@@ -2,6 +2,16 @@
 
 新 session 接手先读 `CLAUDE.md` + 本文件. 全部铁律见 `docs/architecture.md` (单一计算点 / canonical first / edges 一等公民).
 
+**用户身份 (2026-05-23 澄清)**: **持牌教育机构** — 合规非阻塞, 教材/真题入仓 + 公开部署在授权范围内.
+
+## 当前阶段 (2026-05-23 重排)
+
+按用户最新指令路线 (替代旧 M1-M5):
+1. **第一阶段 — 数据彻底补全** (当前) — 不留遗漏的"半口径数据" → 见下文 §"数据补全清单"
+2. **第二阶段 — 题型扩展** — 听/应用文/读后续写 + 难度梯度 + 合成题 (待数据齐)
+3. ~~学生端~~ — 暂不开发
+4. ~~合规~~ — 持牌机构, 非阻塞
+
 ---
 
 ## 项目目标 (用户 2026-05-23 累计要求)
@@ -15,12 +25,97 @@
 
 | M | 名称 | 验收 | 状态 |
 |---|---|---|---|
+## 数据补全清单 (第一阶段, 不留遗漏)
+
+按用户原话"彻底补充完整没有遗漏". 每项都列 (1) 当前缺口 (2) 计划 (3) 完成度.
+
+### A. 教材 unit 召回 (xuanze_4 + 其它残缺)
+- 缺: waiyan/xuanze_4 整册 0 unit; renjiao/bixiu_2 缺 2 unit (4/6); xuanze_3 仅 1 unit
+- 计划: pdfplumber 兜底 + outline 二次扫描 + 人工 anchor list
+- 验收: 14 册 ≥ 5 unit/册 (含 Welcome)
+
+### B. 教材词表 (vocab_intro) 人教版抽
+- 缺: 人教版 7 册词表 **0** 行 (4 市 unusable)
+- 计划: 人教版 APPENDICES `Words and Expressions in Each Unit` 单独抽器
+- 验收: renjiao 7 册各 ≥ 100 词, 总 ≥ 1500 词
+
+### C. 教材 section 二次精化
+- 缺: Other 23 个 (anchor 未命中); 多 unit 只 1-2 section
+- 计划: 扩 ANCHOR 词典 + 子 section (e.g. Reading and Thinking 内 Activity 1-N)
+- 验收: 每 unit 6-9 sections, Other ≤ 5%
+
+### D. 课标语法 4 象限 (类比 vocab)
+- 缺: grammar 只有 cefr_level edge, 没 exam_status; 真题用语法点没识别
+- 计划: 题面 grep 中文语法术语 (eg "定语从句"/"非谓语动词") 命中 → tests_grammar; 算 4 象限
+- 验收: grammar.attrs.exam_status 入 graph, 14 顶级类目 + 子项全有 status
+
+### E. 教材短语 / 句型 / 功能表达 (规则版, 不 LLM)
+- 缺: 完全空白. 用户原话"教材的表达方式比单词更重要"
+- 计划: 扫教材 reading section 文本, 用预定义模式 (动词短语 "take ... into account", 句型 "It is ... that", 功能表达 "I'd like to"); 双关键词 / 滑窗 + cefr_vocab 过滤
+- 验收: 每 unit ≥ 10 短语, 总 ≥ 800
+
+### F. 真题省份精炼
+- 缺: 334 题中仅 32 (10%) 启发式标"辽宁"; 实际辽宁卷 (2021+ 新课标 II) 应 ≥ 80
+- 计划: 用 gaokao 项目 R2 卷型→省份映射 (year → province 1:N), 镜像到本仓 jsonl
+- 验收: province=辽宁 题数 ≥ 60 (5 年 × ~12 题/卷)
+
+### G. 真题考点 mapping (tests_word / tests_grammar / tests_theme)
+- 缺: 没建 edge — 4 象限统计只是 token-level grep, 不入 graph
+- 计划: 规则版 (token grep cefr_vocab + 题面 grep 主题关键词), 入 edges 表
+- 验收: edges.tests_word ≥ 5k, tests_grammar ≥ 500, tests_theme ≥ 300
+
+### H. 课标主题 → 单元主题 mapping (theme_of_unit)
+- 缺: theme 13 节点全孤儿 (用 ORPHAN_TOLERATED 暂时容忍)
+- 计划: 关键词 grep (eg waiyan/bixiu_1/U1 "TEENAGE LIFE" → 人与自我/生活与学习); 人工预定义 mapping table 兜底
+- 验收: 每 unit ≥ 1 theme edge; theme orphan = 0; 移除 ORPHAN_TOLERATED 容忍
+
+### I. 听力 / 应用文 / 读后续写 教材素材抽
+- 缺: 这三项辽宁卷 70 分占比, GAOKAO-Bench 不含听力音频, 教材内对应 section 未标识
+- 计划:
+  - 听力: 标 sections.kind='Listening' 的 page 范围 (已有)
+  - 应用文: 教材 Writing section 抽功能模板 (邀请/通知/求职/感谢)
+  - 读后续写: 教材 Reading section 抽叙事性语篇标记 narrativity=true
+- 验收: 三类素材都有 ≥ 20 个候选/标记
+
+### J. 教材图片 / 听力位置 (pdfplumber, 留 K)
+- 延后: 需要 pdfplumber bbox, 引新依赖
+- 当前: 不做, 列入"M5+ 题型扩展" 时再补
+
+### K. 教材原文文本入图 (sentence-level)
+- 缺: section 只有 page 范围, 没 raw_text
+- 计划: 每 section page 范围 pypdf 抽全文, 入新表 section_text
+- 验收: 14 册 × ~6 section × ~50 句 ≈ 4000+ sentences
+
+### L. 课标主题群下子主题 (level3)
+- 缺: theme 只到 level2 (主题群), 课标 §四(一) 有 level3 子主题
+- 计划: 硬编码 (课标 p22-23 列了 9 项子主题 / 主题群)
+- 验收: theme_contexts 表 level3 列填充 ≥ 30 个
+
+### M. 词形派生关系 (derive_from / related_to)
+- 缺: 派生词 (eg able → ability → enable → unable) 在 graph 里是孤立节点
+- 计划: 简单规则: 同前缀 + 同后缀模式 (ed/ing/ly/tion) → 加 `derive_from` edge
+- 验收: ≥ 500 derive edges
+
+---
+
+## 数据补全后 (第二阶段)
+题型扩展见 `docs/exercise_design.md`. 题型清单 (待数据齐补):
+- 完形填空合成 (LLM 抽 reading section 关键词遮蔽)
+- 语法填空合成 (规则: 时态/语态/词形派生)
+- 应用文模板生成 (从 教材 Writing section 抽功能套句)
+- 读后续写素材库 (教材叙事 reading 标记)
+- 难度梯度: 简单 logistic 回归 (待 sklearn 装)
+
+---
+
+## 旧里程碑 (M0-M5, 历史标记, 不再驱动开发)
+
 | **M0** | 资料基石 + 框架 + 顶层架构 | DB 多表, API 19+ endpoint, 前端区块, 0 FAIL 审计 | ✅ |
-| **M1** | 一城一册全程数据通 (沈阳/外研必修一) | 单元 + section + 词表 + 真题映射 链路完整 | ✅ (units 66 + sections 93 + vocab_intro 2k+ 入仓) |
-| **M2** | L1 课时题生成 (词汇 + 短句) | 任 1 unit 出 5 道单选 + 答案 + 考点 graph | ✅ PoC + 学生端 UI |
-| **M3** | L2 单元题 + L3 阶段卷 | 单元卷 20+ 题混合 | ✅ L2 PoC (跨 unit shuffle); L3 同 algorithm 扩 (一册) |
-| **M4** | L4 模拟卷 (完整 150 分 / 120 min) | 题型分布 = 真卷, 越纲率 < 5% | ✅ L4_replay (历年真题重组, 非押题) |
-| **M5** | 学生交互界面 + 弱点反馈 | 登入 / 答题 / 错题集 / 个性化推荐 | ✅ MVP (`/student` 城市→教材→Unit→答题→自动评分) |
+| **M1** | 一城一册全程数据通 (沈阳/外研必修一) | 单元 + section + 词表 + 真题映射 链路完整 | ✅ PoC, 第一阶段重抽 |
+| **M2** | L1 课时题生成 (词汇 + 短句) | 任 1 unit 出 5 道单选 + 答案 + 考点 graph | ✅ PoC, 第二阶段扩 |
+| **M3** | L2 单元题 + L3 阶段卷 | 单元卷 20+ 题混合 | ✅ L2 PoC; L3 第二阶段 |
+| **M4** | L4 模拟卷 (完整 150 分 / 120 min) | 题型分布 = 真卷, 越纲率 < 5% | ✅ L4_replay; 听/写第二阶段 |
+| ~~M5~~ | ~~学生交互界面~~ | 用户 2026-05-23: 暂不开发 | — |
 
 **"可交付运营" 定义**: M1+M2+M3 完成, M4 跑通一份模拟卷, M5 有最小教师/学生入口.
 

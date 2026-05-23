@@ -20,7 +20,8 @@ from datetime import datetime, timezone
 import duckdb
 
 from . import (codequality, cross_source, curriculum, exam_coverage,
-               extracurricular, file_integrity, graph, publisher, textbook)
+               extracurricular, file_integrity, grammar_4q, graph, publisher,
+               textbook)
 
 # Order = report order; severity sorting happens later
 AUDIT_FNS = [
@@ -34,6 +35,7 @@ AUDIT_FNS = [
     textbook.audit_vocab_curriculum_alignment,
     extracurricular.audit_extracurricular_in_exam,
     exam_coverage.audit_vocab_4q_classification,
+    grammar_4q.audit_grammar_exam_coverage,
     graph.audit_node_orphans,
     graph.audit_edge_validity,
     graph.audit_relation_dictionary,

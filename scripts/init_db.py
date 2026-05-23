@@ -17,7 +17,7 @@ from pypdf import PdfReader
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from backend.services import canonical, links, audit  # noqa: E402
+from backend.services import canonical, links, links_extra, audit  # noqa: E402
 from backend.services.extraction import exam as exam_extract  # noqa: E402
 from backend.services.extraction import textbook as textbook_extract  # noqa: E402
 
@@ -159,12 +159,19 @@ def main() -> None:
         )
         print(f"  loaded units: {len(u_rows)}")
 
-    print("\n=== Layer 2: extract textbook vocabulary intro (STEP 2 second cut) ===")
+    print("\n=== Layer 2: extract textbook vocabulary intro (STEP 2 second cut, 两版) ===")
     from backend.services.extraction import vocab as vocab_extract  # noqa: E402
+    from backend.services.extraction import vocab_renjiao as vocab_rj_extract  # noqa: E402
     vs = vocab_extract.run_all()
-    print(f"  volumes: {vs['volumes']}, rows: {vs['rows']}")
-    vocab_jsonl = ROOT / "data/structured/textbook/vocab_intro_all.jsonl"
-    if vocab_jsonl.exists():
+    vsr = vocab_rj_extract.run_all()
+    print(f"  外研 volumes: {vs['volumes']}, rows: {vs['rows']}")
+    print(f"  人教 volumes: {vsr['volumes']}, rows: {vsr['rows']} per_vol: {vsr['per_volume']}")
+    total_v = 0
+    for vocab_jsonl in [
+        ROOT / "data/structured/textbook/vocab_intro_all.jsonl",
+        ROOT / "data/structured/textbook/vocab_intro_renjiao.jsonl",
+    ]:
+        if not vocab_jsonl.exists(): continue
         v_rows = _read_jsonl(vocab_jsonl)
         con.executemany(
             "INSERT OR REPLACE INTO unit_vocab_intro VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -172,7 +179,13 @@ def main() -> None:
               True, r.get("pos"), r.get("zh_def"), r.get("raw_marker"))
              for r in v_rows],
         )
-        print(f"  loaded unit_vocab_intro: {len(v_rows)}")
+        total_v += len(v_rows)
+    print(f"  loaded unit_vocab_intro 合计: {total_v}")
+
+    print("\n=== Layer 2: 修 units.title_en (外研 PDF 文件名 → 真实主题) ===")
+    from backend.services.extraction import unit_title_fix  # noqa: E402
+    tf = unit_title_fix.fix_titles(con)
+    print(f"  titles fixed: {tf['fixed']}/{tf['total']}, untouched: {tf['untouched']}")
 
     print("\n=== Layer 2: extract textbook sections (STEP 2 third cut, M1 收尾) ===")
     from backend.services.extraction import section as section_extract  # noqa: E402
@@ -201,6 +214,10 @@ def main() -> None:
     print("\n=== Layer 3: links/build (build edges) ===")
     lk = links.build_all(con)
     for k, v in lk.items():
+        print(f"  edges.{k}: {v}")
+    print("\n=== Layer 3: links_extra (tests_word / tests_grammar / theme_of_unit) ===")
+    le = links_extra.build_all_extra(con)
+    for k, v in le.items():
         print(f"  edges.{k}: {v}")
     total_edges = con.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
     print(f"  TOTAL edges: {total_edges}")

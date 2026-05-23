@@ -35,32 +35,57 @@ ALLOWED_RELATIONS = {
 }
 
 # 哪些节点类型可以"孤儿" (e.g. cefr_level 是标签节点, 终点, 没 outgoing 是正常)
-# subject = allowed_in_ln 的 dst 标签;
-# theme = STEP 2 theme_of_unit 启用后应移除容忍 (届时 theme 必须接 unit)
-ORPHAN_TOLERATED_TYPES = {"cefr_level", "qtype", "exam_year", "subject", "theme"}
+# subject = allowed_in_ln 的 dst 标签
+ORPHAN_TOLERATED_TYPES = {"cefr_level", "qtype", "exam_year", "subject"}
+
+
+# 按 node_type 的孤儿率容忍 (≤ N% 算 OK, ≤ M% 算 WARN, 否则 FAIL).
+# 没列出的 type 默认 0 容忍.
+ORPHAN_RATIO_TOLERATED = {
+    "theme": (0.40, 0.70),    # 课标主题部分允许不教
+    "exam_year": (1.0, 1.0),  # 标签节点
+    "qtype": (1.0, 1.0),
+    "cefr_level": (1.0, 1.0),
+    "subject": (1.0, 1.0),
+}
 
 
 def audit_node_orphans(con: duckdb.DuckDBPyConnection) -> list[dict]:
-    """节点 in_degree + out_degree = 0 视为孤儿."""
+    """节点 in_degree + out_degree = 0 视为孤儿. 按 type 比例容忍."""
     rows = con.execute("""
         SELECT n.node_type, n.concept_id,
                COALESCE((SELECT COUNT(*) FROM edges e WHERE e.src_id = n.concept_id), 0) AS od,
                COALESCE((SELECT COUNT(*) FROM edges e WHERE e.dst_id = n.concept_id), 0) AS id
         FROM nodes n
     """).fetchall()
-    by_type: dict[str, int] = {}
-    orphans: list[tuple[str, str]] = []
+    total_by_type: dict[str, int] = {}
+    orphan_by_type: dict[str, int] = {}
+    orphan_samples: list[tuple[str, str]] = []
     for nt, cid, od, id_ in rows:
+        total_by_type[nt] = total_by_type.get(nt, 0) + 1
         if od + id_ == 0:
-            by_type[nt] = by_type.get(nt, 0) + 1
-            if nt not in ORPHAN_TOLERATED_TYPES:
-                orphans.append((nt, cid))
-    sev = "FAIL" if orphans else "OK"
-    return [finding("graph_orphans", sev,
-                    target="nodes 无任何 edge",
-                    expected=f"仅 {ORPHAN_TOLERATED_TYPES} 允许孤儿",
-                    actual=str(len(orphans)),
-                    note=f"by_type={by_type}; sample={orphans[:5]}")]
+            orphan_by_type[nt] = orphan_by_type.get(nt, 0) + 1
+            if len(orphan_samples) < 10:
+                orphan_samples.append((nt, cid))
+    # severity per type
+    severities: list[str] = []
+    type_status: dict[str, str] = {}
+    for nt, total in total_by_type.items():
+        n_orphan = orphan_by_type.get(nt, 0)
+        if n_orphan == 0:
+            type_status[nt] = "OK"; continue
+        ratio = n_orphan / max(1, total)
+        ok_th, warn_th = ORPHAN_RATIO_TOLERATED.get(nt, (0.0, 0.0))
+        if ratio <= ok_th: type_status[nt] = "OK"
+        elif ratio <= warn_th: type_status[nt] = "WARN"
+        else: type_status[nt] = "FAIL"
+        severities.append(type_status[nt])
+    overall = "FAIL" if "FAIL" in severities else ("WARN" if "WARN" in severities else "OK")
+    return [finding("graph_orphans", overall,
+                    target="按 node_type 的孤儿率",
+                    expected="theme≤40% OK / ≤70% WARN; 其它 type 0",
+                    actual=str(type_status),
+                    note=f"orphan_by_type={orphan_by_type}; sample={orphan_samples[:5]}")]
 
 
 def audit_edge_validity(con: duckdb.DuckDBPyConnection) -> list[dict]:
