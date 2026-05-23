@@ -167,35 +167,24 @@ def extract_grammar_items(reader: PdfReader) -> list[dict]:
 
 
 def extract_theme_contexts(_reader: PdfReader) -> list[dict]:
-    """主题语境: 三大语境 + 6 主题群 (硬编码 — 课标 p22-23 明文定义).
-
-    课标原文 (p22, §四(一)):
-      人与自我 (生活与学习 / 做人与做事 — 2 个主题群, 9 项子主题)
-      人与社会 (社会服务与人际沟通 / 文学、艺术与体育 / 历史、社会与文化 / 科学与技术 — 4 个主题群)
-      人与自然 (自然生态 / 环境保护 / 灾害防范 / 宇宙探索 — 4 个主题群)
-    子主题 (level3) 待 STEP 2 P0.3 增量抽; 当前 MVP 用 level1/level2 已够.
+    """主题语境: 三大语境 + 10 主题群 + 35 子主题 (硬编码自 theme_contexts_hardcoded.json).
+    数据源: 课标 §四(一) p22-46, 出表方便人工维护 / 后续 PDF 实抽对比.
     """
-    structure = {
-        "人与自我": ["生活与学习", "做人与做事"],
-        "人与社会": [
-            "社会服务与人际沟通", "文学、艺术与体育",
-            "历史、社会与文化", "科学与技术",
-        ],
-        "人与自然": ["自然生态", "环境保护", "灾害防范", "宇宙探索"],
-    }
+    spec_path = OUT_DIR / "theme_contexts_hardcoded.json"
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    structure, level3 = spec["structure"], spec["level3"]
     rows: list[dict] = []
     for lvl1, groups in structure.items():
-        rows.append({
-            "theme_context_id": lvl1,
-            "level1": lvl1, "level2": None, "level3": None,
-            "source": f"{SOURCE_TAG} (硬编码自 p22-23)",
-        })
+        rows.append({"theme_context_id": lvl1, "level1": lvl1, "level2": None,
+                      "level3": None, "source": f"{SOURCE_TAG} (json hardcoded)"})
         for g in groups:
-            rows.append({
-                "theme_context_id": f"{lvl1}/{g}",
-                "level1": lvl1, "level2": g, "level3": None,
-                "source": f"{SOURCE_TAG} (硬编码自 p22-23)",
-            })
+            rows.append({"theme_context_id": f"{lvl1}/{g}", "level1": lvl1,
+                          "level2": g, "level3": None,
+                          "source": f"{SOURCE_TAG} (json hardcoded)"})
+            for sub in level3.get(f"{lvl1}/{g}", []):
+                rows.append({"theme_context_id": f"{lvl1}/{g}/{sub}",
+                              "level1": lvl1, "level2": g, "level3": sub,
+                              "source": f"{SOURCE_TAG} (json hardcoded)"})
     return rows
 
 

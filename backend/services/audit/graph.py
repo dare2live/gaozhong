@@ -33,6 +33,7 @@ ALLOWED_RELATIONS = {
     "co_occurs": "word ↔ word",
     "topic_aligned": "unit ↔ unit",
     "introduces_phrase": "unit → phrase",
+    "derive_from": "word ↔ word (同 stem)",
 }
 
 # 哪些节点类型可以"孤儿" (e.g. cefr_level 是标签节点, 终点, 没 outgoing 是正常)
@@ -43,7 +44,7 @@ ORPHAN_TOLERATED_TYPES = {"cefr_level", "qtype", "exam_year", "subject"}
 # 按 node_type 的孤儿率容忍 (≤ N% 算 OK, ≤ M% 算 WARN, 否则 FAIL).
 # 没列出的 type 默认 0 容忍.
 ORPHAN_RATIO_TOLERATED = {
-    "theme": (0.40, 0.70),    # 课标主题部分允许不教
+    "theme": (0.80, 0.90),    # 课标主题部分允许不教 (level3 子主题大量孤儿合理)
     "exam_year": (1.0, 1.0),  # 标签节点
     "qtype": (1.0, 1.0),
     "cefr_level": (1.0, 1.0),
