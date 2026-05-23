@@ -79,19 +79,47 @@ CREATE TABLE IF NOT EXISTS units (
 );
 
 -- 单元内 section (Reading/Listening/Writing/Project/...)
--- 由 STEP 2 第三刀 extraction/section.py 产出
 CREATE TABLE IF NOT EXISTS sections (
     version_key    VARCHAR NOT NULL,
     volume_key     VARCHAR NOT NULL,
     unit_number    INTEGER NOT NULL,
-    seq            INTEGER NOT NULL,    -- 该 unit 内 section 顺序 1, 2, 3...
-    kind           VARCHAR NOT NULL,    -- "Reading" | "Listening" | "Writing" | "Project" | ...
-    title          VARCHAR,             -- 原页眉 (regex 抓的全句)
+    seq            INTEGER NOT NULL,
+    kind           VARCHAR NOT NULL,
+    title          VARCHAR,
     page_start     INTEGER,
     page_end       INTEGER,
+    is_narrative   BOOLEAN DEFAULT FALSE,   -- 标"叙事性" (读后续写复用源)
+    is_applied     BOOLEAN DEFAULT FALSE,   -- 标"应用文"
+    is_listening   BOOLEAN DEFAULT FALSE,   -- 标"听力素材"
     PRIMARY KEY (version_key, volume_key, unit_number, seq)
 );
 CREATE INDEX IF NOT EXISTS idx_sections_unit ON sections(version_key, volume_key, unit_number);
+
+-- Section 文本 (page 范围抽出, 给短语/句型抽 + 后续 LLM 用)
+CREATE TABLE IF NOT EXISTS section_text (
+    version_key    VARCHAR NOT NULL,
+    volume_key     VARCHAR NOT NULL,
+    unit_number    INTEGER NOT NULL,
+    seq            INTEGER NOT NULL,
+    raw_text       VARCHAR NOT NULL,
+    n_chars        INTEGER,
+    PRIMARY KEY (version_key, volume_key, unit_number, seq)
+);
+
+-- 教材短语 / 句型 / 功能表达 (E, 规则版)
+CREATE TABLE IF NOT EXISTS phrases (
+    phrase_id      BIGINT PRIMARY KEY,
+    version_key    VARCHAR NOT NULL,
+    volume_key     VARCHAR NOT NULL,
+    unit_number    INTEGER NOT NULL,
+    canonical      VARCHAR NOT NULL,
+    phrase_type    VARCHAR,                  -- verb_phrase | collocation | function_expression | sentence_pattern
+    evidence       VARCHAR,                  -- 原句
+    pattern_id     VARCHAR                    -- 来源模式 id
+);
+CREATE INDEX IF NOT EXISTS idx_phrases_unit ON phrases(version_key, volume_key, unit_number);
+CREATE INDEX IF NOT EXISTS idx_phrases_canonical ON phrases(canonical);
+CREATE SEQUENCE IF NOT EXISTS phrase_id_seq START 1;
 
 -- 教材词条引入位置 (mapping 到 cefr_vocab)
 -- in_curriculum 是 load 时占位; 实际真值由 links/build_introduces_word 算 (LEFT JOIN cefr_vocab)

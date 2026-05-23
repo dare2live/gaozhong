@@ -32,6 +32,7 @@ ALLOWED_RELATIONS = {
     "tests_theme": "question → theme",
     "co_occurs": "word ↔ word",
     "topic_aligned": "unit ↔ unit",
+    "introduces_phrase": "unit → phrase",
 }
 
 # 哪些节点类型可以"孤儿" (e.g. cefr_level 是标签节点, 终点, 没 outgoing 是正常)

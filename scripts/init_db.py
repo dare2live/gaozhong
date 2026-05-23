@@ -196,7 +196,8 @@ def main() -> None:
     if sec_jsonl.exists():
         s_rows = _read_jsonl(sec_jsonl)
         con.executemany(
-            "INSERT OR REPLACE INTO sections VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO sections (version_key, volume_key, unit_number, "
+            "seq, kind, title, page_start, page_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [(r["version_key"], r["volume_key"], r["unit_number"], r["seq"],
               r["kind"], r["title"], r["page_start"], r["page_end"]) for r in s_rows],
         )
@@ -210,6 +211,26 @@ def main() -> None:
         print(f"  nodes.{k}: {v}")
     total_nodes = con.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
     print(f"  TOTAL nodes: {total_nodes}")
+
+    print("\n=== Layer 2: section_text (raw text per section, for phrase/LLM 抽) ===")
+    from backend.services.extraction import section_text as st_extract  # noqa: E402
+    st = st_extract.extract_section_text(con)
+    print(f"  section_text: {st['rows_inserted']}/{st['sections_scanned']}")
+
+    print("\n=== Layer 2: phrases (规则版 verb/pattern/function) ===")
+    from backend.services.extraction import phrases as ph_extract  # noqa: E402
+    ph = ph_extract.extract_phrases(con)
+    print(f"  phrases inserted: {ph['phrases_inserted']}, by_type: {ph['by_type']}")
+
+    print("\n=== Layer 2: 真题省份精炼 (启发式 v2, 辽宁卷型 mapping) ===")
+    from backend.services.extraction import exam_province as ep  # noqa: E402
+    eps = ep.refine_province(con)
+    print(f"  updated: {eps['updated']}, distribution: {eps['counts']}")
+
+    print("\n=== Layer 2: section flags (is_listening / is_applied / is_narrative) ===")
+    from backend.services.extraction import section_flags as sf  # noqa: E402
+    sfs = sf.flag_sections(con)
+    print(f"  {sfs}")
 
     print("\n=== Layer 3: links/build (build edges) ===")
     lk = links.build_all(con)

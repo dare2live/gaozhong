@@ -120,9 +120,38 @@ def build_theme_of_unit(con: duckdb.DuckDBPyConnection) -> int:
     return _replace(con, "theme_of_unit", rows)
 
 
+def build_introduces_phrase(con: duckdb.DuckDBPyConnection) -> int:
+    """unit → phrase. Auto-create phrase nodes (concept_id = 'phrase:<sha8>')."""
+    import hashlib
+    rows_p = con.execute(
+        "SELECT version_key, volume_key, unit_number, canonical, phrase_type, evidence "
+        "FROM phrases"
+    ).fetchall()
+    node_rows: list[tuple] = []
+    edge_rows: list[tuple] = []
+    seen_nodes: set[str] = set()
+    for ver, vol, un, canon, ptype, ev in rows_p:
+        sha = hashlib.sha1(f"{canon}/{ptype}".encode("utf-8")).hexdigest()[:8]
+        cid = f"phrase:{sha}"
+        if cid not in seen_nodes:
+            seen_nodes.add(cid)
+            attrs = ('{"canonical": "%s", "type": "%s"}'
+                     % (canon.replace('"', '\\"'), ptype))
+            node_rows.append((cid, "phrase", canon, attrs))
+        ev_short = (ev or "")[:200].replace('"', "'")
+        edge_rows.append((
+            f"unit:{ver}/{vol}/U{un}", cid, 1.0,
+            '{"evidence": "%s"}' % ev_short,
+        ))
+    if node_rows:
+        con.executemany("INSERT OR REPLACE INTO nodes VALUES (?, ?, ?, ?)", node_rows)
+    return _replace(con, "introduces_phrase", edge_rows)
+
+
 def build_all_extra(con: duckdb.DuckDBPyConnection) -> dict:
     return {
         "tests_word": build_tests_word(con),
         "tests_grammar": build_tests_grammar(con),
         "theme_of_unit": build_theme_of_unit(con),
+        "introduces_phrase": build_introduces_phrase(con),
     }
