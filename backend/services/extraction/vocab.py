@@ -24,15 +24,19 @@ ROOT = Path(__file__).resolve().parent.parent.parent.parent
 TEXTBOOK_DIR = ROOT / "data" / "textbooks"
 OUT_DIR = ROOT / "data" / "structured" / "textbook"
 
-# Match: [optional marker] word /ipa/ pos.  zh_def  unit_number
+# Word and expressions section 实际排版 (实测样本):
+#   "UNIT 1" / "UNIT N TITLE" 段头独立一行 → current_unit = N
+#   词条行: word /ipa/ pos.  zh_def [trailing num=lesson# 忽略]
+# 行末数字曾被误抽为 Unit#, 见 docs/lessons_learned.md L-A.
 ENTRY_RE = re.compile(
-    r"^\s*([*▫])?\s*"           # marker
-    r"([a-zA-Z][a-zA-Z'\- ]*?)"   # word (allow multi-word: "social media")
-    r"\s+/[^/]+/\s+"             # ipa /.../
-    r"([a-z]+\.)?\s*"             # pos (optional)
-    r"(.+?)\s+"                   # zh_def (lazy)
-    r"(\d{1,3})\s*$",             # trailing unit number
+    r"^\s*([*▫])?\s*"            # marker
+    r"([a-zA-Z][a-zA-Z'\- ]*?)"   # word
+    r"\s+/[^/]+/\s+"              # ipa /.../
+    r"([a-z]+\.)?\s*"             # pos
+    r"(.+?)"                      # zh_def
+    r"(?:\s+\d{1,3})?\s*$",       # optional trailing lesson# (discarded)
 )
+UNIT_HEADER_RE = re.compile(r"^\s*UNIT\s+(\d+)\s*(.*)$", re.IGNORECASE)
 
 
 def _find_section_pages(reader: PdfReader, heading: str = "Words and expressions") -> list[int]:
@@ -99,20 +103,36 @@ def _next_section_page(reader: PdfReader, start: int, exclude_heading: str) -> i
     return len(reader.pages)
 
 
-def _parse_entry_line(line: str) -> tuple[str, str, str, str, int] | None:
-    """Parse one vocabulary entry line. Return (marker, word, pos, zh_def, unit_n) or None."""
-    if not line or "Words and expressions" in line:
+def _parse_unit_header(line: str) -> int | None:
+    """If line is a 'UNIT N' section header, return N; else None."""
+    if not line:
+        return None
+    s = line.strip()
+    # too long → probably not header
+    if len(s) > 40:
+        return None
+    m = UNIT_HEADER_RE.match(s)
+    if not m:
+        return None
+    try:
+        return int(m.group(1))
+    except ValueError:
+        return None
+
+
+def _parse_entry_line(line: str) -> tuple[str, str, str, str] | None:
+    """Parse one entry. Return (marker, word, pos, zh_def) or None.
+    NOTE: 不返回 unit#; 由扫描循环里 current_unit 跟踪."""
+    if not line or "Words and expressions" in line or "Vocabulary" in line:
         return None
     m = ENTRY_RE.match(line.rstrip())
     if not m:
         return None
-    marker, word, pos, zh, unit_str = m.groups()
-    try:
-        unit_n = int(unit_str)
-    except ValueError:
+    marker, word, pos, zh = m.groups()
+    word = word.strip().lower()
+    if not word or len(word) > 30:
         return None
-    return (marker or "", word.strip().lower(), (pos or "").rstrip("."),
-            (zh or "").strip(), unit_n)
+    return (marker or "", word, (pos or "").rstrip("."), (zh or "").strip())
 
 
 def _page_text(reader: PdfReader, pi: int) -> str:
@@ -131,19 +151,28 @@ def extract_vocab_intro(pdf_path: Path, version_key: str, volume_key: str) -> li
     e = _next_section_page(reader, s, "Words and expressions")
     out: list[dict] = []
     seen: set[tuple[str, int]] = set()
+    current_unit: int | None = None
     for pi in range(s, e):
         for raw in _page_text(reader, pi).split("\n"):
-            parsed = _parse_entry_line(raw)
+            line = raw.rstrip()
+            # check UNIT N header first
+            header_n = _parse_unit_header(line)
+            if header_n is not None:
+                current_unit = header_n
+                continue
+            if current_unit is None:
+                continue
+            parsed = _parse_entry_line(line)
             if not parsed:
                 continue
-            marker, word, pos, zh, unit_n = parsed
-            key = (word, unit_n)
+            marker, word, pos, zh = parsed
+            key = (word, current_unit)
             if key in seen:
                 continue
             seen.add(key)
             out.append({
                 "version_key": version_key, "volume_key": volume_key,
-                "unit_number": unit_n, "word": word, "pos": pos,
+                "unit_number": current_unit, "word": word, "pos": pos,
                 "zh_def": zh, "raw_marker": marker,
             })
     return out

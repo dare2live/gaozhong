@@ -11,6 +11,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/dp/Documents/M/gaozhong/scripts/user_prompt_continuity_hook.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
