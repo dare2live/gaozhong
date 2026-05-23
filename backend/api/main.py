@@ -61,6 +61,9 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/" or path == "/index.html":
             self._send_file(FRONTEND_DIR / "index.html", "text/html; charset=utf-8")
             return True
+        if path == "/student" or path == "/student.html":
+            self._send_file(FRONTEND_DIR / "student.html", "text/html; charset=utf-8")
+            return True
         if path.startswith("/static/"):
             self._send_file(FRONTEND_DIR / "static" / path[len("/static/"):],
                             guess_mime(path))

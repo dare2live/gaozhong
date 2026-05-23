@@ -109,6 +109,38 @@ async function loadTextbooks() {
     </tr>`).join("");
 }
 
+// === Trend (历年高考词频 + 题型分布) ===
+async function loadTrend() {
+  const d = await fetchJSON("/api/trend/summary");
+  // top words
+  const top = (d.top_words || []).slice(0, 20);
+  let html = `<h3 style="font-family:Georgia,serif;margin-top:0">Top 20 高频实义词 (年覆盖 / 总次)</h3>
+    <div class="heat-grid" style="grid-template-columns: repeat(5, 1fr);font-size:11px">`;
+  for (const w of top) {
+    html += `<div style="padding:6px 8px;background:#f7f5ef;border-left:3px solid #0a4d75">
+      <b>${w.word}</b><br>
+      <span style="font-size:10px;color:#666">${w.total} 次 · ${w.year_span} 年</span>
+    </div>`;
+  }
+  html += `</div>`;
+  // type distribution by year
+  const yrs = d.years_covered || [];
+  const typeDist = d.type_distribution_by_year || {};
+  const allTypes = new Set();
+  for (const y of yrs) for (const t of Object.keys(typeDist[y]||{})) allTypes.add(t);
+  const types = [...allTypes].sort();
+  html += `<h3 style="font-family:Georgia,serif;margin-top:14px">年×题型 题量分布</h3>
+    <table style="font-size:12px"><thead><tr><th>年份</th>${types.map(t=>`<th>${t}</th>`).join("")}<th>总</th></tr></thead><tbody>`;
+  for (const y of yrs) {
+    const total = Object.values(typeDist[y]||{}).reduce((a,b)=>a+b,0);
+    html += `<tr><td><b>${y}</b></td>${
+      types.map(t => `<td style="text-align:center">${(typeDist[y]||{})[t] || ''}</td>`).join("")
+    }<td><b>${total}</b></td></tr>`;
+  }
+  html += `</tbody></table>`;
+  $("#trend-body").innerHTML = html;
+}
+
 // === L1 Quiz UI ===
 async function populateUnitDropdown() {
   const rows = await fetchJSON("/api/units?version=waiyan");
@@ -388,4 +420,5 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#q-reveal").addEventListener("click", revealAllAnswers);
     generateQuiz().catch(console.error);
   }).catch(console.error);
+  loadTrend().catch(console.error);
 });

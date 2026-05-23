@@ -8,8 +8,9 @@
 </head>
 <body>
   <header>
-    <h1>沈阳/辽宁高中英语教学系统 <span class="badge">STEP 1 MVP</span></h1>
-    <p class="subtitle">课标 = master · 教材 = 辽宁在用 2 版 · 高考 = 新课标 II 卷</p>
+    <h1>沈阳/辽宁高中英语教学系统 <span class="badge">数据治理 + 知识图谱</span></h1>
+    <p class="subtitle">课标 = master · 教材 = 辽宁在用 2 版 · 高考 = 新课标 II 卷 ·
+      <a href="/student" style="color:#fff;border-bottom:1px solid #fff">学生端 →</a></p>
   </header>
 
   <section id="stats" class="card">
@@ -95,6 +96,12 @@
     <h2>知识图谱 stats (nodes + edges)</h2>
     <p class="src">详 docs/knowledge_graph.md · 查邻居: <code>/api/graph/neighbors?node=word:abandon</code></p>
     <div id="graph-body"></div>
+  </section>
+
+  <section id="trend" class="card">
+    <h2>历年高考趋势 (词频 × 题型, 排除 stopword)</h2>
+    <p class="src">用于辅助"哪些考点要狠教". 详见 docs/tooling_for_exam_analysis.md (非押题)</p>
+    <div id="trend-body"></div>
   </section>
 
   <section id="quiz" class="card">

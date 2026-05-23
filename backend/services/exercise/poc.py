@@ -57,6 +57,85 @@ def _distractor_pool(con: duckdb.DuckDBPyConnection, level: str = "义教") -> l
     return [{"word": w, "zh_def": zh.strip()} for w, zh in rows if zh and zh.strip()]
 
 
+def generate_l4_paper(con: duckdb.DuckDBPyConnection, province: str = "辽宁",
+                       year_min: int = 2020, n: int = 25,
+                       seed: int | None = None) -> dict:
+    """L4 模拟卷 — 从真题抽组合, 题型分布对齐辽宁新课标 II 卷.
+    不押题, 不合成 — 直接复用历年真题, 标 paper_level=L4_replay.
+    """
+    rng = random.Random(seed)
+    rows = con.execute("""
+        SELECT question_id, year, province, question_type, raw_question, answer, analysis
+        FROM exam_questions
+        WHERE province LIKE ? AND year >= ?
+        ORDER BY year DESC
+    """, [f"%{province}%", year_min]).fetchall()
+    if not rows:
+        rows = con.execute("""
+            SELECT question_id, year, province, question_type, raw_question, answer, analysis
+            FROM exam_questions WHERE year >= ?
+        """, [year_min]).fetchall()
+    by_type: dict[str, list] = {}
+    for r in rows:
+        by_type.setdefault(r[3], []).append(r)
+    # 新课标 II 卷比例 (近似): 阅读 5 + 完形 1 + 语法填空 1 + 单选 N + 改错 1
+    target_mix = {
+        "阅读理解": max(5, n // 4),
+        "完形填空": max(2, n // 8),
+        "语法填空": max(2, n // 12),
+        "单选(语法/词汇)": max(5, n // 4),
+        "短文改错": 1,
+    }
+    picked = []
+    for qtype, want in target_mix.items():
+        pool = by_type.get(qtype, [])[:]
+        rng.shuffle(pool)
+        for r in pool[:want]:
+            picked.append({
+                "question_id": r[0], "year": r[1], "province": r[2],
+                "question_type": r[3], "stem": (r[4] or "")[:1200],
+                "answer": (r[5] or "")[:600], "analysis": (r[6] or "")[:600],
+            })
+    rng.shuffle(picked)
+    for i, p in enumerate(picked):
+        p["seq"] = i + 1
+    return {
+        "paper_level": "L4_replay", "scope": f"province={province} year>={year_min}",
+        "target_count": n, "actual_count": len(picked),
+        "mix": target_mix, "questions": picked,
+        "note": "L4 模拟卷 = 历年真题重组, 非押题/非合成. 见 docs/exercise_design.md",
+    }
+
+
+def generate_l2_quiz(con: duckdb.DuckDBPyConnection, version_key: str, volume_key: str,
+                     n: int = 20, seed: int | None = None) -> dict:
+    """L2 单元试卷 — 给一整册或一个 unit, 出 N 题混合 (词义 + 填空)."""
+    rng = random.Random(seed)
+    units = con.execute("""
+        SELECT version_key, volume_key, unit_number FROM units
+        WHERE version_key=? AND volume_key=? ORDER BY unit_number
+    """, [version_key, volume_key]).fetchall()
+    if not units:
+        return {"error": f"no units for {version_key}/{volume_key}"}
+    per_unit = max(1, n // len(units))
+    all_questions: list[dict] = []
+    for ver, vol, un in units:
+        sub = generate_l1_quiz(con, f"unit:{ver}/{vol}/U{un}", n=per_unit,
+                                seed=rng.randint(0, 99999))
+        for q in sub.get("questions", []):
+            q["unit_origin"] = un
+            all_questions.append(q)
+    rng.shuffle(all_questions)
+    for i, q in enumerate(all_questions[:n]):
+        q["seq"] = i + 1
+    return {
+        "paper_level": "L2", "scope": f"{version_key}/{volume_key}",
+        "target_count": n, "actual_count": min(n, len(all_questions)),
+        "questions": all_questions[:n],
+        "compose_note": f"{len(units)} units × {per_unit} 题/unit, shuffle",
+    }
+
+
 def generate_l1_quiz(con: duckdb.DuckDBPyConnection, unit_id: str, n: int = 5,
                      seed: int | None = None) -> dict:
     """生成 N 道 L1 单选 ('选义' 题型). 返回 {paper_id, unit_id, questions:[...]}"""
