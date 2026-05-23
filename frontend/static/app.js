@@ -109,6 +109,23 @@ async function loadTextbooks() {
     </tr>`).join("");
 }
 
+async function loadUnits() {
+  const rows = await fetchJSON("/api/units");
+  $("#units-body tbody").innerHTML = rows.map((r) => {
+    const bgColor = r.extract_method === 'outline' ? '' :
+                    r.extract_method === 'regex_min' ? 'background:#fffaf0' :
+                    'background:#fde2e1';
+    return `<tr style="${bgColor}">
+      <td>${r.version_key}</td>
+      <td>${r.volume_key}</td>
+      <td>${r.unit_number}</td>
+      <td>${r.title_en}</td>
+      <td>p${r.page_start}–${r.page_end}</td>
+      <td><code style="font-size:11px">${r.extract_method}</code></td>
+    </tr>`;
+  }).join("");
+}
+
 async function loadThemes() {
   const rows = await fetchJSON("/api/theme_contexts");
   const byL1 = {};
@@ -163,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAudit().catch(console.error);
   loadGraph().catch(console.error);
   loadExam().catch(console.error);
+  loadUnits().catch(console.error);
   $("#vocab-go").addEventListener("click", () => loadVocab().catch(console.error));
   $("#vocab-prefix").addEventListener("keydown", (e) => { if (e.key === "Enter") loadVocab(); });
   $("#exam-go").addEventListener("click", () => loadExam().catch(console.error));

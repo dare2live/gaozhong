@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 from backend.services import canonical, links, audit  # noqa: E402
 from backend.services.extraction import exam as exam_extract  # noqa: E402
+from backend.services.extraction import textbook as textbook_extract  # noqa: E402
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 SCHEMA_PATH = ROOT / "backend" / "db" / "schema.sql"
@@ -142,6 +143,21 @@ def main() -> None:
     print(f"  files: {s['files']}, examples: {s['examples']}")
     print(f"  by_province: {s['by_province']}")
     print(f"  by_type: {s['by_type']}")
+
+    print("\n=== Layer 2: extract textbook units (STEP 2 first cut) ===")
+    ts = textbook_extract.run_all()
+    print(f"  volumes: {ts['volumes']}, units_total: {ts['units_total']}")
+    print(f"  by_method: {ts['by_method']}")
+    # load units jsonl into DB
+    units_jsonl = ROOT / "data/structured/textbook/units_all.jsonl"
+    if units_jsonl.exists():
+        u_rows = _read_jsonl(units_jsonl)
+        con.executemany(
+            "INSERT OR REPLACE INTO units VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [(r["version_key"], r["volume_key"], r["unit_number"], r["title_en"],
+              None, r["page_start"], r["page_end"], r["extract_method"]) for r in u_rows],
+        )
+        print(f"  loaded units: {len(u_rows)}")
 
     print(f"\n  file_manifest: {_load_file_manifest(con)}")
 

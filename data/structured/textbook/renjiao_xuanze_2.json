@@ -1,0 +1,44 @@
+{
+  "version_key": "renjiao",
+  "volume_key": "xuanze_2",
+  "n_pages": 134,
+  "n_units": 5,
+  "method": "regex_min",
+  "units": [
+    {
+      "unit_number": 1,
+      "title_en": "UNIT 1 PEOPLE OF ACHIEVEMENT",
+      "start_page": 8,
+      "method": "regex_min",
+      "end_page": 29
+    },
+    {
+      "unit_number": 2,
+      "title_en": "UNIT 2 BRIDGING CULTURES",
+      "start_page": 30,
+      "method": "regex_min",
+      "end_page": 81
+    },
+    {
+      "unit_number": 3,
+      "title_en": "UNIT 3 FOOD AND CUL TURE",
+      "start_page": 82,
+      "method": "regex_min",
+      "end_page": 89
+    },
+    {
+      "unit_number": 4,
+      "title_en": "UNIT 4 JOURNEY ACROS S A VAST LAND",
+      "start_page": 90,
+      "method": "regex_min",
+      "end_page": 95
+    },
+    {
+      "unit_number": 5,
+      "title_en": "UNIT 5 FIRST AID",
+      "start_page": 96,
+      "method": "regex_min",
+      "end_page": 134
+    }
+  ]
+}

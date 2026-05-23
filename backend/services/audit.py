@@ -39,6 +39,7 @@ def run_all(con: duckdb.DuckDBPyConnection) -> dict:
     findings += audit_publisher_coverage(con)
     findings += audit_cross_source_vocab(con)
     findings += audit_textbook_pages(con)
+    findings += audit_textbook_units(con)
 
     if findings:
         for i, f in enumerate(findings):
@@ -198,4 +199,43 @@ def audit_textbook_pages(con: duckdb.DuckDBPyConnection) -> list[dict]:
                     target="textbooks.pdf_pages", expected="all > 50",
                     actual=f"{len(rows) - len(bad)}/{len(rows)} pass",
                     note=str(bad) if bad else None))
+    return out
+
+
+def audit_textbook_units(con: duckdb.DuckDBPyConnection) -> list[dict]:
+    """每册 units 数应在合理范围 (必修 5-6 / 选必 4-6, 含 Welcome Unit)."""
+    out = []
+    per_vol = con.execute("""
+        SELECT version_key, volume_key,
+               COUNT(*) AS n_units,
+               MAX(extract_method) AS method
+        FROM units GROUP BY version_key, volume_key
+    """).fetchall()
+    expected_total = 14 * 6  # 期望 14 册 × 6 unit ≈ 85 (含 Welcome)
+    actual_total = sum(n for _, _, n, _ in per_vol)
+    sev = "OK" if actual_total >= expected_total * 0.75 else ("WARN" if actual_total >= expected_total * 0.5 else "FAIL")
+    out.append(dict(audit_kind="textbook_units",
+                    severity=sev,
+                    target="units.total",
+                    expected=f"≈{expected_total} (14 vols × ~6 units)",
+                    actual=str(actual_total),
+                    delta=str(actual_total - expected_total),
+                    note=f"召回率 {actual_total/expected_total:.0%}"))
+    # 每册个体检查
+    empty = [(v, k) for v, k, n, _ in per_vol if n == 0]
+    short = [(v, k, n) for v, k, n, _ in per_vol if 0 < n < 4]
+    out.append(dict(audit_kind="textbook_units",
+                    severity="FAIL" if empty else ("WARN" if short else "OK"),
+                    target="units.per_volume",
+                    expected="all >= 4",
+                    actual=f"{len(per_vol) - len(empty) - len(short)}/{len(per_vol)} pass",
+                    note=f"empty={empty} short={short}"))
+    # 期望 14 册都有
+    total_vols = con.execute("SELECT COUNT(*) FROM textbooks").fetchone()[0]
+    out.append(dict(audit_kind="textbook_units",
+                    severity="WARN" if len(per_vol) < total_vols else "OK",
+                    target="units.volume_coverage",
+                    expected=str(total_vols),
+                    actual=str(len(per_vol)),
+                    note=f"{total_vols - len(per_vol)} 册无任何 unit"))
     return out

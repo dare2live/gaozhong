@@ -1,0 +1,51 @@
+{
+  "version_key": "waiyan",
+  "volume_key": "xuanze_2",
+  "n_pages": 131,
+  "n_units": 6,
+  "method": "outline",
+  "units": [
+    {
+      "unit_number": 1,
+      "title_en": "选修2-2 Unit 1.pdf",
+      "start_page": 8,
+      "method": "outline",
+      "end_page": 19
+    },
+    {
+      "unit_number": 2,
+      "title_en": "选修2-3 Unit 2.pdf",
+      "start_page": 20,
+      "method": "outline",
+      "end_page": 31
+    },
+    {
+      "unit_number": 3,
+      "title_en": "选修2-4 Unit 3.pdf",
+      "start_page": 32,
+      "method": "outline",
+      "end_page": 43
+    },
+    {
+      "unit_number": 4,
+      "title_en": "选修2-5 Unit 4.pdf",
+      "start_page": 44,
+      "method": "outline",
+      "end_page": 55
+    },
+    {
+      "unit_number": 5,
+      "title_en": "选修2-6 Unit 5.pdf",
+      "start_page": 56,
+      "method": "outline",
+      "end_page": 67
+    },
+    {
+      "unit_number": 6,
+      "title_en": "选修2-7 Unit 6.pdf",
+      "start_page": 68,
+      "method": "outline",
+      "end_page": 131
+    }
+  ]
+}

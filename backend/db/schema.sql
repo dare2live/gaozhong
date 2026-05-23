@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS units (
     theme_context_id VARCHAR,           -- → theme_contexts(theme_context_id)
     page_start     INTEGER,
     page_end       INTEGER,
+    extract_method VARCHAR,              -- 'outline' | 'regex_min' | 'empty' (STEP 2 textbook extractor)
     PRIMARY KEY (version_key, volume_key, unit_number)
 );
 

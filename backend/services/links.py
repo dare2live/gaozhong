@@ -22,7 +22,8 @@ def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     counts["vol_in_ver"] = build_volume_publisher(con)
     counts["in_year"] = build_question_in_year(con)
     counts["question_type"] = build_question_type(con)
-    # 教材层 (units/sections/vocab_intro/phrases) STEP 2 输出后再补 build_*
+    counts["in_volume"] = build_unit_in_volume(con)
+    # 教材层 (sections/vocab_intro/phrases) STEP 2 第二刀输出后再补 build_*
     # 真题→考点 (tests_word/tests_grammar/tests_theme) STEP 3 LLM 抽出后再补
     return counts
 
@@ -119,3 +120,26 @@ def build_volume_publisher(con: duckdb.DuckDBPyConnection) -> int:
         short = ver_to_short.get(ver, ver)
         rows.append((f"volume:{ver}/{vol}", f"publisher:{short}", 1.0, None))
     return _replace_relation(con, "vol_in_ver", rows)
+
+
+def build_unit_in_volume(con: duckdb.DuckDBPyConnection) -> int:
+    """unit → volume. unit concept_id = unit:<ver>/<vol>/U<n>; ensure unit nodes exist first."""
+    units = con.execute("""
+        SELECT version_key, volume_key, unit_number, title_en, page_start, page_end
+        FROM units ORDER BY version_key, volume_key, unit_number
+    """).fetchall()
+    if not units:
+        return 0
+    # ensure unit nodes
+    node_rows = []
+    for ver, vol, un, title, ps, pe in units:
+        cid = f"unit:{ver}/{vol}/U{un}"
+        attrs = '{"page_start": %d, "page_end": %d}' % (ps or 0, pe or 0)
+        node_rows.append((cid, "unit", title or f"Unit {un}", attrs))
+    con.executemany("INSERT OR REPLACE INTO nodes VALUES (?, ?, ?, ?)", node_rows)
+    # edges
+    rows = [
+        (f"unit:{ver}/{vol}/U{un}", f"volume:{ver}/{vol}", 1.0, None)
+        for ver, vol, un, *_ in units
+    ]
+    return _replace_relation(con, "in_volume", rows)
