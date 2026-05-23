@@ -23,7 +23,8 @@ def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     counts["in_year"] = build_question_in_year(con)
     counts["question_type"] = build_question_type(con)
     counts["in_volume"] = build_unit_in_volume(con)
-    # 教材层 (sections/vocab_intro/phrases) STEP 2 第二刀输出后再补 build_*
+    counts["introduces_word"] = build_introduces_word(con)
+    # 教材层 (sections/phrases) STEP 2 第三刀
     # 真题→考点 (tests_word/tests_grammar/tests_theme) STEP 3 LLM 抽出后再补
     return counts
 
@@ -120,6 +121,46 @@ def build_volume_publisher(con: duckdb.DuckDBPyConnection) -> int:
         short = ver_to_short.get(ver, ver)
         rows.append((f"volume:{ver}/{vol}", f"publisher:{short}", 1.0, None))
     return _replace_relation(con, "vol_in_ver", rows)
+
+
+def build_introduces_word(con: duckdb.DuckDBPyConnection) -> int:
+    """unit → word, evidence 含 pos/zh_def/marker.
+    自动 ensure 越纲 word 节点; INNER JOIN units 过滤掉 vocab_extractor 误抽的非 Unit 数字
+    (e.g. 行末 14/21 等 lesson 号被当 Unit) — 见 docs/lessons_learned.md L-2026-05-23-A."""
+    try:
+        rows_in = con.execute("""
+            SELECT v.version_key, v.volume_key, v.unit_number, v.word, v.pos, v.zh_def, v.raw_marker,
+                   (c.word IS NOT NULL) AS in_curriculum
+            FROM unit_vocab_intro v
+            INNER JOIN units u
+              ON u.version_key=v.version_key AND u.volume_key=v.volume_key AND u.unit_number=v.unit_number
+            LEFT JOIN cefr_vocab c ON c.word = v.word
+        """).fetchall()
+    except duckdb.CatalogException:
+        return 0
+    # Step 1: ensure all word nodes exist (extracurricular included)
+    extra_words = {r[3] for r in rows_in if not r[7]}
+    if extra_words:
+        con.executemany(
+            "INSERT OR REPLACE INTO nodes VALUES (?, 'word', ?, ?)",
+            [(f"word:{w}", w,
+              '{"extracurricular": true, "cefr_level": "校本扩展"}') for w in extra_words],
+        )
+    # Step 2: build edges
+    rows = []
+    for ver, vol, un, word, pos, zh, marker, in_cur in rows_in:
+        unit_id = f"unit:{ver}/{vol}/U{un}"
+        word_id = f"word:{word}"
+        evidence = '{"pos": %s, "zh_def": %s, "marker": %s, "in_curriculum": %s}' % (
+            _q(pos), _q(zh), _q(marker), str(bool(in_cur)).lower())
+        rows.append((unit_id, word_id, 1.0 if in_cur else 0.5, evidence))
+    return _replace_relation(con, "introduces_word", rows)
+
+
+def _q(s) -> str:
+    """JSON-string escape (minimal)."""
+    if s is None: return "null"
+    return '"' + str(s).replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
 def build_unit_in_volume(con: duckdb.DuckDBPyConnection) -> int:

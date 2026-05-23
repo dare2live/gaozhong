@@ -159,6 +159,22 @@ def main() -> None:
         )
         print(f"  loaded units: {len(u_rows)}")
 
+    print("\n=== Layer 2: extract textbook vocabulary intro (STEP 2 second cut) ===")
+    from backend.services.extraction import vocab as vocab_extract  # noqa: E402
+    vs = vocab_extract.run_all()
+    print(f"  volumes: {vs['volumes']}, rows: {vs['rows']}")
+    vocab_jsonl = ROOT / "data/structured/textbook/vocab_intro_all.jsonl"
+    if vocab_jsonl.exists():
+        v_rows = _read_jsonl(vocab_jsonl)
+        con.executemany(
+            "INSERT OR REPLACE INTO unit_vocab_intro VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [(r["version_key"], r["volume_key"], r["unit_number"], r["word"],
+              True,  # 走 LEFT JOIN cefr_vocab 在 links/build 时实际算 in_curriculum
+              r.get("pos"), r.get("zh_def"), r.get("raw_marker"))
+             for r in v_rows],
+        )
+        print(f"  loaded unit_vocab_intro: {len(v_rows)}")
+
     print(f"\n  file_manifest: {_load_file_manifest(con)}")
 
     print("\n=== Layer 3: canonical/concept (build nodes) ===")

@@ -79,17 +79,19 @@ CREATE TABLE IF NOT EXISTS units (
 );
 
 -- 教材词条引入位置 (mapping 到 cefr_vocab)
+-- in_curriculum 是 load 时占位; 实际真值由 links/build_introduces_word 算 (LEFT JOIN cefr_vocab)
 CREATE TABLE IF NOT EXISTS unit_vocab_intro (
     version_key    VARCHAR NOT NULL,
     volume_key     VARCHAR NOT NULL,
     unit_number    INTEGER NOT NULL,
-    word           VARCHAR NOT NULL,    -- → cefr_vocab(word) if in_curriculum
+    word           VARCHAR NOT NULL,
     in_curriculum  BOOLEAN NOT NULL,
     pos            VARCHAR,
     zh_def         VARCHAR,
-    raw_marker     VARCHAR,             -- 教材原标记 (*, △ 等)
+    raw_marker     VARCHAR,
     PRIMARY KEY (version_key, volume_key, unit_number, word)
 );
+CREATE INDEX IF NOT EXISTS idx_unit_vocab_word ON unit_vocab_intro(word);
 
 -- 短语 / 句型 / 功能表达 (STEP 2 P5 输出)
 CREATE TABLE IF NOT EXISTS phrases (

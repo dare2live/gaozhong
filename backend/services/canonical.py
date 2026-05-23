@@ -23,6 +23,10 @@ def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     con.execute("DELETE FROM nodes")
     counts: dict[str, int] = {}
 
+    # 0) subject 节点 (常量, allowed_in_ln 的 dst)
+    _bulk_insert(con, [("subject:英语", "subject", "英语", None)])
+    counts["subject"] = 1
+
     # 1) cefr_level 节点 (常量 4 个)
     rows = [(f"cefr_level:{lv}", "cefr_level", lv, None) for lv in CEFR_LEVEL_VALUES]
     _bulk_insert(con, rows)
