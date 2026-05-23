@@ -137,6 +137,14 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 .heat-drilldown .word { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 6px;
                         background: white; border: 1px solid #e8e6e0; }
 
+/* === Quiz === */
+.quiz-q { margin: 12px 0; padding: 10px 12px; border-left: 3px solid #0a4d75; background: #f7f5ef; }
+.quiz-q p { margin: 0 0 6px; font-family: Georgia, serif; }
+.quiz-opts { list-style: none; padding: 0; margin: 6px 0; }
+.quiz-opts li { padding: 4px 8px; border: 1px solid transparent; margin: 2px 0; border-radius: 0; }
+.quiz-opts li:hover { background: #ebe8e0; }
+.quiz-ans { margin-top: 6px; padding: 4px 6px; background: #fdfdfb; border-top: 1px dashed #ccc; }
+
 /* === 简易"图表"风 === */
 .stat-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 8px 0; }
 .stat-row .stat { flex: 1 1 140px; }

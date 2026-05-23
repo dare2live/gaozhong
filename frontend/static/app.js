@@ -109,6 +109,58 @@ async function loadTextbooks() {
     </tr>`).join("");
 }
 
+// === L1 Quiz UI ===
+async function populateUnitDropdown() {
+  const rows = await fetchJSON("/api/units?version=waiyan");
+  const sel = $("#q-unit");
+  sel.innerHTML = rows.map(r =>
+    `<option value="unit:${r.version_key}/${r.volume_key}/U${r.unit_number}">
+       ${r.version_key}/${r.volume_key}/U${r.unit_number} — ${r.title_en||''}
+     </option>`).join("");
+}
+
+async function generateQuiz() {
+  const unit = $("#q-unit").value;
+  const n = $("#q-n").value;
+  const seed = $("#q-seed").value;
+  const d = await fetchJSON(
+    `/api/exercise/l1?unit=${encodeURIComponent(unit)}&n=${n}&seed=${seed}`);
+  if (d.error) {
+    $("#quiz-body").innerHTML = `<em>${d.error}</em>`;
+    return;
+  }
+  let html = `<div class="heat-totals">${d.unit_id} · 出 ${d.actual_count}/${d.target_count} 题</div>`;
+  for (const q of d.questions) {
+    html += `<div class="quiz-q" data-answer="${q.answer}">
+      <p><b>${q.seq}.</b> ${q.stem}</p>
+      <ul class="quiz-opts">
+        ${q.options.map(o => `<li data-label="${o.label}">
+          <b>${o.label}.</b> ${o.text}</li>`).join("")}
+      </ul>
+      <div class="quiz-ans" style="display:none;font-size:12px;color:#0a4d75;">
+        答: <b>${q.answer}</b> · 出处: <code>${q.evidence.word_concept}</code>
+        ${q.evidence.in_curriculum ? "" : " · <span style='color:#c1272d'>(超纲)</span>"}
+      </div>
+    </div>`;
+  }
+  $("#quiz-body").innerHTML = html;
+  // option click = select
+  document.querySelectorAll(".quiz-opts li").forEach(li => {
+    li.style.cursor = "pointer";
+    li.addEventListener("click", () => {
+      const q = li.closest(".quiz-q");
+      q.querySelectorAll("li").forEach(x => x.style.background = "");
+      const correct = q.dataset.answer === li.dataset.label;
+      li.style.background = correct ? "#d6e9d6" : "#f9d4d4";
+      q.querySelector(".quiz-ans").style.display = "block";
+    });
+  });
+}
+
+function revealAllAnswers() {
+  document.querySelectorAll(".quiz-ans").forEach(el => el.style.display = "block");
+}
+
 // === Knowledge graph force-directed (零依赖, naive simulation) ===
 const TYPE_COLOR = {
   city:       "#c1272d",  word:     "#0a4d75",  grammar:   "#1c5d99",
@@ -331,4 +383,9 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#exam-go").addEventListener("click", () => loadExam().catch(console.error));
   $("#ge-go").addEventListener("click", () => exploreGraph().catch(console.error));
   exploreGraph().catch(console.error);
+  populateUnitDropdown().then(() => {
+    $("#q-go").addEventListener("click", () => generateQuiz().catch(console.error));
+    $("#q-reveal").addEventListener("click", revealAllAnswers);
+    generateQuiz().catch(console.error);
+  }).catch(console.error);
 });

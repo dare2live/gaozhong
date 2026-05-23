@@ -97,6 +97,21 @@
     <div id="graph-body"></div>
   </section>
 
+  <section id="quiz" class="card">
+    <h2>L1 课时词汇题生成器 (M2 PoC)</h2>
+    <p class="src">按教材 unit → graph introduces_word → 4 选 1 选义题. 干扰项来自同级别其他词.</p>
+    <div class="controls">
+      <label>unit:
+        <select id="q-unit"></select>
+      </label>
+      <label>题量: <input id="q-n" type="number" min="1" max="20" value="5" style="width:50px"></label>
+      <label>seed: <input id="q-seed" type="number" value="42" style="width:60px"></label>
+      <button id="q-go">出题</button>
+      <button id="q-reveal" type="button">显示答案</button>
+    </div>
+    <div id="quiz-body"></div>
+  </section>
+
   <section id="graph-explore" class="card">
     <h2>知识图谱 force-directed 探索</h2>
     <div class="controls">
