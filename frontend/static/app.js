@@ -109,6 +109,56 @@ async function loadTextbooks() {
     </tr>`).join("");
 }
 
+async function loadHeatmap() {
+  const d = await fetchJSON("/api/heatmap/vocab");
+  const STATUSES = ["core", "standard", "HV_extra", "LV_extra"];
+  const total = STATUSES.reduce((a, s) => a + (d.totals[s] || 0), 0);
+  // legend + totals
+  const legendHtml = `
+    <div class="heat-totals">
+      <b>${total.toLocaleString()}</b> 词分 4 象限 (基于课标 ∩ 高考 vs 教材引入)
+    </div>
+    <div class="heat-legend">${STATUSES.map(s => `
+      <span><i style="background:${d.legend[s].color}"></i>
+        <b>${s}</b> ${d.totals[s]||0} — ${d.legend[s].hint}</span>`).join("")}
+    </div>`;
+  // grid: header row + per-letter rows
+  let html = legendHtml + `<div class="heat-grid">
+    <div class="head"></div>
+    ${STATUSES.map(s => `<div class="head" style="background:${d.legend[s].color};color:white">${s}</div>`).join("")}`;
+  // compute max for sizing
+  let max = 0;
+  for (const L of d.letters)
+    for (const s of STATUSES)
+      max = Math.max(max, (d.cells[L]||{})[s]||0);
+  for (const L of d.letters) {
+    html += `<div class="letter">${L}</div>`;
+    for (const s of STATUSES) {
+      const n = (d.cells[L]||{})[s] || 0;
+      const intensity = max > 0 ? (n / max) : 0;
+      const bg = n === 0 ? "" : d.legend[s].color;
+      const alpha = n === 0 ? 1 : 0.3 + 0.7 * intensity;
+      html += `<div class="cell ${n===0?'empty':''}"
+                    style="background:${bg};opacity:${alpha}"
+                    data-status="${s}" data-letter="${L}">${n||"·"}</div>`;
+    }
+  }
+  html += `</div>`;
+  $("#heatmap-body").innerHTML = html;
+  // click drilldown
+  document.querySelectorAll("#heatmap-body .cell").forEach((el) => {
+    el.addEventListener("click", async () => {
+      const letter = el.dataset.letter, status = el.dataset.status;
+      if ((d.cells[letter]||{})[status] === undefined) return;
+      const words = await fetchJSON(`/api/heatmap/words_by_status?status=${status}&letter=${letter}`);
+      const dd = $("#heat-drilldown");
+      dd.style.display = "block";
+      dd.innerHTML = `<b>[${status}] · ${letter}</b> · ${words.length} words<br>` +
+        words.map(w => `<span class="word" title="${(w.attrs||'').replace(/"/g, '&quot;')}">${w.word}</span>`).join("");
+    });
+  });
+}
+
 async function loadUnits() {
   const rows = await fetchJSON("/api/units");
   $("#units-body tbody").innerHTML = rows.map((r) => {
@@ -181,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadGraph().catch(console.error);
   loadExam().catch(console.error);
   loadUnits().catch(console.error);
+  loadHeatmap().catch(console.error);
   $("#vocab-go").addEventListener("click", () => loadVocab().catch(console.error));
   $("#vocab-prefix").addEventListener("keydown", (e) => { if (e.key === "Enter") loadVocab(); });
   $("#exam-go").addEventListener("click", () => loadExam().catch(console.error));

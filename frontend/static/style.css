@@ -1,18 +1,26 @@
+/* 经济学人风格 (用户 2026-05-23): 红蓝主色, 留白足, 数据为先, 大数字小说明 */
 * { box-sizing: border-box; }
 body {
   font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
   margin: 0;
-  background: #f6f7f9;
-  color: #222;
-  line-height: 1.5;
+  background: #fdfdfb;     /* warm off-white */
+  color: #1a1a1a;
+  line-height: 1.55;
 }
 header {
-  background: #1c5d99;
+  background: #0a4d75;
   color: white;
   padding: 24px 32px;
+  border-bottom: 3px solid #c1272d;     /* economist 红条 */
 }
-header h1 { margin: 0; font-size: 22px; font-weight: 600; }
-header .subtitle { margin: 6px 0 0; opacity: 0.85; font-size: 14px; }
+header h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+header .subtitle { margin: 6px 0 0; opacity: 0.9; font-size: 13px; }
 .badge {
   display: inline-block;
   background: #f4a261;
@@ -26,15 +34,18 @@ header .subtitle { margin: 6px 0 0; opacity: 0.85; font-size: 14px; }
 
 .card {
   background: white;
-  margin: 16px 32px;
-  padding: 16px 20px;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin: 18px 32px;
+  padding: 18px 22px;
+  border: 1px solid #e8e6e0;        /* economist 细边代替 box-shadow */
+  border-radius: 0;                  /* 直角 */
 }
 .card h2 {
   margin: 0 0 12px;
-  font-size: 16px;
-  border-bottom: 1px solid #eee;
+  font-family: Georgia, serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0a4d75;
+  border-bottom: 2px solid #c1272d;
   padding-bottom: 6px;
 }
 .src { font-size: 12px; color: #666; margin: -4px 0 8px; }
@@ -100,8 +111,37 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 }
 .controls button:hover { background: #164a7d; }
 
-.theme-l1 { font-weight: 600; color: #1c5d99; margin-top: 6px; }
+.theme-l1 { font-weight: 600; color: #0a4d75; margin-top: 6px; }
 .theme-l2 { margin-left: 16px; font-size: 13px; color: #555; }
+
+/* === 4 象限热力图 === */
+.heat-legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0 14px; font-size: 12px; }
+.heat-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.heat-legend i { display: inline-block; width: 14px; height: 14px; }
+.heat-totals { font-family: Georgia, serif; font-size: 14px; color: #555; margin-bottom: 10px; }
+.heat-totals b { font-size: 22px; color: #0a4d75; }
+
+.heat-grid { display: grid; grid-template-columns: 26px repeat(4, 1fr); gap: 2px; font-size: 11px; }
+.heat-grid .head { font-weight: 700; text-align: center; background: #f1eee7; padding: 4px; color: #444; }
+.heat-grid .letter { text-align: center; padding: 4px; font-weight: 700; color: #0a4d75; background: #f7f5ef; }
+.heat-grid .cell {
+  padding: 4px; text-align: center; color: white; cursor: pointer;
+  transition: transform 0.1s;
+}
+.heat-grid .cell:hover { transform: scale(1.06); outline: 2px solid #1a1a1a; }
+.heat-grid .cell.empty { background: #f4f1ea; color: #c5c1b6; }
+
+.heat-drilldown { margin-top: 14px; max-height: 260px; overflow-y: auto;
+                   font-family: "SF Mono", monospace; font-size: 12px;
+                   background: #f7f5ef; padding: 8px; }
+.heat-drilldown .word { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 6px;
+                        background: white; border: 1px solid #e8e6e0; }
+
+/* === 简易"图表"风 === */
+.stat-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 8px 0; }
+.stat-row .stat { flex: 1 1 140px; }
+.stat-row .stat .n { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: #0a4d75; }
+.stat-row .stat .l { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
 
 footer {
   margin: 24px 32px;
