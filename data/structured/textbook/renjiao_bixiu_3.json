@@ -7,35 +7,35 @@
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 FESTIVALS AND CELEBRA TIONS",
+      "title_en": "UNIT 1 FESTIVALS AND CELEBRA TIONS Using Words and Expressions UNIT 1 FESTIVALS",
       "start_page": 68,
       "method": "regex_min",
       "end_page": 73
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 MORALS AND VIRTUES",
+      "title_en": "UNIT 2 MORALS AND VIRTUES Using Words and Expressions UNIT 2 MORALS AND VIRTUES",
       "start_page": 74,
       "method": "regex_min",
       "end_page": 79
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 DIVERSE CULTURES",
+      "title_en": "UNIT 3 DIVERSE CULTURES SPORTS AND FITNESSUNIT 3 DIVERSE CULTURESUNIT 3 1 Comple",
       "start_page": 80,
       "method": "regex_min",
       "end_page": 85
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 SPA CE EXPLORATION",
+      "title_en": "UNIT 4 SPA CE EXPLORATION SPACE EXPLORATIONUNIT 4 3 Complete the sentences with",
       "start_page": 86,
       "method": "regex_min",
       "end_page": 91
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 THE VAL UE OF MONEY",
+      "title_en": "UNIT 5 THE VAL UE OF MONEY THE VALUE OF MONEYUNIT 5 Using Words and Expressions",
       "start_page": 92,
       "method": "regex_min",
       "end_page": 130

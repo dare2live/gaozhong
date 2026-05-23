@@ -7,28 +7,28 @@
   "units": [
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 WILDLIFE",
+      "title_en": "UNIT 2 WILDLIFE PROTECTION UNIT",
       "start_page": 20,
       "method": "regex_min",
       "end_page": 67
     },
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 CULTURAL HERIT AGE",
+      "title_en": "UNIT 1 CULTURAL HERIT AGE 61 CULTURAL HERITAGEUNIT",
       "start_page": 68,
       "method": "regex_min",
       "end_page": 79
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 THE INTERNET",
+      "title_en": "UNIT 3 THE INTERNET 73 UNIT 3 THE INTERNET",
       "start_page": 80,
       "method": "regex_min",
       "end_page": 85
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 HIsTory a Nd Trad ITIo Ns",
+      "title_en": "UNIT 4 HIsTory a Nd Trad ITIo Ns 79 UNIT 4 HISTORY AND TRADITIONS",
       "start_page": 86,
       "method": "regex_min",
       "end_page": 126

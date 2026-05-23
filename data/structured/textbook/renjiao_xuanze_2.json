@@ -7,35 +7,35 @@
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 PEOPLE OF ACHIEVEMENT",
+      "title_en": "UNIT 1 PEOPLE OF ACHIEVEMENT To raise new questions, new possibilities, to regar",
       "start_page": 8,
       "method": "regex_min",
       "end_page": 29
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 BRIDGING CULTURES",
+      "title_en": "UNIT 2 BRIDGING CULTURES 23 1    Brainstorm what the visiting students might nee",
       "start_page": 30,
       "method": "regex_min",
       "end_page": 81
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 FOOD AND CUL TURE",
+      "title_en": "UNIT 3 FOOD AND CUL TURE 1 Match the noun phrases on the right with the adjectiv",
       "start_page": 82,
       "method": "regex_min",
       "end_page": 89
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 JOURNEY ACROS S A VAST LAND",
+      "title_en": "UNIT 4 JOURNEY ACROS S A VAST LAND Using Structures 1    Complete the table with",
       "start_page": 90,
       "method": "regex_min",
       "end_page": 95
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 FIRST AID",
+      "title_en": "UNIT 5 FIRST AID UNIT 5  FIRST AID 3 The elderly man’s speech",
       "start_page": 96,
       "method": "regex_min",
       "end_page": 134

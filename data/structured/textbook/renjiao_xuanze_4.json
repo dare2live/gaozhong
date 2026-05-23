@@ -7,35 +7,35 @@
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 SCIENCE FICTION",
+      "title_en": "UNIT 1 SCIENCE FICTION 9 3    Read the text again and answer the questions. 5 Im",
       "start_page": 16,
       "method": "regex_min",
       "end_page": 21
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 ICONIC ATTRACTIONS",
+      "title_en": "UNIT 2 ICONIC ATTRACTIONS 15 5 Work in groups. Discuss what iconic Chinese attra",
       "start_page": 22,
       "method": "regex_min",
       "end_page": 81
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 SEA EXPLORA TION",
+      "title_en": "UNIT 3 SEA EXPLORA TION 1 Match the words with their meanings. Then mak",
       "start_page": 82,
       "method": "regex_min",
       "end_page": 89
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 SHARING",
+      "title_en": "UNIT 4 SHARING Using Structures 1    Finish the story with the phrases in",
       "start_page": 90,
       "method": "regex_min",
       "end_page": 95
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 LAUNCHING Y OUR CAREER",
+      "title_en": "UNIT 5 LAUNCHING Y OUR CAREER UNIT 5  LAUNCHING YOUR C AREER Then I found my",
       "start_page": 96,
       "method": "regex_min",
       "end_page": 130

@@ -73,30 +73,39 @@ def _from_outline(reader: PdfReader) -> list[dict]:
     return out
 
 
+def _classify_unit_header(head_block: str) -> tuple[int, str] | None:
+    """Parse head_block (first ~3 lines concatenated). Return (unit_num, title) or None."""
+    m = UNIT_RE.match(head_block)
+    if not m:
+        return None
+    if m.group(1).upper().startswith("WELCOME"):
+        return (0, "WELCOME UNIT")
+    num_str = m.group(2) or m.group(3)
+    try:
+        unit_num = int(num_str)
+    except (TypeError, ValueError):
+        return None
+    tail = UNIT_TITLE_CLEAN.sub("", (m.group(4) or "").strip())
+    return (unit_num, f"UNIT {unit_num} {tail}".rstrip())
+
+
+def _page_head_block(reader: PdfReader, pi: int) -> str:
+    try:
+        txt = reader.pages[pi].extract_text() or ""
+    except Exception:
+        return ""
+    return " ".join(line.strip() for line in txt.split("\n")[:3] if line.strip())[:80]
+
+
 def _from_regex(reader: PdfReader) -> list[dict]:
-    """页眉式 'UNIT N TITLE' 扫描. 同 N 取最小页."""
+    """页眉式 'UNIT N TITLE' 扫描. 同 N 取最小页.
+    某些 PDF (eg 外研 xuanze_3/4) 把 'UNIT' 和数字拆两行, 所以合并前 3 行再 match."""
     hits: dict[int, tuple[int, str]] = {}
     for pi in range(len(reader.pages)):
-        try:
-            txt = reader.pages[pi].extract_text() or ""
-        except Exception:
+        result = _classify_unit_header(_page_head_block(reader, pi))
+        if result is None:
             continue
-        first = (txt.split("\n", 1)[0] if txt else "").strip()
-        m = UNIT_RE.match(first)
-        if not m:
-            continue
-        if m.group(1).upper().startswith("WELCOME"):
-            unit_num = 0
-            title = "WELCOME UNIT"
-        else:
-            num_str = m.group(2) or m.group(3)
-            try:
-                unit_num = int(num_str)
-            except (TypeError, ValueError):
-                continue
-            tail = (m.group(4) or "").strip()
-            tail = UNIT_TITLE_CLEAN.sub("", tail)
-            title = f"UNIT {unit_num} {tail}".rstrip()
+        unit_num, title = result
         if unit_num not in hits or (pi + 1) < hits[unit_num][0]:
             hits[unit_num] = (pi + 1, title)
     return [
