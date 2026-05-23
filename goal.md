@@ -7,10 +7,14 @@
 ## 当前阶段 (2026-05-23 重排)
 
 按用户最新指令路线 (替代旧 M1-M5):
-1. **第一阶段 — 数据彻底补全** ✅ **完成** (见 `docs/data_completeness_report.md` + 下文清单状态)
-   - 0 FAIL / 5 WARN (全已知容忍) · 4622 nodes · 33997 edges
-2. **第二阶段 — 题型扩展** (启动中) — 听/应用文/读后续写 + 难度梯度 + 合成题
-3. ~~学生端~~ — 暂不开发, 但 students/student_answers/student_weakness/scan_uploads 4 张 schema 表已建好等扫描录入
+1. **第一阶段 — 数据彻底补全** ✅ **完成** (`docs/data_completeness_report.md`)
+   - 0 FAIL / **3 WARN** (从 5 降, 全已知容忍) · 4622 nodes · **34697 edges**
+   - 13/13 项 A-M 全闭环 (G1 xuanze manual override + G2 ANCHOR 扩 + G3 listening 放松)
+2. **第二阶段 — 题型扩展** ✅ **7 题型全跑通**
+   - L1 单选词义 / L2 跨 unit / L4 真题重组 (原有)
+   - **新增 4 种**: cloze 完形填空 / grammar_fill 语法填空 / applied_templates 应用文模板 (22 chunks) / narrative_passages 续写素材 (21 篇)
+   - 7 endpoint 全 200 OK, CC 全 ≤ 10
+3. ~~学生端~~ — 暂不开发, students/student_answers/student_weakness/scan_uploads 4 张 schema 已预留
 4. ~~合规~~ — 持牌机构, 非阻塞
 
 ---

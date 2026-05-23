@@ -57,8 +57,52 @@ def api_exercise_l4(qs: dict) -> dict:
         con.close()
 
 
+def api_exercise_cloze(qs: dict) -> dict:
+    from backend.services.exercise import cloze
+    unit = qs.get("unit", [None])[0]
+    try: n = min(int(qs.get("n", ["10"])[0]), 20)
+    except ValueError: n = 10
+    seed_str = qs.get("seed", [None])[0]
+    seed = int(seed_str) if seed_str and seed_str.isdigit() else None
+    con = db_ro()
+    try:
+        return cloze.generate_cloze(con, unit_id=unit, n_blanks=n, seed=seed)
+    finally: con.close()
+
+
+def api_exercise_grammar_fill(qs: dict) -> dict:
+    from backend.services.exercise import grammar_fill
+    unit = qs.get("unit", [None])[0]
+    try: n = min(int(qs.get("n", ["10"])[0]), 20)
+    except ValueError: n = 10
+    seed_str = qs.get("seed", [None])[0]
+    seed = int(seed_str) if seed_str and seed_str.isdigit() else None
+    con = db_ro()
+    try:
+        return grammar_fill.generate_grammar_fill(con, unit_id=unit, n_blanks=n, seed=seed)
+    finally: con.close()
+
+
+def api_exercise_applied_templates(_qs: dict) -> dict:
+    from backend.services.exercise import applied
+    con = db_ro()
+    try: return applied.list_applied_templates(con)
+    finally: con.close()
+
+
+def api_exercise_narrative_passages(_qs: dict) -> dict:
+    from backend.services.exercise import applied
+    con = db_ro()
+    try: return applied.list_narrative_passages(con)
+    finally: con.close()
+
+
 ROUTES = {
     "/api/exercise/l1": api_exercise_l1,
     "/api/exercise/l2": api_exercise_l2,
     "/api/exercise/l4": api_exercise_l4,
+    "/api/exercise/cloze": api_exercise_cloze,
+    "/api/exercise/grammar_fill": api_exercise_grammar_fill,
+    "/api/exercise/applied_templates": api_exercise_applied_templates,
+    "/api/exercise/narrative_passages": api_exercise_narrative_passages,
 }
