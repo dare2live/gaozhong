@@ -1,0 +1,12 @@
+# gaozhong 项目 — 最小化技术栈 (用户 2026-05-23: 能不新增组件就不新增)
+# 三个依赖全部已在系统 Python 3.13 中可用, pip install 仅供新开发机 bootstrap.
+
+duckdb>=1.5         # 单文件 OLAP, 与 gaokao 项目独立的 .duckdb (不混用)
+pypdf>=6.0          # 课标 + 教材 PDF 文本/书签抽取 (实测两版均为可选文本, 不需 OCR)
+PyYAML>=6.0         # backend/config/sources.yaml
+
+# 显式不装清单 (stdlib 够用):
+# - fastapi/uvicorn  → 用 stdlib http.server, 零依赖, MVP 足够
+# - jinja2           → 前端用静态 HTML + fetch, 不做服务端渲染
+# - requests         → 教材已下完, 后续动态抓时再加
+# - pdfplumber       → pypdf 已能干净抽出文本 + outline

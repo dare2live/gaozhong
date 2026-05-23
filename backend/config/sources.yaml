@@ -1,0 +1,85 @@
+# gaozhong 集中源管理 (借鉴 gaokao backend/config/pdf_sources.yaml).
+# 用途: 后续动态抓取 + manifest lineage 的 single source of truth.
+
+curriculum_standards:
+  moe_full_zip:
+    name: 普通高中课程方案 + 21 学科课标 全套 (2017 版 2020 修订)
+    org: 教育部 (MoE)
+    publish_url: http://www.moe.gov.cn/srcsite/A26/s8001/202006/t20200603_462199.html
+    attachment_url: http://www.moe.gov.cn/srcsite/A26/s8001/202006/W020200603315372317586.zip
+    local_dir: data/curriculum/national/普通高中课程方案及20科课程标准（2017年版2020年修订)/
+    lineage: L0
+    status: archived
+
+  english_standard:
+    name: 普通高中英语课程标准 (2017 版 2020 修订)
+    org: 教育部
+    local_path: data/curriculum/national/普通高中课程方案及20科课程标准（2017年版2020年修订)/4.普通高中英语课程标准（2017年版2020年修订）.pdf
+    lineage: L0
+    status: archived
+    key_pages:
+      theme_contexts: [20, 22]      # 主题语境定义
+      vocab_appendix: [129, 182]    # 附录 2 词汇表 (≈ 3000 词)
+      grammar_appendix: [187, 191]  # 附录 3 语法项目表
+
+liaoning_official_directory_2023:
+  attachment_1:
+    name: 辽宁省教育厅 2023 教学用书目录 附件1 (含普高 2017 版课标教材)
+    org: 辽宁省教育厅
+    publish_url: https://jyt.ln.gov.cn/jyt/gk/zxtz/2023051514040874388/index.shtml
+    local_path: data/curriculum/liaoning/官方/辽宁省教育厅关于印发2023年中小学教学用书目录的通知 附件1.xlsx
+    lineage: L0
+    status: archived
+    sheets:
+      - 义务教育国家课程教材
+      - 普通高中国家课程教材-根据2017年版课标修订   # ← 本项目关注
+      - 普通高中国家课程教材-根据2003年版课标编写
+      - 特殊教育国家课程教材
+      - 体育运动学校国家课程教材
+  attachment_2:
+    name: 辽宁省教育厅 2023 教学用书目录 附件2 (义教地方课程 + 电子音像)
+    org: 辽宁省教育厅
+    local_path: data/curriculum/liaoning/官方/辽宁省教育厅关于印发2023年中小学教学用书目录的通知 附件2.docx
+    lineage: L0
+    status: archived
+    note: 不涉及高中阶段, 仅作完整入仓证据保留
+
+textbooks_in_use:
+  source_repo: TapXWorld/ChinaTextbook
+  source_url: https://github.com/TapXWorld/ChinaTextbook
+  snapshot_pushed: '2025-10-18T13:39:24Z'
+  versions:
+    - key: waiyan
+      publisher_label: 外研社版-外语教学与研究出版社 (2019 新版)
+      chief_editor: 陈琳
+      local_dir: data/textbooks/waiyan/
+      books_total: 7
+      cities_using:
+        [沈阳, 大连, 鞍山, 抚顺, 本溪, 丹东, 营口, 阜新, 辽阳, 盘锦]
+    - key: renjiao
+      publisher_label: 人教版-人民教育出版社 (2019 新版)
+      chief_editor: 刘道义/郑旺全
+      local_dir: data/textbooks/renjiao/
+      books_total: 7
+      cities_using: [锦州, 铁岭, 朝阳, 葫芦岛]
+
+city_evidence:
+  liaoning_14_cities:
+    publish_url: http://www.xuexili.com/keben/18486.html
+    local_path: data/curriculum/liaoning/xuexili_辽宁各地市高中教材版本_20260523.html
+    lineage: L2   # 民间聚合, 已与 textbook-info / yanxiuwang 印证沈阳一项
+
+structured_auxiliary:
+  # 注: 都是旧版 (2003-2009) 词表, 仅作 cross-check, 不当 master.
+  - name: LinXueyuanStdio/DictionaryData
+    url: https://github.com/LinXueyuanStdio/DictionaryData
+    local_dir: data/structured/DictionaryData/
+    role: cross_check_only
+  - name: kajweb/dict
+    url: https://github.com/kajweb/dict
+    local_dir: data/structured/dict/
+    role: cross_check_only
+  - name: mahavivo/english-wordlists
+    url: https://github.com/mahavivo/english-wordlists
+    local_dir: data/structured/english-wordlists/
+    role: cross_check_only

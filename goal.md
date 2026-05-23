@@ -33,15 +33,40 @@
 | 教材 PDF 下载脚本 | ✅ `scripts/download_textbooks.sh` | URL-decode + 分片合并 |
 | 项目目录初始化 + git init | ✅ | `data/{textbooks,curriculum,exam_syllabus,structured}` |
 
-### Step 1 进行中 / 待办
+### Step 1 全部完成 (2026-05-23)
 
-- [ ] 8 个版本教材 PDF 全下载完 (background, ~1-2GB)
-- [ ] 课标 SHA256 + manifest (借 gaokao `verify_pdf_lineage.py` 风格)
-- [ ] 辽宁省 2024-2025 教学用书目录原文核实 (jyt.ln.gov.cn 反爬待绕)
-- [ ] 沈阳市教育局选用版本"官方"印证 (现仅两个民间聚合源)
-- [ ] 高考英语 3500 词官方权威源 (新高考下已无独立"考试大纲", 改 课标 + 高考评价体系)
-- [ ] 结构化词汇/课文资源克隆 (DictionaryData / 类似 repo)
-- [ ] 写 CLAUDE.md (项目专属规则)
+- [x] 教材 PDF: 辽宁在用 2 版 × 7 册 = 14 PDFs / 202 MB 已下完
+- [x] 课标 SHA256 + manifest (`scripts/build_manifest.py` + DuckDB `file_manifest` 表)
+- [x] 辽宁省 2023 教学用书目录官方原文 (用户提供附件 1/2 入仓 `data/curriculum/liaoning/官方/`)
+- [x] 高考英语 3500 词 truth source: 课标附录 2 已抽出 2928 词 (97.6% 召回, 义教 1476 + 必修 480 + 选必 972)
+- [x] 结构化词汇辅助 (DictionaryData / kajweb-dict / mahavivo-english-wordlists, 标 cross-check only)
+- [x] CLAUDE.md / docs/exam_overview_liaoning.md / docs/data_gaps.md / docs/step2_extraction_plan.md
+- [x] **MVP 框架搭通**: backend FastAPI (stdlib http.server, 零新增依赖) + DuckDB + frontend HTML
+- [ ] 辽宁省 2024-2025 教学用书目录原文 (jyt.ln.gov.cn 反爬, 2023 版可用)
+- [ ] 沈阳市教育局选用版本"官方"印证 (现 textbook-info + yanxiuwang + xuexili 三聚合)
+- [ ] 课标语法附录 3 深度抽 (当前仅 14 顶级类目, MVP 够)
+
+### MVP 框架 (Step 1 收尾)
+
+| 组件 | 实现 | 文件 |
+|---|---|---|
+| DB | DuckDB 单文件 (与 gaokao 完全独立) | `data/db/gaozhong.duckdb` |
+| Schema | 7 张表: 课标 3 + 辽宁约束 2 + 教材 1 + manifest 1 | `backend/db/schema.sql` |
+| 源管理 | YAML 集中配置 | `backend/config/sources.yaml` |
+| 后端 API | stdlib `http.server`, 8 个 endpoint | `backend/api/main.py` |
+| 前端 | 原生 HTML + 原生 fetch, 7 个区块 | `frontend/index.html` `frontend/static/{style.css,app.js}` |
+| 课标抽 | pypdf + 正则 | `scripts/extract_curriculum.py` |
+| 教材下载 | bash + curl | `scripts/download_textbooks.sh` |
+| 装库 | duckdb + pypdf | `scripts/init_db.py` |
+| Manifest | sha256 jsonl | `scripts/build_manifest.py` |
+
+**新增依赖**: 0. 全部用系统 Python 3.13 已有 (duckdb / pypdf / PyYAML).
+
+启动:
+```bash
+python3 scripts/init_db.py             # 重建 DB + 装载 5 个 truth source
+python3 backend/api/main.py            # 启 API + 前端 (http://127.0.0.1:8765)
+```
 
 ---
 

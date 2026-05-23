@@ -4,3 +4,9 @@ __pycache__/
 .DS_Store
 data/textbooks/_raw_clone/
 
+# Sub-repos cloned under data/structured/ — keep the files, drop their .git metadata
+data/structured/*/.git/
+
+# DuckDB runtime artifacts (rebuilt by scripts/init_db.py)
+data/db/*.duckdb
+data/db/*.duckdb.wal

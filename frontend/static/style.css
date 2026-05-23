@@ -1,0 +1,114 @@
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  margin: 0;
+  background: #f6f7f9;
+  color: #222;
+  line-height: 1.5;
+}
+header {
+  background: #1c5d99;
+  color: white;
+  padding: 24px 32px;
+}
+header h1 { margin: 0; font-size: 22px; font-weight: 600; }
+header .subtitle { margin: 6px 0 0; opacity: 0.85; font-size: 14px; }
+.badge {
+  display: inline-block;
+  background: #f4a261;
+  color: white;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.card {
+  background: white;
+  margin: 16px 32px;
+  padding: 16px 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+.src { font-size: 12px; color: #666; margin: -4px 0 8px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th, td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid #eee;
+}
+th { background: #fafbfc; font-weight: 600; }
+code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
+
+.city-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+.city {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  background: white;
+}
+.city.waiyan { border-left: 4px solid #2a9d8f; }
+.city.renjiao { border-left: 4px solid #e76f51; }
+.city .pub { font-size: 11px; color: #888; }
+
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 4px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 4px;
+  background: #fafbfc;
+  border-radius: 4px;
+}
+.vocab-item {
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  background: white;
+  border: 1px solid #eee;
+}
+.vocab-item.l-义教 { border-left: 3px solid #999; }
+.vocab-item.l-必修 { border-left: 3px solid #e9c46a; }
+.vocab-item.l-选必 { border-left: 3px solid #f4a261; }
+.vocab-item .lvl { font-size: 10px; color: #999; margin-left: 4px; }
+
+.controls { margin: 8px 0 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+.controls input, .controls select {
+  padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px;
+}
+.controls input[type=number] { width: 70px; }
+.controls button {
+  padding: 4px 14px; background: #1c5d99; color: white; border: 0; border-radius: 3px; cursor: pointer;
+}
+.controls button:hover { background: #164a7d; }
+
+.theme-l1 { font-weight: 600; color: #1c5d99; margin-top: 6px; }
+.theme-l2 { margin-left: 16px; font-size: 13px; color: #555; }
+
+footer {
+  margin: 24px 32px;
+  font-size: 12px;
+  color: #666;
+}
+footer p { margin: 4px 0; }
+
+a { color: #1c5d99; text-decoration: none; }
+a:hover { text-decoration: underline; }

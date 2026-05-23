@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>gaozhong — 沈阳/辽宁高中英语教学系统 (MVP)</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>沈阳/辽宁高中英语教学系统 <span class="badge">STEP 1 MVP</span></h1>
+    <p class="subtitle">课标 = master · 教材 = 辽宁在用 2 版 · 高考 = 新课标 II 卷</p>
+  </header>
+
+  <section id="stats" class="card">
+    <h2>资料基石概览</h2>
+    <div id="stats-body">加载中…</div>
+  </section>
+
+  <section id="cities" class="card">
+    <h2>辽宁 14 地市 · 高中英语 教材选用</h2>
+    <p class="src" id="cities-src"></p>
+    <div id="cities-body" class="city-grid">加载中…</div>
+  </section>
+
+  <section id="publishers" class="card">
+    <h2>辽宁省教育厅 2023 年允许选用版本 (高中英语, 8 版)</h2>
+    <p class="src">附件1 · sheet "普通高中国家课程教材-根据2017年版课标修订"</p>
+    <table id="publishers-body"><thead><tr>
+      <th>主编</th><th>出版社</th><th>书名</th><th>册数</th>
+    </tr></thead><tbody></tbody></table>
+  </section>
+
+  <section id="textbooks" class="card">
+    <h2>已入仓教材 PDF (外研版 + 人教版 各 7 册)</h2>
+    <table id="textbooks-body"><thead><tr>
+      <th>版本</th><th>册</th><th>页数</th><th>SHA256</th><th>预览</th>
+    </tr></thead><tbody></tbody></table>
+  </section>
+
+  <section id="vocab" class="card">
+    <h2>课标词汇表 (附录2, ~3000 词)</h2>
+    <div class="controls">
+      <label>级别:
+        <select id="vocab-level">
+          <option value="">(全部)</option>
+          <option value="义教">义教 (~1500)</option>
+          <option value="必修">必修 ★ (~500)</option>
+          <option value="选必">选必 ★★ (~1000)</option>
+        </select>
+      </label>
+      <label>前缀: <input id="vocab-prefix" type="text" maxlength="6" placeholder="ab"></label>
+      <label>条数: <input id="vocab-limit" type="number" min="10" max="1000" value="100"></label>
+      <button id="vocab-go">查询</button>
+    </div>
+    <div id="vocab-body" class="vocab-grid"></div>
+  </section>
+
+  <section id="themes" class="card">
+    <h2>主题语境 (课标 §四(一), p22-23)</h2>
+    <div id="themes-body"></div>
+  </section>
+
+  <section id="grammar" class="card">
+    <h2>语法项目表 (附录3, MVP 仅顶级类目, 待 STEP 2 完善)</h2>
+    <table id="grammar-body"><thead><tr>
+      <th>ID</th><th>类目</th><th>标签</th><th>级别</th>
+    </tr></thead><tbody></tbody></table>
+  </section>
+
+  <footer>
+    <p>仓库: <code>/Users/dp/Documents/M/gaozhong/</code> · 数据库: <code>data/db/gaozhong.duckdb</code></p>
+    <p>命令: <code>python3 backend/api/main.py</code></p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
