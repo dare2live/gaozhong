@@ -109,6 +109,100 @@ async function loadTextbooks() {
     </tr>`).join("");
 }
 
+// === Knowledge graph force-directed (零依赖, naive simulation) ===
+const TYPE_COLOR = {
+  city:       "#c1272d",  word:     "#0a4d75",  grammar:   "#1c5d99",
+  theme:      "#2a9d8f",  publisher:"#e76f51",  volume:    "#f4a261",
+  unit:       "#7aa6c2",  question: "#999999",  exam_year: "#bdbdbd",
+  cefr_level: "#444444",  qtype:    "#888888",  subject:   "#333333",
+};
+
+function simForce(nodes, links, iter = 80, w = 800, h = 460) {
+  // initial random
+  nodes.forEach((n) => { n.x = Math.random() * w; n.y = Math.random() * h; n.vx = 0; n.vy = 0; });
+  const idx = {}; nodes.forEach((n, i) => idx[n.concept_id] = i);
+  for (let s = 0; s < iter; s++) {
+    // repulsion (n^2 — OK for ~60 nodes)
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        let dx = a.x - b.x, dy = a.y - b.y, d2 = dx*dx + dy*dy + 0.01;
+        const f = 800 / d2;
+        const fx = f * dx, fy = f * dy;
+        a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+      }
+    }
+    // attraction via links
+    for (const l of links) {
+      const a = nodes[idx[l.src]], b = nodes[idx[l.dst]];
+      if (!a || !b) continue;
+      const dx = b.x - a.x, dy = b.y - a.y;
+      a.vx += dx * 0.02; a.vy += dy * 0.02;
+      b.vx -= dx * 0.02; b.vy -= dy * 0.02;
+    }
+    // damping + center pull + bounds
+    for (const n of nodes) {
+      n.vx = n.vx * 0.6 + (w/2 - n.x) * 0.005;
+      n.vy = n.vy * 0.6 + (h/2 - n.y) * 0.005;
+      n.x = Math.max(20, Math.min(w-20, n.x + n.vx));
+      n.y = Math.max(20, Math.min(h-20, n.y + n.vy));
+    }
+  }
+}
+
+function renderGraph(d) {
+  const svg = $("#ge-canvas");
+  const w = svg.clientWidth || 800, h = 460;
+  svg.innerHTML = "";
+  if (!d.nodes.length) {
+    $("#ge-info").textContent = "无节点 (起点不存在 / 无邻居)";
+    return;
+  }
+  const nodes = d.nodes.map(n => ({...n}));
+  const links = d.edges.map(e => ({src: e.src, dst: e.dst, rel: e.relation}));
+  simForce(nodes, links, 80, w, h);
+  // edges
+  for (const l of links) {
+    const a = nodes.find(n => n.concept_id === l.src);
+    const b = nodes.find(n => n.concept_id === l.dst);
+    if (!a || !b) continue;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", a.x); line.setAttribute("y1", a.y);
+    line.setAttribute("x2", b.x); line.setAttribute("y2", b.y);
+    line.setAttribute("stroke", "#ccc"); line.setAttribute("stroke-width", "1");
+    svg.appendChild(line);
+  }
+  // nodes
+  for (const n of nodes) {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("transform", `translate(${n.x},${n.y})`);
+    g.style.cursor = "pointer";
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("r", n.concept_id === d.nodes[0].concept_id ? "8" : "5");
+    c.setAttribute("fill", TYPE_COLOR[n.node_type] || "#999");
+    c.setAttribute("stroke", "white"); c.setAttribute("stroke-width", "1.5");
+    g.appendChild(c);
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", 8); t.setAttribute("y", 4);
+    t.setAttribute("font-size", "10"); t.setAttribute("fill", "#222");
+    t.textContent = n.label.length > 14 ? n.label.slice(0, 12) + "…" : n.label;
+    g.appendChild(t);
+    g.addEventListener("click", () => { $("#ge-node").value = n.concept_id; exploreGraph(); });
+    svg.appendChild(g);
+  }
+  $("#ge-info").innerHTML =
+    `共 ${nodes.length} nodes / ${links.length} edges · 起点 <code>${d.nodes[0].concept_id}</code>`;
+}
+
+async function exploreGraph() {
+  const node = $("#ge-node").value.trim();
+  const depth = $("#ge-depth").value;
+  const mn = $("#ge-max").value;
+  const d = await fetchJSON(
+    `/api/graph/subgraph?node=${encodeURIComponent(node)}&depth=${depth}&max_nodes=${mn}`);
+  renderGraph(d);
+}
+
 async function loadHeatmap() {
   const d = await fetchJSON("/api/heatmap/vocab");
   const STATUSES = ["core", "standard", "HV_extra", "LV_extra"];
@@ -235,4 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#vocab-go").addEventListener("click", () => loadVocab().catch(console.error));
   $("#vocab-prefix").addEventListener("keydown", (e) => { if (e.key === "Enter") loadVocab(); });
   $("#exam-go").addEventListener("click", () => loadExam().catch(console.error));
+  $("#ge-go").addEventListener("click", () => exploreGraph().catch(console.error));
+  exploreGraph().catch(console.error);
 });

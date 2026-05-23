@@ -97,6 +97,21 @@
     <div id="graph-body"></div>
   </section>
 
+  <section id="graph-explore" class="card">
+    <h2>知识图谱 force-directed 探索</h2>
+    <div class="controls">
+      <label>起点 concept_id:
+        <input id="ge-node" value="city:沈阳" size="30">
+      </label>
+      <label>深度: <input id="ge-depth" type="number" min="1" max="3" value="2" style="width:50px"></label>
+      <label>max nodes: <input id="ge-max" type="number" min="10" max="200" value="60" style="width:60px"></label>
+      <button id="ge-go">展开</button>
+      <span style="font-size:11px;color:#777">点节点 = 重新 expand</span>
+    </div>
+    <svg id="ge-canvas" width="100%" height="500" style="background:#fdfdfb;border:1px solid #e8e6e0"></svg>
+    <div id="ge-info" style="font-size:12px;color:#555;margin-top:6px"></div>
+  </section>
+
   <section id="exam" class="card">
     <h2>高考真题 (GAOKAO-Bench 镜像, 辽宁过滤)</h2>
     <p class="src">默认显示 province 含"辽宁"的题. 顶用方式: <code>/api/exam_questions?province=辽宁&amp;limit=20</code></p>

@@ -30,7 +30,31 @@ def api_graph_neighbors(qs: dict) -> list[dict]:
         con.close()
 
 
+def api_graph_subgraph(qs: dict) -> dict:
+    """BFS expand from a concept_id, returns nodes+edges subgraph (for SVG render)."""
+    start = qs.get("node", [""])[0]
+    if not start:
+        return {"nodes": [], "edges": []}
+    try:
+        depth = min(int(qs.get("depth", ["2"])[0]), 3)
+    except ValueError:
+        depth = 2
+    try:
+        max_nodes = min(int(qs.get("max_nodes", ["60"])[0]), 200)
+    except ValueError:
+        max_nodes = 60
+    rel = qs.get("relation", [None])
+    rel_list = rel if rel != [None] and rel else None
+    con = db_ro()
+    try:
+        return gsvc.expand(con, start, max_depth=depth,
+                            relation_whitelist=rel_list, max_nodes=max_nodes)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/graph/stats": api_graph_stats,
     "/api/graph/neighbors": api_graph_neighbors,
+    "/api/graph/subgraph": api_graph_subgraph,
 }
