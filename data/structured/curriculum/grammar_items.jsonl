@@ -1,28 +1,106 @@
-{"grammar_item_id": "1", "category": "名词", "label": "名词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "2", "category": "动词", "label": "动词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "3", "category": "形容词", "label": "形容词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "4", "category": "副词", "label": "副词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "5", "category": "代词", "label": "代词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "6", "category": "数词", "label": "数词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "7", "category": "介词", "label": "介词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "8", "category": "连词", "label": "连词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "9", "category": "冠词", "label": "冠词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "10", "category": "感叹词", "label": "感叹词", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "1", "category": "合成法", "label": "合成法", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "2", "category": "派生法", "label": "派生法", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "3", "category": "转化法", "label": "转化法", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "4", "category": "缩写和简写", "label": "缩写和简写", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "1", "category": "句子种类", "label": "句子种类", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "2", "category": "句子成分：按结构分类", "label": "句子成分：按结构分类", "cefr_level": "选必", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "3", "category": "句子成分：按功能分类", "label": "句子成分：按功能分类", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "4", "category": "基本句型", "label": "基本句型", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "5", "category": "谓语动词的时态", "label": "谓语动词的时态", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "6", "category": "被动语态", "label": "被动语态", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "7", "category": "动词的非谓语形式", "label": "动词的非谓语形式", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "8", "category": "主谓一致", "label": "主谓一致", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "9", "category": "并列复合句", "label": "并列复合句", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "10", "category": "主从复合句", "label": "主从复合句", "cefr_level": "义教", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "11", "category": "省略", "label": "省略", "cefr_level": "必修", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "12", "category": "倒装 *", "label": "倒装 *", "cefr_level": "选必", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "13", "category": "强调 *", "label": "强调 *", "cefr_level": "选必", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
-{"grammar_item_id": "14", "category": "虚拟语气 *", "label": "虚拟语气 *", "cefr_level": "选必", "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一", "depth": 1, "parent_id": null, "category": "一", "label": "词类", "cefr_level": "义教", "seq": 1, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/1", "depth": 2, "parent_id": "一", "category": "一", "label": "名词", "cefr_level": "义教", "seq": 2, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/1/(1)", "depth": 3, "parent_id": "一/1", "category": "一", "label": "可数名词及其单、复数", "cefr_level": "义教", "seq": 3, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/1/(2)", "depth": 3, "parent_id": "一/1", "category": "一", "label": "不可数名词", "cefr_level": "义教", "seq": 4, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/1/(3)", "depth": 3, "parent_id": "一/1", "category": "一", "label": "专有名词", "cefr_level": "义教", "seq": 5, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/1/(4)", "depth": 3, "parent_id": "一/1", "category": "一", "label": "名词所有格", "cefr_level": "义教", "seq": 6, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/2", "depth": 2, "parent_id": "一", "category": "一", "label": "动词", "cefr_level": "义教", "seq": 7, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/2/(1)", "depth": 3, "parent_id": "一/2", "category": "一", "label": "动词的基本形式", "cefr_level": "义教", "seq": 8, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/2/(2)", "depth": 3, "parent_id": "一/2", "category": "一", "label": "及物动词和不及物动词", "cefr_level": "义教", "seq": 9, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/2/(3)", "depth": 3, "parent_id": "一/2", "category": "一", "label": "系动词", "cefr_level": "义教", "seq": 10, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/2/(4)", "depth": 3, "parent_id": "一/2", "category": "一", "label": "助动词", "cefr_level": "义教", "seq": 11, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/2/(5)", "depth": 3, "parent_id": "一/2", "category": "一", "label": "情态动词", "cefr_level": "义教", "seq": 12, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/3", "depth": 2, "parent_id": "一", "category": "一", "label": "形容词", "cefr_level": "义教", "seq": 13, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/3/(1)", "depth": 3, "parent_id": "一/3", "category": "一", "label": "形容词的基本形式", "cefr_level": "义教", "seq": 14, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/3/(2)", "depth": 3, "parent_id": "一/3", "category": "一", "label": "形容词的比较级和最高级", "cefr_level": "义教", "seq": 15, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/4", "depth": 2, "parent_id": "一", "category": "一", "label": "副词", "cefr_level": "义教", "seq": 16, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/4/(1)", "depth": 3, "parent_id": "一/4", "category": "一", "label": "副词的基本形式", "cefr_level": "义教", "seq": 17, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/4/(2)", "depth": 3, "parent_id": "一/4", "category": "一", "label": "副词的比较级和最高级", "cefr_level": "义教", "seq": 18, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5", "depth": 2, "parent_id": "一", "category": "一", "label": "代词", "cefr_level": "义教", "seq": 19, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5/(1)", "depth": 3, "parent_id": "一/5", "category": "一", "label": "人称代词", "cefr_level": "义教", "seq": 20, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5/(2)", "depth": 3, "parent_id": "一/5", "category": "一", "label": "物主代词", "cefr_level": "义教", "seq": 21, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5/(3)", "depth": 3, "parent_id": "一/5", "category": "一", "label": "反身代词", "cefr_level": "义教", "seq": 22, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5/(4)", "depth": 3, "parent_id": "一/5", "category": "一", "label": "指示代词", "cefr_level": "义教", "seq": 23, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5/(5)", "depth": 3, "parent_id": "一/5", "category": "一", "label": "不定代词", "cefr_level": "义教", "seq": 24, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/5/(6)", "depth": 3, "parent_id": "一/5", "category": "一", "label": "疑问代词", "cefr_level": "义教", "seq": 25, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/6", "depth": 2, "parent_id": "一", "category": "一", "label": "数词", "cefr_level": "义教", "seq": 26, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/6/(1)", "depth": 3, "parent_id": "一/6", "category": "一", "label": "基数词", "cefr_level": "义教", "seq": 27, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/6/(2)", "depth": 3, "parent_id": "一/6", "category": "一", "label": "序数词", "cefr_level": "义教", "seq": 28, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/7", "depth": 2, "parent_id": "一", "category": "一", "label": "介词", "cefr_level": "义教", "seq": 29, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/8", "depth": 2, "parent_id": "一", "category": "一", "label": "连词", "cefr_level": "义教", "seq": 30, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/9", "depth": 2, "parent_id": "一", "category": "一", "label": "冠词", "cefr_level": "义教", "seq": 31, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "一/10", "depth": 2, "parent_id": "一", "category": "一", "label": "感叹词", "cefr_level": "义教", "seq": 32, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "二", "depth": 1, "parent_id": null, "category": "二", "label": "构词法", "cefr_level": "义教", "seq": 33, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "二/1", "depth": 2, "parent_id": "二", "category": "二", "label": "合成法", "cefr_level": "义教", "seq": 34, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "二/2", "depth": 2, "parent_id": "二", "category": "二", "label": "派生法", "cefr_level": "义教", "seq": 35, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "二/3", "depth": 2, "parent_id": "二", "category": "二", "label": "转化法", "cefr_level": "义教", "seq": 36, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "二/4", "depth": 2, "parent_id": "二", "category": "二", "label": "缩写和简写", "cefr_level": "义教", "seq": 37, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三", "depth": 1, "parent_id": null, "category": "三", "label": "句法", "cefr_level": "义教", "seq": 38, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1", "depth": 2, "parent_id": "三", "category": "三", "label": "句子种类", "cefr_level": "义教", "seq": 39, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(1)", "depth": 3, "parent_id": "三/1", "category": "三", "label": "陈述句", "cefr_level": "义教", "seq": 40, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(2)", "depth": 3, "parent_id": "三/1", "category": "三", "label": "疑问句", "cefr_level": "义教", "seq": 41, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(2)/a", "depth": 4, "parent_id": "三/1/(2)", "category": "三", "label": "一般疑问句", "cefr_level": "义教", "seq": 42, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(2)/b", "depth": 4, "parent_id": "三/1/(2)", "category": "三", "label": "特殊疑问句", "cefr_level": "义教", "seq": 43, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(2)/c", "depth": 4, "parent_id": "三/1/(2)", "category": "三", "label": "选择疑问句", "cefr_level": "义教", "seq": 44, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(2)/d", "depth": 4, "parent_id": "三/1/(2)", "category": "三", "label": "附加疑问句", "cefr_level": "义教", "seq": 45, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(3)", "depth": 3, "parent_id": "三/1", "category": "三", "label": "祈使句", "cefr_level": "义教", "seq": 46, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/1/(4)", "depth": 3, "parent_id": "三/1", "category": "三", "label": "感叹句", "cefr_level": "义教", "seq": 47, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/2", "depth": 2, "parent_id": "三", "category": "三", "label": "句子成分：按结构分类", "cefr_level": "选必", "seq": 48, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/2/(1)", "depth": 3, "parent_id": "三/2", "category": "三", "label": "名词短语", "cefr_level": "义教", "seq": 49, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/2/(2)", "depth": 3, "parent_id": "三/2", "category": "三", "label": "动词短语", "cefr_level": "义教", "seq": 50, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/2/(3)", "depth": 3, "parent_id": "三/2", "category": "三", "label": "形容词短语", "cefr_level": "义教", "seq": 51, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/2/(4)", "depth": 3, "parent_id": "三/2", "category": "三", "label": "副词短语", "cefr_level": "义教", "seq": 52, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/2/(5)", "depth": 3, "parent_id": "三/2", "category": "三", "label": "介词短语", "cefr_level": "义教", "seq": 53, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3", "depth": 2, "parent_id": "三", "category": "三", "label": "句子成分：按功能分类", "cefr_level": "义教", "seq": 54, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(1)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "主语（S）", "cefr_level": "义教", "seq": 55, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(2)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "谓语（指谓语部分的主要动词，也称谓词） （V）", "cefr_level": "义教", "seq": 56, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(3)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "宾语（O）", "cefr_level": "义教", "seq": 57, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(4)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "补语（C）", "cefr_level": "义教", "seq": 58, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(5)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "状语（A）", "cefr_level": "义教", "seq": 59, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(6)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "表语（P）", "cefr_level": "义教", "seq": 60, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/3/(7)", "depth": 3, "parent_id": "三/3", "category": "三", "label": "定语（Attr.）", "cefr_level": "义教", "seq": 61, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4", "depth": 2, "parent_id": "三", "category": "三", "label": "基本句型", "cefr_level": "义教", "seq": 62, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(1)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主谓（主语 + 谓词，下同） （SV）", "cefr_level": "义教", "seq": 63, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(2)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主（系）表（SP）", "cefr_level": "义教", "seq": 64, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(3)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主谓宾（SVO）", "cefr_level": "义教", "seq": 65, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(4)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主谓宾宾（SVOO）", "cefr_level": "义教", "seq": 66, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(5)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主谓宾补（SVOC）", "cefr_level": "义教", "seq": 67, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(6)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主谓状（S VA）", "cefr_level": "义教", "seq": 68, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(7)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "主谓宾状（SVOA）", "cefr_level": "义教", "seq": 69, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/4/(8)", "depth": 3, "parent_id": "三/4", "category": "三", "label": "存现句", "cefr_level": "义教", "seq": 70, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5", "depth": 2, "parent_id": "三", "category": "三", "label": "谓语动词的时态", "cefr_level": "义教", "seq": 71, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(1)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "一般现在", "cefr_level": "义教", "seq": 72, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(2)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "一般过去", "cefr_level": "义教", "seq": 73, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(3)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "一般将来", "cefr_level": "义教", "seq": 74, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(4)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "现在进行", "cefr_level": "义教", "seq": 75, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(5)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "过去进行", "cefr_level": "义教", "seq": 76, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(6)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "现在完成", "cefr_level": "义教", "seq": 77, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(7)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "过去将来", "cefr_level": "必修", "seq": 78, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(8)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "将来进行", "cefr_level": "选必", "seq": 79, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(9)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "过去完成", "cefr_level": "选必", "seq": 80, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/5/(10)", "depth": 3, "parent_id": "三/5", "category": "三", "label": "现在完成进行", "cefr_level": "选必", "seq": 81, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6", "depth": 2, "parent_id": "三", "category": "三", "label": "被动语态", "cefr_level": "义教", "seq": 82, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(1)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "一般现在时的被动语态", "cefr_level": "义教", "seq": 83, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(2)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "一般过去时的被动语态", "cefr_level": "义教", "seq": 84, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(3)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "一般将来时的被动语态", "cefr_level": "义教", "seq": 85, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(4)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "现在进行时的被动语态", "cefr_level": "必修", "seq": 86, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(5)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "现在完成时的被动语态", "cefr_level": "必修", "seq": 87, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(6)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "过去进行时的被动语态", "cefr_level": "选必", "seq": 88, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/6/(7)", "depth": 3, "parent_id": "三/6", "category": "三", "label": "过去完成时的被动语态", "cefr_level": "选必", "seq": 89, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/7", "depth": 2, "parent_id": "三", "category": "三", "label": "动词的非谓语形式", "cefr_level": "义教", "seq": 90, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/7/(1)", "depth": 3, "parent_id": "三/7", "category": "三", "label": "动词不定式（作宾语、补语、目的状语、定语*、结果状", "cefr_level": "义教", "seq": 91, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/7/(2)", "depth": 3, "parent_id": "三/7", "category": "三", "label": "动词的 -ing 形式（作定语 *、状语 *、补语 *、主语 **、", "cefr_level": "义教", "seq": 92, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/7/(3)", "depth": 3, "parent_id": "三/7", "category": "三", "label": "动词的 -ed 形式（作定语 *、状语 *、补语 *、表语 **）", "cefr_level": "义教", "seq": 93, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/8", "depth": 2, "parent_id": "三", "category": "三", "label": "主谓一致", "cefr_level": "义教", "seq": 94, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/9", "depth": 2, "parent_id": "三", "category": "三", "label": "并列复合句", "cefr_level": "义教", "seq": 95, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10", "depth": 2, "parent_id": "三", "category": "三", "label": "主从复合句", "cefr_level": "义教", "seq": 96, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10/(1)", "depth": 3, "parent_id": "三/10", "category": "三", "label": "宾语从句", "cefr_level": "义教", "seq": 97, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10/(2)", "depth": 3, "parent_id": "三/10", "category": "三", "label": "状语从句", "cefr_level": "义教", "seq": 98, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10/(3)", "depth": 3, "parent_id": "三/10", "category": "三", "label": "定语从句", "cefr_level": "义教", "seq": 99, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10/(4)", "depth": 3, "parent_id": "三/10", "category": "三", "label": "主语从句", "cefr_level": "选必", "seq": 100, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10/(5)", "depth": 3, "parent_id": "三/10", "category": "三", "label": "表语从句", "cefr_level": "选必", "seq": 101, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/10/(6)", "depth": 3, "parent_id": "三/10", "category": "三", "label": "同位语从句", "cefr_level": "选修", "seq": 102, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/11", "depth": 2, "parent_id": "三", "category": "三", "label": "省略", "cefr_level": "必修", "seq": 103, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/12", "depth": 2, "parent_id": "三", "category": "三", "label": "倒装", "cefr_level": "选修", "seq": 104, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/13", "depth": 2, "parent_id": "三", "category": "三", "label": "强调", "cefr_level": "选修", "seq": 105, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}
+{"grammar_item_id": "三/14", "depth": 2, "parent_id": "三", "category": "三", "label": "虚拟语气", "cefr_level": "选修", "seq": 106, "source": "4.普通高中英语课程标准（2017年版2020年修订）.pdf"}

@@ -24,9 +24,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 
-import duckdb
-
 ROOT = Path(__file__).resolve().parent.parent.parent
+# Allow `from backend.services import ...` when started as `python3 backend/api/main.py`
+sys.path.insert(0, str(ROOT))
+
+import duckdb  # noqa: E402
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 FRONTEND_DIR = ROOT / "frontend"
 
@@ -49,7 +51,8 @@ def api_stats(_qs: dict) -> dict:
         for tbl in [
             "cefr_vocab", "grammar_items", "theme_contexts",
             "liaoning_allowed_publishers", "liaoning_city_textbook_choice",
-            "textbooks", "file_manifest",
+            "textbooks", "file_manifest", "nodes", "edges",
+            "exam_questions", "audit_findings",
         ]:
             s[tbl] = con.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
         s["vocab_by_level"] = dict(
@@ -60,6 +63,15 @@ def api_stats(_qs: dict) -> dict:
                 "SELECT publisher_short, COUNT(*) FROM liaoning_city_textbook_choice "
                 "WHERE subject = '英语' GROUP BY publisher_short"
             ).fetchall()
+        )
+        s["exam_by_province"] = dict(
+            con.execute("SELECT province, COUNT(*) FROM exam_questions GROUP BY province").fetchall()
+        )
+        s["audit_by_severity"] = dict(
+            con.execute("SELECT severity, COUNT(*) FROM audit_findings GROUP BY severity").fetchall()
+        )
+        s["edges_by_relation"] = dict(
+            con.execute("SELECT relation, COUNT(*) FROM edges GROUP BY relation ORDER BY COUNT(*) DESC").fetchall()
         )
         return s
     finally:
@@ -149,6 +161,73 @@ def api_textbooks(_qs: dict) -> list[dict]:
         con.close()
 
 
+def api_audit_findings(_qs: dict) -> list[dict]:
+    con = db_ro()
+    try:
+        return rows_to_dicts(con.execute(
+            "SELECT audit_kind, severity, target, expected, actual, delta, note "
+            "FROM audit_findings ORDER BY audit_kind, severity DESC"
+        ))
+    finally:
+        con.close()
+
+
+def api_graph_stats(_qs: dict) -> dict:
+    from backend.services import graph as gsvc
+    con = db_ro()
+    try:
+        return gsvc.stats(con)
+    finally:
+        con.close()
+
+
+def api_graph_neighbors(qs: dict) -> list[dict]:
+    from backend.services import graph as gsvc
+    node = qs.get("node", [""])[0]
+    if not node:
+        return []
+    rel = qs.get("relation", [None])[0]
+    direction = qs.get("direction", ["out"])[0]
+    try:
+        limit = min(int(qs.get("limit", ["50"])[0]), 500)
+    except ValueError:
+        limit = 50
+    con = db_ro()
+    try:
+        return gsvc.neighbors(con, node, rel, direction, limit)
+    finally:
+        con.close()
+
+
+def api_exam_questions(qs: dict) -> list[dict]:
+    province = qs.get("province", [None])[0]
+    qtype = qs.get("type", [None])[0]
+    year = qs.get("year", [None])[0]
+    try:
+        limit = min(int(qs.get("limit", ["20"])[0]), 200)
+    except ValueError:
+        limit = 20
+    where, args = [], []
+    if province:
+        where.append("province LIKE ?"); args.append(f"%{province}%")
+    if qtype:
+        where.append("question_type = ?"); args.append(qtype)
+    if year:
+        where.append("year = ?"); args.append(int(year))
+    sql = ("SELECT question_id, year, province, paper_type, question_type, "
+           "SUBSTR(raw_question, 1, 200) AS preview, source_file, source_index "
+           "FROM exam_questions")
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    sql += " ORDER BY year DESC, question_id LIMIT ?"
+    args.append(limit)
+    con = db_ro()
+    try:
+        return rows_to_dicts(con.execute(sql, args))
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/stats": api_stats,
     "/api/cefr_vocab": api_cefr_vocab,
@@ -157,6 +236,10 @@ ROUTES = {
     "/api/liaoning/allowed_publishers": api_allowed_publishers,
     "/api/liaoning/city_choice": api_city_choice,
     "/api/textbooks": api_textbooks,
+    "/api/audit/findings": api_audit_findings,
+    "/api/graph/stats": api_graph_stats,
+    "/api/graph/neighbors": api_graph_neighbors,
+    "/api/exam_questions": api_exam_questions,
 }
 
 

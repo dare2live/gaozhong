@@ -62,10 +62,45 @@
   </section>
 
   <section id="grammar" class="card">
-    <h2>语法项目表 (附录3, MVP 仅顶级类目, 待 STEP 2 完善)</h2>
+    <h2>语法项目表 (附录3, 106 行层级)</h2>
     <table id="grammar-body"><thead><tr>
       <th>ID</th><th>类目</th><th>标签</th><th>级别</th>
     </tr></thead><tbody></tbody></table>
+  </section>
+
+  <section id="audit" class="card">
+    <h2>数据审计 (cross-check 报告)</h2>
+    <p class="src">详 docs/data_audit_report.md · 跑: <code>python3 scripts/init_db.py</code></p>
+    <table id="audit-body"><thead><tr>
+      <th>检查项</th><th>严重度</th><th>目标</th><th>期望</th><th>实际</th><th>说明</th>
+    </tr></thead><tbody></tbody></table>
+  </section>
+
+  <section id="graph" class="card">
+    <h2>知识图谱 stats (nodes + edges)</h2>
+    <p class="src">详 docs/knowledge_graph.md · 查邻居: <code>/api/graph/neighbors?node=word:abandon</code></p>
+    <div id="graph-body"></div>
+  </section>
+
+  <section id="exam" class="card">
+    <h2>高考真题 (GAOKAO-Bench 镜像, 辽宁过滤)</h2>
+    <p class="src">默认显示 province 含"辽宁"的题. 顶用方式: <code>/api/exam_questions?province=辽宁&amp;limit=20</code></p>
+    <div class="controls">
+      <label>省份 contains: <input id="exam-prov" value="辽宁"></label>
+      <label>类型:
+        <select id="exam-qtype">
+          <option value="">(全部)</option>
+          <option>阅读理解</option>
+          <option>完形填空</option>
+          <option>语法填空</option>
+          <option>单选(语法/词汇)</option>
+          <option>短文改错</option>
+        </select>
+      </label>
+      <label>年: <input id="exam-year" type="number" placeholder="2022"></label>
+      <button id="exam-go">查询</button>
+    </div>
+    <div id="exam-body"></div>
   </section>
 
   <footer>

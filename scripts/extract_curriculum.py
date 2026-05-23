@@ -25,55 +25,112 @@ def _page_text(reader: PdfReader, page_index: int) -> str:
 
 
 def extract_cefr_vocab(reader: PdfReader) -> list[dict]:
-    """词汇表 (附录2, p129-182): 一行一词 + 后缀 * (必修) / ** (选必)."""
+    """词汇表 (附录2, p129-182): 一行一词 + 后缀 * (必修) / ** (选必).
+    P0 v2: 支持 'word (alt_form)' (eg 'a (an)', 'mouse (pl. mice)') 也收 alt 词 (alt 视同 hub 词级别).
+    """
     rows: list[dict] = []
     seen: set[str] = set()
-    word_re = re.compile(r"^([A-Za-z][A-Za-z\-']*?)(\*{1,2})?\s*$")
-    # 词汇表起始/结束页 (0-indexed). 课标 p129 = "附录 2 词汇表"; p182 末; 第 183 起是附录 3 语法.
+    # 主词 token: 字母 + 可选 - ' . , 全部允许内嵌
+    main_re = re.compile(r"^([A-Za-z][A-Za-z\-'.]*)(\*{1,2})?$")
+    # 括号 alt 内的纯英文词 (e.g. 'an', 'mice', 'bicycle')
+    alt_word_re = re.compile(r"([A-Za-z][A-Za-z\-']{1,})")
     start_page, end_page = 129 - 1, 182 - 1
     for pi in range(start_page, end_page + 1):
         if pi >= len(reader.pages):
             break
         text = _page_text(reader, pi)
-        for line in text.split("\n"):
-            line = line.strip()
-            if not line:
+        for raw in text.split("\n"):
+            line = raw.strip()
+            if not line or line.startswith("│") or line.isdigit():
                 continue
-            # 跳过页眉 "│ 附录 │", 页码
-            if line.startswith("│") or line.isdigit():
-                continue
-            # 跳过单字母分组标 (A B C ...)
             if len(line) == 1 and line.isalpha():
                 continue
-            # 课标说明段也跳过 (含中文)
             if any("一" <= ch <= "鿿" for ch in line):
                 continue
-            # 拆 token: 一页里词条用空格分隔, 而非换行
-            for tok in line.split():
-                m = word_re.match(tok)
-                if not m:
-                    continue
-                w = m.group(1).lower()
+            # split into [main, ...parenthesized...]
+            paren = re.findall(r"\(([^)]*)\)", line)
+            main_part = re.sub(r"\([^)]*\)", "", line).strip()
+            for tok in main_part.split():
+                m = main_re.match(tok)
+                if not m: continue
+                w = m.group(1).lower().rstrip(".")
                 suffix = m.group(2) or ""
-                if w in seen:
-                    continue
-                seen.add(w)
-                level = "选必" if suffix == "**" else ("必修" if suffix == "*" else "义教")
-                rows.append({
-                    "word": w,
-                    "cefr_level": level,
-                    "raw_suffix": suffix,
-                    "source": SOURCE_TAG,
-                })
+                if w and w not in seen:
+                    seen.add(w)
+                    rows.append({
+                        "word": w, "cefr_level": _level_of(suffix),
+                        "raw_suffix": suffix, "source": SOURCE_TAG,
+                    })
+                # for the same line, 找括号 alt
+                for p in paren:
+                    # skip "pl. mice" 标记
+                    for a in alt_word_re.findall(p):
+                        aw = a.lower()
+                        # 跳过明显是标注 (pl/sing/eg) 的 token
+                        if aw in {"pl", "sing", "eg", "etc", "ie"}:
+                            continue
+                        if aw not in seen:
+                            seen.add(aw)
+                            rows.append({
+                                "word": aw, "cefr_level": _level_of(suffix),
+                                "raw_suffix": suffix + " (alt)", "source": SOURCE_TAG,
+                            })
+                paren = []  # consume
     return rows
 
 
+def _level_of(suffix: str) -> str:
+    if suffix.startswith("***"): return "选修"
+    if suffix.startswith("**"): return "选必"
+    if suffix.startswith("*"): return "必修"
+    return "义教"
+
+
 def extract_grammar_items(reader: PdfReader) -> list[dict]:
-    """语法项目表 (附录3, p187-191): 编号 + 标题层级 + * / ** 标."""
+    """语法项目表 (附录3, p187-191) 层级:
+        一、词类 (一级)
+          1. 名词 (二级)
+            （1）可数名词及其单、复数 (三级)
+              a. 一般疑问句 (四级)
+        ID 用层级路径: "一/1/(1)/a"; 全局唯一, 父子关系经 cat_of edge.
+        星号 *=必修, **=选必, ***=选修.
+    """
     rows: list[dict] = []
     start_page, end_page = 187 - 1, 192 - 1
-    current_category = None
-    item_re = re.compile(r"^(\d+(?:\.\d+)*|\([0-9一二三四五六七八九十]+\))\s*(.*?)(\*{1,2})?\s*$")
+    seq = 0
+
+    # 五种行型 → (depth, normalized_token)
+    re_l1   = re.compile(r"^([一二三四五六七八九十]+)、(.+?)(\*+)?$")
+    re_l2   = re.compile(r"^(\d+)\.\s*(.+?)(\*+)?$")
+    re_l3   = re.compile(r"^[（(](\d+)[)）]\s*(.+?)(\*+)?$")
+    re_l4   = re.compile(r"^([a-z])\.\s*(.+?)(\*+)?$")
+
+    cur = {1: None, 2: None, 3: None, 4: None}
+
+    def lvl_of(suffix: str) -> str:
+        if not suffix: return "义教"
+        if suffix == "*": return "必修"
+        if suffix == "**": return "选必"
+        return "选修"   # ***
+
+    def emit(depth: int, num: str, label: str, suffix: str, parent_path: str):
+        nonlocal seq
+        path = parent_path + "/" + num if parent_path else num
+        cur[depth] = path
+        for k in range(depth + 1, 5):
+            cur[k] = None
+        seq += 1
+        rows.append({
+            "grammar_item_id": path,
+            "depth": depth,
+            "parent_id": parent_path or None,
+            "category": cur[1] and cur[1].split("/")[0],
+            "label": label.strip().rstrip("：:"),
+            "cefr_level": lvl_of(suffix),
+            "seq": seq,
+            "source": SOURCE_TAG,
+        })
+
     for pi in range(start_page, end_page + 1):
         if pi >= len(reader.pages):
             break
@@ -82,27 +139,30 @@ def extract_grammar_items(reader: PdfReader) -> list[dict]:
             line = line.strip()
             if not line or line.startswith("│") or line.isdigit():
                 continue
-            if line.startswith("附录") or "语法项目" in line or "说明" in line:
+            if line.startswith("附录") or "语法项目" in line or line.startswith("说明") or line.startswith("普通高中"):
                 continue
-            m = item_re.match(line)
-            if not m:
+            # skip 例句 (含英文字母 > 50% 的行)
+            if sum(ch.isascii() and ch.isalpha() for ch in line) > 0.4 * max(1, len(line.replace(" ", ""))):
                 continue
-            num, label, suffix = m.group(1), m.group(2).strip(), (m.group(3) or "")
-            # 课标行型 "5. 谓语动词的时态" — 我们的 regex 抓 num="5" label=". 谓语动词的时态"
-            label = label.lstrip(".。:：、 ").strip()
-            if not label:
+            m1 = re_l1.match(line)
+            if m1:
+                emit(1, m1.group(1), m1.group(2), m1.group(3) or "", "")
                 continue
-            level = "选必" if suffix == "**" else ("必修" if suffix == "*" else "义教")
-            # 顶级数字 (无小数点) 视为类目
-            if re.match(r"^\d+$", num):
-                current_category = label.rstrip("：:")
-            rows.append({
-                "grammar_item_id": num,
-                "category": current_category,
-                "label": label,
-                "cefr_level": level,
-                "source": SOURCE_TAG,
-            })
+            m2 = re_l2.match(line)
+            if m2:
+                parent = cur[1] or ""
+                emit(2, m2.group(1), m2.group(2), m2.group(3) or "", parent)
+                continue
+            m3 = re_l3.match(line)
+            if m3:
+                parent = cur[2] or cur[1] or ""
+                emit(3, f"({m3.group(1)})", m3.group(2), m3.group(3) or "", parent)
+                continue
+            m4 = re_l4.match(line)
+            if m4:
+                parent = cur[3] or cur[2] or cur[1] or ""
+                emit(4, m4.group(1), m4.group(2), m4.group(3) or "", parent)
+                continue
     return rows
 
 

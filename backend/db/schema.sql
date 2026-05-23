@@ -13,12 +13,17 @@ CREATE TABLE IF NOT EXISTS cefr_vocab (
 CREATE INDEX IF NOT EXISTS idx_cefr_vocab_level ON cefr_vocab(cefr_level);
 
 CREATE TABLE IF NOT EXISTS grammar_items (
-    grammar_item_id VARCHAR PRIMARY KEY,  -- e.g. "10.3.a" 主从复合句/定语从句/关系代词
+    grammar_item_id VARCHAR PRIMARY KEY,  -- hierarchical "三/10/(3)/a"
+    depth           INTEGER NOT NULL,
+    parent_id       VARCHAR,              -- → grammar_items.grammar_item_id, NULL for depth=1
     category        VARCHAR,
     label           VARCHAR NOT NULL,
-    cefr_level      VARCHAR NOT NULL,     -- 义教 | 必修 | 选必
+    cefr_level      VARCHAR NOT NULL,     -- 义教 | 必修 | 选必 | 选修
+    seq             INTEGER,
     source          VARCHAR NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_grammar_depth ON grammar_items(depth);
+CREATE INDEX IF NOT EXISTS idx_grammar_parent ON grammar_items(parent_id);
 
 CREATE TABLE IF NOT EXISTS theme_contexts (
     theme_context_id VARCHAR PRIMARY KEY,  -- e.g. "人与自我/生活与学习"
@@ -108,6 +113,64 @@ CREATE TABLE IF NOT EXISTS grammar_occurrences (
     grammar_item_id  VARCHAR NOT NULL,  -- → grammar_items(grammar_item_id)
     example_sentence VARCHAR
 );
+
+-- ====== 知识图谱核心 (架构 §0 Rule 3, edges 一等公民) ======
+
+CREATE TABLE IF NOT EXISTS nodes (
+    concept_id  VARCHAR PRIMARY KEY,    -- e.g. "word:apple", "grammar:三/10/(3)/a", "city:沈阳"
+    node_type   VARCHAR NOT NULL,        -- word|grammar|theme|volume|unit|section|phrase|question|exam_year|publisher|city|cefr_level
+    label       VARCHAR NOT NULL,        -- 展示名
+    attrs_json  VARCHAR                  -- 额外属性 (pos/ipa/page/year 等)
+);
+CREATE INDEX IF NOT EXISTS idx_nodes_type ON nodes(node_type);
+
+CREATE SEQUENCE IF NOT EXISTS edge_id_seq START 1;
+CREATE TABLE IF NOT EXISTS edges (
+    edge_id        BIGINT PRIMARY KEY DEFAULT nextval('edge_id_seq'),
+    src_id         VARCHAR NOT NULL,
+    dst_id         VARCHAR NOT NULL,
+    relation       VARCHAR NOT NULL,    -- cefr_level | introduces_word | tests_word | city_uses | ...
+    weight         DOUBLE,
+    evidence_json  VARCHAR,
+    UNIQUE (src_id, dst_id, relation)
+);
+CREATE INDEX IF NOT EXISTS idx_edges_src ON edges(src_id, relation);
+CREATE INDEX IF NOT EXISTS idx_edges_dst ON edges(dst_id, relation);
+CREATE INDEX IF NOT EXISTS idx_edges_rel ON edges(relation);
+
+-- ====== 高考真题 (辽宁卷锚定) ======
+
+CREATE TABLE IF NOT EXISTS exam_questions (
+    question_id    VARCHAR PRIMARY KEY,   -- "gb/<file_basename>/<index>"
+    year           INTEGER,
+    province       VARCHAR,                -- "辽宁" / "全国 II" / "未知" — 走 extraction/exam.py 推断
+    paper_type     VARCHAR,                -- "新课标 II 卷" / "全国卷" / etc
+    question_type  VARCHAR,                -- 完形|阅读|语法填空|读后续写|MCQ|应用文|改错
+    raw_question   VARCHAR,                -- 题面 (可能含选项)
+    answer         VARCHAR,
+    analysis       VARCHAR,
+    source_file    VARCHAR,                -- 原 GAOKAO-Bench json 文件名
+    source_index   INTEGER,                -- 原 example 数组下标
+    source_repo    VARCHAR DEFAULT 'OpenLMLab/GAOKAO-Bench'
+);
+CREATE INDEX IF NOT EXISTS idx_exam_year ON exam_questions(year);
+CREATE INDEX IF NOT EXISTS idx_exam_prov ON exam_questions(province);
+CREATE INDEX IF NOT EXISTS idx_exam_type ON exam_questions(question_type);
+
+-- ====== 审计 (cross-check 结果落表) ======
+
+CREATE TABLE IF NOT EXISTS audit_findings (
+    finding_id    BIGINT PRIMARY KEY,
+    audit_kind    VARCHAR NOT NULL,    -- file_sha | vocab_recall | grammar_recall | cross_source | publisher_coverage
+    severity      VARCHAR NOT NULL,    -- OK | WARN | FAIL
+    target        VARCHAR,             -- file path / table.column / publisher 等
+    expected      VARCHAR,
+    actual        VARCHAR,
+    delta         VARCHAR,
+    note          VARCHAR,
+    audited_at    VARCHAR NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_audit_kind ON audit_findings(audit_kind, audited_at);
 
 -- ====== Lineage / manifest (审计) ======
 

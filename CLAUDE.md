@@ -8,6 +8,27 @@
 
 ---
 
+## 0. 顶层架构与"单一计算点"铁律 (硬约束)
+
+任何代码 PR 都先读 `docs/architecture.md` §0-§4 + `docs/knowledge_graph.md`. 三条铁律:
+
+- **Rule 1 单一计算点**: 派生事实只在 `backend/services/` 算一次入表 / view. **API / 前端 / 脚本不准重写同样的 JOIN/agg**.
+- **Rule 2 Canonical Model First**: 任何 entity 先有 PK 表, 再谈关联.
+- **Rule 3 Edges 是一等公民**: N:M 关系全走 `edges` 表 + `services/graph/`, 不塞 JSON 字段, 不到处写 SQL JOIN.
+
+违反 = 拒收. 任何"为了快 inline 一下" = 后期重构债.
+
+## 0.5 改代码前先 codegraph + complexity (用户 2026-05-23 硬约束)
+
+- 项目装了 PreToolUse hook (`scripts/precode_review_hook.sh`, 注册在 `.claude/settings.local.json`).
+- 改 `backend/services/*` `backend/db/*` `backend/api/*` `scripts/init_db.py` `scripts/extract_*.py` 前, hook 会 stderr 提醒文件复杂度 + fan-in + 阈值.
+- 当 hook 输出 `>> 建议先跑 /codegraph-architecture-audit`, 必须先跑再继续改.
+- 触发阈值: 行数 >250 / 函数+类 >15 / fan-in >3.
+- 全局 codegraph skill (`/codegraph-architecture-audit`) 不可用时降级 rg + import 扫描 (skill 自带 fallback).
+- complexity-optimizer 用 stdlib ast 自实现 (`scripts/lib/complexity_check.py`, 零新增依赖), 算 cyclomatic complexity. hook 已集成 — CC>10 函数 ≥ 3 个会强提示 codegraph. 单独跑: `python3 scripts/lib/complexity_check.py <file.py>`.
+
+不要等"重构完再 review", 要"改前先 review", 避免后期大规模重构.
+
 ## 1. 思维原则 (继承 gaokao §1)
 
 ### 1.1 数据基石优先
@@ -109,6 +130,14 @@
 - `~/Documents/M/gaozhong/` (本项目) 负责 **教材侧**: 课文拆解 / 词表 / 语法点 / 趣味化.
 - 两边交汇点: **知识点 ↔ 真题考点 映射表** (STEP 3, 双向引用).
 - 不要在本项目重复抓真题 PDF.
+- **DuckDB 完全独立**, 不 ATTACH 不混用 (用户 2026-05-23 硬约束).
+
+## 7. 辽宁卷锚定 (用户 2026-05-23 再次强调)
+
+- 本项目真题数据范围 = **辽宁卷** (新课标 II 卷, 2021 起辽宁正式启用).
+- 早期真题 (2010-2020) 辽宁卷型在 GAOKAO-Bench 不一定显式标省, 镜像后必须 **加 province 过滤层** (`backend/services/extraction/exam.py` 输出 province / 卷型 元数据, 入 `exam_questions.province` 字段).
+- 不直接拿"全国卷"分析当成"辽宁卷分析" — 见姊妹项目 gaokao R2 反例 (2026-05-22 假设辽宁用 I 卷, 实际是 II 卷, 5 个 session 白跑).
+- 任何"题型分布 / 命题点" 报告必须先 province=辽宁 / 卷型 ∈ {新课标 II 卷, 2020 前对应辽宁实际卷型} 过滤.
 
 ---
 

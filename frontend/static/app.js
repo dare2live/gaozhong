@@ -7,16 +7,73 @@ async function loadStats() {
   const s = await fetchJSON("/api/stats");
   const v = s.vocab_by_level || {};
   const c = s.cities_by_publisher || {};
+  const ep = s.exam_by_province || {};
+  const as = s.audit_by_severity || {};
   $("#stats-body").innerHTML = `
     <table>
       <tr><th>课标词汇表</th><td><b>${s.cefr_vocab}</b> 词 (义教 ${v["义教"]||0} / 必修★ ${v["必修"]||0} / 选必★★ ${v["选必"]||0})</td></tr>
-      <tr><th>课标语法项目</th><td>${s.grammar_items} 顶级类目 (MVP)</td></tr>
+      <tr><th>课标语法项目</th><td>${s.grammar_items} 行 (层级 depth 1-4)</td></tr>
       <tr><th>主题语境</th><td>${s.theme_contexts} (3 大语境 + 10 主题群)</td></tr>
       <tr><th>辽宁允许版本 (英语)</th><td>${s.liaoning_allowed_publishers} 个出版社</td></tr>
       <tr><th>辽宁 14 地市使用</th><td>${s.liaoning_city_textbook_choice} 城市 — 外研版 ${c["外研版"]||0} / 人教版 ${c["人教版"]||0}</td></tr>
       <tr><th>已入仓教材 PDF</th><td>${s.textbooks} 册</td></tr>
+      <tr><th>真题镜像</th><td>${s.exam_questions} 题 — 辽宁推断 ${Object.entries(ep).filter(([k])=>k.includes("辽宁")).reduce((a,[,v])=>a+v,0)} / 未知 ${ep["未知"]||0}</td></tr>
+      <tr><th>知识图谱</th><td>${s.nodes} nodes · ${s.edges} edges</td></tr>
+      <tr><th>审计</th><td><b style="color:#2a9d8f">${as["OK"]||0} OK</b> · ${as["WARN"]||0} WARN · <b style="color:#e76f51">${as["FAIL"]||0} FAIL</b></td></tr>
       <tr><th>文件 manifest</th><td>${s.file_manifest} 条 (含 sha256)</td></tr>
     </table>`;
+}
+
+async function loadAudit() {
+  const rows = await fetchJSON("/api/audit/findings");
+  $("#audit-body tbody").innerHTML = rows.map((r) => `
+    <tr style="background:${r.severity==='FAIL'?'#fde2e1':r.severity==='WARN'?'#fff7d6':''}">
+      <td>${r.audit_kind}</td>
+      <td><b style="color:${r.severity==='FAIL'?'#c1272d':r.severity==='WARN'?'#b8860b':'#2a9d8f'}">${r.severity}</b></td>
+      <td>${r.target||''}</td>
+      <td>${r.expected||''}</td>
+      <td>${r.actual||''}</td>
+      <td style="font-size:11px;color:#666">${r.note||''}</td>
+    </tr>`).join("");
+}
+
+async function loadGraph() {
+  const s = await fetchJSON("/api/graph/stats");
+  const rows = (obj) => Object.entries(obj).sort((a,b)=>b[1]-a[1])
+    .map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+  $("#graph-body").innerHTML = `
+    <table style="float:left;width:48%">
+      <thead><tr><th>node_type</th><th>count</th></tr></thead>
+      <tbody>${rows(s.nodes)}</tbody>
+      <tfoot><tr><td><b>total</b></td><td><b>${s.total_nodes}</b></td></tr></tfoot>
+    </table>
+    <table style="float:right;width:48%">
+      <thead><tr><th>relation</th><th>count</th></tr></thead>
+      <tbody>${rows(s.edges)}</tbody>
+      <tfoot><tr><td><b>total</b></td><td><b>${s.total_edges}</b></td></tr></tfoot>
+    </table>
+    <div style="clear:both"></div>`;
+}
+
+async function loadExam() {
+  const prov = $("#exam-prov").value;
+  const qtype = $("#exam-qtype").value;
+  const year = $("#exam-year").value;
+  const qs = new URLSearchParams();
+  if (prov) qs.set("province", prov);
+  if (qtype) qs.set("type", qtype);
+  if (year) qs.set("year", year);
+  qs.set("limit", "30");
+  const rows = await fetchJSON("/api/exam_questions?" + qs);
+  if (!rows.length) {
+    $("#exam-body").innerHTML = "<em>无匹配</em>";
+    return;
+  }
+  $("#exam-body").innerHTML = rows.map((r) => `
+    <details style="margin-bottom:6px;border:1px solid #eee;padding:6px;border-radius:4px">
+      <summary><b>${r.year}</b> · ${r.question_type} · <code>${r.question_id}</code> · ${r.province}</summary>
+      <pre style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">${r.preview}</pre>
+    </details>`).join("");
 }
 
 async function loadCities() {
@@ -103,6 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
   loadThemes().catch(console.error);
   loadGrammar().catch(console.error);
   loadVocab().catch(console.error);
+  loadAudit().catch(console.error);
+  loadGraph().catch(console.error);
+  loadExam().catch(console.error);
   $("#vocab-go").addEventListener("click", () => loadVocab().catch(console.error));
   $("#vocab-prefix").addEventListener("keydown", (e) => { if (e.key === "Enter") loadVocab(); });
+  $("#exam-go").addEventListener("click", () => loadExam().catch(console.error));
 });
