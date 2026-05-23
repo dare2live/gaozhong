@@ -78,6 +78,21 @@ CREATE TABLE IF NOT EXISTS units (
     PRIMARY KEY (version_key, volume_key, unit_number)
 );
 
+-- 单元内 section (Reading/Listening/Writing/Project/...)
+-- 由 STEP 2 第三刀 extraction/section.py 产出
+CREATE TABLE IF NOT EXISTS sections (
+    version_key    VARCHAR NOT NULL,
+    volume_key     VARCHAR NOT NULL,
+    unit_number    INTEGER NOT NULL,
+    seq            INTEGER NOT NULL,    -- 该 unit 内 section 顺序 1, 2, 3...
+    kind           VARCHAR NOT NULL,    -- "Reading" | "Listening" | "Writing" | "Project" | ...
+    title          VARCHAR,             -- 原页眉 (regex 抓的全句)
+    page_start     INTEGER,
+    page_end       INTEGER,
+    PRIMARY KEY (version_key, volume_key, unit_number, seq)
+);
+CREATE INDEX IF NOT EXISTS idx_sections_unit ON sections(version_key, volume_key, unit_number);
+
 -- 教材词条引入位置 (mapping 到 cefr_vocab)
 -- in_curriculum 是 load 时占位; 实际真值由 links/build_introduces_word 算 (LEFT JOIN cefr_vocab)
 CREATE TABLE IF NOT EXISTS unit_vocab_intro (

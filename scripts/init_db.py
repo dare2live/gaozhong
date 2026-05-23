@@ -169,11 +169,25 @@ def main() -> None:
         con.executemany(
             "INSERT OR REPLACE INTO unit_vocab_intro VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [(r["version_key"], r["volume_key"], r["unit_number"], r["word"],
-              True,  # 走 LEFT JOIN cefr_vocab 在 links/build 时实际算 in_curriculum
-              r.get("pos"), r.get("zh_def"), r.get("raw_marker"))
+              True, r.get("pos"), r.get("zh_def"), r.get("raw_marker"))
              for r in v_rows],
         )
         print(f"  loaded unit_vocab_intro: {len(v_rows)}")
+
+    print("\n=== Layer 2: extract textbook sections (STEP 2 third cut, M1 收尾) ===")
+    from backend.services.extraction import section as section_extract  # noqa: E402
+    ss = section_extract.run_all(con)
+    print(f"  units_scanned: {ss['units_scanned']}, sections_total: {ss['sections_total']}")
+    print(f"  by_kind: {ss['by_kind']}")
+    sec_jsonl = ROOT / "data/structured/textbook/sections_all.jsonl"
+    if sec_jsonl.exists():
+        s_rows = _read_jsonl(sec_jsonl)
+        con.executemany(
+            "INSERT OR REPLACE INTO sections VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [(r["version_key"], r["volume_key"], r["unit_number"], r["seq"],
+              r["kind"], r["title"], r["page_start"], r["page_end"]) for r in s_rows],
+        )
+        print(f"  loaded sections: {len(s_rows)}")
 
     print(f"\n  file_manifest: {_load_file_manifest(con)}")
 
