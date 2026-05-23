@@ -63,4 +63,15 @@
 {"version_key": "waiyan", "volume_key": "xuanze_2", "unit_number": 4, "title_en": "选修2-5 Unit 4.pdf", "page_start": 44, "page_end": 55, "extract_method": "outline"}
 {"version_key": "waiyan", "volume_key": "xuanze_2", "unit_number": 5, "title_en": "选修2-6 Unit 5.pdf", "page_start": 56, "page_end": 67, "extract_method": "outline"}
 {"version_key": "waiyan", "volume_key": "xuanze_2", "unit_number": 6, "title_en": "选修2-7 Unit 6.pdf", "page_start": 68, "page_end": 131, "extract_method": "outline"}
-{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 1, "title_en": "UNIT 1 Watch the video and answer the questions. 1 How many kinds of Peking Ope", "page_start": 8, "page_end": 138, "extract_method": "regex_min"}
+{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 1, "title_en": "Face values", "page_start": 8, "page_end": 19, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 2, "title_en": "A life's work", "page_start": 20, "page_end": 31, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 3, "title_en": "War and peace", "page_start": 32, "page_end": 43, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 4, "title_en": "Masters of time", "page_start": 44, "page_end": 55, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 5, "title_en": "A boy's best friend (sci-fi)", "page_start": 56, "page_end": 67, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_3", "unit_number": 6, "title_en": "Live to learn", "page_start": 68, "page_end": 85, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_4", "unit_number": 1, "title_en": "The road not taken", "page_start": 8, "page_end": 19, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_4", "unit_number": 2, "title_en": "Lessons in life", "page_start": 20, "page_end": 31, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_4", "unit_number": 3, "title_en": "The world meets China", "page_start": 32, "page_end": 43, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_4", "unit_number": 4, "title_en": "Smart cities and AI", "page_start": 44, "page_end": 55, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_4", "unit_number": 5, "title_en": "Facing the unknown", "page_start": 56, "page_end": 67, "extract_method": "manual_override"}
+{"version_key": "waiyan", "volume_key": "xuanze_4", "unit_number": 6, "title_en": "Space and beyond", "page_start": 68, "page_end": 85, "extract_method": "manual_override"}

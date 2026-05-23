@@ -1,0 +1,22 @@
+{
+  "_source": "PDF Scope and sequence p5-6 手动整理 (textbook extractor 兜底)",
+  "_apply_when": "extractor 失败 (method='empty') 或漏抓 unit",
+  "overrides": {
+    "waiyan/xuanze_4": [
+      {"unit_number": 1, "title": "The road not taken", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "Lessons in life", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "The world meets China", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "Smart cities and AI", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "Facing the unknown", "page_start": 56, "page_end": 67},
+      {"unit_number": 6, "title": "Space and beyond", "page_start": 68, "page_end": 85}
+    ],
+    "waiyan/xuanze_3": [
+      {"unit_number": 1, "title": "Face values", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "A life's work", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "War and peace", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "Masters of time", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "A boy's best friend (sci-fi)", "page_start": 56, "page_end": 67},
+      {"unit_number": 6, "title": "Live to learn", "page_start": 68, "page_end": 85}
+    ]
+  }
+}

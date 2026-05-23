@@ -29,13 +29,16 @@ ANCHORS = {
     "waiyan": [
         "Starting out", "Understanding ideas", "Using language",
         "Developing ideas", "Presenting ideas", "Reflection",
-        "Project", "Self-assessment",
+        "Project", "Self-assessment", "Integrated skills",
+        "Grammar", "Vocabulary", "Listening", "Speaking", "Reading", "Writing",
     ],
     "renjiao": [
         "Reading and Thinking", "Reading and Writing",
         "Listening and Speaking", "Listening and Talking",
         "Discovering Useful Structures", "Assessing Your Progress",
-        "Workbook", "Project",
+        "Workbook", "Project", "Reading for Writing",
+        "Video Time", "Words in Use", "Listening", "Speaking",
+        "Grammar", "Vocabulary", "Reading", "Writing",
     ],
 }
 
@@ -45,11 +48,17 @@ KIND_MAP = {
     "Using language": "Grammar", "Developing ideas": "Reading",
     "Presenting ideas": "Speaking", "Reflection": "Review",
     "Project": "Project", "Self-assessment": "Review",
+    "Integrated skills": "Integrated",
     "Reading and Thinking": "Reading", "Reading and Writing": "Writing",
+    "Reading for Writing": "Writing",
     "Listening and Speaking": "Listening",
     "Listening and Talking": "Listening",
     "Discovering Useful Structures": "Grammar",
     "Assessing Your Progress": "Review", "Workbook": "Workbook",
+    "Video Time": "Listening", "Words in Use": "Vocabulary",
+    "Grammar": "Grammar", "Vocabulary": "Vocabulary",
+    "Listening": "Listening", "Speaking": "Speaking",
+    "Reading": "Reading", "Writing": "Writing",
 }
 
 

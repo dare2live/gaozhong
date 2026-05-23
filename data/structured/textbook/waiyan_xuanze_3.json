@@ -2,15 +2,50 @@
   "version_key": "waiyan",
   "volume_key": "xuanze_3",
   "n_pages": 138,
-  "n_units": 1,
-  "method": "regex_min",
+  "n_units": 6,
+  "method": "manual_override",
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 Watch the video and answer the questions. 1 How many kinds of Peking Ope",
+      "title_en": "Face values",
       "start_page": 8,
-      "method": "regex_min",
-      "end_page": 138
+      "end_page": 19,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 2,
+      "title_en": "A life's work",
+      "start_page": 20,
+      "end_page": 31,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 3,
+      "title_en": "War and peace",
+      "start_page": 32,
+      "end_page": 43,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 4,
+      "title_en": "Masters of time",
+      "start_page": 44,
+      "end_page": 55,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 5,
+      "title_en": "A boy's best friend (sci-fi)",
+      "start_page": 56,
+      "end_page": 67,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 6,
+      "title_en": "Live to learn",
+      "start_page": 68,
+      "end_page": 85,
+      "method": "manual_override"
     }
   ]
 }

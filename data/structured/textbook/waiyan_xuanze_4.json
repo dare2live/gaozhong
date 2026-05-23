@@ -2,7 +2,50 @@
   "version_key": "waiyan",
   "volume_key": "xuanze_4",
   "n_pages": 138,
-  "n_units": 0,
-  "method": "empty",
-  "units": []
+  "n_units": 6,
+  "method": "manual_override",
+  "units": [
+    {
+      "unit_number": 1,
+      "title_en": "The road not taken",
+      "start_page": 8,
+      "end_page": 19,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 2,
+      "title_en": "Lessons in life",
+      "start_page": 20,
+      "end_page": 31,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 3,
+      "title_en": "The world meets China",
+      "start_page": 32,
+      "end_page": 43,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 4,
+      "title_en": "Smart cities and AI",
+      "start_page": 44,
+      "end_page": 55,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 5,
+      "title_en": "Facing the unknown",
+      "start_page": 56,
+      "end_page": 67,
+      "method": "manual_override"
+    },
+    {
+      "unit_number": 6,
+      "title_en": "Space and beyond",
+      "start_page": 68,
+      "end_page": 85,
+      "method": "manual_override"
+    }
+  ]
 }

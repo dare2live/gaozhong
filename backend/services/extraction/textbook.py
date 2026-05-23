@@ -114,6 +114,21 @@ def _from_regex(reader: PdfReader) -> list[dict]:
     ]
 
 
+def _from_override(version_key: str, volume_key: str) -> list[dict]:
+    """Manual fallback from unit_overrides.json — for PDFs where outline+regex both fail."""
+    spec_path = ROOT / "data" / "structured" / "textbook" / "unit_overrides.json"
+    if not spec_path.exists():
+        return []
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    key = f"{version_key}/{volume_key}"
+    raw = spec.get("overrides", {}).get(key)
+    if not raw:
+        return []
+    return [{"unit_number": u["unit_number"], "title_en": u["title"],
+              "start_page": u["page_start"], "end_page": u["page_end"],
+              "method": "manual_override"} for u in raw]
+
+
 def extract_units(pdf_path: Path, version_key: str, volume_key: str) -> dict:
     """Returns {volume meta + units[]}. 不抛, 失败 units=[]."""
     reader = PdfReader(pdf_path)
@@ -121,10 +136,13 @@ def extract_units(pdf_path: Path, version_key: str, volume_key: str) -> dict:
     units = _from_outline(reader)
     if len(units) < 2:
         units = _from_regex(reader)
+    if len(units) < 2:   # final fallback: manual override
+        units = _from_override(version_key, volume_key)
     units.sort(key=lambda u: u["start_page"])
-    # fill end_page
+    # fill end_page if not preset
     for i, u in enumerate(units):
-        u["end_page"] = units[i + 1]["start_page"] - 1 if i + 1 < len(units) else n_pages
+        if "end_page" not in u:
+            u["end_page"] = units[i + 1]["start_page"] - 1 if i + 1 < len(units) else n_pages
     return {
         "version_key": version_key,
         "volume_key": volume_key,
