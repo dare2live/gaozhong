@@ -35,10 +35,35 @@ def audit_course_relations(con: duckdb.DuckDBPyConnection) -> list[dict]:
 
 # ===== R2 =====
 def audit_course_no_textbook_copy(con: duckdb.DuckDBPyConnection) -> list[dict]:
-    """目前 yaml 没有真长例句 (handout 自动生成), 此 audit 在 #37 阶段填讲义后才有真校验.
-    占位返 WARN — 提示后续讲义文本生成时挂上 substring 扫."""
-    return [_o("audit_course_no_textbook_copy", "WARN", "(handout text)", "no 10-gram overlap",
-               "讲义文本未持久化, 此 audit 待 #38 UI 渲染时挂 substring 扫")]
+    """R2: 讲义里去除 HTML 后, 与教材 section_text 无 ≥10 词连续重叠.
+
+    P1.2 实装: 从 course_handouts 表读 md (init_db 灌), 调 scenarios.has_textbook_copy.
+    若 course_handouts 空 → WARN; 否则真扫.
+    """
+    n_handouts = con.execute("SELECT COUNT(*) FROM course_handouts").fetchone()[0]
+    if n_handouts == 0:
+        return [_o("audit_course_no_textbook_copy", "WARN", "(no handouts)",
+                   "course_handouts table populated",
+                   "init_db 未灌讲义, 跑 init_db 后再 audit")]
+    rows = con.execute("SELECT course_id, md FROM course_handouts").fetchall()
+    out: list[dict] = []
+    fail_n = 0
+    for cid, md in rows:
+        clean = _strip_html(md)
+        hit = scenarios.has_textbook_copy(con, clean)
+        if hit:
+            out.append(_o("audit_course_no_textbook_copy", "FAIL", f"course={cid}",
+                          "no 10-gram overlap", f"hit: {hit!r}"))
+            fail_n += 1
+    if fail_n == 0:
+        out.append(_o("audit_course_no_textbook_copy", "OK", f"{len(rows)} handouts",
+                      "no overlap >= 10 words", "all pass"))
+    return out
+
+
+def _strip_html(s: str) -> str:
+    import re
+    return re.sub(r"<[^>]+>", " ", s or "")
 
 
 # ===== R3 =====

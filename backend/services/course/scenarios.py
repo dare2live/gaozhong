@@ -59,7 +59,7 @@ def has_textbook_copy(con: duckdb.DuckDBPyConnection, text: str, n: int = NGRAM_
         return None
     grams = {" ".join(toks[i:i + n]) for i in range(len(toks) - n + 1)}
     # 抽样 section_text 100 行做 substring 扫
-    rows = con.execute("SELECT content FROM section_text LIMIT 500").fetchall()
+    rows = con.execute("SELECT raw_text FROM section_text LIMIT 500").fetchall()
     for (content,) in rows:
         c = " ".join(_tokens(content or ""))
         for g in grams:

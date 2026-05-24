@@ -322,15 +322,98 @@
   // G. 扫描 OCR (占位 4.7.C)
   // ===================================================================
   register("scan", async () => {
+    CONTENT.innerHTML = `<h2>G. 扫描 OCR</h2><p>载入中 ...</p>`;
+    const [list, students] = await Promise.all([
+      fetchJSON("/api/scan/list").catch(() => []),
+      fetchJSON("/api/students/list").catch(() => ({ students: [] })),
+    ]);
+    const rows = Array.isArray(list) ? list : (list.rows || []);
+    const studentOpts = (students.students || [])
+      .map(s => `<option value="${s.student_id}">${s.name} (${s.student_id})</option>`).join("");
     CONTENT.innerHTML = `
-      <h2>G. 扫描 OCR</h2>
-      <div class="tab-placeholder">
-        <p>POST 通 (<code>/api/scan/upload</code>). UI 待 4.7.C 补:</p>
-        <ul>
-          <li>教师端上传 PDF / 图片</li>
-          <li>已上传清单</li>
-          <li>OCR review 队列 (人工校对)</li>
-        </ul>
-      </div>`;
+      <h2>G. 扫描 OCR · 学生卷面上传</h2>
+      <p style="color:#666">PDF: 自动 pypdf 抽文字 / 图片: 留 PaddleOCR 后续.</p>
+
+      <section class="layer-section">
+        <h3>上传新扫描</h3>
+        <form id="scan-form" style="background:#fff;padding:1rem;border-radius:4px;max-width:500px">
+          <div style="margin:0.5rem 0">
+            <label>学生 (可选):
+              <select name="student_id" style="width:100%">
+                <option value="">--- 未关联 ---</option>
+                ${studentOpts}
+              </select>
+            </label>
+          </div>
+          <div style="margin:0.5rem 0">
+            <label>类型:
+              <select name="kind" style="width:100%">
+                <option value="answer_sheet">答题卡</option>
+                <option value="homework">作业</option>
+                <option value="essay">作文</option>
+              </select>
+            </label>
+          </div>
+          <div style="margin:0.5rem 0">
+            <label>文件 (PDF 优先):
+              <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
+            </label>
+          </div>
+          <button type="submit" style="background:#E3120B;color:#fff;border:0;padding:0.5rem 1rem;border-radius:3px;cursor:pointer">上传</button>
+          <div id="scan-result" style="margin-top:0.7rem;color:#1a5e1a"></div>
+        </form>
+      </section>
+
+      <section class="layer-section">
+        <h3>已上传 (${rows.length})</h3>
+        <table style="width:100%;background:#fff;border-collapse:collapse">
+          <thead><tr style="background:#1a1a1a;color:#fff">
+            <th style="padding:0.4rem;text-align:left">upload_id</th>
+            <th style="padding:0.4rem">学生</th>
+            <th style="padding:0.4rem">类型</th>
+            <th style="padding:0.4rem">OCR 状态</th>
+            <th style="padding:0.4rem">时间</th>
+          </tr></thead>
+          <tbody>
+            ${rows.length ? rows.map(r => `<tr style="border-bottom:1px solid #eee">
+              <td style="padding:0.3rem"><code>${r.upload_id || r[0]}</code></td>
+              <td style="padding:0.3rem">${r.student_id || r[1] || "-"}</td>
+              <td style="padding:0.3rem">${r.upload_kind || r[3] || "-"}</td>
+              <td style="padding:0.3rem"><span class="${(r.ocr_status||r[5])==='done'?'gz-type-grammar':'gz-type-theme'}">${r.ocr_status || r[5] || "-"}</span></td>
+              <td style="padding:0.3rem"><small>${(r.uploaded_at || r[4] || "").slice(0,19).replace('T',' ')}</small></td>
+            </tr>`).join("") : `<tr><td colspan="5" style="padding:1rem;color:#888;text-align:center">无上传记录</td></tr>`}
+          </tbody>
+        </table>
+      </section>`;
+
+    document.getElementById("scan-form").onsubmit = async (ev) => {
+      ev.preventDefault();
+      const form = ev.target;
+      const file = form.file.files[0];
+      const resultDiv = document.getElementById("scan-result");
+      if (!file) { resultDiv.innerHTML = `<span style="color:#c00">请选文件</span>`; return; }
+      resultDiv.textContent = "上传中 ...";
+      const params = new URLSearchParams({
+        student_id: form.student_id.value,
+        kind:       form.kind.value,
+        filename:   file.name,
+      });
+      try {
+        const resp = await fetch("/api/scan/upload?" + params, {
+          method: "POST",
+          headers: { "Content-Type": "application/octet-stream" },
+          body: file,
+        });
+        const data = await resp.json();
+        if (resp.ok) {
+          resultDiv.innerHTML = `✅ 上传成功 <code>${data.upload_id}</code>; sha=${data.sha256}; OCR 状态=${data.ocr_status} (${data.text_chars} 字符)`;
+          setTimeout(() => route(), 1500);  // 刷新清单
+        } else {
+          resultDiv.innerHTML = `<span style="color:#c00">❌ ${data.error || resp.statusText}</span>`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<span style="color:#c00">❌ ${err.message}</span>`;
+      }
+    };
   });
 })();
