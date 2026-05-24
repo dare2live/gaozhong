@@ -2,7 +2,7 @@
    每 tab 一个 mount() 函数, 注册到 ROUTES dict. (M2 插件式 dispatch) */
 
 (function () {
-  const { $, $$, fetchJSON } = window.GZ;
+  const { $, $$, fetchJSON, mdToHtml } = window.GZ;
   const CONTENT = $("#content");
 
   // -- 注册表 (M2)
@@ -99,9 +99,9 @@
     md.textContent = "载入中 ...";
     try {
       const data = await fetchJSON("/api/course/handout?id=" + cid);
-      md.textContent = data.md || JSON.stringify(data, null, 2);
+      md.innerHTML = mdToHtml(data.md || "") || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     } catch (err) {
-      md.textContent = "讲义载入失败: " + err.message;
+      md.innerHTML = "讲义载入失败: " + err.message;
     }
   };
 

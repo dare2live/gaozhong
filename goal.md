@@ -404,6 +404,31 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 
 ---
 
+## 第六阶段 — 运营交付前完善 (用户 2026-05-24 反馈)
+
+### 6.A codegraph + complexity baseline 收紧 ✅
+- `codegraph index` 全量重 index: 17 → 104 file, 224 → 976 nodes, 390 → 1674 edges
+- `stop_gate.sh` baseline 14 → 13 (M6 持续收紧, 拆 3 老函数后真实降)
+
+### 6.B 全局图谱浮窗 ✅ (用户原话: "任意知识点超链接都可调出关联图谱 + 高考真题")
+- **后端** `/api/graph/popup?id=<concept_id>` 返 {center, related (1 层), questions (真题节点)}
+- **前端** `frontend/static/graph_popup.js` 全局 click 委托 + modal 栈 (支持递归点击深扩 + 返回)
+- **接入** `course/handout.py` 讲义里词/语法/真题号 全用 `_clink()` 渲染 conceptLink
+  (实测 #11 讲义含 33 个 conceptLink)
+- **共享** `common.js` 加 `conceptLink()` + `mdToHtml()` (零依赖 md→html)
+- **覆盖**: 5 类 concept (word/grammar/phrase/question/grammar 类目) 可弹 + 联通真题节点
+
+### 6.C 老师试用 + 反馈 🚧 待用户接力
+- 4.6.E 找 1 个英语老师真用 30 分钟
+- 录屏 + 收 3-5 条 → `docs/teacher_feedback_round1.md`
+
+### 6.D 学生答题闭环 (P1)
+- 4.7.D csv import students
+- 4.7.E 弱点真算 (替换 demo 数据)
+- 4.7.C 扫描 POST UI
+
+---
+
 ## 后续阶段 (运营稳后, 用户拍前不做)
 
 | 阶段 | 内容 | 触发 |

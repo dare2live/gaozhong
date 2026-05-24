@@ -53,6 +53,59 @@ window.GZ = (function () {
     document.body.insertBefore(header, document.body.firstChild);
   }
 
+  /**
+   * 全局浮窗友好的 concept 链接 (用户 2026-05-24).
+   * 用法: html += GZ.conceptLink('word:family', 'family')
+   * 渲染: <a class="gz-concept" data-concept="word:family">family</a>
+   * 点击 → graph_popup.js 自动弹关联图 + 真题
+   */
+  function conceptLink(conceptId, label) {
+    const id = String(conceptId || "");
+    const text = String(label || conceptId || "");
+    const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `<a class="gz-concept" data-concept="${id.replace(/"/g, '&quot;')}">${safe}</a>`;
+  }
+
+  /**
+   * 极简 markdown → HTML (无 lib).
+   * 支持: ### / ## # 标题, **bold**, - list, \n\n 段落.
+   * 保留 HTML 标签 (eg <a class="gz-concept">) 直接通过.
+   */
+  function mdToHtml(md) {
+    if (!md) return "";
+    const lines = md.split("\n");
+    const out = [];
+    let inList = false;
+    for (const raw of lines) {
+      const line = raw.trimEnd();
+      if (line.startsWith("### ")) {
+        if (inList) { out.push("</ul>"); inList = false; }
+        out.push(`<h3>${line.slice(4)}</h3>`);
+      } else if (line.startsWith("## ")) {
+        if (inList) { out.push("</ul>"); inList = false; }
+        out.push(`<h2>${line.slice(3)}</h2>`);
+      } else if (line.startsWith("# ")) {
+        if (inList) { out.push("</ul>"); inList = false; }
+        out.push(`<h1>${line.slice(2)}</h1>`);
+      } else if (line.startsWith("- ")) {
+        if (!inList) { out.push("<ul>"); inList = true; }
+        out.push(`<li>${line.slice(2).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</li>`);
+      } else if (line === "---") {
+        if (inList) { out.push("</ul>"); inList = false; }
+        out.push("<hr>");
+      } else if (!line) {
+        if (inList) { out.push("</ul>"); inList = false; }
+      } else {
+        if (inList) { out.push("</ul>"); inList = false; }
+        const txt = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                        .replace(/_(.+?)_/g, "<em>$1</em>");
+        out.push(`<p>${txt}</p>`);
+      }
+    }
+    if (inList) out.push("</ul>");
+    return out.join("\n");
+  }
+
   function colorByTagKind(kind) {
     const map = {
       word: "#0a4d75", grammar: "#1c5d99", year: "#f4a261",
@@ -65,6 +118,6 @@ window.GZ = (function () {
   // expose
   return {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
-    mountLayout, colorByTagKind, NAV,
+    mountLayout, colorByTagKind, conceptLink, mdToHtml, NAV,
   };
 })();

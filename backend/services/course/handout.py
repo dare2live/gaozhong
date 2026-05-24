@@ -13,6 +13,12 @@ from . import homework, relations
 SEGMENTS = ["hook", "review", "core", "relations", "exam_trace", "practice", "homework"]
 
 
+def _clink(cid: str, label: str | None = None) -> str:
+    """Render concept HTML link — graph_popup.js 自动绑定点击弹联通图 + 真题."""
+    safe = (label or cid).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    return f'<a class="gz-concept" data-concept="{cid}">{safe}</a>'
+
+
 def render_handout(con: duckdb.DuckDBPyConnection, course: dict) -> dict[str, Any]:
     """返 {md, segments: {seg_name: text}}."""
     segs: dict[str, str] = {
@@ -41,16 +47,18 @@ def _seg_core(c: dict) -> str:
     lines = ["### 核心教学\n"]
     for it in c.get("core_items") or []:
         pos = it.get("position", "(无位置)")
-        lines.append(f"- **{it['kind']}: {it['id']}** [{c['layer']}·{pos}]")
+        label = it["id"].split(":", 1)[-1] if ":" in it["id"] else it["id"]
+        lines.append(f"- **{it['kind']}**: {_clink(it['id'], label)} [{c['layer']}·{pos}]")
     return "\n".join(lines) + "\n"
 
 
 def _seg_relations(con: duckdb.DuckDBPyConnection, c: dict) -> str:
-    lines = ["### 关联拓展 (R1 ≥3)\n"]
+    lines = ["### 关联拓展 (R1 ≥3, 点任一关联弹联通图)\n"]
     for it in c.get("core_items") or []:
         rels = relations.related_concepts(con, it["id"])
-        names = ", ".join(f"{r['type']}:{r['label']}" for r in rels[:5])
-        lines.append(f"- **{it['id']}** → {names}")
+        names = ", ".join(_clink(r["id"], f"{r['type']}:{r['label']}") for r in rels[:5])
+        center = _clink(it["id"], it["id"].split(":", 1)[-1])
+        lines.append(f"- **{center}** → {names}")
     return "\n".join(lines) + "\n"
 
 
@@ -60,15 +68,16 @@ def _seg_exam_trace(con: duckdb.DuckDBPyConnection, c: dict) -> str:
         return "### 真题溯源\n\n(无 homework_tags, 跳过)\n"
     placeholders = ",".join("?" * len(htags))
     rows = con.execute(
-        f"SELECT qb.qb_id, qb.question_type, SUBSTR(qb.stem, 1, 80) "
+        f"SELECT qb.qb_id, qb.question_type, SUBSTR(qb.stem, 1, 80), qb.origin_ref "
         f"FROM question_bank qb JOIN question_tags qt ON qt.qb_id = qb.qb_id "
         f"WHERE qt.tag_id IN ({placeholders}) AND qb.origin='real' "
         f"ORDER BY qb.qb_id LIMIT 5",
         htags,
     ).fetchall()
-    lines = ["### 真题溯源\n"]
-    for qid, qt, stem in rows:
-        lines.append(f"- 真题 #{qid} ({qt}): {stem}...")
+    lines = ["### 真题溯源 (点题号弹原题 + 联通图)\n"]
+    for qid, qt, stem, oref in rows:
+        link = _clink(f"question:{oref}", f"#{qid}") if oref else f"#{qid}"
+        lines.append(f"- 真题 {link} ({qt}): {stem}...")
     if not rows:
         lines.append("- (近 5 年真题暂无直接命中)")
     return "\n".join(lines) + "\n"
@@ -85,11 +94,23 @@ def _seg_practice(c: dict) -> str:
 
 def _seg_homework(con: duckdb.DuckDBPyConnection, c: dict) -> str:
     qs = homework.pick_homework(con, c.get("homework_tags") or [])
-    lines = ["### 课后作业 (R4: tag ⊆ 本节)\n"]
+    lines = ["### 课后作业 (R4: tag ⊆ 本节, 点题号弹原题 + 联通图)\n"]
+    # batch 查 origin_ref → concept_id
+    qb_ids = [q["qb_id"] for q in qs]
+    oref_map: dict = {}
+    if qb_ids:
+        placeholders = ",".join("?" * len(qb_ids))
+        for qid, oref in con.execute(
+            f"SELECT qb_id, origin_ref FROM question_bank WHERE qb_id IN ({placeholders})",
+            qb_ids,
+        ).fetchall():
+            oref_map[qid] = oref
     for q in qs:
-        lines.append(f"- #{q['qb_id']} [{q['question_type']}, {q['difficulty']}]: {q['stem'][:60]}...")
+        oref = oref_map.get(q["qb_id"])
+        link = _clink(f"question:{oref}", f"#{q['qb_id']}") if oref else f"#{q['qb_id']}"
+        lines.append(f"- {link} [{q['question_type']}, {q['difficulty']}]: {q['stem'][:60]}...")
     if not qs:
-        lines.append("- (题库未命中本节 tag, 待 #37 灌齐题库标签)")
+        lines.append("- (题库未命中本节 tag)")
     return "\n".join(lines) + "\n"
 
 

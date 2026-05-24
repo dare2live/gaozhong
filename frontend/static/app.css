@@ -115,6 +115,57 @@
 #handout-modal pre { white-space: pre-wrap; font-family: 'Menlo', monospace; font-size: 0.85em; }
 #handout-modal .close-btn { float: right; cursor: pointer; color: #888; font-size: 1.3em; }
 
+/* ===== 全局图谱浮窗 (用户 2026-05-24) ===== */
+.gz-concept {
+  color: #0a4d75; text-decoration: none;
+  border-bottom: 1px dashed #aac3d6;
+  cursor: pointer;
+}
+.gz-concept:hover { color: #E3120B; border-bottom-color: #E3120B; }
+
+#gz-popup {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+}
+#gz-popup.open { display: block; }
+#gz-popup .gz-popup-back {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+}
+#gz-popup .gz-popup-body {
+  position: absolute; top: 5vh; left: 50%; transform: translateX(-50%);
+  width: min(90vw, 640px); max-height: 90vh; overflow-y: auto;
+  background: #FCFAF7; border-radius: 6px; padding: 1rem 1.3rem;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+#gz-popup .gz-popup-head {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #ddd; padding-bottom: 0.4rem; margin-bottom: 0.5rem;
+}
+#gz-popup .gz-popup-nav { font-size: 0.9em; color: #666; }
+#gz-popup .gz-popup-close { cursor: pointer; color: #888; font-size: 1.3em; }
+#gz-popup .gz-center { margin: 0.2rem 0 0.6rem; }
+#gz-popup .gz-center small { display: block; font-weight: normal; font-size: 0.7em; }
+#gz-popup .gz-section { margin: 1rem 0; }
+#gz-popup .gz-sec-title { font-weight: 600; margin-bottom: 0.4rem; color: #333; }
+#gz-popup .gz-group { margin: 0.3rem 0; }
+#gz-popup .gz-chip {
+  display: inline-block; padding: 2px 8px; margin: 2px;
+  background: #fff; border: 1px solid #ddd; border-radius: 3px;
+  font-size: 0.85em; border-bottom: 1px solid #ddd;
+}
+#gz-popup .gz-chip:hover { background: #ffe6e6; border-color: #E3120B; }
+#gz-popup .gz-qlist { padding-left: 1.2rem; }
+#gz-popup .gz-qlist li { margin: 0.4rem 0; line-height: 1.4; }
+#gz-popup .gz-qlink { font-weight: 600; color: #E3120B; }
+#gz-popup .gz-year {
+  background: #1a1a1a; color: #fff; padding: 1px 4px;
+  border-radius: 2px; font-size: 0.75em;
+}
+.gz-type-word    { color: #0a4d75; }
+.gz-type-grammar { color: #1c5d99; }
+.gz-type-phrase  { color: #2a9d8f; }
+.gz-type-unit    { color: #7aa6c2; }
+.gz-type-theme   { color: #f4a261; }
+
 .tab-placeholder {
   padding: 2rem; background: #fff; border-left: 4px solid #f4a261;
   color: #555; max-width: 600px;
