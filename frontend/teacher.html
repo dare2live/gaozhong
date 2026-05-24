@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>gaozhong · 教师端</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .teacher-grid { display: grid; grid-template-columns: 280px 1fr; gap: 0; min-height: 100vh; }
+    nav.sidebar { background: #0a4d75; color: white; padding: 16px; }
+    nav.sidebar h2 { font-family: Georgia, serif; color: white; border-bottom-color: #c1272d; font-size: 16px; }
+    nav.sidebar ul { list-style: none; padding: 0; margin: 12px 0; }
+    nav.sidebar li { padding: 6px 10px; cursor: pointer; border-left: 3px solid transparent; }
+    nav.sidebar li:hover, nav.sidebar li.active { border-left-color: #c1272d; background: rgba(255,255,255,0.08); }
+    main.tab-body { padding: 18px 24px; }
+    .qb-row { border-bottom: 1px solid #eee; padding: 8px 0; cursor: pointer; }
+    .qb-row:hover { background: #f7f5ef; }
+    .qb-row .meta { font-size: 11px; color: #888; }
+    .tag-chip { display: inline-block; background: #e8e6e0; border-radius: 0; padding: 1px 5px;
+                font-size: 10px; margin: 0 3px 3px 0; color: #555; }
+    .tag-chip.word { background: #0a4d75; color: white; }
+    .tag-chip.grammar { background: #1c5d99; color: white; }
+    .tag-chip.year { background: #f4a261; color: white; }
+    .tag-chip.question_type { background: #c1272d; color: white; }
+    .tag-chip.difficulty { background: #2a9d8f; color: white; }
+    .paper-q { margin: 14px 0; padding: 10px; border-left: 3px solid #0a4d75; background: #fdfdfb; }
+    .paper-q .stem { font-family: Georgia, serif; white-space: pre-wrap; }
+    .compose-form { display: grid; grid-template-columns: 160px 1fr; gap: 8px 14px;
+                     align-items: center; max-width: 700px; }
+    .compose-form label { font-weight: 600; color: #444; }
+    .compose-form input, .compose-form select, .compose-form textarea {
+      padding: 6px 8px; border: 1px solid #ccc; font-family: inherit;
+    }
+    .btn-primary { background: #c1272d; color: white; border: 0; padding: 8px 22px; cursor: pointer; }
+    .btn-primary:hover { background: #a02020; }
+    .stat-tile { display: inline-block; background: white; padding: 14px 18px; margin: 6px;
+                  border: 1px solid #e8e6e0; min-width: 140px; }
+    .stat-tile .n { font-family: Georgia, serif; font-size: 26px; color: #0a4d75; font-weight: 700; }
+    .stat-tile .l { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body style="margin:0;background:#f4f1ea">
+  <div class="teacher-grid">
+    <nav class="sidebar">
+      <h2>沈阳/辽宁<br>高中英语教师端</h2>
+      <ul id="nav">
+        <li data-tab="overview" class="active">概览</li>
+        <li data-tab="lesson">备课 (按 unit)</li>
+        <li data-tab="qbank">题库浏览</li>
+        <li data-tab="compose">组卷</li>
+        <li data-tab="graph">知识图谱</li>
+      </ul>
+      <p style="font-size:11px;opacity:0.7">
+        条件式组卷 (题库 + 标签). 不用 LLM. 持牌机构内用.
+      </p>
+    </nav>
+    <main class="tab-body">
+      <section id="tab-overview" class="tab"></section>
+      <section id="tab-lesson" class="tab" style="display:none"></section>
+      <section id="tab-qbank" class="tab" style="display:none"></section>
+      <section id="tab-compose" class="tab" style="display:none"></section>
+      <section id="tab-graph" class="tab" style="display:none"></section>
+    </main>
+  </div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+const f = (p) => fetch(p).then(r => r.json());
+
+document.querySelectorAll("#nav li").forEach(li => {
+  li.addEventListener("click", () => {
+    $$("#nav li").forEach(x => x.classList.remove("active"));
+    li.classList.add("active");
+    $$(".tab").forEach(t => t.style.display = "none");
+    document.getElementById("tab-" + li.dataset.tab).style.display = "block";
+    LOADERS[li.dataset.tab] && LOADERS[li.dataset.tab]();
+  });
+});
+
+const LOADERS = {
+  overview: async () => {
+    const s = await f("/api/stats"); const qb = await f("/api/qb/stats");
+    $("#tab-overview").innerHTML = `
+      <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px">数据 + 题库概览</h2>
+      <div class="stat-tile"><div class="n">${qb.total||0}</div><div class="l">题库总数</div></div>
+      <div class="stat-tile"><div class="n">${qb.tags_total||0}</div><div class="l">标签</div></div>
+      <div class="stat-tile"><div class="n">${qb.question_tags||0}</div><div class="l">题-标关联</div></div>
+      <div class="stat-tile"><div class="n">${s.exam_questions}</div><div class="l">真题原档</div></div>
+      <div class="stat-tile"><div class="n">${s.nodes}</div><div class="l">graph nodes</div></div>
+      <div class="stat-tile"><div class="n">${s.edges}</div><div class="l">graph edges</div></div>
+      <h3 style="font-family:Georgia,serif">题型分布</h3>
+      <table>${Object.entries(qb.by_type||{}).map(([k,v])=>`<tr><td>${k}</td><td><b>${v}</b></td></tr>`).join("")}</table>
+      <h3 style="font-family:Georgia,serif">标签维度分布</h3>
+      <table>${Object.entries(qb.tag_by_kind||{}).map(([k,v])=>`<tr><td>${k}</td><td><b>${v}</b></td></tr>`).join("")}</table>
+    `;
+  },
+  lesson: async () => {
+    if (!$("#tab-lesson").innerHTML) $("#tab-lesson").innerHTML = `
+      <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px">备课 — 选 unit 看考点与教材</h2>
+      <label>unit: <select id="lp-unit" style="padding:6px;min-width:380px"></select></label>
+      <button id="lp-go" class="btn-primary">查看</button>
+      <div id="lp-body" style="margin-top:14px"></div>
+    `;
+    const rows = await f("/api/units");
+    $("#lp-unit").innerHTML = rows.map(r => `<option value="unit:${r.version_key}/${r.volume_key}/U${r.unit_number}">${r.version_key}/${r.volume_key}/U${r.unit_number} — ${r.title_en||''}</option>`).join("");
+    if (!$("#lp-go").dataset.bound) {
+      $("#lp-go").dataset.bound = "1";
+      $("#lp-go").addEventListener("click", async () => {
+        const uid = $("#lp-unit").value;
+        const sub = await f(`/api/graph/subgraph?node=${encodeURIComponent(uid)}&depth=1&max_nodes=80`);
+        const words = sub.nodes.filter(n=>n.node_type==='word').map(n=>n.label);
+        const grammar = sub.nodes.filter(n=>n.node_type==='grammar').map(n=>n.label);
+        const themes = sub.nodes.filter(n=>n.node_type==='theme').map(n=>n.label);
+        $("#lp-body").innerHTML = `
+          <h3>词汇 (${words.length})</h3>
+          <div>${words.map(w=>`<span class="tag-chip word">${w}</span>`).join("")}</div>
+          <h3>主题</h3>
+          <div>${themes.map(w=>`<span class="tag-chip">${w}</span>`).join("") || '<em>未匹配 (theme_of_unit edge 缺)</em>'}</div>
+          <h3>该 unit 题库 (按 unit tag 过滤)</h3>
+          <div id="lp-qs"></div>`;
+        const qs = await f(`/api/qb/browse?tag=${encodeURIComponent(uid)}&limit=30`);
+        $("#lp-qs").innerHTML = qs.length ? qs.map(q=>`
+          <div class="qb-row"><span class="tag-chip question_type">${q.question_type}</span> ${q.stem_preview}…
+          <div class="meta">qb#${q.qb_id} · ${q.origin} · ${q.difficulty}</div></div>`).join("")
+          : "<em>该 unit 无关联题 (尝试组卷器加 unit tag 过滤)</em>";
+      });
+    }
+    $("#lp-go").click();
+  },
+  qbank: async () => {
+    if (!$("#tab-qbank").innerHTML) {
+      const qb = await f("/api/qb/stats");
+      $("#tab-qbank").innerHTML = `
+        <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px">题库浏览</h2>
+        <label>题型:
+          <select id="qb-type"><option value="">(全部)</option>
+          ${Object.keys(qb.by_type).map(k=>`<option>${k}</option>`).join("")}
+          </select>
+        </label>
+        <input id="qb-tag" placeholder="tag_id (eg word:abandon, year:2022)" style="width:240px;padding:6px">
+        <button id="qb-go" class="btn-primary">筛选</button>
+        <div id="qb-body" style="margin-top:14px"></div>
+      `;
+      $("#qb-go").addEventListener("click", async () => {
+        const t = $("#qb-type").value, tag = $("#qb-tag").value;
+        const qs = new URLSearchParams();
+        if (t) qs.set("type", t);
+        if (tag) qs.set("tag", tag);
+        qs.set("limit", "50");
+        const rows = await f("/api/qb/browse?" + qs);
+        $("#qb-body").innerHTML = rows.map(q=>`
+          <div class="qb-row" onclick="loadDetail(${q.qb_id})">
+            <span class="tag-chip question_type">${q.question_type}</span>
+            <span class="tag-chip difficulty">${q.difficulty}</span>
+            ${q.stem_preview}…
+            <div class="meta">qb#${q.qb_id} · ${q.origin} · 答案 ${q.answer || '—'}</div>
+          </div>`).join("");
+      });
+    }
+  },
+  compose: async () => {
+    if (!$("#tab-compose").innerHTML) $("#tab-compose").innerHTML = `
+      <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px">组卷</h2>
+      <div class="compose-form">
+        <label>题型分布:</label>
+        <input id="c-mix" value="阅读理解:4,语法填空:8,选义单选:8" placeholder="类型:数量,...">
+        <label>必含标签:</label>
+        <input id="c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1">
+        <label>难度:</label>
+        <select id="c-diff"><option value="">(混合)</option><option>easy</option><option>mid</option><option>hard</option></select>
+        <label>年份限制:</label>
+        <input id="c-year" placeholder="2020,2021,2022 (仅真题)">
+        <label>随机种子:</label>
+        <input id="c-seed" type="number" value="42" style="width:80px">
+        <label></label>
+        <div><button id="c-go" class="btn-primary">生成试卷</button>
+              <button id="c-print" style="margin-left:8px">打印</button></div>
+      </div>
+      <div id="c-body" style="margin-top:18px"></div>
+    `;
+    if (!$("#c-go").dataset.bound) {
+      $("#c-go").dataset.bound = "1";
+      $("#c-go").addEventListener("click", composeRun);
+      $("#c-print").addEventListener("click", () => window.print());
+    }
+  },
+  graph: async () => {
+    if (!$("#tab-graph").innerHTML) {
+      const tags = await f("/api/qb/tags?kind=word&limit=30");
+      $("#tab-graph").innerHTML = `
+        <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px">知识图谱 · 教师视角</h2>
+        <h3>高频考词 top 30 (按题库标签数)</h3>
+        <div>${tags.map(t=>`<span class="tag-chip word">${t.label} · ${t.n_q}</span>`).join("")}</div>
+        <h3>13 种关系 + 4945+ 节点</h3>
+        <p>详 <a href="/" target="_blank">主页探索</a> · graph stats <code>/api/graph/stats</code></p>
+      `;
+    }
+  },
+};
+async function composeRun() {
+  const mix = $("#c-mix").value;
+  const req = $("#c-req").value;
+  const diff = $("#c-diff").value;
+  const year = $("#c-year").value;
+  const seed = $("#c-seed").value;
+  const q = new URLSearchParams();
+  q.set("type_mix", mix);
+  if (req) q.set("require_tags", req);
+  if (diff) q.set("difficulty", diff);
+  if (year) q.set("year_in", year);
+  if (seed) q.set("seed", seed);
+  const p = await f("/api/paper/compose?" + q);
+  if (p.error) { $("#c-body").innerHTML = `<em>${p.error}</em>`; return; }
+  let html = `<h3>试卷 ${p.paper_id} · 目标 ${p.target_total} 实出 ${p.actual_total}</h3>`;
+  if (Object.values(p.shortfalls||{}).some(v=>v>0))
+    html += `<p style="color:#c1272d">缺额: ${JSON.stringify(p.shortfalls)}</p>`;
+  for (const q of p.questions) {
+    html += `<div class="paper-q">
+      <div><b>${q.seq}.</b> <span class="tag-chip question_type">${q.qtype}</span>
+        <span class="tag-chip difficulty">${q.difficulty}</span></div>
+      <div class="stem">${(q.stem||'').slice(0,1500)}</div>
+      ${q.options ? '<ul>'+q.options.map(o=>`<li>${o.label}. ${o.text}</li>`).join('')+'</ul>':''}
+      <details><summary>答案 / 解析</summary><pre style="white-space:pre-wrap">${q.answer||''}\n${q.analysis||''}</pre></details>
+      <div style="font-size:11px;color:#888">qb#${q.qb_id} · ${q.tags.slice(0,8).map(t=>`<span class="tag-chip">${t}</span>`).join('')}</div>
+    </div>`;
+  }
+  $("#c-body").innerHTML = html;
+}
+async function loadDetail(qbid) {
+  const d = await f(`/api/qb/detail?id=${qbid}`);
+  alert(`qb#${d.qb_id}\n类型: ${d.qtype}\n标签: ${d.tags.join(' · ')}\n\n${d.stem.slice(0,1500)}\n\n答案: ${d.answer}`);
+}
+window.loadDetail = loadDetail;
+LOADERS.overview();
+</script>
+</body>
+</html>

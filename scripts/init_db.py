@@ -79,6 +79,13 @@ def main() -> None:
     print(f"  edges.derive_from: {extract.run_derive_edges(con)}")
     print(f"  TOTAL edges: {con.execute('SELECT COUNT(*) FROM edges').fetchone()[0]}")
 
+    print("\n=== Layer 4: question_bank 装载 (真题 + 合成题 + 自动打标) ===")
+    qb = extract.run_question_bank(con)
+    print(f"  {qb}")
+    print(f"  qb total: {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
+    print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
+    print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")
+
     print("\n=== Layer 3: audit ===")
     for k, v in audit.run_all(con).items():
         print(f"  {k}: {v}")

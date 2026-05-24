@@ -96,3 +96,11 @@ def run_derive_edges(con: duckdb.DuckDBPyConnection) -> int:
     """Build word ↔ word derive_from edges (M)."""
     from backend.services import derive
     return derive.build_derive_edges(con)
+
+
+def run_question_bank(con: duckdb.DuckDBPyConnection) -> dict:
+    """题库装载: 真题 + 合成题入 question_bank, 自动打标."""
+    from backend.services.question_bank import loader
+    real = loader.load_real_questions(con)
+    synth = loader.load_synthesized_samples(con, samples_per_type=15)
+    return {**real, **synth}
