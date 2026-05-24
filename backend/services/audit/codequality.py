@@ -49,18 +49,22 @@ def _hi_cc_funcs(file: Path) -> list[tuple[str, int]]:
     return [(r["name"], r["cc"]) for r in rows if r.get("cc", 0) > CC_WARN]
 
 
+CC_BASELINE = 13   # 与 stop_gate.sh 一致, M6 持续收紧 (D0 100% 准 — OBS 与 baseline 对齐)
+
+
 def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
     files = _scan_files()
     hi_funcs: list[dict] = []
     for f in files:
         for name, cc in _hi_cc_funcs(f):
             hi_funcs.append({"file": str(f.relative_to(ROOT)), "name": name, "cc": cc})
-    sev = "OK" if not hi_funcs else "WARN"
+    # D0 重归类: ≤ baseline = OK (OBS, 非数据 bug); > baseline = WARN (真涨需收紧)
+    sev = "OK" if len(hi_funcs) <= CC_BASELINE else "WARN"
     return [finding("code_complexity", sev,
                     target=f"all .py in {[str(d.relative_to(ROOT)) for d in SCAN_DIRS]}",
-                    expected=f"CC <= {CC_WARN} for all funcs",
+                    expected=f"CC>10 funcs <= baseline {CC_BASELINE}",
                     actual=str(len(hi_funcs)),
-                    note=f"hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
+                    note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:

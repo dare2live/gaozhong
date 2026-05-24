@@ -15,19 +15,35 @@ fi
 
 fails=""
 
-# 1. 数据 audit FAIL
+# 1. D0 数据 audit FAIL + WARN 都 BLOCK (用户 2026-05-24 硬约束 100% 准)
 if [ -f data/db/gaozhong.duckdb ]; then
-  n_fail=$(python3 -c "
+  sev_counts=$(python3 -c "
 import duckdb
 try:
     con = duckdb.connect('data/db/gaozhong.duckdb', read_only=True)
-    print(con.execute(\"SELECT COUNT(*) FROM audit_findings WHERE severity='FAIL'\").fetchone()[0])
+    f = con.execute(\"SELECT COUNT(*) FROM audit_findings WHERE severity='FAIL'\").fetchone()[0]
+    w = con.execute(\"SELECT COUNT(*) FROM audit_findings WHERE severity='WARN'\").fetchone()[0]
+    print(f'{f} {w}')
 except Exception:
-    print(0)
-" 2>/dev/null || echo 0)
+    print('0 0')
+" 2>/dev/null || echo '0 0')
+  n_fail=$(echo "$sev_counts" | awk '{print $1}')
+  n_warn=$(echo "$sev_counts" | awk '{print $2}')
   if [ "$n_fail" -gt 0 ]; then
     fails="$fails
-  ❌ 数据 audit 有 $n_fail FAIL — 必须修后再 stop"
+  ❌ D0 违反: audit 有 $n_fail FAIL — 100% 准约束失败"
+  fi
+  if [ "$n_warn" -gt 0 ]; then
+    fails="$fails
+  ❌ D0 违反: audit 有 $n_warn WARN — 100% 准约束失败 (重归类成 OK 或修真问题)"
+  fi
+fi
+
+# 1b. D0 强执行: data_accuracy_check.py 全数据校验
+if [ -f data/db/gaozhong.duckdb ] && [ -f scripts/data_accuracy_check.py ]; then
+  if ! python3 scripts/data_accuracy_check.py > /tmp/d0_check.log 2>&1; then
+    fails="$fails
+  ❌ D0 违反: scripts/data_accuracy_check.py 失败 — 看 /tmp/d0_check.log"
   fi
 fi
 
@@ -64,9 +80,10 @@ if [ -n "$fails" ]; then
 [stop-gate] 阻断 stop, 必须修这些再 stop:$fails
 
 通过条件:
-  (1) 数据 audit 0 FAIL  (跑 python3 scripts/init_db.py 看末尾)
-  (2) CC>10 函数 ≤ $HOT_BASELINE  (跑 python3 scripts/lib/complexity_check.py <files>)
-  (3) 前端 inline 大块 ≤ $INLINE_BASELINE  (抽到 common.js / common.css)
+  (1)  D0 audit 0 FAIL + 0 WARN  (任何 WARN 必须重归类 OK 或修)
+  (1b) D0 data_accuracy_check.py 全通过  (词/语法/教案/图谱/关联 全 100%)
+  (2)  CC>10 函数 ≤ $HOT_BASELINE  (跑 python3 scripts/lib/complexity_check.py <files>)
+  (3)  前端 inline 大块 ≤ $INLINE_BASELINE  (抽到 common.js / common.css)
 
 只有当当前改动让基线**变更恶化** 时才阻断; 持平或改善 OK.
 临时绕过 (不推荐): echo > /tmp/skip_stop_gate (然后下次 stop 内自动重置)

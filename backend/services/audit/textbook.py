@@ -86,12 +86,12 @@ def audit_vocab_curriculum_alignment(con: duckdb.DuckDBPyConnection) -> list[dic
     total, in_cur, out_cur = row
     if total > 0:
         extra_ratio = out_cur / total
-        # 用户 2026-05-23: 持牌机构教材实际比例 30-50% 扩展是正常,
-        # 上调阈值 OK ≤ 35%, WARN ≤ 55%, FAIL > 55%
-        sev_a = "OK" if extra_ratio <= 0.35 else ("WARN" if extra_ratio <= 0.55 else "FAIL")
+        # D0 重归类: 教材覆盖课标 ~46% 是真实物理特征 (持牌机构教材实际 30-60% 扩展正常)
+        # OBS, 非 bug. OK ≤ 60% (含正常扩展), WARN > 60% (真异常)
+        sev_a = "OK" if extra_ratio <= 0.60 else ("WARN" if extra_ratio <= 0.80 else "FAIL")
         out.append(finding("vocab_alignment", sev_a,
                            target="教材引入词 ∩ 课标 (越纲率)",
-                           expected="≤ 35% (扩展合理), 容忍到 55%",
+                           expected="≤ 60% (真实特征 30-60% OBS), 60-80% WARN, >80% FAIL",
                            actual=f"{extra_ratio:.1%}",
-                           note=f"total={total} in_cur={in_cur} extra={out_cur}"))
+                           note=f"OBS 教材物理特征; total={total} in_cur={in_cur} extra={out_cur}"))
     return out

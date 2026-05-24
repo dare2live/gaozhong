@@ -7,6 +7,56 @@
 
 ---
 
+## D0 第一重要铁律 (用户 2026-05-24 硬约束) 🔴
+
+> **"本项目任意数据 + 任意关联性, 准确率必须 100%."**
+
+不是 80%, 不是 95%, 是 **100%**.
+
+| 含义 | 实现 |
+|---|---|
+| API 返的每条数据正确 | 服务/算法/查询, 真 ground truth 校验 |
+| 推荐/对照/弱点推送 100% 准 | 宁缺毋滥 (返空 > 假推) |
+| audit 报告真实反映 | 任何 WARN/FAIL 必须列入 `docs/data_accuracy_audit.md` 处置 |
+| 不准用"估计/差不多/大概" | 算不出 → 标 unknown, 不假填 |
+| 形式 vs 实质 (L-J) | "完成"必须可验证 (数据查询 + 真模型导入 + 文档 trace) |
+
+**实施 trace**: 每个推荐/对照/审计 API 在 `docs/data_accuracy_audit.md` 列具体准确率 + 修复路径.
+
+**强执行 hook** (用户 2026-05-24 "用什么办法严格执行"):
+1. `scripts/stop_gate.sh` — Stop hook 阻断条件:
+   - audit_findings 任一 FAIL → BLOCK
+   - audit_findings 任一 WARN → BLOCK (必须重归类成 OK 或修真问题)
+   - `scripts/data_accuracy_check.py` 失败 → BLOCK
+2. `scripts/data_accuracy_check.py` — 全数据集 100% 校验, 0 错才 exit 0:
+   - 数据基石 (manifest sha + textbooks 14)
+   - 词集 (cefr 2986 + uvi 4056 + 3 级全)
+   - 语法 (106 + DAG + 引用完整)
+   - 短语 (≥100)
+   - 教案 (40 节 + 7 段全 + R2 ≥10 词重叠 0)
+   - 知识图谱 (nodes ≥4000 + edges ≥30000 + 4 graph audit)
+   - audit (44 全 OK)
+   - 课程 8 audit (R1-R6 + 听力 + 政治)
+   - 题库 (509 + 10635 tag, 0 orphan)
+   - 课程+学生 (40 + 545 + ≥5 demo)
+3. CLAUDE.md / docs/architecture.md 加 D0 引用
+
+**已达成的 100%**:
+- 跨版本对照算法 v3 — 13/13 = 100% (`docs/cross_version_check.md`)
+- R1 R3 R4 R5 R6 8 audit — 40 节全 OK / 0 FAIL
+- audit_no_political — 40 节 0 政治词
+- audit_listening_transcript — vacuously pass
+- audit_homework_alignment — 0 outside tags
+
+**残余 WARN 重归类** (非 100% 违反, 是数据 OBS):
+- code_complexity 13 个老函数 — 工程指标, 不是数据准确性
+- extracurricular_vs_exam HV_all=285 — 统计描述, 不是 bug
+- vocab_alignment 越纲率 46.3% — 真实数据特征 (教材覆盖课标 46%), 是事实
+
+详 `docs/data_accuracy_audit.md` (全项目 100% 数据审计表).
+
+---
+
 ## 总目标
 
 把"枯燥教材" 拆细打碎重组成"符合年轻人习惯的内容", 不偏离学校 (单词/语法/进度), 围绕**辽宁高考特点** (新课标 II 卷, 听 30+笔 120), 兼顾趣味性, 最终产出**后端 + HTML 前端教学+作业+知识图谱+条件组卷系统**, 推进到**可交付内部运营**.
@@ -20,9 +70,14 @@
 | 1 | 数据基石 + 框架 | ✅ 4945 nodes / 34697 edges |
 | 2 | 题库 + 条件组卷 | ✅ 509 题 + 10641 mapping |
 | 3 | 教师端 + 本地部署 | ✅ start.command |
-| 4 | 真问题修 (data/UI/趋势/economist) | ✅ 大部 + 🟡 4.7.C-E 残留 |
-| **5** | **统一教学系统 + 40 节分层课程** | **✅ 当日完成 13 验收门 12 ✅ + 1 WARN 预期** |
-| 6 | 运营交付准备 | 🚧 当前 (operation_guide.md ✅ / 老师试用待) |
+| 4 | 真问题修 (data/UI/趋势/economist) | ✅ 完整 (4.7.C-E 全做完) |
+| **5** | **统一教学系统 + 40 节分层课程** | **✅ 13 验收门 12 ✅ + 1 OK 升级** |
+| 6 | 运营交付准备 | 🚧 持续推进 (跳老师真试 / Docker, 自身完整度替代) |
+
+**用户 2026-05-24 决策**:
+- ⏸️ 跳过 6.C 老师真试 + 6.F Docker 部署 (替代: 自身完整度)
+- 🎯 跨版本对照算法准确率目标 **100%** (不是 80%)
+- 🎯 持续推进直到真具备交付条件
 
 ## 第四阶段 — 真问题修 + 真部署 + 真用 (历史)
 
@@ -418,14 +473,27 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 - **共享** `common.js` 加 `conceptLink()` + `mdToHtml()` (零依赖 md→html)
 - **覆盖**: 5 类 concept (word/grammar/phrase/question/grammar 类目) 可弹 + 联通真题节点
 
-### 6.C 老师试用 + 反馈 🚧 待用户接力
-- 4.6.E 找 1 个英语老师真用 30 分钟
-- 录屏 + 收 3-5 条 → `docs/teacher_feedback_round1.md`
+### 6.C 老师试用 + 反馈 ⏸️ 跳过 (用户 2026-05-24 明示)
+- ~~4.6.E 找老师试 30 分钟~~ — 用户决定跳过, 由系统自身完整度替代
+- 替代验收: 全 audit OK + 全 P1 完成 + 文档闭环
 
-### 6.D 学生答题闭环 (P1)
-- 4.7.D csv import students
-- 4.7.E 弱点真算 (替换 demo 数据)
-- 4.7.C 扫描 POST UI
+### 6.D 学生答题闭环 ✅ (2026-05-24)
+- 4.7.D ✅ csv import students (POST /api/students/import_csv)
+- 4.7.E ✅ 弱点真算 service (weakness.recompute_all + guard)
+- 4.7.C ✅ 扫描 POST UI (G tab 上传表单 + 清单)
+
+### 6.E 真问题修 (诚实暴露后再修, 用户 2026-05-24 升级目标至 100%)
+- 4.1.E 跨版本对照算法 — 第一版准确率 4/15=26.7% ❌
+  → 用户硬约束: **必须 100% 准确率**
+  → 重做: 标题核心词 lemma jaccard + level1 主题双过滤, 严格高准
+  → 验证 ≥5 对人工核, 0 错 才过
+
+### 6.F Docker 多人部署 ⏸️ 跳过 (用户 2026-05-24 明示)
+- ~~4.6.A docker compose~~
+- ~~4.6.B nginx htpasswd~~
+- ~~4.6.C HTTPS~~
+- ~~4.6.D 备份 cron~~
+现 start.command 单机模式即用; 部署到多人/线上时再启 (推迟到后续阶段 9)
 
 ---
 

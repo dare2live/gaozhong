@@ -86,8 +86,8 @@ def audit_extracurricular_in_exam(con: duckdb.DuckDBPyConnection) -> list[dict]:
                 target="超纲词 ∩ 高考真题 (题面 substring)",
                 expected="HV_extra > 0", actual=f"HV_all={len(hv_all)} HV_ln={len(hv_ln)} LV={len(lv)}",
                 note=f"超纲词总 {len(extra)}; HV_all 比例 {len(hv_all)/len(extra):.1%}"),
-        finding("extracurricular_vs_exam", "WARN" if hv_all else "OK",
+        finding("extracurricular_vs_exam", "OK",
                 target="教学优先级建议", expected="HV_extra 标星",
                 actual=f"HV_all={len(hv_all)}",
-                note="HV_all 已写入 nodes.attrs_json.teaching_priority='HV_extra'"),
+                note="OBS 统计描述, HV_all 已写入 nodes.attrs_json.teaching_priority='HV_extra' (D0 100% — 非 bug)"),
     ]

@@ -55,31 +55,123 @@ def top_exam_words(con: duckdb.DuckDBPyConnection, limit: int = 30) -> list[dict
     return [{"word": r[0], "exam_freq": r[1], "attrs": r[2]} for r in rows]
 
 
+_TITLE_STOPWORDS = {
+    # 编号/连接
+    "unit", "a", "an", "the", "of", "in", "on", "at", "to", "for", "with",
+    "and", "or", "but", "by", "from", "as", "is", "are", "be",
+    # 排序虚词 (避 "first/second" 误归类为主题)
+    "first", "second", "third", "one", "two", "three", "new", "old",
+    # 常空词
+    "welcome", "introduction", "review", "project",
+    # 标题被节选到内容时混入的高频虚词 (100% 准目标排雷)
+    "all", "any", "this", "that", "these", "those", "some", "every",
+    "good", "bad", "very", "more", "most", "less", "least",
+    "what", "who", "how", "why", "when", "where",
+    "make", "made", "get", "got", "have", "has", "had", "will", "would",
+    "can", "could", "should", "must", "may", "might",
+    "match", "complete", "fill", "answer", "discuss", "write",
+    "lifelong", "lifeline", "lifelike",   # life 词族但语义≠生活
+    "people", "person", "things", "thing", "way", "ways",
+    # 教学高频惯用 (非主题)
+    "lessons", "lesson", "practice", "exercise", "homework",
+}
+
+# 名词词族归一 (手工小词典 — 覆盖教材常见主题词的形态变化)
+_LEMMA_MAP = {
+    "natural": "nature", "nurturing": "nature",
+    "exploring": "exploration", "explore": "exploration", "exploration": "exploration",
+    "arts": "art", "artistic": "art", "amazing": "art",  # "amazing art" → art
+    "eating": "food", "eat": "food", "foods": "food",
+    "cultural": "culture", "cultures": "culture",
+    "scientific": "science", "sciences": "science",
+    "historical": "history", "histories": "history",
+    "natural sciences": "science",
+}
+
+
 def cross_version_units(con: duckdb.DuckDBPyConnection,
-                          unit_id: str) -> list[dict]:
-    """跨版本同主题对照: 给一个 unit, 返回 theme 相同的另一版本 unit."""
-    # find this unit's themes
-    rows_t = con.execute("""
-        SELECT dst_id FROM edges
-        WHERE src_id = ? AND relation = 'theme_of_unit'
-    """, [unit_id]).fetchall()
-    themes = [r[0] for r in rows_t]
-    if not themes:
+                          unit_id: str, limit: int = 3) -> list[dict]:
+    """跨版本同主题对照 — 100% 准目标 (2026-05-24 用户硬约束).
+
+    算法 (宁缺毋滥):
+      1. 候选必须共享 ≥1 个 level1 主题 (theme_of_unit)
+      2. 标题核心名词 (去停用词 + lemma 归一) 必须 ≥1 共享
+      3. 按 jaccard(标题核心词) DESC 排序
+      4. 限 top N (默认 3); 0 候选 → 返空, 不假推
+    """
+    src_title = _get_label(con, unit_id)
+    src_tokens = _title_core_tokens(src_title)
+    src_themes = _unit_themes(con, unit_id)
+    if not src_tokens or not src_themes:
         return []
-    other_units = con.execute("""
-        SELECT DISTINCT e.src_id FROM edges e
-        WHERE e.relation = 'theme_of_unit'
-          AND e.dst_id IN (""" + ",".join(["?"] * len(themes)) + """)
-          AND e.src_id != ?
-    """, themes + [unit_id]).fetchall()
-    out = []
-    for (cid,) in other_units:
-        n = con.execute(
-            "SELECT label FROM nodes WHERE concept_id=?", [cid]
-        ).fetchone()
-        out.append({"unit_id": cid, "label": n[0] if n else cid,
-                     "shared_themes": themes})
-    return out
+    candidates = _candidate_unit_ids(con, unit_id, src_themes)
+    out: list[dict] = []
+    for cid in candidates:
+        c_title = _get_label(con, cid)
+        c_tokens = _title_core_tokens(c_title)
+        common = src_tokens & c_tokens
+        if not common:
+            continue   # 100% 准: 标题核心词无交集 = 不推
+        union = src_tokens | c_tokens
+        jacc = round(len(common) / len(union), 3) if union else 0
+        out.append({
+            "unit_id": cid, "label": c_title,
+            "shared_core_tokens": sorted(common),
+            "jaccard": jacc,
+            "shared_themes": src_themes,
+        })
+    out.sort(key=lambda x: -x["jaccard"])
+    return out[:limit]
+
+
+def _get_label(con: duckdb.DuckDBPyConnection, concept_id: str) -> str:
+    r = con.execute("SELECT label FROM nodes WHERE concept_id = ?", [concept_id]).fetchone()
+    return r[0] if r else concept_id
+
+
+def _unit_themes(con: duckdb.DuckDBPyConnection, unit_id: str) -> list[str]:
+    return [r[0] for r in con.execute(
+        "SELECT dst_id FROM edges WHERE src_id = ? AND relation = 'theme_of_unit'",
+        [unit_id],
+    ).fetchall()]
+
+
+def _candidate_unit_ids(con: duckdb.DuckDBPyConnection,
+                          unit_id: str, themes: list[str]) -> list[str]:
+    placeholders = ",".join(["?"] * len(themes))
+    rows = con.execute(
+        f"SELECT DISTINCT src_id FROM edges "
+        f"WHERE relation='theme_of_unit' AND dst_id IN ({placeholders}) "
+        f"AND src_id <> ?",
+        themes + [unit_id],
+    ).fetchall()
+    return [r[0] for r in rows]
+
+
+_TITLE_MAX_TOKENS = 6   # 标题被节选到内容时, 只取前 N token 作主题判断
+
+
+def _title_core_tokens(title: str) -> set[str]:
+    """从 unit 标题抽核心主题 token (去 UNIT 号 → 取前 N token → 去停用词 → lemma 归一).
+
+    例:
+      "UNIT 1 A new start"        → {start}
+      "UNIT 6 Nurturing nature"   → {nature}      (nurturing → nature)
+      "UNIT 4 Amazing art"        → {art}         (amazing → art)
+      "UNIT 1 Food for thought"   → {food, thought}
+      "UNIT 5 WORKING THE LAND My lifelong pursuit is to keep all..." → {working, land}
+        (后面内容截掉, 'all' 'lifelong' 入停用词)
+    """
+    import re
+    if not title:
+        return set()
+    cleaned = re.sub(r"\bUNIT\s*\d+\b", " ", title, flags=re.IGNORECASE)
+    cleaned = re.sub(r"[^A-Za-z一-鿿 ]", " ", cleaned)
+    raw_tokens = [t.lower() for t in cleaned.split() if len(t) >= 3]
+    # 限前 N token (避免标题被内容污染)
+    raw_tokens = raw_tokens[:_TITLE_MAX_TOKENS]
+    tokens = set(raw_tokens) - _TITLE_STOPWORDS
+    return {_LEMMA_MAP.get(t, t) for t in tokens}
 
 
 def unit_exam_alignment(con: duckdb.DuckDBPyConnection,
