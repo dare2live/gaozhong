@@ -1,0 +1,53 @@
+# 摸底测验卷 spec (3 套 G1/G2/G3) — 用户 2026-05-25
+# 题库化, 不硬编码题目 — runtime 按 spec 从 question_bank 抽 (R4 R5 兼容)
+# 巧妙设计: 用最少题快速覆盖关键能力 + 关联 graph + 弱点推送
+#
+# spec 字段:
+#   grade        — 年级摸底, G1/G2/G3
+#   target_layer — 答对率高 → 可升 layer 课节, 低 → 推 当前/降级 layer
+#   blocks       — 题型分布 (type/n/difficulty/coverage_tag_kind)
+#     coverage_tag_kind: 抽题时要覆盖的 tag 类目 (eg "word" 覆盖 N 不同 word tag)
+#   scoring      — 答对率阈值 → layer 推荐 (3 段)
+
+placement_tests:
+  - grade: G1
+    target_layer: G1
+    total_questions: 9
+    blocks:
+      - {kind: vocab,    type: "选义单选",         n: 4, difficulty: easy, tag_kind: word}
+      - {kind: grammar,  type: "单选(语法/词汇)",   n: 3, difficulty: easy, tag_kind: word}
+      - {kind: reading,  type: "阅读理解",         n: 1, difficulty: easy, tag_kind: question_type}
+      - {kind: cloze,    type: "完形填空",         n: 1, difficulty: easy, tag_kind: question_type}
+    scoring:
+      pass_threshold: 0.80    # ≥ 80% → 可升 G2
+      strong_threshold: 0.60  # 60-80% → 巩固 G1
+      # < 60% → 推 G1 必修 1-2 词汇课节 (弱点导向)
+
+  - grade: G2
+    target_layer: G2
+    total_questions: 10
+    blocks:
+      - {kind: vocab,    type: "选义单选",         n: 3, difficulty: mid,  tag_kind: word}
+      - {kind: grammar,  type: "单选(语法/词汇)",   n: 2, difficulty: mid,  tag_kind: word}
+      - {kind: reading,  type: "阅读理解",         n: 2, difficulty: mid,  tag_kind: question_type}
+      - {kind: cloze,    type: "完形填空",         n: 1, difficulty: mid,  tag_kind: question_type}
+      - {kind: gramfill, type: "语法填空",         n: 1, difficulty: mid,  tag_kind: question_type}
+      - {kind: applied,  type: "短文改错",         n: 1, difficulty: mid,  tag_kind: question_type}
+    scoring:
+      pass_threshold: 0.80
+      strong_threshold: 0.55
+
+  - grade: G3
+    target_layer: G3
+    total_questions: 11
+    blocks:
+      - {kind: vocab,    type: "选义单选",         n: 3, difficulty: hard, tag_kind: word}
+      - {kind: grammar,  type: "单选(语法/词汇)",   n: 2, difficulty: hard, tag_kind: word}
+      - {kind: reading,  type: "阅读理解",         n: 2, difficulty: hard, tag_kind: question_type}
+      - {kind: cloze,    type: "完形填空(七选五/语篇)", n: 1, difficulty: hard, tag_kind: question_type}
+      - {kind: cloze2,   type: "完形填空",         n: 1, difficulty: hard, tag_kind: question_type}
+      - {kind: gramfill, type: "语法填空",         n: 1, difficulty: hard, tag_kind: question_type}
+      - {kind: applied,  type: "短文改错",         n: 1, difficulty: hard, tag_kind: question_type}
+    scoring:
+      pass_threshold: 0.75    # 高三难度高, 阈值略放
+      strong_threshold: 0.50

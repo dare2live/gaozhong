@@ -194,7 +194,21 @@ def main() -> int:
     """).fetchone()[0]
     check("course_materials ref_id 全有 node", miss_ref == 0, f"miss={miss_ref}")
 
-    print("\n=== (16) 跨版本对照算法 v3 100% (复用 docs) ===")
+    print("\n=== (16) 摸底测验卷 placement (D 2026-05-25) ===")
+    from backend.services.placement import generator, loader
+    specs = loader.load_specs()
+    check("placement_tests.yaml 3 套 (G1/G2/G3)",
+          len(specs) == 3, f"{len(specs)} 套")
+    for s in specs:
+        try:
+            p = generator.generate_paper(con, s)
+            check(f"{s['grade']} 抽足题 ({s['total_questions']})",
+                  p["total_actual"] == s["total_questions"],
+                  f"exp={s['total_questions']} got={p['total_actual']}")
+        except Exception as e:
+            check(f"{s['grade']} generate 跑通", False, f"err: {e}")
+
+    print("\n=== (17) 跨版本对照算法 v3 100% (复用 docs) ===")
     # Re-run 10 种子 sample 看返非 0 的算法是否还工作
     from backend.services import recommend
     sample_unit = "unit:waiyan/xuanze_1/U6"   # P1.3 验证过的 nature 主题种子

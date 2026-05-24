@@ -192,6 +192,17 @@
       fetchJSON("/api/students/classes"),
     ]);
     let html = `<h2>E. 学生档案 (${list.count} 学生 · ${classes.count} 班)</h2>
+
+      <section class="layer-section">
+        <h3>🎯 新学生入测 · 摸底测验</h3>
+        <p style="color:#666;font-size:0.9em">巧妙 9-11 题快速摸清水平 → 自动推送对应 layer 课节 + 弱点</p>
+        <div style="display:flex;gap:0.5rem;margin:0.5rem 0">
+          <button onclick="window._startPlacement('G1')" style="padding:0.4rem 1rem;background:#2a9d8f;color:#fff;border:0;border-radius:3px;cursor:pointer">G1 入测 (9 题)</button>
+          <button onclick="window._startPlacement('G2')" style="padding:0.4rem 1rem;background:#f4a261;color:#fff;border:0;border-radius:3px;cursor:pointer">G2 入测 (10 题)</button>
+          <button onclick="window._startPlacement('G3')" style="padding:0.4rem 1rem;background:#e76f51;color:#fff;border:0;border-radius:3px;cursor:pointer">G3 入测 (11 题)</button>
+        </div>
+      </section>
+
       <section class="layer-section">
         <h3>班级 <span class="layer-meta">${classes.count}</span></h3>
         <div class="course-grid">`;
@@ -222,6 +233,62 @@
       </div>`;
     CONTENT.innerHTML = html;
   });
+
+  // 摸底测验流程 — D2 用户 2026-05-25
+  window._startPlacement = async (grade) => {
+    CONTENT.innerHTML = `<h2>📝 ${grade} 摸底测验</h2><p>载入题目 ...</p>`;
+    try {
+      const paper = await fetchJSON("/api/placement/generate?grade=" + grade);
+      let html = `<h2>📝 ${grade} 摸底测验 (${paper.total_actual} 题)</h2>
+        <p style="color:#666">答完点"提交"自动评分 + 推送对应课节. 不会的题留空.</p>
+        <form id="placement-form" style="background:#fff;padding:1rem;border-radius:4px;max-width:700px">`;
+      let i = 0;
+      for (const blk of paper.blocks) {
+        html += `<h3 style="border-bottom:1px solid #ddd">${blk.kind} (${blk.type}) — ${blk.n_actual} 题</h3>`;
+        for (const q of blk.questions) {
+          i++;
+          html += `<div style="margin:0.7rem 0;padding:0.5rem;background:#fafafa;border-left:3px solid #ddd">
+            <strong>${i}.</strong> <small style="color:#888">[#${q.qb_id}, ${q.difficulty}]</small>
+            <div style="margin:0.3rem 0">${(q.stem || "").slice(0, 200)}</div>
+            <input type="text" name="ans_${q.qb_id}" placeholder="答案 (eg A/B/C/D 或文本)" style="width:300px;padding:0.3rem">
+          </div>`;
+        }
+      }
+      html += `<button type="submit" style="background:#E3120B;color:#fff;border:0;padding:0.6rem 1.5rem;border-radius:3px;cursor:pointer">提交评分</button>
+        <button type="button" onclick="window.location.hash='#/students'" style="margin-left:0.5rem;padding:0.6rem 1rem">取消</button>
+        </form>
+        <div id="placement-result" style="margin-top:1rem"></div>`;
+      CONTENT.innerHTML = html;
+
+      document.getElementById("placement-form").onsubmit = async (ev) => {
+        ev.preventDefault();
+        const form = ev.target;
+        const answers = {};
+        for (const blk of paper.blocks) for (const q of blk.questions) {
+          const v = form[`ans_${q.qb_id}`].value.trim();
+          if (v) answers[q.qb_id] = v;
+        }
+        const resp = await fetch("/api/placement/score?grade=" + grade, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers }),
+        });
+        const result = await resp.json();
+        const rd = document.getElementById("placement-result");
+        rd.innerHTML = `<div style="background:#fff;padding:1rem;border-left:4px solid #E3120B;border-radius:4px">
+          <h3>📊 评分结果</h3>
+          <p><strong>正确率: ${(result.accuracy * 100).toFixed(1)}%</strong> (${result.n_correct}/${result.n_total})</p>
+          <p><strong>${result.layer_recommendation.msg}</strong></p>
+          <h4>弱点 (${result.weak_concepts.length})</h4>
+          <ul>${result.weak_concepts.slice(0, 8).map(w => `<li>${GZ.conceptLink(w.concept_id, w.concept_id)}</li>`).join("")}</ul>
+          <h4>推送课节 (${result.recommended_courses.length})</h4>
+          <ul>${result.recommended_courses.map(c => `<li><a href="#" onclick="window._openHandout(${c.course_id});return false">#${c.course_id} [${c.layer}] ${c.title}</a> ← ${c.weak_concept}</li>`).join("")}</ul>
+        </div>`;
+      };
+    } catch (err) {
+      CONTENT.innerHTML = `<h2>载入失败</h2><p style="color:#c00">${err.message}</p>`;
+    }
+  };
 
   window._openStudent = async (sid) => {
     const modal = document.getElementById("student-modal");
