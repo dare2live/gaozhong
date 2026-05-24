@@ -112,6 +112,23 @@
 >
 > **另一缺口**: 教学内容没真做 — 只有 graph 查询 + 教案 API, 缺**30 节课时的具体课程方案**.
 
+### 5.0 模块化 / 可扩展 / 可维护 原则 (用户 2026-05-24 硬约束)
+
+> 与 `docs/architecture.md` 8 条铁律 互补. 第五阶段所有新代码必须落到位.
+
+| # | 原则 | 实现 |
+|---|---|---|
+| M1 | **三层严分** service / api / db, 不跨层调 | route 只接 qs + 调 service, service 只接 con + 返 dict, db 只放 schema 与 RW helper |
+| M2 | **插件式 dispatch** block_kind / audit / scenario_kind / question_type 都用注册表 (dict[str, callable]), 禁 `if/elif` 长链 | `registry.register("vocab", handler)` + import 触发注册 |
+| M3 | **数据外置** 30 节 templates / 主题池 / audit 阈值 / hook 阈值 → yaml/json, 不硬编 .py | `backend/config/{course_templates,theme_pool,audit_thresholds}.yaml` |
+| M4 | **稳定 API** 字段不删不重命名, 加功能加新 endpoint | 已发 `/api/*` 进 `docs/api_contract.md` 锁住 |
+| M5 | **每模块单测** service / audit / template 都带 `tests/` 同名文件 | smoke test 200 + 关键 assert ≥ 1 |
+| M6 | **CC ≤ 10 默认** 新代码任一函数 CC>10 = Stop hook 阻塞 (当前 baseline 12, 不许涨) | `scripts/lib/complexity_check.py` 已集成 |
+| M7 | **fan-in ≤ 5 默认** service 被引用 >5 处 = 拆 | codegraph audit (PreToolUse hook 已扫) |
+| M8 | **零新增依赖** 全 stdlib + duckdb + pypdf + yaml; 引新库要 doc 解释为什么 | requirements.txt 锁定 |
+
+**Baseline (2026-05-24, 改前)**: backend 17 file / 262 func / 12 CC>10 残留. 第五阶段结束应**不涨**.
+
 ### 5.1 统一 UI 架构 (P0)
 
 | 改 | 当前 | 目标 |
@@ -128,7 +145,7 @@
 |---|---|---|
 | **A. 工作台** | 今日待办: 上次进度 / 待批改试卷 / 学生异常预警 / 数据健康 | /api/stats /api/audit /workbench/today |
 | **B. 教学** ⭐ | 30 节课程 — 选课节 → 查讲义 / 教材原文 / 课件 / 出题 | /api/course/{list,session,materials} (新) |
-| **C. 题库 + 组卷** | 现有 qbank + compose 合并到一 tab | /api/qb/* /api/paper/* |
+| **C. 题库 + 组卷** | 现有 qbank + compose 合并到一 tab; **听力题统一入此 tab** (transcript + audio_id 字段) | /api/qb/* /api/paper/* /api/listening/* |
 | **D. 数据管理** | 全部 14 数据集 + 审计 + lineage 编辑 | /api/stats /api/audit /api/manifest |
 | **E. 学生档案** | 学生 CRUD + 班级 + 答题历史 + 弱点 | /api/students/* (新) |
 | **F. 知识图谱** | force-directed + 热力图 + 趋势 + 跨版本对照 | 现有 graph/recommend/trend |
@@ -147,22 +164,25 @@
 | **R3 多场景** | 同一知识点至少在 **3 个不同场景** 出现 (eg "describe" 出现在: 体育解说 / vlog 评论 / 求职 self-intro) | `course/scenarios.py` 给每个知识点配 ≥3 场景 |
 | **R4 作业 ↔ 知识点闭环** | 每节 10 道作业题, **100% 命中本节知识点** (作业题 tag ⊆ 本节知识点 tag) | `course/homework.py` + `audit_homework_alignment` 阻塞 |
 
-#### 5.3.A 30 个新鲜主题池 (替代教材原主题)
+#### 5.3.A 30 个新鲜主题池 (替代教材原主题, 教育/学术/正向导向)
 
-| 类别 | 主题示例 (年轻人感兴趣) |
+> 用户 2026-05-24: "短视频啥的不要设计". 删娱乐流量类 (短视频/网红/弹幕/虚拟偶像/翻译梗), 换学术/科普/职业/社会议题, 贴合高考阅读的真实选材风格.
+
+| 类别 | 主题 (5 个) |
 |---|---|
-| 科技 | AI 创作 / 自动驾驶 / 元宇宙 / 量子计算 / 脑机接口 |
-| 流行 | K-pop 全球化 / 短视频经济 / 网红创业 / 虚拟偶像 / 弹幕文化 |
-| 体育 | 电竞奥运 / 滑板入奥 / 女足世界杯 / 户外攀岩 / 飞盘 |
-| 旅行 | 露营复兴 / city walk / 独自旅行安全 / 哈尔滨冰雪季 / 沙漠星空 |
-| 环境 | 海洋塑料 / 城市绿地 / 碳中和 / 候鸟迁徙 / 沙尘暴溯源 |
-| 心理 | Z 世代焦虑 / 数字断舍离 / 高考压力 / 友谊重构 / 拖延症 |
-| 文化 | 国潮汉服 / 博物馆热 / 非遗短视频 / 跨文化误会 / 翻译梗 |
-| 职业 | 远程办公 / 数字游民 / 斜杠青年 / 实习生日记 / AI 取代焦虑 |
-| 校园 | 选科困惑 / 走班制 / 社团竞选 / 班级冲突 / 自习室文化 |
-| 时事 | 太空旅游 / 极地科考 / 跨境电商 / 校园食安 / 老龄化社会 |
+| 科技 | AI 辅助科研 / 自动驾驶伦理 / 量子计算入门 / 脑机接口 / 5G 农业应用 |
+| 学术 | STEM 跨学科 / 田野调查方法 / 学术写作规范 / 学科前沿讲座 / 学术诚信 |
+| 环境 | 海洋塑料治理 / 城市绿地 / 碳中和路径 / 候鸟迁徙 / 极地冰川变化 |
+| 社会 | 老龄化社会 / 乡村振兴 / 极地科考 / 全球公共卫生 / 一带一路合作 |
+| 心理 | 时间管理 / 高考压力调节 / 友谊重构 / 学习动机 / 拖延克服 |
+| 文化 | 国潮汉服 / 博物馆热 / 非遗传承 / 跨文化交流 / 茶道与礼仪 |
+| 职业 | 青年企业家 / 数字游民 / 远程办公 / 实习生日记 / 人机协作 |
+| 旅行 | 露营复兴 / city walk / 哈尔滨冰雪季 / 沙漠星空 / 游学之旅 |
+| 体育 | 电竞奥运 / 滑板入奥 / 女足世界杯 / 户外攀岩 / 体育精神 |
+| 校园 | 选科困惑 / 走班制 / 社团竞选 / 自习室文化 / 校园食安 |
 
 > 每节课从对应主题池抽 1 主选 + 2-3 副选 (R3 多场景). 教材的 unit 主题作为"参考来源", 不直接 copy.
+> 主题池外置 `backend/config/theme_pool.yaml` (M3), 不硬编码.
 
 #### 5.3.B 每节课时结构 (120 min)
 
@@ -177,37 +197,38 @@
 115-120 min 课后作业: 10 题, tag ⊆ 本节 (R4 强校验)
 ```
 
-#### 5.3.C 30 节课程编排 (示例 5 节, 其余落 templates.py)
+#### 5.3.C 30 节课程编排 (示例 5 节, 其余落外置 yaml)
 
 | # | 主题板块 | 核心知识点 | 主选场景 | 关联拓展 (≥3) |
 |---|---|---|---|---|
-| 1 | 词汇·高频形容词 1 | adequate, ambiguous, arbitrary, authentic | AI 生成内容是否 authentic | adj 词族 (-ly 副词) / 反义 (genuine/fake) / 搭配 (an ~ source) |
-| 2 | 语法·宾从陈述 vs 一般疑问 | that/whether/if + 时态呼应 | 网红创业访谈引述 | 主从复合句联通 / 名词从语类 / 间接引语 |
-| 3 | 阅读·议论文 main idea | 论点-论据-反驳结构 | Z 世代数字断舍离辩论 | 完形议论篇 / 续写转折 / 应用文倡议书 |
-| 4 | 完形·语境推断 | 上下文同义/反义提示 | 短视频经济文章 | 阅读细节题 / 七选五连贯 / 词汇辨析 |
-| 5 | 续写·情绪转折 | so... that / 倒装强调 | 滑板入奥的失败到逆袭 | 倒装语法 / 情绪词族 / 叙事时态 |
+| 1 | 词汇·高频形容词 1 | adequate, ambiguous, arbitrary, authentic | AI 辅助科研结果是否 authentic | adj 词族 (-ly 副词) / 反义 (genuine/fake) / 搭配 (an ~ source) |
+| 2 | 语法·宾从陈述 vs 疑问 | that/whether/if + 时态呼应 | 青年企业家访谈引述 | 主从复合句联通 / 名词从语类 / 间接引语 |
+| 3 | 阅读·议论文 main idea | 论点-论据-反驳结构 | 乡村振兴政策辩论 | 完形议论篇 / 续写转折 / 应用文倡议书 |
+| 4 | 完形·语境推断 | 上下文同义/反义提示 | 极地科考长文 | 阅读细节题 / 七选五连贯 / 词汇辨析 |
+| 5 | 续写·情绪转折 | so... that / 倒装强调 | 滑板入奥失败到逆袭 | 倒装语法 / 情绪词族 / 叙事时态 |
 
-(完整 30 节列在 `backend/services/course/templates.py` 里, 含 course_id/title/block_kind/themes/related_concepts/homework_tags.)
+完整 30 节: `backend/config/course_templates.yaml` (M3 数据外置), 含 course_id/title/block_kind/themes/related_concepts/homework_tags/listening_required.
 
-### 5.4 课程 schema (P0)
+### 5.4 schema (P0)
 
-新表:
+#### 5.4.A 课程 3 新表
 
 ```sql
-courses              -- 30 节课程定义
+courses              -- 30 节课程定义 (源自 course_templates.yaml, init_db 灌)
   course_id (1..30)
   title                  eg "高频核心词冲刺 (1) — A-D 字母段"
-  block_kind             vocab|grammar|reading|cloze|gramfill|applied|narrative|mock
+  block_kind             vocab|grammar|reading|cloze|gramfill|applied|narrative|mock|listening
   block_order            1..30
   duration_min           120
   target_audience        "高二复习"|"高三冲刺"
+  listening_required     bool          -- 含听力练习的节
   description            老师视角说明
 
-course_materials     -- 每节自动 + 手动 关联 graph 实体
+course_materials     -- 每节自动 + 手动 关联 graph 实体 / 题
   course_id
-  kind                   word|grammar|phrase|exam_question|reading_section
+  kind                   word|grammar|phrase|exam_question|reading_section|listening_clip
   ref_id                 → nodes.concept_id 或 qb_id
-  source                 "auto_from_trend"|"manual"|"from_lesson_plan"
+  source                 "auto_from_trend"|"manual"|"from_lesson_plan"|"from_scenario"
   reason                 eg "近 3 年真题 freq=5, exam_status=core"
   position               (建议讲解顺序)
 
@@ -219,13 +240,30 @@ course_sessions      -- 实际授课记录 (老师标的)
   notes                  老师课后笔记
 ```
 
+#### 5.4.B question_bank 扩字段 (听力题统一入题库, 不另起表)
+
+```sql
+ALTER TABLE qb_questions ADD COLUMN has_audio       BOOLEAN  DEFAULT false;
+ALTER TABLE qb_questions ADD COLUMN audio_id        VARCHAR;          -- "audio:2024/A/Q1" lineage
+ALTER TABLE qb_questions ADD COLUMN transcript      TEXT;             -- 听力文字稿 (必填 if has_audio)
+ALTER TABLE qb_questions ADD COLUMN audio_speakers  JSON;             -- [{"id":"M","label":"男1"}, ...]
+ALTER TABLE qb_questions ADD COLUMN audio_duration  INTEGER;          -- 秒
+-- 题型扩枚举: listening_short | listening_dialog | listening_passage
+```
+
+audit:
+- `audit_listening_transcript_required`: 凡 has_audio=true 必须 transcript ≥ 50 字符
+- `audit_listening_in_qbank`: 不存在"独立听力表", 全 join qb_questions
+
 ### 5.5 课程内容自动生成 service (P0)
 
 新 service `backend/services/course/`:
 
 | 模块 | 作用 | 对应铁律 |
 |---|---|---|
-| `templates.py` | 30 节 spec (id/title/block/themes/related_concepts/homework_tags) | — |
+| `registry.py` | 插件式 dispatch (block_kind / scenario_kind / audit_kind 注册表) | M2 |
+| `loader.py` | 从 `backend/config/*.yaml` 加载 templates/theme_pool/thresholds | M3 |
+| `templates.py` | 30 节 spec 验证 + 暴露 (实数据走 yaml) | — |
 | `relations.py` | 每节核心知识点 → 联通 ≥3 个其他 (从 nodes+edges) | **R1** |
 | `scenarios.py` | 主题池 + 每知识点 ≥3 场景 + 教材原句重叠 audit | **R2 R3** |
 | `materials.py` | 综合 (graph + trend + question_bank + scenarios) 生成 materials | — |
@@ -258,6 +296,10 @@ course_sessions      -- 实际授课记录 (老师标的)
 4b. ✅ R2: 与教材无 ≥10 词连续重叠 (audit_course_no_textbook_copy)
 4c. ✅ R3: 每核心知识点 ≥3 场景 (audit_course_scenarios)
 4d. ✅ R4: 每节作业 tag 100% ⊆ 本节 (audit_homework_alignment)
+4e. ✅ 听力题入 qb_questions (扩字段), 凡 has_audio=true 必有 transcript (audit_listening_transcript_required)
+4f. ✅ 主题池 / templates / 阈值 全外置 yaml (M3), 0 硬编码
+4g. ✅ CC>10 函数数 ≤ baseline 12, fan-in ≤ 5 (M6 M7)
+4h. ✅ 每新模块带 `tests/test_*.py` smoke 200 (M5)
 5. ✅ 学生档案 tab CRUD 跑通 + 至少 1 个班 5 学生 demo 数据
 6. ✅ 0 FAIL audit 持续
 7. ✅ 老师双击 `start.command` 30 秒内能看到 7 tab 切换流畅
