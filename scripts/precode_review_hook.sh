@@ -69,8 +69,27 @@ if [ -f "$file" ]; then
   if [ "$lines" -gt 250 ] || [ "$funcs" -gt 15 ] || [ "$fanin" -gt 3 ] || [ "${hi_cc:-0}" -gt 2 ]; then
     echo "  >> 建议先跑 /codegraph-architecture-audit 看 hotspot 再改 (codegraph query <symbol>)" >&2
   fi
+  # === BLOCK 模式 (Rule 7+8, 2026-05-24) ===
+  if [ "$lines" -gt 400 ]; then
+    echo "[precode-check] BLOCK: $rel 已 $lines L > 400 (god-module). 先拆再改." >&2
+    exit 2
+  fi
+  if [ "$fanin" -gt 5 ]; then
+    echo "[precode-check] BLOCK: $rel fan-in = $fanin > 5. 必须先 'codegraph query <symbol>' 看全部 caller, 改 signature 影响面太大." >&2
+    exit 2
+  fi
 else
   echo "[precode-check] 新建文件: $rel — 写前请确认模块边界 (见 docs/architecture.md §2)" >&2
+  # 前端 html 新建必须复用 common.js / layout
+  case "$rel" in
+    frontend/*.html)
+      if [ ! -f frontend/static/common.js ]; then
+        echo "  [Rule 5] 提醒: 还没有 frontend/static/common.js — 这是首个新页面, 应同时建 common.js 抽公共逻辑." >&2
+      else
+        echo "  [Rule 5] 必须复用 frontend/static/common.js (不要 inline 大块 JS); 见 docs/architecture.md Rule 5." >&2
+      fi
+      ;;
+  esac
 fi
 
 exit 0

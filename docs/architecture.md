@@ -5,7 +5,13 @@
 
 ---
 
-## 0. 三条铁律 (反"到处计算"模式)
+## 0. 八条铁律 (系统级强制, hook 配套)
+
+> 1-3 为原版铁律 (单一计算点 / Canonical First / Edges 一等公民).
+> 4-8 为 2026-05-24 用户反馈新加 (模块化 / 可复用 / 可扩展 / 不牵一发动全身 / 反模式禁令).
+> 每条违例必须 hook 自动检测, 否则会被遗忘.
+
+## 0.
 
 ### Rule 1 — 单一计算点 (Single Computation Point)
 任何派生事实 (vocab CEFR level / unit 主题 / 短语越纲与否 / 题目难度 / 知识点关联强度) 只在 **services/** 层算**一次**, 入 DB 表或视图. **API / 前端 / 脚本 不准重复 JOIN/SUM/计算同一事实**.
@@ -29,6 +35,57 @@ SELECT * FROM vocab_with_unit WHERE word = ?
 - 关联可被独立扩展 (新增 relation 不改主表)
 - 推理 / 查询走统一图遍历 (graph service), 不到处写 SQL
 - 出题 / 推荐 / 教学路径 = 图查询
+
+### Rule 4 — 模块化 (新功能先扩, 不新建)
+加新功能前必须先查 codegraph: 已有 service / route / extractor 能否复用? 不能再建.
+- **检查方法**: `codegraph query <symbol_name>` 看是否已有同名/近似 fn
+- **违例**: 我加 `teacher.html` 没复用 `index.html` 的 `app.js` → L-G
+- **hook 自动**: PreToolUse 新建 html/py 时, 先扫"同目录是否已有相似命名/职责文件"
+
+### Rule 5 — 可复用 (helper 抽 common)
+任何在 ≥ 2 处出现的逻辑必须抽到 shared:
+- 前端: `frontend/static/common.js` (fetchJSON / tagChip / renderTable / parseForm)
+- 后端: `backend/api/db.py` (db_ro / rows_to_dicts), `backend/services/<area>/common.py`
+- 模板: `frontend/_layout.html` (header/nav/footer)
+- **违例**: index/teacher/student 三页各自重写 fetch+render → L-G
+- **hook 自动**: 改 frontend/*.html 时检测 inline `fetch(` / `<script>` 块大小 > 50L → 警告抽出去
+
+### Rule 6 — 可扩展 (向后兼容加列加表加 relation)
+- schema: 加列 + DEFAULT, 不改字段语义; 加新表, 不破坏现有表 PK
+- relation: 加 `ALLOWED_RELATIONS` 字典, audit 自动校验
+- API: 加 `/api/foo/v2`, 不破 v1; query param 添加要 backward-compatible
+- **违例处理**: 改 schema/api 必须能跑 `python3 scripts/init_db.py` + 现有 endpoint 仍 200
+
+### Rule 7 — 不牵一发动全身 (fan-in 警戒)
+改 fan-in > 3 文件前必须:
+1. `codegraph query <symbol>` 看下游
+2. 改 service 函数签名 → 同时改所有 caller (一次性, 不留半成品)
+- **违例 hook**: `scripts/precode_review_hook.sh` 已含 fan-in 检测, 但只 WARN; **升级到 fan-in > 5 BLOCK** (exit 2)
+
+### Rule 8 — 反模式禁令 (一票否决)
+| 反模式 | 违例 | 自动检测 |
+|---|---|---|
+| god-module > 400 L | 拒收 | `audit/codequality.audit_code_size` FAIL |
+| CC > 15 | 必须拆 | `audit/codequality.audit_code_complexity` FAIL |
+| 前端 inline `<style>` 块 > 30 L | 必须抽 css | `audit/frontend_dupe` (待加) |
+| 前端 inline `<script>` 块 > 80 L | 必须抽 js | 同上 |
+| API endpoint 写 SQL JOIN | Rule 1 反例 | code review 拦 |
+| `try: ... except: pass` 静默吃错 | 见 CLAUDE.md §1.5 | grep CI |
+| "形式 OK, 实质未验" (eg 跑通但没真用数据查) | L-J | Stop hook 跑 init_db 真审计 |
+| 用户问后才发现的盲区 | M-5/M-6 元教训 | 见下条 |
+
+---
+
+## 元约束: hook 系统化, 不靠口头
+
+| 时机 | hook | 做什么 |
+|---|---|---|
+| 改代码前 | PreToolUse (`Edit\|Write\|MultiEdit`) | size / CC / fan-in / 前端重复 → WARN 或 BLOCK (exit 2) |
+| 新消息进来 | UserPromptSubmit | 检查 git uncommitted + .claude/in_progress.md → 提醒 "先完成手头" |
+| Session 启动 | SessionStart | 注入 lessons 前 5 条 + 架构铁律 |
+| Session 结束 | Stop | 跑 `init_db` 全审计 + complexity 扫 → 任何 FAIL 阻断 stop |
+
+**永不接受**: "下次我注意" 类承诺. 任何重复 ≥ 2 次的失误必须落 hook.
 
 ---
 

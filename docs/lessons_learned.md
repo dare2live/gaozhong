@@ -86,6 +86,103 @@
 
 ---
 
+## L-2026-05-24-F · vocab extractor 漏抓 30-50% — "跑通" 不等于"数据准确"
+
+**现象**: 用户 2026-05-24 问"数据治理到位吗", 跑真数据发现:
+- 课标 3000 词 + 200 扩展 ≈ 3200, 实际外研抽 2025 / 人教 1644
+- 某些 unit 仅 3-5 词 (bixiu_2/U3/U4) — 明显异常
+- 整 7 册总词数比应有的低 30-50%
+
+**根因**: vocab 抽器跑通 = 跑出 1842/1904 行, 数字够大没人怀疑. 但**没和"理论应有数"对账**.
+
+**自动化兜底**:
+1. **新 audit_vocab_per_volume_expected** — 每册 ≥ 200 词 (高一基础) / ≥ 300 (高二) / ≥ 250 (高三选必), 不达 FAIL
+2. **vs_curriculum_total** — 7 册累计 ≥ 2800 词 (留 200 弹性), 不达 FAIL
+3. **每 unit 范围 30-150 词** — < 10 词 WARN
+
+**教训**: 任何"数据完整性" 检查不能只看"有数", 必须有**期望基线 anchor**.
+
+---
+
+## L-2026-05-24-G · 前端 3 页各自重写 — 加新页时偷懒
+
+**现象**: 用户 2026-05-24 问"前端是否按统一框架优化", 实测:
+- `index.html` 用 `app.js` (424 L)
+- `teacher.html` 完全 inline JS + CSS, 238 L
+- `student.html` 完全 inline JS + CSS, 129 L
+- `fetchJSON` / `tagChip` 渲染 / table 渲染 重复 3 遍
+- navigation / header / footer 不一致
+
+**根因**: 我加 teacher.html 时图省事, 没看现有 app.js 是否能扩.
+
+**自动化兜底**:
+1. **PreToolUse hook 扩**: 改 frontend/*.html 时, 检测 inline `<script>` 块 > 80 L 或 inline `<style>` > 30 L → BLOCK
+2. **新 audit_frontend_dupe** — 扫所有 html, 检 fetch( 出现 ≥ 2 次未走 common.js → WARN
+3. **新建 frontend/_layout.html** + `common.js` + 强制注入式 header
+
+**教训**: 新页面 = 新隐性 N 倍维护成本. 第二个页面诞生时就要抽 common.
+
+---
+
+## L-2026-05-24-H · 命题"趋势"用 raw count 假装"模型"
+
+**现象**: 用户 2026-05-24 问"命题风格趋势是否研究了更适合的模型", 实测:
+- `backend/services/trend.py` 只做 token 词频年聚合
+- 没做时间序列趋势 / 主题演化 / 题型分布回归 / 难度年变化
+- 文档 `docs/tooling_for_exam_analysis.md` 列出 sklearn/statsmodels 但**没用**
+
+**根因**: 数据有, 但"叫做趋势" 容易, "真用模型分析" 难, 我偷懒.
+
+**自动化兜底**:
+1. 写一个 `backend/services/trend/model.py` 真上 sklearn 或 numpy 简单线性回归 → docs/exam_trend_analysis.md 必须有真模型输出
+2. **新 audit_trend_model_substance** — 检查 trend service 是否有 import sklearn 或类似真模型, 没有 WARN
+
+**教训**: 任何"分析 / 趋势 / 智能" 词都要被怀疑是否真做. 取个 fancy 名不等于做了.
+
+---
+
+## L-2026-05-24-I · 经济学人风格只抄配色, 没抄结构
+
+**现象**: 用户 2026-05-24 问"研究了经济学人页面吗", 实测:
+- 我做了: 红蓝双色 + Georgia serif 标题 + 细边 card
+- 真 economist.com: sticky chart + drop cap + inline citation + annotation overlay + minimalist chart axis + 'most-read' rank box
+- 我做到 30% 表面
+
+**根因**: 借鉴别人的设计要看**结构**和**信息密度规则**, 不是配色字体. 配色易抄, 信息架构难学.
+
+**自动化兜底**:
+1. 列 docs/design_reference_economist.md, 列经济学人 10 个标志元素 + 我做了/没做
+2. 任何"借鉴 X 风格" 任务必须先写 reference doc, 列 10 个元素, 不能直接动手
+
+**教训**: 设计借鉴 = 拆解 + 选项 + 验证, 不是抄表面.
+
+---
+
+## L-2026-05-24-J · "形式 vs 实质" 系统性盲区
+
+**现象**: 用户 2026-05-24 一次问 4 件事, 全都是"形式做了实质没":
+- 数据治理 (10 项核查 0 做)
+- 跨年度覆盖 (没算)
+- 命题趋势模型 (raw count 假装模型)
+- 经济学人风格 (浅借鉴)
+- 深度交叉关联 (API 通, UI 没)
+- 高考考点覆盖 (没算)
+
+**根因**: 我倾向"跑通即完成", 不主动跑"是否真有效" 二阶验证.
+
+**自动化兜底 (核心)**:
+1. **Stop hook**: Claude 报 "完成" 前必须自检:
+   - 数据 audit 0 FAIL?
+   - 提到的"模型 / 趋势 / 智能 / 准确" 是否有真实证?
+   - 提到的"借鉴 / 学习 / 风格" 是否有 reference doc?
+   - 提到的"覆盖率 / 召回率 / 命中率" 是否有真数据 vs anchor?
+   不通过 → 不允许 stop, 退回继续工作
+2. **PR checklist 文档** (docs/pr_checklist.md): 完成任何"feat:" commit 前 5 项必走
+
+**教训**: 我对自己的工作没有"二阶验证" 习惯. 必须 system 强制.
+
+---
+
 ## 流程沉淀 (元 lesson)
 
 ### M-1 改代码前必走 codegraph + complexity
@@ -99,3 +196,12 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 
 ### M-4 项目宪法 §1.5 数据基石优先
 任何"加 LLM / 加新模型 / 改前端" 冲动都先 push back 回数据源完整性. 见 gaokao 项目反例 (5 session 才到位).
+
+### M-5 用户提醒前的盲区 (元元教训, 2026-05-24)
+我重复 3+ 次靠用户问出"形式 vs 实质"问题. 不可接受.
+- 解决: Stop hook 自动跑 "claim vs evidence" 自查
+- 解决: 任何"完成" 报告前自问 5 问 (是否跑过 init_db / CC 全清 / 前端复用 / 数据 vs anchor / 真模型还是 raw count)
+- 解决: docs/pr_checklist.md 系统化
+
+### M-6 不接受 "下次我注意" 类承诺
+重复 ≥ 2 次的失误必须落 hook / audit / test, 不靠口头. 用户 2026-05-24 原话: "可用 hook 建起来的就从流程上系统上建好, 确保后续可持续使用, 而不是每次都要我提醒".

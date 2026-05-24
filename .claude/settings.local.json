@@ -22,6 +22,28 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/dp/Documents/M/gaozhong/scripts/stop_gate.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/dp/Documents/M/gaozhong/scripts/session_start_hook.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
