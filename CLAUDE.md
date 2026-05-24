@@ -2,9 +2,25 @@
 
 > 配 `goal.md` 使用. 新 session 先读 goal.md + 本文件.
 
-沈阳/辽宁高中英语教学系统. 当前阶段: **STEP 1 资料基石** (后续 STEP 全部 blocked by 基石 gate).
+沈阳/辽宁高中英语教学系统. 第五阶段 (40 节分层课程) + 第六阶段 (全局图谱浮窗 + D0 100% 准约束) 已完成.
 
 参考姊妹项目 `~/Documents/M/gaokao/` (辽宁高考真题研判) 的工程纪律, 部分原则继承.
+
+---
+
+## 🔴 D0 第一重要 (用户 2026-05-25 硬约束)
+
+**"本项目任意数据 + 任意关联性, 准确率必须 100%."**
+
+- 不是 80%, 不是 95%, 是 **100%**
+- 强执行 hook: `scripts/stop_gate.sh` 任 audit FAIL/WARN → BLOCK
+- 强校验脚本: `scripts/data_accuracy_check.py` 16 大维度 30+ 项, 0 错才 exit 0
+- 详 `goal.md#D0` + `docs/data_accuracy_audit.md`
+
+新 API/算法/数据落地, 必须:
+1. 加进 `docs/data_accuracy_audit.md`
+2. `data_accuracy_check.py` 加校验项
+3. 跑 `python3 scripts/data_accuracy_check.py` 0 错才能 stop
 
 ---
 

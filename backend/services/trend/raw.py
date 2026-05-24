@@ -32,20 +32,30 @@ STOPWORDS = {
 def word_freq_by_year(con: duckdb.DuckDBPyConnection,
                        restrict_to_cefr: bool = True,
                        exclude_stopwords: bool = True) -> dict[str, dict[int, int]]:
-    cefr = set()
-    if restrict_to_cefr:
-        cefr = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
+    cefr = _load_cefr_set(con) if restrict_to_cefr else set()
     out: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
-    for yr, qtext in con.execute(
+    rows = con.execute(
         "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
-    ).fetchall():
-        if not yr or not qtext: continue
-        for tok in _WORD_RE.findall(qtext):
-            w = tok.lower()
-            if exclude_stopwords and w in STOPWORDS: continue
-            if restrict_to_cefr and w not in cefr: continue
-            out[w][yr] += 1
+    ).fetchall()
+    for yr, qtext in rows:
+        _tally_year(out, yr, qtext, cefr, exclude_stopwords, restrict_to_cefr)
     return out
+
+
+def _load_cefr_set(con: duckdb.DuckDBPyConnection) -> set[str]:
+    return {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
+
+
+def _tally_year(out: dict, yr, qtext, cefr: set, exclude_stop: bool, restrict: bool) -> None:
+    if not yr or not qtext:
+        return
+    for tok in _WORD_RE.findall(qtext):
+        w = tok.lower()
+        if exclude_stop and w in STOPWORDS:
+            continue
+        if restrict and w not in cefr:
+            continue
+        out[w][yr] += 1
 
 
 def top_high_freq_words(con: duckdb.DuckDBPyConnection, top_n: int = 50) -> list[dict]:

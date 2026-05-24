@@ -67,6 +67,20 @@ def question_type_year_trend(con: duckdb.DuckDBPyConnection) -> list[dict]:
 
 def vocab_year_growth(con: duckdb.DuckDBPyConnection) -> dict:
     """所有真题年总实义词 token 数 → 线性回归."""
+    by_year = _tokens_per_year(con)
+    years = sorted(by_year)
+    xs = [float(y) for y in years]
+    ys = [float(by_year[y]) for y in years]
+    slope, _intercept = _linreg(xs, ys)
+    return {
+        "years": years,
+        "tokens_per_year": [by_year[y] for y in years],
+        "slope_per_year": round(slope, 2),
+        "interpretation": _slope_interp(slope),
+    }
+
+
+def _tokens_per_year(con: duckdb.DuckDBPyConnection) -> dict[int, int]:
     rows = con.execute(
         "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
     ).fetchall()
@@ -76,20 +90,15 @@ def vocab_year_growth(con: duckdb.DuckDBPyConnection) -> dict:
             tl = t.lower()
             if tl not in STOPWORDS and len(tl) >= 3:
                 by_year[y] += 1
-    years = sorted(by_year)
-    xs = [float(y) for y in years]
-    ys = [float(by_year[y]) for y in years]
-    slope, intercept = _linreg(xs, ys)
-    return {
-        "years": years,
-        "tokens_per_year": [by_year[y] for y in years],
-        "slope_per_year": round(slope, 2),
-        "interpretation": (
-            "词汇量逐年上升" if slope > 50
-            else "词汇量逐年下降" if slope < -50
-            else "词汇量持平"
-        ),
-    }
+    return by_year
+
+
+def _slope_interp(slope: float) -> str:
+    if slope > 50:
+        return "词汇量逐年上升"
+    if slope < -50:
+        return "词汇量逐年下降"
+    return "词汇量持平"
 
 
 def top_rising_words(con: duckdb.DuckDBPyConnection,

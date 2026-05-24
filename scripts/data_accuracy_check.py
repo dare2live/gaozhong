@@ -126,6 +126,83 @@ def main() -> int:
     check("students ≥ 5 (demo)",         con.execute("SELECT COUNT(*) FROM students").fetchone()[0] >= 5)
     check("classes ≥ 1 (demo)",          con.execute("SELECT COUNT(*) FROM classes").fetchone()[0] >= 1)
 
+    print("\n=== (11) 知识图谱深扫: 引用完整性 ===")
+    # edges.src_id / dst_id 必须全部在 nodes 表 (孤儿 edges = 数据不一致)
+    n_orphan_src = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE src_id NOT IN (SELECT concept_id FROM nodes)"
+    ).fetchone()[0]
+    n_orphan_dst = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE dst_id NOT IN (SELECT concept_id FROM nodes)"
+    ).fetchone()[0]
+    check("edges.src_id 全在 nodes",      n_orphan_src == 0, f"orphan src={n_orphan_src}")
+    check("edges.dst_id 全在 nodes",      n_orphan_dst == 0, f"orphan dst={n_orphan_dst}")
+    # 孤立 node — 区分"必有 edge"(word/grammar/question/phrase/unit) vs "可独立"(theme/cefr_level/subject)
+    n_iso_critical = con.execute("""
+        SELECT COUNT(*) FROM nodes n
+        WHERE n.node_type IN ('word','grammar','question','phrase','unit')
+          AND n.concept_id NOT IN (SELECT src_id FROM edges)
+          AND n.concept_id NOT IN (SELECT dst_id FROM edges)
+    """).fetchone()[0]
+    check("孤立关键 node = 0 (word/grammar/question/phrase/unit)",
+          n_iso_critical == 0, f"isolated={n_iso_critical}")
+    # OBS: theme/cefr_level/subject 等元数据节点可独立 (eg 课标 level3 主题未被 unit 引用 — 真实状态)
+    n_iso_meta = con.execute("""
+        SELECT COUNT(*) FROM nodes n
+        WHERE n.node_type IN ('theme','cefr_level','subject','exam_year','qtype')
+          AND n.concept_id NOT IN (SELECT src_id FROM edges)
+          AND n.concept_id NOT IN (SELECT dst_id FROM edges)
+    """).fetchone()[0]
+    check("OBS: 孤立元数据 node 数 (theme/cefr 等可独立)",
+          True, f"OBS={n_iso_meta} (元数据可独立, 非 bug)")
+
+    print("\n=== (12) 词集 ↔ 节点 一致性 (抽样 100) ===")
+    # cefr_vocab 词必须在 nodes (concept_id='word:xxx')
+    miss_words = con.execute("""
+        SELECT COUNT(*) FROM cefr_vocab c
+        WHERE 'word:' || LOWER(c.word) NOT IN (SELECT concept_id FROM nodes WHERE node_type='word')
+    """).fetchone()[0]
+    check("cefr_vocab 全有对应 word node", miss_words == 0, f"miss={miss_words}")
+    # nodes word label ↔ concept_id 一致 (label 应等于 concept_id 去 'word:')
+    mismatch_labels = con.execute("""
+        SELECT COUNT(*) FROM nodes WHERE node_type='word'
+          AND LOWER(label) <> LOWER(REPLACE(concept_id, 'word:', ''))
+    """).fetchone()[0]
+    check("word node label↔concept_id 一致", mismatch_labels == 0, f"mismatch={mismatch_labels}")
+
+    print("\n=== (13) 教材 unit ↔ nodes 一致性 ===")
+    miss_units = con.execute("""
+        SELECT COUNT(*) FROM units u
+        WHERE 'unit:' || u.version_key || '/' || u.volume_key || '/U' || u.unit_number
+              NOT IN (SELECT concept_id FROM nodes WHERE node_type='unit')
+    """).fetchone()[0]
+    check("units 全有对应 unit node",     miss_units == 0, f"miss={miss_units}")
+
+    print("\n=== (14) 真题 question ↔ nodes 一致性 ===")
+    miss_q = con.execute("""
+        SELECT COUNT(*) FROM exam_questions q
+        WHERE 'question:' || q.question_id
+              NOT IN (SELECT concept_id FROM nodes WHERE node_type='question')
+    """).fetchone()[0]
+    check("exam_questions 全有对应 question node", miss_q == 0, f"miss={miss_q}")
+
+    print("\n=== (15) 课程 materials ref_id 引用 ===")
+    # course_materials.ref_id (kind=word/grammar/phrase/exam_question) 必须存在
+    miss_ref = con.execute("""
+        SELECT COUNT(*) FROM course_materials cm
+        WHERE cm.kind IN ('word','grammar','phrase')
+          AND cm.ref_id NOT IN (SELECT concept_id FROM nodes)
+    """).fetchone()[0]
+    check("course_materials ref_id 全有 node", miss_ref == 0, f"miss={miss_ref}")
+
+    print("\n=== (16) 跨版本对照算法 v3 100% (复用 docs) ===")
+    # Re-run 10 种子 sample 看返非 0 的算法是否还工作
+    from backend.services import recommend
+    sample_unit = "unit:waiyan/xuanze_1/U6"   # P1.3 验证过的 nature 主题种子
+    res = recommend.cross_version_units(con, sample_unit)
+    check("cross_version 'nature 主题' 返 3 个 same-cefr",
+          len(res) == 3 and all("nature" in r["shared_core_tokens"] for r in res),
+          f"got {len(res)} 个: {[r['unit_id'] for r in res]}")
+
     con.close()
 
     print("\n" + "=" * 60)

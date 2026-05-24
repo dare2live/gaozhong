@@ -30,28 +30,37 @@ def _stem(word: str) -> str:
 
 def build_derive_edges(con: duckdb.DuckDBPyConnection) -> int:
     """Group words by stem (≥4 chars), build derive_from edges between members."""
-    words = [r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()]
-    by_stem: dict[str, list[str]] = defaultdict(list)
-    for w in words:
-        s = _stem(w)
-        if s:
-            by_stem[s].append(w)
-    edges: list[tuple] = []
-    for stem, group in by_stem.items():
-        if len(group) < 2:
-            continue
-        for w1 in group:
-            for w2 in group:
-                if w1 == w2:
-                    continue
-                edges.append((f"word:{w1}", f"word:{w2}", 0.8,
-                               '{"shared_stem": "%s"}' % stem))
+    by_stem = _group_by_stem(con)
+    edges = _build_edge_tuples(by_stem)
     con.execute("DELETE FROM edges WHERE relation = 'derive_from'")
     if not edges:
         return 0
     con.executemany(
         "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) "
         "VALUES (?, ?, 'derive_from', ?, ?)",
-        [(s, d, w, ev) for s, d, w, ev in edges],
+        edges,
     )
     return len(edges)
+
+
+def _group_by_stem(con: duckdb.DuckDBPyConnection) -> dict[str, list[str]]:
+    words = [r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()]
+    by_stem: dict[str, list[str]] = defaultdict(list)
+    for w in words:
+        s = _stem(w)
+        if s:
+            by_stem[s].append(w)
+    return by_stem
+
+
+def _build_edge_tuples(by_stem: dict[str, list[str]]) -> list[tuple]:
+    edges: list[tuple] = []
+    for stem, group in by_stem.items():
+        if len(group) < 2:
+            continue
+        for w1 in group:
+            for w2 in group:
+                if w1 != w2:
+                    edges.append((f"word:{w1}", f"word:{w2}", 0.8,
+                                   '{"shared_stem": "%s"}' % stem))
+    return edges
