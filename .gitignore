@@ -4,6 +4,9 @@ __pycache__/
 .DS_Store
 data/textbooks/_raw_clone/
 
+# start.command runtime logs
+logs/
+
 # Sub-repos cloned under data/structured/ — keep the files, drop their .git metadata
 data/structured/*/.git/
 
