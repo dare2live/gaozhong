@@ -58,8 +58,44 @@ backend/services/recommend.py:cross_version_units(unit_id, limit=3)
 - **lemma 字典手工列** — 仅 8 个常见主题词族 (nature/art/food/culture/science/history/exploration), 准, 不引入 NLP 库 (M8 零依赖)
 - **jaccard 排序** — 多个对照按相似度排, 1.0 同名 > 0.5 部分 > 0.25 单词共享
 
+## v4 扩 30 对验证 (2026-05-25 P2.1)
+
+从 10 对扩 → 30 对全 unit 等距抽样 (waiyan 18 + renjiao 12).
+
+### v3 跑 30 对发现 2 误判
+- `TRAVELLING AROUND` → `LANGUAGES AROUND` 仅因 `around` 是位置介词
+- `FESTIVALS AND CELEBRATIONS` → `JOURNEY ACROSS A VAST LAND` 仅因 `using`
+
+### v4 修复
+`_TITLE_STOPWORDS` 加 30+ 介词/副词/动词助词:
+- 位置: around / across / into / over / under / through / between / along / among / behind / before / after / during / since / until / without / within
+- 动作: using / used / doing / done / saying / said / going / gone / seeing / seen / comes / coming / became
+- 太宽: learn / look / think
+
+### v4 30 对结果
+
+```
+24 种子 → 无对照 (诚实)
+ 9 种子 → 真推荐 共 11 对
+33 判断 → 33 全对 = 100% ✅
+```
+
+9 真推荐:
+
+| 种子 | 推荐 | 共享 token |
+|---|---|---|
+| Food for thought | FOOD AND CULTURE | food |
+| Revealing nature | At one with nature, Nurturing nature, Nature in words | nature |
+| CULTURAL HERITAGE | BRIDGING CULTURES | culture |
+| DIVERSE CULTURES SPORTS | SPORTS AND FITNESS | sports |
+| PEOPLE OF ACHIEVEMENT (x2 unit) | 同名 unit 跨 volume | achievement |
+| FOOD AND CULTURE | Food for thought | food |
+
 ## 验收
 
 ```
-4.1.E ✅ 准确率 13/13 = 100% (用户硬约束达成)
+4.1.E ✅ v3 13/13 = 100% (10 种子)
+4.1.E ✅ v4 33/33 = 100% (30 种子扩验)
+   v4 暴露并修复 v3 漏的 'around' 'using' 等高频虚词
+   持续推进规则: 每扩样本若发现误判, 立即更新停用词 / lemma_map
 ```

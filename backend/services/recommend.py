@@ -74,6 +74,17 @@ _TITLE_STOPWORDS = {
     "people", "person", "things", "thing", "way", "ways",
     # 教学高频惯用 (非主题)
     "lessons", "lesson", "practice", "exercise", "homework",
+    # 介词/副词扩展 (P2.1 30 对验证暴露 — around/using/across 等单独不构成主题)
+    "around", "across", "into", "onto", "over", "under", "above", "below",
+    "through", "between", "beyond", "along", "among", "behind", "before",
+    "after", "during", "since", "until", "without", "within",
+    "using", "use", "used", "uses", "applying", "applied",
+    "doing", "done", "saying", "said", "going", "gone", "seeing", "seen",
+    "comes", "coming", "came", "becomes", "becoming", "became",
+    # 单独动词太宽泛
+    "learn", "learning", "learner",
+    "look", "looking", "looked", "looks",
+    "think", "thinking", "thought",
 }
 
 # 名词词族归一 (手工小词典 — 覆盖教材常见主题词的形态变化)
