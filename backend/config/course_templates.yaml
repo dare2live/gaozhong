@@ -1,87 +1,626 @@
 # 40 节课程编排 — 4 层 × 10
-# G1 高一 ~1200 词 / G2 高二 ~2200 / G3 高三 ~3000 / G_FINAL 高考前突击 ~3500
-# 用户 2026-05-24 D6: "总冲刺 10 节, 词汇向下兼容, 标教材位置"
-# 实施: G_FINAL + G1 优先 (高 ROI), G2/G3 逐步补
+# 用户 2026-05-24 D2/D6: 30 节×2h → 改 40 节 (4 层 × 10); 总冲刺=G_FINAL 10 节
+# 板块按 5.4.D 差异化: G1 重词 / G2 加完形 + 应用文 / G3 加续写 + 语法填空 / G_FINAL 加模拟卷
 #
-# yaml 字段:
-#   course_id        全局 1..40
-#   layer            G1 | G2 | G3 | G_FINAL
-#   block_kind       vocab|grammar|reading|cloze|gramfill|applied|narrative|mock|listening
-#   block_order      层内序号 1..10
-#   title            课节标题
-#   themes_main      主选场景 (Time/NatGeo/SciAm 风)
-#   themes_aux       副选场景 ≥2 (R3 多场景)
-#   related_concepts 关联拓展 ≥3 (R1)
-#   core_items       核心知识点 (kind + id + year + position)  R6
-#   homework_tags    作业 tag (R4 ⊆ 本节)
-#   listening_required
+# 词均从 cefr_vocab 实抽 (R5 strict ⊆ layer 词集)
+# grammar 用真实 grammar_items_id (R6 必标)
+# 主题从 theme_pool 抽 (R3 ≥3, R2 不重叠教材, D5 非政治)
 
 courses:
-  # === G1 高一 (10 节) — 词汇 5 / 语法 3 / 阅读 2 ===
+# ============================================================
+# G1 高一 (10 节) — 词 5 / 语法 3 / 阅读 2 — 重义教 + 基础必修
+# ============================================================
   - course_id: 1
     layer: G1
     block_kind: vocab
     block_order: 1
-    title: "G1·词汇·基础名词 1"
-    themes_main: 校园新生活
-    themes_aux: [自习室文化, 友谊重构]
-    related_concepts: [词族 -er/-or, 反义 enemy/friend, 搭配 make ~]
+    title: "G1·词·基础生活 1 (能力 + 接受)"
+    themes_main: 校园新生活与时间管理
+    themes_aux: [自习室文化, 友谊重构, 学习动机]
+    related_concepts: [词族 -ity/-able, 反义 unable/incapable, 搭配 the ~ to do]
     core_items:
-      - {kind: word, id: "word:family",   year: 1, position: "外研·必修1·U1·Vocabulary"}
-      - {kind: word, id: "word:friend",   year: 1, position: "外研·必修1·U1·Vocabulary"}
-      - {kind: word, id: "word:hobby",    year: 1, position: "外研·必修1·U2·Vocabulary"}
-      - {kind: word, id: "word:teacher",  year: 1, position: "外研·必修1·U1·Vocabulary"}
-      - {kind: word, id: "word:study",    year: 1, position: "外研·必修1·U2·Vocabulary"}
-    homework_tags: [word:family, word:friend, word:hobby, word:teacher, word:study]
+      - {kind: word, id: "word:ability",  year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:able",     year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:accept",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:achieve",  year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:active",   year: 1, position: "课标·义教"}
+    homework_tags: [word:ability, word:able, word:accept, word:achieve, word:active]
     listening_required: false
 
-  # === G2 高二 (示例 1 节) ===
+  - course_id: 2
+    layer: G1
+    block_kind: vocab
+    block_order: 2
+    title: "G1·词·基础动作 + 描述"
+    themes_main: 校园社团竞选
+    themes_aux: [自习室文化, 走班制, 时间管理]
+    related_concepts: [动词词族 -tion, 反义否定前缀, 搭配 in/on/at]
+    core_items:
+      - {kind: word, id: "word:action",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:add",      year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:address",  year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:advice",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:advise",   year: 1, position: "课标·义教"}
+    homework_tags: [word:action, word:add, word:address, word:advice, word:advise]
+    listening_required: false
+
+  - course_id: 3
+    layer: G1
+    block_kind: vocab
+    block_order: 3
+    title: "G1·词·感官与情绪 1"
+    themes_main: 友谊重构
+    themes_aux: [高考压力调节, 时间管理, 选科困惑]
+    related_concepts: [情绪词族, 反义 happy/sad, 搭配 feel ~]
+    core_items:
+      - {kind: word, id: "word:afraid",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:against",  year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:advantage", year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:above",    year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:about",    year: 1, position: "课标·义教"}
+    homework_tags: [word:afraid, word:against, word:advantage, word:above, word:about]
+    listening_required: false
+
+  - course_id: 4
+    layer: G1
+    block_kind: vocab
+    block_order: 4
+    title: "G1·词·基础动作 2 (接受 + 行动)"
+    themes_main: city walk 体验记
+    themes_aux: [校园新生活, 露营复兴, 学习动机]
+    related_concepts: [动词词族 -ing/-ed, 搭配 ~ to/from]
+    core_items:
+      - {kind: word, id: "word:abroad",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:across",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:act",      year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:after",    year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:again",    year: 1, position: "课标·义教"}
+    homework_tags: [word:abroad, word:across, word:act, word:after, word:again]
+    listening_required: false
+
+  - course_id: 5
+    layer: G1
+    block_kind: vocab
+    block_order: 5
+    title: "G1·词·学习交流"
+    themes_main: 跨文化交流入门
+    themes_aux: [自习室文化, 校园食安, 学习动机]
+    related_concepts: [学习词族 -ment, 同义 study/learn, 搭配]
+    core_items:
+      - {kind: word, id: "word:absent",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:actor",    year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:actress",  year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:africa",   year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:african",  year: 1, position: "课标·义教"}
+    homework_tags: [word:absent, word:actor, word:actress, word:africa, word:african]
+    listening_required: false
+
+  - course_id: 6
+    layer: G1
+    block_kind: grammar
+    block_order: 6
+    title: "G1·语法·名词单复数与可数性"
+    themes_main: 校园新生活
+    themes_aux: [友谊重构, city walk, 自习室文化]
+    related_concepts: [可数/不可数, 名词所有格, 名词短语]
+    core_items:
+      - {kind: grammar, id: "grammar:一/1/(1)", year: 1, position: "课标·语法·义教·可数名词单复数"}
+      - {kind: grammar, id: "grammar:一/1/(2)", year: 1, position: "课标·语法·义教·不可数名词"}
+      - {kind: grammar, id: "grammar:一/1/(4)", year: 1, position: "课标·语法·义教·名词所有格"}
+    homework_tags: [word:advantage, word:advice, word:action]
+    listening_required: false
+
+  - course_id: 7
+    layer: G1
+    block_kind: grammar
+    block_order: 7
+    title: "G1·语法·形容词比较级与最高级"
+    themes_main: 校园社团竞选
+    themes_aux: [电竞奥运, 滑板入奥, 户外攀岩]
+    related_concepts: [形容词基本形式, 副词比较级, 比较结构]
+    core_items:
+      - {kind: grammar, id: "grammar:一/3/(1)", year: 1, position: "课标·语法·义教·形容词基本形式"}
+      - {kind: grammar, id: "grammar:一/3/(2)", year: 1, position: "课标·语法·义教·比较级最高级"}
+      - {kind: grammar, id: "grammar:一/4/(2)", year: 1, position: "课标·语法·义教·副词比较级"}
+    homework_tags: [word:active, word:able, word:advantage]
+    listening_required: false
+
+  - course_id: 8
+    layer: G1
+    block_kind: grammar
+    block_order: 8
+    title: "G1·语法·代词系统"
+    themes_main: 跨文化交流
+    themes_aux: [校园新生活, 友谊重构, 实习生日记]
+    related_concepts: [人称代词, 物主代词, 不定代词]
+    core_items:
+      - {kind: grammar, id: "grammar:一/5/(1)", year: 1, position: "课标·语法·义教·人称代词"}
+      - {kind: grammar, id: "grammar:一/5/(2)", year: 1, position: "课标·语法·义教·物主代词"}
+      - {kind: grammar, id: "grammar:一/5/(5)", year: 1, position: "课标·语法·义教·不定代词"}
+    homework_tags: [word:about, word:above, word:address]
+    listening_required: false
+
+  - course_id: 9
+    layer: G1
+    block_kind: reading
+    block_order: 9
+    title: "G1·阅读·细节理解"
+    themes_main: 国潮汉服
+    themes_aux: [博物馆热, 非遗传承, 茶道与礼仪]
+    related_concepts: [跳读, 关键词定位, 同义替换识别]
+    core_items:
+      - {kind: word, id: "word:accept", year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:advice", year: 1, position: "课标·义教"}
+    homework_tags: [word:accept, word:advice, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 10
+    layer: G1
+    block_kind: reading
+    block_order: 10
+    title: "G1·阅读·主旨大意"
+    themes_main: 露营复兴
+    themes_aux: [city walk, 哈尔滨冰雪季, 沙漠星空]
+    related_concepts: [主旨题型, 段落结构, 首末句重点]
+    core_items:
+      - {kind: word, id: "word:about",     year: 1, position: "课标·义教"}
+      - {kind: word, id: "word:advantage", year: 1, position: "课标·义教"}
+    homework_tags: [word:about, word:advantage, question_type:阅读理解]
+    listening_required: false
+
+# ============================================================
+# G2 高二 (10 节) — 词 3 / 语法 3 / 阅读 2 / 完形 1 / 应用文 1
+# ============================================================
   - course_id: 11
     layer: G2
-    block_kind: grammar
+    block_kind: vocab
     block_order: 1
-    title: "G2·语法·宾语从句陈述 vs 一般疑问"
+    title: "G2·词·学术交流 (achievement + accuracy)"
+    themes_main: 青年企业家访谈
+    themes_aux: [实习生日记, STEM 跨学科, 学习动机]
+    related_concepts: [名词后缀 -ment, 形→名转换, 搭配 ~ in/of]
+    core_items:
+      - {kind: word, id: "word:achievement", year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:account",     year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:acquire",     year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:actually",    year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:addition",    year: 2, position: "课标·必修"}
+    homework_tags: [word:achievement, word:account, word:acquire, word:actually, word:addition]
+    listening_required: false
+
+  - course_id: 12
+    layer: G2
+    block_kind: vocab
+    block_order: 2
+    title: "G2·词·科技与创新 (admire/aim/aspect)"
+    themes_main: AI 辅助科研
+    themes_aux: [脑机接口, 量子计算入门, 自动驾驶伦理]
+    related_concepts: [tech 词族, 抽象名词, 搭配 ~ at/to]
+    core_items:
+      - {kind: word, id: "word:admire",     year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:admit",      year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:adult",      year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:adventure",  year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:aim",        year: 2, position: "课标·必修"}
+    homework_tags: [word:admire, word:admit, word:adult, word:adventure, word:aim]
+    listening_required: false
+
+  - course_id: 13
+    layer: G2
+    block_kind: vocab
+    block_order: 3
+    title: "G2·词·情感焦虑 (anxious/announce)"
+    themes_main: 时间管理
+    themes_aux: [高考压力调节, 拖延克服, 友谊重构]
+    related_concepts: [情绪词族, 反义 calm/anxious, 搭配 feel ~ about]
+    core_items:
+      - {kind: word, id: "word:anxious",   year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:announce",  year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:argue",     year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:assume",    year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:approach",  year: 2, position: "课标·必修"}
+    homework_tags: [word:anxious, word:announce, word:argue, word:assume, word:approach]
+    listening_required: false
+
+  - course_id: 14
+    layer: G2
+    block_kind: grammar
+    block_order: 4
+    title: "G2·语法·宾语从句 (that/whether/if)"
     themes_main: 青年企业家访谈引述
-    themes_aux: [实习生日记, 远程办公]
-    related_concepts: [主从复合句, 名词性从句, 间接引语]
+    themes_aux: [实习生日记, 远程办公, STEM 跨学科]
+    related_concepts: [主从复合, 名词性从句, 间接引语]
     core_items:
       - {kind: grammar, id: "grammar:三/10/(1)", year: 2, position: "课标·语法·必修·宾语从句"}
-      - {kind: grammar, id: "grammar:三/10",     year: 2, position: "课标·语法·必修·名词性从句"}
-      - {kind: word,    id: "word:whether",      year: 2, position: "课标·3500词表"}
-    # homework_tags 命名空间限定: word tag (question_bank 实际有的). grammar tag question_bank 暂不支持.
-    homework_tags: [word:whether, word:report, word:explain]
+      - {kind: grammar, id: "grammar:三/10",     year: 2, position: "课标·语法·必修·主从复合句"}
+      - {kind: word,    id: "word:announce",     year: 2, position: "课标·必修"}
+    homework_tags: [word:announce, word:argue, word:assume]
     listening_required: false
 
-  # === G3 高三 (示例 1 节) ===
+  - course_id: 15
+    layer: G2
+    block_kind: grammar
+    block_order: 5
+    title: "G2·语法·定语从句 (who/which/that)"
+    themes_main: 故宫文物修复
+    themes_aux: [博物馆热, 非遗传承, 国潮汉服]
+    related_concepts: [关系代词, 关系副词, 限制/非限制]
+    core_items:
+      - {kind: grammar, id: "grammar:三/10/(3)", year: 2, position: "课标·语法·必修·定语从句"}
+      - {kind: word,    id: "word:approach",     year: 2, position: "课标·必修"}
+    homework_tags: [word:approach, word:adult, word:admit]
+    listening_required: false
+
+  - course_id: 16
+    layer: G2
+    block_kind: grammar
+    block_order: 6
+    title: "G2·语法·状语从句 (when/because/although)"
+    themes_main: 数字游民工作纪实
+    themes_aux: [远程办公, 实习生日记, 人机协作]
+    related_concepts: [时间状从, 原因状从, 让步状从]
+    core_items:
+      - {kind: grammar, id: "grammar:三/10/(2)", year: 2, position: "课标·语法·必修·状语从句"}
+      - {kind: word,    id: "word:adult",        year: 2, position: "课标·必修"}
+    homework_tags: [word:adult, word:adventure, word:actually]
+    listening_required: false
+
+  - course_id: 17
+    layer: G2
+    block_kind: reading
+    block_order: 7
+    title: "G2·阅读·议论文 main idea"
+    themes_main: STEM 跨学科教育
+    themes_aux: [田野调查方法, 学术写作规范, 学术诚信]
+    related_concepts: [论点-论据, 反驳结构, 主旨题]
+    core_items:
+      - {kind: word, id: "word:achievement", year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:approach",    year: 2, position: "课标·必修"}
+    homework_tags: [word:achievement, word:approach, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 18
+    layer: G2
+    block_kind: reading
+    block_order: 8
+    title: "G2·阅读·说明文 + 数据图表"
+    themes_main: 海洋塑料治理
+    themes_aux: [候鸟迁徙, 极地冰川变化, 雨林生态保护]
+    related_concepts: [图表数据题, 因果关系, 细节定位]
+    core_items:
+      - {kind: word, id: "word:aspect",   year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:addition", year: 2, position: "课标·必修"}
+    homework_tags: [word:aspect, word:addition, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 19
+    layer: G2
+    block_kind: cloze
+    block_order: 9
+    title: "G2·完形·语境推断"
+    themes_main: 远程办公
+    themes_aux: [数字游民, 实习生日记, 人机协作]
+    related_concepts: [上下文同义, 反义提示, 词汇辨析]
+    core_items:
+      - {kind: word, id: "word:approach", year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:argue",    year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:assume",   year: 2, position: "课标·必修"}
+    homework_tags: [word:approach, word:argue, word:assume, question_type:完形填空(七选五/语篇)]
+    listening_required: false
+
+  - course_id: 20
+    layer: G2
+    block_kind: applied
+    block_order: 10
+    title: "G2·应用文·邀请信 + 通知"
+    themes_main: 跨文化交流活动
+    themes_aux: [博物馆热, 校园社团竞选, 非遗传承]
+    related_concepts: [应用文格式, 礼貌用语, 表达邀请]
+    core_items:
+      - {kind: word, id: "word:announce", year: 2, position: "课标·必修"}
+      - {kind: word, id: "word:advance",  year: 2, position: "课标·必修"}
+    homework_tags: [word:announce, word:advance, question_type:阅读理解]
+    listening_required: false
+
+# ============================================================
+# G3 高三 (10 节) — 词 2 / 语法 2 / 阅读 2 / 完形 1 / 语法填空 1 / 应用文 1 / 续写 1
+# ============================================================
   - course_id: 21
     layer: G3
-    block_kind: narrative
+    block_kind: vocab
     block_order: 1
-    title: "G3·续写·情绪转折"
-    themes_main: 玛雅遗址考古从挫折到突破
-    themes_aux: [极地探险, 滑板入奥]
-    related_concepts: [倒装强调, 情绪词族, 叙事时态]
+    title: "G3·词·学术高频 (academic + access)"
+    themes_main: STEM 跨学科
+    themes_aux: [学术写作规范, 学科前沿讲座, 学术诚信]
+    related_concepts: [学术词族 -ic/-ive, 抽象名词, 搭配 have ~ to]
     core_items:
-      - {kind: grammar, id: "grammar:三/8",   year: 3, position: "课标·语法·选必·强调结构"}
-      - {kind: word,    id: "word:abandon",    year: 3, position: "课标·选必"}
-      - {kind: word,    id: "word:astonish",   year: 3, position: "课标·选必"}
-      - {kind: word,    id: "word:struggle",   year: 3, position: "课标·选必"}
-    homework_tags: [word:abandon, word:astonish, word:struggle, word:debate]
+      - {kind: word, id: "word:academic", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:access",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:accurate", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:absorb",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:adjust",   year: 3, position: "课标·选必"}
+    homework_tags: [word:academic, word:access, word:accurate, word:absorb, word:adjust]
     listening_required: false
 
-  # === G_FINAL 高考前突击 (示例 1 节) ===
+  - course_id: 22
+    layer: G3
+    block_kind: vocab
+    block_order: 2
+    title: "G3·词·情绪与转折 (abandon + astonish)"
+    themes_main: 玛雅遗址新发现
+    themes_aux: [古埃及金字塔解谜, 庞贝古城重现, 极地探险]
+    related_concepts: [情绪强词, 转折副词, 叙事词汇]
+    core_items:
+      - {kind: word, id: "word:abandon",  year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:astonish", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:adopt",    year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:advocate", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:affect",   year: 3, position: "课标·选必"}
+    homework_tags: [word:abandon, word:astonish, word:adopt, word:advocate, word:affect]
+    listening_required: false
+
+  - course_id: 23
+    layer: G3
+    block_kind: grammar
+    block_order: 3
+    title: "G3·语法·主语从句 + 表语从句"
+    themes_main: 流感病毒变异研究
+    themes_aux: [阿尔茨海默症研究, 系外行星观测, 基因编辑]
+    related_concepts: [主从复合, 引导词, 形式主语 it]
+    core_items:
+      - {kind: grammar, id: "grammar:三/10/(4)", year: 3, position: "课标·语法·选必·主语从句"}
+      - {kind: grammar, id: "grammar:三/10/(5)", year: 3, position: "课标·语法·选必·表语从句"}
+      - {kind: word,    id: "word:assume",       year: 2, position: "课标·必修"}
+    homework_tags: [word:assume, word:academic, word:access]
+    listening_required: false
+
+  - course_id: 24
+    layer: G3
+    block_kind: grammar
+    block_order: 4
+    title: "G3·语法·非谓语动词综合"
+    themes_main: 候鸟迁徙研究
+    themes_aux: [雨林生态保护, 灵长类社会行为, 深海热泉生命]
+    related_concepts: [不定式, 动名词, 分词作状语]
+    core_items:
+      - {kind: grammar, id: "grammar:三/7/(1)", year: 3, position: "课标·语法·选必·动词不定式"}
+      - {kind: word,    id: "word:adopt",        year: 3, position: "课标·选必"}
+    homework_tags: [word:adopt, word:advocate, word:abandon]
+    listening_required: false
+
+  - course_id: 25
+    layer: G3
+    block_kind: reading
+    block_order: 5
+    title: "G3·阅读·议论文 + 推理判断"
+    themes_main: 极地冰川变化
+    themes_aux: [海洋塑料治理, 候鸟迁徙, 碳中和路径变种]
+    related_concepts: [推理题, 论证结构, 隐含态度]
+    core_items:
+      - {kind: word, id: "word:adjust", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:affect", year: 3, position: "课标·选必"}
+    homework_tags: [word:adjust, word:affect, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 26
+    layer: G3
+    block_kind: reading
+    block_order: 6
+    title: "G3·阅读·科普 + 词义猜测"
+    themes_main: 灵长类社会行为
+    themes_aux: [雨林生态保护, 深海热泉生命, 候鸟迁徙]
+    related_concepts: [词义猜测题, 科普逻辑, 数据支撑]
+    core_items:
+      - {kind: word, id: "word:absorb",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:accurate", year: 3, position: "课标·选必"}
+    homework_tags: [word:absorb, word:accurate, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 27
+    layer: G3
+    block_kind: cloze
+    block_order: 7
+    title: "G3·完形·议论篇深度"
+    themes_main: 跨文化交流
+    themes_aux: [国潮汉服, 茶道与礼仪, 非遗传承]
+    related_concepts: [逻辑关系词, 段落主旨, 同义反义]
+    core_items:
+      - {kind: word, id: "word:academic", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:advocate", year: 3, position: "课标·选必"}
+    homework_tags: [word:academic, word:advocate, question_type:完形填空(七选五/语篇)]
+    listening_required: false
+
+  - course_id: 28
+    layer: G3
+    block_kind: gramfill
+    block_order: 8
+    title: "G3·语法填空·时态 + 词形变化"
+    themes_main: 古埃及金字塔解谜
+    themes_aux: [玛雅遗址新发现, 庞贝古城重现, 丝路考古]
+    related_concepts: [时态判断, 词性转换, 三单/复数]
+    core_items:
+      - {kind: grammar, id: "grammar:一/2/(1)", year: 1, position: "课标·语法·义教·动词基本形式"}
+      - {kind: word,    id: "word:adjust",       year: 3, position: "课标·选必"}
+    homework_tags: [word:adjust, word:affect, question_type:语法填空_synth]
+    listening_required: false
+
+  - course_id: 29
+    layer: G3
+    block_kind: applied
+    block_order: 9
+    title: "G3·应用文·求职 + 自荐"
+    themes_main: 青年企业家访谈
+    themes_aux: [实习生日记, 人机协作, 数字游民]
+    related_concepts: [求职信结构, 自我陈述, 礼貌结尾]
+    core_items:
+      - {kind: word, id: "word:advocate", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:academic", year: 3, position: "课标·选必"}
+    homework_tags: [word:advocate, word:academic, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 30
+    layer: G3
+    block_kind: narrative
+    block_order: 10
+    title: "G3·续写·情绪转折 + 倒装"
+    themes_main: 玛雅遗址挫折到突破
+    themes_aux: [极地探险, 滑板入奥, 户外攀岩]
+    related_concepts: [倒装强调, 情绪词族, 叙事时态]
+    core_items:
+      - {kind: grammar, id: "grammar:三/8",  year: 3, position: "课标·语法·选必·句子成分按结构"}
+      - {kind: word,    id: "word:abandon",   year: 3, position: "课标·选必"}
+      - {kind: word,    id: "word:astonish",  year: 3, position: "课标·选必"}
+    homework_tags: [word:abandon, word:astonish, word:advocate, word:affect]
+    listening_required: false
+
+# ============================================================
+# G_FINAL 高考前突击 (10 节) — 词 2 / 语法 2 / 阅读 2 / 完形 1 / 语法填空 1 / 应用文 1 / 模拟卷 1
+# ============================================================
   - course_id: 31
     layer: G_FINAL
-    block_kind: mock
+    block_kind: vocab
     block_order: 1
-    title: "G_FINAL·模拟卷·阅读密集 + 真题趋势"
+    title: "G_FINAL·词·选必核心冲刺 1 (civil/debate/creature)"
     themes_main: 火星探索任务长文
     themes_aux: [深海热泉生命, 阿尔茨海默症研究, 系外行星观测]
-    related_concepts: [科技类阅读, 主旨题, 推理题, 词义猜测]
+    related_concepts: [科技阅读高频, 主旨题, 词义猜测]
     core_items:
-      - {kind: word, id: "word:civil",      year: 3, position: "课标·选必"}
-      - {kind: word, id: "word:debate",     year: 3, position: "课标·选必"}
-      - {kind: word, id: "word:creature",   year: 3, position: "课标·选必"}
-      - {kind: word, id: "word:citizen",    year: 3, position: "课标·选必"}
-    homework_tags: [word:civil, word:debate, word:creature, word:citizen]
+      - {kind: word, id: "word:civil",    year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:debate",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:creature", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:citizen",  year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:constant", year: 3, position: "课标·选必"}
+    homework_tags: [word:civil, word:debate, word:creature, word:citizen, word:constant]
+    listening_required: false
+
+  - course_id: 32
+    layer: G_FINAL
+    block_kind: vocab
+    block_order: 2
+    title: "G_FINAL·词·选必核心冲刺 2 (clone/canal/anger)"
+    themes_main: 基因编辑技术伦理
+    themes_aux: [AI 辅助科研, 脑机接口, 自动驾驶伦理]
+    related_concepts: [科技高频名词, 抽象动词, 搭配]
+    core_items:
+      - {kind: word, id: "word:clone",         year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:canal",         year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:anger",         year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:angle",         year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:administration", year: 3, position: "课标·选必"}
+    homework_tags: [word:clone, word:canal, word:anger, word:angle, word:administration]
+    listening_required: false
+
+  - course_id: 33
+    layer: G_FINAL
+    block_kind: grammar
+    block_order: 3
+    title: "G_FINAL·语法·虚拟语气 (if + were/had)"
+    themes_main: 学术写作规范
+    themes_aux: [学术诚信, STEM 跨学科, 田野调查方法]
+    related_concepts: [虚拟条件, 倒装虚拟, 含蓄虚拟]
+    core_items:
+      - {kind: grammar, id: "grammar:三/14", year: 3, position: "课标·语法·选修·虚拟语气"}
+      - {kind: word,    id: "word:abandon",   year: 3, position: "课标·选必"}
+    homework_tags: [word:abandon, word:astonish, word:advocate]
+    listening_required: false
+
+  - course_id: 34
+    layer: G_FINAL
+    block_kind: grammar
+    block_order: 4
+    title: "G_FINAL·语法·强调结构 + 倒装"
+    themes_main: 极地探险纪实
+    themes_aux: [户外攀岩, 滑板入奥, 沙漠星空]
+    related_concepts: [it is...that, 部分倒装, 全倒装]
+    core_items:
+      - {kind: grammar, id: "grammar:三/13", year: 3, position: "课标·语法·选修·强调"}
+      - {kind: grammar, id: "grammar:三/12", year: 3, position: "课标·语法·选修·倒装"}
+      - {kind: word,    id: "word:debate",   year: 3, position: "课标·选必"}
+    homework_tags: [word:debate, word:civil, word:constant]
+    listening_required: false
+
+  - course_id: 35
+    layer: G_FINAL
+    block_kind: reading
+    block_order: 5
+    title: "G_FINAL·阅读·密集真题 (科技长文)"
+    themes_main: 火星探索任务
+    themes_aux: [深海热泉, 阿尔茨海默症研究, 系外行星观测]
+    related_concepts: [全题型综合, 推理判断, 细节定位]
+    core_items:
+      - {kind: word, id: "word:academic", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:absorb",   year: 3, position: "课标·选必"}
+    homework_tags: [word:academic, word:absorb, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 36
+    layer: G_FINAL
+    block_kind: reading
+    block_order: 6
+    title: "G_FINAL·阅读·密集真题 (自然长文)"
+    themes_main: 灵长类社会行为
+    themes_aux: [候鸟迁徙, 雨林生态保护, 极地冰川变化]
+    related_concepts: [科普长文, 实验描述, 数据图表]
+    core_items:
+      - {kind: word, id: "word:adjust",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:accurate", year: 3, position: "课标·选必"}
+    homework_tags: [word:adjust, word:accurate, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 37
+    layer: G_FINAL
+    block_kind: cloze
+    block_order: 7
+    title: "G_FINAL·完形·5 年真题主题"
+    themes_main: 阿尔茨海默症研究
+    themes_aux: [基因编辑, 流感病毒变异, 脑机接口]
+    related_concepts: [医学英语, 逻辑词, 同义/反义提示]
+    core_items:
+      - {kind: word, id: "word:adopt",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:affect",  year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:adjust",  year: 3, position: "课标·选必"}
+    homework_tags: [word:adopt, word:affect, word:adjust, question_type:完形填空(七选五/语篇)]
+    listening_required: false
+
+  - course_id: 38
+    layer: G_FINAL
+    block_kind: gramfill
+    block_order: 8
+    title: "G_FINAL·语法填空·5 年真题"
+    themes_main: 国潮汉服现象
+    themes_aux: [博物馆热, 非遗传承, 茶道与礼仪]
+    related_concepts: [词形转换, 时态语态, 介词冠词]
+    core_items:
+      - {kind: grammar, id: "grammar:一/2/(1)", year: 1, position: "课标·语法·义教·动词基本形式"}
+      - {kind: word,    id: "word:adapt",        year: 3, position: "课标·选必"}
+    homework_tags: [word:adapt, word:adjust, question_type:语法填空_synth]
+    listening_required: false
+
+  - course_id: 39
+    layer: G_FINAL
+    block_kind: applied
+    block_order: 9
+    title: "G_FINAL·应用文·5 年真题 (邀请/感谢/通知)"
+    themes_main: 实习生日记
+    themes_aux: [青年企业家访谈, 远程办公, 数字游民]
+    related_concepts: [应用文模板, 高级连接词, 礼貌套语]
+    core_items:
+      - {kind: word, id: "word:academic", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:advocate", year: 3, position: "课标·选必"}
+    homework_tags: [word:academic, word:advocate, question_type:阅读理解]
+    listening_required: false
+
+  - course_id: 40
+    layer: G_FINAL
+    block_kind: mock
+    block_order: 10
+    title: "G_FINAL·模拟卷·综合冲刺 (阅+完+语填+作文)"
+    themes_main: 故宫文物修复纪实
+    themes_aux: [玛雅遗址新发现, 古埃及金字塔解谜, 庞贝古城重现]
+    related_concepts: [全题型综合, 时间分配, 答题策略]
+    core_items:
+      - {kind: word, id: "word:academic", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:advocate", year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:affect",   year: 3, position: "课标·选必"}
+    homework_tags: [word:academic, word:advocate, word:affect, question_type:阅读理解, question_type:完形填空(七选五/语篇)]
     listening_required: false
