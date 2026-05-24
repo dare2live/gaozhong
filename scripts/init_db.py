@@ -90,6 +90,11 @@ def main() -> None:
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
     print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")
 
+    print("\n=== Layer 4c: 40 节课程灌库 (5.5 init_courses 用户 2026-05-24) ===")
+    from backend.services.course import init_courses
+    cs = init_courses.run(con)
+    print(f"  {cs}")
+
     print("\n=== Layer 3: audit ===")
     for k, v in audit.run_all(con).items():
         print(f"  {k}: {v}")

@@ -19,9 +19,9 @@ from datetime import datetime, timezone
 
 import duckdb
 
-from . import (codequality, coverage, cross_source, curriculum, exam_coverage,
-               extracurricular, file_integrity, frontend_dupe, grammar_4q,
-               graph, publisher, textbook)
+from . import (codequality, course, coverage, cross_source, curriculum,
+               exam_coverage, extracurricular, file_integrity, frontend_dupe,
+               grammar_4q, graph, publisher, textbook)
 
 # Order = report order; severity sorting happens later
 AUDIT_FNS = [
@@ -47,6 +47,15 @@ AUDIT_FNS = [
     codequality.audit_code_size,
     frontend_dupe.audit_frontend_inline_blocks,
     frontend_dupe.audit_frontend_duplicate_fetch,
+    # 第五阶段 (R1-R6 + 听力 + 政治)
+    course.audit_course_relations,
+    course.audit_course_no_textbook_copy,
+    course.audit_course_scenarios,
+    course.audit_homework_alignment,
+    course.audit_course_lexical_layer,
+    course.audit_course_textbook_position,
+    course.audit_listening_transcript_required,
+    course.audit_no_political,
 ]
 
 

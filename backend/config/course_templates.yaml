@@ -1,0 +1,87 @@
+# 40 节课程编排 — 4 层 × 10
+# G1 高一 ~1200 词 / G2 高二 ~2200 / G3 高三 ~3000 / G_FINAL 高考前突击 ~3500
+# 用户 2026-05-24 D6: "总冲刺 10 节, 词汇向下兼容, 标教材位置"
+# 实施: G_FINAL + G1 优先 (高 ROI), G2/G3 逐步补
+#
+# yaml 字段:
+#   course_id        全局 1..40
+#   layer            G1 | G2 | G3 | G_FINAL
+#   block_kind       vocab|grammar|reading|cloze|gramfill|applied|narrative|mock|listening
+#   block_order      层内序号 1..10
+#   title            课节标题
+#   themes_main      主选场景 (Time/NatGeo/SciAm 风)
+#   themes_aux       副选场景 ≥2 (R3 多场景)
+#   related_concepts 关联拓展 ≥3 (R1)
+#   core_items       核心知识点 (kind + id + year + position)  R6
+#   homework_tags    作业 tag (R4 ⊆ 本节)
+#   listening_required
+
+courses:
+  # === G1 高一 (10 节) — 词汇 5 / 语法 3 / 阅读 2 ===
+  - course_id: 1
+    layer: G1
+    block_kind: vocab
+    block_order: 1
+    title: "G1·词汇·基础名词 1"
+    themes_main: 校园新生活
+    themes_aux: [自习室文化, 友谊重构]
+    related_concepts: [词族 -er/-or, 反义 enemy/friend, 搭配 make ~]
+    core_items:
+      - {kind: word, id: "word:family",   year: 1, position: "外研·必修1·U1·Vocabulary"}
+      - {kind: word, id: "word:friend",   year: 1, position: "外研·必修1·U1·Vocabulary"}
+      - {kind: word, id: "word:hobby",    year: 1, position: "外研·必修1·U2·Vocabulary"}
+      - {kind: word, id: "word:teacher",  year: 1, position: "外研·必修1·U1·Vocabulary"}
+      - {kind: word, id: "word:study",    year: 1, position: "外研·必修1·U2·Vocabulary"}
+    homework_tags: [word:family, word:friend, word:hobby, word:teacher, word:study]
+    listening_required: false
+
+  # === G2 高二 (示例 1 节) ===
+  - course_id: 11
+    layer: G2
+    block_kind: grammar
+    block_order: 1
+    title: "G2·语法·宾语从句陈述 vs 一般疑问"
+    themes_main: 青年企业家访谈引述
+    themes_aux: [实习生日记, 远程办公]
+    related_concepts: [主从复合句, 名词性从句, 间接引语]
+    core_items:
+      - {kind: grammar, id: "grammar:三/10/(1)", year: 2, position: "课标·语法·必修·宾语从句"}
+      - {kind: grammar, id: "grammar:三/10",     year: 2, position: "课标·语法·必修·名词性从句"}
+      - {kind: word,    id: "word:whether",      year: 2, position: "课标·3500词表"}
+    # homework_tags 命名空间限定: word tag (question_bank 实际有的). grammar tag question_bank 暂不支持.
+    homework_tags: [word:whether, word:report, word:explain]
+    listening_required: false
+
+  # === G3 高三 (示例 1 节) ===
+  - course_id: 21
+    layer: G3
+    block_kind: narrative
+    block_order: 1
+    title: "G3·续写·情绪转折"
+    themes_main: 玛雅遗址考古从挫折到突破
+    themes_aux: [极地探险, 滑板入奥]
+    related_concepts: [倒装强调, 情绪词族, 叙事时态]
+    core_items:
+      - {kind: grammar, id: "grammar:三/8",   year: 3, position: "课标·语法·选必·强调结构"}
+      - {kind: word,    id: "word:abandon",    year: 3, position: "课标·选必"}
+      - {kind: word,    id: "word:astonish",   year: 3, position: "课标·选必"}
+      - {kind: word,    id: "word:struggle",   year: 3, position: "课标·选必"}
+    homework_tags: [word:abandon, word:astonish, word:struggle, word:debate]
+    listening_required: false
+
+  # === G_FINAL 高考前突击 (示例 1 节) ===
+  - course_id: 31
+    layer: G_FINAL
+    block_kind: mock
+    block_order: 1
+    title: "G_FINAL·模拟卷·阅读密集 + 真题趋势"
+    themes_main: 火星探索任务长文
+    themes_aux: [深海热泉生命, 阿尔茨海默症研究, 系外行星观测]
+    related_concepts: [科技类阅读, 主旨题, 推理题, 词义猜测]
+    core_items:
+      - {kind: word, id: "word:civil",      year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:debate",     year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:creature",   year: 3, position: "课标·选必"}
+      - {kind: word, id: "word:citizen",    year: 3, position: "课标·选必"}
+    homework_tags: [word:civil, word:debate, word:creature, word:citizen]
+    listening_required: false

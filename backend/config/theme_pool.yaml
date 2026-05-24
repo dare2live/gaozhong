@@ -1,0 +1,54 @@
+# 50 主题池 (Time / National Geographic / Scientific American 风格, 非政治)
+# 用户 2026-05-24 D5: "可参考 time 国家地理 科学美国人 选题, 不要涉及政治"
+# 10 类 × 5, 外置以便修改不动代码 (M3)
+
+categories:
+  - id: tech
+    label: 科技
+    refs: [SciAm, Time]
+    themes: [AI 辅助科研, 自动驾驶伦理, 量子计算入门, 脑机接口, 基因编辑]
+
+  - id: science
+    label: 科学
+    refs: [SciAm, NatGeo]
+    themes: [火星探索任务, 深海热泉生命, 系外行星观测, 阿尔茨海默症研究, 流感病毒变异]
+
+  - id: nature
+    label: 自然
+    refs: [NatGeo]
+    themes: [海洋塑料治理, 候鸟迁徙, 极地冰川变化, 灵长类社会行为, 雨林生态保护]
+
+  - id: history_archeo
+    label: 历史考古
+    refs: [NatGeo, Time]
+    themes: [玛雅遗址新发现, 古埃及金字塔解谜, 庞贝古城重现, 丝路考古, 故宫文物修复]
+
+  - id: academic
+    label: 学术
+    refs: [教学]
+    themes: [STEM 跨学科, 田野调查方法, 学术写作规范, 学科前沿讲座, 学术诚信]
+
+  - id: psychology
+    label: 心理
+    refs: [SciAm Mind]
+    themes: [时间管理, 高考压力调节, 友谊重构, 学习动机, 拖延克服]
+
+  - id: culture
+    label: 文化
+    refs: [NatGeo]
+    themes: [国潮汉服, 博物馆热, 非遗传承, 跨文化交流, 茶道与礼仪]
+
+  - id: career
+    label: 职业
+    refs: [Time]
+    themes: [青年企业家, 数字游民, 远程办公, 实习生日记, 人机协作]
+
+  - id: travel_adventure
+    label: 旅行探险
+    refs: [NatGeo]
+    themes: [露营复兴, city walk, 哈尔滨冰雪季, 沙漠星空, 极地探险]
+
+  - id: sports_school
+    label: 体育校园
+    refs: [Time, 教学]
+    themes: [电竞奥运, 滑板入奥, 女足世界杯, 校园食安, 自习室文化]

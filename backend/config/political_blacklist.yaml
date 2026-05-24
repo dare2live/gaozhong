@@ -1,0 +1,20 @@
+# 政治敏感词黑名单 — audit_no_political 扫: 主题 / 阅读篇 / 听力 transcript
+# 用户 2026-05-24 D5: "不要涉及政治"
+# 窄黑名单, 不扫 "policy" 等泛词避免误伤 (eg "学校政策" 可保留)
+
+trigger_words:
+  - 政府
+  - 选举
+  - 政党
+  - 政权
+  - 制裁
+  - 外交关系
+  - 战争
+  - 政治体制
+  - government       # 英文同样
+  - election
+  - political party
+  - regime
+  - sanction
+  - diplomatic relation
+  - war
