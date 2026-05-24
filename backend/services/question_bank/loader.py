@@ -49,7 +49,10 @@ def _insert_question(con: duckdb.DuckDBPyConnection, origin: str, origin_ref: st
                       answer: str | None, analysis: str | None,
                       difficulty: str = "mid") -> int:
     row = con.execute(
-        "INSERT INTO question_bank VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?) "
+        "INSERT INTO question_bank "
+        "(qb_id, origin, origin_ref, question_type, stem, options_json, answer, analysis, "
+        " difficulty, reviewed_by, created_at) "
+        "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?) "
         "RETURNING qb_id",
         [origin, origin_ref, qtype, stem, options_json, answer, analysis, difficulty, _now()],
     ).fetchone()

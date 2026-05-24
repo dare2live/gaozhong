@@ -117,7 +117,7 @@
 | **D1** | "应该就是一个教学系统, 可以做成不同的标签" | 5.2 删 3 端独立, 改 `/app` 7 tab SPA |
 | **D2** | "教学用的教材也没写, 30 节每节两小时" | 5.4 40 节 (D6 后改成分层 4×10) |
 | **D3** | "覆盖知识点解析关联关系, 内容不与教材一致, 多种场景, 作业要检验" | 5.1.B R1 关联 / R2 不抄 / R3 多场景 / R4 作业闭环 |
-| **D4** | "短视频啥的不要, 听力题目的文字稿要加, 都统一放题库管理, 模块化可扩展可维护, 跑 codegraph 和 complexity" | 主题池去娱乐流量 / 听力入 qb_questions / 5.1.A M1-M8 模块化原则 / baseline 已跑 (12 CC>10) |
+| **D4** | "短视频啥的不要, 听力题目的文字稿要加, 都统一放题库管理, 模块化可扩展可维护, 跑 codegraph 和 complexity" | 主题池去娱乐流量 / 听力入 question_bank / 5.1.A M1-M8 模块化原则 / baseline 已跑 (12 CC>10) |
 | **D5** | "参考 Time / 国家地理 / 科学美国人 选题, 不要涉及政治" | 5.4.B 主题池 10 类 × 5 (科学/自然/历史考古 加强), 加 audit_no_political |
 | **D6** | "充分利用高中各阶段词汇, 不引陌生词, 标年级+教材位置, 总冲刺 10 节" | R5 词汇分层向下兼容 + R6 教材位置必标 + 总冲刺 = G_FINAL 10 节 → 4 层 × 10 = 40 节 |
 
@@ -313,10 +313,10 @@ course_sessions                          -- 老师实际授课记录
   session_id, course_id, class_id, taught_at, notes
 ```
 
-#### 5.5.B qb_questions 扩字段 (听力入题库, 不另起表)
+#### 5.5.B question_bank 扩字段 (听力入题库, 不另起表)
 
 ```sql
-ALTER TABLE qb_questions ADD COLUMN
+ALTER TABLE question_bank ADD COLUMN
   has_audio       BOOLEAN DEFAULT false,
   audio_id        VARCHAR,                       -- "audio:2024/A/Q1" lineage
   transcript      TEXT,                          -- 必填 if has_audio (audit_listening_transcript_required)
@@ -361,7 +361,7 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 4b. ✅ R2: 与教材无 ≥10 词连续重叠 (`audit_course_no_textbook_copy`)
 4c. ✅ R3: 每核心知识点 ≥3 场景 (`audit_course_scenarios`)
 4d. ✅ R4: 每节作业 tag 100% ⊆ 本节 (`audit_homework_alignment`)
-4e. ✅ 听力题入 `qb_questions`, has_audio=true 必有 transcript (`audit_listening_transcript_required`)
+4e. ✅ 听力题入 `question_bank`, has_audio=true 必有 transcript (`audit_listening_transcript_required`)
 4f. ✅ 主题池 / templates / 阈值 全 yaml 外置 (M3), 0 硬编码
 4g. ✅ CC>10 函数数 ≤ baseline 12, fan-in ≤ 5 (M6 M7)
 4h. ✅ 每新模块带 `tests/test_*.py` smoke 200 (M5)
