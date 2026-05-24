@@ -73,6 +73,10 @@ class Handler(BaseHTTPRequestHandler):
 
     # --- dispatch helpers ---
     def _try_static(self, path: str) -> bool:
+        # /app — 第五阶段统一 SPA 入口 (D1)
+        if path == "/app" or path == "/app.html":
+            self._send_file(FRONTEND_DIR / "app.html", "text/html; charset=utf-8")
+            return True
         if path == "/" or path == "/index.html":
             self._send_file(FRONTEND_DIR / "index.html", "text/html; charset=utf-8")
             return True

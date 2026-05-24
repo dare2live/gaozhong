@@ -44,13 +44,9 @@ for i in 1 2 3 4 5; do
   sleep 1
 done
 
-# 4. 浏览器开 3 个页面
+# 4. 浏览器开 /app 单入口 (5.1 统一 SPA)
 echo "[start] 打开浏览器"
-open "http://127.0.0.1:$PORT/teacher"      # 主用 — 教师端
-sleep 0.5
-open "http://127.0.0.1:$PORT/"              # 主页 (概览)
-sleep 0.5
-open "http://127.0.0.1:$PORT/student"       # 学生端 (扫码答题)
+open "http://127.0.0.1:$PORT/app"
 
 echo ""
 echo "================================================================"
