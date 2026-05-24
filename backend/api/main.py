@@ -67,6 +67,10 @@ class Handler(BaseHTTPRequestHandler):
                 from backend.api.routes import scan_upload
                 self._json(*scan_upload.handle(qs, body, self.headers))
                 return
+            if path == "/api/students/import_csv":
+                from backend.api.routes import students as st
+                self._json(200, st.api_students_import_csv(qs, body))
+                return
             self._json(404, {"error": "no POST route", "path": path})
         except Exception as e:
             self._json(500, {"error": str(e), "type": type(e).__name__})

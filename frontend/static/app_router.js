@@ -30,26 +30,58 @@
   // A. 工作台
   // ===================================================================
   register("workbench", async () => {
-    const [stats, cs] = await Promise.all([fetchJSON("/api/stats"), fetchJSON("/api/course/stats")]);
+    const [stats, cs, classes, audit] = await Promise.all([
+      fetchJSON("/api/stats"),
+      fetchJSON("/api/course/stats"),
+      fetchJSON("/api/students/classes").catch(() => ({ count: 0, classes: [] })),
+      fetchJSON("/api/audit/findings").catch(() => []),
+    ]);
+    const findings = Array.isArray(audit) ? audit : (audit.findings || []);
+    const fail = findings.filter(f => f.severity === "FAIL").length;
+    const warn = findings.filter(f => f.severity === "WARN").length;
+    const sevColor = fail > 0 ? "G_FINAL" : (warn > 4 ? "G3" : "G1");
+    const totalStudents = (classes.classes || []).reduce((a, c) => a + (c.n_students || 0), 0);
     CONTENT.innerHTML = `
-      <h2>A. 工作台</h2>
+      <h2>A. 工作台 · 今日概览</h2>
       <div class="course-grid">
-        <div class="course-card">
-          <strong>数据健康</strong>
-          <div class="block">nodes: ${stats.nodes ?? "-"} / edges: ${stats.edges ?? "-"}</div>
-          <div class="block">question_bank: ${stats.question_bank ?? "-"} / tags: ${stats.question_tags ?? "-"}</div>
+        <div class="course-card ${sevColor}">
+          <strong>📊 数据健康</strong>
+          <div class="block"><strong>${fail} FAIL · ${warn} WARN</strong> (共 ${findings.length} audit)</div>
+          <div class="block"><a href="#/data">→ D 数据管理</a> 查详</div>
         </div>
         <div class="course-card G_FINAL">
-          <strong>40 节课程</strong>
-          <div class="block">G1: ${cs.by_layer?.G1 ?? 0} / G2: ${cs.by_layer?.G2 ?? 0} / G3: ${cs.by_layer?.G3 ?? 0} / G_FINAL: ${cs.by_layer?.G_FINAL ?? 0}</div>
-          <div class="block">materials: ${cs.total_materials ?? 0}</div>
+          <strong>📚 40 节课程</strong>
+          <div class="block">G1:${cs.by_layer?.G1 ?? 0} · G2:${cs.by_layer?.G2 ?? 0} · G3:${cs.by_layer?.G3 ?? 0} · G_FINAL:${cs.by_layer?.G_FINAL ?? 0}</div>
+          <div class="block">materials: ${cs.total_materials ?? 0} 行 · <a href="#/teaching">→ B 教学</a></div>
         </div>
         <div class="course-card">
-          <strong>待补缺口</strong>
-          <div class="block">学生档案 UI (#39 待做)</div>
-          <div class="block">扫描 POST UI (4.7.C 待补)</div>
+          <strong>🎓 学生 + 班级</strong>
+          <div class="block">${totalStudents} 学生 / ${classes.count || 0} 班</div>
+          <div class="block"><a href="#/students">→ E 学生档案</a></div>
         </div>
-      </div>`;
+        <div class="course-card">
+          <strong>📝 题库</strong>
+          <div class="block">${stats.question_bank ?? "-"} 题 / ${stats.question_tags ?? "-"} 标签</div>
+          <div class="block"><a href="#/qbank">→ C 题库 + 组卷</a></div>
+        </div>
+        <div class="course-card">
+          <strong>🌐 知识图谱</strong>
+          <div class="block">${stats.nodes ?? "-"} nodes · ${stats.edges ?? "-"} edges</div>
+          <div class="block"><a href="#/graph">→ F 图谱 + 趋势</a></div>
+        </div>
+        <div class="course-card">
+          <strong>📂 教材资源</strong>
+          <div class="block">${stats.textbooks ?? "-"} 教材 · ${stats.cefr_vocab ?? "-"} 课标词</div>
+          <div class="block">${stats.exam_questions ?? "-"} 真题 · ${stats.theme_contexts ?? "-"} 主题</div>
+        </div>
+      </div>
+      <h3 style="margin-top:1.5rem">最近 audit 异常 (${fail + warn} 条, 前 5)</h3>
+      <ul class="gz-qlist" style="background:#fff;padding:0.5rem 2rem;border-radius:4px">
+        ${findings.filter(f => f.severity !== "OK").slice(0, 5).map(f =>
+          `<li><strong style="color:${f.severity === 'FAIL' ? '#E3120B' : '#f4a261'}">${f.severity}</strong>
+           <code>${f.audit_kind}</code> ${f.target || ""}: ${(f.actual || "").slice(0, 100)}</li>`
+        ).join("") || "<li>无</li>"}
+      </ul>`;
   });
 
   // ===================================================================
@@ -224,10 +256,66 @@
   // F. 知识图谱 (复用 /teacher 的图谱 tab, iframe 嵌)
   // ===================================================================
   register("graph", async () => {
+    CONTENT.innerHTML = `<h2>F. 知识图谱</h2><p>载入中 ...</p>`;
+    const [gstats, trend] = await Promise.all([
+      fetchJSON("/api/graph/stats").catch(() => ({})),
+      fetchJSON("/api/trend/summary").catch(() => ({})),
+    ]);
+    // /api/graph/stats 实际字段: {nodes, edges, total_nodes, total_edges}
+    // nodes 是 {kind: count}, edges 是 {relation: count}
+    const nodeKinds = gstats.nodes || gstats.by_node_type || {};
+    const relations = gstats.edges || gstats.by_relation || {};
     CONTENT.innerHTML = `
-      <h2>F. 知识图谱</h2>
-      <p>force-directed / 热力图 / 趋势 / 跨版本</p>
-      <iframe src="/teacher" style="width:100%;height:80vh;border:1px solid #ddd;border-radius:4px"></iframe>`;
+      <h2>F. 知识图谱 · 探索入口</h2>
+      <p style="color:#666">点任一节点 → 弹联通图 + 真题 (graph_popup 全局浮窗). 此 tab 列入口节点 + 命题趋势.</p>
+
+      <h3>图谱概览</h3>
+      <div class="course-grid">
+        <div class="course-card"><strong>nodes by type</strong>
+          ${Object.entries(nodeKinds).map(([k, v]) => `<div class="block">${k}: ${v}</div>`).join("")}
+        </div>
+        <div class="course-card"><strong>edges by relation (top 6)</strong>
+          ${Object.entries(relations).slice(0, 6).map(([k, v]) => `<div class="block">${k}: ${v}</div>`).join("")}
+        </div>
+      </div>
+
+      <h3>探索入口 — 点任一概念弹联通图 + 真题</h3>
+      <div id="graph-explore" style="background:#fff;padding:1rem;border-radius:4px">
+        <p>载入热门 concept ...</p>
+      </div>
+
+      <h3>命题趋势</h3>
+      <div class="course-grid">
+        <div class="course-card G_FINAL"><strong>📈 近年高频上升词</strong>
+          ${(trend.top_words || trend.rising_words || []).slice(0, 8)
+            .map(w => `<div class="block">${GZ.conceptLink("word:" + (w.word || w.label || w), w.word || w.label || w)} ${w.recent_freq ? `(${w.recent_freq})` : ""}</div>`).join("") || "<div class='block'>无</div>"}
+        </div>
+        <div class="course-card"><strong>📊 题型年趋势</strong>
+          ${Object.entries(trend.type_distribution_by_year || {}).slice(-3).map(
+            ([y, types]) => `<div class="block">${y}: ${Object.keys(types).slice(0, 3).join(" / ")}</div>`
+          ).join("") || "<div class='block'>无</div>"}
+        </div>
+      </div>
+
+      <p style="margin-top:1rem;color:#888">老 /teacher 图谱保留为兼容 → <a href="/teacher" target="_blank">/teacher</a></p>`;
+
+    // 异步载热门 concept (high exam_status=core word 前 20)
+    try {
+      const top = await fetchJSON("/api/recommend/top_exam_words?limit=20").catch(() => ([]));
+      const items = Array.isArray(top) ? top : (top.words || top.items || []);
+      const explore = document.getElementById("graph-explore");
+      if (items.length) {
+        explore.innerHTML = items.map(it => {
+          const w = it.word || it.label || it.id || it;
+          const cid = w.startsWith && w.startsWith("word:") ? w : "word:" + w;
+          return GZ.conceptLink(cid, w.replace(/^word:/, ""));
+        }).join("&nbsp; ");
+      } else {
+        explore.innerHTML = "<p>无 top exam words 数据.</p>";
+      }
+    } catch (err) {
+      document.getElementById("graph-explore").innerHTML = `<p>载入失败: ${err.message}</p>`;
+    }
   });
 
   // ===================================================================
