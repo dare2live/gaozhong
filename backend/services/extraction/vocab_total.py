@@ -50,6 +50,16 @@ def _find_vocabulary_pages(reader: PdfReader) -> tuple[int, int]:
     return (start, end)
 
 
+def _parse_line(line: str) -> tuple[str, str, str] | None:
+    if not line or "Vocabulary" in line or len(line) <= 2: return None
+    m = ENTRY_RE.match(line)
+    if not m: return None
+    word, pos, zh = m.groups()
+    word = word.strip().lower()
+    if not word or len(word) > 30: return None
+    return word, (pos or "").rstrip("."), (zh or "").strip()
+
+
 def extract_vocabulary_section(pdf_path: Path, version_key: str,
                                   volume_key: str) -> list[dict]:
     reader = PdfReader(pdf_path)
@@ -60,18 +70,15 @@ def extract_vocabulary_section(pdf_path: Path, version_key: str,
     seen: set[str] = set()
     for pi in range(s, e):
         for raw in _page_text(reader, pi).split("\n"):
-            line = raw.rstrip()
-            if not line or "Vocabulary" in line or len(line) <= 2: continue
-            m = ENTRY_RE.match(line)
-            if not m: continue
-            word, pos, zh = m.groups()
-            word = word.strip().lower()
-            if not word or len(word) > 30 or word in seen: continue
+            parsed = _parse_line(raw.rstrip())
+            if not parsed: continue
+            word, pos, zh = parsed
+            if word in seen: continue
             seen.add(word)
             out.append({
                 "version_key": version_key, "volume_key": volume_key,
                 "unit_number": VOLUME_SUMMARY_UNIT, "word": word,
-                "pos": (pos or "").rstrip("."), "zh_def": (zh or "").strip(),
+                "pos": pos, "zh_def": zh,
                 "raw_marker": "from_Vocabulary_section",
             })
     return out
