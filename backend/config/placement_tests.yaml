@@ -19,9 +19,9 @@ placement_tests:
       - {kind: reading,  type: "阅读理解",         n: 1, difficulty: easy, tag_kind: question_type}
       - {kind: cloze,    type: "完形填空",         n: 1, difficulty: easy, tag_kind: question_type}
     scoring:
-      pass_threshold: 0.80    # ≥ 80% → 可升 G2
-      strong_threshold: 0.60  # 60-80% → 巩固 G1
-      # < 60% → 推 G1 必修 1-2 词汇课节 (弱点导向)
+      pass_threshold: 0.80          # ≥ 80% → 可升 G2
+      consolidate_floor: 0.70       # 70-80% → 巩固 G1 (改名 + 提阈值 codex Q3)
+      # < 70% → 推 G1 基础课节 (弱点导向)
 
   - grade: G2
     target_layer: G2
@@ -35,7 +35,7 @@ placement_tests:
       - {kind: applied,  type: "短文改错",         n: 1, difficulty: mid,  tag_kind: question_type}
     scoring:
       pass_threshold: 0.80
-      strong_threshold: 0.55
+      consolidate_floor: 0.70       # 提 55 → 70 (codex Q3 短卷分层更准)
 
   - grade: G3
     target_layer: G3
@@ -49,5 +49,5 @@ placement_tests:
       - {kind: gramfill, type: "语法填空",         n: 1, difficulty: hard, tag_kind: question_type}
       - {kind: applied,  type: "短文改错",         n: 1, difficulty: hard, tag_kind: question_type}
     scoring:
-      pass_threshold: 0.75    # 高三难度高, 阈值略放
-      strong_threshold: 0.50
+      pass_threshold: 0.75          # 高三难度高, 阈值略放
+      consolidate_floor: 0.65       # 提 50 → 65 (codex Q3)

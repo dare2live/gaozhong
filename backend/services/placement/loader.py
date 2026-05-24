@@ -34,5 +34,6 @@ def _validate(spec: dict) -> None:
     if not spec.get("blocks"):
         raise ValueError(f"{g} blocks empty")
     sc = spec.get("scoring") or {}
-    if not (0 < sc.get("strong_threshold", 0) < sc.get("pass_threshold", 0) <= 1):
+    cf = sc.get("consolidate_floor", sc.get("strong_threshold", 0))   # 兼容旧名
+    if not (0 < cf < sc.get("pass_threshold", 0) <= 1):
         raise ValueError(f"{g} scoring thresholds invalid")

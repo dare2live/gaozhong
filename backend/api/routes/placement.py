@@ -31,9 +31,10 @@ def api_placement_generate(qs: dict) -> dict:
     spec = loader.get_spec(grade)
     if not spec:
         return {"error": f"unknown grade {grade}"}
+    student_id = qs.get("student_id", [None])[0]   # Codex Q5: per-student seed
     con = db_ro()
     try:
-        return generator.generate_paper(con, spec)
+        return generator.generate_paper(con, spec, student_id)
     finally:
         con.close()
 
@@ -53,10 +54,10 @@ def api_placement_score(qs: dict, body: bytes | None = None) -> dict:
         return {"error": f"bad JSON: {e}"}
     raw_answers = data.get("answers") or {}
     answers = {int(k): str(v) for k, v in raw_answers.items()}
-    # 重新生成同 spec 的 paper (deterministic 抽题, 同种子返同结果)
+    student_id = qs.get("student_id", [None])[0]
     con = duckdb.connect(str(DB_PATH), read_only=True)
     try:
-        paper = generator.generate_paper(con, spec)
+        paper = generator.generate_paper(con, spec, student_id)
         return scorer.score_paper(con, paper, answers, spec)
     finally:
         con.close()

@@ -46,13 +46,13 @@ def score_paper(con: duckdb.DuckDBPyConnection,
 def _layer_recommendation(accuracy: float, spec: dict) -> dict:
     sc = spec.get("scoring") or {}
     pass_t = sc.get("pass_threshold", 0.80)
-    strong_t = sc.get("strong_threshold", 0.60)
+    consolidate_t = sc.get("consolidate_floor", sc.get("strong_threshold", 0.60))
     target = spec["target_layer"]
     next_layer = {"G1": "G2", "G2": "G3", "G3": "G_FINAL"}.get(target, target)
     if accuracy >= pass_t:
         return {"verdict": "pass", "next_layer": next_layer,
                 "msg": f"水平已达 {target}, 推入 {next_layer} 课节"}
-    if accuracy >= strong_t:
+    if accuracy >= consolidate_t:
         return {"verdict": "consolidate", "next_layer": target,
                 "msg": f"水平接近 {target}, 巩固 {target} 课节"}
     return {"verdict": "below", "next_layer": target,
@@ -79,20 +79,26 @@ def _weak_concepts(con: duckdb.DuckDBPyConnection, wrong_qids: list[int]) -> lis
 
 def _recommend_courses_for_weak(con: duckdb.DuckDBPyConnection,
                                   weak: list[dict]) -> list[dict]:
-    """弱点 concept → 推 course (course_materials.ref_id 匹配)."""
+    """弱点 concept → 推 course (course_materials.ref_id 匹配).
+
+    Codex Q4: 严格 kind in ('word','grammar') — course_materials.ref_id 也装
+    exam_question/reading_section 等, 不该参与"弱点 → 课节"推荐.
+    """
     if not weak:
         return []
     concepts = [w["concept_id"] for w in weak]
     placeholders = ",".join("?" * len(concepts))
     rows = con.execute(
-        f"SELECT DISTINCT c.course_id, c.layer, c.title, cm.ref_id "
+        f"SELECT DISTINCT c.course_id, c.layer, c.title, cm.ref_id, cm.kind "
         f"FROM course_materials cm "
         f"JOIN courses c ON c.course_id = cm.course_id "
         f"WHERE cm.ref_id IN ({placeholders}) "
+        f"AND cm.kind IN ('word','grammar') "
         f"ORDER BY c.layer, c.course_id LIMIT 10",
         concepts,
     ).fetchall()
     return [
-        {"course_id": r[0], "layer": r[1], "title": r[2], "weak_concept": r[3]}
+        {"course_id": r[0], "layer": r[1], "title": r[2],
+         "weak_concept": r[3], "concept_kind": r[4]}
         for r in rows
     ]
