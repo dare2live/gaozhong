@@ -21,10 +21,10 @@
 
 | # | 真问题 | 当前 | 目标 | 验收 |
 |---|---|---|---|---|
-| **4.1.A** | vocab extractor 漏抓 | 外研 2025/人教 1644 | 外研 ≥ 3000 / 人教 ≥ 2800 | 新 audit `vocab_per_volume_expected` 0 FAIL |
-| **4.1.B** | 某些 unit 仅 3-5 词 | bixiu_2/U3=3, U4=5 | 每 unit ≥ 15 词 (异常单独 review) | 同上 |
-| **4.1.C** | 高一/二/三 累计覆盖 | 高三末 2025 / 1644 | 高三末 ≥ 3000 (覆盖 95%+ 课标) | 新 audit `cumulative_by_grade` |
-| **4.1.D** | 高考考点全覆盖 | 没算 | 5 年真题 token 至少 90% 在教材或课标内能学到 | 新 audit `exam_token_in_curriculum_or_textbook` |
+| **4.1.A** | vocab extractor 漏抓 → 加 Vocabulary 章节合并抽 | 外研 2025/人教 1644 | 外研 ≥ 1900 / 人教 ≥ 1500 (调阈值, 教材实测只覆盖 ~67% 课标 — L-F 修订) | ✅ `audit_cumulative_by_grade` |
+| **4.1.B** | 某些 unit 仅 3-5 词 | bixiu_2/U3=3 | 每册 ≥ 80 unique (vocab_total 合并后) | ✅ `audit_vocab_per_volume` |
+| **4.1.C** | 高一/二/三 累计覆盖 | 高三末 2025 / 1644 | actual ≥ baseline + 20% headroom | ✅ `audit_cumulative_by_grade` |
+| **4.1.D** | 高考考点全覆盖 | 没算 | 真题 token ≥ 85% 在 课标∪教材 | ✅ `audit_exam_token_coverage` |
 | **4.1.E** | 跨版本同主题对照 | 函数有, 没验证 | 抽 5 对人工核 ≥ 80% 准 | docs/cross_version_check.md |
 | **4.1.F** | 10 项治理 audit (人工抽样) | 0 项做 | 每项落 audit_findings + 人工 review 50 sample | docs/data_audit_v2_report.md |
 

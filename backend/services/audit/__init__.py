@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 
 import duckdb
 
-from . import (codequality, cross_source, curriculum, exam_coverage,
+from . import (codequality, coverage, cross_source, curriculum, exam_coverage,
                extracurricular, file_integrity, frontend_dupe, grammar_4q,
                graph, publisher, textbook)
 
@@ -33,6 +33,9 @@ AUDIT_FNS = [
     textbook.audit_textbook_pages,
     textbook.audit_textbook_units,
     textbook.audit_vocab_curriculum_alignment,
+    coverage.audit_vocab_per_volume,
+    coverage.audit_cumulative_by_grade,
+    coverage.audit_exam_token_coverage,
     extracurricular.audit_extracurricular_in_exam,
     exam_coverage.audit_vocab_4q_classification,
     grammar_4q.audit_grammar_exam_coverage,
