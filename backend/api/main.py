@@ -56,6 +56,21 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:
             self._json(500, {"error": str(e), "type": type(e).__name__})
 
+    def do_POST(self):  # noqa: N802 — 4.7 scan upload + 未来 paper save
+        parsed = urlparse(self.path)
+        path = parsed.path
+        qs = parse_qs(parsed.query)
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            body = self.rfile.read(length) if length else b""
+            if path == "/api/scan/upload":
+                from backend.api.routes import scan_upload
+                self._json(*scan_upload.handle(qs, body, self.headers))
+                return
+            self._json(404, {"error": "no POST route", "path": path})
+        except Exception as e:
+            self._json(500, {"error": str(e), "type": type(e).__name__})
+
     # --- dispatch helpers ---
     def _try_static(self, path: str) -> bool:
         if path == "/" or path == "/index.html":

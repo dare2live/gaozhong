@@ -164,3 +164,19 @@ footer p { margin: 4px 0; }
 
 a { color: #1c5d99; text-decoration: none; }
 a:hover { text-decoration: underline; }
+
+/* === 4.4 经济学人风格新元素 (见 docs/design_reference_economist.md) === */
+.drop-cap::first-letter {
+  float: left; font-family: Georgia, serif; font-size: 56px; line-height: 0.8;
+  margin: 6px 8px 0 0; color: #c1272d; font-weight: 700;
+}
+.cite { font-size: 10px; color: #888; vertical-align: super; margin-left: 2px; }
+.sticky-stat {
+  position: sticky; top: 0; z-index: 5;
+  background: white; border-bottom: 2px solid #c1272d; padding: 8px 16px;
+  font-family: Georgia, serif; font-size: 13px;
+}
+.annotation {
+  display: inline-block; background: #fff7d6; border-left: 3px solid #f4a261;
+  padding: 4px 8px; font-size: 12px; margin: 6px 0;
+}
