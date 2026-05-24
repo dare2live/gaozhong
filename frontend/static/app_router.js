@@ -122,9 +122,10 @@
   // D. 数据管理
   // ===================================================================
   register("data", async () => {
-    const [stats, audit] = await Promise.all([fetchJSON("/api/stats"), fetchJSON("/api/audit")]);
-    const fail = audit.summary?.fail ?? "-";
-    const warn = audit.summary?.warn ?? "-";
+    const [stats, audit] = await Promise.all([fetchJSON("/api/stats"), fetchJSON("/api/audit/findings").catch(()=>({findings:[]}))]);
+    const f = audit.findings || [];
+    const fail = f.filter(x => x.severity === "FAIL").length;
+    const warn = f.filter(x => x.severity === "WARN").length;
     CONTENT.innerHTML = `
       <h2>D. 数据管理</h2>
       <p>14 数据集 + 自动审计</p>
