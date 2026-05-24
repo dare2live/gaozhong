@@ -102,14 +102,138 @@
 
 ---
 
+---
+
+## 第五阶段 — 统一教学系统 (用户 2026-05-24 架构重构)
+
+> **诊断**: 我之前错把项目做成 3 个独立 HTML 端 (`/` / `/teacher` / `/student`), 用户原话:
+> "应该就是一个教学系统, 用于小班教学, 可以做成不同的标签".
+> 删 3 端独立结构, 改 `/app` 单入口 + 内部 tab.
+>
+> **另一缺口**: 教学内容没真做 — 只有 graph 查询 + 教案 API, 缺**30 节课时的具体课程方案**.
+
+### 5.1 统一 UI 架构 (P0)
+
+| 改 | 当前 | 目标 |
+|---|---|---|
+| 入口 | 3 个独立 HTML (`/` 概览, `/teacher` 5 tab, `/student` 答题) | 1 个 `/app` SPA 入口 |
+| 导航 | 顶部 nav-inline 3 链接, 3 套 css | 左侧固定 sidebar, 7 tab 切换 (复用 teacher 的 sidebar 模式) |
+| tab 设计 | 没有 | (见 §5.2) |
+| 共享逻辑 | common.js 已做 | 升级为 SPA router (hash-based, 零依赖) |
+| 清理 | `/` `/teacher` `/student` 3 路由 | 3 路由保留为别名 (向后兼容), 主入口 `/app` |
+
+### 5.2 七个 tab 设计
+
+| tab | 用途 | 接口 |
+|---|---|---|
+| **A. 工作台** | 今日待办: 上次进度 / 待批改试卷 / 学生异常预警 / 数据健康 | /api/stats /api/audit /workbench/today |
+| **B. 教学** ⭐ | 30 节课程 — 选课节 → 查讲义 / 教材原文 / 课件 / 出题 | /api/course/{list,session,materials} (新) |
+| **C. 题库 + 组卷** | 现有 qbank + compose 合并到一 tab | /api/qb/* /api/paper/* |
+| **D. 数据管理** | 全部 14 数据集 + 审计 + lineage 编辑 | /api/stats /api/audit /api/manifest |
+| **E. 学生档案** | 学生 CRUD + 班级 + 答题历史 + 弱点 | /api/students/* (新) |
+| **F. 知识图谱** | force-directed + 热力图 + 趋势 + 跨版本对照 | 现有 graph/recommend/trend |
+| **G. 扫描 OCR** | POST 上传 + 显示已上传清单 + OCR review 队列 | /api/scan/* (POST 已通) |
+
+### 5.3 教学内容: 30 节课程方案 (P0, 核心交付) ⭐
+
+**spec**: 高三冲刺 / 高二复习用. 30 节, 每节 2 小时 = 120 min, 总 60 小时.
+
+按高考占比 + 趋势模型 分配:
+
+| 主题板块 | 节数 | 占比 | 趋势依据 |
+|---|---|---|---|
+| 词汇专题 (高频核心 + HV_extra) | 8 | 27% | vocab_growth +99.57/y, HV_extra 287 词 |
+| 语法专题 (按 grammar_exam_4q core 排) | 6 | 20% | 14 顶级语法类目, core 优先 |
+| 阅读理解 (主题分群 + 题型) | 6 | 20% | slope +0.028/y, 41% 占比 |
+| 完形填空 + 七选五 | 3 | 10% | slope +0.011/y |
+| 语法填空 (词形变形 + 时态) | 2 | 7% | slope +0.008/y |
+| 应用文写作 (邀请/通知/求职等) | 2 | 7% | 15 分 |
+| 读后续写 (叙事性教材文 + 模板) | 2 | 7% | 25 分, 新高考最大 delta |
+| 模拟卷讲评 | 1 | 3% | 真题重组 |
+
+**每节课时结构** (120 min):
+
+```
+0-20 min   开场 + 上节复习 (5 题 quick check, 抽自 question_bank)
+20-50 min  核心教学 (词/语法/篇)
+50-70 min  真题溯源 + 趋势提示 (从 lesson_plan API 拉)
+70-90 min  课堂练习 (compose 3-5 题, 题型/难度 匹配本节)
+90-110 min 重点解析 + 易错点
+110-120 min 总结 + 下节预告 + 课后作业 (compose 10 题)
+```
+
+### 5.4 课程 schema (P0)
+
+新表:
+
+```sql
+courses              -- 30 节课程定义
+  course_id (1..30)
+  title                  eg "高频核心词冲刺 (1) — A-D 字母段"
+  block_kind             vocab|grammar|reading|cloze|gramfill|applied|narrative|mock
+  block_order            1..30
+  duration_min           120
+  target_audience        "高二复习"|"高三冲刺"
+  description            老师视角说明
+
+course_materials     -- 每节自动 + 手动 关联 graph 实体
+  course_id
+  kind                   word|grammar|phrase|exam_question|reading_section
+  ref_id                 → nodes.concept_id 或 qb_id
+  source                 "auto_from_trend"|"manual"|"from_lesson_plan"
+  reason                 eg "近 3 年真题 freq=5, exam_status=core"
+  position               (建议讲解顺序)
+
+course_sessions      -- 实际授课记录 (老师标的)
+  session_id
+  course_id
+  class_id
+  taught_at
+  notes                  老师课后笔记
+```
+
+### 5.5 课程内容自动生成 service (P0)
+
+新 service `backend/services/course/`:
+- `templates.py` — 30 节课程的硬编码 spec (主题/板块/顺序)
+- `materials.py` — 每节自动拉 materials (graph 查 + trend 推 + question_bank 抽)
+- `handout.py` — 每节生成讲义 (md + html), 含
+  - 核心知识点 (词/语法/句型, 带定义 + 例句)
+  - 真题溯源 (近年 N 题, 题号 + 年份 + 题型)
+  - 趋势提示 (本知识点 5 年频次曲线)
+  - 课堂练习 (compose 3-5 题)
+  - 课后作业 (compose 10 题)
+- `lesson_plan_full.py` — 升级现有 lesson_plan 支持课程语义
+
+### 5.6 学生档案 tab (P1)
+
+补 4.7.D/E 没做的:
+- 学生 CRUD (现 schema 通, 缺 UI)
+- 班级 + 学生关联
+- 答题历史 timeline
+- 弱点 heatmap (按 word/grammar 4 象限)
+- 弱点 → 推送 (该学生应该补哪节课的哪段)
+
+### 5.7 验收门
+
+1. ✅ `/app` 单入口, 7 tab 全可点击切换 (向后兼容旧 3 路由)
+2. ✅ `courses` 表 30 行真课程 (非测试 stub)
+3. ✅ 每节 course_materials ≥ 10 行 (auto + manual 混)
+4. ✅ 任一节能生成完整讲义 (md + html, 含真题溯源 + 趋势 + 练习)
+5. ✅ 学生档案 tab CRUD 跑通 + 至少 1 个班 5 学生 demo 数据
+6. ✅ 0 FAIL audit 持续
+7. ✅ 老师双击 `start.command` 30 秒内能看到 7 tab 切换流畅
+
+---
+
 ## 后续阶段 (运营稳后, 用户拍前不做)
 
 | 阶段 | 内容 | 触发 |
 |---|---|---|
-| 5 | LLM 增强 (Claude API): cloze 干扰项升级 / phrase 真考点抽 / 趣味化改写 | 老师反馈"题目质量" 强信号 |
-| 6 | 难度梯度 sklearn (基于学生答题日志) | 4.7 student_answers ≥ 1000 行 |
-| 7 | 跨学科扩展 (语文/数学) | 英语稳定运营 ≥ 1 学期 |
-| 8 | 第二城市 / 多校多班级 | 单校跑稳 |
+| 6 | LLM 增强 (Claude API): cloze 干扰项升级 / phrase 真考点抽 / 趣味化改写 | 老师反馈"题目质量" 强信号 |
+| 7 | 难度梯度 sklearn (基于学生答题日志) | 4.7 student_answers ≥ 1000 行 |
+| 8 | 跨学科扩展 (语文/数学) | 英语稳定运营 ≥ 1 学期 |
+| 9 | 第二城市 / 多校多班级 | 单校跑稳 |
 
 ---
 
