@@ -1,0 +1,32 @@
+version: "3.8"
+
+# 部署用 docker-compose. nginx 反代 + HTTPS (cert 自备).
+# 启动: docker compose up -d
+# 访问: https://你的域名/  → 主页 (公开)
+#       https://你的域名/teacher → 教师端
+# 数据持久: data/db 通过 volume mount, init_db 仅 image build 跑一次,
+#          后续教师改题/组卷直接写入 mount 进来的 .duckdb.
+
+services:
+  app:
+    build: .
+    container_name: gaozhong-app
+    restart: unless-stopped
+    expose: ["8765"]
+    volumes:
+      - ./data/db:/app/data/db          # DuckDB 持久化
+      - ./data/scans:/app/data/scans    # 学生扫描原件持久化
+      - ./.codegraph:/app/.codegraph    # codegraph 索引可选挂载
+    environment:
+      - TZ=Asia/Shanghai
+
+  # nginx 反代 + HTTPS — 用户自配证书
+  nginx:
+    image: nginx:alpine
+    container_name: gaozhong-nginx
+    restart: unless-stopped
+    depends_on: [app]
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
