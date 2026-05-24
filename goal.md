@@ -151,18 +151,38 @@
 | **F. 知识图谱** | force-directed + 热力图 + 趋势 + 跨版本对照 | 现有 graph/recommend/trend |
 | **G. 扫描 OCR** | POST 上传 + 显示已上传清单 + OCR review 队列 | /api/scan/* (POST 已通) |
 
-### 5.3 教学内容: 30 节课程方案 (P0, 核心交付) ⭐
+### 5.3 教学内容: 4 层共 40 节课程方案 (P0, 核心交付) ⭐
 
-**spec**: 高三冲刺 / 高二复习用. 30 节, 每节 2 小时 = 120 min, 总 60 小时.
+**spec** (用户 2026-05-24 改): 按年级分 4 层, **总冲刺 10 节** (高考前突击, 用户明示), G1/G2/G3 各 10 节, 共 40 节, 每节 120 min.
 
-#### 5.3.0 4 条铁律 (用户 2026-05-24 追加)
+| 层 | 课节 | 词汇集 | 用途 |
+|---|---|---|---|
+| **G1** | 10 节 | 高一 ~1200 词 | 高一全年系统课 |
+| **G2** | 10 节 | G1 + 高二 ~2200 词 | 高二全年系统课 |
+| **G3** | 10 节 | G2 + 高三 ~3000 词 | 高三上学期系统课 (题型完整) |
+| **G_FINAL** | **10 节** | G3 + 课标 3500 | **高考前突击** (真题密集 + 模拟卷 + 趋势) |
+
+#### 5.3.0 6 条铁律 (用户 2026-05-24 追加)
 
 | 铁律 | 含义 | 实现 |
 |---|---|---|
 | **R1 知识点关联** | 每节讲完, 该词/语法 在 graph 中要联通 ≥3 个其他知识点 (同义/反义/词族/搭配/近义语法/相邻话题) | `course/relations.py` 自动从 nodes+edges 抽 + 写进讲义"关联拓展"段 |
-| **R2 不抄教材** | 例句 / 阅读篇 / 情景 主题**不与教材重复**, 用真实/年轻话题 (见 §5.3.A) | `course/scenarios.py` 主题池 + audit 校验"无教材原句重叠" |
-| **R3 多场景** | 同一知识点至少在 **3 个不同场景** 出现 (eg "describe" 出现在: 体育解说 / vlog 评论 / 求职 self-intro) | `course/scenarios.py` 给每个知识点配 ≥3 场景 |
-| **R4 作业 ↔ 知识点闭环** | 每节 10 道作业题, **100% 命中本节知识点** (作业题 tag ⊆ 本节知识点 tag) | `course/homework.py` + `audit_homework_alignment` 阻塞 |
+| **R2 不抄教材** | 例句 / 阅读篇 / 情景 主题**不与教材重复**, 用真实场景 (见 §5.3.A) | `course/scenarios.py` 主题池 + audit "无教材 ≥10 词连续重叠" |
+| **R3 多场景** | 同一知识点至少在 **3 个不同场景** 出现 | `course/scenarios.py` 给每个知识点配 ≥3 场景 |
+| **R4 作业 ↔ 知识点闭环** | 每节 10 道作业题, **100% 命中本节知识点** (作业题 tag ⊆ 本节知识点 tag) | `course/homework.py` + `audit_homework_alignment` |
+| **R5 词汇分层向下兼容** ⭐ | 每节有 `lexical_layer` ∈ {G1, G2, G3, G_FINAL}. 节内**所有词汇** ⊆ 该 layer 允许集 (累计向下兼容). 不引入陌生词. | `course/lexicon_filter.py` + `audit_course_lexical_layer` |
+| **R6 教材位置必标** ⭐ | 每个词/语法/句型 必带 `year_level` (1/2/3 或 "课标补充") + `textbook_position` (eg "外研社·必修2·U3·Vocabulary"). 讲义和题目里显式标注. | `lexicon_filter` 反查 lexicon 表 join nodes |
+
+#### 5.3.0.A 4 层词汇集 (R5 R6 配套)
+
+```
+G1     = 高一已学   = 外研社·必修1+2 ∪ 人教版·必修1+2  词集    (~1200 词)
+G2     = G1 + 高二  = + 外研社·必修3+选必1+2 ∪ 人教·必修3+选必1+2  (~2200 词)
+G3     = G2 + 高三  = + 外研社·选必3+4 ∪ 人教·选必3+4              (~3000 词)
+G_FINAL = G3 + 课标 = + 国家课标 3500 词表 中超出 G3 的补充           (~3500 词)
+```
+
+向下兼容: G2 节可用 G1∪G2 全部; G_FINAL 节可用全部 + 课标补充. 不可上引 (G1 节不可用 G2 才出的词).
 
 #### 5.3.A 50 主题池 (Time / NatGeo / SciAm 风格, 不涉政治)
 
@@ -190,57 +210,70 @@
 #### 5.3.B 每节课时结构 (120 min)
 
 ```
-0-15 min   开场: 趣味 hook (短视频/新闻片段/段子 — 主题导入)
+0-15 min   开场: 趣味 hook (Time/NatGeo/SciAm 风格新闻 — 主题导入)
 15-25 min  上节复习: 5 题 quick check (抽自上节作业的同 tag)
-25-50 min  核心教学: 词/语法/句型 (主场景 + 关联拓展 ≥3 个相关点 = R1)
+25-50 min  核心教学: 词/语法/句型 (主场景 + 关联拓展 ≥3 = R1)
+           每词/语法板上写: [G2·外研社·必修3·U2·Vocabulary]  (R6)
 50-70 min  真题溯源: 近 5 年真题中该知识点 N 题 + 趋势曲线
-70-90 min  场景练习: 同知识点 3 个不同场景 (R3) 各 1-2 题 (compose)
+70-90 min  场景练习: 同知识点 3 个不同场景 (R3) 各 1-2 题
+           题目里出现的所有词必须 ⊆ 本节 lexical_layer (R5 strict)
 90-105 min 重点解析 + 易错点 (从历史 student_weakness 抽)
-105-115 min 总结 + 下节预告 (主题预告, 制造期待)
-115-120 min 课后作业: 10 题, tag ⊆ 本节 (R4 强校验)
+105-115 min 总结 + 下节预告
+115-120 min 课后作业: 10 题, tag ⊆ 本节 (R4), 词 ⊆ layer (R5)
 ```
 
-#### 5.3.C 30 节课程编排 (示例 5 节, 其余落外置 yaml)
+#### 5.3.C 40 节课程编排 (示例每层 1 节, 其余落外置 yaml)
 
-| # | 主题板块 | 核心知识点 | 主选场景 | 关联拓展 (≥3) |
-|---|---|---|---|---|
-| 1 | 词汇·高频形容词 1 | adequate, ambiguous, arbitrary, authentic | AI 辅助科研结果是否 authentic (SciAm) | adj 词族 (-ly 副词) / 反义 (genuine/fake) / 搭配 (an ~ source) |
-| 2 | 语法·宾从陈述 vs 疑问 | that/whether/if + 时态呼应 | 青年企业家访谈引述 (Time) | 主从复合句联通 / 名词从语类 / 间接引语 |
-| 3 | 阅读·议论文 main idea | 论点-论据-反驳结构 | 海洋塑料治理可行性辩论 (NatGeo) | 完形议论篇 / 续写转折 / 应用文倡议书 |
-| 4 | 完形·语境推断 | 上下文同义/反义提示 | 极地冰川变化长文 (NatGeo) | 阅读细节题 / 七选五连贯 / 词汇辨析 |
-| 5 | 续写·情绪转折 | so... that / 倒装强调 | 玛雅遗址考古从挫折到突破 (NatGeo) | 倒装语法 / 情绪词族 / 叙事时态 |
+| layer | # | 板块 | 核心知识点 (含 textbook_position) | 主选场景 | 关联 ≥3 |
+|---|---|---|---|---|---|
+| **G1** | 1 | 词汇·基础名词 | family, friend, school, study, hobby [G1·外研·必修1·U1] | 校园新生活 (Time 校园) | 反义/搭配/词族 |
+| **G2** | 11 | 语法·宾语从句 | that/whether/if [G2·外研·必修3·U2] | 青年企业家访谈引述 (Time) | 主从复合 / 名词从 / 间接引语 |
+| **G3** | 21 | 续写·情绪转折 | so...that / 倒装 [G3·外研·选必3·U4] | 玛雅遗址考古挫折到突破 (NatGeo) | 倒装语法 / 情绪词族 / 叙事时态 |
+| **G_FINAL** | 31 | 模拟卷·阅读密集 | 5 年真题主题词汇高频 [G_FINAL·课标 3500] | 火星探索任务长文 (SciAm) | 全题型综合 |
 
-完整 30 节: `backend/config/course_templates.yaml` (M3 数据外置), 含 course_id/title/block_kind/themes/related_concepts/homework_tags/listening_required.
+完整 40 节: `backend/config/course_templates.yaml` (M3 数据外置), 每节字段:
+```yaml
+- course_id: 11
+  layer: G2
+  block_kind: grammar
+  title: "宾语从句陈述 vs 疑问"
+  themes_main: 青年企业家访谈引述
+  themes_aux: [实习生日记, 远程办公]
+  related_concepts: [主从复合, 名词从语类, 间接引语]
+  core_items:
+    - {kind: grammar, id: "g:obj_clause_that",  year: 2, position: "外研·必修3·U2·Grammar"}
+    - {kind: grammar, id: "g:obj_clause_if",    year: 2, position: "外研·必修3·U2·Grammar"}
+  homework_tags: [g:obj_clause_that, g:obj_clause_if]
+  listening_required: false
+```
 
 ### 5.4 schema (P0)
 
 #### 5.4.A 课程 3 新表
 
 ```sql
-courses              -- 30 节课程定义 (源自 course_templates.yaml, init_db 灌)
-  course_id (1..30)
-  title                  eg "高频核心词冲刺 (1) — A-D 字母段"
+courses              -- 40 节课程定义 (源自 course_templates.yaml, init_db 灌)
+  course_id (1..40)
+  layer                  ENUM('G1','G2','G3','G_FINAL')   -- 词汇层 (R5)
+  title                  eg "宾语从句陈述 vs 疑问"
   block_kind             vocab|grammar|reading|cloze|gramfill|applied|narrative|mock|listening
-  block_order            1..30
+  block_order            层内序号 1..10
   duration_min           120
-  target_audience        "高二复习"|"高三冲刺"
-  listening_required     bool          -- 含听力练习的节
-  description            老师视角说明
+  listening_required     bool
+  description
 
-course_materials     -- 每节自动 + 手动 关联 graph 实体 / 题
+course_materials     -- 每节关联 graph 实体 / 题 (auto + manual 混)
   course_id
   kind                   word|grammar|phrase|exam_question|reading_section|listening_clip
   ref_id                 → nodes.concept_id 或 qb_id
+  year_level             1|2|3|99       -- 99 = 课标补充 (R6)
+  textbook_position      VARCHAR        -- "外研·必修3·U2·Grammar" (R6)
   source                 "auto_from_trend"|"manual"|"from_lesson_plan"|"from_scenario"
-  reason                 eg "近 3 年真题 freq=5, exam_status=core"
-  position               (建议讲解顺序)
+  reason                 eg "近 3 年真题 freq=5"
+  position               (讲解顺序)
 
-course_sessions      -- 实际授课记录 (老师标的)
-  session_id
-  course_id
-  class_id
-  taught_at
-  notes                  老师课后笔记
+course_sessions      -- 实际授课记录
+  session_id, course_id, class_id, taught_at, notes
 ```
 
 #### 5.4.B question_bank 扩字段 (听力题统一入题库, 不另起表)
@@ -266,7 +299,8 @@ audit:
 |---|---|---|
 | `registry.py` | 插件式 dispatch (block_kind / scenario_kind / audit_kind 注册表) | M2 |
 | `loader.py` | 从 `backend/config/*.yaml` 加载 templates/theme_pool/thresholds | M3 |
-| `templates.py` | 30 节 spec 验证 + 暴露 (实数据走 yaml) | — |
+| `templates.py` | 40 节 spec 验证 + 暴露 (实数据走 yaml) | — |
+| `lexicon_filter.py` | 给定 layer 返回允许词集 (G1/G2/G3/G_FINAL), 反查 lexicon 表带 year+position | **R5 R6** |
 | `relations.py` | 每节核心知识点 → 联通 ≥3 个其他 (从 nodes+edges) | **R1** |
 | `scenarios.py` | 主题池 + 每知识点 ≥3 场景 + 教材原句重叠 audit | **R2 R3** |
 | `materials.py` | 综合 (graph + trend + question_bank + scenarios) 生成 materials | — |
@@ -279,6 +313,8 @@ audit:
 - `audit_course_no_textbook_copy`: 例句/阅读篇 与教材原句无 ≥10 词连续重叠 (R2)
 - `audit_course_scenarios`: 每核心知识点 ≥3 场景 (R3)
 - `audit_homework_alignment`: 每节作业 tag 100% ⊆ 本节 (R4)
+- `audit_course_lexical_layer`: 节内所有词 ⊆ layer 允许集, 0 陌生词 (R5)
+- `audit_course_textbook_position`: 每词/语法必有 year_level + textbook_position, 课标补充标 "课标·3500词表" (R6)
 
 ### 5.6 学生档案 tab (P1)
 
@@ -292,7 +328,7 @@ audit:
 ### 5.7 验收门
 
 1. ✅ `/app` 单入口, 7 tab 全可点击切换 (向后兼容旧 3 路由)
-2. ✅ `courses` 表 30 行真课程 (非测试 stub)
+2. ✅ `courses` 表 **40 行真课程** (G1×10 + G2×10 + G3×10 + G_FINAL×10)
 3. ✅ 每节 course_materials ≥ 10 行 (auto + manual 混)
 4. ✅ 任一节能生成完整讲义 (md + html, 含 hook/复习/核心/关联/真题/场景/作业 7 段)
 4a. ✅ R1: 每节关联 ≥3 (audit_course_relations)
@@ -304,6 +340,8 @@ audit:
 4g. ✅ CC>10 函数数 ≤ baseline 12, fan-in ≤ 5 (M6 M7)
 4h. ✅ 每新模块带 `tests/test_*.py` smoke 200 (M5)
 4i. ✅ 主题 / 阅读篇 / 听力 transcript 不含政治词 (audit_no_political)
+4j. ✅ 每节节内所有词 ⊆ lexical_layer (R5), 0 陌生词 (audit_course_lexical_layer)
+4k. ✅ 每词/语法 必带 year_level + textbook_position (R6) (audit_course_textbook_position)
 5. ✅ 学生档案 tab CRUD 跑通 + 至少 1 个班 5 学生 demo 数据
 6. ✅ 0 FAIL audit 持续
 7. ✅ 老师双击 `start.command` 30 秒内能看到 7 tab 切换流畅
