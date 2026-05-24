@@ -104,3 +104,9 @@ def run_question_bank(con: duckdb.DuckDBPyConnection) -> dict:
     real = loader.load_real_questions(con)
     synth = loader.load_synthesized_samples(con, samples_per_type=15)
     return {**real, **synth}
+
+
+def run_ocr_fix_dict(con: duckdb.DuckDBPyConnection) -> dict:
+    """构建 OCR 修复字典 (用户 2026-05-24 上下文修复)."""
+    from backend.services import ocr_fix
+    return ocr_fix.build_ocr_fix_dict(con)

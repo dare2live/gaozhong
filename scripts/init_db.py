@@ -82,6 +82,10 @@ def main() -> None:
     print("\n=== Layer 4: question_bank 装载 (真题 + 合成题 + 自动打标) ===")
     qb = extract.run_question_bank(con)
     print(f"  {qb}")
+
+    print("\n=== Layer 4b: OCR 上下文修复字典 (用户 2026-05-24) ===")
+    ofd = extract.run_ocr_fix_dict(con)
+    print(f"  ocr fixes: {ofd['fixes_built']}/{ofd['unknown_tokens']}, examples: {ofd['examples'][:4]}")
     print(f"  qb total: {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
     print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")
