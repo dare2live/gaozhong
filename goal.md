@@ -138,29 +138,56 @@
 
 **spec**: 高三冲刺 / 高二复习用. 30 节, 每节 2 小时 = 120 min, 总 60 小时.
 
-按高考占比 + 趋势模型 分配:
+#### 5.3.0 4 条铁律 (用户 2026-05-24 追加)
 
-| 主题板块 | 节数 | 占比 | 趋势依据 |
-|---|---|---|---|
-| 词汇专题 (高频核心 + HV_extra) | 8 | 27% | vocab_growth +99.57/y, HV_extra 287 词 |
-| 语法专题 (按 grammar_exam_4q core 排) | 6 | 20% | 14 顶级语法类目, core 优先 |
-| 阅读理解 (主题分群 + 题型) | 6 | 20% | slope +0.028/y, 41% 占比 |
-| 完形填空 + 七选五 | 3 | 10% | slope +0.011/y |
-| 语法填空 (词形变形 + 时态) | 2 | 7% | slope +0.008/y |
-| 应用文写作 (邀请/通知/求职等) | 2 | 7% | 15 分 |
-| 读后续写 (叙事性教材文 + 模板) | 2 | 7% | 25 分, 新高考最大 delta |
-| 模拟卷讲评 | 1 | 3% | 真题重组 |
+| 铁律 | 含义 | 实现 |
+|---|---|---|
+| **R1 知识点关联** | 每节讲完, 该词/语法 在 graph 中要联通 ≥3 个其他知识点 (同义/反义/词族/搭配/近义语法/相邻话题) | `course/relations.py` 自动从 nodes+edges 抽 + 写进讲义"关联拓展"段 |
+| **R2 不抄教材** | 例句 / 阅读篇 / 情景 主题**不与教材重复**, 用真实/年轻话题 (见 §5.3.A) | `course/scenarios.py` 主题池 + audit 校验"无教材原句重叠" |
+| **R3 多场景** | 同一知识点至少在 **3 个不同场景** 出现 (eg "describe" 出现在: 体育解说 / vlog 评论 / 求职 self-intro) | `course/scenarios.py` 给每个知识点配 ≥3 场景 |
+| **R4 作业 ↔ 知识点闭环** | 每节 10 道作业题, **100% 命中本节知识点** (作业题 tag ⊆ 本节知识点 tag) | `course/homework.py` + `audit_homework_alignment` 阻塞 |
 
-**每节课时结构** (120 min):
+#### 5.3.A 30 个新鲜主题池 (替代教材原主题)
+
+| 类别 | 主题示例 (年轻人感兴趣) |
+|---|---|
+| 科技 | AI 创作 / 自动驾驶 / 元宇宙 / 量子计算 / 脑机接口 |
+| 流行 | K-pop 全球化 / 短视频经济 / 网红创业 / 虚拟偶像 / 弹幕文化 |
+| 体育 | 电竞奥运 / 滑板入奥 / 女足世界杯 / 户外攀岩 / 飞盘 |
+| 旅行 | 露营复兴 / city walk / 独自旅行安全 / 哈尔滨冰雪季 / 沙漠星空 |
+| 环境 | 海洋塑料 / 城市绿地 / 碳中和 / 候鸟迁徙 / 沙尘暴溯源 |
+| 心理 | Z 世代焦虑 / 数字断舍离 / 高考压力 / 友谊重构 / 拖延症 |
+| 文化 | 国潮汉服 / 博物馆热 / 非遗短视频 / 跨文化误会 / 翻译梗 |
+| 职业 | 远程办公 / 数字游民 / 斜杠青年 / 实习生日记 / AI 取代焦虑 |
+| 校园 | 选科困惑 / 走班制 / 社团竞选 / 班级冲突 / 自习室文化 |
+| 时事 | 太空旅游 / 极地科考 / 跨境电商 / 校园食安 / 老龄化社会 |
+
+> 每节课从对应主题池抽 1 主选 + 2-3 副选 (R3 多场景). 教材的 unit 主题作为"参考来源", 不直接 copy.
+
+#### 5.3.B 每节课时结构 (120 min)
 
 ```
-0-20 min   开场 + 上节复习 (5 题 quick check, 抽自 question_bank)
-20-50 min  核心教学 (词/语法/篇)
-50-70 min  真题溯源 + 趋势提示 (从 lesson_plan API 拉)
-70-90 min  课堂练习 (compose 3-5 题, 题型/难度 匹配本节)
-90-110 min 重点解析 + 易错点
-110-120 min 总结 + 下节预告 + 课后作业 (compose 10 题)
+0-15 min   开场: 趣味 hook (短视频/新闻片段/段子 — 主题导入)
+15-25 min  上节复习: 5 题 quick check (抽自上节作业的同 tag)
+25-50 min  核心教学: 词/语法/句型 (主场景 + 关联拓展 ≥3 个相关点 = R1)
+50-70 min  真题溯源: 近 5 年真题中该知识点 N 题 + 趋势曲线
+70-90 min  场景练习: 同知识点 3 个不同场景 (R3) 各 1-2 题 (compose)
+90-105 min 重点解析 + 易错点 (从历史 student_weakness 抽)
+105-115 min 总结 + 下节预告 (主题预告, 制造期待)
+115-120 min 课后作业: 10 题, tag ⊆ 本节 (R4 强校验)
 ```
+
+#### 5.3.C 30 节课程编排 (示例 5 节, 其余落 templates.py)
+
+| # | 主题板块 | 核心知识点 | 主选场景 | 关联拓展 (≥3) |
+|---|---|---|---|---|
+| 1 | 词汇·高频形容词 1 | adequate, ambiguous, arbitrary, authentic | AI 生成内容是否 authentic | adj 词族 (-ly 副词) / 反义 (genuine/fake) / 搭配 (an ~ source) |
+| 2 | 语法·宾从陈述 vs 一般疑问 | that/whether/if + 时态呼应 | 网红创业访谈引述 | 主从复合句联通 / 名词从语类 / 间接引语 |
+| 3 | 阅读·议论文 main idea | 论点-论据-反驳结构 | Z 世代数字断舍离辩论 | 完形议论篇 / 续写转折 / 应用文倡议书 |
+| 4 | 完形·语境推断 | 上下文同义/反义提示 | 短视频经济文章 | 阅读细节题 / 七选五连贯 / 词汇辨析 |
+| 5 | 续写·情绪转折 | so... that / 倒装强调 | 滑板入奥的失败到逆袭 | 倒装语法 / 情绪词族 / 叙事时态 |
+
+(完整 30 节列在 `backend/services/course/templates.py` 里, 含 course_id/title/block_kind/themes/related_concepts/homework_tags.)
 
 ### 5.4 课程 schema (P0)
 
@@ -195,15 +222,22 @@ course_sessions      -- 实际授课记录 (老师标的)
 ### 5.5 课程内容自动生成 service (P0)
 
 新 service `backend/services/course/`:
-- `templates.py` — 30 节课程的硬编码 spec (主题/板块/顺序)
-- `materials.py` — 每节自动拉 materials (graph 查 + trend 推 + question_bank 抽)
-- `handout.py` — 每节生成讲义 (md + html), 含
-  - 核心知识点 (词/语法/句型, 带定义 + 例句)
-  - 真题溯源 (近年 N 题, 题号 + 年份 + 题型)
-  - 趋势提示 (本知识点 5 年频次曲线)
-  - 课堂练习 (compose 3-5 题)
-  - 课后作业 (compose 10 题)
-- `lesson_plan_full.py` — 升级现有 lesson_plan 支持课程语义
+
+| 模块 | 作用 | 对应铁律 |
+|---|---|---|
+| `templates.py` | 30 节 spec (id/title/block/themes/related_concepts/homework_tags) | — |
+| `relations.py` | 每节核心知识点 → 联通 ≥3 个其他 (从 nodes+edges) | **R1** |
+| `scenarios.py` | 主题池 + 每知识点 ≥3 场景 + 教材原句重叠 audit | **R2 R3** |
+| `materials.py` | 综合 (graph + trend + question_bank + scenarios) 生成 materials | — |
+| `homework.py` | 抽 10 题作业, 强校验 题目 tag ⊆ 本节知识点 tag | **R4** |
+| `handout.py` | 生成讲义 (md + html), 含 7 段: hook / 复习 / 核心 / 关联拓展 / 真题溯源 / 场景练习 / 作业 | — |
+| `lesson_plan_full.py` | 升级现有 lesson_plan API 支持课程语义 (route 改一下) | — |
+
+新 audit (Stop hook 加入):
+- `audit_course_relations`: 每节关联 ≥3 (R1)
+- `audit_course_no_textbook_copy`: 例句/阅读篇 与教材原句无 ≥10 词连续重叠 (R2)
+- `audit_course_scenarios`: 每核心知识点 ≥3 场景 (R3)
+- `audit_homework_alignment`: 每节作业 tag 100% ⊆ 本节 (R4)
 
 ### 5.6 学生档案 tab (P1)
 
@@ -219,7 +253,11 @@ course_sessions      -- 实际授课记录 (老师标的)
 1. ✅ `/app` 单入口, 7 tab 全可点击切换 (向后兼容旧 3 路由)
 2. ✅ `courses` 表 30 行真课程 (非测试 stub)
 3. ✅ 每节 course_materials ≥ 10 行 (auto + manual 混)
-4. ✅ 任一节能生成完整讲义 (md + html, 含真题溯源 + 趋势 + 练习)
+4. ✅ 任一节能生成完整讲义 (md + html, 含 hook/复习/核心/关联/真题/场景/作业 7 段)
+4a. ✅ R1: 每节关联 ≥3 (audit_course_relations)
+4b. ✅ R2: 与教材无 ≥10 词连续重叠 (audit_course_no_textbook_copy)
+4c. ✅ R3: 每核心知识点 ≥3 场景 (audit_course_scenarios)
+4d. ✅ R4: 每节作业 tag 100% ⊆ 本节 (audit_homework_alignment)
 5. ✅ 学生档案 tab CRUD 跑通 + 至少 1 个班 5 学生 demo 数据
 6. ✅ 0 FAIL audit 持续
 7. ✅ 老师双击 `start.command` 30 秒内能看到 7 tab 切换流畅
