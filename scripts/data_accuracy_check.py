@@ -22,9 +22,11 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))   # 让 stop_gate 跑时也能 import backend.*
+
 import duckdb
 
-ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 
 FAILURES: list[str] = []
