@@ -22,13 +22,18 @@ def _level_of(suffix: str) -> str:
     return "义教"
 
 
+_SKIP_PREFIXES = ("│", "附录", "说明", "普通高中")
+_SKIP_CONTAINS = ("语法项目",)
+
+
 def _skip_line(line: str) -> bool:
-    if not line: return True
-    if line.startswith("│") or line.isdigit(): return True
-    if line.startswith("附录") or "语法项目" in line: return True
-    if line.startswith("说明") or line.startswith("普通高中"): return True
-    if not line.strip(): return True
-    # 跳过例句 (英文字母占比高)
+    if not line or not line.strip() or line.isdigit():
+        return True
+    if any(line.startswith(p) for p in _SKIP_PREFIXES):
+        return True
+    if any(s in line for s in _SKIP_CONTAINS):
+        return True
+    # 例句 (英文字母占比高)
     ratio = sum(ch.isascii() and ch.isalpha() for ch in line) / max(1, len(line.replace(" ", "")))
     return ratio > 0.4
 
@@ -50,23 +55,33 @@ def _emit_node(state: dict, depth: int, num: str, label: str, suffix: str,
     }
 
 
+def _parent_for(state: dict, depth: int) -> str:
+    for d in range(depth - 1, 0, -1):
+        if state["current"].get(d):
+            return state["current"][d]
+    return ""
+
+
+def _try_match_at(state: dict, line: str, source_tag: str, depth: int, regex, num_fmt) -> dict | None:
+    m = regex.match(line)
+    if not m:
+        return None
+    num = num_fmt(m.group(1))
+    parent = "" if depth == 1 else _parent_for(state, depth)
+    return _emit_node(state, depth, num, m.group(2), m.group(3) or "", parent, source_tag)
+
+
 def _try_match(state: dict, line: str, source_tag: str) -> dict | None:
-    m1 = RE_L1.match(line)
-    if m1:
-        return _emit_node(state, 1, m1.group(1), m1.group(2), m1.group(3) or "", "", source_tag)
-    m2 = RE_L2.match(line)
-    if m2:
-        return _emit_node(state, 2, m2.group(1), m2.group(2), m2.group(3) or "",
-                            state["current"][1] or "", source_tag)
-    m3 = RE_L3.match(line)
-    if m3:
-        parent = state["current"][2] or state["current"][1] or ""
-        return _emit_node(state, 3, f"({m3.group(1)})", m3.group(2),
-                            m3.group(3) or "", parent, source_tag)
-    m4 = RE_L4.match(line)
-    if m4:
-        parent = state["current"][3] or state["current"][2] or state["current"][1] or ""
-        return _emit_node(state, 4, m4.group(1), m4.group(2), m4.group(3) or "", parent, source_tag)
+    # M2 dispatch: 4 层 regex 表驱动, CC=5
+    for depth, regex, num_fmt in (
+        (1, RE_L1, str),
+        (2, RE_L2, str),
+        (3, RE_L3, lambda x: f"({x})"),
+        (4, RE_L4, str),
+    ):
+        row = _try_match_at(state, line, source_tag, depth, regex, num_fmt)
+        if row:
+            return row
     return None
 
 

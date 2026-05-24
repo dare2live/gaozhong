@@ -94,28 +94,37 @@ def vocab_year_growth(con: duckdb.DuckDBPyConnection) -> dict:
 
 def top_rising_words(con: duckdb.DuckDBPyConnection,
                        recent_years: int = 3, top_n: int = 20) -> list[dict]:
-    """近 N 年新出现 / 频次上升的词."""
-    rows = con.execute(
-        "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
-    ).fetchall()
-    by_word_year: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
-    for y, q in rows:
-        for t in _WORD_RE.findall(q or ""):
-            tl = t.lower()
-            if tl not in STOPWORDS and len(tl) >= 4:
-                by_word_year[tl][y] += 1
-    all_years = sorted({y for years_dict in by_word_year.values() for y in years_dict})
+    """近 N 年新出现 / 频次上升的词. (M6 拆: 主函数 ≤10)"""
+    by_word_year = _word_year_counts(con)
+    all_years = sorted({y for d in by_word_year.values() for y in d})
     if len(all_years) < recent_years * 2:
         return []
     recent = set(all_years[-recent_years:])
     older = set(all_years[:-recent_years])
-    rising = []
-    for w, yd in by_word_year.items():
-        recent_total = sum(yd.get(y, 0) for y in recent)
-        older_total = sum(yd.get(y, 0) for y in older)
-        # 近期至少出现 3 次, 老时期 ≤ 1
-        if recent_total >= 3 and older_total <= 1:
-            rising.append((w, recent_total, older_total))
+    rising = _filter_rising(by_word_year, recent, older)
     rising.sort(key=lambda x: -x[1])
     return [{"word": w, "recent_freq": r, "older_freq": o,
               "rise_ratio": (r + 1) / (o + 1)} for w, r, o in rising[:top_n]]
+
+
+def _word_year_counts(con: duckdb.DuckDBPyConnection) -> dict[str, dict[int, int]]:
+    rows = con.execute(
+        "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
+    ).fetchall()
+    by_wy: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
+    for y, q in rows:
+        for t in _WORD_RE.findall(q or ""):
+            tl = t.lower()
+            if tl not in STOPWORDS and len(tl) >= 4:
+                by_wy[tl][y] += 1
+    return by_wy
+
+
+def _filter_rising(by_wy: dict, recent: set, older: set) -> list[tuple]:
+    rising: list[tuple] = []
+    for w, yd in by_wy.items():
+        rt = sum(yd.get(y, 0) for y in recent)
+        ot = sum(yd.get(y, 0) for y in older)
+        if rt >= 3 and ot <= 1:
+            rising.append((w, rt, ot))
+    return rising
