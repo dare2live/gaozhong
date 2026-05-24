@@ -1,0 +1,40 @@
+/* teacher.html 专用 (从原 inline <style> 抽出, Rule 5). 主 css 在 style.css */
+
+.teacher-grid { display: grid; grid-template-columns: 280px 1fr; gap: 0; min-height: 100vh; }
+nav.sidebar { background: #0a4d75; color: white; padding: 16px; }
+nav.sidebar h2 { font-family: Georgia, serif; color: white; border-bottom-color: #c1272d; font-size: 16px; }
+nav.sidebar ul { list-style: none; padding: 0; margin: 12px 0; }
+nav.sidebar li { padding: 6px 10px; cursor: pointer; border-left: 3px solid transparent; }
+nav.sidebar li:hover, nav.sidebar li.active { border-left-color: #c1272d; background: rgba(255,255,255,0.08); }
+main.tab-body { padding: 18px 24px; }
+
+.qb-row { border-bottom: 1px solid #eee; padding: 8px 0; cursor: pointer; }
+.qb-row:hover { background: #f7f5ef; }
+.qb-row .meta { font-size: 11px; color: #888; }
+
+.tag-chip { display: inline-block; background: #e8e6e0; border-radius: 0; padding: 1px 5px;
+            font-size: 10px; margin: 0 3px 3px 0; color: #555; }
+.tag-chip.word { background: #0a4d75; color: white; }
+.tag-chip.grammar { background: #1c5d99; color: white; }
+.tag-chip.year { background: #f4a261; color: white; }
+.tag-chip.question_type { background: #c1272d; color: white; }
+.tag-chip.difficulty { background: #2a9d8f; color: white; }
+.tag-chip.theme { background: #2a9d8f; color: white; }
+
+.paper-q { margin: 14px 0; padding: 10px; border-left: 3px solid #0a4d75; background: #fdfdfb; }
+.paper-q .stem { font-family: Georgia, serif; white-space: pre-wrap; }
+
+.compose-form { display: grid; grid-template-columns: 160px 1fr; gap: 8px 14px;
+                 align-items: center; max-width: 700px; }
+.compose-form label { font-weight: 600; color: #444; }
+.compose-form input, .compose-form select, .compose-form textarea {
+  padding: 6px 8px; border: 1px solid #ccc; font-family: inherit;
+}
+
+.btn-primary { background: #c1272d; color: white; border: 0; padding: 8px 22px; cursor: pointer; }
+.btn-primary:hover { background: #a02020; }
+
+.stat-tile { display: inline-block; background: white; padding: 14px 18px; margin: 6px;
+              border: 1px solid #e8e6e0; min-width: 140px; }
+.stat-tile .n { font-family: Georgia, serif; font-size: 26px; color: #0a4d75; font-weight: 700; }
+.stat-tile .l { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }

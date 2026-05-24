@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>gaozhong · 学生端 (MVP)</title>
+  <title>gaozhong · 学生端</title>
   <link rel="stylesheet" href="/static/style.css">
   <style>
     .student-card { background: white; margin: 16px; padding: 18px 22px;
@@ -17,113 +17,29 @@
     .score-bar b { color: #c1272d; font-size: 22px; }
   </style>
 </head>
-<body>
-  <header>
-    <h1>沈阳/辽宁高中英语 · 学生端 (M5 MVP)</h1>
-    <p class="subtitle">按城市选教材 → 选 unit → 做题 → 错题自查</p>
-  </header>
-
+<body style="margin:0;background:#fdfdfb">
   <section class="student-card">
-    <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px;margin-top:0">
-      1. 你所在的城市
-    </h2>
+    <h2>1. 你所在的城市</h2>
     <div class="city-pick" id="city-pick">加载中…</div>
     <p style="font-size:12px;color:#777">点城市自动切教材版本</p>
   </section>
 
   <section class="student-card">
-    <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px;margin-top:0">
-      2. 选 unit, 出 5 道课时题
-    </h2>
+    <h2>2. 选 unit, 出 5 道课时题</h2>
     <p>当前教材: <b id="cur-version">—</b></p>
     <select id="stu-unit" style="width:100%;padding:6px"></select>
     <div style="margin-top:8px">
-      <button id="stu-go" style="background:#c1272d;color:white;border:0;padding:8px 18px;cursor:pointer">开始做题</button>
+      <button id="stu-go" class="btn-primary">开始做题</button>
     </div>
   </section>
 
   <section class="student-card" id="stu-quiz-card" style="display:none">
-    <h2 style="font-family:Georgia,serif;color:#0a4d75;border-bottom:2px solid #c1272d;padding-bottom:6px;margin-top:0">
-      课时题
-    </h2>
+    <h2>课时题</h2>
     <div id="stu-quiz"></div>
     <div class="score-bar" id="stu-score" style="display:none"></div>
   </section>
 
-  <script>
-    const $ = (s) => document.querySelector(s);
-    const f = (p) => fetch(p).then(r => r.json());
-
-    const CITY_TO_VER = { "外研版": "waiyan", "人教版": "renjiao" };
-    let activeVersion = "waiyan";
-
-    async function loadCities() {
-      const rows = await f("/api/liaoning/city_choice");
-      $("#city-pick").innerHTML = rows.map(r =>
-        `<button data-pub="${r.publisher_short}" data-city="${r.city}">${r.city}<span style="font-size:10px;opacity:0.6"> (${r.publisher_short})</span></button>`).join("");
-      document.querySelectorAll("#city-pick button").forEach(b => {
-        b.addEventListener("click", () => pickCity(b));
-      });
-      // default 沈阳
-      pickCity(document.querySelector('[data-city="沈阳"]'));
-    }
-    function pickCity(b) {
-      document.querySelectorAll("#city-pick button").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      const pub = b.dataset.pub;
-      activeVersion = CITY_TO_VER[pub] || "waiyan";
-      $("#cur-version").textContent = `${pub} (${activeVersion})`;
-      loadUnits();
-    }
-    async function loadUnits() {
-      const rows = await f(`/api/units?version=${activeVersion}`);
-      $("#stu-unit").innerHTML = rows.map(r =>
-        `<option value="unit:${r.version_key}/${r.volume_key}/U${r.unit_number}">${r.volume_key} / Unit ${r.unit_number} — ${r.title_en||''}</option>`).join("");
-    }
-    async function startQuiz() {
-      const unit = $("#stu-unit").value;
-      const d = await f(`/api/exercise/l1?unit=${encodeURIComponent(unit)}&n=5`);
-      $("#stu-quiz-card").style.display = "block";
-      $("#stu-score").style.display = "none";
-      if (d.error) { $("#stu-quiz").innerHTML = `<em>${d.error}</em>`; return; }
-      window.__quiz = d;
-      window.__answers = {};
-      $("#stu-quiz").innerHTML = d.questions.map(q => `
-        <div class="quiz-q" data-seq="${q.seq}" data-answer="${q.answer}">
-          <p><b>${q.seq}.</b> ${q.stem}</p>
-          <ul class="quiz-opts">
-            ${q.options.map(o => `<li data-label="${o.label}"><b>${o.label}.</b> ${o.text}</li>`).join("")}
-          </ul>
-        </div>`).join("") +
-        `<button id="stu-submit" style="background:#0a4d75;color:white;border:0;padding:8px 18px;cursor:pointer;margin-top:10px">交卷</button>`;
-      document.querySelectorAll(".quiz-opts li").forEach(li => {
-        li.addEventListener("click", () => {
-          const q = li.closest(".quiz-q");
-          q.querySelectorAll("li").forEach(x => x.style.background = "");
-          li.style.background = "#e0eaf2";
-          window.__answers[q.dataset.seq] = li.dataset.label;
-        });
-      });
-      $("#stu-submit").addEventListener("click", submitQuiz);
-    }
-    function submitQuiz() {
-      let correct = 0;
-      window.__quiz.questions.forEach(q => {
-        const ans = window.__answers[q.seq];
-        const elQ = document.querySelector(`.quiz-q[data-seq="${q.seq}"]`);
-        elQ.querySelectorAll("li").forEach(li => {
-          if (li.dataset.label === q.answer) li.style.background = "#d6e9d6";
-          else if (li.dataset.label === ans) li.style.background = "#f9d4d4";
-        });
-        if (ans === q.answer) correct++;
-      });
-      const n = window.__quiz.questions.length;
-      $("#stu-score").style.display = "block";
-      $("#stu-score").innerHTML = `成绩: <b>${correct}/${n}</b> (${Math.round(100*correct/n)}%)`;
-    }
-
-    loadCities();
-    $("#stu-go").addEventListener("click", startQuiz);
-  </script>
+  <script src="/static/common.js"></script>
+  <script src="/static/student.js"></script>
 </body>
 </html>

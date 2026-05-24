@@ -10,17 +10,21 @@ body {
 header {
   background: #0a4d75;
   color: white;
-  padding: 24px 32px;
-  border-bottom: 3px solid #c1272d;     /* economist 红条 */
+  padding: 18px 32px;
+  border-bottom: 3px solid #c1272d;
 }
 header h1 {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.3px;
 }
 header .subtitle { margin: 6px 0 0; opacity: 0.9; font-size: 13px; }
+header .nav-inline { font-family: -apple-system, sans-serif; font-size: 14px; font-weight: 400; opacity: 0.92; margin-left: 16px; }
+header .nav-inline a { color: white; text-decoration: none; margin: 0 4px; border-bottom: 2px solid transparent; padding-bottom: 2px; }
+header .nav-inline a.active { border-bottom-color: #c1272d; }
+header .nav-inline a:hover { opacity: 0.7; }
 .badge {
   display: inline-block;
   background: #f4a261;
