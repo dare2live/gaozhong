@@ -150,22 +150,74 @@
   });
 
   // ===================================================================
-  // E. 学生档案 (占位 #39)
+  // E. 学生档案 (#39 真接入)
   // ===================================================================
   register("students", async () => {
-    CONTENT.innerHTML = `
-      <h2>E. 学生档案</h2>
-      <div class="tab-placeholder">
-        <p>待 task #39 实装. 计划:</p>
-        <ul>
-          <li>学生 CRUD UI (<code>/api/students/*</code> 已规划)</li>
-          <li>班级 + 学生关联</li>
-          <li>答题历史 timeline</li>
-          <li>弱点 heatmap (4 象限)</li>
-          <li>弱点 → 推送对应课节 (eg "g:obj_clause_that 弱 → G2 #11")</li>
-        </ul>
+    CONTENT.innerHTML = `<h2>E. 学生档案</h2><p>载入中...</p>`;
+    const [list, classes] = await Promise.all([
+      fetchJSON("/api/students/list"),
+      fetchJSON("/api/students/classes"),
+    ]);
+    let html = `<h2>E. 学生档案 (${list.count} 学生 · ${classes.count} 班)</h2>
+      <section class="layer-section">
+        <h3>班级 <span class="layer-meta">${classes.count}</span></h3>
+        <div class="course-grid">`;
+    for (const c of classes.classes) {
+      html += `<div class="course-card">
+        <strong>${c.name}</strong>
+        <div class="block">${c.school} · ${c.grade}</div>
+        <div class="block">学生: ${c.n_students}</div>
       </div>`;
+    }
+    html += `</div></section>
+      <section class="layer-section">
+        <h3>学生列表 <span class="layer-meta">点击查弱点 + 推送课节</span></h3>
+        <div class="course-grid">`;
+    for (const s of list.students) {
+      html += `<div class="course-card" onclick="window._openStudent('${s.student_id}')">
+        <strong>${s.name}</strong> <span class="layer-badge">${s.grade}</span>
+        <div class="block">学号: ${s.student_id}</div>
+        <div class="block">${s.school} · ${s.city}</div>
+      </div>`;
+    }
+    html += `</div></section>
+      <div id="student-modal" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="modal-body">
+          <span class="close-btn" onclick="document.getElementById('student-modal').classList.remove('open')">✕</span>
+          <div id="student-content">载入中...</div>
+        </div>
+      </div>`;
+    CONTENT.innerHTML = html;
   });
+
+  window._openStudent = async (sid) => {
+    const modal = document.getElementById("student-modal");
+    const cont = document.getElementById("student-content");
+    modal.classList.add("open");
+    modal.id = "handout-modal";  // reuse 样式
+    cont.innerHTML = "载入中...";
+    try {
+      const [info, weak, rec] = await Promise.all([
+        fetchJSON("/api/students/get?id=" + sid),
+        fetchJSON("/api/students/weakness?id=" + sid),
+        fetchJSON("/api/students/recommend?id=" + sid),
+      ]);
+      let h = `<h2 style="margin:0">${info.student.name} (${sid})</h2>`;
+      h += `<p>${info.student.school} · ${info.student.grade} · 答题 ${info.answers.total} 题 (正确 ${info.answers.correct})</p>`;
+      h += `<h3>弱点 (${weak.count})</h3><ul>`;
+      for (const w of weak.weakness) {
+        h += `<li>[${w.kind}] <strong>${w.concept_id}</strong> — 弱化度 ${w.score} (样本 ${w.sample_n})</li>`;
+      }
+      h += `</ul><h3>推送课节 (${rec.count})</h3><ul>`;
+      for (const r of rec.recommendations) {
+        h += `<li><a href="#" onclick="window._openHandout(${r.course_id});return false">#${r.course_id} [${r.layer}] ${r.title}</a> ← ${r.weak_concept}</li>`;
+      }
+      h += `</ul>`;
+      cont.innerHTML = h;
+    } catch (err) {
+      cont.innerHTML = "载入失败: " + err.message;
+    }
+  };
 
   // ===================================================================
   // F. 知识图谱 (复用 /teacher 的图谱 tab, iframe 嵌)

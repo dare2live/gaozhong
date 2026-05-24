@@ -95,6 +95,10 @@ def main() -> None:
     cs = init_courses.run(con)
     print(f"  {cs}")
 
+    print("\n=== Layer 4d: 学生档案 demo (5.6 #39) ===")
+    from backend.services import students as students_seed
+    print(f"  {students_seed.seed_demo(con)}")
+
     print("\n=== Layer 3: audit ===")
     for k, v in audit.run_all(con).items():
         print(f"  {k}: {v}")
