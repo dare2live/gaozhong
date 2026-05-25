@@ -1,6 +1,6 @@
 # CLAUDE.md — gaozhong 项目工程规则
 
-> 配 `goal.md` 使用. 新 session 先读 goal.md + 本文件.
+> 配 `goal.md` 使用. 新 session 先读 **`docs/RESUME.md`** (断点续传) + goal.md + 本文件.
 
 沈阳/辽宁高中英语教学系统. 第五阶段 (40 节分层课程) + 第六阶段 (全局图谱浮窗 + D0 100% 准约束) 已完成.
 
