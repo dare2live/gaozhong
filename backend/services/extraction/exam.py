@@ -41,16 +41,17 @@ def infer_province(year: int | None, question_text: str) -> str:
     if year is None:
         return "未知"
     text = question_text or ""
-    if any(k in text for k in LIAONING_KEYWORDS):
+    if _has_keyword(text, LIAONING_KEYWORDS):
         return "辽宁"
     if year >= 2021:
-        # 新课标 II 卷 → 辽宁默认 (省份硬约束); 但若题面显示其它省, 优先题面
-        if any(k in text for k in NATIONAL_II_HINT):
-            return "辽宁 (新课标 II)"
-        return "辽宁 (推断, 2021+ 新课标 II)"
-    if 2017 <= year <= 2020 and any(k in text for k in NATIONAL_II_HINT):
+        return "辽宁 (新课标 II)" if _has_keyword(text, NATIONAL_II_HINT) else "辽宁 (推断, 2021+ 新课标 II)"
+    if 2017 <= year <= 2020 and _has_keyword(text, NATIONAL_II_HINT):
         return "辽宁 (全国卷 II, 改革前)"
     return "未知"
+
+
+def _has_keyword(text: str, keywords: list[str]) -> bool:
+    return any(k in text for k in keywords)
 
 
 def infer_question_type(file_basename: str) -> str:
