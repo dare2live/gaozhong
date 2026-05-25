@@ -127,8 +127,8 @@ def _check_trend_backtest(con) -> dict:
         slope = _wls_slope(list(train_years), vals, weights)
         predicted_dir = _classify_direction(slope)
         actual_2023 = heatmap_test.get(point, {}).get(2023, 0)
-        actual_2022 = heatmap_train.get(point, {}).get(2022, 0)
-        actual_dir = _classify_direction(actual_2023 - actual_2022)
+        avg_train = sum(vals) / max(len(vals), 1)
+        actual_dir = _classify_direction(actual_2023 - avg_train)
         if predicted_dir == actual_dir:
             correct += 1
         total += 1
