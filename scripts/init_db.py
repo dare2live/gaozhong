@@ -94,8 +94,9 @@ def main() -> None:
     now_str = datetime.now(timezone.utc).isoformat()
     for wr in writing_rows:
         con.execute(
-            "INSERT INTO question_bank (question_type, stem, options_json, answer, "
-            "difficulty, origin, origin_ref, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
+            "difficulty, origin, origin_ref, created_at) "
+            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?)",
             [wr["question_type"], wr["stem"], wr["options_json"], wr["answer"],
              wr["difficulty"], wr["origin"], wr["origin_ref"], now_str],
         )
