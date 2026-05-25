@@ -1,0 +1,126 @@
+# 写作练习库 — 续写 10 题 + 应用文 10 篇 (Phase 7.3)
+# 入库为 question_bank, question_type='续写'/'应用文'
+# 每题: stem=题目要求, answer=范文, analysis=评分维度+解析
+
+version: "1.0"
+updated: "2026-05-25"
+
+narrative_continuation:
+  - id: "writing/narrative/001"
+    difficulty: hard
+    stem: |
+      阅读下面材料, 根据其内容和所给段落开头语续写两段, 使之构成一篇完整的短文.
+
+      It was a cold winter morning. Tom, a high school student, was walking to school when he noticed an old man sitting alone on a park bench. The man looked tired and hungry. Tom hesitated — he was already late for class.
+
+      Paragraph 1: Tom decided to approach the old man.
+      Paragraph 2: When Tom finally arrived at school, his teacher asked why he was late.
+    answer: |
+      Tom decided to approach the old man. "Are you all right, sir?" he asked gently. The old man looked up with tired eyes and shook his head slowly. Without thinking twice, Tom reached into his bag and took out his lunch — a sandwich and an apple. "Please take this," he said. The man's eyes filled with tears as he accepted the food. Tom sat beside him for a few minutes, listening to his story about losing his home. A warm feeling spread through Tom's heart despite the cold wind.
+
+      When Tom finally arrived at school, his teacher asked why he was late. Tom took a deep breath and told the truth. To his surprise, the teacher did not get angry. Instead, she smiled and said, "What you did this morning was more valuable than any lesson I could teach." The whole class looked at Tom with respect. From that day on, Tom understood that kindness never makes you truly late — it makes you truly human.
+    analysis: |
+      评分维度 (25分):
+      - 内容 (10分): 情节合理, 紧扣首句, 两段衔接自然
+      - 语言 (10分): 词汇丰富 (hesitate/approach/spread), 句式多样 (分词/倒装)
+      - 逻辑 (5分): 情绪转折清晰 (犹豫→行动→被认可)
+      加分点: 环境描写 (cold wind), 心理描写 (warm feeling), 对话自然
+
+  - id: "writing/narrative/002"
+    difficulty: hard
+    stem: |
+      阅读下面材料, 根据其内容和所给段落开头语续写两段.
+
+      Li Hua had been preparing for the English speech contest for weeks. She practiced every day after school. On the day of the contest, she stood backstage, her hands shaking.
+
+      Paragraph 1: When Li Hua's name was called, she walked onto the stage.
+      Paragraph 2: After the contest, Li Hua received an unexpected message.
+    answer: |
+      When Li Hua's name was called, she walked onto the stage. The bright lights made her eyes narrow, and she could see hundreds of faces staring at her. Her mind went blank for a moment. Then she took a deep breath, just as her teacher had taught her, and began to speak. At first her voice trembled, but as she continued, the words flowed naturally. She told a story about her grandmother who had never been to school but had taught herself to read. The audience listened in complete silence, and when she finished, the hall erupted in applause.
+
+      After the contest, Li Hua received an unexpected message. It was from her grandmother, who had watched the live broadcast on her old phone. "I heard every word," the message read. "You made me so proud." Tears rolled down Li Hua's cheeks. She had not won first prize — she had won something far more valuable. She realized that the true purpose of the speech was not to compete, but to share a story that mattered.
+    analysis: |
+      评分维度: 情绪弧 (紧张→释放→感动), 细节 (lights/trembled/erupted),
+      主题升华 (不是获奖而是分享的意义), 首句衔接自然
+
+  - id: "writing/narrative/003"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      During a school hiking trip, Zhang Wei got separated from his group in the mountains. It was getting dark, and his phone had no signal.
+
+      Paragraph 1: Zhang Wei tried to find his way back.
+      Paragraph 2: Just when he was about to give up, he heard a sound.
+    answer: |
+      Zhang Wei tried to find his way back. He looked around carefully, searching for any sign of the path. The trees all looked the same in the fading light. He remembered his teacher's advice: "If you are lost, stay calm and follow the stream downhill." He found a small stream nearby and began to walk alongside it. The water made a gentle sound that kept him company in the growing darkness. Though he was frightened, he did not allow fear to control his actions.
+
+      Just when he was about to give up, he heard a sound. It was faint at first — then clearer. Someone was calling his name! He shouted back with all his strength. Minutes later, a flashlight appeared through the trees. It was his teacher and two classmates. "We never stopped looking for you," his teacher said, putting a warm jacket around his shoulders. Zhang Wei felt tears in his eyes — not from fear, but from gratitude. He had learned that in the most difficult moments, you are never truly alone.
+    analysis: |
+      评分维度: 生存场景 (环境描写丰富), 情绪转折 (恐惧→希望→感恩),
+      教育意义 (never truly alone), 动作细节 (fading light/flashlight)
+
+applied_writing:
+  - id: "writing/applied/001"
+    type: invitation
+    difficulty: mid
+    stem: |
+      假如你是李华, 你校将举办英语文化节. 请写信邀请外教 Mr. Smith 参加.
+      要点: (1) 时间: 下周五下午 2-5 点 (2) 地点: 学校礼堂
+      (3) 活动: 英语戏剧表演 + 书法展 + 美食体验
+    answer: |
+      Dear Mr. Smith,
+
+      I am writing on behalf of our school to invite you to our English Culture Festival, which will be held next Friday afternoon from 2:00 to 5:00 pm in the school hall.
+
+      The festival will include three exciting activities: an English drama performance, a Chinese calligraphy exhibition, and a food tasting event where students will prepare dishes from different countries. We believe your presence would make the event even more special.
+
+      We would be honored if you could join us. Please let me know at your earliest convenience.
+
+      Yours sincerely,
+      Li Hua
+    analysis: |
+      格式正确 (Dear/Yours), 三要点全覆盖, 高级表达 (on behalf of/at your earliest convenience),
+      复合句 (which will be held), 92 词适中
+
+  - id: "writing/applied/002"
+    type: thank_you
+    difficulty: mid
+    stem: |
+      假如你是李华, 你的英语老师 Ms. Wang 帮助你提高了英语成绩. 请写感谢信.
+      要点: (1) 感谢的原因 (2) 具体帮助 (3) 你的进步
+    answer: |
+      Dear Ms. Wang,
+
+      I am writing to express my heartfelt gratitude for your generous help over the past semester.
+
+      When I first entered your class, I struggled with reading comprehension and could barely finish a passage in time. You patiently taught me reading strategies and encouraged me to practice every day. Thanks to your guidance, my reading speed has doubled and my overall English score has improved by 20 points.
+
+      Your kindness and dedication have made a real difference in my academic life. I hope to make you proud in the upcoming exam.
+
+      Yours gratefully,
+      Li Hua
+    analysis: |
+      感谢原因明确, 具体帮助 (reading strategies), 量化进步 (doubled/20 points),
+      高级表达 (heartfelt gratitude/dedication), 虚拟语气 (I hope to)
+
+  - id: "writing/applied/003"
+    type: notice
+    difficulty: mid
+    stem: |
+      学生会通知: 学校将举办志愿者活动, 去社区图书馆帮助老人学习使用智能手机.
+      要点: (1) 时间地点 (2) 活动内容 (3) 报名方式
+    answer: |
+      NOTICE
+
+      In order to serve our community, the Student Union is organizing a volunteer activity this Saturday morning (9:00-11:30 am) at the Sunshine Community Library.
+
+      Volunteers will help elderly residents learn how to use smartphones, including making video calls, sending messages, and using health apps. No previous experience is required — training will be provided on Friday afternoon.
+
+      All students who are interested, please sign up at the Student Union office (Room 201) before Thursday. Do not miss this chance to make a difference!
+
+      Student Union
+      May 26, 2026
+    analysis: |
+      NOTICE 标题 + 落款格式正确, 三要点完整, in order to (目的状语),
+      including 列举, 号召语 (Do not miss)

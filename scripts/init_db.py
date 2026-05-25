@@ -86,6 +86,21 @@ def main() -> None:
     print("\n=== Layer 4b: OCR 上下文修复字典 (用户 2026-05-24) ===")
     ofd = extract.run_ocr_fix_dict(con)
     print(f"  ocr fixes: {ofd['fixes_built']}/{ofd['unknown_tokens']}, examples: {ofd['examples'][:4]}")
+
+    print("\n=== Layer 4c: 写作练习入库 (Phase 7.3: 续写+应用文) ===")
+    from backend.services.course.writing import load_writing_exercises
+    from datetime import datetime, timezone
+    writing_rows = load_writing_exercises()
+    now_str = datetime.now(timezone.utc).isoformat()
+    for wr in writing_rows:
+        con.execute(
+            "INSERT INTO question_bank (question_type, stem, options_json, answer, "
+            "difficulty, origin, origin_ref, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [wr["question_type"], wr["stem"], wr["options_json"], wr["answer"],
+             wr["difficulty"], wr["origin"], wr["origin_ref"], now_str],
+        )
+    print(f"  writing exercises: {len(writing_rows)} (续写+应用文)")
+
     print(f"  qb total: {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
     print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")

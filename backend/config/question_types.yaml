@@ -1,0 +1,98 @@
+# 高考英语题型说明配置 (Phase 7.4)
+# 按题型 → 年级层级组织, 支持:
+#   1. 前端题型说明展示 (B tab / C tab)
+#   2. 按类型+层级抽题 (API: /api/qbank/by_type)
+#   3. 教案中关联对应题型 (course_materials)
+
+version: "1.0"
+updated: "2026-05-25"
+
+types:
+  阅读理解:
+    english_name: "Reading Comprehension"
+    gaokao_score: 50
+    gaokao_questions: 15
+    description: "4 篇文章, 每篇 3-4 题. A 篇最简单 (应用文/通知), D 篇最难 (科技/学术)."
+    sub_skills:
+      - {name: "细节理解", intro_layer: G1, description: "找具体信息, 定位关键词"}
+      - {name: "主旨大意", intro_layer: G1, description: "归纳全文/段落中心思想"}
+      - {name: "推理判断", intro_layer: G3, description: "从已知推未知, 不过度推理"}
+      - {name: "词义猜测", intro_layer: G3, description: "从上下文推断生词含义"}
+    layer_focus:
+      G1: "细节理解 + 主旨大意 (A/B 篇难度)"
+      G2: "议论文 + 说明文 (B/C 篇难度)"
+      G3: "推理判断 + 词义猜测 (C/D 篇难度)"
+      G_FINAL: "密集真题训练 (全篇型)"
+    courses: [9, 10, 17, 18, 25, 26, 35, 36]
+    qbank_filter: "question_type IN ('阅读理解')"
+
+  完形填空:
+    english_name: "Cloze Test"
+    gaokao_score: 15
+    gaokao_questions: 15
+    description: "1 篇 250 词短文, 15 个空, 每空 4 选项. 考语境推断+词汇搭配."
+    sub_skills:
+      - {name: "语境推断", intro_layer: G2, description: "从上下文选最合适的词"}
+      - {name: "逻辑连接", intro_layer: G3, description: "转折/递进/因果连接词"}
+      - {name: "词汇辨析", intro_layer: G2, description: "近义词选择 (adopt/adapt/adjust)"}
+    layer_focus:
+      G2: "记叙文完形 (故事类, 情感变化)"
+      G3: "议论文完形 (观点类, 逻辑链)"
+      G_FINAL: "5 年真题主题训练"
+    courses: [19, 27, 37]
+    qbank_filter: "question_type LIKE '%完形%'"
+
+  语法填空:
+    english_name: "Grammar Fill-in-the-Blank"
+    gaokao_score: 15
+    gaokao_questions: 10
+    description: "1 篇 200 词短文, 10 空. 有提示词 (词形变化) + 无提示词 (语法)."
+    sub_skills:
+      - {name: "时态语态", intro_layer: G1, description: "判断主动/被动 + 什么时态"}
+      - {name: "词形变化", intro_layer: G3, description: "adj→adv, n→v, 比较级等"}
+      - {name: "冠词/介词/连词", intro_layer: G2, description: "无提示词填空"}
+    layer_focus:
+      G3: "时态+词形综合"
+      G_FINAL: "5 年真题训练"
+    courses: [28, 38]
+    qbank_filter: "question_type LIKE '%语法填空%'"
+
+  应用文:
+    english_name: "Applied Writing"
+    gaokao_score: 15
+    gaokao_questions: 1
+    description: "80-100 词短文. 邀请信/感谢信/通知/求职/建议 5 类轮换."
+    sub_skills:
+      - {name: "格式规范", intro_layer: G2, description: "Dear/Yours 等固定格式"}
+      - {name: "要点覆盖", intro_layer: G2, description: "3 个要点全写到"}
+      - {name: "高级表达", intro_layer: G3, description: "替换基础词, 用复合句"}
+    layer_focus:
+      G2: "邀请信 + 通知 (模板入门)"
+      G3: "求职/自荐 (正式语气)"
+      G_FINAL: "5 年真题全类型"
+    courses: [20, 29, 39]
+    qbank_filter: "question_type = '应用文'"
+
+  续写:
+    english_name: "Narrative Continuation"
+    gaokao_score: 25
+    gaokao_questions: 1
+    description: "读 350 词故事, 续写 2 段 (各 70-80 词). 新高考最大新增."
+    sub_skills:
+      - {name: "情节推进", intro_layer: G3, description: "紧扣首句, 合理发展"}
+      - {name: "情绪描写", intro_layer: G3, description: "动作/环境/心理代替形容词"}
+      - {name: "语言升级", intro_layer: G_FINAL, description: "倒装/强调/非谓语加分"}
+    layer_focus:
+      G3: "情绪转折 + 基础续写"
+      G_FINAL: "模拟卷 + 高分技巧"
+    courses: [30, 40]
+    qbank_filter: "question_type = '续写'"
+
+  单选:
+    english_name: "Multiple Choice (Grammar/Vocab)"
+    gaokao_score: 0
+    gaokao_questions: 0
+    description: "新高考已取消单独的单选题, 但语法词汇仍通过其他题型考查."
+    note: "保留在题库中用于课堂练习, 非正式考试题型"
+    courses: []
+    qbank_filter: "question_type LIKE '%单选%' OR question_type LIKE '%选义%'"
