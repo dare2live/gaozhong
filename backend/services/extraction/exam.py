@@ -63,10 +63,11 @@ def _has_keyword(text: str, keywords: list[str]) -> bool:
 
 def infer_question_type(file_basename: str) -> str:
     name = file_basename.lower()
-    if "cloze_test" in name: return "完形填空"
-    if "cloze_passage" in name: return "完形填空(七选五/语篇)"
+    # L-2026-05-25-O: 交叉验证发现 cloze_test=七选五, cloze_passage=语法填空, fill_in_blanks=完形填空
+    if "cloze_test" in name: return "完形填空(七选五/语篇)"
+    if "cloze_passage" in name: return "语法填空"
     if "reading_comp" in name: return "阅读理解"
-    if "fill_in_blanks" in name: return "语法填空"
+    if "fill_in_blanks" in name: return "完形填空"
     if "error_correction" in name: return "短文改错"
     if "mcq" in name: return "单选(语法/词汇)"
     return "其他"

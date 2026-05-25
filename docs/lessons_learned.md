@@ -258,3 +258,20 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **自动化兜底**: cross_validation_report.json (交叉验证); model_capability_audit 应加 paper_type 验证维度.
 
 **教训**: D0 100% 准确率不只是"数据入库了", 而是"每条数据的每个字段都正确". paper_type 错标 = 整个模型失效. 宪法 §8 数据获取规范必须包含 paper_type 验证.
+
+---
+
+## L-2026-05-25-O · infer_question_type 三个题型标反 — 全部真题题型标签错误
+
+**现象**: 交叉验证 agent 发现 exam.py 的文件名→题型映射全标反:
+- cloze_test (实际是七选五) → 标成了完形填空
+- cloze_passage (实际是语法填空) → 标成了完形填空(七选五/语篇)  
+- fill_in_blanks (实际是完形填空) → 标成了语法填空
+
+**根因**: 文件名与题型的对应关系靠猜, 没有验证. cloze_test 听起来像完形填空, 但 GAOKAO-Bench 的 cloze_test 实际是七选五格式 (选项 A-G).
+
+**影响**: 56 条 2021-2023 真题的题型全错 → 题型分布分析全错 → 趋势模型在错误的题型上做趋势.
+
+**自动化兜底**: cross_validation_report.json; 应在 init_db 中加题型格式校验 (七选五应有 A-G 选项, 完形应有 ABCD).
+
+**教训**: 文件名不是 ground truth. 必须看实际内容 (题目格式/选项/答案) 来判断题型. 宪法 §8 "交叉验证" 就是为了抓这类错.
