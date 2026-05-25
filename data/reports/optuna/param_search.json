@@ -1,5 +1,5 @@
 {
-  "n_trials": 10,
+  "n_trials": 5,
   "best_score": 75.92,
   "best_params": {
     "hard_ratio": 0.62,
@@ -67,66 +67,6 @@
         "stem_len_max": 91.606,
         "analysis_min_chars": 131.699,
         "topic_match_threshold": 0.602
-      },
-      "score": 70.92
-    },
-    {
-      "trial": 5,
-      "params": {
-        "hard_ratio": 0.704,
-        "mid_ratio": 0.405,
-        "stem_len_min": 41.449,
-        "stem_len_max": 196.774,
-        "analysis_min_chars": 75.424,
-        "topic_match_threshold": 0.576
-      },
-      "score": 70.92
-    },
-    {
-      "trial": 6,
-      "params": {
-        "hard_ratio": 0.715,
-        "mid_ratio": 0.366,
-        "stem_len_min": 54.468,
-        "stem_len_max": 149.282,
-        "analysis_min_chars": 114.549,
-        "topic_match_threshold": 0.323
-      },
-      "score": 70.92
-    },
-    {
-      "trial": 7,
-      "params": {
-        "hard_ratio": 0.414,
-        "mid_ratio": 0.251,
-        "stem_len_min": 23.192,
-        "stem_len_max": 107.935,
-        "analysis_min_chars": 42.12,
-        "topic_match_threshold": 0.439
-      },
-      "score": 75.92
-    },
-    {
-      "trial": 8,
-      "params": {
-        "hard_ratio": 0.618,
-        "mid_ratio": 0.278,
-        "stem_len_min": 34.807,
-        "stem_len_max": 105.141,
-        "analysis_min_chars": 62.037,
-        "topic_match_threshold": 0.768
-      },
-      "score": 75.92
-    },
-    {
-      "trial": 9,
-      "params": {
-        "hard_ratio": 0.624,
-        "mid_ratio": 0.363,
-        "stem_len_min": 26.846,
-        "stem_len_max": 167.495,
-        "analysis_min_chars": 49.608,
-        "topic_match_threshold": 0.49
       },
       "score": 70.92
     }

@@ -1,0 +1,209 @@
+{
+  "generated": "2026-05-25T21:53:41.608232",
+  "summary": {
+    "scope": "2021-2025 Liaoning English gaokao (新课标 II 卷)",
+    "total_items_2024_2025_from_pdf": 94,
+    "total_individual_items_all_years": 249,
+    "verified_objective_answers": {
+      "2021": 60,
+      "2022": 60,
+      "2023": 35,
+      "2024": 45,
+      "2025": 45,
+      "total": 245
+    },
+    "sources": [
+      "OpenLMLab/GAOKAO-Bench (2021-2022)",
+      "OpenLMLab/GAOKAO-Bench-Updates (2023)",
+      "PDF: zgkao_2024_xgkii_english (2024)",
+      "PDF: jhgk_2025_xgkii_english (2025)"
+    ]
+  },
+  "years": {
+    "2021": {
+      "paper": "新课标 II 卷 (解析版 in GAOKAO-Bench)",
+      "source": "GAOKAO-Bench",
+      "in_db": true,
+      "db_entries": 16,
+      "liaoning_entries": 8,
+      "individual_items": 60,
+      "breakdown": {
+        "阅读理解": 15,
+        "七选五": 5,
+        "完形填空": 20,
+        "语法填空": 10,
+        "短文改错": 10
+      },
+      "answers_complete": true,
+      "pdf_available": false,
+      "issues": [
+        "3/5 question types mislabeled in exam_questions table"
+      ]
+    },
+    "2022": {
+      "paper": "全国乙卷 (= new 新课标 II for Liaoning)",
+      "source": "GAOKAO-Bench",
+      "in_db": true,
+      "db_entries": 16,
+      "liaoning_entries": 8,
+      "individual_items": 60,
+      "breakdown": {
+        "阅读理解": 15,
+        "七选五": 5,
+        "完形填空": 20,
+        "语法填空": 10,
+        "短文改错": 10
+      },
+      "answers_complete": true,
+      "pdf_available": false,
+      "issues": [
+        "3/5 question types mislabeled in exam_questions table"
+      ]
+    },
+    "2023": {
+      "paper": "新课标全国Ⅱ卷",
+      "source": "GAOKAO-Bench-Updates",
+      "in_db": true,
+      "db_entries": 24,
+      "liaoning_entries": 6,
+      "individual_items": 35,
+      "breakdown": {
+        "阅读理解": 15,
+        "七选五": 5,
+        "完形填空": 15,
+        "语法填空": 0,
+        "写作": 0
+      },
+      "answers_complete": false,
+      "missing_types": [
+        "语法填空 (10 items)",
+        "应用文写作 (1 item)",
+        "读后续写 (1 item)"
+      ],
+      "pdf_available": false,
+      "issues": [
+        "3/3 question types mislabeled",
+        "12 items missing from source"
+      ]
+    },
+    "2024": {
+      "paper": "新课标 II 卷",
+      "source": "PDF (zgkao_2024_xgkii_english)",
+      "in_db": false,
+      "db_entries": 0,
+      "individual_items": 47,
+      "breakdown": {
+        "阅读理解": 15,
+        "七选五": 5,
+        "完形填空": 15,
+        "语法填空": 10,
+        "应用文写作": 1,
+        "读后续写": 1
+      },
+      "objective_answers_verified": 45,
+      "mc_stems_extracted": 29,
+      "pdf_available": true,
+      "issues": [
+        "Not imported to DB"
+      ]
+    },
+    "2025": {
+      "paper": "新课标 II 卷 (全国二卷)",
+      "source": "PDF (jhgk_2025_xgkii_english)",
+      "in_db": false,
+      "db_entries": 0,
+      "individual_items": 47,
+      "breakdown": {
+        "阅读理解": 15,
+        "七选五": 5,
+        "完形填空": 15,
+        "语法填空": 10,
+        "应用文写作": 1,
+        "读后续写": 1
+      },
+      "objective_answers_verified": 45,
+      "mc_stems_extracted": 28,
+      "pdf_available": true,
+      "issues": [
+        "Not imported to DB"
+      ]
+    }
+  },
+  "cross_validation_results": {
+    "2023_source_vs_db": {
+      "raw_text_match": true,
+      "answer_values_match": true,
+      "question_type_labels_match": false,
+      "samples_compared": 3,
+      "conclusion": "Content is faithfully copied from source JSON to DB. Only the question_type labels are wrong."
+    },
+    "2024_2025_pdf_only": {
+      "answer_keys_complete": true,
+      "answer_count": {
+        "2024": 45,
+        "2025": 45
+      },
+      "no_cross_source": "Cannot cross-validate: only PDF source exists for these years"
+    },
+    "format_evolution": {
+      "2021_2022": {
+        "完形填空": 20,
+        "短文改错": "Yes (10 items)",
+        "format": "old gaokao"
+      },
+      "2023_2024_2025": {
+        "完形填空": 15,
+        "短文改错": "Removed",
+        "新增": [
+          "应用文写作",
+          "读后续写"
+        ],
+        "format": "new gaokao"
+      }
+    }
+  },
+  "critical_findings": [
+    {
+      "id": "F1",
+      "severity": "HIGH",
+      "title": "SYSTEMATIC QUESTION TYPE MISLABELING",
+      "affected_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "affected_rows": 56,
+      "root_cause": "backend/services/extraction/exam.py lines 64-72",
+      "wrong_mappings": {
+        "cloze_test -> '完形填空'": "Should be '七选五'",
+        "cloze_passage -> '完形填空(七选五/语篇)'": "Should be '语法填空'",
+        "fill_in_blanks -> '语法填空'": "Should be '完形填空'"
+      },
+      "downstream_impact": [
+        "placement_tests.yaml references wrong type names",
+        "question_types.yaml filters would return wrong questions",
+        "trend analysis by type would be incorrect",
+        "exam alignment checks would be wrong"
+      ],
+      "fix": "Fix infer_question_type() mapping, re-run init_db.py"
+    },
+    {
+      "id": "F2",
+      "severity": "MEDIUM",
+      "title": "2024/2025 NOT IN DATABASE",
+      "fix": "Run python3 scripts/import_recent_exams.py"
+    },
+    {
+      "id": "F3",
+      "severity": "MEDIUM",
+      "title": "2023 MISSING 12 ITEMS",
+      "details": "语法填空 (10) + 应用文写作 (1) + 读后续写 (1) absent from GAOKAO-Bench-Updates"
+    },
+    {
+      "id": "F4",
+      "severity": "INFO",
+      "title": "LISTENING DATA GAP (ALL YEARS)",
+      "details": "Expected - listening requires audio, not text-extractable from PDF"
+    }
+  ]
+}
