@@ -4,7 +4,7 @@
 > 新 session 一打开, 先读本文件 + `goal.md` 顶部 D0, 立即接上.
 
 最后停止时间: **2026-05-25**
-最后 commit: (本 session 完成 Q6, 待 commit)
+最后 commit: **`ba1c77e`** feat(junior_high): 外研版 8下+9下
 
 ---
 
@@ -15,7 +15,7 @@
 ```bash
 cd /Users/dp/Documents/M/gaozhong
 
-# (a) D0 全数据 100% 准校验 — 17 章 39+ 项, 必须 exit 0
+# (a) D0 全数据 100% 准校验 — 18 章 39+ 项, 必须 exit 0
 python3 scripts/data_accuracy_check.py
 # 期望: ✅ D0 100% 准确率达成, 全部检查通过
 
@@ -66,10 +66,17 @@ codex review 全部落地:
 - 二阶段摸底 (一阶段粗分 + 追问深挖) 完整闭环
 - 前端 7 tab SPA + 全局图谱浮窗 + 概念互链
 
-**后续可考虑 (用户拍前不做)**:
+**近期待做 (本 session 用户新需求)**:
+- 外研版初中 九年级上册 下载重试 (13.7MB, 当前可能已完成)
+- 沈阳中考英语真题 2020-2025 (J5)
+- 2023 年高考英语真题补入 (GAOKAO-Bench 止于 2022)
+- 初中资料进一步 extract (J6 词表 / J7 语法)
+
+**后续阶段 (用户拍前不做)**:
 - 阶段 7: LLM 增强 (Claude API)
 - 阶段 8: sklearn 难度梯度
 - 阶段 9: 跨学科/多校部署
+- 阶段 10: 初中英语独立项目 (数据已在 data/junior_high/)
 
 ---
 
