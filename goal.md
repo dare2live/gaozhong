@@ -828,21 +828,40 @@ Week 2:  7.2 听力 + 7.3 续写/应用文 ✅ DONE
          ├─ 应用文: 10 篇 (邀请/感谢/通知/建议/推荐/回信/申请/报道)
          └─ D0: 20 章 45+ 项, 0 FAIL / 0 WARN
 
-Week 3:  7.4 模型驱动题目升级 + 7.11 工具模块 P0 ← 当前
-         ├─ scripts/tools/ 目录结构 + __init__.py
-         ├─ tools/generation/optuna_optimizer.py (Optuna 寻优)
-         ├─ tools/generation/llm_question_gen.py (LLM 批量出题)
-         ├─ tools/alignment/topic_gap_analyzer.py (主题缺口)
-         ├─ rule_synth 淘汰 + LLM 新增 (完形 75 + 语法填空 100)
-         └─ exam_alignment overall → 80+
+Week 3:  7.4 模型 + 工具 ✅ DONE
+         ├─ 12 工具实装 (对齐/趋势/审计/生成/监控)
+         ├─ 宪法 29 条入库 + API + 前端 + enforce_before_generation
+         ├─ 模型审计 97.3/100 (Spearman ρ=0.82, 0 leakage)
+         ├─ 细粒度标注器: 56 大块→337 逐题 (17 考点)
+         ├─ Quiz mode + 听力播放器 + 打印
+         └─ 全系统宪法审计: 数据78 + 内容42 + 工具72 = 64/100
 
-Week 3b: 7.5 交互前端 + 7.11 工具模块 P1
-         ├─ Quiz mode + 进度条 + 年级标注 tooltip
-         ├─ tools/alignment/difficulty_profiler.py
-         └─ tools/audit/ground_truth_validator.py
+Week 4:  7.12 细粒度重建 (2024/2025 数据回来后) ← 当前
+         ├─ Phase A: 2024/2025 真题逐题入库 (gaokao agent 提取中)
+         │   ├─ 结构化数据 vs PDF 交叉验证
+         │   ├─ 逐题拆分 (55-60 题/年, 含解析)
+         │   └─ 答案+考点逐题标注
+         ├─ Phase B: 知识图谱重建
+         │   ├─ 2024/2025 题→word/grammar edges (当前 1 条 vs 应有 100+)
+         │   ├─ 38 主题节点层级连通 (level1→level2→level3)
+         │   └─ course_materials ref_id 统一为 concept_id
+         ├─ Phase C: 模型重训 (337→500+ 样本)
+         │   ├─ trend_engine 用 337 逐题标注替代 56 大块
+         │   ├─ 年份权重按宪法 P1 (2025=5)
+         │   └─ 回测目标: Spearman ≥ 0.90
+         ├─ Phase D: 内容质量重建
+         │   ├─ 答案 B 偏修复 (ABCD 均匀化)
+         │   ├─ 275 rule_synth 补 analysis (或淘汰)
+         │   ├─ 难度梯度 A→D (P9)
+         │   └─ 31/40 讲义补 hook + relations 段
+         └─ Phase E: 全系统审计 → 目标 100/100
+             ├─ 数据 78→100
+             ├─ 内容 42→100
+             └─ 工具 72→100
 
-Week 4:  7.6 真人验证 + 7.7 管线 + 7.11 工具模块 P2
-         ├─ 真人验证 + 修 bug
+Week 5:  7.6 真人验证 + 收尾
+         ├─ 安排学生走 8 步协议 (63 min)
+         ├─ feedback 入档 → 修 bug
          ├─ tools/audit/content_drift_detector.py
          ├─ tools/audit/batch_regression_test.py
          ├─ tools/monitor/quality_dashboard.py
