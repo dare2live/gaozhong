@@ -147,7 +147,16 @@ def main() -> None:
     from backend.services import students as students_seed
     print(f"  {students_seed.seed_demo(con)}")
 
-    print("\n=== Layer 4g: 设计宪法入库 (model_driven_design) ===")
+    print("\n=== Layer 4g: 2024/2025 真题 PDF 导入 ===")
+    import subprocess
+    r = subprocess.run(["python3", "scripts/import_recent_exams.py"],
+                       capture_output=True, text=True, timeout=60)
+    for line in (r.stdout or "").strip().split("\n"):
+        if line.strip(): print(f"  {line.strip()}")
+    if r.returncode != 0:
+        print(f"  PDF import warning: {(r.stderr or '')[:200]}")
+
+    print("\n=== Layer 4h: 设计宪法入库 (model_driven_design) ===")
     from backend.services import constitution
     cs = constitution.seed(con)
     print(f"  constitution: {cs['total']} 条 ({cs['principles']} 原则 + {cs['iron_laws']} 铁律 + {cs['violations']} 违宪)")

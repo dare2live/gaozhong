@@ -33,41 +33,53 @@ def extract_text(pdf_path: Path) -> str:
 
 def parse_questions(text: str, year: int) -> list[dict]:
     """按大题块分段: 阅读 A-D + 七选五 + 完形 + 语法填空 + 应用文 + 续写."""
-    questions = []
-    part2 = _extract_between(text, "第二部分", "第三部分") or ""
-    part3 = _extract_between(text, "第三部分", "第四部分") or ""
-    part4 = _extract_between(text, "第四部分", None) or ""
+    parts = _split_parts(text)
+    questions = _parse_reading(parts["part2"], year)
+    questions += _parse_language(parts["part3"], year)
+    questions += _parse_writing(parts["part4"], year)
+    return questions
 
-    # 阅读 A-D 篇 (第一节, 题号 21-35)
+
+def _split_parts(text: str) -> dict:
+    return {
+        "part2": _extract_between(text, "第二部分", "第三部分") or "",
+        "part3": _extract_between(text, "第三部分", "第四部分") or "",
+        "part4": _extract_between(text, "第四部分", None) or "",
+    }
+
+
+def _parse_reading(part2: str, year: int) -> list[dict]:
+    qs = []
     for label in ["A", "B", "C", "D"]:
         block = _extract_passage(part2, label)
         if block and len(block) > 100:
-            questions.append(_make_q(year, "阅读理解", block, ord(label) - ord("A") + 1))
-
-    # 七选五 (第二节, 题号 36-40)
+            qs.append(_make_q(year, "阅读理解", block, ord(label) - ord("A") + 1))
     qiwu = _extract_between(part2, "第二节", None) or ""
     if len(qiwu) > 100:
-        questions.append(_make_q(year, "完形填空(七选五/语篇)", qiwu, 36))
+        qs.append(_make_q(year, "完形填空(七选五/语篇)", qiwu, 36))
+    return qs
 
-    # 完形填空 (第三部分 第一节, 题号 41-55)
+
+def _parse_language(part3: str, year: int) -> list[dict]:
+    qs = []
     cloze = _extract_between(part3, "第一节", "第二节") or part3[:2000]
     if len(cloze) > 100:
-        questions.append(_make_q(year, "完形填空", cloze, 41))
-
-    # 语法填空 (第三部分 第二节, 题号 56-65)
+        qs.append(_make_q(year, "完形填空", cloze, 41))
     grammar = _extract_between(part3, "第二节", None) or ""
     if len(grammar) > 50:
-        questions.append(_make_q(year, "语法填空", grammar, 56))
+        qs.append(_make_q(year, "语法填空", grammar, 56))
+    return qs
 
-    # 应用文 (第四部分 第一节)
+
+def _parse_writing(part4: str, year: int) -> list[dict]:
+    qs = []
     applied = _extract_between(part4, "第一节", "第二节") or ""
     if len(applied) > 50:
-        questions.append(_make_q(year, "应用文写作", applied, 46))
-
-    # 续写 (第四部分 第二节)
+        qs.append(_make_q(year, "应用文写作", applied, 46))
     narrative = _extract_between(part4, "第二节", None) or ""
     if len(narrative) > 50:
-        questions.append(_make_q(year, "续写", narrative, 47))
+        qs.append(_make_q(year, "续写", narrative, 47))
+    return qs
 
     return questions
 
@@ -133,6 +145,15 @@ def import_to_db(questions: list[dict]) -> int:
                  q["question_type"], q["raw_question"], q["answer"], q["analysis"],
                  q["source_file"], q["source_index"], q["source_repo"]],
             )
+            cid = f"question:{q['question_id']}"
+            if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [cid]).fetchone():
+                con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [cid, "question", q["question_id"]])
+            year_node = f"exam_year:{q['year']}"
+            if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [year_node]).fetchone():
+                con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [year_node, "exam_year", str(q["year"])])
+            if not con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=?", [cid, year_node]).fetchone():
+                con.execute("INSERT INTO edges VALUES (?,?,?,?)",
+                            [cid, year_node, "exam_year_of", '{"source":"pdf_import"}'])
             n += 1
         return n
     finally:
