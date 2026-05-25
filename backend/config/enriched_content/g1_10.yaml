@@ -1,0 +1,159 @@
+# Course #10: G1·阅读·主旨大意
+course_id: 10
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G1
+  core_words: [about, advantage]
+  theme: "校园新生活"
+
+segments:
+  hook: |
+    **What Is This Article About?**
+
+    Read this paragraph quickly (15 seconds):
+
+    "More and more young people in China are choosing to learn a second foreign language in addition to English. Spanish, Japanese, and French are the most popular choices. Experts say that knowing more than two languages gives students an advantage in the job market."
+
+    Question: What is the main idea?
+    A. Young people should learn Spanish.
+    B. French is better than Japanese.
+    C. Learning extra languages is becoming popular and has benefits.
+    D. The job market is difficult.
+
+    The answer is C. But how do you find it in just seconds? Today you will learn the skill of identifying the main idea — the single most important reading skill for the gaokao.
+
+  core: |
+    **主旨大意题 完全讲解**
+
+    ---
+
+    **一、什么是主旨题?** ⭐
+
+    主旨题问的是: "这篇文章/这段话主要在讲什么?"
+
+    标志词:
+    - What is the main idea / main point of the passage?
+    - What is the passage mainly about?
+    - What is the best title for the passage?
+    - What is the purpose of the text?
+    - The author's main purpose is to...
+
+    ---
+
+    **二、主题句在哪里?** ⭐⭐
+
+    大多数英文段落有一个"主题句" (topic sentence):
+
+    | 位置 | 频率 | 特征 |
+    |---|---|---|
+    | 段首 | 60% | 直接点明观点, 后面是支撑 |
+    | 段尾 | 25% | 先举例/论证, 最后总结 |
+    | 首尾呼应 | 10% | 开头提出, 结尾强化 |
+    | 无明确主题句 | 5% | 需自己归纳 (最难) |
+
+    **全文主旨 = 各段主题句的共同主题**
+
+    ---
+
+    **三、主旨题 vs 细节题 的区别** ⭐⭐⭐
+
+    | | 细节题 (#9) | 主旨题 (本节) |
+    |---|---|---|
+    | 问什么 | 文中的具体信息 | 全文/全段的中心思想 |
+    | 答案位置 | 某个具体句子 | 需要综合多段 |
+    | 做题方法 | 关键词定位 | 读首段+各段首句 |
+    | 正确选项 | 原文同义改写 | 高度概括, 不太具体也不太宽泛 |
+
+    ---
+
+    **四、选标题 (best title) 的技巧** ⭐⭐⭐
+
+    标题 = 最短的主旨概括. 好标题的标准:
+    - 涵盖全文 (不能只说了一段的内容)
+    - 具体明确 (不能太宽泛)
+    - 吸引读者 (有时用问句/比喻)
+
+    排除法:
+    - 太宽泛: "Life" / "Education" (没说什么具体的)
+    - 太具体: 只提了文中一个细节
+    - 偏离中心: 和全文主要方向不一致
+
+    ---
+
+    **五、做题示范**
+
+    文章 (3 段摘要):
+    - P1: Schools in China are adding new subjects about technology.
+    - P2: Students learn coding, AI, and data skills.
+    - P3: Experts believe this gives students an advantage for future jobs.
+
+    Q: What would be the best title?
+    A. How to Learn Coding (太具体 — 只说了 P2 的一部分)
+    B. Technology Education in Chinese Schools (涵盖全文, 具体明确 ✅)
+    C. The Future of Jobs (太宽泛 — 文章核心是学校教育, 不是就业市场)
+    D. Why Students Like AI (文中没说学生"喜欢"AI)
+
+  relations: |
+    **主旨题与 G1 全部知识的联系**
+
+    - **词汇** (#1-#5): 理解段首句需要认识核心词
+    - **语法** (#6-#8): 长句拆分 (代词 it 指代什么? 比较级在比什么?)
+    - **细节题** (#9): 细节支撑主旨; 先理解细节再归纳主旨
+    - **后续**: #17 (G2) 议论文主旨 → #25 (G3) 推理判断 → #35 (G_FINAL) 科技长文
+
+    **G1 阅读能力总结**:
+    - #9: 能找到具体信息 (细节)
+    - #10: 能归纳全文重点 (主旨)
+    → G2 将增加: 推理 + 态度 + 文体识别
+
+  practice: |
+    **Practice: Find the Main Idea** ⭐⭐
+
+    **Passage 1:**
+    Many students feel stressed about exams. However, a little pressure can actually help you perform better. The key is to find the right balance. Too much stress makes it hard to think clearly, but too little means you may not try your best.
+
+    Q1: What is the main idea?
+    A. All stress is bad.
+    B. Students should not take exams.
+    C. A balanced amount of stress can be helpful.
+    D. The best students never feel stressed.
+    答案: C (段首提出, 段中解释平衡)
+
+    ---
+
+    **Passage 2:**
+    Reading has many advantages for language learners. First, it helps you learn new vocabulary naturally. Second, it improves your understanding of grammar. Third, it gives you ideas for writing. Most importantly, reading is something you can do anywhere, at any time.
+
+    Q2: What would be the best title?
+    A. How to Write Better
+    B. The Advantages of Reading for Language Learners
+    C. Learning New Words
+    D. Why Grammar Is Important
+    答案: B (涵盖全文: 阅读对语言学习者的优势; 文中 "many advantages" 是主题句)
+
+    ---
+
+    **Passage 3 (choose the topic sentence):** ⭐
+
+    Q3: Which sentence is the topic sentence of this paragraph?
+    ① Some students study late at night. ② Others prefer to get up early. ③ Research shows that different people have different best study times. ④ The important thing is to find what works for you.
+
+    A. ①  B. ③  C. ④
+    答案: B (③是主题句: 概括了全段在讨论的问题 — 不同人有不同最佳学习时间)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **主题句位置**: 60% 段首, 25% 段尾 — 先读首尾
+    2. **全文主旨 = 各段主题句的共同方向**
+    3. **选标题**: 不能太宽泛 (Life) 也不能太具体 (某个细节)
+    4. **与细节题区分**: 细节 = 找具体; 主旨 = 归纳总结
+    5. **做题顺序**: 先做细节题 → 最后做主旨题 (读完全文后更容易判断)
+
+    **G1 全 10 节完成!** 你已经掌握了:
+    - 25+ 核心词汇 (生活/动作/情绪/交流)
+    - 3 大语法基础 (名词可数性/比较级/代词)
+    - 2 种阅读题型 (细节理解/主旨大意)
+
+    **下一层 G2 预告**: 从句系统 (宾语从句/定语从句/状语从句) + 学术词汇 + 议论文阅读

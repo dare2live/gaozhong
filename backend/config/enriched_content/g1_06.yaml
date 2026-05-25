@@ -1,0 +1,125 @@
+# Course #6: G1·语法·名词单复数与可数性
+course_id: 6
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G1
+  theme: "校园新生活"
+
+segments:
+  hook: |
+    **One Advice or a Piece of Advice?**
+
+    Here is a common mistake that Chinese students make:
+
+    ❌ "My teacher gave me many advices."
+    ✅ "My teacher gave me a lot of advice."
+
+    Why? Because "advice" is an uncountable noun in English. You cannot add "s" to it or put "a/an" before it. But "suggestion" IS countable — you can say "a suggestion" or "many suggestions."
+
+    This difference does not exist in Chinese, which is why it causes so many problems. Today, we will sort out the rules for countable and uncountable nouns once and for all.
+
+  core: |
+    **名词可数性 完全讲解**
+
+    ---
+
+    **一、可数名词 (Countable Nouns)** ⭐
+
+    可以数的, 有单复数变化:
+    - 规则变化: book → books, box → boxes, baby → babies, knife → knives
+    - 不规则变化: man → men, child → children, foot → feet, mouse → mice
+
+    特殊:
+    - 单复同形: sheep, fish, deer, Chinese, Japanese
+    - 只有复数: glasses (眼镜), trousers, scissors, news (看起来复数但不可数!)
+
+    ---
+
+    **二、不可数名词 (Uncountable Nouns)** ⭐⭐
+
+    不能数, 没有复数, 不能加 a/an:
+
+    | 类别 | 例词 | 错误 | 正确 |
+    |---|---|---|---|
+    | 抽象 | advice, information, knowledge, progress, fun | ~~an advice~~ | a piece of advice |
+    | 物质 | water, bread, rice, meat, paper (纸) | ~~a bread~~ | a piece of bread |
+    | 学科 | English, math, physics | ~~an English~~ | the English language |
+
+    **量词表达** (让不可数名词"可数"):
+    - a piece of advice / information / news / furniture
+    - a cup of water / coffee
+    - a glass of milk / juice
+    - a bottle of water
+
+    ---
+
+    **三、高考易错名词 TOP 10** ⭐⭐⭐
+
+    | 词 | 可数? | 陷阱 |
+    |---|---|---|
+    | advice | ❌ 不可数 | ~~an advice~~ → a piece of advice |
+    | information | ❌ 不可数 | ~~informations~~ → some information |
+    | news | ❌ 不可数 | news IS 单数 (News is good.) |
+    | progress | ❌ 不可数 | ~~a progress~~ → make progress |
+    | furniture | ❌ 不可数 | ~~furnitures~~ → a piece of furniture |
+    | equipment | ❌ 不可数 | ~~equipments~~ → a piece of equipment |
+    | work | ❌ 不可数 (工作) | works 可数时 = 作品 |
+    | paper | ⚠️ 双重 | paper 不可数 (纸); a paper 可数 (论文/报纸) |
+    | experience | ⚠️ 双重 | experience 不可数 (经验); an experience 可数 (经历) |
+    | time | ⚠️ 双重 | time 不可数 (时间); times 可数 (次数/时代) |
+
+    ---
+
+    **四、名词所有格** ⭐⭐
+
+    - 人/动物: Tom's book, the dog's tail
+    - 无生命: the door of the room (用 of, 不用 's)
+    - 双重所有格: a friend of my father's (我父亲的一个朋友)
+    - 时间/距离特殊: today's news, ten minutes' walk
+
+  relations: |
+    **名词可数性与其他语法的联系**
+
+    - **冠词** (a/an/the): 只有可数单数用 a/an; 不可数用 some/much
+    - **主谓一致**: News IS (单数); The police ARE (集体名词, 复数)
+    - **数量词**: many + 可数复数; much + 不可数; a lot of 通用
+    - **语法填空考法**: 给名词原形, 判断加 s 还是不加
+
+    回顾: #1-#5 学过的词中:
+    - 可数: action (actions), advantage (advantages), ability (abilities)
+    - 不可数: advice (a piece of advice!)
+
+  practice: |
+    **练习 1: 判断可数/不可数** ⭐
+
+    1. __ information  (C / U) → U
+    2. __ suggestion  (C / U) → C
+    3. __ progress  (C / U) → U
+    4. __ experience  (C / U) → 双重! (经验 U, 经历 C)
+    5. __ news  (C / U) → U
+
+    **练习 2: 改错** ⭐⭐
+
+    6. She gave me a good advice. → She gave me a good piece of advice. (或 good advice)
+    7. I have made a great progress. → I have made great progress.
+    8. Can you give me some informations? → Can you give me some information?
+    9. The news are very exciting. → The news is very exciting.
+    10. He has many experiences in teaching. → He has much experience in teaching. (如果指"经验")
+
+    **练习 3: 语法填空** ⭐⭐⭐
+
+    After receiving several ___(11)___ (piece) of advice from his teacher, Li Hua made great ___(12)___ (progress) in English. His ___(13)___ (ability) to speak improved greatly. The best ___(14)___ (news) was that he won first prize.
+
+    11. pieces  12. progress (不变!)  13. ability  14. news (不变!)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **不可数名词 TOP 10**: advice/information/news/progress/furniture/equipment
+    2. **量词救星**: a piece of + 不可数
+    3. **双重身份词**: paper/experience/time (义项不同, 可数性不同)
+    4. **news 单数!**: The news IS good.
+    5. **语法填空**: 给名词 → 判断加 s 或 不加, 看可数性
+
+    **下节预告**: #7 形容词比较级与最高级 — good→better→best, 不规则变化

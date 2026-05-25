@@ -1,0 +1,133 @@
+# Course #8: G1·语法·代词系统
+course_id: 8
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G1
+  theme: "校园新生活"
+
+segments:
+  hook: |
+    **"It" Is the Most Powerful Word in English**
+
+    Look at these sentences:
+    - **It** is raining. (天在下雨 — it 指什么? 没有具体指代!)
+    - **It** is important to learn English. (学英语很重要 — it 做形式主语)
+    - I find **it** difficult to get up early. (我发现早起很难 — it 做形式宾语)
+
+    The word "it" appears in nearly every English sentence, but its use in Chinese and English is very different. Today we will sort out the entire pronoun system — personal pronouns, demonstratives, and the tricky "it" patterns that appear on every single gaokao paper.
+
+  core: |
+    **代词系统 完全讲解**
+
+    ---
+
+    **一、人称代词** ⭐
+
+    | 人称 | 主格 | 宾格 | 形物 | 名物 | 反身 |
+    |---|---|---|---|---|---|
+    | 我 | I | me | my | mine | myself |
+    | 你 | you | you | your | yours | yourself |
+    | 他 | he | him | his | his | himself |
+    | 她 | she | her | her | hers | herself |
+    | 它 | it | it | its | — | itself |
+    | 我们 | we | us | our | ours | ourselves |
+    | 他们 | they | them | their | theirs | themselves |
+
+    高考考点:
+    - 主格做主语: **He** is a student.
+    - 宾格做宾语: Give **him** the book.
+    - 形容词性物主代词 + 名词: **my** book
+    - 名词性物主代词独立使用: This book is **mine**.
+
+    ---
+
+    **二、it 的特殊用法** ⭐⭐⭐ (高考必考!)
+
+    **1. 形式主语 (It is + adj + to do / that...)**
+    - It is important **to learn** English well.
+    - It is clear **that** he has made progress.
+    - It is no use **crying** over spilt milk. (it + no use + doing)
+
+    **2. 形式宾语 (S + find/think/make + it + adj + to do)**
+    - I find **it** difficult **to understand** this grammar point.
+    - She made **it** clear **that** she would not agree.
+    - We think **it** necessary **to take** action.
+
+    **3. 强调句 (It is/was...that/who...)**
+    - It was **yesterday** that I met her. (强调时间)
+    - 回顾 #34 (G_FINAL 倒装+强调): 这是同一个结构
+
+    **4. 天气/时间/距离**
+    - It is raining. / It is cold today.
+    - It is 8 o'clock. / It takes 10 minutes to walk there.
+
+    ---
+
+    **三、指示代词** ⭐
+
+    | 近 | 远 |
+    |---|---|
+    | this (单) | that (单) |
+    | these (复) | those (复) |
+
+    易错: that/those 做替代词
+    - The weather in Beijing is colder than **that** in Shanghai. (that = the weather)
+    - The students in Class 1 are more active than **those** in Class 2. (those = the students)
+
+    ---
+
+    **四、不定代词** ⭐⭐
+
+    | 全部 | 部分 | 否定 |
+    |---|---|---|
+    | all / both / every / each | some / any / most / many / few / several | no / none / neither / nothing |
+
+    高考重点:
+    - **both** (两者都) vs **all** (三者以上都)
+    - **either** (两者任一) vs **any** (三者以上任一)
+    - **neither** (两者都不) vs **none** (三者以上都不)
+    - **other / another / the other / others**:
+      - another + 单数 (另一个, 不确定)
+      - the other + 单数 (另一个, 确定的另一个)
+      - others = other + 复数 (其他的一些)
+      - the others (其余所有)
+
+  relations: |
+    **代词与其他语法的联系**
+
+    - **it 形式主语/宾语** → 连接从句知识 (that/whether/how 引导)
+    - **it 强调句** → #34 强调结构 (G_FINAL)
+    - **反身代词** → 主语和宾语是同一人时用 (He hurt himself.)
+    - **指示代词 that/those 替代** → 语法填空高频 (比较句中)
+
+  practice: |
+    **练习 1: 代词填空** ⭐
+
+    1. The book is not mine. It is ___ (she). → hers
+    2. We should learn to take care of ___ (we). → ourselves
+    3. ___ (it) is important to practice every day. → It
+
+    **练习 2: it 的用法判断** ⭐⭐
+
+    判断 it 的用法 (形式主语/形式宾语/天气/强调句):
+    4. It is necessary to finish the homework. → 形式主语
+    5. It was Tom who broke the window. → 强调句
+    6. I find it hard to agree with him. → 形式宾语
+    7. It has been raining for three days. → 天气
+
+    **练习 3: 语法填空** ⭐⭐⭐
+
+    8. The population of China is larger than ___ of Japan. → that (替代 the population)
+    9. Some students like English. ___ prefer math. → Others
+    10. I have two brothers. One is a teacher; ___ ___ is a doctor. → the other
+
+  summary: |
+    **本节核心要点:**
+
+    1. **it 四种用法**: 形式主语/形式宾语/天气时间/强调句 — 每张试卷都考!
+    2. **that/those 替代**: 比较句中替代前面的名词 (高频语法填空)
+    3. **不定代词**: both/all/either/any/neither/none 的两者/三者对应
+    4. **other 系列**: another/the other/others/the others 四选一
+
+    **下节预告**: #9 阅读·细节理解 — 从语法转入阅读, 用代词知识理解长难句

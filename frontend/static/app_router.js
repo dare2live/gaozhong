@@ -117,11 +117,68 @@
     html += `<div id="handout-modal" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="modal-body">
         <span class="close-btn" onclick="document.getElementById('handout-modal').classList.remove('open')">✕</span>
-        <pre id="handout-md">载入中 ...</pre>
+        <div id="handout-md">载入中 ...</div>
       </div>
     </div>`;
     CONTENT.innerHTML = html;
   });
+
+  // -- 讲义分段元数据 (Phase 7.1)
+  const SEG_META = [
+    { key: "header",    icon: "📖", label: "" },
+    { key: "hook",      icon: "🎯", label: "开场 hook", match: "hook" },
+    { key: "review",    icon: "🔄", label: "上节复习",  match: "复习" },
+    { key: "core",      icon: "🔑", label: "核心教学",  match: "核心" },
+    { key: "relations", icon: "🔗", label: "关联拓展",  match: "关联" },
+    { key: "exam",      icon: "📝", label: "真题溯源",  match: "真题" },
+    { key: "practice",  icon: "💡", label: "场景练习",  match: "场景" },
+    { key: "homework",  icon: "📋", label: "课后作业",  match: "作业" },
+    { key: "summary",   icon: "📌", label: "总结收束",  match: "总结" },
+  ];
+
+  function _classifySegment(text) {
+    const first = text.split("\n").find(l => l.trim()) || "";
+    for (let i = 1; i < SEG_META.length; i++) {
+      if (first.includes(SEG_META[i].match)) return SEG_META[i];
+    }
+    return SEG_META[0];
+  }
+
+  function _renderSegments(raw) {
+    const parts = raw.split(/\n---\n/);
+    if (parts.length < 2) return mdToHtml(raw);
+    let html = '<div class="handout-segments">';
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+      const meta = _classifySegment(trimmed);
+      const segLabel = meta.label || trimmed.split("\n")[0].replace(/^#+\s*/, "");
+      html += `<div class="handout-seg seg-${meta.key}">`;
+      html += `<div class="handout-seg-head"><span class="seg-icon">${meta.icon}</span> ${segLabel}</div>`;
+      html += `<div class="handout-seg-body">${mdToHtml(trimmed)}</div>`;
+      html += `</div>`;
+    }
+    html += '</div>';
+    html += _renderPrinciples();
+    return html;
+  }
+
+  function _renderPrinciples() {
+    return `<div style="text-align:right">
+      <span class="principles-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+        ℹ️ 生成规则 (R2/R5/D0)
+      </span>
+      <div class="principles-body">
+        <dl>
+          <dt>R2 · 不拷教材</dt><dd>10-gram 不与教材原文重叠 — 用自己语言重述</dd>
+          <dt>R5 · 词汇层约束</dt><dd>所有英语词 ⊆ 对应年级词表 (G1 ~1200 / G2 ~2200 / G3 ~3000 / G_FINAL ~3500)</dd>
+          <dt>R1 · 关联 ≥3</dt><dd>每节核心知识点至少 3 个关联 (语义网络 / 词族 / 搭配)</dd>
+          <dt>R4 · 作业对齐</dt><dd>作业 tag 100% ⊆ 本节知识点</dd>
+          <dt>D0 · 准确率 100%</dt><dd>任何数据 + 关联准确率必须 100%, 18 章 audit 全绿</dd>
+        </dl>
+      </div>
+    </div>`;
+  }
 
   // 全局: 打开讲义 modal
   window._openHandout = async (cid) => {
@@ -131,7 +188,9 @@
     md.textContent = "载入中 ...";
     try {
       const data = await fetchJSON("/api/course/handout?id=" + cid);
-      md.innerHTML = mdToHtml(data.md || "") || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      const raw = data.md || "";
+      md.innerHTML = (raw.includes("\n---\n") ? _renderSegments(raw) : mdToHtml(raw))
+        || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     } catch (err) {
       md.innerHTML = "讲义载入失败: " + err.message;
     }

@@ -1,0 +1,140 @@
+# Course #9: G1·阅读·细节理解
+course_id: 9
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G1
+  core_words: [accept, advice]
+  theme: "校园新生活"
+
+segments:
+  hook: |
+    **Reading Is Not About Understanding Every Word**
+
+    Many students believe they need to understand every word in a reading passage. This is not true. In fact, the gaokao reading section tests your ability to find specific information quickly — not to translate the entire text.
+
+    Passage A on the gaokao is usually the easiest. It is often a notice, an advertisement, or a short information text. The questions ask for specific details: times, places, prices, rules. If you can scan the text and locate the answer, you can score full marks in 5 minutes.
+
+    Today, you will learn the three-step method for detail questions — the type that makes up 60% of all reading questions.
+
+  core: |
+    **细节理解题 完全讲解**
+
+    ---
+
+    **一、什么是细节题?** ⭐
+
+    细节题问的是文章中直接写出的信息 (不需要推理).
+
+    标志词:
+    - According to the passage, ...
+    - Which of the following is TRUE/NOT TRUE?
+    - What/When/Where/How much...?
+    - The author mentions ... to show ...
+
+    ---
+
+    **二、三步法** ⭐⭐
+
+    **Step 1: 读题干, 找关键词**
+    - 题目: "According to the passage, when does the library close on weekdays?"
+    - 关键词: library, close, weekdays
+
+    **Step 2: 在文中定位关键词**
+    - 扫描全文, 找到包含 "library" 和 "weekdays" 的句子
+    - 通常在同一段或相邻句子中
+
+    **Step 3: 比对选项**
+    - 原文: "The library is open from 8:00 am to 9:00 pm on weekdays."
+    - 正确选项通常是原文的同义改写 (不是原词复制)
+
+    ---
+
+    **三、常见陷阱** ⭐⭐⭐
+
+    | 陷阱 | 特征 | 应对 |
+    |---|---|---|
+    | 张冠李戴 | 信息来自文中, 但对应的不是题目问的对象 | 确认主语一致 |
+    | 偷换概念 | 选项用了原文的词, 但改了含义 | 回原文逐词比对 |
+    | 以偏概全 | 原文说"some", 选项说"all" | 注意程度词 |
+    | 无中生有 | 选项说的内容文中没有 | 找不到原文依据 → 排除 |
+
+    ---
+
+    **四、做题示范**
+
+    原文 (模拟 A 篇):
+    "The school English club meets every Wednesday afternoon from 4:00 to 5:30 in Room 201. All students are welcome. Please bring your own notebook. The club is free to join, but members must attend at least three times a month."
+
+    Q: What is required of club members?
+    A. They must pay a monthly fee.
+    B. They must come at least three times a month.
+    C. They must bring a computer.
+    D. They must be in Grade 3.
+
+    分析:
+    - A: 原文说 "free" → 排除
+    - B: 原文 "must attend at least three times a month" → 正确!
+    - C: 原文说 "notebook" (笔记本), 不是 computer → 排除
+    - D: 文中没提年级要求 → 无中生有
+
+  relations: |
+    **细节理解与其他技能的联系**
+
+    - **词汇**: 看不懂关键词 → 无法定位 → #1-#5 词汇是基础
+    - **语法**: 长难句理解 → #6-#8 名词/比较/代词帮助拆句
+    - **后续**: #10 主旨大意 → 从细节升级到全文理解
+    - **高年级**: #25 推理判断 → 从找到信息升级到推出信息
+
+    **A 篇 vs D 篇**:
+    - A 篇: 90% 细节题, 简单直接, 5 分钟做完
+    - D 篇: 50% 推理题, 需要深度理解, 10 分钟
+
+  practice: |
+    **Practice Passage A: School Notice** ⭐
+
+    SUMMER READING PROGRAM
+    The school library invites all students to join our Summer Reading Program.
+    - Time: July 1 to August 15
+    - Place: School Library, 2nd Floor
+    - How to join: Sign up at the front desk before June 25
+    - Rules: Read at least 3 books and write a short report for each
+    - Prize: The top 10 readers will receive a gift card
+
+    For more information, please contact Ms. Li (Room 105).
+
+    **Q1.** When does the program start?
+    A. June 25  B. July 1  C. August 15  D. September 1
+    答案: B (定位 "Time: July 1 to August 15")
+
+    **Q2.** What must students do to join?
+    A. Buy 3 books  B. Write to Ms. Li  C. Sign up before June 25  D. Pay a fee
+    答案: C (定位 "Sign up at the front desk before June 25")
+
+    **Q3.** Which of the following is NOT mentioned?
+    A. The location of the program  B. The number of books to read  C. The type of books to read  D. A prize for top readers
+    答案: C (文中没提书的类型 → NOT mentioned)
+
+    ---
+
+    **Practice Passage B: Daily Life** ⭐⭐
+
+    Tom moved to a new city last month. At first, he found it hard to accept the changes in his life. His new school was bigger, and the students spoke faster. A classmate gave him some advice: "Join a club. It's the best way to make friends." Tom accepted the suggestion and joined the basketball team.
+
+    **Q4.** Why was it hard for Tom at first?
+    A. He did not like basketball.  B. The school was too small.  C. Everything was new and different.  D. He had no money.
+    答案: C (同义改写: "hard to accept the changes" = 一切都是新的和不同的)
+
+    **Q5.** What advice did Tom's classmate give him?
+    A. Study harder.  B. Join a club.  C. Move back home.  D. Talk to the teacher.
+    答案: B (直接定位 "Join a club")
+
+  summary: |
+    **本节核心要点:**
+
+    1. **细节题三步**: 找关键词 → 原文定位 → 比对选项
+    2. **四种陷阱**: 张冠李戴/偷换概念/以偏概全/无中生有
+    3. **A 篇策略**: 5 分钟做完, 90% 细节题, 不用深度理解
+    4. **NOT mentioned/NOT true**: 找不到原文依据 = 正确答案
+
+    **下节预告**: #10 阅读·主旨大意 — 从细节升级到"这篇文章在讲什么?"

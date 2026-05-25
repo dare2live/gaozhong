@@ -171,3 +171,96 @@
   color: #555; max-width: 600px;
 }
 .tab-placeholder code { background: #eee; padding: 1px 4px; border-radius: 2px; }
+
+/* ===== 讲义分段卡片 (Phase 7.1 enriched handouts) ===== */
+.handout-segments { display: flex; flex-direction: column; gap: 0.8rem; }
+.handout-seg {
+  background: #fff; border-radius: 4px;
+  border: 1px solid #e8e6e0; border-left: 4px solid #888;
+  padding: 0;
+}
+.handout-seg-head {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; font-weight: 600; font-size: 0.95em;
+  border-bottom: 1px solid #f0ede7; cursor: default;
+}
+.handout-seg-head .seg-icon {
+  display: inline-block; width: 1.5em; text-align: center; flex-shrink: 0;
+}
+.handout-seg-body { padding: 0.6rem 1rem 0.8rem; font-size: 0.9em; line-height: 1.6; }
+.handout-seg-body h3 { display: none; } /* hide the ### header already shown in seg-head */
+.handout-seg-body p { margin: 0.3rem 0; }
+.handout-seg-body ul { margin: 0.3rem 0 0.3rem 1rem; padding: 0; }
+.handout-seg-body li { margin: 0.2rem 0; }
+
+/* segment color coding */
+.handout-seg.seg-header  { border-left-color: #1a1a1a; background: #f7f5ef; }
+.handout-seg.seg-hook    { border-left-color: #0a4d75; }
+.handout-seg.seg-review  { border-left-color: #888; }
+.handout-seg.seg-core    { border-left-color: #E3120B; }
+.handout-seg.seg-relations { border-left-color: #2a9d8f; }
+.handout-seg.seg-exam    { border-left-color: #f4a261; }
+.handout-seg.seg-practice { border-left-color: #264653; }
+.handout-seg.seg-homework { border-left-color: #0a4d75; }
+.handout-seg.seg-summary { border-left-color: #6c757d; }
+
+.handout-seg.seg-header .handout-seg-head { color: #1a1a1a; }
+.handout-seg.seg-hook .handout-seg-head { color: #0a4d75; }
+.handout-seg.seg-review .handout-seg-head { color: #555; }
+.handout-seg.seg-core .handout-seg-head { color: #E3120B; }
+.handout-seg.seg-relations .handout-seg-head { color: #2a9d8f; }
+.handout-seg.seg-exam .handout-seg-head { color: #c47600; }
+.handout-seg.seg-practice .handout-seg-head { color: #264653; }
+.handout-seg.seg-homework .handout-seg-head { color: #0a4d75; }
+.handout-seg.seg-summary .handout-seg-head { color: #6c757d; }
+
+/* difficulty markers */
+.diff-stars { letter-spacing: 1px; font-size: 0.85em; }
+.diff-stars[data-level="basic"] { color: #2a9d8f; }
+.diff-stars[data-level="intermediate"] { color: #f4a261; }
+.diff-stars[data-level="advanced"] { color: #E3120B; }
+
+/* answer reveal toggle */
+.answer-toggle {
+  display: inline-block; padding: 2px 10px; margin: 0.3rem 0;
+  background: #f0ede7; border: 1px solid #ddd; border-radius: 3px;
+  font-size: 0.85em; cursor: pointer; color: #555;
+}
+.answer-toggle:hover { background: #e8e6e0; }
+.answer-body { display: none; margin: 0.3rem 0 0.5rem; padding: 0.4rem 0.8rem; background: #f7f5ef; border-radius: 3px; font-size: 0.9em; }
+.answer-body.open { display: block; }
+
+/* content principles info button */
+.principles-toggle {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.3rem 0.8rem; margin-top: 0.8rem;
+  background: #f7f5ef; border: 1px solid #ddd; border-radius: 3px;
+  font-size: 0.82em; cursor: pointer; color: #666;
+}
+.principles-toggle:hover { background: #e8e6e0; color: #333; }
+.principles-body {
+  display: none; margin-top: 0.5rem; padding: 0.6rem 1rem;
+  background: #fff; border: 1px solid #e8e6e0; border-radius: 4px;
+  font-size: 0.82em; color: #555; line-height: 1.5;
+}
+.principles-body.open { display: block; }
+.principles-body dt { font-weight: 600; color: #333; margin-top: 0.3rem; }
+.principles-body dd { margin: 0 0 0.2rem 1rem; }
+
+/* modal wider for enriched content */
+#handout-modal .modal-body { max-width: 900px; }
+
+/* mobile responsive */
+@media (max-width: 768px) {
+  .app-shell { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 0.5rem; border-right: 0; border-bottom: 3px solid #E3120B; }
+  .sidebar .brand { padding: 0.3rem 0.5rem; border-bottom: 0; margin: 0; font-size: 0.9rem; }
+  .sidebar .tabnav { flex-direction: row; flex-wrap: wrap; }
+  .sidebar .tabnav a { padding: 0.4rem 0.7rem; font-size: 0.85em; border-left: 0; border-bottom: 3px solid transparent; }
+  .sidebar .tabnav a.active { border-bottom-color: #E3120B; border-left: 0; }
+  .sidebar-foot { display: none; }
+  .content { padding: 1rem; }
+  .course-grid { grid-template-columns: 1fr; }
+  #handout-modal .modal-body { width: 98%; padding: 0.7rem; max-height: 95vh; }
+  .handout-seg-body { padding: 0.4rem 0.6rem 0.5rem; font-size: 0.85em; }
+}

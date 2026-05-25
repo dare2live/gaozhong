@@ -1,0 +1,129 @@
+# Course #7: G1·语法·形容词比较级与最高级
+course_id: 7
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G1
+  theme: "校园新生活"
+
+segments:
+  hook: |
+    **Who Is Taller: You or Your Best Friend?**
+
+    In English, when we compare two things, we change the form of the adjective. "Tall" becomes "taller." "Beautiful" becomes "more beautiful." And when we compare three or more, we use the superlative: "the tallest" or "the most beautiful."
+
+    Sounds simple? Here is where it gets interesting: "good" does not become "gooder" — it becomes "better." And "bad" does not become "badder" — it becomes "worse." These irregular forms are among the most tested grammar points on the gaokao.
+
+    Today, you will master the comparison system completely.
+
+  core: |
+    **比较级与最高级 完全讲解**
+
+    ---
+
+    **一、规则变化** ⭐
+
+    | 类型 | 比较级 | 最高级 | 例词 |
+    |---|---|---|---|
+    | 单音节 | +er | +est | tall → taller → tallest |
+    | 辅+元+辅 (双写) | +双写+er | +双写+est | big → bigger → biggest |
+    | 以 e 结尾 | +r | +st | large → larger → largest |
+    | 以 y 结尾 | 变 y→ier | 变 y→iest | happy → happier → happiest |
+    | 多音节 | more + adj | most + adj | beautiful → more beautiful → most beautiful |
+
+    ---
+
+    **二、不规则变化 (必背!)** ⭐⭐⭐
+
+    | 原级 | 比较级 | 最高级 |
+    |---|---|---|
+    | good/well | **better** | **best** |
+    | bad/ill | **worse** | **worst** |
+    | many/much | **more** | **most** |
+    | little | **less** | **least** |
+    | far | **farther/further** | **farthest/furthest** |
+    | old | **older/elder** | **oldest/eldest** |
+
+    farther vs further: farther (物理距离); further (抽象: further study = 进一步学习)
+    older vs elder: elder 只用于家庭 (elder brother); older 更通用
+
+    ---
+
+    **三、比较级的特殊句型** ⭐⭐⭐
+
+    1. **the + 比较级, the + 比较级** (越...越...)
+       - The harder you study, the better results you will get.
+       - The more you practice, the more confident you become.
+
+    2. **比较级 + and + 比较级** (越来越...)
+       - English is becoming more and more important.
+       - The weather is getting colder and colder.
+
+    3. **one of the + 最高级 + 复数名词** (最...之一)
+       - She is one of the best students in our class.
+       - English is one of the most widely spoken languages.
+
+    4. **倍数表达**:
+       - A is twice as big as B. (A 是 B 的两倍大)
+       - A is three times bigger than B. (A 比 B 大三倍)
+
+    ---
+
+    **四、易错点** ⭐⭐
+
+    - 比较级前可加 much/far/even/a little (不加 very!)
+      ✅ much better / far more important / even worse
+      ❌ ~~very better~~ / ~~very more~~
+
+    - 两者比较用比较级, 三者及以上用最高级
+      ✅ He is the taller of the two. (两者用 the + 比较级)
+      ✅ He is the tallest of the three. (三者用最高级)
+
+    - 最高级前必须加 the (除了 most = very 时)
+      ✅ He is **the** most popular student.
+      ✅ This is **a most** interesting book. (most = very, 不加 the)
+
+  relations: |
+    **比较级与高考题型的联系**
+
+    - **语法填空**: 给原级, 要求变比较级/最高级 (high频!)
+    - **短文改错**: more + adj 多加了 er (~~more easier~~)
+    - **完形**: 语境判断选 better/worse/more
+    - **阅读**: 比较结构理解 (数据对比类文章)
+
+    与 #6 名词的联系: "one of the best students" — 最高级 + 复数名词
+
+  practice: |
+    **练习 1: 写出比较级和最高级** ⭐
+
+    1. fast → ___, ___ → faster, fastest
+    2. important → ___, ___ → more important, most important
+    3. good → ___, ___ → better, best
+    4. bad → ___, ___ → worse, worst
+    5. happy → ___, ___ → happier, happiest
+
+    **练习 2: 填空** ⭐⭐
+
+    6. Of the two sisters, Mary is ___ (tall). → the taller (两者)
+    7. The ___ (hard) you work, the ___ (good) grades you will get. → harder, better
+    8. This book is ___ (much) more interesting than that one. → much
+    9. It is getting ___ and ___ (cold) these days. → colder, colder
+    10. She is one of ___ ___ (good) teachers in our school. → the best
+
+    **练习 3: 改错** ⭐⭐⭐
+
+    11. He is more taller than his brother. → taller (不能 more + er)
+    12. She is the most smartest girl. → the smartest (不能 most + est)
+    13. The situation is getting more and more bad. → worse and worse (不规则)
+    14. This is very better than before. → much better (比较级前不用 very)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **不规则必背 6 个**: good-better-best / bad-worse-worst / many-more-most
+    2. **the + 比较级, the + 比较级**: 越...越...
+    3. **比较级前**: much/far/even/a little (不用 very!)
+    4. **最高级**: one of the + 最高级 + 复数名词
+    5. **两者 vs 三者**: 两者用比较级, 三者用最高级
+
+    **下节预告**: #8 代词系统 — it/this/that/one, 人称/指示/不定代词
