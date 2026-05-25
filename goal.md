@@ -800,9 +800,9 @@ exam_alignment_checker.py --json
 | 7 | Quiz mode | 学生可在前端做题 + 即时反馈 | 🔲 待做 |
 | 8 | CC baseline | ≤ 8 (不涨) | ✅ CC=8 |
 | 9 | D0 100% | 全部检查通过 (含新增 check) | ✅ 20 章全绿 |
-| **10** | **考试对齐度** | **exam_alignment overall ≥ 80** | **🔲 当前 75.8 (难度 44.5 + 话题 17.8 待升)** |
-| **11** | **Optuna 寻优** | **best_value ≥ 80, ≥ 50 trials** | **🔲 待建 optuna_optimizer.py** |
-| **12** | **工具模块** | **scripts/tools/ 4 子目录, P0 工具全建** | **🔲 待建 (7.11 方案已定)** |
+| **10** | **考试对齐度** | **exam_alignment overall ≥ 80** | **✅ 84.6 (8 维全 PASS)** |
+| **11** | **Optuna 寻优** | **best_value ≥ 80, ≥ 50 trials** | **🔲 待建 (工具框架已备)** |
+| **12** | **工具模块** | **scripts/tools/ 4 子目录, P0 工具全建** | **✅ 5 工具实装 + 回归检测基线** |
 
 ### 7.9 实施顺序 (按 ROI + 依赖)
 

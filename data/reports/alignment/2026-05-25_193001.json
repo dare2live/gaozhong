@@ -1,0 +1,38 @@
+{
+  "type_coverage": {
+    "score": 100.0,
+    "pass": true
+  },
+  "difficulty_alignment": {
+    "score": 63.8,
+    "pass": true
+  },
+  "vocab_overlap": {
+    "score": 94.1,
+    "pass": true
+  },
+  "topic_alignment": {
+    "score": 68.9,
+    "pass": true
+  },
+  "analysis_completeness": {
+    "score": 73.6,
+    "pass": true
+  },
+  "listening_structure": {
+    "score": 98.3,
+    "pass": true
+  },
+  "listening_skill_coverage": {
+    "score": 87.5,
+    "pass": true
+  },
+  "writing_format": {
+    "score": 90.5,
+    "pass": true
+  },
+  "overall": {
+    "score": 84.6,
+    "pass": true
+  }
+}
