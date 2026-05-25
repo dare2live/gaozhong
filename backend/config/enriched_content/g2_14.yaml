@@ -1,0 +1,148 @@
+# Course #14: G2·语法·宾语从句 (that/whether/if)
+course_id: 14
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [announce, at]
+  theme: "青年企业家访谈"
+
+segments:
+  hook: |
+    **"I believe that you can do it."**
+
+    Read these three sentences:
+    - The teacher announced **that the exam would be next Friday**.
+    - I don't know **whether/if he will come**.
+    - Can you tell me **where the library is**?
+
+    The bold parts are all object clauses — sentences within sentences that act as the object of a verb. In Chinese, you just add a phrase after the verb. In English, you need a connector word (that/whether/if/what/where...) and the word order changes.
+
+    This is the first of three lessons on clauses. Master this, and you will understand 80% of the complex sentences on the gaokao.
+
+  core: |
+    **宾语从句 完全讲解**
+
+    ---
+
+    **一、什么是宾语从句?** ⭐
+
+    宾语从句 = 一个句子做另一个句子的宾语
+
+    主句动词 + **连接词** + 从句 (主+谓+...)
+
+    常见主句动词: think, believe, know, say, tell, announce, hope, wish, wonder, ask, assume, argue
+
+    ---
+
+    **二、三种连接词** ⭐⭐⭐
+
+    | 连接词 | 用法 | 例句 |
+    |---|---|---|
+    | **that** | 陈述句变宾语 | I think **that** he is right. |
+    | **whether/if** | 一般疑问句变宾语 | I wonder **whether/if** he will come. |
+    | **what/who/where/when/how/why** | 特殊疑问句变宾语 | I don't know **where** he lives. |
+
+    ---
+
+    **三、that 引导** ⭐⭐
+
+    - that 可省略 (口语中常省): I think (that) he is right.
+    - that 不可省的情况:
+      - 两个宾语从句并列: I know **that** he is kind and **that** he works hard.
+      - that 从句做介词宾语: except **that** / in **that**
+
+    ---
+
+    **四、whether 和 if** ⭐⭐⭐
+
+    大多数情况可互换, 但有例外:
+
+    | 只用 whether (不用 if) | 原因 |
+    |---|---|
+    | whether **or not** | if or not 不规范 |
+    | 介词后: about/of **whether** | 介词后不用 if |
+    | 主语从句 / 表语从句 | if 只用于宾语从句 |
+    | whether **to do** (不定式) | if to do 不可 |
+
+    例: I don't know **whether to accept** the offer. (✅)
+    ~~I don't know if to accept~~ (❌)
+
+    ---
+
+    **五、特殊疑问词引导** ⭐⭐⭐
+
+    关键: **从句用陈述语序** (不是疑问语序!)
+
+    | 疑问句 | 宾语从句 (语序变!) |
+    |---|---|
+    | Where **does** he live? | I know where he **lives**. |
+    | What **is** his name? | Tell me what his name **is**. |
+    | When **did** they arrive? | I wonder when they **arrived**. |
+
+    去掉助动词 (do/does/did), 恢复正常语序!
+
+    ---
+
+    **六、时态呼应** ⭐⭐
+
+    主句过去时 → 从句一般要跟着变过去:
+    - He says he **is** busy. → He said he **was** busy.
+    - She thinks she **will** win. → She thought she **would** win.
+
+    例外 (不变):
+    - 客观真理: He said the earth **goes** around the sun. (不变)
+    - 习惯: She said she **gets** up at 6. (可不变)
+
+  relations: |
+    **从句体系总览 (G2 三节连贯)**
+
+    ```
+    从句家族
+    ├── 宾语从句 (本节 #14) ← 你在这里
+    ├── 定语从句 (#15 下节)
+    └── 状语从句 (#16 再下节)
+    ```
+
+    宾语从句是最基础的, 因为:
+    - 结构最简单 (主句 + 连接词 + 从句)
+    - 使用最频繁 (几乎每篇阅读都有)
+    - 语法填空每年必考 (填 that/whether/what/where 等)
+
+  practice: |
+    **场景 1: 连接词选择** ⭐⭐
+
+    1. I believe ___ she will pass the exam. (that/what/whether)
+    答案: that (陈述句做宾语)
+
+    2. I wonder ___ he has finished his homework. (that/what/whether)
+    答案: whether (一般疑问 → whether/if)
+
+    3. Can you tell me ___ the meeting starts? (that/when/whether)
+    答案: when (特殊疑问: 什么时候)
+
+    4. I don't know ___ or not he will come. (if/whether/that)
+    答案: whether (or not 前只能用 whether)
+
+    **场景 2: 语序改错** ⭐⭐⭐
+
+    5. I want to know where does he live. → where he lives (陈述语序)
+    6. Tell me what is your name. → what your name is
+    7. She asked when will the train arrive. → when the train would arrive (过去时+语序)
+
+    **场景 3: 时态呼应** ⭐⭐
+
+    8. He says he ___ (be) fine. → is (主句现在时, 不变)
+    9. He said he ___ (be) fine. → was (主句过去时, 从句跟变)
+    10. She told me she ___ (will) come tomorrow. → would (will → would)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **三种连接词**: that (陈述) / whether-if (是否) / wh-词 (特殊疑问)
+    2. **从句用陈述语序**: 去 do/does/did, 恢复 S+V
+    3. **whether vs if**: or not / 介词后 / 不定式 → 只能 whether
+    4. **时态呼应**: 主句过去→从句跟过去; 真理/习惯例外
+    5. **语法填空考法**: 看从句缺什么 → 选连接词
+
+    **下节预告**: #15 定语从句 (who/which/that) — 修饰名词的从句, 与宾语从句对比
