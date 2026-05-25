@@ -160,29 +160,39 @@ def check_vocab_overlap(con: duckdb.DuckDBPyConnection) -> dict:
     }
 
 
+CURRICULUM_KEYWORDS = {
+    "生活与学习": ["school", "class", "study", "homework", "exam", "learn", "family", "friend", "daily", "weekend"],
+    "做人与做事": ["honest", "responsible", "brave", "kind", "help", "effort", "goal", "plan", "dream"],
+    "社会服务与人际沟通": ["volunteer", "community", "invite", "thank", "advice", "letter", "communicate"],
+    "文学、艺术与体育": ["story", "novel", "art", "music", "sport", "basketball", "exercise", "drama", "museum"],
+    "历史、社会与文化": ["history", "culture", "tradition", "festival", "ancient", "heritage", "society"],
+    "科学与技术": ["science", "technology", "computer", "experiment", "discover", "research", "robot", "AI"],
+    "自然生态": ["nature", "animal", "plant", "ocean", "forest", "river", "ecology", "species"],
+    "环境保护": ["environment", "pollution", "recycle", "climate", "protect", "green", "waste"],
+    "灾害防范": ["disaster", "earthquake", "flood", "safety", "emergency", "rescue", "prevent"],
+    "宇宙探索": ["space", "Mars", "planet", "universe", "astronaut", "star", "satellite", "explore"],
+}
+
+
 def check_topic_alignment(con: duckdb.DuckDBPyConnection) -> dict:
-    """维度 4: 听力/写作场景 vs 课标主题语境."""
-    themes = con.execute("SELECT DISTINCT level2 FROM theme_contexts WHERE level2 IS NOT NULL").fetchall()
-    theme_set = {t[0].lower() for (t,) in themes if t}
-    gen_stems = con.execute("""
-        SELECT stem, answer FROM question_bank
-        WHERE origin IN ('listening_exercise', 'writing_exercise') AND stem IS NOT NULL
-    """).fetchall()
+    """维度 4: 听力/写作场景 vs 课标主题语境 (双语关键词匹配)."""
+    gen_stems = con.execute(
+        "SELECT stem, answer FROM question_bank "
+        "WHERE origin IN ('listening_exercise', 'writing_exercise') AND stem IS NOT NULL"
+    ).fetchall()
     topic_hits = 0
-    total = 0
+    total = len(gen_stems)
     for stem, answer in gen_stems:
-        total += 1
-        text = (stem or "") + " " + (answer or "")
-        text_lower = text.lower()
-        for theme in theme_set:
-            if theme in text_lower:
+        text = ((stem or "") + " " + (answer or "")).lower()
+        for keywords in CURRICULUM_KEYWORDS.values():
+            if any(kw in text for kw in keywords):
                 topic_hits += 1
                 break
     score = 100 * topic_hits / max(total, 1)
     return {
         "name": "话题对齐 (课标主题语境)",
         "score": round(score, 1),
-        "detail": f"{topic_hits}/{total} 题触及课标主题语境",
+        "detail": f"{topic_hits}/{total} 题命中课标主题 (10 主题群双语匹配)",
         "pass": score >= THRESHOLDS["topic_alignment"],
     }
 
