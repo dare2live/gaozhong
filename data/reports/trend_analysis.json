@@ -6,9 +6,11 @@
     2020,
     2021,
     2022,
-    2023
+    2023,
+    2024,
+    2025
   ],
-  "n_questions": 152,
+  "n_questions": 170,
   "year_weights": {
     "2017": 0.5,
     "2018": 0.5,
@@ -16,7 +18,9 @@
     "2020": 0.5,
     "2021": 1.5,
     "2022": 2,
-    "2023": 3
+    "2023": 3,
+    "2024": 4,
+    "2025": 5
   },
   "heatmap": {
     "细节理解": {
@@ -26,7 +30,9 @@
       "2020": 11,
       "2021": 6,
       "2022": 8,
-      "2023": 15
+      "2023": 15,
+      "2024": 0,
+      "2025": 0
     },
     "推理判断": {
       "2017": 10,
@@ -35,7 +41,9 @@
       "2020": 8,
       "2021": 6,
       "2022": 4,
-      "2023": 11
+      "2023": 11,
+      "2024": 1,
+      "2025": 2
     },
     "主旨大意": {
       "2017": 5,
@@ -44,7 +52,9 @@
       "2020": 6,
       "2021": 3,
       "2022": 4,
-      "2023": 4
+      "2023": 4,
+      "2024": 0,
+      "2025": 0
     },
     "词义猜测": {
       "2017": 6,
@@ -53,7 +63,9 @@
       "2020": 7,
       "2021": 4,
       "2022": 4,
-      "2023": 8
+      "2023": 8,
+      "2024": 0,
+      "2025": 1
     },
     "标题选择": {
       "2017": 3,
@@ -62,7 +74,9 @@
       "2020": 3,
       "2021": 2,
       "2022": 4,
-      "2023": 5
+      "2023": 5,
+      "2024": 0,
+      "2025": 0
     },
     "目的意图": {
       "2017": 5,
@@ -71,7 +85,9 @@
       "2020": 10,
       "2021": 3,
       "2022": 7,
-      "2023": 5
+      "2023": 5,
+      "2024": 0,
+      "2025": 0
     },
     "定语从句": {
       "2017": 15,
@@ -80,7 +96,9 @@
       "2020": 14,
       "2021": 8,
       "2022": 10,
-      "2023": 16
+      "2023": 16,
+      "2024": 4,
+      "2025": 4
     },
     "名词性从句": {
       "2017": 1,
@@ -89,7 +107,9 @@
       "2020": 2,
       "2021": 0,
       "2022": 0,
-      "2023": 0
+      "2023": 0,
+      "2024": 0,
+      "2025": 0
     },
     "状语从句": {
       "2017": 1,
@@ -98,7 +118,9 @@
       "2020": 4,
       "2021": 2,
       "2022": 2,
-      "2023": 0
+      "2023": 0,
+      "2024": 0,
+      "2025": 0
     },
     "非谓语动词": {
       "2017": 14,
@@ -107,7 +129,9 @@
       "2020": 9,
       "2021": 10,
       "2022": 9,
-      "2023": 10
+      "2023": 10,
+      "2024": 1,
+      "2025": 2
     },
     "时态语态": {
       "2017": 16,
@@ -116,7 +140,9 @@
       "2020": 12,
       "2021": 7,
       "2022": 11,
-      "2023": 8
+      "2023": 8,
+      "2024": 4,
+      "2025": 3
     },
     "冠词": {
       "2017": 24,
@@ -125,7 +151,9 @@
       "2020": 24,
       "2021": 16,
       "2022": 16,
-      "2023": 24
+      "2023": 24,
+      "2024": 8,
+      "2025": 8
     },
     "介词搭配": {
       "2017": 7,
@@ -134,7 +162,9 @@
       "2020": 8,
       "2021": 5,
       "2022": 5,
-      "2023": 2
+      "2023": 2,
+      "2024": 0,
+      "2025": 0
     },
     "连词": {
       "2017": 5,
@@ -143,7 +173,9 @@
       "2020": 9,
       "2021": 4,
       "2022": 6,
-      "2023": 4
+      "2023": 4,
+      "2024": 0,
+      "2025": 0
     },
     "代词": {
       "2017": 24,
@@ -152,7 +184,9 @@
       "2020": 24,
       "2021": 16,
       "2022": 16,
-      "2023": 24
+      "2023": 24,
+      "2024": 9,
+      "2025": 8
     },
     "词性转换": {
       "2017": 8,
@@ -161,7 +195,9 @@
       "2020": 9,
       "2021": 6,
       "2022": 6,
-      "2023": 4
+      "2023": 4,
+      "2024": 0,
+      "2025": 0
     },
     "完形语境推断": {
       "2017": 8,
@@ -170,7 +206,9 @@
       "2020": 6,
       "2021": 3,
       "2022": 4,
-      "2023": 4
+      "2023": 4,
+      "2024": 0,
+      "2025": 0
     },
     "七选五衔接": {
       "2017": 9,
@@ -179,7 +217,9 @@
       "2020": 11,
       "2021": 8,
       "2022": 5,
-      "2023": 12
+      "2023": 12,
+      "2024": 0,
+      "2025": 0
     },
     "短文改错语法": {
       "2017": 3,
@@ -188,7 +228,9 @@
       "2020": 3,
       "2021": 2,
       "2022": 2,
-      "2023": 0
+      "2023": 0,
+      "2024": 0,
+      "2025": 0
     },
     "续写情节": {
       "2017": 4,
@@ -197,7 +239,9 @@
       "2020": 0,
       "2021": 0,
       "2022": 2,
-      "2023": 4
+      "2023": 4,
+      "2024": 1,
+      "2025": 1
     },
     "应用文格式": {
       "2017": 2,
@@ -206,340 +250,302 @@
       "2020": 3,
       "2021": 1,
       "2022": 3,
-      "2023": 0
+      "2023": 0,
+      "2024": 2,
+      "2025": 2
     }
   },
   "trends": [
     {
-      "point": "七选五衔接",
-      "slope": 0.538,
-      "weighted_total": 75.0,
-      "weighted_recent_3y": 58.0,
-      "raw_total": 59,
-      "direction": "rising"
-    },
-    {
-      "point": "细节理解",
-      "slope": 0.483,
-      "weighted_total": 93.5,
-      "weighted_recent_3y": 70.0,
-      "raw_total": 76,
-      "direction": "rising"
-    },
-    {
-      "point": "推理判断",
-      "slope": 0.449,
-      "weighted_total": 65.0,
-      "weighted_recent_3y": 50.0,
-      "raw_total": 51,
-      "direction": "rising"
-    },
-    {
-      "point": "词义猜测",
-      "slope": 0.413,
-      "weighted_total": 49.5,
-      "weighted_recent_3y": 38.0,
-      "raw_total": 39,
-      "direction": "rising"
+      "point": "应用文格式",
+      "slope": 0.06,
+      "weighted_total": 29.0,
+      "weighted_recent_3y": 18,
+      "raw_total": 15,
+      "direction": "stable"
     },
     {
       "point": "续写情节",
-      "slope": 0.326,
-      "weighted_total": 19.5,
-      "weighted_recent_3y": 16.0,
-      "raw_total": 13,
-      "direction": "rising"
-    },
-    {
-      "point": "标题选择",
-      "slope": 0.299,
-      "weighted_total": 33.0,
-      "weighted_recent_3y": 26.0,
-      "raw_total": 25,
-      "direction": "rising"
-    },
-    {
-      "point": "目的意图",
-      "slope": -0.051,
-      "weighted_total": 46.5,
-      "weighted_recent_3y": 33.5,
-      "raw_total": 41,
-      "direction": "stable"
-    },
-    {
-      "point": "定语从句",
-      "slope": -0.084,
-      "weighted_total": 111.5,
-      "weighted_recent_3y": 80.0,
-      "raw_total": 97,
-      "direction": "stable"
-    },
-    {
-      "point": "主旨大意",
-      "slope": -0.107,
-      "weighted_total": 34.0,
-      "weighted_recent_3y": 24.5,
-      "raw_total": 30,
-      "direction": "falling"
-    },
-    {
-      "point": "连词",
-      "slope": -0.191,
-      "weighted_total": 42.0,
-      "weighted_recent_3y": 30.0,
-      "raw_total": 38,
-      "direction": "falling"
-    },
-    {
-      "point": "应用文格式",
-      "slope": -0.193,
-      "weighted_total": 11.0,
-      "weighted_recent_3y": 7.5,
-      "raw_total": 11,
-      "direction": "falling"
-    },
-    {
-      "point": "冠词",
-      "slope": -0.219,
-      "weighted_total": 176.0,
-      "weighted_recent_3y": 128.0,
-      "raw_total": 152,
-      "direction": "falling"
-    },
-    {
-      "point": "代词",
-      "slope": -0.219,
-      "weighted_total": 176.0,
-      "weighted_recent_3y": 128.0,
-      "raw_total": 152,
-      "direction": "falling"
-    },
-    {
-      "point": "状语从句",
-      "slope": -0.222,
-      "weighted_total": 10.5,
-      "weighted_recent_3y": 7.0,
-      "raw_total": 11,
+      "slope": -0.12,
+      "weighted_total": 28.5,
+      "weighted_recent_3y": 21,
+      "raw_total": 15,
       "direction": "falling"
     },
     {
       "point": "名词性从句",
-      "slope": -0.228,
+      "slope": -0.14,
       "weighted_total": 2.5,
-      "weighted_recent_3y": 0.0,
+      "weighted_recent_3y": 0,
       "raw_total": 5,
       "direction": "falling"
     },
     {
-      "point": "完形语境推断",
-      "slope": -0.401,
-      "weighted_total": 36.0,
-      "weighted_recent_3y": 24.5,
-      "raw_total": 34,
+      "point": "状语从句",
+      "slope": -0.313,
+      "weighted_total": 10.5,
+      "weighted_recent_3y": 0,
+      "raw_total": 11,
       "direction": "falling"
     },
     {
       "point": "短文改错语法",
-      "slope": -0.558,
+      "slope": -0.493,
       "weighted_total": 13.0,
-      "weighted_recent_3y": 7.0,
+      "weighted_recent_3y": 0,
       "raw_total": 16,
       "direction": "falling"
     },
     {
-      "point": "非谓语动词",
-      "slope": -0.64,
-      "weighted_total": 87.5,
-      "weighted_recent_3y": 63.0,
-      "raw_total": 78,
+      "point": "标题选择",
+      "slope": -0.613,
+      "weighted_total": 33.0,
+      "weighted_recent_3y": 15,
+      "raw_total": 25,
       "direction": "falling"
     },
     {
-      "point": "词性转换",
-      "slope": -0.931,
-      "weighted_total": 51.0,
-      "weighted_recent_3y": 33.0,
-      "raw_total": 52,
+      "point": "主旨大意",
+      "slope": -0.787,
+      "weighted_total": 34.0,
+      "weighted_recent_3y": 12,
+      "raw_total": 30,
       "direction": "falling"
     },
     {
-      "point": "介词搭配",
-      "slope": -0.963,
-      "weighted_total": 38.0,
-      "weighted_recent_3y": 23.5,
+      "point": "词义猜测",
+      "slope": -0.8,
+      "weighted_total": 54.5,
+      "weighted_recent_3y": 29,
+      "raw_total": 40,
+      "direction": "falling"
+    },
+    {
+      "point": "推理判断",
+      "slope": -0.94,
+      "weighted_total": 79.0,
+      "weighted_recent_3y": 47,
+      "raw_total": 54,
+      "direction": "falling"
+    },
+    {
+      "point": "完形语境推断",
+      "slope": -0.94,
+      "weighted_total": 36.0,
+      "weighted_recent_3y": 12,
+      "raw_total": 34,
+      "direction": "falling"
+    },
+    {
+      "point": "连词",
+      "slope": -0.993,
+      "weighted_total": 42.0,
+      "weighted_recent_3y": 12,
+      "raw_total": 38,
+      "direction": "falling"
+    },
+    {
+      "point": "目的意图",
+      "slope": -1.04,
+      "weighted_total": 46.5,
+      "weighted_recent_3y": 15,
       "raw_total": 41,
       "direction": "falling"
     },
     {
+      "point": "介词搭配",
+      "slope": -1.193,
+      "weighted_total": 38.0,
+      "weighted_recent_3y": 6,
+      "raw_total": 41,
+      "direction": "falling"
+    },
+    {
+      "point": "七选五衔接",
+      "slope": -1.447,
+      "weighted_total": 75.0,
+      "weighted_recent_3y": 36,
+      "raw_total": 59,
+      "direction": "falling"
+    },
+    {
+      "point": "词性转换",
+      "slope": -1.467,
+      "weighted_total": 51.0,
+      "weighted_recent_3y": 12,
+      "raw_total": 52,
+      "direction": "falling"
+    },
+    {
       "point": "时态语态",
-      "slope": -0.988,
-      "weighted_total": 82.5,
-      "weighted_recent_3y": 56.5,
-      "raw_total": 78,
+      "slope": -1.567,
+      "weighted_total": 113.5,
+      "weighted_recent_3y": 55,
+      "raw_total": 85,
+      "direction": "falling"
+    },
+    {
+      "point": "定语从句",
+      "slope": -1.733,
+      "weighted_total": 147.5,
+      "weighted_recent_3y": 84,
+      "raw_total": 105,
+      "direction": "falling"
+    },
+    {
+      "point": "非谓语动词",
+      "slope": -1.84,
+      "weighted_total": 101.5,
+      "weighted_recent_3y": 44,
+      "raw_total": 81,
+      "direction": "falling"
+    },
+    {
+      "point": "细节理解",
+      "slope": -1.873,
+      "weighted_total": 93.5,
+      "weighted_recent_3y": 45,
+      "raw_total": 76,
+      "direction": "falling"
+    },
+    {
+      "point": "代词",
+      "slope": -2.4,
+      "weighted_total": 252.0,
+      "weighted_recent_3y": 148,
+      "raw_total": 169,
+      "direction": "falling"
+    },
+    {
+      "point": "冠词",
+      "slope": -2.453,
+      "weighted_total": 248.0,
+      "weighted_recent_3y": 144,
+      "raw_total": 168,
       "direction": "falling"
     }
   ],
   "cooccurrence": [
     {
       "pair": [
-        "七选五衔接",
-        "主旨大意"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "介词搭配"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "代词"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
+        "代词",
         "冠词"
       ],
-      "co_years": 7
+      "co_years": 9
     },
     {
       "pair": [
-        "七选五衔接",
-        "完形语境推断"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
+        "代词",
         "定语从句"
       ],
-      "co_years": 7
+      "co_years": 9
     },
     {
       "pair": [
-        "七选五衔接",
+        "代词",
         "推理判断"
       ],
-      "co_years": 7
+      "co_years": 9
     },
     {
       "pair": [
-        "七选五衔接",
+        "代词",
         "时态语态"
       ],
-      "co_years": 7
+      "co_years": 9
     },
     {
       "pair": [
-        "七选五衔接",
-        "标题选择"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "目的意图"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "细节理解"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "词义猜测"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "词性转换"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
-        "连词"
-      ],
-      "co_years": 7
-    },
-    {
-      "pair": [
-        "七选五衔接",
+        "代词",
         "非谓语动词"
       ],
-      "co_years": 7
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "冠词",
+        "定语从句"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "冠词",
+        "推理判断"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "冠词",
+        "时态语态"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "冠词",
+        "非谓语动词"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "定语从句",
+        "推理判断"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "定语从句",
+        "时态语态"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "定语从句",
+        "非谓语动词"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "推理判断",
+        "时态语态"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "推理判断",
+        "非谓语动词"
+      ],
+      "co_years": 9
+    },
+    {
+      "pair": [
+        "时态语态",
+        "非谓语动词"
+      ],
+      "co_years": 9
     }
   ],
   "recommendations": [
     {
-      "point": "七选五衔接",
-      "reason": "上升趋势 (WLS slope=+0.538), 加权近3年=58.0",
-      "related": [
-        "主旨大意",
-        "介词搭配",
-        "代词"
-      ],
-      "priority": "high"
-    },
-    {
-      "point": "细节理解",
-      "reason": "上升趋势 (WLS slope=+0.483), 加权近3年=70.0",
-      "related": [
-        "七选五衔接"
-      ],
-      "priority": "high"
-    },
-    {
-      "point": "推理判断",
-      "reason": "上升趋势 (WLS slope=+0.449), 加权近3年=50.0",
-      "related": [
-        "七选五衔接"
-      ],
-      "priority": "high"
-    },
-    {
-      "point": "词义猜测",
-      "reason": "上升趋势 (WLS slope=+0.413), 加权近3年=38.0",
-      "related": [
-        "七选五衔接"
-      ],
-      "priority": "high"
-    },
-    {
       "point": "续写情节",
-      "reason": "上升趋势 (WLS slope=+0.326), 加权近3年=16.0",
-      "related": [],
-      "priority": "high"
-    },
-    {
-      "point": "主旨大意",
-      "reason": "下降趋势 (WLS slope=-0.107), 可适当减少",
+      "reason": "下降趋势 (WLS slope=-0.120), 可适当减少",
       "priority": "low"
     },
     {
-      "point": "连词",
-      "reason": "下降趋势 (WLS slope=-0.191), 可适当减少",
+      "point": "名词性从句",
+      "reason": "下降趋势 (WLS slope=-0.140), 可适当减少",
       "priority": "low"
     },
     {
-      "point": "应用文格式",
-      "reason": "下降趋势 (WLS slope=-0.193), 可适当减少",
+      "point": "状语从句",
+      "reason": "下降趋势 (WLS slope=-0.313), 可适当减少",
       "priority": "low"
     }
   ]

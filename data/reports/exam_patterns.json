@@ -1,32 +1,42 @@
 {
   "source": "exam_questions (2021+ 新课标 II 辽宁)",
-  "n_questions": 56,
+  "n_questions": 74,
   "years": [
     2021,
     2022,
-    2023
+    2023,
+    2024,
+    2025
   ],
+  "year_weights": {
+    "2021": 1.5,
+    "2022": 2,
+    "2023": 3,
+    "2024": 4,
+    "2025": 5
+  },
+  "data_gap": [],
   "reading": {
-    "n": 32,
+    "n": 40,
     "question_patterns": {
-      "What": 1.0,
-      "Which": 0.5,
-      "How": 0.406,
-      "Why": 0.375,
-      "Where": 0.219,
+      "What": 0.95,
+      "Which": 0.425,
+      "How": 0.4,
+      "Why": 0.325,
+      "Where": 0.2,
       "Who": 0.125
     },
     "skill_distribution": {
-      "细节理解": 0.875,
-      "推理判断": 0.375,
-      "主旨大意": 0.312,
-      "目的意图": 0.281,
-      "标题选择": 0.188,
-      "词义猜测": 0.125
+      "细节理解": 0.7,
+      "推理判断": 0.35,
+      "主旨大意": 0.25,
+      "目的意图": 0.225,
+      "标题选择": 0.15,
+      "词义猜测": 0.1
     }
   },
   "cloze": {
-    "n": 12,
+    "n": 16,
     "article_type_distribution": {
       "说明文": 4,
       "应用文": 1,
@@ -34,7 +44,7 @@
     }
   },
   "grammar_fill": {
-    "n": 8,
+    "n": 10,
     "grammar_points_ranked": [
       {
         "point": "形容词",
@@ -66,211 +76,211 @@
     "top50_content_words": [
       {
         "word": "what",
-        "freq": 117
-      },
-      {
-        "word": "about",
-        "freq": 64
+        "freq": 135
       },
       {
         "word": "more",
-        "freq": 64
+        "freq": 83
       },
       {
-        "word": "people",
-        "freq": 59
+        "word": "about",
+        "freq": 79
       },
       {
         "word": "time",
-        "freq": 54
+        "freq": 74
+      },
+      {
+        "word": "people",
+        "freq": 67
       },
       {
         "word": "when",
-        "freq": 50
-      },
-      {
-        "word": "them",
-        "freq": 48
-      },
-      {
-        "word": "some",
-        "freq": 44
-      },
-      {
-        "word": "all",
-        "freq": 43
+        "freq": 63
       },
       {
         "word": "one",
-        "freq": 42
+        "freq": 56
       },
       {
-        "word": "which",
-        "freq": 41
+        "word": "all",
+        "freq": 55
       },
       {
-        "word": "how",
-        "freq": 39
-      },
-      {
-        "word": "than",
-        "freq": 36
-      },
-      {
-        "word": "make",
-        "freq": 34
+        "word": "some",
+        "freq": 54
       },
       {
         "word": "out",
-        "freq": 34
+        "freq": 53
       },
       {
-        "word": "into",
-        "freq": 34
+        "word": "them",
+        "freq": 52
       },
       {
-        "word": "first",
-        "freq": 33
-      },
-      {
-        "word": "most",
-        "freq": 33
-      },
-      {
-        "word": "where",
-        "freq": 32
-      },
-      {
-        "word": "like",
-        "freq": 31
-      },
-      {
-        "word": "does",
-        "freq": 30
-      },
-      {
-        "word": "book",
-        "freq": 30
+        "word": "how",
+        "freq": 51
       },
       {
         "word": "there",
-        "freq": 29
+        "freq": 47
       },
       {
-        "word": "world",
-        "freq": 29
+        "word": "which",
+        "freq": 47
       },
       {
-        "word": "around",
-        "freq": 28
+        "word": "than",
+        "freq": 46
       },
       {
-        "word": "best",
-        "freq": 28
+        "word": "like",
+        "freq": 45
+      },
+      {
+        "word": "into",
+        "freq": 43
+      },
+      {
+        "word": "first",
+        "freq": 41
+      },
+      {
+        "word": "where",
+        "freq": 41
+      },
+      {
+        "word": "make",
+        "freq": 39
       },
       {
         "word": "just",
-        "freq": 27
+        "freq": 39
       },
       {
-        "word": "these",
-        "freq": 27
-      },
-      {
-        "word": "did",
-        "freq": 27
-      },
-      {
-        "word": "also",
-        "freq": 27
-      },
-      {
-        "word": "work",
-        "freq": 27
-      },
-      {
-        "word": "take",
-        "freq": 26
-      },
-      {
-        "word": "only",
-        "freq": 26
-      },
-      {
-        "word": "day",
-        "freq": 26
-      },
-      {
-        "word": "many",
-        "freq": 26
-      },
-      {
-        "word": "could",
-        "freq": 26
-      },
-      {
-        "word": "new",
-        "freq": 26
-      },
-      {
-        "word": "help",
-        "freq": 25
-      },
-      {
-        "word": "then",
-        "freq": 25
-      },
-      {
-        "word": "would",
-        "freq": 25
-      },
-      {
-        "word": "city",
-        "freq": 25
-      },
-      {
-        "word": "now",
-        "freq": 25
+        "word": "most",
+        "freq": 39
       },
       {
         "word": "way",
-        "freq": 25
-      },
-      {
-        "word": "may",
-        "freq": 25
-      },
-      {
-        "word": "why",
-        "freq": 25
-      },
-      {
-        "word": "author",
-        "freq": 24
-      },
-      {
-        "word": "children",
-        "freq": 24
+        "freq": 36
       },
       {
         "word": "plants",
-        "freq": 24
+        "freq": 36
       },
       {
-        "word": "should",
-        "freq": 23
+        "word": "also",
+        "freq": 35
+      },
+      {
+        "word": "world",
+        "freq": 35
+      },
+      {
+        "word": "does",
+        "freq": 35
+      },
+      {
+        "word": "only",
+        "freq": 34
+      },
+      {
+        "word": "new",
+        "freq": 34
+      },
+      {
+        "word": "would",
+        "freq": 33
+      },
+      {
+        "word": "book",
+        "freq": 33
+      },
+      {
+        "word": "food",
+        "freq": 33
+      },
+      {
+        "word": "around",
+        "freq": 32
+      },
+      {
+        "word": "did",
+        "freq": 32
+      },
+      {
+        "word": "best",
+        "freq": 32
+      },
+      {
+        "word": "day",
+        "freq": 32
+      },
+      {
+        "word": "many",
+        "freq": 32
+      },
+      {
+        "word": "could",
+        "freq": 32
+      },
+      {
+        "word": "these",
+        "freq": 31
+      },
+      {
+        "word": "now",
+        "freq": 31
+      },
+      {
+        "word": "after",
+        "freq": 31
+      },
+      {
+        "word": "work",
+        "freq": 31
+      },
+      {
+        "word": "family",
+        "freq": 30
+      },
+      {
+        "word": "get",
+        "freq": 29
+      },
+      {
+        "word": "take",
+        "freq": 29
       },
       {
         "word": "good",
-        "freq": 23
+        "freq": 29
+      },
+      {
+        "word": "may",
+        "freq": 29
+      },
+      {
+        "word": "help",
+        "freq": 28
+      },
+      {
+        "word": "home",
+        "freq": 28
+      },
+      {
+        "word": "two",
+        "freq": 28
       }
     ]
   },
   "global_sentence": {
-    "avg_sentence_words": 12.4,
-    "median_sentence_words": 10,
-    "p25": 5,
-    "p75": 17
+    "avg_sentence_words": 12.8,
+    "median_sentence_words": 11,
+    "p25": 6,
+    "p75": 18
   },
   "question_design_terms": {
     "ranked": [
@@ -335,11 +345,11 @@
         "freq": 2
       },
       {
-        "term": "总结",
+        "term": "举例",
         "freq": 2
       },
       {
-        "term": "举例",
+        "term": "总结",
         "freq": 2
       }
     ]
