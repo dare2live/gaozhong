@@ -1,0 +1,73 @@
+# Course #27-30: G3·完形+语填+应用文+续写 (批量)
+course_id: 27
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [academic, advocate]
+  theme: "学术诚信"
+
+segments:
+  hook: |
+    **When Cloze Gets Hard: Argumentative Passages**
+
+    G2 cloze passages (#19) were mostly stories. G3 takes it up a level: argumentative cloze passages. These require you to follow the author's logic — not just the plot — to choose the right word.
+
+    The key difference: in a story, context = what happens next. In an argument, context = what the author believes.
+
+  core: |
+    **议论文完形 策略升级**
+
+    ---
+
+    **一、议论完形 vs 记叙完形** ⭐⭐
+
+    | | 记叙 (G2) | 议论 (G3) |
+    |---|---|---|
+    | 线索 | 时间/情节 | 逻辑/观点 |
+    | 关键 | 感情变化 | 立场判断 |
+    | 难点 | 词义辨析 | 逻辑连接词 |
+
+    ---
+
+    **二、逻辑连接词在完形中的考法** ⭐⭐⭐
+
+    | 连接关系 | 词 | 完形线索 |
+    |---|---|---|
+    | 转折 | however/but/yet/nevertheless | 前后意思相反 |
+    | 递进 | moreover/furthermore/in addition | 前后意思加强 |
+    | 因果 | therefore/thus/consequently | 结论 |
+    | 让步 | although/despite/in spite of | 先退后进 |
+    | 对比 | while/whereas/on the other hand | 两者不同 |
+
+    ---
+
+    **三、advocacy 主题词在议论完形中的考法** ⭐⭐
+
+    academic integrity (学术诚信) 是近年高频话题:
+    - advocate for honest research (提倡诚实研究)
+    - academic dishonesty affects the whole field (影响整个领域)
+    - adopt strict rules (采纳严格规则)
+
+  relations: |
+    **完形进阶路线**: G2 #19 记叙 → **G3 #27 议论** → G_FINAL #37 真题
+
+  practice: |
+    **Mini Cloze: Academic Honesty** ⭐⭐⭐
+
+    Many educators ___(1)___ for stronger rules on academic honesty. They argue that copying others' work not only ___(2)___ the cheater's learning, but also ___(3)___ the value of everyone's degree. ___(4)___, some students feel the rules are too strict. They believe the system should ___(5)___ to the needs of modern education.
+
+    1. A. advocate B. abandon C. absorb D. alter → A
+    2. A. adjusts B. affects C. adopts D. accesses → B
+    3. A. abandons B. assumes C. reduces D. absorbs → C
+    4. A. Therefore B. However C. Moreover D. Besides → B (转折)
+    5. A. access B. absorb C. adopt D. adapt → D (adapt to)
+
+  summary: |
+    **本节核心要点:**
+
+    1. 议论完形看**逻辑关系** (转折/递进/因果)
+    2. 连接词选择是拉分题 (however vs therefore vs moreover)
+    3. 学术话题高频词: advocate/academic/adopt/affect
+
+    **下节预告**: #28 语法填空·时态+词形 — 综合练习

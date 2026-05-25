@@ -1,0 +1,85 @@
+# Course #28: G3·语法填空·时态 + 词形变化
+course_id: 28
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [adjust]
+  theme: "茶道礼仪"
+
+segments:
+  hook: |
+    **Grammar Fill: The 15-Point Gift**
+
+    Grammar fill-in-the-blank is the most predictable section on the gaokao. Every year, the 10 blanks test the same types: verb tenses (3-4), word forms (3-4), and function words (2-3). If you know the patterns, you can score 12-15 out of 15.
+
+    G_FINAL #38 covered the overall strategy. This G3 lesson goes deeper into the two hardest parts: tense choices and word form changes.
+
+  core: |
+    **时态 + 词形变化 深度讲解**
+
+    ---
+
+    **一、时态选择 (给动词原形, 要求变时态)** ⭐⭐⭐
+
+    判断步骤:
+    1. 有主语吗? → 有 = 谓语 (需时态); 无 = 非谓语 (doing/done/to do)
+    2. 是主动还是被动? → 主语是执行者=主动; 主语是承受者=被动
+    3. 什么时态? → 看时间标志词
+
+    | 标志词 | 时态 |
+    |---|---|
+    | now/at present/look | 现在进行 |
+    | yesterday/last year/ago | 一般过去 |
+    | since/for/so far/already | 现在完成 |
+    | by the time/before (过去) | 过去完成 |
+    | next/tomorrow/will | 一般将来 |
+
+    ---
+
+    **二、词形变化 (给词根, 变形)** ⭐⭐⭐
+
+    | 给什么 | 看什么 | 变什么 |
+    |---|---|---|
+    | 动词 | 前面有 be → 被动/进行 | done/doing |
+    | 名词 | 前面有 many/these | 复数 -s |
+    | 形容词 | 修饰动词 → 变副词 | -ly |
+    | 形容词 | 有 than → 比较级 | -er / more |
+
+    常考变形:
+    - adjust → adjustment (n.) / adjustable (adj.)
+    - accurate → accuracy (n.) / accurately (adv.) / inaccurate (反义)
+    - abandon → abandoned (adj. 被遗弃的)
+
+  relations: |
+    **语法填空知识整合**
+
+    时态 → G1 #6-#8 基础语法
+    从句连接词 → G2 #14-#16 三种从句
+    非谓语 → G3 #24
+    词形变化 → 本节
+    → G_FINAL #38 综合真题练习
+
+  practice: |
+    **Practice: Tea Culture** ⭐⭐⭐
+
+    Tea culture in China ___(1)___ (develop) for thousands of years. Today, tea ___(2)___ (consider) one of the most important drinks in Chinese life. Each type of tea requires a different ___(3)___ (prepare) method.
+
+    To ___(4)___ (true) enjoy tea, one must ___(5)___ (patient) wait for it to brew. The temperature should be ___(6)___ (accurate) controlled. A tea master I met last year ___(7)___ (adjust) the water temperature several times during the process.
+
+    1. has developed (现在完成: for thousands of years)
+    2. is considered (被动: 茶被认为)
+    3. preparation (名词: different + n.)
+    4. truly (副词修饰动词 enjoy)
+    5. patiently (副词修饰动词 wait)
+    6. accurately (副词修饰动词 controlled)
+    7. adjusted (一般过去: last year)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **时态三步**: 有主语?→主动被动?→什么时态?
+    2. **词形变化**: 看前后词性需求 (adj→adv: -ly; n→adj: -ful/-less)
+    3. **高频变形**: adjust→adjustment, accurate→accuracy→accurately
+
+    **下节预告**: #29 应用文·求职自荐 — 比邀请信更复杂的写作

@@ -1,0 +1,98 @@
+# Course #23: G3·语法·主语从句 + 表语从句
+course_id: 23
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [assume]
+  theme: "学科前沿"
+
+segments:
+  hook: |
+    **"What matters is how you respond."**
+
+    In G2, you learned object clauses (宾语从句) and relative clauses (定语从句). Now, in G3, we complete the picture with two more types: subject clauses (主语从句) and predicative clauses (表语从句).
+
+    "**What** he said" — this is a subject clause (做主语).
+    "The truth is **that** he lied." — this is a predicative clause (做表语).
+
+    These structures appear in the most difficult gaokao sentences. Master them, and you can read anything.
+
+  core: |
+    **主语从句 + 表语从句**
+
+    ---
+
+    **一、主语从句** ⭐⭐⭐
+
+    从句做主语. 连接词: that / whether / what / who / where / when / how / why
+
+    **常见句型**:
+    - **That** he passed the exam surprised everyone.
+    - **What** she said made me think.
+    - **Whether** he will come is still unknown.
+
+    **It 做形式主语** (更常用, 回顾 #8):
+    - **It** is clear **that** he has improved.
+    - **It** is important **that** we take action.
+    - **It** doesn't matter **whether** you win or lose.
+    - **It** is reported/believed/said **that**... (据报道/认为/说...)
+
+    ---
+
+    **二、表语从句** ⭐⭐
+
+    从句做表语 (be 动词之后). 连接词同上.
+
+    - The fact is **that** we need more time.
+    - The question is **whether** we can afford it.
+    - That is **why** I chose this school.
+    - The problem is **how** we solve it.
+
+    ---
+
+    **三、四种名词性从句对比** ⭐⭐⭐
+
+    | 类型 | 位置 | 例句 |
+    |---|---|---|
+    | 主语从句 | 句首/It形式 | **What** he said is true. |
+    | 宾语从句 (#14) | 动词后 | I know **that** he is right. |
+    | 表语从句 | be 后 | The truth is **that** he left. |
+    | 同位语从句 | 名词后 | The news **that** he won is true. |
+
+    **同位语从句 vs 定语从句**:
+    - 同位语: The news **that** he won (that=内容, 不做成分)
+    - 定语: The news **that** I heard (that=the news, 做宾语)
+
+  relations: |
+    **从句体系完整版**
+
+    G2: 宾语从句 (#14) + 定语从句 (#15) + 状语从句 (#16)
+    G3: **主语从句 + 表语从句 + 同位语从句** (本节)
+    G_FINAL: 虚拟 (#33) + 倒装 (#34)
+
+  practice: |
+    **练习 1: 判断从句类型** ⭐⭐
+
+    1. **What** she needs is a good rest. → 主语从句
+    2. The problem is **that** we have no money. → 表语从句
+    3. I hope **that** he can come. → 宾语从句
+    4. The idea **that** the earth is round was once rejected. → 同位语从句
+    5. **It** is believed **that** exercise is good for health. → 主语从句 (it 形式主语)
+
+    **练习 2: 填连接词** ⭐⭐⭐
+
+    6. ___ he will accept the offer is still uncertain. → Whether
+    7. It is reported ___ the new bridge will open next month. → that
+    8. The reason is ___ he did not prepare well enough. → that
+    9. ___ makes this school special is its teaching approach. → What
+
+  summary: |
+    **本节核心要点:**
+
+    1. **主语从句**: What/That/Whether + 从句做主语; It 形式主语更常用
+    2. **表语从句**: be 后 + that/whether/why/how
+    3. **同位语 vs 定语**: that 后句子完整 → 同位语; 缺成分 → 定语
+    4. **四种名词性从句**: 看位置 (句首/动词后/be后/名词后)
+
+    **下节预告**: #24 非谓语动词综合 — to do / doing / done 三大非谓语

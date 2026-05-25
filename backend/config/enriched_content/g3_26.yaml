@@ -1,0 +1,92 @@
+# Course #26: G3·阅读·科普 + 词义猜测
+course_id: 26
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [absorb, accurate]
+  theme: "深海热泉"
+
+segments:
+  hook: |
+    **"Hydrothermal" — Can You Guess What It Means?**
+
+    On the gaokao, you will meet words you have never seen before. That is by design. Word-guessing questions test whether you can figure out meaning from context — without a dictionary.
+
+    The word "hydrothermal" combines "hydro" (water) + "thermal" (heat). Even without knowing this, you could guess its meaning from a sentence like: "Deep under the ocean, hydrothermal vents release extremely hot water."
+
+    Today you will learn 5 strategies for guessing word meanings — a skill that works not just on exams, but in real life.
+
+  core: |
+    **词义猜测 完全讲解**
+
+    ---
+
+    **五种猜词策略** ⭐⭐⭐
+
+    | 策略 | 线索 | 例子 |
+    |---|---|---|
+    | 1. 定义 | is/means/refers to | "A habitat, which **is** the natural home of an animal..." |
+    | 2. 同义 | or/namely/that is | "She was **timid**, **or** shy, in front of strangers." |
+    | 3. 反义 | but/however/unlike/instead of | "Unlike her **outgoing** sister, she was very ___." → shy |
+    | 4. 因果 | because/so/therefore | "The water was **contaminated**, so we could not drink it." → polluted |
+    | 5. 构词 | 前缀/后缀/词根 | un- = not; -less = without; bio- = life |
+
+    ---
+
+    **常见构词法** ⭐⭐
+
+    | 前缀 | 含义 | 例子 |
+    |---|---|---|
+    | un-/in-/im-/dis- | 否定 | unable, inaccurate, impossible, disagree |
+    | re- | 再次 | rebuild, rethink |
+    | pre- | 提前 | preview, predict |
+    | over- | 过度 | overwork, overcome |
+
+    | 后缀 | 词性 | 例子 |
+    |---|---|---|
+    | -tion/-sion | n. | education, decision |
+    | -ful/-less | adj. | helpful, careless |
+    | -ly | adv. | quickly, accurately |
+    | -ize/-ify | v. | realize, simplify |
+
+    ---
+
+    **核心词**: absorb (吸收 — 科普文高频) + accurate (准确 — 科学描述必备)
+
+  relations: |
+    **G3 阅读技能完整版**
+
+    G3 #25 推理判断 + **#26 词义猜测** = D 篇两大难题类型
+
+    词义猜测需要:
+    - 构词法知识 (前缀+后缀)
+    - 上下文逻辑 (因果/转折/对比)
+    - G1-G3 积累的词汇基础
+
+  practice: |
+    **练习: 猜词义** ⭐⭐⭐
+
+    1. "The **barren** land could not grow any crops." → A. 肥沃的 B. 贫瘠的 C. 广阔的
+    答案: B (因果: 不能种庄稼 → 贫瘠)
+
+    2. "She tried to **conceal** the truth, but her face showed everything." → A. 隐藏 B. 揭露 C. 改变
+    答案: A (转折: 试图___, 但脸出卖了 → 隐藏)
+
+    3. "The **omnivore** eats both plants and meat." → A. 食草动物 B. 食肉动物 C. 杂食动物
+    答案: C (定义: eats both plants and meat)
+
+    4. The underlined word "deteriorate" most likely means ___.
+    "As pollution increased, the water quality continued to **deteriorate**."
+    A. improve  B. get worse  C. stay the same  D. disappear
+    答案: B (因果: 污染增加 → 水质___ → 变差)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **5 种猜词法**: 定义/同义/反义/因果/构词
+    2. **构词法**: 前缀 (un-/re-/pre-) + 后缀 (-tion/-ful/-ly/-ize)
+    3. **因果推断**: 最常用的猜词方法
+    4. **D 篇策略**: 推理(#25) + 猜词(#26) = D 篇得分关键
+
+    **下节预告**: #27 完形·议论篇 — G3 完形升级, 长篇议论文完形

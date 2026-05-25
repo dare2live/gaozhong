@@ -1,0 +1,104 @@
+# Course #24: G3·语法·非谓语动词综合
+course_id: 24
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [adopt]
+  theme: "科学研究"
+
+segments:
+  hook: |
+    **To Do, Doing, or Done?**
+
+    Look at these three sentences:
+    - He decided **to adopt** a new method. (不定式)
+    - He enjoyed **adopting** new ideas. (动名词)
+    - The method **adopted** by the team was successful. (过去分词)
+
+    Same verb "adopt," three different forms, three different meanings. Non-finite verbs (非谓语动词) are the most tested grammar point on the gaokao — appearing in reading, cloze, grammar fill, and even writing. If you master this one topic, you gain points in EVERY section.
+
+  core: |
+    **非谓语动词 完全讲解**
+
+    ---
+
+    **一、三种非谓语** ⭐⭐
+
+    | 形式 | 时态意义 | 功能 |
+    |---|---|---|
+    | **to do** (不定式) | 将来/目的 | 主/宾/表/定/状/补 |
+    | **doing** (现在分词/动名词) | 正在/主动 | 主/宾/表/定/状/补 |
+    | **done** (过去分词) | 已完成/被动 | 定/状/补 |
+
+    ---
+
+    **二、做定语 (修饰名词)** ⭐⭐⭐
+
+    - to do: 将要做的 — the work **to be done** (将要做的工作)
+    - doing: 正在做的/主动 — the girl **standing** there (正站着的女孩)
+    - done: 已完成/被动 — the book **written** by him (他写的书)
+
+    ---
+
+    **三、做状语** ⭐⭐⭐
+
+    - to do: 目的 — **To achieve** success, you must work hard.
+    - doing: 伴随/原因/时间 (主动) — **Hearing** the news, she felt happy.
+    - done: 原因/条件 (被动) — **Adopted** by a new family, the child felt safe.
+
+    ---
+
+    **四、高频考点: 独立主格** ⭐⭐⭐
+
+    非谓语的逻辑主语与句子主语不同时:
+    - **Weather permitting**, we will go hiking. (天气允许的话)
+    - **All things considered**, this is the best choice. (综合考虑)
+
+    ---
+
+    **五、固定搭配: doing vs to do** ⭐⭐⭐
+
+    | 只接 doing | 只接 to do | 两者都可 (义不同) |
+    |---|---|---|
+    | enjoy, finish, avoid, mind, suggest, practice, admit, consider | decide, hope, wish, refuse, agree, promise, manage, afford | remember, forget, stop, try, mean |
+
+    remember **doing** = 记得做过 (过去)
+    remember **to do** = 记得要做 (将来)
+    stop **doing** = 停止做某事
+    stop **to do** = 停下来去做另一事
+
+  relations: |
+    **非谓语与从句的关系**
+
+    非谓语 = 从句的简化版:
+    - Because he was tired → **Being** tired (分词状语)
+    - The book which was written → The book **written** (分词定语)
+    - I don't know what to do → I don't know what I should do (不定式)
+
+  practice: |
+    **练习 1: 选形式** ⭐⭐
+
+    1. She decided ___ (adopt) a new study method. → to adopt
+    2. I enjoy ___ (read) English novels. → reading
+    3. The plan ___ (adopt) last year was very successful. → adopted
+    4. ___ (hear) the good news, everyone cheered. → Hearing
+    5. ___ (compare) with last year, our results have improved. → Compared
+
+    **练习 2: 语法填空** ⭐⭐⭐
+
+    6. He managed ___ (pass) the exam. → to pass (manage + to do)
+    7. She avoided ___ (make) the same mistake. → making (avoid + doing)
+    8. I remember ___ (lock) the door. (我记得锁了) → locking
+    9. Remember ___ (lock) the door when you leave. (记得要锁) → to lock
+
+  summary: |
+    **本节核心要点:**
+
+    1. **三种形式**: to do (将来/目的) / doing (主动/进行) / done (被动/完成)
+    2. **做定语**: doing=正在的, done=已完成的, to do=将要的
+    3. **做状语**: doing=主动, done=被动, to do=目的
+    4. **固定搭配**: enjoy/avoid/admit + doing; decide/hope/manage + to do
+    5. **meaning 变化**: remember/stop/try + doing vs to do
+
+    **下节预告**: #25 推理判断 — 用非谓语和从句知识读懂最难的 D 篇

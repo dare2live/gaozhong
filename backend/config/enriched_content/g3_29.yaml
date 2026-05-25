@@ -1,0 +1,101 @@
+# Course #29: G3·应用文·求职 + 自荐
+course_id: 29
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [advocate, academic]
+  theme: "实习申请"
+
+segments:
+  hook: |
+    **Dear Sir/Madam: How to Sell Yourself in 80 Words**
+
+    In G2, you learned invitation letters and notices. Now, in G3, we tackle a harder type: application/self-recommendation letters. These require you to describe your strengths, explain your motivation, and sound professional — all in 80-100 words.
+
+    This type has appeared twice in the last 5 years of gaokao. And it is the type that most separates good writers from great ones.
+
+  core: |
+    **求职/自荐信 模板 + 高分技巧**
+
+    ---
+
+    **一、结构** ⭐⭐
+
+    ```
+    Dear Sir/Madam, (或 Dear Mr./Ms. [Name],)
+
+    [P1: 目的+职位] I am writing to apply for the position of [职位]
+    advertised in [来源].
+
+    [P2: 资质+经验] I am currently a [身份] at [学校].
+    My academic performance is excellent, and I have experience in [相关经验].
+    In addition, I am [个人特质].
+
+    [P3: 表达期待] I would be grateful for the opportunity to discuss
+    my application further. I am available for an interview at your convenience.
+
+    Yours sincerely/faithfully,
+    Li Hua
+    ```
+
+    ---
+
+    **二、高分词汇替换** ⭐⭐⭐
+
+    | 普通 | 高分 |
+    |---|---|
+    | I want to | I am eager to / I am keen on |
+    | I am good at | I have a strong background in / I am skilled in |
+    | I hope | I would be grateful if / I look forward to |
+    | I can | I am capable of / I am qualified for |
+    | I like | I am passionate about / I have a keen interest in |
+
+    ---
+
+    **三、自荐信 vs 邀请信** ⭐⭐
+
+    | | 自荐信 | 邀请信 (#20) |
+    |---|---|---|
+    | 目的 | 推销自己 | 邀请他人 |
+    | 语气 | 正式+自信 | 热情+期待 |
+    | 核心段 | 资质+经验 | 活动详情 |
+    | 结尾 | 请给机会面试 | 期待回复 |
+
+    ---
+
+    **核心词**: advocate (在自荐信中展示主动性: "I advocate for...") + academic (描述学业: "academic excellence")
+
+  relations: |
+    **G3 写作进阶**: G2 #20 邀请+通知 → **G3 #29 求职自荐** → G_FINAL #39 真题综合
+
+  practice: |
+    **练习: 写自荐信** ⭐⭐⭐
+
+    题目: 你是李华, 看到学校英语报招聘学生编辑的通知. 写信申请, 包含:
+    (1) 你的优势 (英语好/写作经验)
+    (2) 你能做什么贡献
+    (3) 期待回复
+
+    参考范文 (92 词):
+    ---
+    Dear Editor,
+
+    I am writing to apply for the position of student editor at our school English newspaper.
+
+    I have a strong academic background in English and have won the school writing competition twice. I am passionate about writing and have published several articles in our class blog. I believe my skills and experience make me well qualified for this role.
+
+    I would be grateful for the opportunity to contribute to the newspaper. Please let me know if an interview can be arranged.
+
+    Yours sincerely,
+    Li Hua
+
+  summary: |
+    **本节核心要点:**
+
+    1. **三段式**: 目的+资质+期待
+    2. **高分替换**: good at → skilled in; hope → would be grateful
+    3. **语气**: 自信但不自大 (I believe... / I am confident that...)
+    4. **格式**: Dear Sir/Madam → Yours faithfully; Dear Mr./Ms. → Yours sincerely
+
+    **下节预告**: #30 续写·情绪转折 — G3 最后一课, 高考最重要的新题型

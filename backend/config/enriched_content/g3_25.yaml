@@ -1,0 +1,91 @@
+# Course #25: G3·阅读·议论文 + 推理判断
+course_id: 25
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G3
+  core_words: [adjust, affect]
+  theme: "社会话题"
+
+segments:
+  hook: |
+    **Reading Between the Lines**
+
+    "The author probably wants to tell us that..." — this is a reasoning question. The answer is NOT written directly in the text. You must read between the lines: combine what the text says with your own logical thinking.
+
+    Reasoning questions account for 25-30% of all reading questions on the gaokao. They are the hardest type, but they follow clear patterns. Today you will learn how to reason correctly — and how to avoid the trap of over-reasoning.
+
+  core: |
+    **推理判断题 完全讲解**
+
+    ---
+
+    **一、题型标志词** ⭐⭐
+
+    - It can be inferred from the passage that...
+    - What can we learn/conclude from...?
+    - The author implies/suggests that...
+    - What will the author most probably discuss next?
+
+    ---
+
+    **二、推理 vs 过度推理** ⭐⭐⭐
+
+    | 原文 | 合理推理 ✅ | 过度推理 ❌ |
+    |---|---|---|
+    | "He frowned when he heard the news." | He was not happy. | He was angry at the person who told him. |
+    | "Sales rose 50% after the ad." | The ad was effective. | The ad was the best in history. |
+
+    原则: 推进一小步, 不跳跃
+
+    ---
+
+    **三、四步法** ⭐⭐⭐
+
+    1. 读题 → 找关键词 (infer/imply/suggest)
+    2. 定位 → 找原文相关段落
+    3. 理解 → 原文字面意思是什么
+    4. 推一步 → 合理推出, 选最保守的选项
+
+    ---
+
+    **核心词**: adjust (调整) + affect (影响) — 推理判断中常见的因果关系词
+
+  relations: |
+    **阅读策略进阶路线**
+
+    G1 #9 细节 → G1 #10 主旨 → G2 #17 议论文 → **G3 #25 推理判断** → G_FINAL #35 综合
+
+    推理需要:
+    - 从句知识 (读懂复杂句)
+    - 词汇深度 (理解含义)
+    - 逻辑思维 (因果/转折/对比)
+
+  practice: |
+    **Practice: Inference Questions** ⭐⭐⭐
+
+    Passage: "The new policy greatly affected how schools operate. Many teachers had to adjust their methods. Some welcomed the change; others felt it came too quickly."
+
+    **Q1.** It can be inferred that ___.
+    A. All teachers liked the new policy.
+    B. The policy caused mixed reactions among teachers.
+    C. The policy failed completely.
+    D. Schools refused to follow the policy.
+    答案: B (some welcomed, others felt too quickly → mixed)
+
+    **Q2.** The word "adjust" suggests that ___.
+    A. Teachers completely changed their methods.
+    B. Teachers made small changes to fit the new rules.
+    C. Teachers abandoned their old methods.
+    D. Teachers did not respond to the policy.
+    答案: B (adjust = 微调, 不是彻底改变)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **推理 = 原文 + 一小步** (不跳跃, 不用常识代替原文)
+    2. **标志词**: infer/imply/suggest/conclude
+    3. **选最保守**: 正确选项通常是最温和/最安全的表述
+    4. **adjust/affect**: 推理题中的因果关系高频词
+
+    **下节预告**: #26 科普+词义猜测 — D 篇最后一种题型
