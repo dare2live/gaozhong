@@ -152,8 +152,8 @@ def import_to_db(questions: list[dict]) -> int:
             if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [year_node]).fetchone():
                 con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [year_node, "exam_year", str(q["year"])])
             if not con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=?", [cid, year_node]).fetchone():
-                con.execute("INSERT INTO edges VALUES (?,?,?,?)",
-                            [cid, year_node, "exam_year_of", '{"source":"pdf_import"}'])
+                con.execute("INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?,?,?,?,?)",
+                            [cid, year_node, "exam_year_of", 1.0, '{"source":"pdf_import"}'])
             n += 1
         return n
     finally:

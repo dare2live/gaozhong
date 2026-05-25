@@ -137,3 +137,40 @@ def check_compliance() -> dict:
         "audit_required": True,
         "iron_laws": [f"{r[0]}: {r[2]}" for r in IRON_LAWS],
     }
+
+
+def enforce_before_generation(con) -> dict:
+    """生成前强制检查 — 不通过则 raise. 宪法 P4 程序化执行."""
+    import json
+    from pathlib import Path
+    report_dir = Path(__file__).resolve().parents[1].parent / "data" / "reports"
+    patterns_path = report_dir / "exam_patterns.json"
+    trends_path = report_dir / "trend_analysis.json"
+    errors = []
+    if not patterns_path.exists():
+        errors.append("exam_patterns.json 不存在 — 先跑 exam_pattern_extractor")
+    if not trends_path.exists():
+        errors.append("trend_analysis.json 不存在 — 先跑 trend_engine")
+    if patterns_path.exists():
+        pat = json.loads(patterns_path.read_text())
+        if pat.get("data_gap"):
+            errors.append(f"数据缺口: {pat['data_gap']} — 先补全真题数据")
+    n_rules = con.execute("SELECT COUNT(*) FROM constitution").fetchone()[0]
+    if n_rules < 20:
+        errors.append(f"constitution 表只有 {n_rules} 条 — 先跑 init_db seed")
+    if errors:
+        raise ConstitutionViolation(errors)
+    compliance = check_compliance()
+    if trends_path.exists():
+        trends = json.loads(trends_path.read_text())
+        compliance["rising_points"] = [
+            t["point"] for t in trends.get("trends", []) if t.get("direction") == "rising"
+        ]
+    return compliance
+
+
+class ConstitutionViolation(Exception):
+    """宪法违反 — 生成前检查未通过."""
+    def __init__(self, errors: list[str]):
+        self.errors = errors
+        super().__init__(f"宪法违反 ({len(errors)} 项): {'; '.join(errors)}")

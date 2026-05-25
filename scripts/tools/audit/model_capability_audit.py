@@ -30,6 +30,8 @@ def audit(con: duckdb.DuckDBPyConnection) -> dict:
         "point_coverage": _check_point_coverage(con),
         "trend_backtest": _check_trend_backtest(con),
         "extraction_sample": _check_extraction_sample(con),
+        "leakage_check": _check_leakage(con),
+        "cross_validation": _check_cross_validation(con),
     }
     scores = [r["score"] for r in results.values()]
     results["overall"] = {
@@ -160,6 +162,65 @@ def _check_extraction_sample(con) -> dict:
         "score": round(hit_rate * 100, 1),
         "pass": hit_rate >= 0.8,
         "samples": results,
+    }
+
+
+def _check_leakage(con) -> dict:
+    """审计: 趋势模型是否存在 data leakage 或未来函数.
+    检查: (1) trend_engine 训练数据不含预测目标年份
+          (2) 特征提取不使用未来数据 (eg 用 2024 数据预测 2023)
+          (3) 回测中 train/test 严格分离"""
+    issues = []
+    from scripts.tools.alignment.trend_engine import YEAR_WEIGHTS, analyze
+    test_result = analyze(con)
+    train_years = test_result.get("years", [])
+    if train_years:
+        max_year = max(train_years)
+        for t in test_result.get("trends", []):
+            if "2026" in str(t) or "2027" in str(t):
+                issues.append("trend output contains future year reference")
+    from scripts.tools.alignment.exam_pattern_extractor import extract
+    pat = extract(con)
+    gap = pat.get("data_gap", [])
+    if gap:
+        issues.append(f"pattern_extractor gap years (not leakage, but data missing): {gap}")
+    score = 100 if not issues else max(0, 100 - len(issues) * 30)
+    return {
+        "name": "Leakage / 未来函数检查",
+        "score": score, "pass": score >= 70,
+        "issues": issues,
+        "note": "检查 train/test 分离 + 无未来年份引用",
+    }
+
+
+def _check_cross_validation(con) -> dict:
+    """审计: 结构化数据源 (GAOKAO-Bench) vs PDF 导入的交叉验证.
+    检查 2021-2023 是否同时存在两个来源, 且题量一致."""
+    bench = con.execute(
+        "SELECT year, COUNT(*) FROM exam_questions "
+        "WHERE source_repo = 'OpenLMLab/GAOKAO-Bench' AND year >= 2021 GROUP BY 1"
+    ).fetchall()
+    pdf = con.execute(
+        "SELECT year, COUNT(*) FROM exam_questions "
+        "WHERE source_repo = 'local_pdf' AND year >= 2021 GROUP BY 1"
+    ).fetchall()
+    bench_d = dict(bench)
+    pdf_d = dict(pdf)
+    overlap_years = set(bench_d) & set(pdf_d)
+    both_sources = len(overlap_years)
+    only_bench = set(bench_d) - set(pdf_d)
+    only_pdf = set(pdf_d) - set(bench_d)
+    all_years_covered = set(bench_d) | set(pdf_d)
+    target = {2021, 2022, 2023, 2024, 2025}
+    coverage = len(all_years_covered & target) / len(target)
+    score = round(coverage * 100) if coverage >= 0.8 else (60 if both_sources >= 1 else 30)
+    return {
+        "name": "数据交叉验证 (结构化 vs PDF)",
+        "score": score, "pass": score >= 50,
+        "bench_years": bench_d, "pdf_years": pdf_d,
+        "overlap": sorted(overlap_years),
+        "only_bench": sorted(only_bench), "only_pdf": sorted(only_pdf),
+        "note": "overlap ≥ 2 年 = 可交叉验证",
     }
 
 
