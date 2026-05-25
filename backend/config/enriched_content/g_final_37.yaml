@@ -1,0 +1,145 @@
+# Course #37: G_FINAL·完形·5 年真题主题
+# Theme: 阿尔茨海默症研究
+course_id: 37
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [adopt, affect, adjust]
+  theme: "阿尔茨海默症研究"
+
+segments:
+  hook: |
+    **A Disease That Steals Memory**
+
+    Every 3 seconds, someone in the world develops a disease that slowly takes away their ability to remember. It affects how they think, how they speak, and even how they recognize the people they love. Scientists have adopted many different approaches to fight this disease, but progress has been slow.
+
+    The disease is called Alzheimer's. And the story of how scientists are trying to understand it is the perfect material for a cloze test — because the passage is full of context clues, logical connections, and vocabulary that requires careful reading.
+
+    Today, you will learn how to solve cloze tests by thinking like the author, not just guessing from grammar.
+
+  core: |
+    **完形填空策略精讲**
+
+    ---
+
+    **策略 1: 全文先读, 不急填空** ⭐⭐
+
+    完形填空是"完整的故事/文章中挖了 15-20 个空". 不要逐空填 — 先通读全文, 理解:
+    - 主题是什么? (人物/事件/道理)
+    - 作者的态度? (积极/消极/客观)
+    - 故事的发展方向? (转折/递进/因果)
+
+    ---
+
+    **策略 2: 四种线索** ⭐⭐⭐
+
+    | 线索类型 | 特征 | 示例 |
+    |---|---|---|
+    | 语境线索 | 上下文暗示 | "She smiled, showing her ___" → 正面情绪 |
+    | 逻辑线索 | 因果/转折/并列 | "Although... he still ___" → 转折后正面 |
+    | 搭配线索 | 固定搭配 | "adopt a(n) ___" → approach/method/attitude |
+    | 复现线索 | 同词或同义词重复 | 前文说 "memory loss", 后文空也指记忆 |
+
+    ---
+
+    **策略 3: 动词选择的"主语+宾语"法** ⭐⭐⭐
+
+    例: The disease ___ millions of people worldwide.
+    选项: A. adopts B. affects C. adjusts D. absorbs
+
+    判断: 主语 disease + 宾语 people → "疾病对人的作用" → affects (影响)
+    - adopts: 收养/采纳 (主语应该是人)
+    - adjusts: 调整 (需要人主动做)
+    - absorbs: 吸收 (物理过程)
+
+    ---
+
+    **核心词在完形中的考法**:
+
+    **adopt** /əˈdɒpt/ v. 采纳; 收养 ⭐⭐
+    - adopt a method/approach/policy (采纳)
+    - adopt a child (收养)
+    - adopt an attitude (采取态度)
+    - 易错: adopt (采纳/收养) vs adapt (适应/改编). 一字之差!
+
+    **affect** /əˈfekt/ v. 影响; 感染 ⭐⭐
+    - sth affects sb/sth (某事影响某人/某物)
+    - be deeply affected by (被深深影响)
+    - 易错: affect (动词, 影响) vs effect (名词, 效果). 完形高频考点!
+
+    **adjust** 复习: 微调/适应 (详见 #36)
+
+  relations: |
+    **完形填空的词汇辨析网络**
+
+    高考完形最爱考的"一组相似词":
+    - adopt / adapt / adjust (三 A 词, 每年必考其一)
+    - affect / effect (词性混淆)
+    - accurate / actual / active (首字母相同)
+
+    **adopt vs adapt vs adjust**:
+    | 词 | 核心义 | 搭配 |
+    |---|---|---|
+    | adopt | 采纳/收养 | adopt + 方法/态度/孩子 |
+    | adapt | 适应/改编 | adapt to + 环境; adapt from + 原著 |
+    | adjust | 微调 | adjust to + 新情况; adjust + 温度/计划 |
+
+    完形做题时, 看宾语就能判断:
+    - ___ a new policy → adopt
+    - ___ to the climate → adapt 或 adjust
+    - ___ the settings → adjust
+
+  practice: |
+    **Practice Cloze: Memory Research** ⭐⭐⭐
+
+    (模拟新课标 II 卷完形, 250 词, 10 空)
+
+    Dr. Li has spent 20 years studying how memory works. Her research has ___(1)___ millions of patients around the world. In the beginning, scientists ___(2)___ a simple approach: they believed that memory loss was just a natural part of aging.
+
+    However, Dr. Li's team ___(3)___ their methods after discovering that certain brain activities could be ___(4)___ measured. "We had to ___(5)___ our entire research plan," she explained. "The old approach was not working."
+
+    The team ___(6)___ new technology to study brain signals. The results were surprising: the disease did not ___(7)___ all parts of the brain equally. Some areas remained ___(8)___ even in late stages. This finding ___(9)___ new hope for treatment.
+
+    Today, Dr. Li's lab continues to ___(10)___ its methods as new data comes in.
+
+    1. A. adopted  B. affected  C. adjusted  D. abandoned
+    答案: B (疾病影响病人 → affects/affected)
+
+    2. A. adjusted  B. abandoned  C. adopted  D. absorbed
+    答案: C (采纳一种方法 → adopted)
+
+    3. A. adopted  B. abandoned  C. adjusted  D. affected
+    答案: C (调整方法 → adjusted)
+
+    4. A. accurately  B. angrily  C. absolutely  D. actively
+    答案: A (精确测量 → accurately)
+
+    5. A. absorb  B. adjust  C. abandon  D. adopt
+    答案: B (调整研究计划 → adjust)
+
+    6. A. adopted  B. adjusted  C. affected  D. abandoned
+    答案: A (采纳新技术 → adopted)
+
+    7. A. adopt  B. adjust  C. absorb  D. affect
+    答案: D (疾病影响大脑 → affect)
+
+    8. A. accurate  B. academic  C. active  D. angry
+    答案: C (大脑区域保持活跃 → active)
+
+    9. A. affected  B. adopted  C. offered  D. abandoned
+    答案: C (带来新希望 → offered)
+
+    10. A. adopt  B. adjust  C. abandon  D. absorb
+    答案: B (持续调整方法 → adjust)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **完形三步**: 通读全文 → 找四种线索 → "主语+宾语"判断动词
+    2. **adopt**: 采纳/收养 (+ 方法/态度/孩子)
+    3. **affect**: 影响 (动词! effect 才是名词)
+    4. **三 A 辨析**: adopt (采纳) / adapt (适应) / adjust (微调)
+    5. **真题规律**: 完形 15 空, 动词占 5-6 空, 是拉分关键
+
+    **下节预告**: #38 语法填空 5 年真题 — 国潮汉服现象, 练词形变化 + 语法应用

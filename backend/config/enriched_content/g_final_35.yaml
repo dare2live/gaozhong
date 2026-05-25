@@ -1,0 +1,140 @@
+# Course #35: G_FINAL·阅读·密集真题 (科技长文)
+# Theme: 火星探索任务
+course_id: 35
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [academic, absorb]
+  theme: "火星探索任务"
+
+segments:
+  hook: |
+    **How to Read a 350-Word Science Passage in 6 Minutes**
+
+    On the gaokao, you will face four reading passages. Passage C or D is usually a science article — about technology, space, medicine, or the environment. These passages test your ability to absorb complex information quickly.
+
+    Today we will practice with real exam-style science texts. The goal: read a 350-word passage, answer 4 questions, and finish in 6-7 minutes. This is the academic standard required for a high score.
+
+    **Before we start, three golden rules:**
+    1. Read the questions FIRST — know what you are looking for
+    2. Find the topic sentence of each paragraph (usually the first or last sentence)
+    3. Do not try to understand every word — focus on the main idea and key details
+
+  core: |
+    **阅读策略精讲 + 核心词**
+
+    ---
+
+    **策略 1: 段落结构识别** ⭐⭐
+
+    科技长文的典型结构:
+    - P1: 现象引入 (A recent study found that...)
+    - P2: 研究过程 (Researchers examined... The team collected...)
+    - P3: 结果发现 (The results showed... Surprisingly,...)
+    - P4: 意义/展望 (This discovery could lead to... However,...)
+
+    每段的主题句通常在段首. 先读段首 → 建立全文框架 → 再看题目定位.
+
+    ---
+
+    **策略 2: 长难句拆分** ⭐⭐⭐
+
+    科技文的难句特征: 多层定语 + 被动 + 插入语
+
+    例句拆分示范:
+    原句: "The data collected by the spacecraft, which had been **absorb**ing radiation measurements for three years, suggested that the surface conditions were more extreme than scientists had previously believed."
+
+    拆分:
+    - 主干: The data **suggested** that the surface conditions were more extreme.
+    - 修饰1: collected by the spacecraft (过去分词修饰 data)
+    - 修饰2: which had been absorbing... (定语从句修饰 spacecraft)
+    - 比较: more extreme than... previously believed
+
+    ---
+
+    **核心词**:
+
+    **academic** /ˌækəˈdemɪk/ adj. 学术的; 学业的 ⭐⭐
+    - academic research / academic paper / academic performance
+    - 例: This passage is written in an academic style, with data and references.
+    - 易错: academic ≠ theoretical (academic 强调"学校/学术领域", theoretical 强调"理论的")
+
+    **absorb** /əbˈzɔːb/ v. 吸收; 全神贯注 ⭐⭐
+    - absorb water/heat/radiation (物理吸收)
+    - absorb information/knowledge (理解吸收)
+    - be absorbed in sth (全神贯注于)
+    - 例: She was so absorbed in the article that she forgot about lunch.
+    - 词族: absorb → absorption → absorbent → absorbing (引人入胜的)
+
+  relations: |
+    **阅读理解的知识关联网络**
+
+    ```
+    阅读策略
+    ├── 细节题 (#9 G1 已学) → 定位关键词
+    ├── 主旨题 (#10 G1 已学) → 首末段 + 段首句
+    ├── 推理判断 (#25 G3 已学) → infer/imply/suggest
+    └── 词义猜测 (#26 G3 已学) → 上下文线索
+            ↓
+    本节: 科技长文综合运用 (4 种题型混合)
+            ↓
+    absorb + academic = 科技阅读的两个核心词
+    ```
+
+    **真题题型分布** (近 5 年辽宁/新课标 II):
+    - 细节题: 占 60% (直接定位)
+    - 推理判断: 占 25% (需综合理解)
+    - 词义猜测: 占 10% (考长难词的语境判断)
+    - 主旨大意: 占 5% (通常最后一题)
+
+  practice: |
+    **Practice Passage: Mars Soil Analysis** ⭐⭐⭐
+
+    (模拟新课标 II 卷 C 篇, 320 词)
+
+    Scientists at NASA have been studying soil samples collected by the Perseverance rover on Mars. The academic team, led by Dr. Sarah Chen, found that certain minerals in the soil can absorb and store water molecules. This discovery suggests that ancient Mars may have had conditions suitable for simple life forms.
+
+    The research focused on a region called Jezero Crater, which scientists believe was once a lake. "The minerals we found are similar to those on Earth that form in the presence of water," Dr. Chen explained. "What surprised us was how much water the soil could absorb — far more than we expected."
+
+    However, not all scientists agree with these findings. Some argue that the minerals could have formed through other processes that did not require water. This academic debate is likely to continue until more samples are returned to Earth for direct study.
+
+    The practical value of this research goes beyond academic interest. If Mars soil can indeed absorb water, future human missions could potentially extract water directly from the ground. This would greatly reduce the cost of sending water from Earth.
+
+    **Q1.** What did Dr. Chen's team discover about Mars soil?
+    A. It contains living organisms.
+    B. It can absorb and store water molecules.
+    C. It is exactly the same as Earth soil.
+    D. It was recently formed by rainfall.
+    答案: B (P1 "certain minerals...can absorb and store water molecules")
+
+    **Q2.** Why is Jezero Crater important for this research?
+    A. It has the most minerals on Mars.
+    B. It is the closest area to the rover.
+    C. Scientists think it was once a lake.
+    D. It has the highest temperature on Mars.
+    答案: C (P2 "which scientists believe was once a lake")
+
+    **Q3.** What does the underlined word "extract" in the last paragraph most likely mean?
+    A. Take out  B. Put in  C. Give up  D. Break down
+    答案: A (语境: 从地面"取出"水, 与 absorb 相反)
+
+    **Q4.** What can we infer from the passage?
+    A. All scientists support Dr. Chen's findings.
+    B. Mars definitely had life in the past.
+    C. The academic debate about Mars water is not yet settled.
+    D. Humans will travel to Mars within five years.
+    答案: C (P3 "This academic debate is likely to continue")
+
+  summary: |
+    **本节核心要点:**
+
+    1. **科技阅读四步法**: 看题 → 读段首 → 定位 → 验证
+    2. **长难句拆分**: 找主干 (S+V+O) → 剥离修饰 → 还原语序
+    3. **academic**: 学术的/学业的 (≠theoretical)
+    4. **absorb**: 吸收/专注 (be absorbed in); 词族 4 个
+    5. **答题节奏**: 350 词 + 4 题 = 6-7 分钟
+
+    **真题规律**: 科技 C/D 篇 60% 细节题, 25% 推理, 先做细节再做推理
+
+    **下节预告**: #36 阅读密集真题 (自然长文) — 灵长类社会行为, 练推理判断题

@@ -1,0 +1,169 @@
+# Course #33: G_FINAL·语法·虚拟语气 (if + were/had)
+# Theme: 学术写作规范
+course_id: 33
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [abandon]
+  theme: "学术写作规范"
+
+segments:
+  hook: |
+    **What If We Had Abandoned the Space Program?**
+
+    Imagine this: in 1970, the United States government decided to abandon its space program completely. No Moon landing. No satellites. No GPS on your phone. What would the world look like today?
+
+    This is not just a fun question — it is also a grammar point. When we talk about situations that did not happen in the past, or situations that are unlikely now, we use a special verb form called the subjunctive mood. In Chinese, we simply add "如果" and change nothing else. In English, the verb form itself must change.
+
+    Today, you will learn to master this powerful structure — one that appears in nearly every academic paper and every high-level reading passage on the gaokao.
+
+    **Think about it:**
+    1. If you were the president, what would you do about space research?
+    2. If scientists had not invented the internet, how would your life be different?
+    3. Why do you think English requires a special verb form for unreal situations?
+
+  core: |
+    **虚拟语气核心讲解**
+
+    ---
+
+    **一、什么是虚拟语气?**
+
+    虚拟语气用于表达与事实相反的假设、愿望或建议. 英语通过**改变动词形式**来标记"这不是真的".
+
+    | 类型 | 条件句 (if...) | 主句 (would/could...) |
+    |---|---|---|
+    | 与现在相反 | If + 过去式 (were) | would/could/might + 动词原形 |
+    | 与过去相反 | If + had + 过去分词 | would/could/might + have + 过去分词 |
+    | 与将来相反 | If + should/were to | would/could/might + 动词原形 |
+
+    ---
+
+    **二、与现在事实相反** ⭐⭐
+
+    结构: If + S + **were/动词过去式**, S + **would/could** + V原形
+
+    关键: 不管主语是 I/he/she/it, 都用 **were** (不用 was)
+
+    例句:
+    1. If I **were** you, I would not abandon this project. ⭐
+    2. If the earth **were** closer to the sun, life could not exist. ⭐⭐
+    3. If every citizen **were** given the chance to vote on science funding, the result might be different from what the administration decides. ⭐⭐⭐
+
+    易错点: 口语中有人用 "If I was...", 但高考/学术写作**必须用 were**.
+
+    ---
+
+    **三、与过去事实相反** ⭐⭐⭐
+
+    结构: If + S + **had + 过去分词**, S + **would/could have** + 过去分词
+
+    例句:
+    1. If he **had studied** harder, he would have passed the exam. ⭐
+    2. If they **had not abandoned** the experiment, they might have made a discovery. ⭐⭐
+    3. If the ancient people **had not built** the Grand Canal, trade between the north and south would have developed much more slowly. ⭐⭐⭐
+
+    易错点: "would have + pp" 不要写成 "would had" — have 永远是原形!
+
+    ---
+
+    **四、混合虚拟 (时间错位)** ⭐⭐⭐
+
+    条件在过去, 结果在现在: If + had + pp, S + would + V原形 (now)
+
+    例句:
+    - If I **had accepted** that job offer last year, I **would be** in Beijing now.
+    - If scientists **had abandoned** climate research decades ago, we **would know** nothing about global warming today.
+
+    ---
+
+    **五、省略 if 的倒装** ⭐⭐⭐
+
+    去掉 if, 把 were/had/should 提到主语前:
+    - ~~If I were~~ → **Were I** to choose again, I would make the same decision.
+    - ~~If he had known~~ → **Had he known** the truth, he would not have been so angry.
+    - ~~If it should rain~~ → **Should it rain** tomorrow, the game would be cancelled.
+
+    高考语法填空/短文改错高频考点!
+
+  relations: |
+    **虚拟语气的关联知识网络**
+
+    ```
+    虚拟语气 (subjunctive)
+    ├── 条件句 (if-clause) ← 本节核心
+    ├── wish + 虚拟 (I wish I were...)
+    ├── suggest/recommend + (should) + V原形 (建议类)
+    ├── as if / as though + 虚拟 (好像...)
+    └── It's time + 过去式 (该做...了)
+    ```
+
+    **与其他语法的联系**:
+    - **倒装句** (#34 下节): Were I... / Had I... 就是虚拟+倒装的结合
+    - **时态系统**: 虚拟语气"借用"过去时态表示"不真实", 理解时态是基础
+    - **情态动词**: would/could/might 在虚拟语气中不表示"过去", 表示"假设结果"
+
+    **高考真题规律** (近 5 年):
+    - 语法填空: 每年 1-2 题涉及虚拟 (给出 if 要求填 were/had)
+    - 短文改错: was→were, have→had 是常见错误类型
+    - 阅读理解: 科技/社会话题常用 "If X had not happened, Y would not exist"
+
+  practice: |
+    **场景 1: 学术写作 (Academic Essay)** ⭐⭐
+
+    Complete the sentences with the correct form:
+
+    1. If the government ___ (abandon) the education reform in 2010, millions of students would not have benefited.
+    答案: had abandoned (与过去相反)
+
+    2. If I ___ (be) the school principal, I would change the exam system.
+    答案: were (与现在相反, 不用 was)
+
+    3. ___ (should) any problem arise during the experiment, please contact the administration immediately.
+    答案: Should (省略 if 的倒装)
+
+    ---
+
+    **场景 2: 科技假设 (Science Hypothesis)** ⭐⭐⭐
+
+    Rewrite the sentences using the subjunctive mood:
+
+    4. "The internet exists, so we can communicate globally."
+    → If the internet ___ (not exist), we ___ (not be able to) communicate globally.
+    答案: did not exist; would not be able to
+
+    5. "Scientists did not abandon the Mars project. They discovered water."
+    → If scientists ___ (abandon) the Mars project, they ___ (not discover) water.
+    答案: had abandoned; would not have discovered
+
+    ---
+
+    **场景 3: 生活情境 (Daily Life)** ⭐⭐
+
+    Choose the correct option:
+
+    6. If he ___ more careful with his words, she would not have felt such anger.
+    A. were  B. had been  C. is  D. has been
+    答案: B (与过去相反: had been → would not have felt)
+
+    7. ___ I to know the answer, I would tell you immediately.
+    A. If  B. Were  C. Had  D. Should
+    答案: B (Were I to know = If I were to know, 省略 if 倒装)
+
+    8. I wish I ___ harder when I was in high school.
+    A. study  B. studied  C. had studied  D. would study
+    答案: C (wish + had pp = 后悔过去没做的事)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **与现在相反**: If + were/过去式, would + V原形 (were 不分人称)
+    2. **与过去相反**: If + had pp, would have + pp (have 永远原形)
+    3. **混合虚拟**: 条件过去 + 结果现在 (时间错位)
+    4. **省略 if 倒装**: Were/Had/Should + S (高考高频!)
+    5. **abandon** 在虚拟语气中的典型用法: "If we had abandoned X..."
+
+    **记忆口诀**: "现过将 — were/had/should — 全用 would"
+
+    **下节预告**: #34 强调结构 + 倒装 — 与虚拟语气的倒装形式互补, 构成高考语法核心考点群

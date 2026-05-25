@@ -1,0 +1,171 @@
+# Course #40: G_FINAL·模拟卷·综合冲刺 (阅+完+语填+作文)
+# Theme: 故宫文物修复纪实
+course_id: 40
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [academic, advocate, affect]
+  theme: "故宫文物修复纪实"
+
+segments:
+  hook: |
+    **Final Countdown: One Paper, Four Skills**
+
+    This is your last training session before the real exam. Today, we will simulate the written part of the gaokao English paper: Reading (4 passages), Cloze (1 passage), Grammar Fill (1 passage), and Writing (1 letter + 1 narrative continuation).
+
+    The total time for the written section is 100 minutes. That means every minute counts. Here is your time budget:
+
+    | Section | Questions | Target Time |
+    |---|---|---|
+    | Reading A-D | 15 questions | 35 minutes |
+    | Cloze | 15 blanks | 15 minutes |
+    | Grammar Fill | 10 blanks | 8 minutes |
+    | Applied Writing | 1 letter, 80-100 words | 15 minutes |
+    | Narrative Continuation | 1 essay, 150 words | 25 minutes |
+    | Check | — | 2 minutes |
+
+    Are you ready? Let's go.
+
+  core: |
+    **综合冲刺 — 四大板块策略复习**
+
+    ---
+
+    **一、阅读 (35 分钟 / 4 篇 / 30 分)** ⭐⭐⭐
+
+    时间分配: A 篇 6 分钟 / B 篇 7 分钟 / C 篇 9 分钟 / D 篇 10 分钟 / 检查 3 分钟
+
+    提分策略 (复习 #35 #36):
+    - 先看题, 再看文 (带着问题读)
+    - A 篇最简单, 不要花太多时间; D 篇最难, 留够时间
+    - 推理题: 原文有依据才选, 不能靠常识猜
+
+    ---
+
+    **二、完形 (15 分钟 / 15 空 / 15 分)** ⭐⭐
+
+    提分策略 (复习 #37):
+    - 通读全文再填空 (不要逐空做)
+    - 动词选择: 看主语 + 宾语
+    - 形容词/副词选择: 看感情色彩 (正面/负面)
+    - 不确定的先跳过, 做完回头用排除法
+
+    ---
+
+    **三、语法填空 (8 分钟 / 10 空 / 15 分)** ⭐⭐
+
+    提分策略 (复习 #38):
+    - 有提示词: 先判断"谓语 or 非谓语"
+    - 无提示词: 四类 (冠词/介词/连词/代词)
+    - 检查: 填完通读一遍, 看语法是否通顺
+
+    ---
+
+    **四、写作 (40 分钟 / 2 篇 / 40 分)** ⭐⭐⭐
+
+    **应用文 (15 分 / 15 分钟)** — 复习 #39:
+    - 格式正确 (Dear.../Yours...)
+    - 3 个要点全覆盖
+    - 2-3 个高级表达
+
+    **读后续写 (25 分 / 25 分钟)**:
+    这是新高考最大新增题型, 也是拉分最大的题.
+
+    续写六步法:
+    1. 读原文 (5 分钟): 理解人物 + 情节 + 情感走向
+    2. 看两段首句: 第一段首句决定情节转折点; 第二段首句决定结局方向
+    3. 列提纲 (2 分钟): 每段 3-4 个情节点
+    4. 写作 (15 分钟): 每段 70-80 词
+    5. 加分动作: 环境描写 + 心理描写 + 动作细节
+    6. 检查 (3 分钟): 时态一致 + 人称一致 + 与原文风格一致
+
+    **续写高分表达**:
+    - 情绪: A wave of excitement swept over her. / His heart sank.
+    - 动作: She reached out her trembling hand. / He took a deep breath.
+    - 环境: The sun broke through the clouds. / Silence fell over the room.
+    - 转折: It was at that moment that... / Little did he know...
+
+    ---
+
+    **核心词在综合卷中的出现方式**:
+
+    - **academic**: 阅读 B 篇 (学校活动类) / 应用文 (学术交流邀请)
+    - **advocate**: 完形 (人物观点: She advocated for...) / 应用文 (倡议类通知)
+    - **affect**: 阅读 C/D 篇 (科技/社会影响) / 完形 (事件对人的影响)
+
+  relations: |
+    **40 节课程总回顾 — 知识网络**
+
+    ```
+    G1 (基础打底)
+    ├── #1-5 词汇·基础生活/动作/感官
+    ├── #6-8 语法·名词/形容词/代词
+    └── #9-10 阅读·细节/主旨
+          ↓
+    G2 (能力提升)
+    ├── #11-13 词汇·学术/科技/情感
+    ├── #14-16 语法·三种从句 (宾/定/状)
+    ├── #17-18 阅读·议论/说明
+    ├── #19 完形·语境推断
+    └── #20 应用文·邀请通知
+          ↓
+    G3 (题型完整)
+    ├── #21-22 词汇·学术高频/情绪转折
+    ├── #23-24 语法·主语从句/非谓语
+    ├── #25-26 阅读·推理/词义猜测
+    ├── #27 完形·议论深度
+    ├── #28 语法填空·词形变化
+    ├── #29 应用文·求职自荐
+    └── #30 续写·情绪转折
+          ↓
+    G_FINAL (冲刺)
+    ├── #31-32 词汇·选必核心冲刺
+    ├── #33-34 语法·虚拟/强调/倒装
+    ├── #35-36 阅读·密集真题
+    ├── #37 完形·真题主题
+    ├── #38 语法填空·真题
+    ├── #39 应用文·真题
+    └── #40 模拟卷·综合冲刺 ← 你在这里
+    ```
+
+  practice: |
+    **模拟练习 — 时间管理训练**
+
+    由于完整模拟卷需要 100 分钟, 本节课堂上做 mini 版 (30 分钟):
+
+    **Part 1: 阅读 1 篇 (10 分钟)** — 使用 #35 或 #36 的 practice passage
+
+    **Part 2: 完形 5 空 (5 分钟)** — 使用 #37 的 practice cloze 前 5 空
+
+    **Part 3: 语法填空 5 空 (4 分钟)** — 使用 #38 的 practice 前 5 空
+
+    **Part 4: 应用文 (10 分钟)** — 现场写一篇:
+
+    题目: 假如你是李华, 学校英语角 (English Corner) 本周五活动主题是 "The Art of Cultural Heritage" (文化遗产). 请写信邀请留学生 Tom 参加.
+    要点: (1) 时间地点 (周五下午 4 点, 学校图书馆) (2) 活动内容 (讨论故宫修复 + 分享各国文化遗产故事) (3) 表达期待
+
+    **完成后自评**:
+    - [ ] 格式正确 (Dear Tom / Yours, Li Hua)
+    - [ ] 3 个要点全覆盖
+    - [ ] 至少 2 个高级表达 (On behalf of... / It would be... / advocate...)
+    - [ ] 80-100 词
+    - [ ] 虚拟语气加分句 (I would appreciate it if you could...)
+
+    **课后作业**: 完成 #35-#38 所有未做的 practice 题目 (计时, 记录用时)
+
+  summary: |
+    **本节 (也是全部 40 节) 核心要点:**
+
+    1. **时间管理**: 阅读 35 + 完形 15 + 语填 8 + 写作 40 + 检查 2 = 100 分钟
+    2. **续写六步法**: 读原文 → 看首句 → 列提纲 → 写作 → 加分细节 → 检查
+    3. **高频考词**: academic/advocate/affect 在 4 种题型中的不同考法
+    4. **心态**: 先易后难, A 篇快做, D 篇留时间; 不确定先跳
+
+    **40 节课程总结**:
+    - G1: 打基础 (词汇 + 基础语法 + 阅读入门)
+    - G2: 提能力 (从句 + 议论文 + 完形 + 应用文)
+    - G3: 全题型 (非谓语 + 推理 + 语填 + 续写)
+    - G_FINAL: 冲高分 (虚拟/倒装 + 密集真题 + 模拟卷)
+
+    祝你高考顺利! 加油!

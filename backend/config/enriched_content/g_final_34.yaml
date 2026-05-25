@@ -1,0 +1,161 @@
+# Course #34: G_FINAL·语法·强调结构 + 倒装
+# Theme: 极地探险纪实
+course_id: 34
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [debate]
+  theme: "极地探险纪实"
+
+segments:
+  hook: |
+    **It Was in Antarctica That the Real Test Began**
+
+    In 1914, Ernest Shackleton set out for the South Pole. His ship became trapped in ice. For months, the crew survived in the most extreme conditions on Earth. Never before had they faced such danger. Not only did they fight the cold, but they also fought fear itself.
+
+    Notice the sentences above. "It was in Antarctica that..." and "Never before had they..." — these are two of the most powerful structures in English: the cleft sentence (强调句) and inversion (倒装句). They appear constantly in academic writing and high-level reading passages.
+
+    **Think about it:**
+    1. What is being emphasized in "It was in Antarctica that the real test began"?
+    2. Why does "Never before had they" sound more dramatic than "They had never before"?
+    3. Can you find one more example of unusual word order in the passage above?
+
+  core: |
+    **强调结构 + 倒装 精讲**
+
+    ---
+
+    **Part A: 强调结构 (It is/was ... that/who ...)**
+
+    **公式**: It is/was + 被强调部分 + that/who + 其余
+
+    可强调: 主语、宾语、状语 (不能强调谓语!)
+
+    | 原句 | 强调主语 | 强调宾语 | 强调状语 |
+    |---|---|---|---|
+    | Tom met Mary in Beijing yesterday. | It was **Tom** who/that met... | It was **Mary** that Tom met... | It was **in Beijing** that... / It was **yesterday** that... |
+
+    例句:
+    1. It was the extreme cold **that** made the expedition so dangerous. ⭐
+    2. It was not until 1969 **that** humans first landed on the Moon. ⭐⭐
+    3. It was through constant debate and research **that** scientists finally proved the existence of climate change. ⭐⭐⭐
+
+    **判断技巧**: 去掉 "It is/was ... that", 剩余部分能成完整句子 → 是强调句. 不能 → 是主语从句.
+
+    易错点:
+    - 强调人: that/who 都行; 强调物/时间/地点: 只用 that (不用 which/when/where)
+    - "It was not until...that..." 主句**不倒装** (与 not until 放句首的倒装区分)
+
+    ---
+
+    **Part B: 倒装句**
+
+    **全倒装** (谓语动词完全提前):
+    - 地点/方向副词开头: Here comes the bus. / Away flew the bird.
+    - 介词短语开头: On the wall hangs a map. / In the distance stood a mountain.
+
+    **部分倒装** (助动词/情态动词提前): ⭐⭐⭐ 高考重点
+
+    触发词:
+    | 类型 | 触发词 | 例句 |
+    |---|---|---|
+    | 否定 | Never / Hardly / Seldom / Not until / Not only / Little | Never **had** they seen such a storm. |
+    | Only | Only then / Only in this way / Only after | Only after the debate **did** they reach an agreement. |
+    | So/Such | So cold was it that... | So strong **was** the wind that the team could not move forward. |
+    | Neither/Nor | Neither...nor... | He did not give up, nor **did** his team. |
+
+    例句:
+    1. Not only **did** they survive, but they also saved the ship. ⭐⭐
+    2. Hardly **had** the expedition begun when a storm hit. ⭐⭐⭐
+    3. Only through years of constant research and public debate **has** science advanced to where it is today. ⭐⭐⭐
+
+    ---
+
+    **Part C: 虚拟语气中的倒装 (承接 #33)**
+
+    - Were I (= If I were)
+    - Had they known (= If they had known)
+    - Should it happen (= If it should happen)
+
+    这是 #33 虚拟 + #34 倒装 的交汇, 高考超高频!
+
+  relations: |
+    **强调+倒装 与其他语法的联系**
+
+    ```
+    强调结构
+    ├── It is...that... (强调句)
+    ├── do/does/did + V原形 (谓语强调: I DO believe...)
+    └── What引导 (What I need is...)
+
+    倒装
+    ├── 全倒装 (地点/方向副词)
+    ├── 部分倒装 (否定/only/so)
+    ├── 虚拟倒装 (Were/Had/Should) ← 连接 #33
+    └── as引导让步 (Young as he is... = Although he is young...)
+    ```
+
+    **与阅读理解的关系**:
+    高考阅读 C/D 篇和续写中大量使用倒装来制造文学效果:
+    - "Little did she know..." (她一点也不知道...)
+    - "So moved was he that..." (他如此感动以至于...)
+    掌握倒装 = 读懂高分文本 + 写出高分续写
+
+  practice: |
+    **场景 1: 极地探险 (Polar Expedition)** ⭐⭐
+
+    1. 改为强调句 (强调地点): The team found fresh water under the ice.
+    → It was ___ ___ ___ the team found fresh water.
+    答案: under the ice that
+
+    2. 改为倒装: They had never experienced such cold before.
+    → Never before ___ ___ ___ such cold.
+    答案: had they experienced
+
+    3. 改为倒装: The ship was so damaged that it could not sail.
+    → So damaged ___ the ship ___ it could not sail.
+    答案: was; that
+
+    ---
+
+    **场景 2: 学术文章 (Academic Text)** ⭐⭐⭐
+
+    4. 选择: ___ in 1912 ___ the Titanic sank.
+    A. It is; that  B. It was; that  C. It was; when  D. It is; when
+    答案: B (强调时间状语, 用 that 不用 when)
+
+    5. Not until the debate ended ___ the scientists reach an agreement.
+    A. do  B. did  C. have  D. had
+    答案: B (not until + 过去时, 主句用 did + V原形)
+
+    6. Only after careful research ___ draw a scientific conclusion.
+    A. we can  B. can we  C. we could  D. could we
+    答案: B (only + 状语开头, 主句部分倒装; 语境是一般性规律用 can)
+
+    ---
+
+    **场景 3: 续写片段 (Narrative Writing)** ⭐⭐⭐
+
+    用倒装改写, 使文段更生动:
+
+    7. 原句: A small light appeared in the distance.
+    → In the distance ___.
+    答案: appeared a small light (全倒装: 地点状语前置)
+
+    8. 原句: He did not realize how dangerous it was. His partner did not realize it either.
+    → He did not realize how dangerous it was, ___ ___ his partner.
+    答案: nor/neither did
+
+  summary: |
+    **本节核心要点:**
+
+    1. **强调句**: It is/was + 强调部分 + that (去掉框架仍完整 = 强调句)
+    2. **部分倒装触发词**: Never/Hardly/Seldom/Not until/Not only/Only/So
+    3. **全倒装**: 地点/方向副词 + V + S (Here comes...)
+    4. **虚拟倒装**: Were/Had/Should + S (连接 #33)
+    5. **高考应用**: 语法填空 (倒装后助动词) + 续写 (文学效果)
+
+    **记忆口诀**: "否定 only so — 助动词提前跑"
+
+    **下节预告**: #35 阅读密集真题 (科技长文) — 用强调/倒装句分析真题阅读中的复杂句

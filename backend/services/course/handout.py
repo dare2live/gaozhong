@@ -1,14 +1,31 @@
 """讲义生成 — 1 节 → 7 段 markdown.
 
-段顺序: hook / review / core / relations / exam_trace / practice / homework
+段顺序: hook / review / core / relations / exam_trace / practice / homework / summary
+优先加载 enriched_content yaml (Phase 7.1 人工制作的完整教学内容).
 """
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import duckdb
+import yaml
 
 from . import homework, relations
+
+ENRICHED_DIR = Path(__file__).resolve().parents[2] / "config" / "enriched_content"
+
+
+def _load_enriched(course_id: int) -> dict | None:
+    """加载 enriched_content yaml, 返回 segments dict 或 None."""
+    for pattern in [f"g_final_{course_id}.yaml", f"g3_{course_id}.yaml",
+                    f"g2_{course_id}.yaml", f"g1_{course_id}.yaml",
+                    f"course_{course_id}.yaml"]:
+        path = ENRICHED_DIR / pattern
+        if path.exists():
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+            return data.get("segments", {})
+    return None
 
 SEGMENTS = ["hook", "review", "core", "relations", "exam_trace", "practice", "homework"]
 
@@ -20,16 +37,29 @@ def _clink(cid: str, label: str | None = None) -> str:
 
 
 def render_handout(con: duckdb.DuckDBPyConnection, course: dict) -> dict[str, Any]:
-    """返 {md, segments: {seg_name: text}}."""
-    segs: dict[str, str] = {
-        "hook": _seg_hook(course),
-        "review": _seg_review(course),
-        "core": _seg_core(course),
-        "relations": _seg_relations(con, course),
-        "exam_trace": _seg_exam_trace(con, course),
-        "practice": _seg_practice(course),
-        "homework": _seg_homework(con, course),
-    }
+    """返 {md, segments: {seg_name: text}}. 优先使用 enriched_content yaml."""
+    enriched = _load_enriched(course["course_id"])
+    if enriched:
+        segs = {
+            "hook": enriched.get("hook", _seg_hook(course)),
+            "review": _seg_review(course),
+            "core": enriched.get("core", _seg_core(course)),
+            "relations": enriched.get("relations", _seg_relations(con, course)),
+            "exam_trace": _seg_exam_trace(con, course),
+            "practice": enriched.get("practice", _seg_practice(course)),
+            "homework": _seg_homework(con, course),
+            "summary": enriched.get("summary", ""),
+        }
+    else:
+        segs = {
+            "hook": _seg_hook(course),
+            "review": _seg_review(course),
+            "core": _seg_core(course),
+            "relations": _seg_relations(con, course),
+            "exam_trace": _seg_exam_trace(con, course),
+            "practice": _seg_practice(course),
+            "homework": _seg_homework(con, course),
+        }
     md = _join_md(course, segs)
     return {"md": md, "segments": segs, "n_segments": len(segs)}
 

@@ -1,0 +1,165 @@
+# Course #39: G_FINAL·应用文·5 年真题 (邀请/感谢/通知)
+# Theme: 实习生日记
+course_id: 39
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [academic, advocate]
+  theme: "实习生日记"
+
+segments:
+  hook: |
+    **Dear Editor: A Letter That Scored Full Marks**
+
+    Every year on the gaokao, one question is worth 15 points and takes only 15 minutes to write: the applied writing task. It asks you to write a short letter — an invitation, a thank-you note, a notice, or an application. The topic changes every year, but the format and scoring rules stay the same.
+
+    In 2024, students were asked to write a letter inviting a foreign teacher to join a school activity. Many students lost points not because of grammar, but because they forgot to include specific details (time, place, activity) or used the wrong tone.
+
+    Today, you will learn the templates, high-scoring phrases, and common mistakes for the three most tested letter types. By the end of this session, you should be able to write a complete 80-100 word letter in under 10 minutes.
+
+  core: |
+    **应用文三类模板 + 高分表达**
+
+    ---
+
+    **一、邀请信 (Invitation Letter)** ⭐⭐⭐ — 近 5 年考了 3 次
+
+    **结构**:
+    - P1: 自我介绍 + 说明目的 (1-2 句)
+    - P2: 活动详情 (时间/地点/内容) (3-4 句)
+    - P3: 表达期待 + 礼貌结尾 (1-2 句)
+
+    **高分开头** (替代 I'm writing to...):
+    - I'm delighted to invite you to...
+    - On behalf of our class, I'd like to extend an invitation to...
+    - It would be our great honor if you could join us for...
+
+    **高分细节表达**:
+    - The event is scheduled for [时间] at [地点].
+    - The activity will include [内容1], [内容2], and [内容3].
+    - Your presence would mean a great deal to all of us.
+
+    **高分结尾**:
+    - I do hope you can make it. Looking forward to your reply.
+    - Please let me know at your earliest convenience whether you can attend.
+
+    ---
+
+    **二、感谢信 (Thank-you Letter)** ⭐⭐
+
+    **结构**:
+    - P1: 明确感谢原因 (1-2 句)
+    - P2: 具体说明帮助的效果 (2-3 句)
+    - P3: 再次感谢 + 表达回报意愿 (1-2 句)
+
+    **高分表达**:
+    - I'm writing to express my sincere gratitude for your generous help.
+    - Without your guidance, I would not have been able to... (虚拟语气加分!)
+    - Your kindness has made a real difference in my academic life.
+    - I truly appreciate what you have done for me.
+    - I hope to have the chance to return the favor someday.
+
+    ---
+
+    **三、通知 (Notice)** ⭐⭐
+
+    **格式特殊**: 标题 NOTICE + 正文 + 落款 (Student Union / Class Monitor)
+
+    **结构**:
+    - 标题: NOTICE
+    - P1: 活动/事件简介 (1-2 句)
+    - P2: 详细信息 (时间/地点/要求/注意事项) (3-4 句)
+    - P3: 号召参与 (1 句)
+    - 落款: Student Union / [日期]
+
+    **高分表达**:
+    - In order to enrich our school life, ... will be held on...
+    - All students are welcome/required to...
+    - Those who are interested please sign up before [日期].
+    - Don't miss this opportunity to...
+
+    ---
+
+    **核心词在应用文中的用法**:
+
+    **academic**: academic performance / academic exchange / academic advisor
+    - 感谢信: "Thank you for improving my academic performance."
+    - 邀请信: "We are organizing an academic exchange event."
+
+    **advocate**: v. 提倡, 主张; n. 倡导者
+    - 通知: "Our school advocates healthy living. Join the sports day!"
+    - 搭配: advocate for + 事业; advocate doing sth
+
+  relations: |
+    **应用文与其他题型的关联**
+
+    应用文看似简单, 实际综合考查:
+    - **语法**: 虚拟语气 (I would appreciate it if...) ← #33
+    - **词汇**: 正式表达 (advocate/academic/extend) ← 本节
+    - **逻辑**: 信息完整性 (5W: who/what/when/where/why)
+
+    **评分维度** (15 分):
+    | 维度 | 分值 | 关键 |
+    |---|---|---|
+    | 内容完整 | 5 分 | 3 个要点全覆盖 |
+    | 语言质量 | 5 分 | 高级词汇 + 复杂句 |
+    | 格式正确 | 3 分 | 称呼/落款/段落 |
+    | 连贯性 | 2 分 | 逻辑衔接 |
+
+    丢分最多的地方: 漏要点 (3 个要点只写了 2 个) + 格式错误 (忘写 Dear.../Yours...)
+
+  practice: |
+    **练习 1: 邀请信** ⭐⭐⭐
+
+    题目: 假如你是李华, 你校将举办英语演讲比赛. 请写信邀请外教 Mr. Smith 担任评委.
+    要求: 时间 (下周五下午 2 点), 地点 (学校报告厅), 比赛主题 (My Dream Career).
+
+    参考范文 (96 词):
+    ---
+    Dear Mr. Smith,
+
+    I'm writing on behalf of our English club to invite you to be a judge at our upcoming English speech contest.
+
+    The event is scheduled for next Friday afternoon at 2:00 pm in the school hall. The theme of the contest is "My Dream Career," and about 20 students from different grades will participate. We believe your professional guidance and feedback would be extremely valuable to all participants.
+
+    It would be our great honor to have you there. Please let me know if you can make it.
+
+    Yours sincerely,
+    Li Hua
+    ---
+
+    **练习 2: 感谢信** ⭐⭐
+
+    题目: 假如你是李华, 你的英语老师 Ms. Wang 在你准备高考期间给了你很多帮助. 请写感谢信.
+
+    参考范文 (88 词):
+    ---
+    Dear Ms. Wang,
+
+    I'm writing to express my heartfelt gratitude for your constant support during my preparation for the college entrance exam.
+
+    Without your patient guidance, I would not have made such progress in my academic performance. The study methods you advocated truly worked — my reading speed improved greatly, and I felt more confident in every practice test.
+
+    I hope to make you proud with my results. Thank you again for everything you have done for me.
+
+    Yours gratefully,
+    Li Hua
+    ---
+
+    **练习 3: 通知** ⭐⭐
+
+    自己尝试写一篇: 学校举办志愿者活动 (周六上午, 社区图书馆, 帮助老人学电脑). 80 词.
+
+  summary: |
+    **本节核心要点:**
+
+    1. **三类模板**: 邀请 (3 段) / 感谢 (3 段) / 通知 (标题+正文+落款)
+    2. **高分替换**: I'm writing to → I'm delighted to / On behalf of...
+    3. **必含要素**: 5W 全覆盖 (漏 1 个要点扣 2-3 分)
+    4. **academic/advocate**: 正式信函高频词
+    5. **15 分满分公式**: 内容完整 + 2-3 个高级表达 + 格式正确 + 1 个复合句
+
+    **时间管理**: 审题 2 分钟 + 写 10 分钟 + 检查 3 分钟 = 15 分钟
+
+    **下节预告**: #40 模拟卷综合冲刺 — 完整一套卷 (阅读+完形+语填+作文), 计时训练

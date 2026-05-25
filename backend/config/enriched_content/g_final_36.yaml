@@ -1,0 +1,130 @@
+# Course #36: G_FINAL·阅读·密集真题 (自然长文)
+# Theme: 灵长类社会行为
+course_id: 36
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G_FINAL
+  core_words: [adjust, accurate]
+  theme: "灵长类社会行为"
+
+segments:
+  hook: |
+    **Do Monkeys Have a Sense of Fairness?**
+
+    In a famous experiment, two monkeys were placed side by side. Both completed the same task. One received a grape; the other received a cucumber. The monkey who got the cucumber threw it back at the researcher in anger.
+
+    This experiment changed how scientists think about animal behavior. It suggested that even monkeys can tell when something is unfair. But is this interpretation accurate? And how do researchers adjust their methods to study animal minds more carefully?
+
+    **Think about it:**
+    1. Why did the monkey throw the cucumber?
+    2. Do you think animals can understand fairness? Why or why not?
+    3. What might "adjust their methods" mean in scientific research?
+
+  core: |
+    **阅读策略 + 核心词 (自然/生物类)**
+
+    ---
+
+    **策略: 推理判断题解法** ⭐⭐⭐
+
+    推理判断题标志词: infer, imply, suggest, conclude, learn from
+
+    解题三步:
+    1. 定位: 题目关键词 → 找原文对应段
+    2. 理解: 原文说了什么 (字面意思)
+    3. 推进一步: 原文没直接说, 但可以合理推出 (不能过度推理)
+
+    **过度推理 vs 合理推理**:
+    - 原文: "Monkeys threw food when treated unfairly."
+    - 合理推理: Monkeys can notice differences in treatment. ✅
+    - 过度推理: Monkeys have the same moral system as humans. ❌
+
+    ---
+
+    **核心词**:
+
+    **adjust** /əˈdʒʌst/ v. 调整; 适应 ⭐⭐
+    - adjust sth (调整某物): adjust the temperature / adjust the plan
+    - adjust to sth (适应某事): adjust to a new environment
+    - 注意: adjust 强调"微调", 不是彻底改变
+
+    例句:
+    1. The scientist adjusted the camera to get a more accurate picture. ⭐
+    2. It took the monkeys several weeks to adjust to the new environment. ⭐⭐
+    3. Researchers constantly adjust their methods to ensure that their observations are accurate and fair. ⭐⭐⭐
+
+    易错: adjust to (适应) vs adapt to (适应). 两者相似, 但 adjust 偏"微调", adapt 偏"改变自身".
+    词族: adjust → adjustment → adjustable
+
+    ---
+
+    **accurate** /ˈækjərət/ adj. 准确的; 精确的 ⭐⭐
+    - accurate data / accurate description / accurate measurement
+    - 反义: inaccurate
+
+    例句:
+    1. Is this report accurate? ⭐
+    2. It is difficult to get accurate results when studying animal behavior. ⭐⭐
+    3. Scientists must adjust their tools regularly to keep measurements accurate, especially when studying creatures in the wild rather than in a lab. ⭐⭐⭐
+
+    易错: accurate (事实/数据准确) vs precise (精确到小数点) vs correct (对/错判断).
+    词族: accurate → accuracy → accurately → inaccurate
+
+  relations: |
+    **自然类阅读的高频词网络**
+
+    adjust 和 accurate 经常同时出现在科学实验类文章中:
+    - 科学方法: observe → adjust methods → get accurate results
+    - 与 #35 科技阅读对比: 科技文重数据, 自然文重行为观察
+
+    **推理判断题的关联**:
+    - #25 (G3) 已学推理判断基础
+    - 本节强化: 自然/生物类推理 (动物行为 → 推测原因)
+    - 与 creature (#31) 呼应: 动物行为研究
+
+  practice: |
+    **Practice Passage: Primate Social Learning** ⭐⭐⭐
+
+    (模拟新课标 II 卷 D 篇, 300 词)
+
+    A team of researchers in Japan spent three years studying how young monkeys learn from adults. Their findings suggest that social learning in primates is more complex than previously thought.
+
+    The team observed that baby monkeys did not simply copy what adults did. Instead, they adjusted their own behavior based on whether the adult's action led to a positive result. For example, when an adult monkey found food by turning over a rock, the baby would try the same action. But if the adult failed, the baby would try a different approach.
+
+    "This shows that young primates do not just imitate," said lead researcher Dr. Tanaka. "They make accurate judgments about which behaviors are worth copying." The finding challenges the old belief that animal learning is purely mechanical.
+
+    However, the study also revealed limits. When the task became too complex, young monkeys stopped adjusting and simply copied the adult exactly — even when the adult's method was not the most efficient. This suggests that social learning has both strengths and weaknesses.
+
+    **Q1.** What is the main finding of the research?
+    A. Baby monkeys always copy adults exactly.
+    B. Young monkeys adjust their learning based on results.
+    C. Primates cannot learn from each other.
+    D. Adult monkeys are better learners than young ones.
+    答案: B (P2 核心: "adjusted their own behavior based on whether the adult's action led to a positive result")
+
+    **Q2.** What can we infer from Dr. Tanaka's words?
+    A. Animal learning is purely mechanical.
+    B. Primates are smarter than all other animals.
+    C. Young monkeys can evaluate the effectiveness of actions.
+    D. Only Japanese researchers study primate behavior.
+    答案: C (推理: "make accurate judgments about which behaviors are worth copying" → 能评估行为效果)
+
+    **Q3.** When tasks became too complex, young monkeys ___.
+    A. gave up completely  B. copied adults without adjusting  C. found better methods  D. asked for help
+    答案: B (P4: "simply copied the adult exactly")
+
+    **Q4.** The word "approach" in paragraph 2 is closest in meaning to ___.
+    A. opinion  B. method  C. distance  D. speed
+    答案: B (语境: 尝试不同的方法)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **推理判断题**: 合理推进一步, 不过度; 找原文证据
+    2. **adjust**: 微调/适应 (adjust to); 与 adapt 区分
+    3. **accurate**: 准确的 (数据) ≠ precise (精确) ≠ correct (正确)
+    4. **自然类阅读**: 重行为描述 + 实验过程 + 结论推理
+    5. **D 篇特点**: 通常最难, 推理题比例最高 (40-50%)
+
+    **下节预告**: #37 完形填空 5 年真题主题 — 阿尔茨海默症研究, 练语境推断能力
