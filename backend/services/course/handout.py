@@ -68,7 +68,7 @@ def _seg_exam_trace(con: duckdb.DuckDBPyConnection, c: dict) -> str:
         return "### 真题溯源\n\n(无 homework_tags, 跳过)\n"
     placeholders = ",".join("?" * len(htags))
     rows = con.execute(
-        f"SELECT qb.qb_id, qb.question_type, SUBSTR(qb.stem, 1, 80), qb.origin_ref "
+        f"SELECT qb.qb_id, qb.question_type, SUBSTR(qb.stem, 1, 40), qb.origin_ref "
         f"FROM question_bank qb JOIN question_tags qt ON qt.qb_id = qb.qb_id "
         f"WHERE qt.tag_id IN ({placeholders}) AND qb.origin='real' "
         f"ORDER BY qb.qb_id LIMIT 5",
@@ -108,7 +108,7 @@ def _seg_homework(con: duckdb.DuckDBPyConnection, c: dict) -> str:
     for q in qs:
         oref = oref_map.get(q["qb_id"])
         link = _clink(f"question:{oref}", f"#{q['qb_id']}") if oref else f"#{q['qb_id']}"
-        lines.append(f"- {link} [{q['question_type']}, {q['difficulty']}]: {q['stem'][:60]}...")
+        lines.append(f"- {link} [{q['question_type']}, {q['difficulty']}]: {q['stem'][:40]}...")
     if not qs:
         lines.append("- (题库未命中本节 tag)")
     return "\n".join(lines) + "\n"

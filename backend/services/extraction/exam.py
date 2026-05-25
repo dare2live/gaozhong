@@ -32,6 +32,13 @@ ENGLISH_SOURCES = [
     "Subjective_Questions/2014-2022_English_Language_Cloze_Passage.json",
 ]
 
+UPDATES_DIR = ROOT / "data" / "external" / "gaokao_bench_2023"
+ENGLISH_SOURCES_2023 = [
+    "2023_English_Cloze_Test.json",
+    "2023_English_Fill_in_Blanks.json",
+    "2023_English_Reading_Comp.json",
+]
+
 LIAONING_KEYWORDS = ["辽宁", "新课标全国Ⅱ", "新课标Ⅱ", "新课标II", "全国新课标Ⅱ"]
 NATIONAL_II_HINT = ["新课标卷Ⅱ", "全国Ⅱ", "全国II"]
 
@@ -77,43 +84,47 @@ def iter_examples(src_file: Path) -> Iterable[dict]:
             yield i, ex
 
 
+def _build_record(id_prefix: str, base: str, i: int, ex: dict,
+                   qtype: str, repo: str) -> dict:
+    year = ex.get("year")
+    try: year = int(year) if year else None
+    except: year = None
+    qtext = ex.get("question") or ""
+    province = infer_province(year, qtext)
+    return {
+        "question_id": f"{id_prefix}/{base}/{i}",
+        "year": year, "province": province,
+        "paper_type": "新课标 II 卷" if "辽宁" in province else "未知",
+        "question_type": qtype,
+        "raw_question": qtext[:8000],
+        "answer": ex.get("answer", ""),
+        "analysis": ex.get("analysis", "")[:4000] if ex.get("analysis") else "",
+        "source_file": base, "source_index": i, "source_repo": repo,
+    }
+
+
 def mirror_to_jsonl(write_db_conn=None) -> dict:
     """Mirror to data/external/gaokao_bench/*.jsonl, optionally load to DB."""
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     summary = {"files": 0, "examples": 0, "by_province": {}, "by_type": {}}
     db_rows = []
-    for relsrc in ENGLISH_SOURCES:
-        src = GAOKAO_DATA / relsrc
-        if not src.exists():
-            continue
-        summary["files"] += 1
-        base = src.stem
-        qtype = infer_question_type(base)
-        out_jsonl = OUT_DIR / f"{base}.jsonl"
-        with out_jsonl.open("w", encoding="utf-8") as fh:
+    all_sources = [
+        (GAOKAO_DATA, ENGLISH_SOURCES, "gb", "OpenLMLab/GAOKAO-Bench"),
+        (UPDATES_DIR, ENGLISH_SOURCES_2023, "gbu", "OpenLMLab/GAOKAO-Bench-Updates"),
+    ]
+    for base_dir, src_list, id_prefix, repo in all_sources:
+        for relsrc in src_list:
+            src = base_dir / relsrc
+            if not src.exists():
+                continue
+            summary["files"] += 1
+            base = src.stem
+            qtype = infer_question_type(base)
             for i, ex in iter_examples(src):
-                year = ex.get("year")
-                try: year = int(year) if year else None
-                except: year = None
-                qtext = ex.get("question") or ""
-                province = infer_province(year, qtext)
-                rec = {
-                    "question_id": f"gb/{base}/{i}",
-                    "year": year,
-                    "province": province,
-                    "paper_type": "新课标 II 卷" if "辽宁" in province else "未知",
-                    "question_type": qtype,
-                    "raw_question": qtext[:8000],
-                    "answer": ex.get("answer", ""),
-                    "analysis": ex.get("analysis", "")[:4000] if ex.get("analysis") else "",
-                    "source_file": base,
-                    "source_index": i,
-                    "source_repo": "OpenLMLab/GAOKAO-Bench",
-                }
-                fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                rec = _build_record(id_prefix, base, i, ex, qtype, repo)
                 db_rows.append(rec)
                 summary["examples"] += 1
-                summary["by_province"][province] = summary["by_province"].get(province, 0) + 1
+                summary["by_province"][rec["province"]] = summary["by_province"].get(rec["province"], 0) + 1
                 summary["by_type"][qtype] = summary["by_type"].get(qtype, 0) + 1
     if write_db_conn is not None and db_rows:
         write_db_conn.execute("DELETE FROM exam_questions")

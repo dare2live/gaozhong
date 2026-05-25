@@ -51,7 +51,7 @@ fi
 hot_now=$(python3 scripts/lib/complexity_check.py \
   $(find backend scripts -name '*.py' -not -path '*/__pycache__/*' 2>/dev/null | tr '\n' ' ') 2>&1 \
   | grep -c 'WARN' || echo 0)
-HOT_BASELINE=10   # 收紧 13→10 (2026-05-25 又拆 3 老函数: word_freq_by_year/vocab_year_growth/build_derive_edges)
+HOT_BASELINE=8   # 收紧 10→8 (2026-05-25 refactor mirror_to_jsonl + infer_province)
 if [ "$hot_now" -gt "$HOT_BASELINE" ]; then
   fails="$fails
   ❌ CC>10 函数 $hot_now > baseline $HOT_BASELINE — 修后再 stop (或 update baseline)"

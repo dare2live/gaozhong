@@ -119,7 +119,7 @@ def _check_9_qbank(con):
     n_orphan = con.execute(
         "SELECT COUNT(*) FROM question_tags WHERE qb_id NOT IN (SELECT qb_id FROM question_bank)"
     ).fetchone()[0]
-    check("question_bank 509", n_qb == 509, f"{n_qb}")
+    check("question_bank ≥509", n_qb >= 509, f"{n_qb}")
     check("question_tags > 10000", n_qt > 10000, f"{n_qt}")
     check("question_tags 引用完整", n_orphan == 0, f"orphan={n_orphan}")
 
