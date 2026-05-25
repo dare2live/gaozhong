@@ -797,7 +797,7 @@ exam_alignment_checker.py --json
 | 4 | 题目总量 | ≥700 题 (升级 rule_synth + 新增) | 🔲 578→700+ (需 ~120) |
 | 5 | R2/R5 audit | 0 FAIL (生成后) | ✅ 0 FAIL, 超纲词=0 |
 | 6 | 真人验证 | 1 人完整走通 + feedback 入档 | 🔲 待做 |
-| 7 | Quiz mode | 学生可在前端做题 + 即时反馈 | 🔲 待做 |
+| 7 | Quiz mode | 学生可在前端做题 + 即时反馈 | ✅ 讲义内 Quiz + 即时批改 |
 | 8 | CC baseline | ≤ 8 (不涨) | ✅ CC=8 |
 | 9 | D0 100% | 全部检查通过 (含新增 check) | ✅ 20 章全绿 |
 | **10** | **考试对齐度** | **exam_alignment overall ≥ 80** | **✅ 84.6 (8 维全 PASS)** |
@@ -920,8 +920,8 @@ scripts/tools/
 │
 ├── alignment/                        # 对齐检测 (内容 vs 真题)
 │   ├── exam_alignment_checker.py     ✅ 已建 — 8 维度综合评分
-│   ├── topic_gap_analyzer.py         🔲 待建 — 课标主题群覆盖缺口分析
-│   └── difficulty_profiler.py        🔲 待建 — 难度曲线 vs 真题分布对比
+│   ├── topic_gap_analyzer.py         ✅ 已建 — 课标 15 主题群覆盖缺口分析
+│   └── difficulty_profiler.py        ✅ 已建 — 难度曲线 real vs gen 对比
 │
 ├── generation/                       # 模型驱动生成
 │   ├── optuna_optimizer.py           🔲 待建 — Optuna 寻优 (搜索生成参数)
@@ -930,8 +930,8 @@ scripts/tools/
 │
 ├── audit/                            # 模型审计 (生成物回溯 + 合规)
 │   ├── content_drift_detector.py     🔲 待建 — 内容漂移检测
-│   ├── ground_truth_validator.py     🔲 待建 — 生成题 vs 真题 ground truth
-│   └── batch_regression_test.py      🔲 待建 — 批次回归测试
+│   ├── ground_truth_validator.py     ✅ 已建 — 生成题结构校验 (45/45 pass)
+│   └── batch_regression_test.py      ✅ 已建 — 批次回归检测 + 报告存档
 │
 └── monitor/                          # 持续监控 (指标 + 告警)
     ├── quality_dashboard.py          🔲 待建 — 质量仪表盘 (趋势 + 告警)
