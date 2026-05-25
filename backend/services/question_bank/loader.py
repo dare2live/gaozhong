@@ -120,8 +120,8 @@ def load_synthesized_samples(con: duckdb.DuckDBPyConnection,
     ).fetchall()]
     n_total = 0
     rng = random.Random(42)
-    # L1 选义题 — 每 unit 5 题
-    for uid in units[:30]:  # cap
+    # L1 选义题 — 每 unit 5 题 (77 units available, use 50 for ~250 questions)
+    for uid in units[:50]:
         try:
             r = poc.generate_l1_quiz(con, uid, n=5, seed=rng.randint(0, 99999))
         except Exception:

@@ -61,7 +61,6 @@ THRESHOLDS = {
     "overall": 55,
 }
 
-
 def _kl_divergence(p: dict, q: dict) -> float:
     """Symmetric KL divergence (Jensen-Shannon-like)."""
     all_keys = set(p) | set(q)
@@ -75,16 +74,13 @@ def _kl_divergence(p: dict, q: dict) -> float:
         kl += 0.5 * (pi * math.log(pi / m) + qi * math.log(qi / m))
     return kl
 
-
 def _score_from_kl(kl: float, max_kl: float = 0.5) -> float:
     """KL → 0-100 score (0 divergence = 100)."""
     return max(0, 100 * (1 - kl / max_kl))
 
-
 def _extract_words(text: str) -> list[str]:
     """Extract English words from text."""
     return [w.lower() for w in re.findall(r"[a-zA-Z']+", text) if len(w) > 1]
-
 
 def check_type_coverage(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 1: 高考 6 大题型覆盖率."""
@@ -110,7 +106,6 @@ def check_type_coverage(con: duckdb.DuckDBPyConnection) -> dict:
         "pass": score >= THRESHOLDS["type_coverage"],
     }
 
-
 def check_difficulty_alignment(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 2: 难度分布 vs 真题分布."""
     real = dict(con.execute("""
@@ -132,7 +127,6 @@ def check_difficulty_alignment(con: duckdb.DuckDBPyConnection) -> dict:
         "detail": f"真题={real}, 生成={gen}, JSD={kl:.4f}",
         "pass": score >= THRESHOLDS["difficulty_alignment"],
     }
-
 
 def check_vocab_overlap(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 3: 生成题词汇 vs 真题词汇重叠."""
@@ -159,20 +153,18 @@ def check_vocab_overlap(con: duckdb.DuckDBPyConnection) -> dict:
         "pass": score >= THRESHOLDS["vocab_overlap"],
     }
 
-
 CURRICULUM_KEYWORDS = {
-    "生活与学习": ["school", "class", "study", "homework", "exam", "learn", "family", "friend", "daily", "weekend"],
-    "做人与做事": ["honest", "responsible", "brave", "kind", "help", "effort", "goal", "plan", "dream"],
-    "社会服务与人际沟通": ["volunteer", "community", "invite", "thank", "advice", "letter", "communicate"],
-    "文学、艺术与体育": ["story", "novel", "art", "music", "sport", "basketball", "exercise", "drama", "museum"],
-    "历史、社会与文化": ["history", "culture", "tradition", "festival", "ancient", "heritage", "society"],
-    "科学与技术": ["science", "technology", "computer", "experiment", "discover", "research", "robot", "AI"],
-    "自然生态": ["nature", "animal", "plant", "ocean", "forest", "river", "ecology", "species"],
-    "环境保护": ["environment", "pollution", "recycle", "climate", "protect", "green", "waste"],
-    "灾害防范": ["disaster", "earthquake", "flood", "safety", "emergency", "rescue", "prevent"],
-    "宇宙探索": ["space", "Mars", "planet", "universe", "astronaut", "star", "satellite", "explore"],
+    "生活学习": "school class study homework exam learn family friend daily weekend".split(),
+    "做人做事": "honest responsible brave kind help effort goal plan dream".split(),
+    "社会沟通": "volunteer community invite thank advice letter communicate".split(),
+    "文艺体育": "story novel art music sport basketball exercise drama museum".split(),
+    "历史文化": "history culture tradition festival ancient heritage society".split(),
+    "科学技术": "science technology computer experiment discover research robot".split(),
+    "自然生态": "nature animal plant ocean forest river ecology species".split(),
+    "环境保护": "environment pollution recycle climate protect green waste".split(),
+    "灾害防范": "disaster earthquake flood safety emergency rescue prevent".split(),
+    "宇宙探索": "space Mars planet universe astronaut star satellite explore".split(),
 }
-
 
 def check_topic_alignment(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 4: 听力/写作场景 vs 课标主题语境 (双语关键词匹配)."""
@@ -196,7 +188,6 @@ def check_topic_alignment(con: duckdb.DuckDBPyConnection) -> dict:
         "pass": score >= THRESHOLDS["topic_alignment"],
     }
 
-
 def check_analysis_completeness(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 5: 生成题 analysis 完整度."""
     rows = con.execute("""
@@ -218,7 +209,6 @@ def check_analysis_completeness(con: duckdb.DuckDBPyConnection) -> dict:
         "detail": f"{has_analysis}/{total} 有解析, avg={avg_len:.0f} chars" if avg_len else f"{has_analysis}/{total}",
         "pass": score >= THRESHOLDS["analysis_completeness"],
     }
-
 
 def check_listening_structure(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 6: 听力 Section 结构对齐."""
@@ -251,7 +241,6 @@ def check_listening_structure(con: duckdb.DuckDBPyConnection) -> dict:
         "pass": score >= THRESHOLDS["listening_structure"],
     }
 
-
 def _score_narrative(stem, answer, analysis) -> float:
     text = (stem or "") + (answer or "") + (analysis or "")
     has_para = sum(1 for e in NARRATIVE_ELEMENTS if e in text)
@@ -259,14 +248,12 @@ def _score_narrative(stem, answer, analysis) -> float:
     has_analysis = len(analysis or "") > 30
     return 100 * (has_para / len(NARRATIVE_ELEMENTS) * 0.4 + has_answer * 0.3 + has_analysis * 0.3)
 
-
 def _score_applied(answer, analysis) -> float:
     text = (answer or "")
     has_fmt = sum(1 for e in APPLIED_FORMAT_ELEMENTS if e in text)
     has_analysis = len(analysis or "") > 30
     word_ok = 60 <= len(_extract_words(text)) <= 200
     return 100 * (has_fmt / len(APPLIED_FORMAT_ELEMENTS) * 0.4 + has_analysis * 0.3 + word_ok * 0.3)
-
 
 def check_writing_format(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 7: 写作格式对齐 (续写段落结构 + 应用文格式)."""
@@ -291,7 +278,6 @@ def check_writing_format(con: duckdb.DuckDBPyConnection) -> dict:
         "detail": f"续写={len(narrative_rows)}, 应用文={len(applied_rows)}, 格式均分={avg:.1f}, 应用文类型={len(types_used)}种",
         "pass": avg >= THRESHOLDS["writing_format"],
     }
-
 
 def check_listening_skill_coverage(con: duckdb.DuckDBPyConnection) -> dict:
     """维度 8: 听力考查技能覆盖 (场所/关系/数字/态度/主旨等)."""
@@ -326,7 +312,6 @@ def check_listening_skill_coverage(con: duckdb.DuckDBPyConnection) -> dict:
         "pass": score >= 50,
     }
 
-
 def run_all(con: duckdb.DuckDBPyConnection, sections: list[str] | None = None) -> dict:
     """Run all checks, return overall report."""
     checks = [
@@ -357,7 +342,6 @@ def run_all(con: duckdb.DuckDBPyConnection, sections: list[str] | None = None) -
     }
     return results
 
-
 def _print_report(results: dict) -> None:
     print("=" * 60)
     print("考试对齐度检测报告 (Exam Alignment Report)")
@@ -381,7 +365,6 @@ def _print_report(results: dict) -> None:
             if key != "overall" and not r["pass"]:
                 print(f"  - {r['name']}: 当前 {r['score']:.1f}, 需 ≥ {THRESHOLDS.get(key, '?')}")
 
-
 def main():
     parser = argparse.ArgumentParser(description="考试对齐度检测器")
     parser.add_argument("--listening", action="store_true")
@@ -403,7 +386,6 @@ def main():
         _print_report(results)
         if not results["overall"]["pass"]:
             sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

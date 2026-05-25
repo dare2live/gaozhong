@@ -418,3 +418,145 @@ extra_long_dialogs:
           C. The student cannot borrow again.
         answer: "B"
         analysis: "one yuan per day per book — 直接信息."
+
+# ================================================================
+# 补充 Phase 2: 覆盖"职业/关系推断"技能 + 更多真题风格
+# ================================================================
+extra_short_dialogs_2:
+
+  - id: "listening/short/011"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_06"
+    audio_duration: 20
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: Good morning. I have a terrible headache and my throat is sore.
+      M: Let me check your temperature first. Please open your mouth and say "ah."
+    stem: |
+      What is the probable relationship between the two speakers?
+      A. Teacher and student.
+      B. Doctor and patient.
+      C. Mother and son.
+    answer: "B"
+    analysis: "headache/throat/temperature/check → 医患关系推断."
+
+  - id: "listening/short/012"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_07"
+    audio_duration: 19
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: I'd like a window seat on the 3 o'clock flight to Beijing, please.
+      W: I'm sorry, sir. Window seats are all taken. I can offer you an aisle seat.
+    stem: |
+      Where does this conversation most probably take place?
+      A. At a train station.
+      B. At an airport check-in counter.
+      C. At a bus stop.
+    answer: "B"
+    analysis: "flight/window seat/aisle seat → 机场值机, 场所推断."
+
+  - id: "listening/short/013"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_08"
+    audio_duration: 21
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: The concert starts at 8, but we should get there by 7:30 to find good seats.
+      M: It's 6:45 now. We still have 45 minutes. Let's not rush.
+    stem: |
+      What time is it now?
+      A. 6:45.
+      B. 7:30.
+      C. 8:00.
+    answer: "A"
+    analysis: "6:45 now — 数字信息题, 需区分现在/到达/开始三个时间."
+
+  - id: "listening/short/014"
+    section: A
+    difficulty: hard
+    audio_id: "2025/listening/short_09"
+    audio_duration: 22
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: I can't believe I failed the driving test again. That's the third time!
+      W: Don't give up. Why not take a few more lessons before trying again?
+    stem: |
+      What does the woman suggest the man do?
+      A. Give up driving.
+      B. Take more lessons.
+      C. Buy a new car.
+    answer: "B"
+    analysis: "take a few more lessons — 建议题, 注意 why not 句式."
+
+  - id: "listening/short/015"
+    section: A
+    difficulty: hard
+    audio_id: "2025/listening/short_10"
+    audio_duration: 23
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: Professor Li, could I hand in my paper next Monday instead of Friday?
+      M: I'm afraid the deadline is firm. But you can come to my office hours if you need help.
+    stem: |
+      What is the man's response to the woman's request?
+      A. He agrees to extend the deadline.
+      B. He refuses but offers help.
+      C. He asks her to come back later.
+    answer: "B"
+    analysis: "deadline is firm (拒绝) + come to office hours (提供帮助) — 态度推断."
+
+extra_monologues_2:
+
+  - id: "listening/passage/003"
+    section: B
+    difficulty: hard
+    audio_id: "2025/listening/passage_02"
+    audio_duration: 92
+    speakers:
+      - {id: "N", label: "旁白"}
+    transcript: |
+      Attention, please. This is an announcement for all Grade 12 students.
+
+      Our school will hold its annual Career Day next Thursday, December 5th, from 9 am to 4 pm in the school gymnasium. We have invited 15 professionals from different fields including medicine, engineering, law, education, and technology.
+
+      Each professional will give a 20-minute talk about their career path, followed by a 10-minute question-and-answer session. You are free to attend any talks that interest you.
+
+      Please sign up on the school website before Tuesday so we can prepare enough materials. Students who attend at least four talks will receive a certificate that can be included in your college application.
+
+      We hope this event will help you make better decisions about your future.
+    questions:
+      - stem: |
+          How many professionals have been invited?
+          A. 10.
+          B. 15.
+          C. 20.
+        answer: "B"
+        analysis: "15 professionals — 数字细节."
+      - stem: |
+          How long is each talk including Q&A?
+          A. 20 minutes.
+          B. 25 minutes.
+          C. 30 minutes.
+        answer: "C"
+        analysis: "20-minute talk + 10-minute Q&A = 30 minutes — 计算推理."
+      - stem: |
+          What benefit will students get from attending?
+          A. A prize.
+          B. A certificate for college applications.
+          C. Extra credit in class.
+        answer: "B"
+        analysis: "certificate for college application — 细节信息."
