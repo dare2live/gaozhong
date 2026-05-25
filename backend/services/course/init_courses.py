@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 
 import duckdb
 
-from . import handout, loader, materials
+from . import handout, lexicon_filter, loader, materials
 
 
 COURSE_HANDOUTS_DDL = """
@@ -45,6 +45,10 @@ def run(con: duckdb.DuckDBPyConnection) -> dict:
             n_materials += 1
         # P1.2 持久化讲义 md → 让 audit_course_no_textbook_copy 真扫
         md = handout.render_handout(con, c)["md"]
+        # R5 程序级超纲拦截: enriched content 必须通过词汇校验
+        beyond = lexicon_filter.validate_content_vocab(con, md, c["layer"])
+        if beyond:
+            print(f"  ⚠️ #{c['course_id']} [{c['layer']}] R5 超纲词 {len(beyond)}: {beyond[:10]}")
         con.execute(
             "INSERT INTO course_handouts (course_id, md, md_chars, generated_at) "
             "VALUES (?, ?, ?, ?)",

@@ -253,6 +253,35 @@ def _check_18_followup(con):
           f"combined={final.get('combined_accuracy')}")
 
 
+def _check_19_enriched_vocab(con):
+    print("\n=== (19) enriched content 超纲词校验 (R5 程序级) ===")
+    from backend.services import vocab_guard
+    import yaml
+    from pathlib import Path
+    enriched_dir = Path("backend/config/enriched_content")
+    if not enriched_dir.exists():
+        check("enriched_content 目录存在", False, "目录不存在")
+        return
+    n_files = 0
+    n_beyond_total = 0
+    worst = []
+    for f in sorted(enriched_dir.glob("*.yaml")):
+        data = yaml.safe_load(f.read_text(encoding="utf-8"))
+        cid = data.get("course_id")
+        layer = data.get("generation_meta", {}).get("vocab_layer", "G_FINAL")
+        text = "\n".join(data.get("segments", {}).values())
+        result = vocab_guard.check_text(con, text, layer)
+        n_files += 1
+        n_beyond_total += result["beyond_count"]
+        if result["beyond_words"]:
+            worst.append((cid, layer, result["beyond_words"][:5]))
+    check(f"enriched {n_files} 文件已扫描",
+          n_files > 0, f"{n_files} files")
+    check(f"超纲词总数 = 0",
+          n_beyond_total == 0,
+          f"{n_beyond_total} 超纲" + (f" (worst: #{worst[0][0]} {worst[0][2]})" if worst else ""))
+
+
 # ===== helpers (CC ≤ 4) =====
 
 def _audit_ok(con, kind: str) -> bool:
@@ -290,7 +319,7 @@ CHECKS = [
     _check_9_qbank, _check_10_qbank_options, _check_11_tag_dict,
     _check_12_cefr_node_xref, _check_13_grammar_chain, _check_14_graph_refs,
     _check_15_xref, _check_16_placement, _check_17_cross_version,
-    _check_18_followup,
+    _check_18_followup, _check_19_enriched_vocab,
 ]
 
 

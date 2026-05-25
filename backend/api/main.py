@@ -83,6 +83,10 @@ class Handler(BaseHTTPRequestHandler):
                 from backend.api.routes import placement as pl
                 self._json(200, pl.api_placement_final_score(qs, body))
                 return
+            if path == "/api/vocab/batch_check":
+                from backend.api.routes import vocab_guard as vg
+                self._json(200, vg.api_vocab_batch_check(qs, body))
+                return
             self._json(404, {"error": "no POST route", "path": path})
         except Exception as e:
             self._json(500, {"error": str(e), "type": type(e).__name__})
