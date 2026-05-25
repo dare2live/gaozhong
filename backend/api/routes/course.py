@@ -118,9 +118,46 @@ def _course_id(qs: dict) -> int | None:
         return None
 
 
+def api_course_quiz(qs: dict) -> dict:
+    """课后测验 — 返回本节 homework 题 (含选项+答案, 供前端即时批改)."""
+    cid = _course_id(qs)
+    if cid is None:
+        return {"error": "missing or invalid ?id (1..40)"}
+    courses = loader.load_course_templates()
+    course = next((c for c in courses if c["course_id"] == cid), None)
+    if not course:
+        return {"error": f"course {cid} not in yaml"}
+    tags = course.get("homework_tags") or []
+    con = db_ro()
+    try:
+        rows = con.execute(
+            "SELECT DISTINCT qb.qb_id, qb.question_type, qb.stem, "
+            "qb.options_json, qb.answer, qb.difficulty, qb.analysis "
+            "FROM question_bank qb "
+            "JOIN question_tags qt ON qt.qb_id = qb.qb_id "
+            f"WHERE qt.tag_id IN ({','.join('?' * len(tags))}) "
+            "ORDER BY qb.qb_id LIMIT 10",
+            tags,
+        ).fetchall() if tags else []
+        questions = [
+            {"qb_id": r[0], "question_type": r[1], "stem": r[2],
+             "options_json": r[3], "answer": r[4],
+             "difficulty": r[5], "analysis": r[6]}
+            for r in rows
+        ]
+        return {
+            "course_id": cid, "layer": course.get("layer"),
+            "title": course.get("title"),
+            "questions": questions, "count": len(questions),
+        }
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/course/list":    api_course_list,
     "/api/course/session": api_course_session,
     "/api/course/handout": api_course_handout,
     "/api/course/stats":   api_course_stats,
+    "/api/course/quiz":    api_course_quiz,
 }

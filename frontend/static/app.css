@@ -310,6 +310,45 @@
 .gz-qfilter:hover { background: #e8e6e0; }
 .gz-qfilter.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
+/* ===== 课后测验 Quiz mode (Phase 7.5) ===== */
+.gz-quiz-btn {
+  padding: 0.5rem 1.5rem; background: #E3120B; color: #fff;
+  border: none; border-radius: 4px; font-size: 0.95em;
+  cursor: pointer; font-weight: 600;
+}
+.gz-quiz-btn:hover { background: #c50e09; }
+.gz-quiz { margin-top: 1rem; }
+.gz-quiz h3 { border-bottom: 2px solid #E3120B; padding-bottom: 0.3rem; }
+.gz-quiz-q {
+  background: #fff; border: 1px solid #e8e6e0; border-left: 4px solid #0a4d75;
+  border-radius: 4px; padding: 0.7rem 1rem; margin-bottom: 0.6rem;
+}
+.gz-quiz-type {
+  background: #1a1a1a; color: #fff; padding: 1px 6px;
+  border-radius: 2px; font-size: 0.75em;
+}
+.gz-quiz-diff { color: #888; font-size: 0.8em; margin-left: 0.3rem; }
+.gz-quiz-stem { margin: 0.4rem 0; line-height: 1.5; }
+.gz-quiz-opts { list-style: none; padding: 0; margin: 0.3rem 0; }
+.gz-quiz-opts li {
+  padding: 0.4rem 0.8rem; margin: 0.2rem 0; border: 1px solid #ddd;
+  border-radius: 3px; cursor: pointer; transition: background 0.1s;
+}
+.gz-quiz-opts li:hover { background: #f0ede7; }
+.gz-quiz-opts li.selected { background: #d6e9f7; border-color: #0a4d75; }
+.gz-quiz-input {
+  width: 60%; padding: 0.4rem 0.6rem; border: 1px solid #ddd;
+  border-radius: 3px; font-size: 0.9em;
+}
+.gz-quiz-feedback { margin: 0.3rem 0; padding: 0.3rem 0.6rem; border-radius: 3px; font-size: 0.9em; }
+.gz-quiz-feedback.correct { background: #e8f5e9; }
+.gz-quiz-feedback.wrong { background: #fde2e1; }
+.gz-quiz-analysis { color: #555; font-size: 0.85em; margin-top: 0.3rem; border-top: 1px dashed #ddd; padding-top: 0.3rem; }
+.gz-quiz-result {
+  text-align: center; padding: 0.8rem; background: #f7f5ef;
+  border: 2px solid #E3120B; border-radius: 4px; font-size: 1.1em;
+}
+
 /* ===== 打印样式 (Phase 7.2) ===== */
 .print-btn {
   display: inline-flex; align-items: center; gap: 0.3rem;

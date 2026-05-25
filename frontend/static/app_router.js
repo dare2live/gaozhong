@@ -190,11 +190,101 @@
     try {
       const data = await fetchJSON("/api/course/handout?id=" + cid);
       const raw = data.md || "";
-      md.innerHTML = (raw.includes("\n---\n") ? _renderSegments(raw) : mdToHtml(raw))
-        || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      let html = raw.includes("\n---\n") ? _renderSegments(raw) : mdToHtml(raw);
+      html += _renderQuizButton(cid);
+      md.innerHTML = html || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     } catch (err) {
       md.innerHTML = "讲义载入失败: " + err.message;
     }
+  };
+
+  function _renderQuizButton(cid) {
+    return `<div style="text-align:center;margin:1.5rem 0">
+      <button class="gz-quiz-btn" onclick="window._startQuiz(${cid})">📝 课后测验</button>
+    </div><div id="quiz-area"></div>`;
+  }
+
+  window._startQuiz = async (cid) => {
+    const area = document.getElementById("quiz-area");
+    if (!area) return;
+    area.innerHTML = "<p>载入题目...</p>";
+    try {
+      const data = await fetchJSON("/api/course/quiz?id=" + cid);
+      if (!data.questions || data.questions.length === 0) {
+        area.innerHTML = "<p style='color:#888'>本节暂无测验题</p>";
+        return;
+      }
+      let html = `<div class="gz-quiz"><h3>课后测验 · ${data.title} (${data.count} 题)</h3>`;
+      data.questions.forEach((q, i) => {
+        html += `<div class="gz-quiz-q" data-qid="${q.qb_id}" data-answer="${(q.answer||'').trim()}">
+          <p><strong>${i+1}.</strong> <span class="gz-quiz-type">${q.question_type}</span>
+             <span class="gz-quiz-diff">${q.difficulty}</span></p>
+          <div class="gz-quiz-stem">${(q.stem||'').replace(/\n/g,'<br>')}</div>`;
+        const opts = _parseOptions(q.options_json, q.stem);
+        if (opts.length) {
+          html += `<ul class="gz-quiz-opts">`;
+          opts.forEach(o => {
+            html += `<li data-label="${o.label}" onclick="window._selectOpt(this)">${o.label}. ${o.text}</li>`;
+          });
+          html += `</ul>`;
+        } else {
+          html += `<input type="text" class="gz-quiz-input" placeholder="输入答案" data-qid="${q.qb_id}">`;
+        }
+        html += `<div class="gz-quiz-feedback" style="display:none"></div></div>`;
+      });
+      html += `<div style="text-align:center;margin:1rem 0">
+        <button class="gz-quiz-btn" onclick="window._submitQuiz()">提交批改</button>
+      </div><div id="quiz-result"></div></div>`;
+      area.innerHTML = html;
+      area._quizData = data;
+    } catch (err) {
+      area.innerHTML = `<p style="color:#c00">载入失败: ${err.message}</p>`;
+    }
+  };
+
+  function _parseOptions(optJson, stem) {
+    if (optJson) {
+      try { return JSON.parse(optJson); } catch (_) {}
+    }
+    const m = (stem||'').match(/([A-D])\.\s*(.+?)(?=\s+[A-D]\.|$)/gs);
+    if (!m) return [];
+    return m.map(s => { const p = s.match(/([A-D])\.\s*(.*)/s); return p ? {label:p[1],text:p[2].trim()} : null; }).filter(Boolean);
+  }
+
+  window._selectOpt = (li) => {
+    const q = li.closest(".gz-quiz-q");
+    q.querySelectorAll(".gz-quiz-opts li").forEach(x => x.classList.remove("selected"));
+    li.classList.add("selected");
+  };
+
+  window._submitQuiz = () => {
+    const area = document.getElementById("quiz-area");
+    if (!area || !area._quizData) return;
+    let correct = 0, total = 0;
+    area.querySelectorAll(".gz-quiz-q").forEach(qEl => {
+      total++;
+      const expected = (qEl.dataset.answer || "").toUpperCase();
+      const selLi = qEl.querySelector(".gz-quiz-opts li.selected");
+      const inputEl = qEl.querySelector(".gz-quiz-input");
+      const given = selLi ? selLi.dataset.label.toUpperCase() : (inputEl ? inputEl.value.trim().toUpperCase() : "");
+      const fb = qEl.querySelector(".gz-quiz-feedback");
+      fb.style.display = "block";
+      if (given === expected) {
+        correct++;
+        fb.innerHTML = `<span style="color:#2a9d8f">✅ 正确</span>`;
+        fb.className = "gz-quiz-feedback correct";
+      } else {
+        fb.innerHTML = `<span style="color:#c1272d">❌ 正确答案: ${expected}</span>`;
+        fb.className = "gz-quiz-feedback wrong";
+      }
+      const qData = (area._quizData.questions||[]).find(q => q.qb_id === +qEl.dataset.qid);
+      if (qData && qData.analysis) {
+        fb.innerHTML += `<div class="gz-quiz-analysis">${qData.analysis}</div>`;
+      }
+    });
+    const pct = total > 0 ? (correct / total * 100).toFixed(0) : 0;
+    document.getElementById("quiz-result").innerHTML =
+      `<div class="gz-quiz-result"><strong>得分: ${correct}/${total} (${pct}%)</strong></div>`;
   };
 
   // ===================================================================
