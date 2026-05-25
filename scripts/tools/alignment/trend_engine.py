@@ -57,6 +57,14 @@ POINT_KEYWORDS = {
 }
 
 
+YEAR_WEIGHTS = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
+YEAR_WEIGHT_OLD = 0.5
+
+
+def _yw(year: int) -> float:
+    return YEAR_WEIGHTS.get(year, YEAR_WEIGHT_OLD)
+
+
 def analyze(con: duckdb.DuckDBPyConnection) -> dict:
     rows = con.execute(
         "SELECT year, question_type, raw_question, answer, analysis "
@@ -69,6 +77,7 @@ def analyze(con: duckdb.DuckDBPyConnection) -> dict:
     recommendations = _generate_recommendations(trends, cooccurrence)
     return {
         "years": years, "n_questions": len(rows),
+        "year_weights": {y: _yw(y) for y in years},
         "heatmap": heatmap,
         "trends": trends,
         "cooccurrence": cooccurrence,
@@ -87,23 +96,31 @@ def _build_heatmap(rows, years) -> dict[str, dict[int, int]]:
     return matrix
 
 
+def _wls_slope(x_vals: list, y_vals: list, weights: list) -> float:
+    """Weighted Least Squares slope. 宪法 P1 合规."""
+    w_sum = sum(weights)
+    x_wm = sum(weights[i] * x_vals[i] for i in range(len(x_vals))) / w_sum
+    y_wm = sum(weights[i] * y_vals[i] for i in range(len(y_vals))) / w_sum
+    num = sum(weights[i] * (x_vals[i] - x_wm) * (y_vals[i] - y_wm) for i in range(len(x_vals)))
+    den = sum(weights[i] * (x_vals[i] - x_wm) ** 2 for i in range(len(x_vals)))
+    return num / den if den != 0 else 0
+
+
 def _compute_trends(heatmap, years) -> list[dict]:
-    """线性回归斜率: 正=上升趋势, 负=下降趋势."""
+    """加权线性回归趋势排序."""
+    if len(years) < 2:
+        return []
+    weights = [_yw(y) for y in years]
     results = []
-    n = len(years)
-    if n < 2:
-        return results
-    x_mean = sum(years) / n
     for point, year_counts in heatmap.items():
         vals = [year_counts[y] for y in years]
-        y_mean = sum(vals) / n
-        num = sum((years[i] - x_mean) * (vals[i] - y_mean) for i in range(n))
-        den = sum((years[i] - x_mean) ** 2 for i in range(n))
-        slope = num / den if den != 0 else 0
-        total = sum(vals)
+        slope = _wls_slope(list(years), vals, weights)
+        w_total = sum(weights[i] * vals[i] for i in range(len(years)))
+        w_recent = sum(weights[i] * vals[i] for i in range(len(years)) if years[i] >= years[-1] - 2)
         results.append({
-            "point": point, "slope": round(slope, 3), "total": total,
-            "recent_3y": sum(vals[-3:]) if len(vals) >= 3 else total,
+            "point": point, "slope": round(slope, 3),
+            "weighted_total": round(w_total, 1), "weighted_recent_3y": round(w_recent, 1),
+            "raw_total": sum(vals),
             "direction": "rising" if slope > 0.1 else ("falling" if slope < -0.1 else "stable"),
         })
     results.sort(key=lambda x: x["slope"], reverse=True)
@@ -136,18 +153,20 @@ def _compute_cooccurrence(rows) -> list[dict]:
 def _generate_recommendations(trends, cooccurrence) -> list[dict]:
     """基于趋势+关联生成教学推荐."""
     recs = []
-    rising = [t for t in trends if t["direction"] == "rising" and t["total"] >= 3]
+    rising = [t for t in trends if t["direction"] == "rising" and t["raw_total"] >= 3]
     for t in rising[:5]:
         related = [c["pair"][1] if c["pair"][0] == t["point"] else c["pair"][0]
                    for c in cooccurrence if t["point"] in c["pair"]][:3]
         recs.append({
-            "point": t["point"], "reason": f"上升趋势 (slope={t['slope']:+.3f}), 近3年{t['recent_3y']}次",
+            "point": t["point"],
+            "reason": f"上升趋势 (WLS slope={t['slope']:+.3f}), 加权近3年={t['weighted_recent_3y']}",
             "related": related, "priority": "high",
         })
-    falling = [t for t in trends if t["direction"] == "falling" and t["total"] >= 3]
+    falling = [t for t in trends if t["direction"] == "falling" and t["raw_total"] >= 3]
     for t in falling[:3]:
         recs.append({
-            "point": t["point"], "reason": f"下降趋势 (slope={t['slope']:+.3f}), 可适当减少",
+            "point": t["point"],
+            "reason": f"下降趋势 (WLS slope={t['slope']:+.3f}), 可适当减少",
             "priority": "low",
         })
     return recs
@@ -169,10 +188,11 @@ def main():
     print(f"趋势分析已保存: {path}")
     print(f"数据范围: {result['years']}, {result['n_questions']} 题")
 
-    print(f"\n=== 考点趋势排序 (slope) ===")
+    print(f"年份权重: {result.get('year_weights', {})}")
+    print(f"\n=== 考点趋势排序 (WLS slope, 加权) ===")
     for t in result["trends"][:10]:
         arrow = "↑" if t["direction"] == "rising" else ("↓" if t["direction"] == "falling" else "→")
-        print(f"  {arrow} {t['point']:<12} slope={t['slope']:+.3f}  total={t['total']:>3}  recent3y={t['recent_3y']:>2}")
+        print(f"  {arrow} {t['point']:<12} slope={t['slope']:+.3f}  w_total={t['weighted_total']:>5.1f}  w_recent={t['weighted_recent_3y']:>5.1f}")
 
     print(f"\n=== 考点同现 TOP 10 ===")
     for c in result["cooccurrence"][:10]:

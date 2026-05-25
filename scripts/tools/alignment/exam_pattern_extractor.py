@@ -32,10 +32,14 @@ def extract(con: duckdb.DuckDBPyConnection) -> dict:
         "FROM exam_questions WHERE year >= 2021 AND province LIKE '%新课标 II%' "
         "ORDER BY year"
     ).fetchall()
+    years = sorted({r[0] for r in rows})
+    year_weights = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
     model = {
         "source": "exam_questions (2021+ 新课标 II 辽宁)",
         "n_questions": len(rows),
-        "years": sorted({r[0] for r in rows}),
+        "years": years,
+        "year_weights": {y: year_weights.get(y, 0.5) for y in years},
+        "data_gap": [y for y in range(2021, 2026) if y not in years],
         "reading": _extract_reading([r for r in rows if r[1] == "阅读理解"]),
         "cloze": _extract_cloze([r for r in rows if "完形" in r[1]]),
         "grammar_fill": _extract_grammar([r for r in rows if r[1] == "语法填空"]),
