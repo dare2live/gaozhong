@@ -39,6 +39,23 @@ def main() -> None:
     print("\n=== Layer 2: exam mirror ===")
     print(f"  {extract.run_exam_extract(con)}")
 
+    print("\n=== Layer 2b: 真题 cross-verify 门禁 (宪法 §8.3) ===")
+    try:
+        from scripts.tools.audit.cross_verify_pdf import verify_year, PDF_MAP
+        for yr in sorted(PDF_MAP.keys()):
+            r = verify_year(yr, con=con)
+            status = r.get("overall", r.get("status", "?"))
+            n_fail = r.get("summary", {}).get("fail", 0)
+            n_total = sum(r.get("summary", {}).values()) if "summary" in r else 0
+            print(f"  {yr}: {status} ({n_total - n_fail}/{n_total} pass)")
+            if status == "FAIL":
+                raise RuntimeError(f"cross_verify FAIL for {yr} — 结构化数据与 PDF 不一致, 拒绝入库")
+    except ImportError:
+        print("  cross_verify_pdf 未安装, 跳过 (首次建库)")
+    except RuntimeError as e:
+        print(f"  ❌ {e}")
+        raise
+
     print("\n=== Layer 2: textbook units ===")
     tu = extract.run_textbook_units(con)
     print(f"  {tu['summary']}, loaded={tu['loaded']}")

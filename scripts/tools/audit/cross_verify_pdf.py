@@ -36,16 +36,19 @@ def extract_pdf_text(pdf_path: Path) -> str:
     return "".join(p.extract_text() or "" for p in reader.pages)
 
 
-def _load_structured(year: int) -> tuple[list, list]:
+def _load_structured(year: int, con=None) -> tuple[list, list]:
     """加载 DB + JSONL 结构化数据."""
-    con = duckdb.connect(str(DB_PATH), read_only=True)
+    own_con = con is None
+    if own_con:
+        con = duckdb.connect(str(DB_PATH), read_only=True)
     try:
         rows = con.execute(
             "SELECT question_id, question_type, raw_question, answer "
             "FROM exam_questions WHERE year = ?", [year]
         ).fetchall()
     finally:
-        con.close()
+        if own_con:
+            con.close()
     jsonl_path = ROOT / "data" / "gaokao_verified_xgkii_2023_2024.jsonl"
     jsonl_entries = []
     if jsonl_path.exists():
@@ -70,14 +73,14 @@ def _check_item(qid, qtype, question_text, pdf_words) -> dict:
             "total_words": len(q_words), "sample_words": q_words[:5]}
 
 
-def verify_year(year: int) -> dict:
+def verify_year(year: int, con=None) -> dict:
     """核对一个年份: 结构化数据的关键文本是否在 PDF 原文中出现."""
     pdf_path = PDF_MAP.get(year)
     if not pdf_path or not pdf_path.exists():
         return {"year": year, "status": "skip", "reason": f"PDF not found: {pdf_path}"}
     pdf_text = extract_pdf_text(pdf_path)
     pdf_words = set(re.findall(r"[a-zA-Z]{4,}", pdf_text.lower()))
-    rows, jsonl_entries = _load_structured(year)
+    rows, jsonl_entries = _load_structured(year, con)
     sources = list(rows) + [(e.get("source", ""), e.get("question_type", ""),
                               e.get("question", ""), e.get("answer", "")) for e in jsonl_entries]
     checks = [_check_item(s[0], s[1], s[2], pdf_words) for s in sources]

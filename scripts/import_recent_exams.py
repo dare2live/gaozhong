@@ -160,6 +160,20 @@ def import_to_db(questions: list[dict]) -> int:
         con.close()
 
 
+def _post_import_verify(year: int) -> bool:
+    """入库后立即 cross-verify — FAIL 则回滚 (宪法 §8.3 程序化执行)."""
+    try:
+        from scripts.tools.audit.cross_verify_pdf import verify_year
+        result = verify_year(year)
+        status = result.get("overall", result.get("status", "skip"))
+        n_fail = result.get("summary", {}).get("fail", 0)
+        print(f"    cross-verify {year}: {status} (fail={n_fail})")
+        return status != "FAIL"
+    except Exception as e:
+        print(f"    cross-verify skip: {e}")
+        return True
+
+
 def main():
     total = 0
     for year, paper, pdf_path in PDFS:
@@ -174,6 +188,8 @@ def main():
         n = import_to_db(qs)
         total += n
         print(f"    imported {n} new (skipped {len(qs) - n} existing)")
+        if not _post_import_verify(year):
+            print(f"    ❌ cross-verify FAIL for {year} — 数据可能不一致, 请检查")
     print(f"\nTotal imported: {total}")
     con = duckdb.connect(str(DB_PATH), read_only=True)
     for r in con.execute("SELECT year, COUNT(*) FROM exam_questions WHERE year >= 2024 GROUP BY 1").fetchall():
