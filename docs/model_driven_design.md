@@ -317,10 +317,23 @@ scripts/tools/
 | 2022 | GAOKAO-Bench (16 条) | — | ✅ 含解析 |
 | 2021 | GAOKAO-Bench (16 条) | — | ✅ 含解析 |
 
-### 8.3 数据刷新频率
+### 8.3 入库前交叉核对 (强制)
+
+**任何新数据入库前, 必须跑 `cross_verify_pdf.py`**:
+- 结构化数据的关键词必须在 PDF 原文中出现 (match_rate ≥ 60%)
+- 任一条 fail → 拒绝入库, 查明是数据错还是 PDF 错
+- 核对报告存 `data/reports/cross_verify_{year}.json`
+
+当前核对状态:
+- 2020: 24/24 PASS (GAOKAO-Bench vs PDF)
+- 2024: 6/6 PASS (GAOKAO-Bench-Updates vs PDF)
+- 后续每个新年份入库时自动核对
+
+### 8.4 数据刷新频率
 
 - **每年 7 月**: 新高考后 1 个月内入库 (PDF + 结构化双源)
-- **入库后立即**: re-run pattern_extractor + trend_engine + 全系统审计
+- **入库前**: cross_verify_pdf.py 核对 → PASS 才入库
+- **入库后**: re-run pattern_extractor + trend_engine + 全系统审计
 
 ---
 

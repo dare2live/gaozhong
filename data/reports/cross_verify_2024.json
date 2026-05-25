@@ -1,0 +1,107 @@
+{
+  "year": 2024,
+  "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/cdn_zgkao_com/zgkao_2024_xgkii_english__english_2024.pdf",
+  "pdf_chars": 27475,
+  "pdf_unique_words": 1141,
+  "structured_entries": 0,
+  "jsonl_entries": 6,
+  "checks": [
+    {
+      "qid": "GAOKAO-Bench-Updates/2024_English_Cloze_Test.json",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Overtourism",
+        "Real",
+        "Help",
+        "Travel",
+        "promotes"
+      ]
+    },
+    {
+      "qid": "GAOKAO-Bench-Updates/2024_English_Fill_in_Blanks.json",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "When",
+        "decided",
+        "house",
+        "Europe",
+        "years"
+      ]
+    },
+    {
+      "qid": "GAOKAO-Bench-Updates/2024_English_Reading_Comp.json",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Choice",
+        "Walks",
+        "Beginner",
+        "Experienced",
+        "Walkers"
+      ]
+    },
+    {
+      "qid": "GAOKAO-Bench-Updates/2024_English_Reading_Comp.json",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "ever",
+        "train",
+        "station",
+        "realize",
+        "forgot"
+      ]
+    },
+    {
+      "qid": "GAOKAO-Bench-Updates/2024_English_Reading_Comp.json",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "know",
+        "fresh",
+        "best",
+        "when",
+        "comes"
+      ]
+    },
+    {
+      "qid": "GAOKAO-Bench-Updates/2024_English_Reading_Comp.json",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Given",
+        "astonishing",
+        "potential",
+        "transform",
+        "lives"
+      ]
+    }
+  ],
+  "summary": {
+    "pass": 6,
+    "warn": 0,
+    "fail": 0,
+    "skip": 0
+  },
+  "overall": "PASS"
+}

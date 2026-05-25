@@ -1,0 +1,377 @@
+{
+  "year": 2020,
+  "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/scmlzx_net/scmlzx_english_2017_rev2020__english_2020.pdf",
+  "pdf_chars": 161448,
+  "pdf_unique_words": 3554,
+  "structured_entries": 24,
+  "jsonl_entries": 0,
+  "checks": [
+    {
+      "qid": "gb/2012-2022_English_Cloze_Test/19",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "Tips",
+        "Self",
+        "Acceptance",
+        "want",
+        "accept"
+      ]
+    },
+    {
+      "qid": "gb/2012-2022_English_Cloze_Test/20",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "Emoji",
+        "Workplace",
+        "Communication",
+        "Asia",
+        "messaging"
+      ]
+    },
+    {
+      "qid": "gb/2012-2022_English_Cloze_Test/21",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "housewarming",
+        "party",
+        "special",
+        "party",
+        "held"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/96",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "Train",
+        "Information",
+        "customers",
+        "travelling",
+        "TransLink"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/97",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "Returning",
+        "book",
+        "read",
+        "many",
+        "times"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/98",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.6,
+      "matched_words": 12,
+      "total_words": 20,
+      "sample_words": [
+        "Race",
+        "walking",
+        "shares",
+        "many",
+        "fitness"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/99",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "connection",
+        "between",
+        "people",
+        "plants",
+        "long"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/100",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.6,
+      "matched_words": 12,
+      "total_words": 20,
+      "sample_words": [
+        "Lake",
+        "District",
+        "Attractions",
+        "Guide",
+        "Dalemain"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/101",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.8,
+      "matched_words": 16,
+      "total_words": 20,
+      "sample_words": [
+        "Some",
+        "parents",
+        "will",
+        "high",
+        "tech"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/102",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.8,
+      "matched_words": 16,
+      "total_words": 20,
+      "sample_words": [
+        "When",
+        "were",
+        "trying",
+        "figure",
+        "what"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/103",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.8,
+      "matched_words": 16,
+      "total_words": 20,
+      "sample_words": [
+        "have",
+        "special",
+        "place",
+        "heart",
+        "libraries"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/104",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "Journey",
+        "Back",
+        "Time",
+        "with",
+        "Scholars"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/105",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "When",
+        "Rise",
+        "Planet",
+        "Apes",
+        "first"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/106",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "With",
+        "young",
+        "unable",
+        "afford",
+        "leave"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Reading_Comp/107",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 0.6,
+      "matched_words": 12,
+      "total_words": 20,
+      "sample_words": [
+        "products",
+        "evolution",
+        "just",
+        "evolution",
+        "that"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Fill_in_Blanks/23",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "Since",
+        "twins",
+        "began",
+        "learning",
+        "walk"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Fill_in_Blanks/24",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "just",
+        "after",
+        "sunrise",
+        "June",
+        "morning"
+      ]
+    },
+    {
+      "qid": "gb/2010-2022_English_Fill_in_Blanks/25",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 0.7,
+      "matched_words": 14,
+      "total_words": 20,
+      "sample_words": [
+        "businesswoman",
+        "care",
+        "deeply",
+        "about",
+        "customers"
+      ]
+    },
+    {
+      "qid": "gb/2012-2022_English_Language_Error_Correction/19",
+      "type": "短文改错",
+      "match": "pass",
+      "match_rate": 0.65,
+      "matched_words": 13,
+      "total_words": 20,
+      "sample_words": [
+        "Today",
+        "tried",
+        "cooking",
+        "simply",
+        "dish"
+      ]
+    },
+    {
+      "qid": "gb/2012-2022_English_Language_Error_Correction/20",
+      "type": "短文改错",
+      "match": "pass",
+      "match_rate": 0.9,
+      "matched_words": 18,
+      "total_words": 20,
+      "sample_words": [
+        "Thank",
+        "your",
+        "letter",
+        "what",
+        "really"
+      ]
+    },
+    {
+      "qid": "gb/2012-2022_English_Language_Error_Correction/21",
+      "type": "短文改错",
+      "match": "pass",
+      "match_rate": 0.85,
+      "matched_words": 17,
+      "total_words": 20,
+      "sample_words": [
+        "really",
+        "concerning",
+        "with",
+        "health",
+        "everyone"
+      ]
+    },
+    {
+      "qid": "gb/2014-2022_English_Language_Cloze_Passage/16",
+      "type": "语法填空",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "China",
+        "become",
+        "first",
+        "country",
+        "land"
+      ]
+    },
+    {
+      "qid": "gb/2014-2022_English_Language_Cloze_Passage/17",
+      "type": "语法填空",
+      "match": "pass",
+      "match_rate": 0.65,
+      "matched_words": 13,
+      "total_words": 20,
+      "sample_words": [
+        "Decorating",
+        "with",
+        "Plants",
+        "Fruits",
+        "Flowers"
+      ]
+    },
+    {
+      "qid": "gb/2014-2022_English_Language_Cloze_Passage/18",
+      "type": "语法填空",
+      "match": "pass",
+      "match_rate": 0.75,
+      "matched_words": 15,
+      "total_words": 20,
+      "sample_words": [
+        "ancient",
+        "China",
+        "lived",
+        "artist",
+        "paintings"
+      ]
+    }
+  ],
+  "summary": {
+    "pass": 24,
+    "warn": 0,
+    "fail": 0,
+    "skip": 0
+  },
+  "overall": "PASS"
+}

@@ -1,0 +1,16 @@
+{
+  "year": 2025,
+  "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/jhgk_cn/jhgk_2025_xgkii_english__english_2025.pdf",
+  "pdf_chars": 28255,
+  "pdf_unique_words": 1122,
+  "structured_entries": 0,
+  "jsonl_entries": 0,
+  "checks": [],
+  "summary": {
+    "pass": 0,
+    "warn": 0,
+    "fail": 0,
+    "skip": 0
+  },
+  "overall": "PASS"
+}
