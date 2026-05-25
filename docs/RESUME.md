@@ -4,7 +4,7 @@
 > 新 session 一打开, 先读本文件 + `goal.md` 顶部 D0, 立即接上.
 
 最后停止时间: **2026-05-25**
-最后 commit: **`350ffed`** feat(7.1 COMPLETE): G3 全10节 — 40/40
+最后 commit: **`15e1bd2`** fix(init_db): 写作题入库
 
 ---
 
