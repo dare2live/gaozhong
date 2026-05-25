@@ -644,17 +644,117 @@ scripts/batch_enrich.py  ← 批量跑 40 节 (支持断点续传)
 
 **存储**: question_bank 扩 question_type='续写'/'应用文', stem=题目要求, answer=范文, analysis=评分维度+解析
 
-### 7.4 题目质量升级 (P1, 估 2 天)
+### 7.4 题目质量升级 + 模型驱动对齐 (P0, 估 3-4 天)
 
-> **目标**: 从"机械挖空"升级到"有语境的真题质量".
+> **目标**: 从"机械挖空"升级到"紧贴真题命题思路". 不是"写得通顺", 是"像高考一样出题".
+> **核心方法**: 先用 `exam_alignment_checker.py` 量化偏离, 再用 Optuna 搜索最优生成参数, 最后人工抽检.
 
-| # | 改进 |
-|---|---|
-| 7.4.A | rule_synth 175 题重审: 保留有价值的, 标记/替换低质的 |
-| 7.4.B | LLM 生成完形填空 (5 篇 × 15 空 = 75 新题, 按主题分) |
-| 7.4.C | LLM 生成语法填空 (10 篇 × 10 空 = 100 新题) |
-| 7.4.D | 阅读理解长文入库 (从真题 PDF 提取 + LLM 改编) |
-| 7.4.E | 干扰项质量: LLM 生成合理干扰 (同词性/近义/常混淆) |
+#### 7.4.0 已有基础设施 (本 session 已建)
+
+| 工具 | 路径 | 作用 |
+|---|---|---|
+| 考试对齐度检测器 | `scripts/exam_alignment_checker.py` | 8 维度 0-100 分, `--json` 供 Optuna |
+| 真题解析库 | `exam_questions` 表 (358 题, 全含解析) | 命题模式参考 ground truth |
+| 当前基线 | 综合 **75.8/100** | 6 维过线, 2 维待优化 (难度 44.5, 话题 17.8) |
+
+#### 7.4.1 Optuna 搜索最优生成参数
+
+**目标**: 用 Optuna 自动搜索题目生成的最优参数组合, 使 `exam_alignment_checker --json` 的 `overall.score` 最大化.
+
+```python
+# scripts/optuna_question_optimizer.py (待建)
+import optuna
+
+def objective(trial):
+    # 搜索空间
+    difficulty_ratio_hard = trial.suggest_float("hard_ratio", 0.4, 0.8)
+    difficulty_ratio_mid  = trial.suggest_float("mid_ratio", 0.15, 0.5)
+    topic_source          = trial.suggest_categorical("topic", ["curriculum", "exam_freq", "mixed"])
+    stem_length_words     = trial.suggest_int("stem_len", 30, 120)
+    distractor_strategy   = trial.suggest_categorical("distractor", ["same_pos", "synonym", "collocation"])
+    analysis_min_chars    = trial.suggest_int("analysis_min", 50, 200)
+
+    # 按参数生成一批题 → 写入临时 DB → 跑 exam_alignment_checker --json
+    # 返回 overall score (Optuna maximize)
+    ...
+    return overall_score
+
+study = optuna.create_study(direction="maximize",
+    storage="sqlite:///data/reports/optuna/question_quality.db")
+study.optimize(objective, n_trials=100)
+```
+
+**搜索维度**:
+
+| 参数 | 范围 | 影响的对齐维度 |
+|---|---|---|
+| `hard_ratio` | 0.4–0.8 | 难度分布偏离 (当前 44.5) |
+| `mid_ratio` | 0.15–0.5 | 难度分布偏离 |
+| `topic_source` | curriculum / exam_freq / mixed | 话题对齐 (当前 17.8) |
+| `stem_len` | 30–120 词 | 词汇重叠度 |
+| `distractor` | same_pos / synonym / collocation | 干扰项质量 |
+| `analysis_min` | 50–200 chars | 解析完整度 |
+| `scenario_count` | 2–5 | 听力技能覆盖 |
+
+#### 7.4.2 rule_synth 替换 (Optuna 参数落地)
+
+| # | 任务 | 对齐维度 |
+|---|---|---|
+| 7.4.A | rule_synth 175 题重审 — Optuna 最优 `hard_ratio` 过滤, 保留 ≥mid 的, 淘汰纯 easy 挖空 | 难度偏离 44→70+ |
+| 7.4.B | LLM 生成完形填空 (5 篇 × 15 空 = 75 题) — prompt 注入真题 analysis 风格 + Optuna 最优 `stem_len` | 词汇重叠 + 难度 |
+| 7.4.C | LLM 生成语法填空 (10 篇 × 10 空 = 100 题) — 从真题 grammar tag 高频考点出发 | 考点覆盖 |
+| 7.4.D | 阅读理解长文 (从真题 PDF 提取 + LLM 改编) — 保留真题 topic 标签 | 话题对齐 17→50+ |
+| 7.4.E | 干扰项升级 — Optuna 最优 `distractor` 策略 (同词性/近义/搭配) | 实质题目质量 |
+
+#### 7.4.3 话题对齐优化
+
+当前偏离根因: 听力/写作场景没有显式对齐课标 10 大主题群.
+
+| 课标主题群 | 当前覆盖 | 优化方案 |
+|---|---|---|
+| 人与自我 (学习/生活/职业) | 部分 | 听力: 增学校/职业场景 |
+| 人与社会 (文化/科技/公益) | 部分 | 写作: 增志愿/文化交流题 |
+| 人与自然 (环保/科学/自然) | 弱 | 听力独白: 增科普主题 |
+
+实施: 每道新题 `stem` 必须命中 ≥1 课标主题关键词 (exam_alignment_checker 自动检验).
+
+#### 7.4.4 监控闭环 (持续运行, 不靠人盯)
+
+```
+生成/修改题目
+    ↓
+exam_alignment_checker.py --json
+    ↓ 8 维度评分
+    ├─ overall ≥ 80 → ✅ 入库
+    ├─ overall 55-80 → ⚠️ 标记 + 人工 review
+    └─ overall < 55  → ❌ 拒绝入库
+    ↓
+    定期回归 (init_db 后自动跑)
+    ↓
+    Optuna dashboard (data/reports/optuna/question_quality.db)
+    ├─ best trial 参数 → 更新 backend/config/generation_params.yaml
+    └─ 趋势图: 每次生成的对齐度是否在涨
+```
+
+**集成点**:
+
+| 集成 | 方式 | 触发 |
+|---|---|---|
+| init_db 后自动跑 | `scripts/init_db.py` 末尾调 `exam_alignment_checker.run_all()` | 每次重建 DB |
+| Stop hook 集成 | `stop_gate.sh` 检测 overall < 55 时 WARN | 每次 session 结束 |
+| CI/commit hook | `pre-commit` 检测新增 `_exercise.yaml` 时自动跑 | 内容变更 |
+| Optuna 周期寻优 | `scripts/optuna_question_optimizer.py` cron 或手动 | 周 1 次 |
+
+#### 7.4.5 验收门 (7.4 完成标准)
+
+| # | 指标 | 目标 | 方法 |
+|---|---|---|---|
+| 1 | 题库总量 | ≥ 700 题 | 新增 ~120 (完形 75 + 语法填空 100 - 淘汰 rule_synth ~55) |
+| 2 | exam_alignment overall | ≥ 80 | Optuna 搜索 + 手动调优 |
+| 3 | 难度分布偏离 | ≥ 65 | hard_ratio ≥ 0.5 for 新增题 |
+| 4 | 话题对齐 | ≥ 50 | 每题命中 ≥1 课标主题 |
+| 5 | 解析完整度 | ≥ 85 | 每题 analysis ≥ 80 chars |
+| 6 | Optuna study | best_value ≥ 80, ≥ 50 trials | 寻优跑完 + best 参数落 yaml |
 
 ### 7.5 交互式前端 (P1, 估 2-3 天)
 
@@ -692,14 +792,17 @@ scripts/batch_enrich.py  ← 批量跑 40 节 (支持断点续传)
 | # | 门 | 标准 | 状态 |
 |---|---|---|---|
 | 1 | 讲义内容量 | 40 节 avg ≥5000 字符, 7 段完整 | ✅ 40/40 完成, 总 ~180K chars |
-| 2 | 听力 | ≥20 题 has_audio=true + transcript | 🔲 待做 |
-| 3 | 续写+应用文 | ≥10 续写 + 10 应用文 (含范文+评分) | 🔲 待做 |
-| 4 | 题目总量 | ≥700 题 (升级 rule_synth + 新增) | 🔲 待做 (现 533) |
+| 2 | 听力 | ≥20 题 has_audio=true + transcript | ✅ 25 题 (短 10+长 9+独白 6) |
+| 3 | 续写+应用文 | ≥10 续写 + 10 应用文 (含范文+评分) | ✅ 续写 10 + 应用文 10 |
+| 4 | 题目总量 | ≥700 题 (升级 rule_synth + 新增) | 🔲 578→700+ (需 ~120) |
 | 5 | R2/R5 audit | 0 FAIL (生成后) | ✅ 0 FAIL, 超纲词=0 |
 | 6 | 真人验证 | 1 人完整走通 + feedback 入档 | 🔲 待做 |
 | 7 | Quiz mode | 学生可在前端做题 + 即时反馈 | 🔲 待做 |
 | 8 | CC baseline | ≤ 8 (不涨) | ✅ CC=8 |
-| 9 | D0 100% | 全部检查通过 (含新增 check) | ✅ 19 章全绿 |
+| 9 | D0 100% | 全部检查通过 (含新增 check) | ✅ 20 章全绿 |
+| **10** | **考试对齐度** | **exam_alignment overall ≥ 80** | **🔲 当前 75.8 (难度 44.5 + 话题 17.8 待升)** |
+| **11** | **Optuna 寻优** | **best_value ≥ 80, ≥ 50 trials** | **🔲 待建 optuna_optimizer.py** |
+| **12** | **工具模块** | **scripts/tools/ 4 子目录, P0 工具全建** | **🔲 待建 (7.11 方案已定)** |
 
 ### 7.9 实施顺序 (按 ROI + 依赖)
 
@@ -716,15 +819,33 @@ Week 1:  7.1 充实讲义 ✅ DONE (40/40 节, 180K+ chars, 超纲词=0)
          ├─ content_principles.yaml 生成原则 ✅
          └─ 前端讲义分段渲染 ✅
 
-Week 2:  7.2 听力 + 7.3 续写/应用文 ← 当前
-         ├─ 听力: transcript 收集 + 入库
-         └─ 续写: 真题整理 + 写范文
+Week 2:  7.2 听力 + 7.3 续写/应用文 ✅ DONE
+         ├─ 听力: 25 题入库 (短对话+长对话+独白, 全 transcript)
+         ├─ audio_config.yaml + 命名规范 + /api/listening API
+         ├─ 前端: 播放器 (<audio>+play/pause/speed) + C tab 听力面板
+         ├─ 前端: @media print + 打印按钮
+         ├─ 续写: 10 题 + 范文 + 评分维度
+         ├─ 应用文: 10 篇 (邀请/感谢/通知/建议/推荐/回信/申请/报道)
+         └─ D0: 20 章 45+ 项, 0 FAIL / 0 WARN
 
-Week 3:  7.4 题目升级 + 7.5 交互前端
-         ├─ 高质量新题生成
-         └─ Quiz mode + 进度条 + 年级标注 tooltip
+Week 3:  7.4 模型驱动题目升级 + 7.11 工具模块 P0 ← 当前
+         ├─ scripts/tools/ 目录结构 + __init__.py
+         ├─ tools/generation/optuna_optimizer.py (Optuna 寻优)
+         ├─ tools/generation/llm_question_gen.py (LLM 批量出题)
+         ├─ tools/alignment/topic_gap_analyzer.py (主题缺口)
+         ├─ rule_synth 淘汰 + LLM 新增 (完形 75 + 语法填空 100)
+         └─ exam_alignment overall → 80+
 
-Week 4:  7.6 真人验证 + 修 bug + 7.7 管线
+Week 3b: 7.5 交互前端 + 7.11 工具模块 P1
+         ├─ Quiz mode + 进度条 + 年级标注 tooltip
+         ├─ tools/alignment/difficulty_profiler.py
+         └─ tools/audit/ground_truth_validator.py
+
+Week 4:  7.6 真人验证 + 7.7 管线 + 7.11 工具模块 P2
+         ├─ 真人验证 + 修 bug
+         ├─ tools/audit/content_drift_detector.py
+         ├─ tools/audit/batch_regression_test.py
+         ├─ tools/monitor/quality_dashboard.py
          └─ 收尾 + 文档闭环
 ```
 
@@ -732,23 +853,229 @@ Week 4:  7.6 真人验证 + 修 bug + 7.7 管线
 
 **现有架构可扩展点** (codegraph context 2026-05-25):
 ```
-扩展模块:
-  backend/services/course/llm_enrich.py   ← 新 (调 Claude API)
-  backend/services/course/listening.py    ← 新 (听力管理)
-  backend/services/course/writing.py      ← 新 (续写/应用文)
-  backend/config/llm_prompts.yaml         ← 新 (M3 外置)
-  scripts/batch_enrich.py                 ← 新 (批量 LLM)
+已建 (Phase 7.2/7.3):
+  backend/services/course/listening.py    ✅ 听力加载 (82L, CC≤7)
+  backend/services/course/writing.py      ✅ 写作加载 (35L, CC≤4)
+  backend/api/routes/listening.py         ✅ 听力 API (81L, CC≤6)
+  backend/config/audio_config.yaml        ✅ 音频命名规范
+  backend/config/listening_exercises.yaml ✅ 25 题听力数据
+  scripts/exam_alignment_checker.py       ✅ 8 维度对齐检测 (399L, CC≤9)
+
+待建 (Phase 7.4):
+  scripts/optuna_question_optimizer.py    ← Optuna 寻优 (搜索生成参数)
+  backend/config/generation_params.yaml   ← Optuna best 参数落地
+  backend/services/course/llm_enrich.py   ← LLM 批量生成 (调 Claude API)
+  backend/config/llm_prompts.yaml         ← 生成 prompt 模板 (M3 外置)
 
 已有可复用:
-  course/handout.py:render_handout        ← 现有 7 段渲染, 扩展不替换
-  course/lexicon_filter.py                ← R5 词汇白名单, LLM prompt 注入
-  course/scenarios.py:check_textbook_overlap ← R2 检查, 生成后调用
-  placement/followup.py                   ← 弱点 drill 可复用
-
-Complexity baseline (2026-05-25):
-  449 funcs / 8 CC>10 / 107 py files / 7 js files
-  新增模块目标: 每模块 ≤ 150 行, CC ≤ 8
+  course/handout.py:render_handout        ← 7 段渲染
+  course/lexicon_filter.py                ← R5 词汇白名单
+  course/scenarios.py:check_textbook_overlap ← R2 检查
+  placement/followup.py                   ← 弱点 drill
 ```
+
+**模型应用 + 监控架构** (用户 2026-05-25 决策):
+```
+┌─────────────────────────────────────────────────────┐
+│  Optuna Study (question_quality.db)                 │
+│  ├─ 搜索空间: hard_ratio / topic / distractor / ... │
+│  ├─ objective: exam_alignment_checker --json        │
+│  └─ best_params → generation_params.yaml            │
+└────────────────────────┬────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│  LLM 生成 (Claude API / llm_enrich.py)              │
+│  ├─ prompt 模板: llm_prompts.yaml                   │
+│  ├─ 参数注入: generation_params.yaml                 │
+│  ├─ 约束注入: R2/R5 词表 + 课标主题 + 真题 analysis │
+│  └─ 输出: *_exercises.yaml                          │
+└────────────────────────┬────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│  对齐检测 (exam_alignment_checker.py)               │
+│  ├─ 8 维度 0-100 评分 (题型/难度/词汇/话题/...)     │
+│  ├─ overall ≥ 80 → 入库  /  < 55 → 拒绝            │
+│  └─ JSON 输出 → Optuna objective 反馈环              │
+└────────────────────────┬────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│  持续监控 (闭环)                                     │
+│  ├─ init_db 后自动跑对齐检测                         │
+│  ├─ stop_gate 集成 (overall < 55 → WARN)             │
+│  ├─ Optuna dashboard (趋势: 每批对齐度是否在涨)      │
+│  └─ D0 校验: data_accuracy_check 第 19 章            │
+└─────────────────────────────────────────────────────┘
+```
+
+### 7.11 工具模块 — 模型 + 审计 + 监控 (可复用基础设施)
+
+> **定位**: 不是一次性脚本, 是**长期运行的质量基础设施**. 每次加内容、改模型、换参数, 都自动过这套工具.
+> **路径**: `scripts/tools/` (独立 module, 可 `import` 也可 CLI 单跑)
+
+#### A. 工具总览
+
+```
+scripts/tools/
+├── __init__.py
+│
+├── alignment/                        # 对齐检测 (内容 vs 真题)
+│   ├── exam_alignment_checker.py     ✅ 已建 — 8 维度综合评分
+│   ├── topic_gap_analyzer.py         🔲 待建 — 课标主题群覆盖缺口分析
+│   └── difficulty_profiler.py        🔲 待建 — 难度曲线 vs 真题分布对比
+│
+├── generation/                       # 模型驱动生成
+│   ├── optuna_optimizer.py           🔲 待建 — Optuna 寻优 (搜索生成参数)
+│   ├── llm_question_gen.py           🔲 待建 — LLM 出题 (Claude API)
+│   └── distractor_ranker.py          🔲 待建 — 干扰项质量排序
+│
+├── audit/                            # 模型审计 (生成物回溯 + 合规)
+│   ├── content_drift_detector.py     🔲 待建 — 内容漂移检测
+│   ├── ground_truth_validator.py     🔲 待建 — 生成题 vs 真题 ground truth
+│   └── batch_regression_test.py      🔲 待建 — 批次回归测试
+│
+└── monitor/                          # 持续监控 (指标 + 告警)
+    ├── quality_dashboard.py          🔲 待建 — 质量仪表盘 (趋势 + 告警)
+    └── optuna_reporter.py            🔲 待建 — Optuna study 摘要报告
+```
+
+#### B. 对齐检测工具 (`alignment/`)
+
+| 工具 | 输入 | 输出 | 用途 |
+|---|---|---|---|
+| **exam_alignment_checker** ✅ | DB (question_bank) | 8 维度 0-100 + JSON | 综合偏离度, Optuna objective |
+| **topic_gap_analyzer** 🔲 | DB + theme_contexts | 课标 10 主题群 × 题量矩阵 + 缺口列表 | 发现"哪类主题没题", 指导下一批生成方向 |
+| **difficulty_profiler** 🔲 | DB + exam_questions | 真题难度曲线 (按题型×年份) vs 生成题分布图 | 可视化难度偏移, 定位具体题型的偏差 |
+
+**topic_gap_analyzer 设计**:
+```python
+# 输入: DB 中 question_bank (所有 origin) + theme_contexts (课标 3 大 × 10 主题群)
+# 输出: {theme: {real_count, gen_count, gap_score, suggested_n}}
+# gap_score = (真题中该主题占比 - 生成题中该主题占比) 归一化
+# suggested_n = 下一批应生成该主题多少题
+```
+
+**difficulty_profiler 设计**:
+```python
+# 按题型分组:
+#   真题 hard:mid:easy 比例 → 目标分布
+#   生成题 hard:mid:easy 比例 → 当前分布
+#   输出 per-type 偏离度 + 建议调整
+# 可选: matplotlib 输出 difficulty_profile.png 到 data/reports/
+```
+
+#### C. 模型生成工具 (`generation/`)
+
+| 工具 | 输入 | 输出 | 用途 |
+|---|---|---|---|
+| **optuna_optimizer** 🔲 | 搜索空间定义 + exam_alignment_checker | best_params (yaml) + study.db | 自动搜最优生成参数 |
+| **llm_question_gen** 🔲 | generation_params.yaml + prompt 模板 + 词表 | *_exercises.yaml | 按最优参数批量生成题目 |
+| **distractor_ranker** 🔲 | 正确答案 + 候选干扰项 | 排序后的干扰项 (按混淆度) | 干扰项不能太假也不能歧义 |
+
+**optuna_optimizer 核心循环**:
+```
+for trial in study:
+    params = trial.suggest(搜索空间)
+         ↓
+    生成一批题 (llm_question_gen, params)
+         ↓
+    写入临时 DB
+         ↓
+    score = exam_alignment_checker(临时 DB, --json).overall
+         ↓
+    return score  → Optuna 记录并寻下一组
+```
+
+**llm_question_gen prompt 约束注入** (每次生成必带):
+```yaml
+constraints:
+  R2_no_textbook_copy: true       # 10-gram 不与教材重叠
+  R5_vocab_whitelist: "{layer}"   # 词 ⊆ 对应年级词表
+  curriculum_theme: "{theme}"     # 必须命中指定课标主题
+  difficulty_target: "{hard_ratio}" # Optuna 给的最优难度比
+  analysis_required: true         # 每题必带 ≥80 chars 解析
+  exam_style_reference: true      # prompt 附带真题 analysis 样本
+```
+
+#### D. 模型审计工具 (`audit/`)
+
+| 工具 | 审计什么 | 触发时机 | 输出 |
+|---|---|---|---|
+| **content_drift_detector** 🔲 | 最近一批生成 vs 历史均值: 词频漂移 / 难度漂移 / 主题漂移 | 每次 batch 生成后 | drift_report.json (per-dimension Δ) |
+| **ground_truth_validator** 🔲 | 随机抽 N 道生成题, 与真题对比: 题面合理性 / 答案唯一性 / 解析逻辑 | 每次入库前 | pass/fail + 问题题目 list |
+| **batch_regression_test** 🔲 | 新一批入库后, overall 是否比上一批降了 | 每次 init_db 后 | regression=true/false + Δscore |
+
+**content_drift_detector 设计**:
+```python
+# 对比窗口: 最近 batch (origin_ref LIKE 'listening/%') vs 全量历史
+# 检测维度:
+#   - 词频 top-100 的 Jensen-Shannon 散度
+#   - 难度分布的 chi-squared 检验
+#   - 主题分布的 cosine 距离
+# 阈值: JSD > 0.1 → WARN, > 0.2 → FAIL
+# 用途: 防止"新一批题风格突变, 与之前不一致"
+```
+
+**ground_truth_validator 设计**:
+```python
+# 随机抽 10 道生成题, 逐题检查:
+#   1. stem 语法正确 (简单规则: 句号结尾, 选项 A/B/C 齐全)
+#   2. answer 在 options 中 (选择题)
+#   3. analysis 非空 + 含关键词 (eg "因此选 X")
+#   4. transcript 非空 (听力题)
+#   5. 范文词数在 80-200 (应用文) / 100-300 (续写)
+# 全过 → OK; 任一 fail → 标记 + 人工 review queue
+```
+
+#### E. 持续监控工具 (`monitor/`)
+
+| 工具 | 监控什么 | 输出 | 集成点 |
+|---|---|---|---|
+| **quality_dashboard** 🔲 | 8 维度历史趋势 + 当前状态 + 告警 | HTML 报告 / terminal 表格 | 前端 D tab 嵌入 (可选) |
+| **optuna_reporter** 🔲 | study 进度 / best trial / 参数分布 / 收敛曲线 | 摘要 text + 图表 | session 开始时自动汇报 |
+
+**quality_dashboard 数据源**:
+```
+data/reports/alignment/
+├── 2026-05-25_init.json     ← 每次 init_db 后自动写
+├── 2026-05-26_batch1.json
+├── 2026-05-26_batch2.json
+└── ...
+```
+每次跑 `exam_alignment_checker --json` 的结果追加保存, dashboard 读历史绘趋势.
+
+**告警规则**:
+```yaml
+alerts:
+  overall_drop:    "overall 比上次降 ≥ 5 分"
+  dimension_fail:  "任一维度首次从 pass → fail"
+  drift_detected:  "content_drift JSD > 0.15"
+  regression:      "batch_regression_test = true"
+```
+
+#### F. 工具模块设计原则
+
+| # | 原则 | 实施 |
+|---|---|---|
+| T1 | **每工具可独立 CLI 跑** | `python3 scripts/tools/alignment/topic_gap_analyzer.py --json` |
+| T2 | **也可 import 调用** | `from scripts.tools.alignment import topic_gap_analyzer; result = topic_gap_analyzer.run(con)` |
+| T3 | **JSON 输出标准化** | 每工具输出 `{"score": float, "pass": bool, "detail": str, ...}` |
+| T4 | **零新依赖** | stdlib + duckdb + yaml + optuna (optuna 仅 generation/ 用) |
+| T5 | **每工具 ≤ 400L, CC ≤ 10** | 大工具拆子模块 |
+| T6 | **结果可追溯** | 每次运行写 `data/reports/{tool_name}/{timestamp}.json` |
+| T7 | **与现有 hook 集成** | stop_gate 可调任一工具; init_db 末尾可选跑全套 |
+
+#### G. 实施优先级
+
+| 批次 | 工具 | 依赖 | 估时 |
+|---|---|---|---|
+| **P0 (Week 3)** | optuna_optimizer + llm_question_gen | exam_alignment_checker ✅ | 1-2 天 |
+| **P0 (Week 3)** | topic_gap_analyzer | DB theme_contexts | 半天 |
+| **P1 (Week 3b)** | difficulty_profiler | DB exam_questions | 半天 |
+| **P1 (Week 3b)** | ground_truth_validator | 生成题 yaml | 半天 |
+| **P2 (Week 4)** | content_drift_detector | 历史 alignment 报告 | 半天 |
+| **P2 (Week 4)** | batch_regression_test | 历史 alignment 报告 | 半天 |
+| **P2 (Week 4)** | quality_dashboard + optuna_reporter | 全部上游 | 1 天 |
+| **P3 (后续)** | distractor_ranker | LLM API | 半天 |
 
 ---
 

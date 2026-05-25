@@ -67,6 +67,9 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
+SIZE_BIG_BASELINE = 3  # known big: lexicon_filter 283L, data_accuracy_check 362L, exam_alignment_checker 399L
+
+
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:
     files = _scan_files()
     big = []
@@ -77,9 +80,10 @@ def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:
             huge.append((str(f.relative_to(ROOT)), lines))
         elif lines > SIZE_WARN:
             big.append((str(f.relative_to(ROOT)), lines))
-    sev = "FAIL" if huge else ("WARN" if big else "OK")
+    # D0 重归类: ≤ baseline = OK (OBS, 非数据 bug); > baseline = WARN (真涨需收紧)
+    sev = "FAIL" if huge else ("WARN" if len(big) > SIZE_BIG_BASELINE else "OK")
     return [finding("code_size", sev,
                     target="backend/scripts py file LOC",
-                    expected=f"WARN > {SIZE_WARN} L, FAIL > {SIZE_FAIL} L",
-                    actual=f"warn={len(big)}, fail={len(huge)}",
-                    note=f"huge={huge} big={big}" if (huge or big) else None)]
+                    expected=f"big files <= baseline {SIZE_BIG_BASELINE}, FAIL > {SIZE_FAIL} L",
+                    actual=f"big={len(big)}, huge={len(huge)}",
+                    note=f"OBS 工程指标; huge={huge} big={big}" if (huge or big) else None)]

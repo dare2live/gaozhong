@@ -1,0 +1,420 @@
+# 听力练习库 — Phase 7.2
+# 入库为 question_bank, question_type='听力短对话'/'听力长对话'/'听力独白'
+# 每题: stem=题目+选项, answer=正确答案, transcript=听力原文
+# 模仿新课标 II 卷 (辽宁) 结构, 原创内容 (非真题翻版)
+#
+# 词汇约束: 所有英文词 ⊆ 课标 3500 + 初中 1600 (G_FINAL layer)
+# 语速: 正常偏慢 (~140 wpm), 适合高中生
+
+version: "1.0"
+updated: "2026-05-25"
+
+# ================================================================
+# Section A: 短对话 (5 段, 各 1 题) — 模拟 2024 新课标 II 卷风格
+# ================================================================
+short_dialogs:
+
+  - id: "listening/short/001"
+    section: A
+    difficulty: mid
+    audio_id: "2024/listening/short_01"
+    audio_duration: 18
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: Excuse me, could you tell me where the nearest post office is?
+      M: Sure. Go straight ahead and turn left at the second traffic light. You'll see it next to the bank.
+    stem: |
+      Where does the woman want to go?
+      A. A bank.
+      B. A post office.
+      C. A traffic light.
+    answer: "B"
+    analysis: "女士问 nearest post office, 直接信息题."
+
+  - id: "listening/short/002"
+    section: A
+    difficulty: mid
+    audio_id: "2024/listening/short_02"
+    audio_duration: 20
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: I heard you got a new job. Congratulations!
+      W: Thanks! I'll be working at a children's hospital starting next Monday.
+    stem: |
+      Where will the woman work?
+      A. At a school.
+      B. At a children's hospital.
+      C. At a research center.
+    answer: "B"
+    analysis: "children's hospital 直接出现在对话中."
+
+  - id: "listening/short/003"
+    section: A
+    difficulty: mid
+    audio_id: "2024/listening/short_03"
+    audio_duration: 22
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: The weather report says it will rain this afternoon. Should we still go hiking?
+      M: Let's go to the museum instead. We can go hiking next weekend.
+    stem: |
+      What will they probably do this afternoon?
+      A. Go hiking.
+      B. Watch the weather report.
+      C. Visit the museum.
+    answer: "C"
+    analysis: "男士建议去博物馆替代, 需听出 plan change."
+
+  - id: "listening/short/004"
+    section: A
+    difficulty: mid
+    audio_id: "2024/listening/short_04"
+    audio_duration: 19
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: Could I have the bill, please? The dinner was wonderful.
+      W: Of course. That will be 86 yuan in total. Would you like to pay by cash or card?
+    stem: |
+      Where does this conversation most probably take place?
+      A. In a restaurant.
+      B. In a supermarket.
+      C. In a hotel.
+    answer: "A"
+    analysis: "bill + dinner + pay → 餐厅场景推理."
+
+  - id: "listening/short/005"
+    section: A
+    difficulty: mid
+    audio_id: "2024/listening/short_05"
+    audio_duration: 21
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: Tom, have you finished your science project yet?
+      M: Not yet. I've collected all the data, but I still need to write the report. It's due on Friday.
+    stem: |
+      What does Tom still need to do?
+      A. Collect the data.
+      B. Write the report.
+      C. Hand in the project.
+    answer: "B"
+    analysis: "data collected 但 still need to write report — 排除 A."
+
+# ================================================================
+# Section B: 长对话 (2 段, 每段 3 题) — 信息量更大
+# ================================================================
+long_dialogs:
+
+  - id: "listening/dialog/001"
+    section: B
+    difficulty: mid
+    audio_id: "2024/listening/dialog_01"
+    audio_duration: 65
+    speakers:
+      - {id: "W", label: "女 (学生)"}
+      - {id: "M", label: "男 (老师)"}
+    transcript: |
+      W: Mr. Zhang, I'd like to join the school English speech contest. When is the sign-up deadline?
+      M: The deadline is this Friday. But you'll need to prepare a three-minute speech on any topic related to the environment.
+      W: The environment? That sounds interesting. Could I talk about ocean pollution?
+      M: Of course. That's a great choice. The contest will be held in the school hall next Wednesday afternoon.
+      W: I see. Is there anything else I should know?
+      M: Yes, you should bring your own presentation slides. And remember, no reading from notes during the speech.
+      W: Got it. Thank you, Mr. Zhang!
+    questions:
+      - stem: |
+          What is the speech topic about?
+          A. School life.
+          B. The environment.
+          C. Future careers.
+        answer: "B"
+        analysis: "topic related to the environment — 明确说明."
+      - stem: |
+          When will the contest be held?
+          A. This Friday.
+          B. Next Monday.
+          C. Next Wednesday.
+        answer: "C"
+        analysis: "Friday 是报名截止, contest 是 next Wednesday."
+      - stem: |
+          What is NOT allowed during the speech?
+          A. Using slides.
+          B. Reading from notes.
+          C. Choosing your own topic.
+        answer: "B"
+        analysis: "no reading from notes — 否定细节题."
+
+  - id: "listening/dialog/002"
+    section: B
+    difficulty: mid
+    audio_id: "2024/listening/dialog_02"
+    audio_duration: 72
+    speakers:
+      - {id: "M", label: "男 (李华)"}
+      - {id: "W", label: "女 (Sarah)"}
+    transcript: |
+      M: Hi Sarah, I noticed you've been reading a lot of books about space recently.
+      W: Yes! I just finished one about the Mars exploration program. It was really exciting.
+      M: That sounds cool. What interested you the most?
+      W: Well, scientists are trying to grow plants on Mars. They've already done experiments on the International Space Station.
+      M: Really? Why would they want to grow plants there?
+      W: Because if humans ever live on Mars, they'll need fresh food. They can't bring everything from Earth.
+      M: That makes sense. Do you think we'll actually go to Mars one day?
+      W: I believe so. Maybe not in the next ten years, but definitely within our lifetime.
+    questions:
+      - stem: |
+          What book did Sarah just finish?
+          A. A book about the space station.
+          B. A book about Mars exploration.
+          C. A book about growing food.
+        answer: "B"
+        analysis: "Mars exploration program 是书的主题."
+      - stem: |
+          Why do scientists want to grow plants on Mars?
+          A. To do scientific experiments.
+          B. To make Mars look like Earth.
+          C. To provide fresh food for humans.
+        answer: "C"
+        analysis: "they'll need fresh food — 原因推理."
+      - stem: |
+          What does Sarah think about going to Mars?
+          A. It will happen within their lifetime.
+          B. It will happen in the next ten years.
+          C. It will never happen.
+        answer: "A"
+        analysis: "not in ten years, but within our lifetime — 时间判断."
+
+# ================================================================
+# Section B: 独白 (2 段, 每段 3 题) — 信息密度高
+# ================================================================
+monologues:
+
+  - id: "listening/passage/001"
+    section: B
+    difficulty: hard
+    audio_id: "2024/listening/passage_01"
+    audio_duration: 85
+    speakers:
+      - {id: "N", label: "旁白"}
+    transcript: |
+      Good morning, everyone. Welcome to the Shenyang Science Museum. Before we start the tour, let me give you some important information.
+
+      The museum has three floors. The first floor is about natural history, where you can see fossils and models of animals that lived millions of years ago. The second floor is our technology section, with hands-on experiments you can try. The third floor has a special exhibition this month about Chinese space exploration, including a model of the Tiangong space station.
+
+      The tour will last about two hours. We'll start from the first floor and work our way up. Please stay with the group and don't touch the exhibits unless there's a sign that says you can. There's a gift shop on the first floor near the exit.
+
+      If you have any questions during the tour, please don't hesitate to ask. Now, let's begin!
+    questions:
+      - stem: |
+          What is on the second floor?
+          A. Natural history.
+          B. Technology experiments.
+          C. Space exploration.
+        answer: "B"
+        analysis: "second floor = technology section with hands-on experiments."
+      - stem: |
+          What special exhibition is showing this month?
+          A. Ancient fossils.
+          B. Chinese space exploration.
+          C. Modern technology.
+        answer: "B"
+        analysis: "third floor special exhibition = Chinese space exploration."
+      - stem: |
+          How long will the tour last?
+          A. About one hour.
+          B. About two hours.
+          C. About three hours.
+        answer: "B"
+        analysis: "about two hours — 直接信息."
+
+  - id: "listening/passage/002"
+    section: B
+    difficulty: hard
+    audio_id: "2024/listening/passage_02"
+    audio_duration: 90
+    speakers:
+      - {id: "N", label: "旁白"}
+    transcript: |
+      Do you know that reading before bed can improve your sleep quality? A recent study from a British university found that reading for just six minutes can reduce stress levels by up to 68 percent. That's more effective than listening to music or going for a walk.
+
+      The researchers tested different relaxation methods. They measured heart rate and muscle tension in volunteers. Reading came out on top because it requires concentration, which distracts the mind from daily worries.
+
+      However, the study also warns that reading on a phone or tablet screen before bed may actually harm your sleep. The blue light from screens can reduce the production of melatonin, a hormone that helps you fall asleep. So experts suggest reading a paper book instead.
+
+      If you find it hard to fall asleep at night, try picking up a book. Start with just ten minutes a night, and you may notice a difference within a week.
+    questions:
+      - stem: |
+          How much can reading reduce stress according to the study?
+          A. Up to 50 percent.
+          B. Up to 68 percent.
+          C. Up to 80 percent.
+        answer: "B"
+        analysis: "68 percent — 数字细节."
+      - stem: |
+          Why is reading effective for relaxation?
+          A. It makes people tired.
+          B. It requires concentration.
+          C. It is similar to music.
+        answer: "B"
+        analysis: "requires concentration → distracts from worries."
+      - stem: |
+          What do experts suggest for bedtime reading?
+          A. Reading on a phone.
+          B. Reading a paper book.
+          C. Listening to an audiobook.
+        answer: "B"
+        analysis: "paper book 替代 screen — 蓝光影响."
+
+# ================================================================
+# 补充: 更多短对话 (达到 20+ 题库要求)
+# ================================================================
+extra_short_dialogs:
+
+  - id: "listening/short/006"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_01"
+    audio_duration: 17
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: What time does the movie start?
+      W: At 7:30. But we should leave at 7:00 because the theater is a 20-minute drive away.
+    stem: |
+      What time should they leave?
+      A. At 7:00.
+      B. At 7:20.
+      C. At 7:30.
+    answer: "A"
+    analysis: "should leave at 7:00 — 时间推理."
+
+  - id: "listening/short/007"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_02"
+    audio_duration: 19
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: Did you enjoy the basketball game yesterday?
+      M: Yes, but our team lost by two points. It was so close!
+    stem: |
+      How does the man feel about the game?
+      A. Disappointed but it was close.
+      B. Happy because his team won.
+      C. He didn't watch the game.
+    answer: "A"
+    analysis: "lost but close — 情感推理."
+
+  - id: "listening/short/008"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_03"
+    audio_duration: 20
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: Excuse me, I'd like to return this jacket. It's too small.
+      W: I'm sorry, but we can only exchange it for a larger size. We don't do refunds on sale items.
+    stem: |
+      What can the man do with the jacket?
+      A. Get a refund.
+      B. Exchange it.
+      C. Keep it.
+    answer: "B"
+    analysis: "only exchange — no refunds on sale items."
+
+  - id: "listening/short/009"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_04"
+    audio_duration: 22
+    speakers:
+      - {id: "W", label: "女"}
+      - {id: "M", label: "男"}
+    transcript: |
+      W: Have you decided what you want to study in college?
+      M: I'm thinking about computer science. My father wants me to study medicine, but I'm more interested in programming.
+    stem: |
+      What does the man want to study?
+      A. Medicine.
+      B. Computer science.
+      C. Mathematics.
+    answer: "B"
+    analysis: "father wants medicine, 但 he prefers computer science — 转折."
+
+  - id: "listening/short/010"
+    section: A
+    difficulty: mid
+    audio_id: "2025/listening/short_05"
+    audio_duration: 18
+    speakers:
+      - {id: "M", label: "男"}
+      - {id: "W", label: "女"}
+    transcript: |
+      M: Could you help me carry these boxes upstairs?
+      W: Sure, but let me finish this email first. I'll be done in five minutes.
+    stem: |
+      What will the woman do first?
+      A. Carry the boxes.
+      B. Go upstairs.
+      C. Finish her email.
+    answer: "C"
+    analysis: "let me finish this email first — 顺序题."
+
+# ================================================================
+# 额外长对话 (补充到 20+ 总题)
+# ================================================================
+extra_long_dialogs:
+
+  - id: "listening/dialog/003"
+    section: B
+    difficulty: hard
+    audio_id: "2025/listening/dialog_01"
+    audio_duration: 78
+    speakers:
+      - {id: "W", label: "女 (图书管理员)"}
+      - {id: "M", label: "男 (学生)"}
+    transcript: |
+      M: Good afternoon. I'd like to borrow some books about Chinese history for my research paper.
+      W: Of course. What period are you focusing on?
+      M: The Tang Dynasty. My teacher said we should find at least three different sources.
+      W: Let me check our system. We have five books on the Tang Dynasty in stock. Two are about the economy, two about art and culture, and one about daily life.
+      M: I think I'll take the ones about art and culture, and the one about daily life.
+      W: Good choice. You can borrow them for three weeks. Just remember to return them before the due date, or there will be a small fine.
+      M: How much is the fine?
+      W: It's one yuan per day per book. But you can renew online if you need more time.
+    questions:
+      - stem: |
+          How many books on the Tang Dynasty does the library have?
+          A. Three.
+          B. Five.
+          C. Seven.
+        answer: "B"
+        analysis: "five books in stock — 数字细节."
+      - stem: |
+          Which books will the man borrow?
+          A. About the economy and daily life.
+          B. About art, culture, and daily life.
+          C. All five books.
+        answer: "B"
+        analysis: "art and culture (2 本) + daily life (1 本)."
+      - stem: |
+          What happens if books are returned late?
+          A. The student gets a warning.
+          B. There is a fine of one yuan per day per book.
+          C. The student cannot borrow again.
+        answer: "B"
+        analysis: "one yuan per day per book — 直接信息."

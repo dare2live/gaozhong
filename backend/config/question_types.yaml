@@ -88,6 +88,23 @@ types:
     courses: [30, 40]
     qbank_filter: "question_type = '续写'"
 
+  听力:
+    english_name: "Listening Comprehension"
+    gaokao_score: 30
+    gaokao_questions: 20
+    description: "Section A 短对话 5 题 + Section B 长对话/独白 15 题. 占总分 20%."
+    sub_skills:
+      - {name: "直接信息", intro_layer: G1, description: "听到什么选什么 (时间/地点/人物)"}
+      - {name: "推理判断", intro_layer: G2, description: "从语气/上下文推断说话人意图"}
+      - {name: "主旨大意", intro_layer: G3, description: "独白/长对话的中心思想"}
+    layer_focus:
+      G1: "短对话 (5W1H 直接信息)"
+      G2: "长对话 (推理 + 细节)"
+      G3: "独白 (主旨 + 态度)"
+      G_FINAL: "真题密集 + 听写"
+    courses: []
+    qbank_filter: "question_type LIKE '%听力%'"
+
   单选:
     english_name: "Multiple Choice (Grammar/Vocab)"
     gaokao_score: 0

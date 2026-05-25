@@ -95,12 +95,30 @@ def main() -> None:
     for wr in writing_rows:
         con.execute(
             "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
-            "difficulty, origin, origin_ref, created_at) "
-            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?)",
+            "difficulty, origin, origin_ref, created_at, analysis) "
+            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [wr["question_type"], wr["stem"], wr["options_json"], wr["answer"],
-             wr["difficulty"], wr["origin"], wr["origin_ref"], now_str],
+             wr["difficulty"], wr["origin"], wr["origin_ref"], now_str,
+             wr.get("analysis", "")],
         )
     print(f"  writing exercises: {len(writing_rows)} (续写+应用文)")
+
+    print("\n=== Layer 4d: 听力练习入库 (Phase 7.2: 短对话/长对话/独白) ===")
+    from backend.services.course.listening import load_listening_exercises
+    listening_rows = load_listening_exercises()
+    for lr in listening_rows:
+        con.execute(
+            "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
+            "difficulty, origin, origin_ref, created_at, analysis, "
+            "has_audio, audio_id, transcript, audio_speakers, audio_duration) "
+            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [lr["question_type"], lr["stem"], lr["options_json"], lr["answer"],
+             lr["difficulty"], lr["origin"], lr["origin_ref"], now_str,
+             lr.get("analysis", ""),
+             lr["has_audio"], lr["audio_id"], lr["transcript"],
+             lr["audio_speakers"], lr["audio_duration"]],
+        )
+    print(f"  listening exercises: {len(listening_rows)} (短对话+长对话+独白)")
 
     print(f"  qb total: {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
@@ -111,7 +129,7 @@ def main() -> None:
     cs = init_courses.run(con)
     print(f"  {cs}")
 
-    print("\n=== Layer 4d: 学生档案 demo (5.6 #39) ===")
+    print("\n=== Layer 4e: 学生档案 demo (5.6 #39) ===")
     from backend.services import students as students_seed
     print(f"  {students_seed.seed_demo(con)}")
 

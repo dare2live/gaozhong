@@ -115,9 +115,83 @@ window.GZ = (function () {
     return map[kind] || "#888";
   }
 
+  /**
+   * 听力播放器 HTML (Phase 7.2).
+   * audioSrc: mp3 路径 (或空 → 显示 "无音频" 提示)
+   * duration: 预估秒数 (用于无音频时显示)
+   */
+  function audioPlayer(audioSrc, duration) {
+    const uid = "ap_" + Math.random().toString(36).slice(2, 8);
+    if (!audioSrc) {
+      return `<div class="gz-audio-player" style="opacity:0.6">
+        <button class="play-btn" disabled>▶</button>
+        <div class="progress-wrap">
+          <span class="time-label">无音频文件 (预估 ${duration || "?"}s) — 可用 TTS 合成</span>
+        </div>
+      </div>`;
+    }
+    return `<div class="gz-audio-player" id="${uid}">
+      <audio preload="metadata" src="${audioSrc}"></audio>
+      <button class="play-btn" onclick="GZ._toggleAudio('${uid}')">▶</button>
+      <div class="progress-wrap">
+        <input type="range" class="progress-bar" min="0" max="100" value="0"
+               oninput="GZ._seekAudio('${uid}', this.value)">
+        <span class="time-label">0:00 / ${_fmtTime(duration || 0)}</span>
+      </div>
+      <button class="speed-btn" onclick="GZ._cycleSpeed('${uid}')">1x</button>
+    </div>`;
+  }
+
+  function _fmtTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ":" + String(sec).padStart(2, "0");
+  }
+
+  function _toggleAudio(uid) {
+    const wrap = document.getElementById(uid);
+    if (!wrap) return;
+    const audio = wrap.querySelector("audio");
+    const btn = wrap.querySelector(".play-btn");
+    if (audio.paused) { audio.play(); btn.textContent = "⏸"; }
+    else { audio.pause(); btn.textContent = "▶"; }
+    if (!audio._bound) {
+      audio._bound = true;
+      audio.addEventListener("timeupdate", () => {
+        const bar = wrap.querySelector(".progress-bar");
+        const label = wrap.querySelector(".time-label");
+        if (audio.duration) {
+          bar.value = (audio.currentTime / audio.duration) * 100;
+          label.textContent = _fmtTime(audio.currentTime) + " / " + _fmtTime(audio.duration);
+        }
+      });
+      audio.addEventListener("ended", () => { btn.textContent = "▶"; });
+    }
+  }
+
+  function _seekAudio(uid, pct) {
+    const wrap = document.getElementById(uid);
+    if (!wrap) return;
+    const audio = wrap.querySelector("audio");
+    if (audio.duration) audio.currentTime = (pct / 100) * audio.duration;
+  }
+
+  function _cycleSpeed(uid) {
+    const wrap = document.getElementById(uid);
+    if (!wrap) return;
+    const audio = wrap.querySelector("audio");
+    const btn = wrap.querySelector(".speed-btn");
+    const speeds = [0.75, 1, 1.25, 1.5];
+    const cur = speeds.indexOf(audio.playbackRate);
+    const next = speeds[(cur + 1) % speeds.length];
+    audio.playbackRate = next;
+    btn.textContent = next + "x";
+  }
+
   // expose
   return {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
     mountLayout, colorByTagKind, conceptLink, mdToHtml, NAV,
+    audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
   };
 })();

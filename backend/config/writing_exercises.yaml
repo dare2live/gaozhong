@@ -60,6 +60,125 @@ narrative_continuation:
       评分维度: 生存场景 (环境描写丰富), 情绪转折 (恐惧→希望→感恩),
       教育意义 (never truly alone), 动作细节 (fading light/flashlight)
 
+  - id: "writing/narrative/004"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      Chen Lin had been saving money for months to buy a birthday gift for her mother. On the morning of the birthday, she went to the shop, only to find that the necklace she had chosen was sold out.
+
+      Paragraph 1: Chen Lin walked out of the shop, feeling disappointed.
+      Paragraph 2: When her mother opened the gift that evening, she was deeply moved.
+    answer: |
+      Chen Lin walked out of the shop, feeling disappointed. She had planned everything so carefully, and now it all seemed ruined. As she wandered through the street, she passed a small art supply store. An idea suddenly came to her mind. She went inside and bought a set of colored pencils and a piece of fine paper. Sitting in a quiet corner of the park, she spent the whole afternoon drawing a portrait of her mother — the warm smile, the gentle eyes, and the silver hair that she loved so much.
+
+      When her mother opened the gift that evening, she was deeply moved. She held the portrait with both hands and stared at it for a long time. "This is the most beautiful gift I have ever received," she said, her voice trembling. Chen Lin realized that the best gifts are not the most expensive ones — they are the ones that come from the heart. That night, her mother placed the drawing carefully on the wall beside her bed, where it would be the first thing she saw every morning.
+    analysis: |
+      评分维度: 情节转折 (失望→灵感→手工礼物), 细节描写 (warm smile/gentle eyes/silver hair),
+      主题升华 (best gifts come from the heart), 结尾温馨 (挂在床边)
+
+  - id: "writing/narrative/005"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      The class was preparing for the school art festival. Everyone had a role except Wang Lei, who was too shy to volunteer. The teacher asked him to be the stage manager, a job nobody wanted.
+
+      Paragraph 1: Wang Lei reluctantly accepted the role and began working behind the scenes.
+      Paragraph 2: On the night of the festival, something unexpected happened on stage.
+    answer: |
+      Wang Lei reluctantly accepted the role and began working behind the scenes. At first, he felt invisible — everyone was busy rehearsing their songs and dances while he arranged chairs and tested microphones. But gradually, he started to enjoy solving problems. When the lights broke down, he found a replacement. When two acts were scheduled at the same time, he reorganized the order. His classmates began to rely on him, and for the first time, he felt needed.
+
+      On the night of the festival, something unexpected happened on stage. The lead singer lost her voice just before the final performance. The audience waited in silence. Wang Lei quickly stepped in and suggested that the whole class sing together as a chorus. He adjusted the microphones, arranged everyone in rows, and gave the signal to start. The performance was not perfect, but the audience loved it — because it was real and honest. After the show, the teacher announced that Wang Lei was the hero of the evening. Standing in the spotlight for the first time, he realized that leadership was not about being on stage — it was about making things work.
+    analysis: |
+      评分维度: 性格成长弧 (shy→capable→leader), 具体问题解决细节 (灯光/麦克/合唱),
+      主题深刻 (leadership = making things work), 情节紧凑
+
+  - id: "writing/narrative/006"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      Last summer, my grandmother invited me to spend a week on her small farm. I expected it to be boring. On the first morning, she woke me up at 5:30.
+
+      Paragraph 1: I followed my grandmother to the vegetable garden, still half asleep.
+      Paragraph 2: On the last day of my visit, I did not want to leave.
+    answer: |
+      I followed my grandmother to the vegetable garden, still half asleep. The air was cool and fresh, and the sky was turning pink along the horizon. She handed me a small basket and showed me how to pick tomatoes — only the red ones, she said, and be gentle. At first I was clumsy, but she laughed patiently. After an hour, we had enough vegetables for a week. She taught me to water the plants, feed the chickens, and recognize different herbs by their smell. Each day brought something new — making soybean paste, fixing a wooden fence, watching fireflies at night.
+
+      On the last day of my visit, I did not want to leave. I stood at the gate with my bag, looking at the fields I had grown to love. My grandmother pressed a small jar of homemade honey into my hands. "Take this to remember the taste of home," she said. On the train back to the city, I realized that the week had not been boring at all — it had been the richest week of my summer. I promised myself I would return every year, not just to help her, but to learn the things that textbooks could never teach.
+    analysis: |
+      评分维度: 感官描写 (pink sky/herbs by smell/fireflies), 首尾呼应 (boring→richest),
+      祖孙情感真挚 (honey/taste of home), 成长反思
+
+  - id: "writing/narrative/007"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      It was the day of the school sports meeting. Liu Yang was chosen to run the 800-meter race, but he had hurt his ankle during practice the day before.
+
+      Paragraph 1: The race began, and Liu Yang started running despite the pain.
+      Paragraph 2: As he crossed the finish line, the whole class rushed toward him.
+    answer: |
+      The race began, and Liu Yang started running despite the pain. For the first two hundred meters, he kept up with the leaders. But as he rounded the second curve, a sharp pain shot through his ankle. He slowed down and fell behind. The crowd's cheering seemed distant. He thought about stopping, but then he saw his classmates standing along the track, shouting his name. Their voices gave him strength. He clenched his teeth and kept going, one painful step at a time.
+
+      As he crossed the finish line, the whole class rushed toward him. He had not won — he finished in last place. But no one cared about the result. His best friend put an arm around his shoulder, and someone handed him a bottle of water. "You are the bravest person I know," said his teacher, who was waiting at the finish line. Liu Yang looked at the faces around him and understood something important: winning is not about crossing the line first — it is about never giving up, even when every step hurts.
+    analysis: |
+      评分维度: 体育场景 (800m 跑步细节丰富), 疼痛描写 (sharp pain/clenched teeth),
+      主题升华 (winning = never giving up), 群体温暖
+
+  - id: "writing/narrative/008"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      Zhao Mei and her best friend Lin Xiao had a big argument over a misunderstanding. They stopped talking to each other for two weeks.
+
+      Paragraph 1: One rainy afternoon, Zhao Mei saw Lin Xiao standing alone at the bus stop without an umbrella.
+      Paragraph 2: The next morning at school, everything felt different.
+    answer: |
+      One rainy afternoon, Zhao Mei saw Lin Xiao standing alone at the bus stop without an umbrella. For a moment, she hesitated. Part of her wanted to keep walking, to hold on to the anger that had built up over two weeks. But then she saw Lin Xiao shivering in the cold, and something inside her softened. She walked over slowly and held her umbrella above both of them. Neither spoke at first. Then Lin Xiao whispered, "I am sorry. I should not have said those things." Zhao Mei felt tears forming in her eyes. "I am sorry too," she replied.
+
+      The next morning at school, everything felt different. The invisible wall between them had disappeared. They sat together at lunch, as they always used to, and talked for an hour — not about the argument, but about everything they had missed in each other's lives. Zhao Mei realized that true friendship was not about never disagreeing. It was about finding your way back to each other. From that day on, whenever they had a problem, they chose to talk instead of keeping silent. And the umbrella that brought them back together became their private joke for years to come.
+    analysis: |
+      评分维度: 心理刻画 (hesitated/anger/softened), 对话自然 (whispered/replied),
+      主题 (friendship = finding way back), 首尾呼应 (umbrella → private joke)
+
+  - id: "writing/narrative/009"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      Our school organized a community service project at a local nursing home. I was assigned to spend the afternoon with Mr. Wang, an 85-year-old retired teacher who rarely had visitors.
+
+      Paragraph 1: When I first sat down beside Mr. Wang, he barely looked at me.
+      Paragraph 2: As I left the nursing home that afternoon, I could not stop thinking about Mr. Wang.
+    answer: |
+      When I first sat down beside Mr. Wang, he barely looked at me. He sat in his wheelchair, staring out the window at the empty courtyard. I did not know what to say, so I asked if he had been a teacher. His eyes lit up for the first time. "Forty years," he said quietly. "Mathematics." He began to tell me about his students — the one who became a scientist, the one who struggled but never gave up, the one who came back years later just to say thank you. As he spoke, his voice grew stronger, and his hands moved with energy, as if he were standing at a blackboard again.
+
+      As I left the nursing home that afternoon, I could not stop thinking about Mr. Wang. Behind his quiet appearance was a lifetime of stories, each one valuable and real. I felt ashamed that I had expected the visit to be boring. I decided to come back the following week — not because the school required it, but because Mr. Wang deserved to be heard. Sometimes, the greatest thing we can give someone is not a gift or money, but our time and attention.
+    analysis: |
+      评分维度: 人物塑造 (从沉默到生动的老教师), 细节 (eyes lit up/hands moved),
+      反思 (ashamed/deserved to be heard), 主题 (time and attention)
+
+  - id: "writing/narrative/010"
+    difficulty: hard
+    stem: |
+      续写两段.
+
+      The English teacher announced a group project: each team had to create a short English play. My team had four members, but none of us had any acting experience.
+
+      Paragraph 1: We started planning the play after school.
+      Paragraph 2: When our turn came to perform in front of the class, we were all nervous.
+    answer: |
+      We started planning the play after school. The first meeting was chaotic — everyone had different ideas and no one wanted to give in. I suggested we write a simple story about a student who travels back in time to meet a young Shakespeare. At first, my teammates laughed, but gradually they began adding their own ideas. Li Wei wrote clever dialogue, Zhang Hua designed props from cardboard boxes, and I took on the role of narrator. We practiced every afternoon for a week, sometimes in the classroom, sometimes in the schoolyard. Each rehearsal was better than the last.
+
+      When our turn came to perform in front of the class, we were all nervous. Li Wei forgot his first line, and Zhang Hua dropped a cardboard sword. The audience laughed — and so did we. That laughter broke the tension. From that point on, the performance flowed naturally. When the final scene ended, the class applauded for a long time. We did not win the prize for best play, but our teacher said ours was the most creative. Walking home that evening, I realized that what we had built together was more than a play — it was a memory that would last far longer than any grade.
+    analysis: |
+      评分维度: 团队合作成长 (chaos→collaboration), 具体失误→化解 (忘词/掉剑→笑),
+      主题升华 (memory > grade), 节奏紧凑
+
 applied_writing:
   - id: "writing/applied/001"
     type: invitation
@@ -124,3 +243,161 @@ applied_writing:
     analysis: |
       NOTICE 标题 + 落款格式正确, 三要点完整, in order to (目的状语),
       including 列举, 号召语 (Do not miss)
+
+  - id: "writing/applied/004"
+    type: suggestion
+    difficulty: mid
+    stem: |
+      假如你是李华, 你的美国笔友 Tom 想了解中国传统节日. 请写信向他介绍春节.
+      要点: (1) 时间和意义 (2) 主要活动 (3) 你的感受
+    answer: |
+      Dear Tom,
+
+      I am glad to hear that you are interested in Chinese traditional festivals. Let me introduce the Spring Festival to you.
+
+      The Spring Festival, also known as Chinese New Year, falls on the first day of the lunar calendar, usually in January or February. It is the most important festival in China, when family members gather together to celebrate.
+
+      During the festival, people clean their houses, put up red decorations, and prepare a big dinner on New Year's Eve. Children receive red envelopes with money inside, which is believed to bring good luck. We also set off fireworks and watch the Spring Festival Gala on television.
+
+      For me, the best part is being with my family. No matter how busy we are during the year, we always come home for this special occasion.
+
+      I hope you can experience it someday!
+
+      Yours,
+      Li Hua
+    analysis: |
+      三要点覆盖 (时间+活动+感受), 文化词 (lunar calendar/red envelopes/fireworks),
+      连接词丰富 (also/no matter how), 邀请收尾得体
+
+  - id: "writing/applied/005"
+    type: recommendation
+    difficulty: mid
+    stem: |
+      假如你是李华, 你校英文报正征集 "我最喜欢的一本书" 主题投稿. 请写一篇短文推荐一本书.
+      要点: (1) 书名和作者 (2) 主要内容 (3) 推荐理由
+    answer: |
+      My Favorite Book
+
+      The book I would like to recommend is "A Brief History of Time" by Stephen Hawking. I first read it when I was in Grade 10, and it completely changed the way I see the world.
+
+      The book explains complex scientific ideas, such as the Big Bang and black holes, in a way that ordinary readers can understand. Hawking uses simple language and vivid examples to make the universe feel close and real.
+
+      What I love most about this book is that it encourages curiosity. It taught me that asking "why" is more important than memorizing answers. Every time I read it again, I discover something new.
+
+      I strongly recommend this book to anyone who is curious about the world we live in.
+    analysis: |
+      三要素清晰 (书名+内容+理由), 高级表达 (completely changed/strongly recommend),
+      具体细节 (Big Bang/black holes), 总结句有感染力
+
+  - id: "writing/applied/006"
+    type: reply
+    difficulty: mid
+    stem: |
+      假如你是李华, 你收到交换生 Mike 的邮件, 他对即将到来的中国之行感到紧张. 请回信安慰并给建议.
+      要点: (1) 表示理解 (2) 给 2-3 条建议 (3) 表示期待
+    answer: |
+      Dear Mike,
+
+      Thank you for your email. I completely understand how you feel — it is natural to be nervous before visiting a new country. But trust me, you will have a wonderful time here.
+
+      Here are a few suggestions that might help. First, try to learn some basic Chinese phrases like "ni hao" and "xie xie." People will appreciate your effort even if your pronunciation is not perfect. Second, be open to trying Chinese food. The dishes here are very different from what you find in restaurants abroad, and most of them are delicious. Third, do not worry about making mistakes. Chinese people are very friendly and patient with foreign visitors.
+
+      I am really looking forward to showing you around my city. See you soon!
+
+      Best wishes,
+      Li Hua
+    analysis: |
+      情感共鸣 (understand/natural), 建议具体可操作 (3 条 First/Second/Third),
+      鼓励语气 (trust me/do not worry), 收尾期待
+
+  - id: "writing/applied/007"
+    type: application
+    difficulty: hard
+    stem: |
+      假如你是李华, 你校国际部招募学生志愿者, 为即将来访的英国中学生做向导. 请写申请信.
+      要点: (1) 申请原因 (2) 个人优势 (3) 能做什么
+    answer: |
+      Dear Sir or Madam,
+
+      I am writing to apply for the position of student volunteer to guide the visiting British students.
+
+      The reason I want to join is that I have always been passionate about cultural exchange. Last summer, I participated in an English camp where I helped foreign students learn about Chinese culture, and the experience was truly rewarding.
+
+      I believe I am well-suited for this role. I have strong English communication skills and received first prize in our school speech contest. More importantly, I am familiar with the local attractions, including the Shenyang Imperial Palace and the Zhongjie walking street, and can introduce their history in English.
+
+      If selected, I would be happy to arrange a welcome activity and prepare a city guide booklet for our guests.
+
+      Thank you for considering my application. I look forward to your reply.
+
+      Yours sincerely,
+      Li Hua
+    analysis: |
+      申请信格式 (Dear Sir or Madam / Yours sincerely), 三段结构严谨,
+      具体经历 (English camp), 本地特色 (沈阳故宫/中街),
+      高级表达 (passionate about/well-suited/rewarding)
+
+  - id: "writing/applied/008"
+    type: invitation
+    difficulty: mid
+    stem: |
+      假如你是学生会主席李华, 你校将举办校园开放日. 请写信邀请家长参加.
+      要点: (1) 活动时间和内容 (2) 参观安排 (3) 注意事项
+    answer: |
+      Dear Parents,
+
+      On behalf of the Student Union, I am pleased to invite you to our School Open Day, which will take place on Saturday, June 7th, from 9:00 am to 3:00 pm.
+
+      The event will begin with a welcome ceremony in the school hall, followed by classroom visits where you can observe lessons in progress. After lunch, there will be a student talent show and a science exhibition. You will also have the opportunity to meet with teachers and discuss your child's progress.
+
+      Please arrive before 8:50 am and register at the school gate. For safety reasons, each family is limited to two visitors. Parking is available in the east lot.
+
+      We sincerely hope to see you there. Your support means a great deal to our students.
+
+      The Student Union
+    analysis: |
+      邀请+通知混合格式, 时间线清晰 (morning→lunch→afternoon),
+      注意事项 (人数限制+停车), 高级表达 (on behalf of/means a great deal)
+
+  - id: "writing/applied/009"
+    type: suggestion
+    difficulty: hard
+    stem: |
+      假如你是李华, 你的朋友王明沉迷手机游戏, 成绩下降. 请写信劝他.
+      要点: (1) 表达关心 (2) 分析危害 (3) 提出建议
+    answer: |
+      Dear Wang Ming,
+
+      I have noticed that you have been spending a lot of time on mobile games recently, and I am writing to you as a friend who truly cares about you.
+
+      To be honest, I am worried about the effect it is having on your studies. Your grades have dropped significantly this semester, and I know that is not like you — you have always been one of the top students in our class. Besides grades, staying up late playing games can harm your eyesight and health.
+
+      I have a few suggestions. Why not set a time limit for gaming — say, no more than 30 minutes a day? You could also join the basketball club with me. Exercise is a great way to relax, and it is much healthier than staring at a screen. Most importantly, remember that the college entrance exam is only a year away.
+
+      I hope you will not take this the wrong way. I am saying all this because I value our friendship.
+
+      Your friend,
+      Li Hua
+    analysis: |
+      委婉劝说 (as a friend/I hope you will not take this the wrong way),
+      具体危害 (grades/eyesight), 可操作建议 (时间限制/篮球/高考提醒),
+      情感收束 (value our friendship)
+
+  - id: "writing/applied/010"
+    type: report
+    difficulty: hard
+    stem: |
+      假如你是李华, 你参加了学校组织的社区环保活动. 请为校报写一篇活动报道.
+      要点: (1) 活动时间和参与人数 (2) 活动内容 (3) 活动意义
+    answer: |
+      Green Action Day — A Step Toward a Cleaner Community
+
+      Last Saturday, over 60 students from our school took part in the "Green Action Day" organized by the Student Union. The activity was held at Hunhe Park from 8:30 am to 12:00 noon.
+
+      The volunteers were divided into three groups. The first group collected litter along the riverbank, filling more than 20 bags of waste. The second group put up posters to raise environmental awareness among visitors. The third group planted 30 young trees in the park's new green area.
+
+      "I never realized how much rubbish was hidden in the grass until I started picking it up," said Zhang Ying, a Grade 11 student. Many participants shared similar feelings.
+
+      The event was meaningful because it not only improved the park's environment but also taught us the importance of taking action. We hope more students will join us next time.
+    analysis: |
+      报道体 (标题+正文+引语+总结), 数据具体 (60人/20袋/30棵),
+      直接引语 (Zhang Ying), 深层意义 (action > awareness), 收尾号召

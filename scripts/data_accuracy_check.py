@@ -253,8 +253,23 @@ def _check_18_followup(con):
           f"combined={final.get('combined_accuracy')}")
 
 
-def _check_19_enriched_vocab(con):
-    print("\n=== (19) enriched content 超纲词校验 (R5 程序级) ===")
+def _check_19_listening_writing(con):
+    print("\n=== (19) 听力 + 写作 (Phase 7.2/7.3) ===")
+    n_listen = con.execute("SELECT COUNT(*) FROM question_bank WHERE has_audio = true").fetchone()[0]
+    n_transcript = con.execute(
+        "SELECT COUNT(*) FROM question_bank WHERE has_audio = true "
+        "AND transcript IS NOT NULL AND transcript != ''"
+    ).fetchone()[0]
+    n_narrative = con.execute("SELECT COUNT(*) FROM question_bank WHERE question_type = '续写'").fetchone()[0]
+    n_applied = con.execute("SELECT COUNT(*) FROM question_bank WHERE question_type = '应用文'").fetchone()[0]
+    check("听力题 ≥ 20", n_listen >= 20, f"{n_listen}")
+    check("听力全有 transcript", n_listen == n_transcript, f"audio={n_listen} transcript={n_transcript}")
+    check("续写 ≥ 10", n_narrative >= 10, f"{n_narrative}")
+    check("应用文 ≥ 10", n_applied >= 10, f"{n_applied}")
+
+
+def _check_20_enriched_vocab(con):
+    print("\n=== (20) enriched content 超纲词校验 (R5 程序级) ===")
     from backend.services import vocab_guard
     import yaml
     from pathlib import Path
@@ -319,7 +334,7 @@ CHECKS = [
     _check_9_qbank, _check_10_qbank_options, _check_11_tag_dict,
     _check_12_cefr_node_xref, _check_13_grammar_chain, _check_14_graph_refs,
     _check_15_xref, _check_16_placement, _check_17_cross_version,
-    _check_18_followup, _check_19_enriched_vocab,
+    _check_18_followup, _check_19_listening_writing, _check_20_enriched_vocab,
 ]
 
 

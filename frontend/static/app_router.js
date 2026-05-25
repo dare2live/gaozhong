@@ -117,6 +117,7 @@
     html += `<div id="handout-modal" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="modal-body">
         <span class="close-btn" onclick="document.getElementById('handout-modal').classList.remove('open')">✕</span>
+        <button class="print-btn" onclick="window.print()">🖨️ 打印 / PDF</button>
         <div id="handout-md">载入中 ...</div>
       </div>
     </div>`;
@@ -200,14 +201,89 @@
   // C. 题库 + 组卷
   // ===================================================================
   register("qbank", async () => {
-    const [stats, st] = await Promise.all([fetchJSON("/api/stats"), fetchJSON("/api/course/stats").catch(()=>({}))]);
-    CONTENT.innerHTML = `
-      <h2>C. 题库 + 组卷</h2>
-      <p>当前题库: <strong>${stats.question_bank ?? "-"}</strong> 题 / <strong>${stats.question_tags ?? "-"}</strong> 标签 / <strong>${stats.tag_dictionary ?? "-"}</strong> 标签字典</p>
-      <p>听力题 (has_audio): 复用 /api/listening (待 #5.5.B 数据导入)</p>
+    CONTENT.innerHTML = `<h2>C. 题库 + 组卷</h2><p>载入中...</p>`;
+    const [stats, listening] = await Promise.all([
+      fetchJSON("/api/stats"),
+      fetchJSON("/api/listening/list"),
+    ]);
+    let html = `<h2>C. 题库 + 组卷</h2>
+      <p>当前题库: <strong>${stats.question_bank ?? "-"}</strong> 题 / <strong>${stats.question_tags ?? "-"}</strong> 标签</p>
       <p>详细组卷器: <a href="/teacher#compose" target="_blank">/teacher tab "组卷"</a> (兼容旧 UI)</p>
-      <p style="margin-top:1.5rem;color:#888">/api/qb/* /api/paper/* /api/listening/* — 接口齐全, 此 tab UI 待迁移</p>`;
+
+      <section class="layer-section">
+        <h3>🎧 听力练习 <span class="layer-meta">${listening.count} 题 · 高考 30 分</span></h3>
+        <div style="display:flex;gap:0.5rem;margin:0.5rem 0 0.7rem">
+          <button class="gz-qfilter active" data-section="all" onclick="window._filterListening('all',this)">全部 (${listening.count})</button>
+          <button class="gz-qfilter" data-section="听力短对话" onclick="window._filterListening('听力短对话',this)">短对话</button>
+          <button class="gz-qfilter" data-section="听力长对话" onclick="window._filterListening('听力长对话',this)">长对话</button>
+          <button class="gz-qfilter" data-section="听力独白" onclick="window._filterListening('听力独白',this)">独白</button>
+        </div>
+        <div id="listening-list">`;
+    for (const q of listening.questions) {
+      html += _renderListeningCard(q);
+    }
+    html += `</div></section>`;
+    CONTENT.innerHTML = html;
+    window._listeningData = listening.questions;
   });
+
+  function _renderListeningCard(q) {
+    const audioSrc = q.audio_id ? `/data/audio/${q.audio_id}.mp3` : "";
+    return `<div class="listening-card" data-qtype="${q.question_type}" style="background:#fff;border:1px solid #e8e6e0;border-left:4px solid #0a4d75;border-radius:4px;padding:0.7rem 1rem;margin-bottom:0.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>#${q.qb_id} · ${q.question_type}</strong>
+        <span style="color:#888;font-size:0.85em">${q.difficulty} · ${q.audio_duration || "?"}s</span>
+      </div>
+      ${GZ.audioPlayer(null, q.audio_duration)}
+      <div style="margin:0.4rem 0;font-size:0.9em">${(q.stem_preview || "").replace(/\n/g, "<br>")}</div>
+      <span class="gz-transcript-toggle" onclick="window._showTranscript(${q.qb_id}, this)">显示原文</span>
+      <div class="gz-transcript" id="transcript-${q.qb_id}" style="display:none">载入中...</div>
+    </div>`;
+  }
+
+  window._filterListening = (section, btn) => {
+    const list = document.getElementById("listening-list");
+    if (!list) return;
+    document.querySelectorAll(".gz-qfilter").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    list.querySelectorAll(".listening-card").forEach(card => {
+      card.style.display = (section === "all" || card.dataset.qtype === section) ? "" : "none";
+    });
+  };
+
+  window._showTranscript = async (qbId, toggleEl) => {
+    const div = document.getElementById("transcript-" + qbId);
+    if (!div) return;
+    if (div.style.display === "none") {
+      div.style.display = "block";
+      toggleEl.textContent = "隐藏原文";
+      if (div.textContent === "载入中...") {
+        try {
+          const d = await fetchJSON("/api/listening/detail?id=" + qbId);
+          let html = "";
+          if (d.transcript) {
+            const lines = d.transcript.split("\n").filter(l => l.trim());
+            html = lines.map(l => {
+              const m = l.match(/^([A-Z]):\s*(.*)/);
+              if (m) {
+                const sp = (d.speakers || []).find(s => s.id === m[1]);
+                return `<div><span class="speaker">${sp ? sp.label : m[1]}:</span> ${m[2]}</div>`;
+              }
+              return `<div>${l}</div>`;
+            }).join("");
+          }
+          if (d.answer) html += `<div style="margin-top:0.5rem;padding-top:0.4rem;border-top:1px solid #ddd"><strong>答案:</strong> ${d.answer}</div>`;
+          if (d.analysis) html += `<div style="color:#666;font-size:0.9em">${d.analysis}</div>`;
+          div.innerHTML = html || "(无原文)";
+        } catch (err) {
+          div.innerHTML = `<span style="color:#c00">载入失败: ${err.message}</span>`;
+        }
+      }
+    } else {
+      div.style.display = "none";
+      toggleEl.textContent = "显示原文";
+    }
+  };
 
   // ===================================================================
   // D. 数据管理

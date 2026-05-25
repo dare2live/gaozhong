@@ -4,7 +4,7 @@
 > 新 session 一打开, 先读本文件 + `goal.md` 顶部 D0, 立即接上.
 
 最后停止时间: **2026-05-25**
-最后 commit: **`15e1bd2`** fix(init_db): 写作题入库
+最后 commit: **`(pending)`** feat(7.2+7.3): 听力 25 题 + 写作 10+10 + 打印+播放器
 
 ---
 
@@ -61,8 +61,8 @@ codex review 全部落地:
 所有 codex review 改进 (Q2-Q6) 已落地, #68 错题追问 endpoint 已实装.
 
 **系统已具备交付运营条件**:
-- D0 100% 准 (18 章 39+ 项, 全绿)
-- 4945 nodes / 34728 edges / 40 节课程 / 509 题库
+- D0 100% 准 (20 章 45+ 项, 全绿)
+- 4945 nodes / 34728 edges / 40 节课程 / 578 题库
 - 二阶段摸底 (一阶段粗分 + 追问深挖) 完整闭环
 - 前端 7 tab SPA + 全局图谱浮窗 + 概念互链
 
@@ -70,16 +70,21 @@ codex review 全部落地:
 - ✅ 7.1 充实讲义 40/40 节 DONE (180K+ chars, 超纲词=0)
 - ✅ vocab_guard 模块 + API + D0 校验 + thresholds.yaml
 - ✅ 前端讲义分段渲染 + 生成规则面板
-- 🔲 7.2 听力 (补 30 分/150 空白)
-- 🔲 7.3 续写+应用文 (补 40 分训练)
-- 🔲 7.4 题目质量升级 (533→700+)
+- ✅ 7.2 听力 25 题 (短对话 10 + 长对话 9 + 独白 6, 全 transcript)
+  - audio_config.yaml + data/audio/ 目录 + 命名规范
+  - listening.py 服务 + API /api/listening/{list,detail}
+  - 前端 C tab 听力面板 (筛选+原文展开+播放器)
+  - 前端 <audio> 播放器 (play/pause/progress/speed)
+  - @media print CSS + 讲义打印按钮
+- ✅ 7.3 续写 10 题 + 应用文 10 篇 (含范文+评分维度)
+- 🔲 7.4 题目质量升级 (578→700+, 需 ~120 题)
 - 🔲 7.5 前端 Quiz mode + 年级标注 tooltip
 - 🔲 7.6 真人验证
 - 🔲 7.7 管线
 
 **继续命令**:
 ```
-"继续 Phase 7, 从 7.2 听力开始"
+"继续 Phase 7, 从 7.4 题目质量升级开始"
 ```
 
 ---
