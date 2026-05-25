@@ -147,6 +147,11 @@ def main() -> None:
     from backend.services import students as students_seed
     print(f"  {students_seed.seed_demo(con)}")
 
+    print("\n=== Layer 4g: 设计宪法入库 (model_driven_design) ===")
+    from backend.services import constitution
+    cs = constitution.seed(con)
+    print(f"  constitution: {cs['total']} 条 ({cs['principles']} 原则 + {cs['iron_laws']} 铁律 + {cs['violations']} 违宪)")
+
     print("\n=== Layer 3: audit ===")
     for k, v in audit.run_all(con).items():
         print(f"  {k}: {v}")

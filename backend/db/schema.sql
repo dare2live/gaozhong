@@ -403,3 +403,15 @@ CREATE TABLE IF NOT EXISTS course_sessions (
 );
 CREATE INDEX IF NOT EXISTS idx_cs_course ON course_sessions(course_id);
 CREATE INDEX IF NOT EXISTS idx_cs_class ON course_sessions(class_id);
+
+-- ====== 设计宪法 (模型驱动内容生成, 用户 2026-05-25 硬约束) ======
+
+CREATE TABLE IF NOT EXISTS constitution (
+    rule_id        VARCHAR PRIMARY KEY,     -- P1 / V1 / PRINCIPLE_1 等
+    rule_type      VARCHAR NOT NULL,        -- 'principle' | 'iron_law' | 'violation'
+    title          VARCHAR NOT NULL,
+    description    VARCHAR NOT NULL,
+    enforcement    VARCHAR,                 -- 如何强制执行
+    ref_section    VARCHAR,                 -- 对应宪法文档章节 (§1.2 等)
+    sort_order     INTEGER NOT NULL DEFAULT 0
+);

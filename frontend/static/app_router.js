@@ -379,32 +379,67 @@
   // D. 数据管理
   // ===================================================================
   register("data", async () => {
-    const [stats, audit] = await Promise.all([fetchJSON("/api/stats"), fetchJSON("/api/audit/findings").catch(()=>({findings:[]}))]);
+    CONTENT.innerHTML = `<h2>D. 数据管理</h2><p>载入中...</p>`;
+    const [stats, audit, cst] = await Promise.all([
+      fetchJSON("/api/stats"),
+      fetchJSON("/api/audit/findings").catch(() => ({findings: []})),
+      fetchJSON("/api/constitution/list").catch(() => ({rules: [], by_type: {}})),
+    ]);
     const f = audit.findings || [];
     const fail = f.filter(x => x.severity === "FAIL").length;
     const warn = f.filter(x => x.severity === "WARN").length;
+    const rules = cst.rules || [];
+    const principles = rules.filter(r => r.rule_type === "principle");
+    const ironLaws = rules.filter(r => r.rule_type === "iron_law");
+    const violations = rules.filter(r => r.rule_type === "violation");
+
     CONTENT.innerHTML = `
-      <h2>D. 数据管理</h2>
-      <p>14 数据集 + 自动审计</p>
+      <h2>D. 数据管理 + 设计宪法</h2>
       <div class="course-grid">
         <div class="course-card ${fail > 0 ? 'G_FINAL' : 'G1'}">
           <strong>审计概览</strong>
           <div class="block">FAIL: ${fail} / WARN: ${warn}</div>
         </div>
         <div class="course-card">
-          <strong>nodes / edges</strong>
-          <div class="block">${stats.nodes ?? "-"} / ${stats.edges ?? "-"}</div>
+          <strong>知识图谱</strong>
+          <div class="block">${stats.nodes ?? "-"} nodes / ${stats.edges ?? "-"} edges</div>
         </div>
         <div class="course-card">
-          <strong>教材 / 课标</strong>
-          <div class="block">textbooks: ${stats.textbooks ?? "-"} / curriculum vocab: ${stats.cefr_vocab ?? "-"}</div>
+          <strong>教材 + 课标</strong>
+          <div class="block">${stats.textbooks ?? "-"} 教材 / ${stats.cefr_vocab ?? "-"} 课标词</div>
         </div>
         <div class="course-card">
-          <strong>课程 (第五阶段)</strong>
-          <div class="block">courses 40 / course_materials ${stats.course_materials ?? "-"}</div>
+          <strong>题库 + 课程</strong>
+          <div class="block">${stats.question_bank ?? "-"} 题 / 40 课 / ${stats.course_materials ?? "-"} 关联</div>
         </div>
       </div>
-      <p style="margin-top:1.5rem"><a href="/teacher" target="_blank">详细数据 → /teacher</a></p>`;
+
+      <section class="layer-section" style="margin-top:1.5rem">
+        <h3>📜 设计宪法 <span class="layer-meta">${rules.length} 条 (${principles.length} 原则 + ${ironLaws.length} 铁律 + ${violations.length} 禁止)</span></h3>
+        <p style="color:#666;font-size:0.85em">模型驱动内容生成最高原则 — 任何题目/教案/教程必须遵守. 入库强制执行.</p>
+
+        <h4 style="color:#0a4d75;margin-top:1rem">六大原则</h4>
+        <div class="course-grid">${principles.map(r => `
+          <div class="course-card" style="border-left-color:#0a4d75">
+            <strong>${r.rule_id}: ${r.title}</strong>
+            <div class="block">${r.description}</div>
+            ${r.enforcement ? `<div class="block" style="color:#2a9d8f">执行: ${r.enforcement}</div>` : ""}
+          </div>`).join("")}
+        </div>
+
+        <h4 style="color:#E3120B;margin-top:1rem">正向铁律 (P1-P15)</h4>
+        <div class="course-grid">${ironLaws.map(r => `
+          <div class="course-card G_FINAL">
+            <strong>${r.rule_id}: ${r.title}</strong>
+            <div class="block">${r.description}</div>
+          </div>`).join("")}
+        </div>
+
+        <h4 style="color:#888;margin-top:1rem">违宪清单 (V1-V8)</h4>
+        <ul style="background:#fff;padding:0.5rem 2rem;border-radius:4px;font-size:0.9em">
+          ${violations.map(r => `<li><strong style="color:#c1272d">${r.rule_id}</strong> ${r.title} → <em>${r.description}</em></li>`).join("")}
+        </ul>
+      </section>`;
   });
 
   // ===================================================================
