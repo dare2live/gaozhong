@@ -1,0 +1,4181 @@
+{
+  "total_blocks": 56,
+  "total_sub_items": 337,
+  "years": [
+    2021,
+    2022,
+    2023
+  ],
+  "skill_distribution": {
+    "推理判断": 309,
+    "冠词介词": 223,
+    "词义猜测": 132,
+    "七选五衔接": 125,
+    "细节理解": 79,
+    "词性转换": 50,
+    "语境推断": 33,
+    "定语从句": 32,
+    "目的意图": 32,
+    "非谓语动词": 30,
+    "主旨大意": 20,
+    "标题选择": 19,
+    "连词代词": 12,
+    "时态语态": 11,
+    "作者态度": 6,
+    "短文改错": 4,
+    "未分类": 1
+  },
+  "items": [
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/22",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "根据上文“it’s not difficult to make yourself interesting at a dinner party (在晚宴上让自己变得有趣并不难)”可知，下文应主要讲述如何在晚宴上让自己变得有趣。下文“So the main thing is just to show up and be adventurous, trying different foods and talking to strangers. (所以最主要的事情就是去尝试，去冒险，尝试不同的食物，和陌生人交谈)”可推知，本段主要说明想在晚宴上让自己变得有趣，就要勇于冒险，勇于探索。由此可知，B项“T",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/22",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "根据下文“it can bring in “I have this old, broken-down vehicle” or “I rode the bus with these crazy people who were laughing at silly jokes in the back.” It just opens up conversation. (它可以带入“我有这辆破旧的车”或“我和那些在后面嘲笑愚蠢笑话的疯子一起乘坐公共汽车。”它只是打开了对话)”可知，设空处应该是提了一个不太好的问题，只是开始交流，但并不会给人留下有趣的印象。由此可知，C项“If you ask the q",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/22",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 38,
+      "analysis_excerpt": "根据下文“If you can’t take their wine away, you should certainly try to take away their soapbox. If you’re the host, you can ask them to help you in the kitchen with something and just remove them from the situation. (如果你不能拿走他们的酒，你当然应该让他们离开讲话的地方。如果你是主人，你可以让他们到厨房帮你做点什么，只是为了让他们摆脱那种情景)”可知，此处指出了一个问题的解决办法。由此",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/22",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 39,
+      "analysis_excerpt": "根据上文“If you can’t take their wine away, you should certainly try to take away their soapbox (讲台). If you’re the host, you can ask them to help you in the kitchen with something and just remove them from the situation. (如果你不能拿走他们的酒，你当然应该让他们离开讲话的地方。如果你是主人，你可以让他们到厨房帮你做点什么，只是为了让他们摆脱那种情景)”可知，本段主要是为解决“喝太多",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/22",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 40,
+      "analysis_excerpt": "根据上文“If you’re faced with an awkward silence at a dinner party, the only thing that always gets everyone talking again is to give the host a compliment.(如果你在晚宴上遭遇了尴尬的沉默，唯一能让大家再次交谈的方法就是赞美主人)”可知，此处指出赞美主人可以缓解尴尬的沉默，设空处承上启下，下文“This cake is extremely delicious and you have to tell me all about it.(这蛋糕特别好吃",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查名词词义辨析。句意：几周前我在做护士的时候就在考虑这个问题。A. cleaner清洁工；B. chemist化学家，药剂师；C. nurse护士；D. doctor医生。根据下文的“as she was 11 she was eager to say 12 to each of us in the nursing team.”可知，当时作者是一名护士。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查名词词义辨析。句意：我突然想到，如果我们有一系列表达不同程度感激之情的词语，那会容易得多。A. grades分数，级别，程度；B. meanings意思；C. needs需求；D. expectations期待。根据上文的“simply saying thank you doesn’t seem enough in certain situations”可知，作者认为如果有表达不同程度感谢的词，那么感谢就容易得多了。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查动词短语辨析。句意：我的想法很快就进行了测验。A. brushed aside撇开；B. put to the test经受考验，接受……的考验；C. brought under discussion在讨论中；D. taken into account考虑。结合下文讲述女病人对护士们的所为，可知作者的想法立即接受了测验。故选B。",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查动词词义辨析。句意：我们有一个病人膝盖置换手术后正在康复。A. departing出发，离开；B. escaping逃跑；C. retiring退休；D. recovering恢复。结合下文提到手术和病人从床上摔下来可知，病人正在恢复中。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查动词词义辨析。句意：一天下午，当她试图上床睡觉时，她因心脏病而摔倒了。A. attempting试图，尝试；B. choosing选择；C. pausing暂停；D. promising承诺。结合上文提到这是个膝盖有伤的病人，可推知她尝试着自己上床。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查副词词义辨析。句意：一天下午，当她试图上床睡觉时，她因心脏病而摔倒了。A. eventually最后；B. fortunately幸运地；C. casually随意地；D. secretly秘密地。结合上文病人是因为膝盖置换手术而住院，由此可知，此处是指最终发现摔倒是因为心脏病。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查动词词义辨析。句意：这次摔倒是灾难性的，需要紧急医疗队和良好的团队合作。A. assessing评估；B. requiring需要；C. forming形成；D. proving证明。根据“the collapse was disastrous”可知，要想把病人治好需要紧急医疗队和良好的团队合作。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查副词词义辨析。句意：虽然很慢，但她恢复了，四周后就可以出院了。A. slightly轻微地；B. accidently意外地；C. slowly缓慢地；D. happily幸福地。根据上文的“the collapse was disastrous”可知，要从灾难性的病痛中恢复一定很慢。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查形容词词义辨析。句意：她对医疗及护士团队为她所作的一切都非常感激。A. grateful感激的；B. thoughtful体贴的；C. sorrowful伤心的，悲伤的；D. fearful恐惧的。结合下文女病人离开前和大家一一道别，推知她对大家的付出表示感激。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查名词词义辨析。句意：在她出院那天，我们分享了她康复的喜悦。A. surprise惊喜；B. delight喜悦；C. curiosity好奇心；D. disappointment失望。根据下文的“her recovery”可知，此处是指分享她康复的喜悦。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 51,
+      "analysis_excerpt": "考查动词词义辨析。句意：当她要离开时，她急切地想和我们护理队的每一个人说再见。A. operating手术；B. thinking思考；C. hesitating犹豫；D. leaving离开。根据上文的“on her day of discharge”可知，女病人要出院了，所以此处是指当她即将离开医院时。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 52,
+      "analysis_excerpt": "考查名词词义辨析。句意：当她要离开时，她急切地想和我们护理队的每一个人说再见。A. sorry抱歉；B. hello你好；C. goodbye再见；D. yes同意。根据上文的“on her day of discharge”可知，女病人要出院了，由此推知她对护理团队的人告别，say goodbye to sb.“和某人告别”符合语境。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "语境推断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 53,
+      "analysis_excerpt": "考查动词词义辨析。句意：当她走到一个护士身边时，她试图塞一张五英镑的钞票在她手里。A. reached到达；B. consulted咨询；C. introduced介绍；D. persuaded说服。结合上文提到女病人出院时要和护士们一一道别可知，此处是指她走到一个护士的身边，用“reach”符合语境。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "语境推断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 54,
+      "analysis_excerpt": "考查动词词义辨析。句意：我的同事拒绝接受，说我们只是做了自己的工作而已。A. wished希望；B. pretended假装；C. failed失败；D. refused拒绝。结合常识和下文的“we were all just 13 our job”可知，作者的同事拒绝收下女士给的钱。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 55,
+      "analysis_excerpt": "考查动词词义辨析。句意：我的同事拒绝接受，说我们只是做了自己的工作而已。A. enjoying享受；B. doing做；C. securing获得，保护；D. starting开始。根据上文提到作者的同事拒绝收下钱可推知，她认为照顾病人只是做了自己应该做的事情而已。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "非谓语动词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 56,
+      "analysis_excerpt": "考查动词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. repeated重复；B. recited背诵；C. replied回答，回应；D. reported报道。结合上文作者同事说照顾女士是自己的工作，不应该得到额外的礼物可知，此处是女病人对同事说的话的回应。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 57,
+      "analysis_excerpt": "考查名词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. courage勇气；B. patience耐心；C. duty职责；D. care照顾。根据下文的“No, this is for setting my hair yesterday”可知，女病人并不是因为护士的照顾才给的五英镑。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 58,
+      "analysis_excerpt": "考查名词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. goal目标；B. given该给的东西；C. push推力；D. greeting招呼。根据上文的“No, this is for setting my hair yesterday”推知，女病人认为她得到的照顾是护士们应该给她的（东西）。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 59,
+      "analysis_excerpt": "考查动词词义辨析。句意：对许多人来说，拯救生命是工作的一部分，但发型是额外的，应该得到奖励。A. risking冒险；B. changing改变；C. saving拯救，挽救；D. building建设。根据上文内容可知，医生和护理团队拯救了女病人的生命可知，此处指很多人认为拯救生命是医生和护士工作的一部分。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 60,
+      "analysis_excerpt": "考查名词词义辨析。句意：对许多人来说，拯救生命是工作的一部分，但做发型是额外的事情，应该得到奖励。A. honour荣誉；B. ability能力；C. opening开口处；D. extra额外的东西。根据下文的“To many people，  19   lives is part of the job”和“but”可知，此处指做发型是本职工作以外的事情，即额外做的事情，应该得到奖励。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查被动语态。句意:它最初是为了保护唐代的城市而建造的，现在已经完全修复了。分析句子可知，空\n格处为谓语，动词build和主语之间是被动关系，应用被动语态(be done)，根据句意和时间状语the Tang\ndynasty可知，用一*般过去时，谓语动词用过去式，主语it为第三人称单数，主谓一致，故填was built.",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "非谓语动词",
+        "时态语态",
+        "冠词介词",
+        "短文改错"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查介词。句意:它最初是为了保护唐代的城市而建造的，现在已经完全修复了。根据句意可知，表示“在\n某个朝代”应用介词in。故填in。",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查动词不定式。句意:在观察了城墙上所有的防御设备后，我们决定是时候采取行动了，还有什么比骑\n在历史.上更好的呢。分析句子可知，此处为句型“it +be+adij+to do sth.\"，it 为形式主语，动词walk的不定式短语作真正主语。故填to wallk.",
+      "skills": [
+        "推理判断",
+        "非谓语动词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查动名词。句意:在花了- -些时间查看了城墙上所有的防御设备之后，我们决定是时候采取一些行动了，\n还有什么比骑在历史上更好的呢。分析句子可知，此处After为介词，故spend应用其动名词形式作介词宾语。故填spending.",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查形容词比较级。句意:在花了一些时间查看了城墙上所有的防御设备之后，我们决定是时候采取一些\n行动了，还有什么比骑在历史上更好的呢。根据后文比较连(介)词than可知,此处应用形容词good的比\n较级。故填better.",
+      "skills": [
+        "推理判断",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查时态。句意:我们从南门的租赁处租了自行车。分析句子可知，此处为谓语动词，根据上下文可知，\n此处描述过去发生的事情，用一般过去时，谓语动词用过去式。故填hired.",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "时态语态",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查连词。句意:我的自行车又旧又摇摇晃晃，但还可以骑。后文did the job和前文My bike was old and shakly之间存在转折关系，故用表示转折的连词but连接。故填but。",
+      "skills": [
+        "冠词介词",
+        "连词代词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查冠词。句意:我们绕着西安城墙走了大约3个小时。结合句意表示“- -直;完全地”可知短语为all the\nway,故用定冠词the限定名词way。故填the.",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查名词复数。句意:据说你可以在两个小时内完成，但我们在不同的大门和了望台停下来拍照，或者只是看当地人进行他们的日常生活。根据句意以及前文形容词diferent可知，此处可数名词watchtower是复\n数概念，应用其复数形式。故填watchtowers.",
+      "skills": [
+        "推理判断",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/20",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查形容词。句意:据说你可以在两个小时内完成，但我们在不同的大门和了望台停下来拍照，或者只是看当地人进行他们的日常生活。修饰后文名词routines应用day的形容词daily,作定语，修饰名词。故填\ndaily.",
+      "skills": [
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 61,
+      "analysis_excerpt": "考查形容词。句意：这不同于传统的旅游，因为它能让旅行者了解这个地区——无论是地理环境还是文化特色，并且经常为环境保护提供资金，并有利于当地的发展。分析句子成分可知，此处查固定搭配become educated about表示“对……有所了解”。故填educated。",
+      "skills": [
+        "推理判断",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 62,
+      "analysis_excerpt": "考查名词。句意：这不同于传统的旅游，因为它能让旅行者了解这个地区——无论是地理环境还是文化特色，并且经常为环境保护提供资金，并有利于当地的发展。根据空格前的定冠词the可知，此处填入名词development来做动词benefits的宾语。故填development。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 63,
+      "analysis_excerpt": "考查代词。句意：生态旅游起源于20世纪70年代的环境运动。根据空格后名词origin可知，此处形容词性物主代词来修饰名词origin。故填its。",
+      "skills": [
+        "推理判断",
+        "词性转换",
+        "连词代词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 64,
+      "analysis_excerpt": "考查固定句型。句意：直到20世纪80年代晚期才作为旅游观念被广泛接受。根据句意可知，此处表示“直到20世纪80年代晚期才作为旅游观念被广泛接受”，表示“直到……才……”使用固定句型“not……until……”。故填until。",
+      "skills": [
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 65,
+      "analysis_excerpt": "考查冠词。句意：由于与环境相关的探险旅行越来越受欢迎，各种各样的旅行现在被归类为生态旅游。分析句子结构可知，空格处应填冠词。再结合空格后“growing popularity of environmental-related and adventure travel”可知，此处特指与环境相关的探险旅行越来越受欢迎，所以应填定冠词the。故填the。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 66,
+      "analysis_excerpt": "考查介词。句意：由于与环境相关的探险旅行越来越受欢迎，各种各样的旅行现在被归类为生态旅游。various types of 为固定搭配表示“各种各样的”，所以空格处应填of。故填of。",
+      "skills": [
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 67,
+      "analysis_excerpt": "考查动名词。句意：最大限度地减少拜访这个地方的影响。根据空格前介词of可知，空格处应填动名词形式来作介词of的宾语。故填visiting。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 68,
+      "analysis_excerpt": "考查形容词。句意：为当地人民提供财政援助和其他福利。根据空后名词aid可知，空格处应填形容词来修饰名词aid，finance的形容词形式为financial。故填financial。",
+      "skills": [
+        "推理判断",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 69,
+      "analysis_excerpt": "考查名词。句意：那里的活动从观鲸到徒步旅行并且住宿宗旨是对自然环境影响达到很小。根据谓语动词range可知，空格处应填用可数名词activity的复数形式作主语。故填activities。",
+      "skills": [
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/19",
+      "year": 2021,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 70,
+      "analysis_excerpt": "考查非谓语动词。句意：那里的活动从观鲸到徒步旅行并且住宿宗旨是对自然环境影响达到很小。固定短语aim to do译为“旨在，目的是”。故填to have。",
+      "skills": [
+        "目的意图",
+        "非谓语动词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/108",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 21,
+      "analysis_excerpt": "细节理解题。根据第一段最后一句“However, that was small fry compared with the city’s Circus Maximus, which accommodated around 250,000 people.” (然而，与这座城市容纳了25万人的大竞技场相比，这只是小巫见大巫。)可知，Circus Maximus的可以容纳250,000人。故选D项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/108",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 22,
+      "analysis_excerpt": "细节理解题。根据文章最后部分中的“Ohio Stadium, Columbus, Ohio, U.S. Capacity: 104,944. Opened October 7, 1922.” (美国俄亥俄州哥伦布市俄亥俄体育场，容纳人数：104,944人。1922年10月7日开业。)及其他四个著名竞技场的开放时间介绍可知，Ohio Stadium开放时间最早在1922年，属于年代最久远的。故选C项。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/108",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 23,
+      "analysis_excerpt": "细节理解题。根据文中“All these stadiums are still functional, still open and still hosting the biggest events in world sport.” (所有这些体育场馆仍在使用，仍在开放，仍在举办世界上最大的体育赛事。)可知，这些体育馆都还在承办大型的体育赛事。故选A项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/109",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 24,
+      "analysis_excerpt": "主旨大意题。根据文章第二段“These days you'd be hard pressed to find anyone in Australia over the age of 15 who doesn't own a mobile phone. In fact plenty of younger kids have one in their pocket. Practically everyone can make and receive calls anywhere, anytime. (现在你很难在澳大利亚找到15岁以上的没有手机的人。事实上，很多年幼的孩子口袋里都有手机。几乎每个人",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/109",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 25,
+      "analysis_excerpt": "词句猜测题。根据划线单词的上文“Of those Australians who still have a landline (在那些仍然有固定电话的澳大利亚人中)”可知，这个调查的目标人群是仍然有固定电话的澳大利亚人；根据下文“it's not really necessary and they're keeping it as a security blanket — 19 percent say they never use it while a further 13 percent keep it in case of emergencies (固定电话并不是必须的，他们将其作为一种安",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/109",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 26,
+      "analysis_excerpt": "推理判断题。根据文章第四段“84 percent of Baby Boomers who've perhaps had the same home number for 50 years.(婴儿潮时代中有84%的人可能已经有50年相同的家庭号码了)”以及文章第五段“That said, to be honest the only people who ever ring our home phone are our Baby Boomers parents (也就是说，老实说，唯一打过我们家电话的人是婴儿潮一代的父母)”可推知，婴儿潮时代的人一直用固定电话。故选C项。",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/109",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 27,
+      "analysis_excerpt": "推理判断题。根据文章最后一段“How attached are you to your landline? How long until they go the way of gas street lamps and morning milk deliveries? (你有多喜欢你的座机？它们还要多久才能走上煤气路灯和早晨送牛奶的道路？)”可推知，本段使用类比的方式，使用煤气路灯以及早晨送牛奶已经被淘汰的例子，侧面说明了固定电话总有一天会废弃的。故选B项。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/110",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 28,
+      "analysis_excerpt": "推理判断题。根据第一段“But does one plastic straw or cup really make a difference? Artist Benjamin Von Wong wants you to know that it does. He builds massive sculptures out of plastic garbage, forcing viewers to re-examine their relationship to single-use plastic products.(但一根塑料吸管或一个塑料杯真的有什么区别吗？艺术家本杰明·冯·王（Benj",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/110",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 29,
+      "analysis_excerpt": "推理判断题。根据第三段“Just 9% of global plastic waste is recycled. Plastic straws are by no means the biggest source(来源) of plastic pollution, but they’ve recently come under fire because most people don’t need them to drink with and, because of their small size and weight, they cannot be recycled. Every stra",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/110",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 30,
+      "analysis_excerpt": "推理判断题。根据倒数第二段“In a piece form 2018, Von Wong wanted to illustrate(说明) a specific statistic: Every 60 seconds, a truckload’s worth of plastic enters the ocean. For this work, titled “Truckload of Plastic,” Von Wong and a group of volunteers collected more than 10,000 pieces of plastic, which were the",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/110",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 31,
+      "analysis_excerpt": "标题判断题。通读全文，结合第一段“But does one plastic straw or cup really make a difference? Artist Benjamin Von Wong wants you to know that it does. He builds massive sculptures out of plastic garbage, forcing viewers to re-examine their relationship to single-use plastic products.(但一根塑料吸管或一个塑料杯真的有什么区别吗？艺术家本杰明·冯·王",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "标题选择",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/111",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 32,
+      "analysis_excerpt": "细节理解题。根据第一段“That’s why I have a membership at the coworking space across the street - so I can focus.（这就是为什么我在街对面的公用办公空间有会员资格——这样我就可以集中精力了。）”可知，采访者喜欢共享办公空间的原因是那里可以帮助他集中精力。故选A项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/111",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 33,
+      "analysis_excerpt": "细节理解题。根据第二段“The differences between most of the groups were statistically insignificant; however, the participants in the 70 decibels group - those exposed to a level of noise similar to background chatter in a coffee shop - significantly outperformed the other groups.（大多数组之间的差异在统计学上是不显著的；然而，音量为70分贝",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词",
+        "连词代词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/111",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 35,
+      "analysis_excerpt": "推理判断题。根据第一段“During an interview for one of my books, my interviewer said something I still think about often.（在一次采访我的一本书时，我的采访者说了一些我至今还经常想起的话。）”可知，作者提到有人采访自己的书，所以可以推断，作者是一位作家。故选D项。\n第二节",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/112",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 1,
+      "analysis_excerpt": "细节理解题。根据第一段\"Take a view, the Landscape(风景) Photographer of the Year Award,was the idea of\nCharlie Waite, one of today's most respected landscape photographers.”( Take a view，年度风景摄影师奖是\nCharlie Waite的主意,他是当今最受尊敬的风景摄影师之- -) 可知摄影师最有可能参加Take a view.故选B.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/112",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 2,
+      "analysis_excerpt": "细节理解题。根据Mike Shepherd部分“It was an extremely cold wintar's evening and freezing fog hung in the\nair.”(那是- -个极其寒冷的冬天的晚上，空气中弥漫着冰冷的雾)和Timothy Smith部分“I was back in my\nhome town of Maclesfield to take some winter images.\" (我回到我的家乡Macclesfield 拍摄- - 些冬季的照片)\n可知Shepherd和Smith 的作品的共同之处是它们都是冬天的景象。故选A.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/112",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 3,
+      "analysis_excerpt": "推理判断题。根据第- -段“Each year, the high standard of entries has shown that the Awards are the perfect\nplaform to showcase the very best photography of the British landscape. Take a view is a desirable annual\ncompetition for photographers from all comers of the UK and beyond.\" ( 每年参赛作品的高水准表明，该奖项是展示英国风景最佳摄影",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/113",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 4,
+      "analysis_excerpt": "推理判断题。通过文章第-段“she became the 40th black rhino to be bormn at the reserve (她成为该保护区出生\n的第40头黑犀牛)”以及文章倒数第二段“His mother, grandmnother and great grandnother were all bor at the\nreserve and still live there. (他的母亲、祖母和曾祖母都出生在保护区，至今仍住在那里)”可知，保护区的繁\n育计划使很多黑犀牛成功存活，可推知，这计划是成功的。故选D项。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/113",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 5,
+      "analysis_excerpt": "细节理解题。通过文章第二段“She's healthy, strong and already eager to play and explore. (她很健康，很强壮，\n已经渴望玩耍和探索了)”可知，Paul Beer认为新生的犀牛身体状况很好。故选C项。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/113",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 6,
+      "analysis_excerpt": "细节理解题。通过文章第一-段 “When the tinv creature anrived on January 31, she became the 40th black rhinoto\nbe bornat the reserve. (1月31日，当这头小犀牛来到保护区时，她成为了第40头在保护区出生的黑犀牛)”\n以及文章倒数第二段“The first rhino to be bom at Port Lympne arrived on January 5 to first-time mother Kisima\nand weighed about32kg. (1月5日，犀牛妈妈Kisima分",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/113",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 7,
+      "analysis_excerpt": "推理判断题。通过文章倒数第二二段“it is too early to tell if the calves will make good candidates to be retumed to\nprotected areas of the wild (要判断这些小犀牛是否会成为返回野生保护区的好的候选者还为时过早)”可推\n知，Pon Lynpne保护区的一- 些犀牛可能会被送到野生保护区。故选D项。",
+      "skills": [
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/114",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 8,
+      "analysis_excerpt": "推理判断题。根据第一段 \"Everyone in the family sttled quickdy into the ceity except me. Without my beloved\nbeaches and endless blue -sky days, I felt at a loss and out of place.(除了我之外的家里人都很快适应这个城市，\n没有了我喜爱的沙滩和蓝天，我感到迷茫和无措)”可知，作者刚到伦敦的时候因为没有喜爱的沙滩，不能很\n好的融入到新的城市，感到很沮丧，故选A.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/114",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 9,
+      "analysis_excerpt": "词义猜测题。根据画线词后文\"And that's what mattered- -landing tricks, being a good skatax. (那才是真正重要\n的一滑 板的落地技巧掌握了才是- - 名好的滑板玩家)\"可知，作者掌握了滑板落地技巧，因此他的朋友大声\n欢呼，因此可以推出本句的Safe是赞关的含义，结合选项，故选B.",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/114",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 10,
+      "analysis_excerpt": "推理判断题。根据第四段*I was a local here 20 years ago,\" I told him. Then, slowly, he began to nod his head.\n“Safe, man. sae\"(我告诉他:“我20年前经常在这里玩滑板，”他缓慢地开始向我点头:“嗨，你好!”)”呵\n推知，作者去Southbank这个地方是为了寻找自己玩滑板的回忆，故选D.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/114",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 11,
+      "analysis_excerpt": "推理判断题。根据全文可知，作者起初搬到伦敦很不适应，但是由于找到了玩滑板的地方，结识了玩滑板\n的朋友，因此很好的适应了。但是搬去华盛顿，因为没有遇到很好的玩滑板的朋友，几年之后就不再玩滑\n板，作者回到伦敦之后，经常之前玩滑板的地方寻找自己的回忆，在于-一个孩子打招呼的时候，终于找\n到了自己久违的回忆。通过作者的经历，作者要表达的是，归属感对于孩子是很重要的，故选C.",
+      "skills": [
+        "推理判断",
+        "主旨大意"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/115",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 12,
+      "analysis_excerpt": "推理判断题。根据第三段的“It is said that history is witen by victors, and those victors set the standards for\nadmision to the genius club. When contributions were made by geniuscs outside the club-women, or people of a\ndifferent color or belief-they were unackanowledged and rejcted by others.(据说历史是由胜利者书写的，而那\n些胜",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/115",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 13,
+      "analysis_excerpt": "推理判断题。根据第四段的“Even worse, the study found that girls act on that belief. Around age six they start to\navoid ativities said to be for children who are“rall rally smart.\" (更糟糕的是,研完发现女孩们是按照这个信\n念行事的。六岁左右，她们开始避免那些据说是“非常非常聪明”的孩子参加的活动)”可推知，女孩容易\n受到社会信仰的影响，认为自己在六岁左右就不适合做“聪明孩子”做的事情。故选D.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/115",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 14,
+      "analysis_excerpt": "细节理解题。根据最后一段的 “In a wired world with constant global communication, we're all positioned to see\nflashes of genius wherever they appear:(在-一个全球通讯不断的有线世界里，我们随时随地都能看到天才的闪\n现)”可知，进步的全球通讯让更多的天才被公众所知道。故选A.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/115",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "sub_question_number": 15,
+      "analysis_excerpt": "主旨大意题。根据文章的主要内容，结合文章第- -段提出问题“Who is a genius? (谁是天才)”和最后-段\n的“As a witer says, future geniuses come from those with \"inteligence, creativity, perseverance, and simple\ngeniuses, who are able to change the world\"(正如一-位作家所说，未来的天才来自那些具有“智慧、创造力、\n毅力和那些能够改变世界的简单天才。”)”可知，天才不一-定是那些有巨大贡献的人，他们也可以是某一\n方面比较突出的普通人",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "标题选择",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Language_Error_Correction/23",
+      "year": 2021,
+      "question_type": "短文改错",
+      "sub_question_number": 0,
+      "analysis_excerpt": "[解析]\n[分析]这是一篇说明文。文章介绍了关于学生在碰到问题后的解决方式的问卷调查结果。\n[详解] 1.考查主谓一致。句意:其中的-一个问题是: 你遇到麻烦时会去找谁? one of the +名词复数，意\n为....之一”，为单数含义，所以其后的系动词应用单数。结合句意，此处指问卷调查中的一一个问题，\n所以为客观事实，时态用一般现在时。 故are改为is。\n2.考查固定结构。句意同上。短语go to sb.“求助于某人”相当于短语tum to sb. for help.故go后加to。\n3.考查名词复数。句意:许多同学说他们会和他们的朋友说或同学讲，因为他们是同龄人，能彼此理解。\nfrie",
+      "skills": [
+        "推理判断",
+        "非谓语动词",
+        "时态语态",
+        "词性转换",
+        "冠词介词",
+        "连词代词",
+        "七选五衔接",
+        "短文改错"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Language_Error_Correction/22",
+      "year": 2021,
+      "question_type": "短文改错",
+      "sub_question_number": 0,
+      "analysis_excerpt": "【解析】\n【分析】本文是一篇记叙文。主要讲述了作者对于做家务这件事的看法以及做家务会带来的好处。\n【详解】1. 考查名词单复数。句意：饭后我总是帮助父母洗碗。固定短语“do the dishes”译为“洗餐具”。故将dish改为dishes。\n2. 考查动词。句意：我也给院子里的花浇水，必要时打扫我自己的卧室。分析句子结构以及并列连词and可知，此处tidy up是并列谓语。根据上文的“water the flowers”可知，句子要使用一般现在时。主语第一人称I，谓语动词用原型。故将tidying改为tidy。\n3. 考查连词。句意：我也给院子里的花浇水，必要时打扫我自己的卧室。根据句意可知",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "非谓语动词",
+        "时态语态",
+        "词性转换",
+        "冠词介词",
+        "连词代词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/23",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 16,
+      "analysis_excerpt": "根据上文“So what to do with all those perfectly- good-but-you 're- maybe-little-sick-of-them clothes piled on your bedroom floor?（那么，该如何处理那些堆在卧室地板上的（看起来）完好但你可能有点厌倦的衣服呢？）”提出关于如何解决旧衣物的问题。下文“It's the best way to get rid of your used clothes, score clothes from your friends, and have a party all at the same",
+      "skills": [
+        "语境推断",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/23",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 17,
+      "analysis_excerpt": "根据上文“Invite 5-10 people so you have a nice selection.”（邀请5到10个人，这样你就有一个很好的选择。）说明了应该邀请的人数。下文“and there may not be enough things to choose from; more than that, and it becomes uncontrollable.”（可能没有足够的东西可供选择；多于这个数量，它就变得无法控制。）说明多于或少于一定数量的人数将会导致一些麻烦。所以空白处应是针对下文中的“more than that”提出的相反的假设，即少于一定数量的人。A项“Less",
+      "skills": [
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/23",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 18,
+      "analysis_excerpt": "根据下文“They should also prepare plenty of reusable bags to carry their “new” clothes home.”（他们还应该准备大量的可重复使用的袋子，把他们的“新”衣服带回家。）说明去的时候应该为交换所得的“新衣服”准备袋子。G项“Tell everyone to bring clean clothes in good condition.”（告诉每个人带来品相完好的衣服。）说明去参加衣物交换的时候应该带完好的衣服，其中的bring和下文中carry相对，都是为交换衣物所做的准备。下文中的also也是提示词，并且其中They指",
+      "skills": [
+        "语境推断",
+        "冠词介词",
+        "连词代词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/23",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 19,
+      "analysis_excerpt": "根据上文“Put different types of clothing on different surfaces in the room.”（把不同类型的衣服放在房间的不同地方。）指出衣服应该归类放置。下文“Place a few mirrors around your room so people can see how things look when they try them on.”（在房间周围放几面镜子，这样人们试穿时就能看到衣服的样子。）提到了放置镜子的意义。由此可见，本段讲述的是房间里的一些具体的做法，所以空白处一样要提出人们在房间里要做什么。F项“Have everyon",
+      "skills": [
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/23",
+      "year": 2021,
+      "question_type": "完形填空",
+      "sub_question_number": 20,
+      "analysis_excerpt": "上文“Set a starting time. Maybe you say “go,” or turn on a certain song, or whatever.”（设置开始时间。也许你说“开始”，或者打开一首歌，或者无论什么。）打开音乐或者无论什么，意味聚会开始。下文“And don't forget to put out some cookies and fruits. Remember, it's a party!”（别忘了拿出一些饼干和水果。记住，这是个派对！）讲到了聚会上应该提供一些派对该有的服务。因而，空白处应是承接上文，讲述聚会期间要保持应有的内容。D项“Just keep ",
+      "skills": [
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 21,
+      "analysis_excerpt": "考查动词词义辨析。句意: Burchill 出差，当时正在酒店收拾行李，准备去拜访当地的一些朋友。A. studying\n研究; B. staying停留; C. looking看; D. packing包装。根据“Burchill was__21 _at the hotel on business and\nplanningto_ 22_ some friends in the area.\"及生活常识可知, Burchill 出差住在酒店，准备去拜访当地的一些朋友，自然是在酒店收拾行李。故选D.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 22,
+      "analysis_excerpt": "考查动词词义辨析。句意: Burchill 出差，当时正在酒店收拾行李，准备去拜访当地的- -些朋友。A. visit\n拜访; B. help帮助: C. fllow跟随; D. make制作。根据“They had asked himto_ 23_ some pepperoni(辣\n香肠) from back east. So he _24_ a suitase full of pepproni.\"可知，朋友让他带一些东西，由此推知Burchill准备去拜访当地的一-些朋友。故选A.",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 23,
+      "analysis_excerpt": "考查动词词义辨析。句意:他们让他从美国东部带些意大利香肠过来。A. sell卖; B. have有; C. bring带来;\ntaste品尝。根据“Sohe_ 24_ a suitcase full of pepperoni.\"可知，Burchill 的朋友让他从美国东部带些意大利香肠过来。故选C.",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 24,
+      "analysis_excerpt": "考查动词词义辨析。句意:所以他装了满满一箱子意 大利香肠。A. flled装满; B. locked锁上; C. abandoned\n抛弃; D. lost失。根据“a suitcase full of pepperoni\"和“They rushed to the window, 30 or 40 birds all trying\nto_ 33_ at the same timne, and pepperoni一everywhere.\" 可知，他装了满满一箱子意大利香肠。 故选A.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "非谓语动词",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 25,
+      "analysis_excerpt": "考查形容词词义辨析。句意:因为担心会太热，他把它放在桌子上，靠近- -扇开着的窗户。A. suprised感\n到惊讶的; B. pleased高兴的; C. excited兴奋的; D. woried担心的。根据“he_ 26_ it out on the table near\nan open window.\"可知，他担心意大利香肠会太热，所以把它放在桌子上，靠近一扇开着的窗户。故选D.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 26,
+      "analysis_excerpt": "考查动词词义辨析。句意:因为担心会太热，他把它放在桌子上,靠近- -扇开着的窗户.A. dug挖; B. cleared\n清除; C.cut切下; D. laid放。根据“it out on the table near an open window”可知，他把它放在桌子上。故选D.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 27,
+      "analysis_excerpt": "考查形容词词义辨析。句意:他以为他的意大利香肠是安全的，冷却得很好，就走了。A. delicious美味的;\nB. safe安全的; C. soft柔软的; D. ready准备好。根据“I remamber walking down the long_ 30 _and opening\nthe door to my room to find an entire flock of seagulls,\" Burchill said in a recent letter of _31_to the 4-star hotel.\"可知, Burchill 离开了，由此推知，他以为他的意大利香肠是安全的，",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 28,
+      "analysis_excerpt": "考查动词词义辨析。句意:他以为他的意大利香肠是安全的，冷却得很好，就走了。A. left离开; B. nodded\n点头;C. waited等待; D. regeted后悔。根据“I remember walking downthe long_ 30 _and opening the door\nto my room to find an entire flock of seagulls,s Burchill said in a recent ltter of_ 31_ to the 4-star hotel.\"可知，Burchill 离开了。故选A.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 29,
+      "analysis_excerpt": "考查形容词词义辨析。句意:事情就在这时出了问题。A. far远的; B. funny有趣的; C. wrong失常的; D. blind\n盲目的。根据“The scagulls immdiatly went_ 32_. They rushed to the window, 30 or 40 birds all trying to_33_ at the same time, and pepperoni 一 everywhere. The curtains were flling down, the lamps were flling down,\nIt was a real _34_”可知，事情就",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 30,
+      "analysis_excerpt": "考查名词词义辨析。句意: Burchill 在最近给这家四星级酒店的一封道歉信中说:“ 我记得我走过长长的大\n厅，打开房门，发现满满- -群海鸥。”A. beach海滩; B. driveway私人车道; C. hall大厅; D. table桌子。\n根据“and opening the door to my room to find an entre flock of seagulls\"可知，Burchill 走过长长的大厅。故\n选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 31,
+      "analysis_excerpt": "考查名词词义辨析。句意: Burchill 在最近给这家四星级酒店的一封道歉信中说:“ 我记得我走过长长的大\n厅，打开房门，发现满满一群海鸥。”A. application申请; B. apology道歉; C. request要求; D. invitation邀请。根据“I have_35_ and I admit responsibility of my_ 36 _.”he said in the letter.“I come to you,_37_， to apologize for the-damage I had_38_caused and to ask you to_39_ my ",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 32,
+      "analysis_excerpt": "考查形容词词义辨析。句意:海鸥立刻变得疯狂起来。A. hungry饥饿的; B. dead死亡的; C. missing失踪\n的; D. wild疯狂的。根据“They rushed to the window, 30 or 40 birds all trying to_ 33_ at the same time, and\npepproni - everywhere.\" 可知，海鸥被突然回到房间的Burchill吓到了，变得疯狂起来。故选D.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 33,
+      "analysis_excerpt": "考查动词短语辨析。句意:它们冲到窗口，30或40只鸟都想同时出去，到处都是意大利香肠。A. wakeup\n醒来; B. getout出去; C. take off起飞; D. breakin闯入。根据\"They rushed to the window\"及生活常识可知，鸟看到人类很害怕，想同时从窗户逃出去。故选B.",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 34,
+      "analysis_excerpt": "考查名词词义辨析。句意:窗帘在落下，灯也在落下，真是一团糟。A. mess混乱; B. puzzle不解之谜; C.\nfight打架; D. callnge挑战。根据“The curtains were flling down, the lamps were flling down\"可知，现场一片混乱。故选A.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 35,
+      "analysis_excerpt": "考查动词词义辨析。句意:“ 我成熟了,我承认对自己的行为负责,”他在信中说。A. rcovered恢复; B. retired\n退休; C. escaped逃跑; D. matured成熟。根据“and I admit responsibilityofmy_ 36_ .” 可知，这里意思是Burchill认为自己成熟了。故选D. .",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "考查名词词义辨析。句意:“ 我成熟了，我承认对自己的行为负责，”他在信中说。A. sfering苦难; B. plans\n计划; C. madness疯狂; D. actions行为。根据“I come to you,_ 37_ ， to apologize for the-damage Ihad_ 38_\ncaused and to askyouto_ 39 _my lifetime ban from the hotel.\"可知, Burchill 承认对自己的行为负责。故选D.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "语法填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "考查固定短语辨",
+      "skills": [
+        "未分类"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/118",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 8,
+      "analysis_excerpt": "细节理解题。根据文章第二段“Drones are already being used to examine high-tension electrical lines. They could do precisely the same thing to inspect railway lines and other vital aspects of rail infrastructure such as the correct position of railway tracks and switching points.(无人机已经被用于检查高压电线。他们完全可以做同样的事情来检查铁路线路",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/118",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 9,
+      "analysis_excerpt": "词义猜测题。根据后文“It is calculated that European railways alone spend approximately 20 billion euros a year on maintenance, including sending maintenance staff, often at night, to inspect and repair the rail infrastructure. (据统计，仅欧洲铁路公司每年在铁路维护上的花费就约为200亿欧元，其中包括经常在夜间派遣维修人员检查和维修铁路基础设施)”可知花在maintenance上的费用是用于",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/118",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 10,
+      "analysis_excerpt": "推理判断题。根据文章最后一段“Engineers are now working on a new concept: the rail drones of the future. They will be moving on the track ahead of the train, and programmed to run autonomously(工程师们现在正在研究一个新概念:未来的铁路无人机。它们将在列车前方的轨道上运行，并被设定为自动运行)”可知铁路无人机有望让火车自动运行。故选B。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/118",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 11,
+      "analysis_excerpt": "主旨大意题。根据文章主题段第一段“Can a small group of drones(无人机)guarantee the safety and reliability of railways and, at the same time, help railway operators save billions of euros each year? That is the very likely future of applying today’s “eyes in the sky” technology to making sure that the millions of kilome",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "标题选择",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/121",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 4,
+      "analysis_excerpt": "细节理解题。根据文章第一段“Though not known to use tools in the wild, the birds have proved skilful at tool use while kept in the cage. (虽然人们不知道这些鸟在野外会使用工具，但事实证明，它们在关在笼子里时就能熟练地使用工具)”以及“the birds were given five differently shaped “keys” to choose from. Inserting, the correct “keys” would let out the nut. (研究人员给了",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/121",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 5,
+      "analysis_excerpt": "细节理解题。根据文章第二段“In humans, babies can put a round shape in a round hole from around one year of age (在人类身上，婴儿从一岁左右就可以把一个圆形的物品放进一个圆形的洞里)”结合选项，可知，一岁儿童最有可能完成“将一个球放进一个圆形的洞里”的任务。故选C。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/121",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 6,
+      "analysis_excerpt": "推理判断题。通过文章最后一段“The next step, according to the researchers, is to try and work out whether the cockatoos rely entirely on visual clues, or also use a sense of touch in making their shape selections. (根据研究人员的说法，下一步是尝试弄清楚凤头鹦鹉是完全依靠视觉线索，还是也使用触觉来选择它们的形状)”可推知，后续测试的目的是了解凤头鹦鹉在测试中是否使用触觉。故选D。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/121",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 7,
+      "analysis_excerpt": "主旨大意题。通读全文，再结合文章第一段“Coffin’s cockatoos, a kind of small parrot native to Australasia, have been shown to have similar shape-recognition abilities to a human two-year-old. (科芬的凤头鹦鹉是一种原产于大洋洲的小鹦鹉，它的形状识别能力与两岁的人类相似)”可推知，本文主要介绍了会识别形状的凤头鹦鹉。D项“Cockatoos: Skilful Shape-Sorters (凤头鹦鹉：识别形状的熟练工)”符合文意，最适合作为本文标题。",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "标题选择"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/122",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 8,
+      "analysis_excerpt": "词句猜测题。根据第二段划线词前文“Throughout her career(职业) as a professional dancer, she toured in the UK, but always longed to explore further. (在她的职业舞蹈演员生涯中，她曾在英国巡演，但一直渴望进一步探索)”和“When she retired from dancing and her sons eventually flew the nest,(当她不再跳舞，她的儿子们最终独立生活)”可知，Ginni在退休和儿子们成家立业之后，她决定尝试有挑战性的事情。由此推知，划线词组ta",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/122",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 9,
+      "analysis_excerpt": "细节理解题。根据第三段中的“And it was in Chile she discovered she could get last-minute cheap deals on ships going to Antarctica from the islands off Tiera del Fuego.(正是在智利，她发现自己可以在最后一刻买到从火地岛附近岛屿前往南极洲的廉价船只)”可知，是一张折扣票价让Ginni决定去南极洲旅行的。故选C。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/122",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 10,
+      "analysis_excerpt": "细节理解题。根据最后一段“The realization that this is a precious land, to be respected by humans, was one of the biggest things that hit home to Ginni.(意识到这是一块宝贵的土地，应该受到人类的尊重，这是Ginni最深刻的感受之一。)”可知，旅行结束后，Ginni认为南极洲应该得到很好的保护。故选C。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/122",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 11,
+      "analysis_excerpt": "主旨大意题。根据第二段“Ever since her childhood, Ginni, now 71 has had a deep love for travel.(今年71岁的吉妮从小就对旅行有着深深的热爱)”及全文可知，文章主要介绍了71岁的Ginni Balinton从小就对旅行有着深深的热爱，渴望探险，不再跳舞和孩子们成家立业之后，她开始周游世界，并在2008年开始了前往南极洲的旅程。由此可知，A childhood dream.(童年的梦想)能够概括文章主旨。故选A。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "主旨大意"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/123",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 12,
+      "analysis_excerpt": "主旨大意题。根据第一段“Sometime in the early 1960s, a significant thing happened in Sydney, Australia. The city discovered its harbor. (20世纪60年代初，澳大利亚悉尼发生了一件大事。这座城市发现了它的港口) ”以及“But it is the harbor that makes the city. (但是是港口造就了城市)”可知，本段主要介绍了悉尼发展的关键是港口。故选C项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "主旨大意",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/123",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 13,
+      "analysis_excerpt": "细节理解题。根据第二段“Andrew Reynolds, a cheerful fellow in his early 30s, pilot Sydney ferryboats for a living. (30岁出头的Andrew Reynolds是个快乐的小伙子，他在悉尼担任渡轮领航员为生)”、第三段“I’ll miss these old boats. (我会想念这些旧船的)”以及第五段“Catamarans are faster, but they’re not so elegant, and they’re not fun to pilot. (双体船更快，但它们不那么优雅，驾驶起来",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/123",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 14,
+      "analysis_excerpt": "推理判断题。根据倒数第三段“Shirley Fitzgerald, the city’s official historian, told me that in its rush to modernity in the 1970s, Sydney swept aside much of its past, including many of its finest buildings. (悉尼的官方历史学家Shirley Fitzgerald告诉我，在20世纪70年代奔向现代化的过程中，悉尼把很多它的过去都抛在了一边，包括许多最漂亮的建筑)”可推知，Shirley Fitzgerald认为悉尼匆",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/123",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 15,
+      "analysis_excerpt": "推理判断题。根据倒数第二段“On the other hand, being young and old at the same time has its attractions. I considered this when I met a thoughtful young businessman named Anthony. (另一方面，同时既年轻又古老也有它的魅力。当我遇到一位深思熟虑的年轻商人Anthony时，我考虑到了这一点)”以及最后一段“He is right (他说得没错)”可推知，作者赞同Anthony的观点，认为一座城市可以同时既年轻又古老。故选A项。\n第二节",
+      "skills": [
+        "推理判断",
+        "作者态度",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/120",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 2,
+      "analysis_excerpt": "细节理解题。根据文章“The Glee Club”部分中的“If you are looking for the best comedies on tour and brilliant live music, you should start here (如果你正在寻找巡演中最好的喜剧和精彩的现场音乐，你应该从这里开始)”可知，人们可以在The Glee Club享受喜剧。故选B。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/120",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 3,
+      "analysis_excerpt": "细节理解题。根据文章“New Theatre”部分中的“The New Theatre has been the home of quality drama, musicians, dance and children’s shows for more than 100 years (100多年来，New Theatre一直是优质戏剧、音乐家、舞蹈和儿童节目的发源地)”以及其下面的网站“www.newtheatrecardiff.co.uk”可知，可以在www.newtheatrecardiff.co.uk网站找到Cardiff存在最久的剧院。故选A。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/25",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 16,
+      "analysis_excerpt": "根据文章标题“Important Things to Know When Dining Out (外出就餐时要知道的重要事情)”可知，本文主要介绍的是外出就餐时应该知道的重要事情。由此可知，D项“Don’t get caught making an embarrassing mistake at a restaurant (不要在餐馆犯尴尬的错误)”符合语境，其中“at a restaurant”对应标题中的“When Dining Out”，同时引起下文“Knowing some tips will help ensure that you have an enjoyable meal wi",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/25",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 17,
+      "analysis_excerpt": "根据本段小标题“Chopstick Rules”可知，本段主要讲述的是使用筷子的规则。根据上文“When you put them down between bites, always put them down together so they are parallel with the edge of the table in front of you. (当你在吃的间隙把它们放下来的时候，一定要把它们放在一起，这样它们就和你面前的桌子边缘平行了)”可知，此处讲述了正确使用筷子的方式。由此可知，F项“Never stick them upright in your food or cros",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/25",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 18,
+      "analysis_excerpt": "根据本段小标题“Hands or Utensils (餐具)”可知，本段主要讲述的是手和餐具的问题。根据上文“In India and the Middle East, it’s considered very rude to eat with your left hand. People in France expect you to eat with a utensil in each hand. (在印度和中东，用左手吃饭被认为是非常不礼貌的。法国人希望你每只手拿一个餐具吃饭)”及下文“instead preferring to use their hands (相反更愿意使用他们的双手",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/25",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 19,
+      "analysis_excerpt": "根据本段小标题“Making Requests”可知，本段主要讲述的是用餐时提请求的问题。根据下文“In Portugal, this would be a serious mistake, because it shows the chef that you don’t like their seasoning skills. Similarly, in Italy, never ask for extra cheese to add to your food. (在葡萄牙，这将是一个严重的错误，因为这向厨师表明你不喜欢他们的调味技巧。同样，在意大利，永远不要要求在食物中添加额外的奶酪)”可",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/25",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 20,
+      "analysis_excerpt": "根据下文“the more comfortable you’ll begin to feel with its foreign cultural practices. (你就会对它的外国文化习俗感到越舒服)”可推知，此处指在一个国家待得越久，就会越习惯当地习俗，且此处是“the+比较级，the+比较级”结构，B项“The more time you spend in any given country (你在某个国家待的时间越长)”符合文意，引出下文。故选B。",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 21,
+      "analysis_excerpt": "考查动词词义辨析。句意：对他们来说，避开别人的目光，让自己无法被别人看到，这是一件非常令人兴奋的事情。A. following跟随；B. taking取走；C. escaping避开；D. directing指导。根据上文“Young children across the globe enjoy playing games of hide and seek.”可知，儿童喜欢玩捉迷藏，避开别人的目光。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 22,
+      "analysis_excerpt": "考查形容词词义辨析。句意：然而，我们都看到学龄前儿童非常不善于隐藏。A. clever聪明的；B. bad不擅长的；C. scared害怕的；D. quick快的。根据下文“They often cover only their eyes with their hands, leaving the rest of their bodies”可知，儿童不擅长隐藏，be bad at sth.表示“不擅长某事”。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 23,
+      "analysis_excerpt": "考查形容词词义辨析。句意：他们通常只用手遮住眼睛，其余的身体暴露在外。A. exposed无遮蔽的；B. examined已检查过的；C. untouched未受影响的；D. imbalanced失衡的。根据上文“They often cover only their eyes with their hands, leaving the rest of their bodies”可知，儿童只是用手遮住了眼睛，身体的其余部分无遮蔽，是暴露在外的。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 24,
+      "analysis_excerpt": "考查动词词义辨析。句意：长期以来，这种无效的隐藏方法被解释为儿童是无可救药的“自我中心”生物的证据。A. supported支持；B. guaranteed保证；C. imagined想象；D. interpreted解释。根据下文“as evidence that children are hopelessly “egocentric” creatures.”可知，此处表示这种无效的隐藏方法被解释为证据，证明儿童是以自我为中心的。故选D项。",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 25,
+      "analysis_excerpt": "考查形容词词义辨析。句意：但我们在儿童发展心理学方面令人惊讶的研究结果与这一观点相矛盾。A. disappointing令人失望的；B. mixed混合的；C. surprising令人惊讶的；D. desired渴望的。根据下文“research results in child developmental psychology _6_ that idea.”可知，研究结果与之前的观点相矛盾，所以研究结果是令人惊讶的。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "作者态度",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 26,
+      "analysis_excerpt": "考查动词词义辨析。句意：但我们在儿童发展心理学方面令人惊讶的研究结果与这一观点相矛盾。A. explained解释；B. confirmed证实；C. contradicted相矛盾；D. tested测试。根据下文“Our19suggest when a child “hides” by putting a blanket over her head, it is not a result of egocentrism. In fact, children consider this method _ 20 _ when others use it.”可知，研究结果与之前的观点是相矛盾的。故",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "作者态度",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 27,
+      "analysis_excerpt": "考查名词词义辨析。句意：每个儿童都和一个成年人坐在一起，成年人遮住自己的眼睛或耳朵。A. parent父母亲；B. child儿童；C. researcher研究员；D. doctor医生。根据上文“We brought young children aged 2-4 into our Minds in Development Lab at USC.”可知，儿童参加实验，此处表示每个儿童和一个成年人坐在一起。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 28,
+      "analysis_excerpt": "考查名词词义辨析。句意：每个儿童都和一个成年人坐在一起，成年人遮住自己的眼睛或耳朵。A. feet脚；B. nose鼻子；C. hands手；D. ears耳朵。根据下文“or hear the adult”可知，实验中，儿童被询问是否能听到成年人的声音，所以此处表示成年人遮住了自己的耳朵。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 29,
+      "analysis_excerpt": "考查动词词义辨析。句意：然后我们问儿童是否能看到或听到成年人的声音。A. see看见；B. help帮助；C. reach到达；D. fool欺骗。根据上文“an adult who covered her own eyes”可知，成年人遮住了自己的眼睛，所以此处儿童被询问是否能看见成年人。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "定语从句",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 30,
+      "analysis_excerpt": "考查名词词义辨析。句意：当成年人捂住她自己的嘴时，同样的事情发生了：此刻孩子们说他们不能和她说话。A. event大事；B. thing事情；C. action行动；D. accident事故。根据下文“children said that they couldn’t _12_ to her.”可知，此处表示同样的事情发生了，孩子们表示不能和捂住嘴的成年人说话了。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 31,
+      "analysis_excerpt": "考查副词词义辨析。句意：当成年人捂住她自己的嘴时，同样的事情发生了：此刻孩子们说他们不能和她说话。A. Yet然而；B. Now此刻；C. Soon很快；D. Once一次。根据语境，此处表示当成年人捂住自己的嘴时，这时孩子们说不能和成年人说话了。故选B项。",
+      "skills": [
+        "词义猜测",
+        "语境推断",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 32,
+      "analysis_excerpt": "考查动词词义辨析。句意：当成年人捂住她自己的嘴时，同样的事情发生了：此刻孩子们说他们不能和她说话。A. speak说；B. listen听；C. turn转；D. wave挥手。根据上文“when the adult covered her own mouth”可知，此处孩子们表示他们不能和成年人说话了。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 33,
+      "analysis_excerpt": "考查名词词义辨析。句意：许多实验排除了孩子们误解了他们被问到的问题。A. instructions命令；B. descriptions说明；C. experiments实验；D. assumptions假设。根据语境，此处表示上文中的许多实验排除了孩子们会误解问题这一情况。故选C项。",
+      "skills": [
+        "词义猜测",
+        "语境推断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 34,
+      "analysis_excerpt": "考查动词词义辨析。句意：结果很清楚：我们的年轻受试者理解了这些问题，并且确切地知道他们被问到了什么。A. comprehended理解；B. predicted预测；C. explored探索；D. ignored忽略。根据下文“the questions and knew _15_ what was asked of them”可知，儿童理解了问题，并能确切地知道自己被问了什么。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 35,
+      "analysis_excerpt": "考查副词词义辨析。句意：结果很清楚：我们的年轻受试者理解了这些问题，并且确切地知道他们被问到了什么。A. partly部分地；B. honestly诚实地；C. vaguely含糊地；D. exactly确切地。根据下文“what was asked of them. Their16to the questions reflected their true _17_ ”可知，孩子们确切地知道自己被问了什么，他们的答案反映了他们真实的看法。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "考查名词词义辨析。句意：他们对这些问题的回答反映了他们真正的看法：“只有你也能看到我，我才能看到你。”A. responses回答；B. approaches方法；C. contribution贡献；D. sensitivity敏感性。根据下文“to the questions”可知，此处表示孩子们对于问题的回答。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "考查名词词义辨析。句意：他们对这些问题的回答反映了他们真正的看法：“只有你也能看到我，我才能看到你。”A. ability能力；B. belief看法；C. identity身份；D. purpose目的。根据下文“I can see you only if you can see me, too.”可知，此处表示孩子们真正的看法。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 38,
+      "analysis_excerpt": "考查动词短语辨析。句意：他们只是坚持相互承认和尊重。A. hold back阻止；B. relate to有关联；C. insist on坚持；D. make up弥补。根据上文“I can see you only if you can see me, too.”可知，孩子们的看法体现了他们坚持相互的承认和尊重。故选C项。",
+      "skills": [
+        "推理判断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 39,
+      "analysis_excerpt": "考查名词词义辨析。句意：我们的研究结果表明，当孩子在头上盖一条毯子“隐藏”时，这并不是自我中心主义的结果。A. limitations限制；B. requirements必要条件；C. theories理论；D. findings调查发现。根据上文“We brought young children aged 2-4 into our Minds in Development Lab at USC.”可知，此处表示实验的研究结果表明孩子的“隐藏”并不是自我中心主义的结果。故选D项。",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/28",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 40,
+      "analysis_excerpt": "考查形容词词义辨析。句意：事实上，当其他人使用这种方法时，孩子们认为它是有效的。A. tentative实验性的；B. impr",
+      "skills": [
+        "词义猜测",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 21,
+      "analysis_excerpt": "考查名词词义辨析。句意：它们的陪伴几乎足以让我远离孤独。A. ownership所有权；B. membership会员；C. companionship陪伴；D. leadership领导。由上文的“For many years, I enjoyed living with my dogs, Tilly and Chance. (多年来，我喜欢和我的狗Tilly和Chance生活在一起)”可知，作者多年和狗狗生活在一起，可得出狗狗陪伴着作者，让作者远离孤独。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 22,
+      "analysis_excerpt": "考查名词词义辨析。句意：去年，我开始约会，但有所保留。A. reservations保留；B. expectations期望；C. confidence信心；D. prejudice偏见。由下文的“He poured water from a bottle into his hand and offered it to my dogs. (他把瓶子里的水倒在手里，递给我的狗)”和“I began to fall for him (我开始爱上他)”可知，作者是在第二周和史蒂夫一起遛狗时，因为史蒂夫把水给自己的爱犬喝，作者才对史蒂夫产生好感，可得出刚开始约会时，因为不熟悉史蒂夫的品行，作者还是有所",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 23,
+      "analysis_excerpt": "考查动词词义辨析。句意：当我第一次和史蒂夫约会时，我得知他有一条名叫Molly的狗和一只名叫Flora的猫。A. feared恐惧；B. doubted怀疑；C. hoped希望；D. learned得知。由上文的“When I first dated Steve (当我第一次和史蒂夫约会时)”和常识可知，第一次约会会得知对方相关情况，作者从而得知史蒂夫有一只狗和一只猫。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 24,
+      "analysis_excerpt": "考查形容词词义辨析。句意：虽然我很高兴他是一个动物爱好者，但我担心三条狗可能太多了，我的狗可能会攻击猫Flora。A. unsatisfied不满意的；B. amused愉快的；C. terrified害怕的；D. thrilled刺激的。由下文的“he was an animal lover (他是一个动物爱好者)”可知，得知史蒂夫是一个动物爱好者，多年和两只爱犬生活在一起的作者应该是感到愉快高兴。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 25,
+      "analysis_excerpt": "考查动词词义辨析。句意：虽然我很高兴他是一个动物爱好者，但我担心三条狗可能太多了，我的狗可能会攻击猫Flora。A. predicted预测；B. worried担心；C. regretted后悔；D. insisted坚持。由下文的“three dogs were perhaps too many, and my dogs might attack     6    the cat (三条狗可能太多了，我的狗可能会攻击猫)”可知，作者认为三条狗可能太多了，且自己的狗可能会攻击史蒂夫的猫，针对这种情况，作者是担忧的。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 26,
+      "analysis_excerpt": "考查名词词义辨析。句意：虽然我很高兴他是一个动物爱好者，但我担心三条狗可能太多了，我的狗可能会攻击猫Flora。A. Flora弗洛拉；B. Chance机会；C. Molly莫莉；D. Tilly蒂莉。选项指的是文中动物名词。由上文的“he had a dog, Molly, and a car, Flora (他有一条名叫Molly的狗和一只名叫Flora的猫)”可知，此处指作者担心自己的狗可能会攻击史蒂夫的猫Flora。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 27,
+      "analysis_excerpt": "考查动词词义辨析。句意：第二周，我们一起遛狗。A. tied系；B. walked牵着（动物）走；C. bathed沐浴；D. fed喂养。由本处的“  7  our dogs together (一起……我们的狗)”可知，作者和史蒂夫在一起遛狗。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 28,
+      "analysis_excerpt": "考查名词词义辨析。句意：当我们停下来休息时，史蒂夫单膝跪下。A. breath呼吸；B. balance平衡；C. attention注意力；D. imagination想象。由上文的“It was a hot day. When we paused (那是一个炎热的日子。当我们停下)”可知，那天很热，遛狗的二人停下来休息一下，catch one’s breath (休息一下、歇一口气)。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 29,
+      "analysis_excerpt": "考查形容词词义辨析。句意：我也喜欢他，但这么快？A. calm冷静的；B. sure确定的；C. soon很快的；D real真正的。由上文的“The next week (第二周)”和“Was he proposing (求婚)? (他在求婚吗)”可知，二人才认识两周，作者以为史蒂夫要向自己求婚，认为进展太快了。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 30,
+      "analysis_excerpt": "考查介词短语辨析。句意：就在那一刻，我开始爱上他。A. By the way顺便说一句；B. In that case那样的话；C. By all means务必；D. In that moment那一刻。由上文的“He poured water from a bottle into his hand and offered it to my dogs. (他把瓶子里的水倒在手里，递给我的狗)”和下文的“I began to fall for him (我开始爱上他)”可知，就在史蒂夫把水给作者爱犬喝的那一刻，还有所保留的作者卸下心防，对史蒂夫产生好感。故选D项。",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 31,
+      "analysis_excerpt": "考查动词词义辨析。句意：我们继续约会，虽然我们都没有提到未来。A. continued继续；B. decided决定；C. intended打算；D. pretended假装。由上文的“I began to fall for him (我开始爱上他)”可知，作者对史蒂夫产生好感，可得出二人会继续约会。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 32,
+      "analysis_excerpt": "考查名词词义辨析。句意：11月下旬，Tilly的腿做了一次手术。A. eye眼睛；B. tail尾巴；C. ear耳朵；D. leg腿。由下文的“I worried that Tilly   13   climbing the stairs could reopen the wound (我担心Tilly爬楼梯会重新打开伤口)”可知，作者担心爬楼会影响Tilly的伤口，可得出Tilly的腿做了手术。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 33,
+      "analysis_excerpt": "考查副词词义辨析。句意：我一天带狗出去四次，我担心Tilly不断地爬楼梯会重新打开伤口。A. secretly秘密地；B. constantly不断地；C. eventually最终；D. unwillingly不情愿地。由上文的“I took the dogs out four times a day (我一天带狗出去四次)”可知，作者一天带狗出去四次，可得出狗狗（包括Tilly）要不断地爬楼梯。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 34,
+      "analysis_excerpt": "考查动词词义辨析。句意：然后史蒂夫离开了他的房子。A. left离开；B. sold卖；C. suggested建议；D. searched搜寻。由下文的“We made good housemates. (我们是很好的室友)”可知，二人成为室友，可得出史蒂夫离开了他的房子，和作者一起居住。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 35,
+      "analysis_excerpt": "考查形容词词义辨析。句意：一切都很好。A. late晚的；B. hard困难的；C. fine好的；D. free自由的。由下文的“The three dogs formed a pack (这三条狗组成了一个团队)”和“Steve and I formed a good team (史蒂夫和我组成了一个好团队)”“We made good housemates. (我们是很好的室友)”可知，狗狗相处友好，作者和史蒂夫相处也友好，可得出一切都好。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "考查动词词义辨析。句意：这三条狗组成了一个团队，在训练下，尊重Flora的空间；史蒂夫和我组成了一个照顾Tilly的好团队。A. emptied清空；B. respected尊重；C. occupied占据；D. discovered发现。由上文的“my dogs might attack   6   , the cat (我的狗可能会攻击猫)”和“The three dogs formed a pack that, with coaching (这三条狗组成了一个团队，在训练下)”可知，起初作者担心自己的狗会攻击史蒂夫的猫Flora，但作者的狗和史蒂夫的狗相处友好，可得出在训练下，狗不会去攻",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Fill_in_Blanks/29",
+      "year": 2022,
+      "question_type": "语法填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "考查动词词义辨析。句意：这三条狗组成了一个团队，在训练下，尊重Flora的空间；史蒂夫和我组成了一个照顾Tilly的好团队。A. looking看；B. caring照顾；C. waiting等待；D. calling打电话。由上文的“Tilly had an operation (Tilly做了一次手术)”可知，作者的狗Tilly做过手术，史蒂夫和作者一起居住后，和作者一起照顾术后康复的Tilly。故",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/119",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 12,
+      "analysis_excerpt": "细节理解题。根据文章第二段中的“First announced in April, 2016, the tax which applies to soft drinks containing more than 5g of sugar per 100ml, was introduced to help reduce childhood obesity .（该税于2016年4月首次宣布，适用于每100毫升含糖超过5g的软饮料，旨在帮助减少儿童肥胖。）”可知，征收糖税的目的是帮助儿童减少肥胖。故选C项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/119",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 13,
+      "analysis_excerpt": "细节理解题。根据第四段中的“It comes after more than half of soft drinks sold in shops have had their sugar levels cut by manufacturers so they can avoid paying the tax.（此前，制造商已经降低了商店中销售的超过一半的软饮料的含糖量，以避免纳税。）”可知，一些饮料公司通过降低了产品的含糖量来避税。故选D项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/119",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 14,
+      "analysis_excerpt": "细节理解题。根据第五段中的“However, some high sugar brands, like Classic Coca Cola, have accepted the sugar tax and are refusing to change for fear of upsetting consumers. Fruit juices, milk-based drinks and most alcoholic drinks are free of the tax, as are small companies manufacturing fewer than 1m litres per ",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/119",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 15,
+      "analysis_excerpt": "推理判断题。根据文章最后一段中“Today’s figures, according to one government official, show the positive influence the sugar tax is having by raising millions of pounds for sports facilities and healthier eating in schools.（根据一位政府官员的说法，今天的数据显示了糖税的积极影响，它为学校的体育设施和健康饮食筹集了数百万英镑）”可推断，糖税政策的实施是一个成功的政策。故选B项。\n第二节",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/117",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 4,
+      "analysis_excerpt": "细节理解题。根据第一段“In 1916, two girls of wealthy families, best friends from Auburn, N.Y.-Dorothy Woodruff and Rosamond Underwood -traveled to a settlement in the Rocky Mountains to teach in a one-room schoolhouse. (1916年，来自纽约奥本市的两个富裕家庭的女孩——Dorothy Woodruff和Rosamond Underwood——来到落基山脉的一个定居点，在一间只有一个房间的学校教书。)",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/117",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 5,
+      "analysis_excerpt": "推理判断题。根据第三段“They moved in with a local family, the Harrisons, and like them, had little privacy, rare baths, and a blanket of snow on their quilt when they woke up in the morning.(他们和一个当地家庭，哈里森一家一起搬进去，和他们一样，几乎没有隐私，很少洗澡，早上醒来时被子上覆盖着一层雪。)”以及“In spring, the snow was replaced by mud over ice.(在春天，雪被泥替代覆盖",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/117",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 6,
+      "analysis_excerpt": "细节理解题。根据倒数第二段“A hair-raising section concerns the building of the railroads, which entailed drilling through the Rockies, often in blinding snowstorms.(令人毛骨悚然的一段与铁路建设有关，这涉及到在令人眩目的暴风雪中钻穿落基山脉。)”可知，Wickenden的作品中涉及落基山脉的铁路建设这一部分是令人毛骨悚然的。故选C项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/117",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 7,
+      "analysis_excerpt": "推理判断题。根据倒数第二段“The book ends with Rosamond and Dorothy’s return to Auburn.(这本书以Rosamond和Dorothy回到奥本结束。)”以及最后一段“Wickenden is a very good storyteller. The sweep of the land and the stoicism of the people move her to some beautiful writing.( Wickenden是个很好的讲故事的人。大地的辽阔和人们的坚忍使她创作出了一些美丽的作品。)”可知，本文简要介绍了Wicke",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Language_Error_Correction/24",
+      "year": 2022,
+      "question_type": "短文改错",
+      "sub_question_number": 0,
+      "analysis_excerpt": "【解析】\n【导语】这是一篇议论文。作者表述了骑自行车这项运动可以带来的好处。\n【详解】1.考查形容词。句意: 我们都知道骑自行车是一项很好的运动。需用形容词作定语修饰名词exercise。故将greatly改为great。\n 2.考查主谓一致。句意：医生告诉我，寿命最长的人是舞蹈家和骑自行车的人。people是集合名词，谓语动词用复数。故将lives改为live。\n3.考查介词。句意：也许是因为新鲜空气、流畅的运动和锻炼的结合。because表示“因为”，后面接从句，短语because of表示“因为”，后面接名词、代词、动名词等作宾语，the combination of fresh air",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "定语从句",
+        "非谓语动词",
+        "时态语态",
+        "词性转换",
+        "冠词介词",
+        "连词代词",
+        "七选五衔接",
+        "短文改错"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Language_Error_Correction/25",
+      "year": 2022,
+      "question_type": "短文改错",
+      "sub_question_number": 0,
+      "analysis_excerpt": "【解析】\n【导语】本文是一篇记叙文，介绍了作者在成长过程中和父亲之间关系的变化及处理分歧的过程。\n【详解】1.考查短语。句意：当我不上学时，我的爸爸经常带我去他的医院。off school为固定短语，表示“不在上学时”，school前面不加任何限定词。故将my去掉。\n2.考查主谓一致。句意：他向我展示他的医疗器械是如何使用的。主语instruments为复数形式，全文为一般过去时，be动词用复数形式were。故将was改为were。\n3.考查形容词。句意：我对他感觉如此亲近。felt为系动词，后面用形容词作表语，表示“亲近的”，closely为副词，此处用close。故将closely改为cl",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "语境推断",
+        "非谓语动词",
+        "时态语态",
+        "词性转换",
+        "冠词介词",
+        "连词代词",
+        "短文改错"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/116",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 1,
+      "analysis_excerpt": "细节理解题。根据表格右上角Raeburn’s English Contemporaries部分“Thursday 30 Oct. (10月30日星期四)”可知，在10月30日星期四可以去参加Raeburn’s English Contemporaries。故选B项。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/116",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 2,
+      "analysis_excerpt": "细节理解题。根据Admission部分“£4. Children under 12 years accompanied by an adult are admitted free.(4英镑。12岁以下儿童在一位成人陪同下免费入场。)”可知，一对夫妇应付4+4=8英镑，两个12岁以下的儿童在成人陪同下免费，即入场费为8英镑。故选B项。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2010-2022_English_Reading_Comp/116",
+      "year": 2022,
+      "question_type": "阅读理解",
+      "sub_question_number": 3,
+      "analysis_excerpt": "细节理解题。根据最后一段“A special low entrance charge of £2 per person is available to all in full-time education, up to and including those at first degree level, in organised groups with teachers.(所有全日制教育的学生，高至并包括那些学士学位水平的学生，在有教师的组织团体中，均可享受每人2英镑的特别低入场费。)”可知，全日制学生在有教师的组织团体中，可以获得折扣，即他们必须由教师带领。故选C项。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/24",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 16,
+      "analysis_excerpt": "上文“With busy schedules, squeezing in phone calls can be a challenge.”（平日繁忙，很难抽出时间打电话。）讲的是双方都很忙碌，很难有时间给对方打电话，D项“尽量找个双方都有空的时间去打电话，并坚持下去”给出了解决没时间打电话这个问题的方法，符合题意。故选D项。",
+      "skills": [
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/24",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 17,
+      "analysis_excerpt": "上文“Make sure you have communicated with your friend about how frequently each of you wants to be contacted and what method works best for you both.”（确保你已经与你的朋友沟通过，了解你们彼此希望联系的次数，以及哪种沟通方式最适合你们两人。）提到异地朋友之间要商量沟通方式，B项“可以通过写信补偿”提出了其中一种沟通方式：写信，下文“There are alternatives to constant written communication, su",
+      "skills": [
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/24",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 18,
+      "analysis_excerpt": "下文“The friend who is remaining”（留下来的朋友）和“The one in the new environment”（在新环境中的那个）提到朋友的两个不同处境，G项“你可能是朋友中离开的那一方，也可能是被留下的那一方”指出了异地友谊中分为离开的一方和留下的一方，其中“the friend who left”和“the one who was left behind”分别对应下文“The one in the new environment”和“The friend who is remaining”，所以G项符合题意。故选G项。",
+      "skills": [
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/24",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 19,
+      "analysis_excerpt": "分析文章结构可知，设空处的内容是维系异地友谊的第四个方法，是第五段的小标题。下文“Anniversaries and birthdays carry even more weight in long-distance friendships.”（周年纪念日和生日对于异地友谊而言是非常重要的。）讲的是诸如周年纪念日和生日等重要的日子对于维系异地友谊是非常重要的，由此推知，这段对应的维系异地友谊的方法是A项“记得重要的日子”，所以A项符合题意。故选A项。",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gb/2012-2022_English_Cloze_Test/24",
+      "year": 2022,
+      "question_type": "完形填空",
+      "sub_question_number": 20,
+      "analysis_excerpt": "设空处所在句子的后半句“but long-distance friendships — even close ones — may require more conscious effort to sustain.”（但是异地友谊——甚至是关系亲密的友谊——可能需要更加自觉地去维系。）讲的是我们要更加自觉地维系异地友谊，其中“but”说明后半句与设空处形成转折，而F项“朋友之间很容易通过社交媒体产生一种联结感”讲的是可以通过社交媒体这种方式很容易与朋友产生联结，与后半句“require more conscious effort to sustain”形成转折，而且其中的“social med",
+      "skills": [
+        "标题选择"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查介词。句意：2019年11月27日，联合国正式将5月21日定为第一个国际茶日。根据句意可知，此处表达“被联合国在5月21日命名”。表示被动，使用固定结构“be+过去分词+by”。故填by。",
+      "skills": [
+        "推理判断",
+        "非谓语动词",
+        "时态语态",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查非谓语动词。句意：为了庆祝这一节日，周四在北京的中国商人博物馆举行了一系列活动。特指International Tea Day这一节日，所以用定冠词the。故填the。",
+      "skills": [
+        "目的意图",
+        "非谓语动词",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查时态。句意：中国文化促进会会长在开幕式上致辞。陈述过去事情，用一般过去时。故填addressed。",
+      "skills": [
+        "时态语态"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查形容词最高级。句意：中国是茶的发源地和最大产茶国，作为国际茶日的主要推动者，中国有责任与其他国家共同促进茶产业的健康发展。根据定冠词the和常识可知，中国是最大产茶国，所以用形容词的最高级形式。故填largest。",
+      "skills": [
+        "推理判断",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查名词。句意：中国是茶的发源地和最大产茶国，作为国际茶日的主要推动者，中国有责任与其他国家共同促进茶产业的健康发展。不定冠词a后接可数名词的单数形式。故填responsibility。",
+      "skills": [
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查非谓语动词。句意：这有助于构建人类命运共同体。此处为非谓语动词做定语来修饰名词future。非谓语动词share和名词future之间为被动关系，所以用过去分词作定语。故填shared。",
+      "skills": [
+        "非谓语动词",
+        "时态语态"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查连词。句意：仪式上发布的“首个国际茶日万里茶道合作倡议”呼吁茶业人士团结起来，促进国际合作和文化交流。名词international cooperation和cultural exchanges为并列成分，作动词promote的宾语。故填and。",
+      "skills": [
+        "连词代词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查非谓语动词。句意：为了加强与年轻人的联系，活动包括在社交媒体上的一系列公共宣传活动，邀请了来自世界各地的29名茶叶专业人士进行36小时不间断的直播。根据句意可知，此处表达“为了加强与年轻人的联系”，需要用不定式作目的状语。故填To strengthen。",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "非谓语动词",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查非谓语动词。句意：为了加强与年轻人的联系，活动包括在社交媒体上的一系列公共宣传活动，邀请了来自世界各地的29名茶叶专业人士进行36小时不间断的直播。此处为非谓语动词，逻辑主语the event与invite之间为主动关系，所以用现在分词作状语。故填inviting。",
+      "skills": [
+        "目的意图",
+        "语境推断",
+        "非谓语动词",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/21",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查代词。句意：在开幕式上，中国古茶博物馆正式揭牌，开启了它的第一个展览：大道遗真——普洱茶专题展。名词exhibition前用形容词性物主代词。故填its。",
+      "skills": [
+        "词性转换",
+        "连词代词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查非谓语动词。句意：近日，一名来自北京的盲人徒步40天来到西安，作为“一带一路”徒步旅行的第一步。分析句子结合句意可知，journey为动词，表示“旅行”，step前面有序数词，应用不定式，作后置定语。故填to journey。",
+      "skills": [
+        "推理判断",
+        "非谓语动词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查定语从句。句意：在1100公里的旅程中，8岁时因一次车祸失明的男子曹盛康穿过了三个省的40个城市和县。分析句子结合句意可知，此处是非限定性定语从句，先行词为Cao Shengkang，指人，在从句中作主语，应用关系代词who引导。故填who。",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "连词代词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查非谓语动词。句意：受到在北京举行的“一带一路”国际合作高峰论坛的启发，曹决定徒步穿越这条路线，以向古代丝绸之路致敬。分析句子可知，本句已有谓语动词decided，所以hold应用非谓语动词形式，hold与cooperation之间为逻辑动宾关系，应用过去分词，作后置定语，表被动。故填held。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "非谓语动词",
+        "时态语态"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查冠词。句意：他的一位朋友吴凡在旅行中自愿成为他的同伴。根据句意可知，此处泛指“他的一个朋友”，应用不定冠词，friend以辅音音素开头，应用a，空处位于句首，首字母大写。故填A。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查名词。句意：曹和吴还沿路收集垃圾，以促进环境保护。根据句意和空前的形容词environmental可知，此处应用名词protection，作宾语，protection表示“保护”时，是不可数名词。故填protection。",
+      "skills": [
+        "推理判断",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查形容词。句意：曹认为这将使这次徒步旅行更加有意义。此处是make复合结构，应用形容词meaningful，作宾语补足语。故填meaningful。",
+      "skills": [
+        "词义猜测",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查动词时态。句意：在过去的五年中，曹操穿越了六大洲的34个国家，2016年，他到达了乞力马扎罗山顶，这是非洲最高的山峰。根据时间状语in the last five years可知，此处应用现在完成时，主语Cao为第三人称单数，助动词用has。故填has walked。",
+      "skills": [
+        "推理判断",
+        "时态语态",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查形容词最高级。句意：在过去的五年中，曹穿越了六大洲的34个国家，2016年，他到达了乞力马扎罗山顶，这是非洲最高的山峰。根据空前Africa’s可知，此处表示乞力马扎罗山是非洲最高的山脉，应用形容词最高级。故填highest。",
+      "skills": [
+        "推理判断",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查介词。句意：9月20日，他从4700公里外的西安飞到了喀什，计划在五个月内徒步回到西安。根据句意和Xi’an to Kashgar 可知，此处表示“从西安飞往喀什”，应用介词from，固定搭配from…to…表示“从……到……”。故填from。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gb/2014-2022_English_Language_Cloze_Passage/22",
+      "year": 2022,
+      "question_type": "完形填空(七选五/语篇)",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查非谓语动词。句意：9月20日，他从4700公里外的西安飞到了喀什，计划在五个月内徒步回到西安。分析句子可知，已有谓语动词flew，所以动词plan(计划)应用非谓语动词形式，plan与主语He之间为逻辑主谓关系，应用现在分词，表主动。故填planning。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "非谓语动词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查动词词义辨析。句意：我们第一次住在那里的时候，我们听到了一辆摩托车从山上向我们开过来的嘎吱嘎吱的声音。A. waited等待；B. met遇见；C. camped露营；D. stayed暂住。根据前文“Many years ago, I bought a house in the Garfagnana, where we still go every summer.”可知，作者在当地买了房子，所以是第一次住在那里。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查动词词义辨析。句意：我们第一次住在那里的时候，我们听到了一辆摩托车从山上向我们开过来的嘎吱嘎吱的声音。A. making使；让；B. searching搜索；C. squeezing挤压；D. feeling感觉。根据后文“coming to    4    us a box containing some tormatoes and a bottle of wine.”可知，摩托车是开过来给我们送东西的，所以make one’s way复合语境，为固定搭配，意为“前往”。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "语境推断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查名词词义辨析。句意：那是邻居马里奥，他给我们带来了一个盒子，里面装着一些西红柿和一瓶酒。A. customer顾客；B. neighbor邻居；C. relative亲戚；D. passenger乘客。根据前文“we heard the chug chug-chug of a motorbike   2   its way down the hill toward us.”以及最后一句“What Mario had   20   us was the taste of the Garfagnana”可知，马里奥是从山上下来的，送来了当地的食物，可推测是作者的邻居。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查动词词义辨析。句意：那是邻居马里奥，他给我们带来了一个盒子，里面装着一些西红柿和一瓶酒。A. lend借出；B. send发送；C. bring带来；D. show展示。根据后文“It was a very nice    5    for him to make.”可知，马里奥很友好，所以是给作者一家带来一个盒子。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查名词词义辨析。句意：他这么做真是太好了。A. choice选择；B. comment议论；C. promise诺言；D. gesture姿态。根据前文“coming to    4    us a box containing some tormatoes and a bottle of wine.”可知，马里奥给作者一家带来一盒子的西红柿和酒，所以是好的姿态。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查形容词词义辨析。句意：但当我们看着那些西红柿时，我们是担心的，因为它们是非常畸形的：一点也不像你在超市里买到的那种漂亮的、圆的、闪亮的样子。A. worried担心的；B. moved感动的；C. thrilled兴奋的；D. bored感到厌倦的。根据后文“because they were so misshapen”可知，西红柿是畸形的，所以作者一家很担心是否能吃。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查形容词词义辨析。句意：但当我们看着那些西红柿时，我们是担心的，因为它们是非常畸形的：一点也不像你在超市里买到的那种漂亮的、圆的、闪亮的样子。A. simple简单的；B. real真实的；C. shiny闪亮的；D. fun有趣的。根据前文“not at all like the nice, round”可知，空处是在形容超市里的西红柿，和前文的“nice, round”并列，结合选项，应是“shiny闪亮的”符合实际。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查形容词词义辨析。句意：我们想，这些肯定不好。A. more更多的；B. good好的；C. new新的；D. easy容易的。根据前文“But when we looked at the tomatoes, we were   6     because they were so misshapen: not at all like the nice, round,   7     things you get in a supermarket. And the wine was cloudy, in a funny old bottle with no label (标签) on it.",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查形容词短语辨析。句意：但我们很感谢他的好意，所以我们试了试。A. sympathetic to同情；B. thankful for对……表示感谢；C. cautious about谨慎对待；D. interested in对……感兴趣。根据前文“It was    3    called Mario, coming to    4    us a box containing some tomatoes and a bottle of wine.”可知，西红柿和酒是邻居送的，所以应该是很感谢他。故选B项。",
+      "skills": [
+        "推理判断",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查动词词义辨析。句意：但我们很感谢他的好意，所以我们试了试。A. tried尝试；B. sold出售；C. returned回来；D. mixed混合。根据后文“Those tomatoes had    13    that reminded me of the ones my uncle used to grow when I was a child.”可知，马里奥送的西红柿让作者想起了小时候叔叔种的西红柿，所以推知，他们是尝试了。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 51,
+      "analysis_excerpt": "考查形容词词义辨析。句意：我们发现，仅仅以外表来判断你吃的东西是否好吃是不明智的。A. unnecessary不需要的；B. uncertain无把握；C. unwise不明智的；D. unusual特别的。结合前后文，可知，作者一家刚开始看到马里奥送的西红柿是畸形的，对其感到担心，但是后来发现，它的味道，比超市的西红柿要好，所以此处应是根据外观来判断你吃的东西是不明智的。故选C项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 52,
+      "analysis_excerpt": "考查名词词义辨析。句意：我们发现，仅仅以外表来判断你的吃的东西是否好吃是不明智的。A. appearance外观；B. quality质量；C. origin源头；D. price价格。根据前文“we were    6    because they were so misshapen”可知，此处应是通过外观来评判。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 53,
+      "analysis_excerpt": "考查名词词义辨析。句意：那些西红柿的味道让我想起了我小时候叔叔种的西红柿。A. size尺寸；B. shape形状；C. color颜色；D. taste味道。根据后文“Nowadays supermarket tomatoes    14    perfect but taste of water.”可知，此处应是用马里奥送的西红柿和超市的西红柿作对比，马里奥送的西红柿外观差，但是味道好，让作者想起了小时候叔叔种的西红柿。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 54,
+      "analysis_excerpt": "考查动词词义辨析。句意：现在超市里的西红柿看起来很好，但味道像水。A. smell闻起来；B. look看起来；C. become变成；D. work工作。根据前文“not at all like the nice, round,    7    things you get in a supermarket.”可知，超市的西红柿看起来很完美。故选B项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 55,
+      "analysis_excerpt": "考查形容词词义辨析。句意：没有人会对那些有快乐的记忆。A. happy快乐的；B. vivid清晰的；C. short短的；D. vague模糊的。根据前文“Nowadays supermarket tomatoes    14    perfect but taste of water.”可知，超市的西红柿，看起来很好，但是吃起来像水，因此没有将会有快乐的记忆。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 56,
+      "analysis_excerpt": "考查动词词义辨析。句意：令人惊讶的是，他们没有设法种植方形的，这样他们就可以方便地包装它们。A. clean打扫；B. check检查；C. count计数；D. pack打包。根据前文“It’s a surprise they haven’t managed to grow square ones”结合实际，可知方形的易包装。故选D项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 57,
+      "analysis_excerpt": "考查形容词词义辨析。句意：马里奥的酒可能是混浊的，而且是从一个旧瓶子里出来的，但它是完美的。A. perfect完美的；B. useful有用的；C. convenient便利的；D. familiar熟悉的。根据前文“Mario’s wine may have been cloudy and come out of an old bottle”以及空前的but可知，此处表转折，结合选项，此处应是“马里奥的酒可能是混浊的，而且是从一个旧瓶子里出来的，但它是完美的”之意，符合实际。故选A项。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/0",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 58,
+      "analysis_excerpt": "考查介词短语辨析。句意：在合适的时间，当它们是应季的时候，并且尽可能靠近它们生长的地方，吃东西是好的。A. on view在展出；B. on sale出售；C. in season当令的；D. in need困难中的。根据前文“It’s good to eat things at the correct time”可知，在合适的时间，也就",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/1",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "根据下文“but studies have shown that they can promote people’s wellbeing by improving their mood (心情), reducing stress and helping their memory.(而且研究表明，它们可以通过改善情绪、减轻压力和帮助增强记忆力来促进人们的健康)”可知，此处与下文是递进关系，构成not only…but“不仅……而且……”结构。由此可知，B. Not only do they look beautiful(它们不仅看起来很漂亮)能够衔接下文，符合语境。故选B。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/1",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "根据上文“Many of these species (物种) are not ideally suited to growing outside in the UK, especially in the winter.(这些品种中的许多都不适合在英国户外生长，尤其是在冬天)”可知，有些植物不适合在户外寒冷的环境中生长，即适合在温暖的地方生长。由此可知，D. Instead, they grow better inside, where it is warmer(相反，它们在温暖的室内生长得更好)能够承接上文，符合语境。故选D。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/1",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 38,
+      "analysis_excerpt": "根据下文“I find during the winter months, plants around the house can really lift your mood.(我发现在冬天的几个月里，房子周围的植物真的能提升你的情绪)”可知，室内植物对人有好处。由此可知，C. There are many benefits to growing plants indoors(在室内种植植物有很多好处)能够衔接下文，符合语境。故选C。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/1",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 39,
+      "analysis_excerpt": "根据上文“There is also research showing that pot plants can clean the air around them by removing harmful gases, such as carbon dioxide. They also remove some harmful chemicals from paints or cooking.(也有研究表明，盆栽植物可以通过去除二氧化碳等有害气体来净化周围的空气。它们还能去除油漆或烹饪中的一些有害化学物质)”可知，盆栽植物能够清除有害物质。由此可知，E. Plants like peace lil",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/1",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 40,
+      "analysis_excerpt": "根据上文“Younger plants are often cheaper than fully grown ones, and you get to care for them as they mature-which is part of the joy of owning plants.(年轻的植物通常比成熟的植物便宜，而且你可以在它们成熟时照顾它们——这是拥有植物的乐趣之一)”可知，不同的植物需求是不同的。由此可知，G. Learning about the requirements of each plant can be very rewarding(了解每种植物的需求是非常有益的",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/2",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "根据空前内容“Taking responsibility for mistakes is a positive step, but don’t beat yourself up about them. To err (犯错) is human. (为错误承担责任是积极的一步，但不要因此而自责。人孰能无过)”可知，作者认为人都会犯错，勇于承担责任固然重要，但是也不要因此而过于自责。结合空后“You can use the following writing exercise to help you do this. (你可以使用下面的写作练习来帮助你做到这一点)”中的“do this”以及下文内",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/2",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "根据空前内容“In a journal or on a piece of paper, put the heading “Personal strengths. ” (在日记或纸上写上“个人优点”)”以及空后内容“Are you caring? Creative? Generous? A good listener? Fun to be around? They don’t have to be world-changing, just aspects of your personality that you’re proud of. (你有爱心吗？有创造力吗？你慷慨吗？是一个好的倾听者？与人",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/2",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 38,
+      "analysis_excerpt": "根据上文内容“At the top of a second page, put the heading “Acts of kindness.” On this one, list all the positive things you’ve done for others. It might be the time when you helped a friend with their homework, when you did the ironing without being asked, or when you baked cookies after the family had ha",
+      "skills": [
+        "推理判断",
+        "标题选择",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/2",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 39,
+      "analysis_excerpt": "根据空后内容“That way, you could exchange thoughts on what makes each of you special and the aspects of your personality that shine through. (这样，你们就可以交换意见，谈谈是什么让你们每个人都与众不同，以及你们个性中闪光的方面)”可知，空处提到了某种方式，这种方式会使得你和朋友们一起交换意见等。选项C“They might even like to have a go at doing the exercise. (他们甚至可能想试一试做练习)”符合语境，C项中的“",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/2",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 40,
+      "analysis_excerpt": "根据空前内容“It’s something of a cliché (陈词滥调) that most people learn not from their successes but their mistakes. The thing is, it’s true. (大多数人不是从他们的成功中学习，而是从他们的错误中学习，这是陈词滥调。但事实是，这是真的)”可知，作者认为人是从错误中学习。选项G“Whatever the mistake, remember it isn’t a fixed aspect of your personality. (不管你犯了什么错误，记住这不是你性格中固定的",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/3",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "根据前文“Start small. I suggest using a sketchbook (素描本) for small studies. These small studies provide inspiration and may be a springboard for more complex works in the future. (从小开始。我建议使用一个素描本进行小规模 学习和实践。这些小的学习和实践可以提供灵感，并成为未来更复杂的作品的跳板)”以及后文“You’ll want to look back on your journey to see how far you’",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/3",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "分析设空处，位于段尾，是对本段的总结，根据前文“Paint often and paint from life. There’s no better way to improve than to put in those brush miles. Whether you paint still lifes, portraits, or landscapes, paint from life as much as possible. (经常作画，且从生活中作画。没有什么比不断练习更能提高你的艺术水平了。无论你是绘制静物、肖像还是风景，都要尽可能地从真实生活中去观察和绘制)”可知，本段主要讲述不断",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/3",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 38,
+      "analysis_excerpt": "分析设空处，空处位于第二句，此处应是对前一句的进一步解释，并同时引出后文，根据前文“Continually challenge yourself to try something new. (不断挑战自己，尝试新事物)”以及后文“Artistic growth can be a bit painful. (艺术的成长可能会有点痛苦)”可知，A项“Get out of your comfort zone. (走出你的舒适区)”是对前句的进一步说明，和后文构成顺承关系。故选A项。",
+      "skills": [
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/3",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 39,
+      "analysis_excerpt": "分析设空处，位于段首，是本段的中心句，根据后文“Seeking and accepting constructive feedback (反馈) is crucial to growth. I post my work on social media and, in turn, have met some of the kindest people. They make me feel valued and respected, no matter my level of artistic ability. (寻求并接受有建设性的反馈对于你的成长非常重要。我在社交媒体上发布我的作品，并因此结识",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "非谓语动词",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/3",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 40,
+      "analysis_excerpt": "分析设空处，空处位于第二句，此处应是对前一句的进一步解释，并同时引出后文，根据前文“The journey you’re on won’t follow a straight path. (你的旅程不会是一条笔直的道路)”以及后文“Push through, give it time and put in the effort. You will harvest the rewards of an artistic life. (坚持下去，给它时间，付出努力。你将收获艺术生活的回报)”可知，E项“You’ll hit roadblocks, and you’ll feel discourage",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/0",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 36,
+      "analysis_excerpt": "根据上文“Here’s a riddle: What do traffic jams, long lines and waiting for a vacation to start all have in common? There’s one answer. (这里有一个谜语：交通堵塞、排长队和等待假期开始有什么共同之处？答案只有一个)”可知，本句说明上文谜语的答案，结合“交通堵塞、排长队和等待假期”这些情况可知都需要耐心。故G选项“在这些情况下，我们都需要一点额外的耐心”符合语境，故选G。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/0",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 37,
+      "analysis_excerpt": "根据上文“Thankfulness has a lot of benefits: Research shows it makes us happier, less stressed and even more optimistic.(感恩有很多好处：研究表明，感恩让我们更快乐，压力更小，甚至更乐观)”以及后文““Showing thankfulness can foster self-control,” said Ye Li, researcher at the University of California. (加州大学的研究员叶丽说：“表达感激可以培养自我控制能力。”)”可知，上文提到了",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "连词代词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/0",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 38,
+      "analysis_excerpt": "根据上文“And the only way for us to get into the habit of waiting is to practice. (我们养成等待习惯的唯一方法就是练习)”以及后文“Put off watching your favorite show until the weekend or wait 10 extra minutes before going for that cake. (把你最喜欢的节目推迟到周末再看，或者多等10分钟再去吃蛋糕)”可知，后文列举的事情都是日常的小事，说明要从小事开始练习等待，故B选项“从小任务开始”符合语境，故选B。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/0",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 39,
+      "analysis_excerpt": "根据本段内容“So many of us have the belief that being comfortable is the only state we will tolerate, and when we experience something outside of our comfort zone, we get impatient about the circumstances. (我们中的许多人都认为舒适是我们唯一能容忍的状态，当我们经历舒适区之外的事情时，我们会对环境失去耐心)”可知，本段提到了舒适是我们唯一能容忍的状态，结合前文的小标题都是祈使句可知，本段的主旨与接受不舒",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "标题选择",
+        "语境推断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Cloze_Test/0",
+      "year": 2023,
+      "question_type": "完形填空",
+      "sub_question_number": 40,
+      "analysis_excerpt": "根据上文“You should learn to say to yourself (你应该学会对自己说……)”以及后文“You’ll then gradually become more patient. (然后你会逐渐变得更有耐心)”结合本段主要说明的是不舒服的状态，可知，本句为对自己所说的话与接受不舒服相关，故F选项“这仅仅是不舒服，而不是无法忍受”符合语境，故选F。",
+      "skills": [
+        "推理判断",
+        "语境推断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查动词词义辨析。句意： 为了成为个人全能项目的奥运冠军，Gabby Douglas不得不放弃她最熟悉的一切。A. tried尝试；B. thought思考；C. judged判断；D. knew知道、熟悉。由上文“To become the Olympic champion in the individual (个人) all-around event, Gabby Douglas had to leave everything”和下文“1,200 miles away from home”可知，为了成为个人全能项目的奥运冠军，Gabby Douglas放弃她最熟悉的一切，来到一个陌生的地方",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查动词短语辨析。句意：她不得不整理好她在弗吉尼亚的卧室。A. take up从事；B. pack up整理、收拾行李；C. clean up清理；D. do up装修。由上文“Gabby Douglas had to leave everything”和下文“her bedroom in Virginia”可知，整理好她的卧室，准备离开这里，故选B。",
+      "skills": [
+        "推理判断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查名词词义辨析。句意：她不得不和她的两只狗以及她喜欢在冲浪板上冲浪的海说再见。A. goodbye再见；B. hello你好；C. thanks感谢；D. no没有、否定的回答。由上“Gabby Douglas had to leave everything”可知，Gabby Douglas要离开自己的家，所以与家里的狗说再见，故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查动词词义辨析。句意：她不得不和她的两只狗以及她喜欢在冲浪板上冲浪的海滩说再见。A. cause引起；B. observe观察；C. ride骑、漂浮；D. strike打击。由下文“waves on her board.”可知，此处表示冲浪，ride the waves意为“冲浪”，故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查名词词义辨析。句意：但是，是时候迈出这一步了，无论这将是多么令人心碎。A. common平民、普通；B. time时间；C. fun乐趣；D. tough暴徒。由下文“to take the leap (飞跃)”可知，虽然离开自己所熟悉的一切很难，但是是时候该迈出这一步了，故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查形容词词义辨析。句意：但是，是时候迈出这一步了，无论这将多么令人心碎。A. breathtaking激动人心的；B. heartbreaking令人心碎的、令人伤心的；C. eye-catching引人注目的；D. head-spinning头晕的。上文提到的Gabby Douglas不得不放弃她最熟悉的一切可知，放弃自己所熟悉的一切是令人伤心，故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查动词短语辨析。句意：所以她离家1200英里，和一个来自中国的教练一起训练。A. dropped out退出；B. moved on继续；C. pulled over靠边停车；D. went off离开。由下文“about 1,200 miles away from home,”可知，Gabby Douglas到了一个离家1200英里的地方，故选D。",
+      "skills": [
+        "推理判断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查动词词义辨析。句意：所以她离家1200英里，和一位来自中国的教练一起训练。A. reason推理；B. talk谈话；C. compete竞争；D. train培训。由上文“To become the Olympic champion in the individual (个人) all-around event”和下文“with a coach from China”可知，为了成为个人全能项目的奥运冠军，Gabby Douglas离开家，由此可知，她来到这里是为了和一位来自中国的教练一起训练，故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查动词词义辨析。句意：她和一个素未谋面的家庭住在一起，一切对她来说都是全新的。A. met遇到、见过；B. helped帮助；C. understood理解；D. needed需要。由下文“everything was new to her.”可知，一切对她来说都是全新的，所以此处指她和一个素未谋面的家庭住在一起，故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查副词词义辨析。句意： 事实证明，Douglas击败了两名俄罗斯选手，完全完成了她成为奥运冠军所需要做的一切。A. approximately大约；B.gradually逐渐地；C. exactly准确地、完全；D. possibly可能地。由下文“the Olympic all-around title, she became the first black woman to do so”可知，Gabby Douglas获得了奥运会全能冠军，由此可知，Gabby Douglas完全完成了她成为奥运冠军所需要做的一切，故选C。\n【51题解】\n考查动词词义辨析。句意： 事实证明，Douglas",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "标题选择",
+        "目的意图",
+        "非谓语动词",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 53,
+      "analysis_excerpt": "考查名词词义辨析。句意：这位中国教练让Douglas成为世界上最好的体操运动员之一，帮助她从国家队的普通队员一跃成为体操运动的顶尖选手。A. world世界；B. city城市；C. team团队；D. state国家。由下文“the Olympic all-around title, she became the first black woman to do so”可知，Douglas赢得奥运会全能冠军，所以说她是世界最好的体操运动员之一，故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "标题选择",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 54,
+      "analysis_excerpt": "考查形容词词义辨析。句意：这位中国教练让Douglas成为世界上最好的体操运动员之一，帮助她从国家队的普通队员一跃成为体操运动的顶尖选手。 A. amateur业余爱好的；B. elected当选的；C. average平均的、普通的；D. enthusiastic热情的。由下文“member of the national team to the top of the sport”可知，这位中国教练帮助Douglas从国家队的普通队员一跃成为体操运动的顶尖选手。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 55,
+      "analysis_excerpt": "考查动词词义辨析。句意：通过赢得奥运会全能冠军，她成为了第一个获此殊荣的黑人女性。A. clarifying分类；B. defending打败；C. winning赢得；D. demanding要求。由下文“the Olympic all-around title, she became the first black woman to do so.”可知，Douglas赢得奥运会全能冠军，故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "标题选择",
+        "目的意图",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 56,
+      "analysis_excerpt": "考查动词词义辨析。句意：她自始至终领先于竞争对手。A. followed跟随；B. organized组织；C. watched观看；D. led带领、领先。由下文“the competition from beginning to end”可知，比赛过程中，Douglas一直领先于竞争对手，故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 57,
+      "analysis_excerpt": "考查形容词词义辨析。句意：她说她一直坚信自己会赢。A. confident自信的、坚信的；B. nervous紧张的；C. excited兴奋的；D. uneasy不安的。由下文“all along that she would win.”可知，Douglas一直坚信自己会赢，故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 58,
+      "analysis_excerpt": "考查动词词义辨析。句意：就在不久前，女子国家队联络人Martha Karoly还认为Douglas不具备成为运选手所需要的条件。A. viewed看待；B. appeared出现；C. mattered重要；D. took需要。由下文“to be an Olympian”可知，此处表示Martha Karoly还认为Douglas不具备成为奥运选手所需要的条件，空处表示“需要”，故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/1",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 59,
+      "analysis_excerpt": "考查短语辨析。句意：随着时间的推移，她越来越相信自己能够在伦敦奥运会上获胜。A. now and then时不时地；B. more and more越来越多；C. far and wide广泛地；D. on and on不断地。由上文“As time went by”和下文“that she could make the London Games — an",
+      "skills": [
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查动词词义辨析。句意：Melanie Bailey应该更早完成比赛。A. designed设计；B. followed跟随；C. changed改变；D. finished完成。根据下一段的“carried her all the way to the finish line, then another 300 feet to where Lenoue could get ____8____ attention”可知，Bailey在比赛中背一名参赛者，所以完成比赛晚了，因此句子表示“Melanie Bailey应该更早完成比赛”。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查名词词义辨析。句意：她的延迟是因为她背着一名竞争对手冲过终点线。A. delay延误；B. chance机会；C. trouble麻烦；D. excuse借口。根据上文“Melanie Bailey should have ____1____ the course earlier than she did”和上一题的解析可知，Melanie Bailey应该更早完成比赛，她的延迟是因为她背着一名竞争对手冲过终点线。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查名词词义辨析。句意：她的延迟是因为她背着一名参赛者冲过终点线。A. judge裁判；B. volunteer志愿者；C. classmate同学；D. competitor参赛者。根据第一段的“hundreds of runners competed in a cross-country race”可知，她是背着一名参赛者冲过终点线。故选D。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查名词词义辨析。句意：据当地一家报纸报道，当Bailey跑到比赛的三分之二多的时候，她前面的一名选手开始痛苦地哭泣。A. race比赛；B. school学校；C. town城镇；D. training训练。根据第一段的“hundreds of runners competed in a cross-country race”可知，此处是说“当Bailey跑到比赛的三分之二多的时候”。故选A。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查动词词义辨析。句意：她停下来帮助她 同伴Danielle Lenoue。A. agreed同意；B. returned回来；C. stopped停止；D. promised答应。根据下文“to help her fellow runner”可知，她停下来帮助她的同伴Danielle Lenoue。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查名词词义辨析。句意：Bailey扶着她的胳膊，看看她能否帮助下前走。A. courage勇气；B. aid帮助；C. patience耐心；D. advice建议。根据上文“Bailey took her arm”可知，此处表示看她是否能在她的帮助下向前走。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查动词短语辨析。句意：然后Bailey弯下腰，让Lenoue爬到她的背上，一路背着她走到终点线，然后又走了300英尺，到Lenoue接受治疗的地方。A. went away离开； B. stood up站起来；C. stepped aside让路；D. bent down弯腰。根据下文“let Lenoue climb onto her back”可知，Bailey弯下腰，让勒诺爬到她的背上。故选D。",
+      "skills": [
+        "推理判断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查形容词词义辨析。句意：然后Bailey弯下腰，让Lenoue爬到她的背上，一路背着她走到终点线，然后又走了300英尺，到Lenoue接受治疗的地方。A. medical医疗的；B. public公众的；C. constant持续不断的；D. equal平等的。根据上文“began crying in pain”可知，Danielle Lenoue很疼，所以是要接受治疗，medical attention意为医疗救助”。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查动词词义辨析。句意：Lenoue在那里接受了检查，后来被送往医院，在那里她得知自己的一个膝盖受了重伤。A. interrupted打断；B. assessed评估；C. identified识别；D. appreciated感激。根据下文“later taken to a hospital”可知，她是先接受了检查，再被送往医院，也就是先接受评估。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查名词词义辨析。句意：如果没有Bailey的帮助，她可能会在极度的痛苦中挣扎着到达那个援助检查站。A. hunger饥饿；B. pain疼痛；C. cold感冒；D. tiredness疲劳。根据第5空前的“began crying in pain”可知，此处表示“如果没有Bailey的帮助，她可能会在极度的痛苦中挣扎着到达那个援助检查站”。故选B。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 51,
+      "analysis_excerpt": "考查形容词词义辨析。句意：至于Bailey，她更困惑的是为什么她的行为被认为是一件大事。A. worried担心的；B. ashamed惭愧的；C. confused困惑的；D. discouraged泄气的。根据下文“I feel like I was just doing the right thing”可知，Bailey觉得自己只是做了正确的事情，所以她对她的行为被认为是一件大事感到困惑。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "非谓语动词",
+        "词性转换",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 52,
+      "analysis_excerpt": "考查名词词义辨析。句意：至于Bailey，她更困惑的是为什么她的行为被认为是一件大事。A. game游戏；B. problem问题；C. lesson课；D. deal交易，局面。根据下文“I feel like I was just doing the right thing”可知，Bailey觉得自己只是做了正确的事情，所以她对她的行为被认为是一件大事感到困惑，a big deal意为“非常重要的事”。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 53,
+      "analysis_excerpt": "考查动词词义辨析。句意：我不能离开她。A. leave离开；B. cure治愈；C. bother打扰；D. understand理解。根据上文“She was just crying”以及Lenoue爬到她的背上，一路背着她走到终点线，然后又走了300英尺。可知，Bailey看见Lenoue哭喊，所以觉得不能离开。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/2",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 54,
+      "analysis_excerpt": "考查名词词义辨析。句意：虽然这两个年轻女子在那场体育比赛之前是陌生人，但后来她们成了朋友。A. ride短途旅程；B. test测试；C. meet体育比赛；D. show展示。根据第一段“hundreds of runners competed in a cross-country race”及空前的“the two young women were strangers before”可知，当时是一场比赛，句子表示“这两个年轻女子在那场体育比赛之前是陌生人”。故选C。\n 55题详解】\n考查名词词义辨析。句意：两人都没有赢得比赛，但展示出的人类善良赢得了胜利。A. secret秘密；B. di",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 41,
+      "analysis_excerpt": "考查名词词义辨析。句意：他们不得不搬到弗吉尼亚，但他们的预算非常紧张。A. turn转折点；B. budget预算；C. schedule时间表；D. connection联系。根据“They could not afford to pay for ___2___ for their dog, Tiffy,”可知，这个家庭的预算非常紧张。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 42,
+      "analysis_excerpt": "考查名词词义辨析。句意：他们付不起他们的狗Tiffy的交通费，又非常想带她一起走。A. food食物；B. shelter庇护；C. medicine药；D. transportation交通。根据“They had to move to Virginia but they were on a very tight ___1___ .”及下文可知，这个家庭的预算非常紧张，所以付不起他们的狗Tiffy的交通费。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 43,
+      "analysis_excerpt": "考查副词词义辨析。句意：他们付不起他们的狗Tiffy的交通费，又非常想带她一起走。 A. desperately非常、拼命地；B. temporarily暂时地；C. secretly秘密地；D. originally起初。根据“wanted to take her with them.”可知这家人非常想把狗一起带走。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 44,
+      "analysis_excerpt": "考查动词词义辨析。句意：碰巧我和另一名飞行员Karen正在计划另一次PNP飞行，他主动提出要把Tiffy从堪萨斯城带到弗吉尼亚。A. appeared出现；B. proved证明；C. happened碰巧；D. showed展示。根据“I was planning another PNP flight with another pilot, Karen,”可知，碰巧的是作者和另一名飞行员正在计划另一次PNP飞行。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 45,
+      "analysis_excerpt": "考查动词词义辨析。句意：碰巧我和另一名飞行员Karen正在计划另一次PNP飞行，他主动提出要把Tiffy从堪萨斯城带到弗吉尼亚。A. waited等待；B. offered提供、主动提出；C. hurried匆忙；D. failed失败。根据“to take Tiffy from Kansas City to Virginia.”可知，Karen主动提出帮忙把狗Tiffy从堪萨斯城带到弗吉尼亚。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 46,
+      "analysis_excerpt": "考查动词短语辨析。句意：我要做的就是飞到托皮卡去接Tiffy。A. see off为……送行B. look for寻找；C. hand over移交；D. pick up接载。根据“What I was to do was fly to Topeka”和常识可知，作者需要飞到托皮卡去接Tiffy。故选D。",
+      "skills": [
+        "推理判断",
+        "非谓语动词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 47,
+      "analysis_excerpt": "考查形容词词义辨析。句意：当我见到Tiffy的主人时，他们看起来很紧张。A. confused困惑的；B. nervous紧张的；C. annoyed恼怒的；D. curious好奇的。根据“George, the husband, was trying to be calm, but I could tell this was ___8___ for him, having to leave his dog to a ___9___ and trust that everything would ___10___ .”可知，这家人看起来有点紧张和不安。故选B。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 48,
+      "analysis_excerpt": "考查形容词词义辨析。句意：丈夫George试着冷静下来，但我看得出来，这对他来说很难，他不得不把狗留给一个陌生人，并相信一切都会解决的。A. hard困难的；B. fine好的；C. common常见的；D. lucky幸运的。根据上文“was trying to be calm”以及下文“having to leave his dog to a ___9___ and trust that everything would ___10___ .”可推知，此处指把狗留给一个陌生人对主人来说很难。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 49,
+      "analysis_excerpt": "考查名词词义辨析。句意：丈夫George试着冷静下来，但我看得出来，这对他来说很难，他不得不把狗留给一个陌生人，并相信一切都会解决的。A. coworker合作者；B. passenger乘客；C. stranger陌生人；D. neighbor邻居。根据“George, the husband, was trying to be calm, but I could tell this was ___8___ for him,”可知，要把狗留给一个陌生人。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 50,
+      "analysis_excerpt": "考查动词短语辨析。句意：丈夫George试着冷静下来，但我看得出来，这对他来说很难，他不得不把狗留给一个陌生人，并相信一切都会解决的。A. speed up加速；B. work out解决；C. come back回来；D. take off起飞。根据“George, the husband, was trying to be calm, but I could tell this was ___8___ for him,”可知，让狗的主人George相信一个陌生人一切都会解决好，对他来很难。故选B。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 51,
+      "analysis_excerpt": "考查动词词义辨析。句意：道别之后，我让George和他的妻子帮我把Tiffy送上飞机。A. feed喂养；B. follow跟随；C. change改变；D. load装载。load into装入。根据“Tiffy into the plane.”可知，作者让George和他的妻子帮忙把Tiffy装入飞机。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 52,
+      "analysis_excerpt": "考查动词词义辨析。句意：我答应过会照顾好Tiffy，一到堪萨斯城就给他们打电话。A. call打电话；B. join加入；C. leave离开；D. serve服务。根据“as soon as we got to Kansas City.”可知，作者承诺一到堪萨斯城就给他们打电话。故选A。",
+      "skills": [
+        "推理判断",
+        "词义猜测"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 53,
+      "analysis_excerpt": "考查形容词词义辨析。句意：这次飞行平安无事，Tiffy是个很棒的乘客。A. unnecessary没有必要的；B. unexpected意想不到的；C. unavoidable不可避免的；D. uneventful太平无事的。根据“and Tiffy was a great passenger.”可知，这次飞行一切都平安无事。故选D。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "词性转换"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 54,
+      "analysis_excerpt": "考动词词义辨析。句意：第二天，她和Karen一起坐飞机，几天后就回到了弗吉尼亚州的George那里。 A. returned返回；B. fought打仗；C. flew飞；D. agreed同意。根据“It just ___4___ that I was planning another PNP flight with another pilot, Karen, who ___5___ to take Tiffy from Kansas City to Virginia.”可知，Karen带狗Tiffy飞往弗吉尼亚州。故选C。",
+      "skills": [
+        "推理判断",
+        "词义猜测",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Fill_in_Blanks/3",
+      "year": 2023,
+      "question_type": "语法填空",
+      "sub_question_number": 55,
+      "analysis_excerpt": "考查形容词词义辨析。句意：他非常感激，给我发了一封很漂亮的电子邮件，并附上了照片。A. thankful感激的；B. generous慷慨的；C. proud骄傲的；D. sympathetic同情的。通读全文，再根据“and sent me a nice e-mail with pictures.”可推知，此处指对于作者的帮忙，George非常感激。故选A。",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "词义猜测",
+        "词性转换",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/0",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 21,
+      "analysis_excerpt": "细节理解题。根据小标题Nahm下的段落中“Head Chef David Thompson, who received a Michelin star for his Loodon-based Thai restaurant of the same name, opened this branch in the Metropolitan Hotel in 2010. (主厨大卫·汤普森(David Thompson)在伦敦的同名泰国餐厅获得了米其林一星，他于2010年在大都会酒店开设了这家分店)”以及小标题Issays Stamese Club下的段落中“Issaya Siamese Club",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "标题选择",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/0",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 22,
+      "analysis_excerpt": "细节理解题。根据小标题Bo. tan下的段落中“For those extremely hungry there’s a large set menu. (对于那些极度饥饿的人来说，这里有一份很大的套餐)”可知，Bo. tan提供大型套餐。故选B项。\n 23题详解】\n细节解题。根据小标题Gaggan下的段落中“The best table in this two-story colonial Thai home offers a window right into the kitchen, where you can see chef Gaggan and his staff in actio",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "标题选择",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/1",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 24,
+      "analysis_excerpt": "词句猜测题。根据文章第一段画线短语下文“Skilled at putting up shelves and piecing together furniture, she never pays someone else to do a job she can do herself. (她擅长摆架子和拼接家具，从不付钱给别人做她自己能做的工作)”可推知，此处指Terri Boltonis是一位DIY高手。C项“A specialist (一位专业人员)”最接近画线短语“a dab hand”的意思。故选C。",
+      "skills": [
+        "推理判断",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/1",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 25,
+      "analysis_excerpt": "推理判断题。根据文章第二段“She credits these skills to her late grandfather and builder Derek Lloyd. From the age of six, Terri, now 26, accompanied Derek to work during her school holidays. A day’s work was rewarded with £ 5 in pocket money. (她将这些技能归功于她已故的祖父兼建筑商Derek Lloyd。从六岁起，现年26岁的Terri就在学校放假期间陪Derek去上班。一天的工",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/1",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 26,
+      "analysis_excerpt": "细节理解题。根据文章第三段“So, it’s been useful to know how to cover up holes and repaint a room to avoid any charges when I’ve moved out. (所以，当我搬出去时，知道如何掩盖漏洞并重新粉刷房间以避免任何费用是很有用的)”可推知，Terri是通过粉饰房间，让它看起来像以前一样，来避免被扣除租房的押金的。故选A。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/1",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 27,
+      "analysis_excerpt": "细节理解题。通过文章最后一段“the research shows it is women now leading the charge (研究表明，现在是女性主导了这项运动)”可知，研究表明，DIY将在女性中越来越受欢迎。故选D。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/2",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 28,
+      "analysis_excerpt": "细节理解题。根据第一段“I was about 13 when an uncle gave me a copy of Jostein Gaarder’s Sophie’s World. It was full of ideas that were new to me, so I spent the summer with my head in and out of that book. It spoke to me and brought me into a world of philosophy(哲学).(我13岁的时候，一个叔叔给了我一本Jostein Gaarder的《 Sophie的世",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "作者态度",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/2",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 29,
+      "analysis_excerpt": "推理判断题。根据第四段中“Weiner starts each chapter with a scene on a train ride between cities and then frames each philosopher’s work in the context (背景) of one thing they can help us do better. The end result is a read in which we learn to wonder like Socrates, see like Thoreau, listen like Schopenhauer, and",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "语境推断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/2",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 30,
+      "analysis_excerpt": "细节理解题。根据第四段中“This, more than a book about undestanding philosophy, is a book abour learning to use philosophy to improve a life.(这不仅仅是一本关于理解哲学的书，更是一本关于学习运用哲学来改善生活的书。)”可知，作者喜欢The Socrates Express这本书，是因为它的思想可以应用到日常生活中。故选B。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/2",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 31,
+      "analysis_excerpt": "推判断题。根据倒数第二段中“He makes philosopical thought an appealing exercise that improves the quality of our experiences, and he does so with plenty of humor.(他使哲学思想成为一种有吸引力的练习，可以提高我们经验的质量，而且他在做这件事的时候充满了幽默感。)”可知，Weiners的书很幽默，根据最后一段中“The Socrates Express is a fun, sharp book that draws readers in with its appa",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/15",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 32,
+      "analysis_excerpt": "细节理解题。根据第一段内容“As cities balloon with growth, access to nature for people living in urban areas is becoming harder to find. If you’re lucky, there might be a pocket park near where you live, but it’s unusual to find places in a city that are relatively wild.(随着城市的飞速发展，生活在城市地区的人们越来越难以接近大自然。如果你幸运的话，你住的",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/15",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 33,
+      "analysis_excerpt": "推理判断题。根据第三段的“They surveyed several hundred park-goers, asking them to submit a written summary online of a meaningful interaction they had with nature in the park. The researchers then examined these submissions, coding (编码) experiences into different categories. (他们调查了数百名公园游客，要求他们在网提交一份书面总结，描述他们在公园",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "词义猜测",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/15",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 34,
+      "analysis_excerpt": "推理判断题。根据第五段内容“Naming each nature experience creates a usable language, which helps people recognize and take part in the activities that are most satisfying and meaningful to them. For example, the experience of walking along the edge of water might be satisfying for a young professional on a weeken",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "主旨大意",
+        "词义猜测",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/15",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 35,
+      "analysis_excerpt": "推理判断题。根据最后一段““We’re trying to generate a language that helps bring the human-nature interactions back into our daily lives. And for that to happen, we also need to protect nature so that we can interact with it,” said Peter Kahn, a senior author of the study. (“我们正试图创造一种语言，帮助将人类与自然的互动带回我们的日常生活中。要做到这",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/4",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 21,
+      "analysis_excerpt": "细节理解题。通过文章第一部分中的“Born to a Jewish family in Florence, she moved to Paris where she worked as a physician and performed surgery. (她出生于佛罗伦萨的一个犹太家庭，搬到巴黎当医生并做外科手术)”以及第二部分中的“She qualified as a surgeon in 1813 (她获得了做外科医生的资格)”和“Barry retired in 1859, having practiced her entire medical profession living an",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/4",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 22,
+      "analysis_excerpt": "推理判断题。通读全文，再根据文章第三部分中的“Tan wrote a book, Sayings of a Female Doctor, describing her life as a physician. (Tan写了一本书《女医生的故事》，描述了她作为一名医生的生活)”可推知，Tan与其他从业人员的不同之处在于她写了一本书。故选A。",
+      "skills": [
+        "推理判断",
+        "主旨大意"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/4",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 23,
+      "analysis_excerpt": "细节理解题。通过文章第一部分中的“Four years later, she was the first African American woman to receive a medical degree. (四年后，她成为第一位获得医学学位的非裔美国女性)”可知，Rebecca Lee Crumpler是第一位获得医学学位的非裔美国人。故选D。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/5",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 24,
+      "analysis_excerpt": "细节理解题。通过文章第二段“I tend to travel with a few of my friends to state parks or to the countryside to go on adventures and take photos along the way. (我倾向于和几个朋友一起去州立公园或乡村探险，沿途拍照)”可知，作为一名中西部的风景摄影师，作者应对挑战的方式是去乡村或州立公园拍摄。故选B。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/5",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 25,
+      "analysis_excerpt": "推理判断题。通过文章最后一段“Still, looking back on the photos, they are some of my best shots though they could have been so much better if I would have been prepared and managed my time wisely. (尽管如此，回顾这些照片，它们仍然是我最好的一些照片，尽管如果我能明智地准备和管理我的时间，它们本可以拍得更好)”可推知，作者认为，风景摄影成功的关键是适当的时间管理。故选A。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/5",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 26,
+      "analysis_excerpt": "推理判断题。通过文章最后一段“However, we did not mark the route (路线) so we ended up almost missing the sunset entirely. (然而，我们没有标出路线，所以我们几乎完全错过了日落)”可推知，作者在与朋友的魔鬼湖之旅中，到达拍摄地点的时间比预期的要晚。故选C。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/5",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 27,
+      "analysis_excerpt": "推理判断题。通过文章最后一段“Still, looking back on the photos, they are some of my best shots though they could have been so much better if I would have been prepared and managed my time wisely. (尽管如此，回顾这些照片，它们仍然是我最好的一些照片，尽管如果我能明智地准备和管理我的时间，它们本可以拍得更好)”可推知，作者认为自己在魔鬼湖拍摄的照片是令人满意的。故选B。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/6",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 28,
+      "analysis_excerpt": "细节理解题。根据第一段的“What comes into your mind when you think of British food? Probably fish and chips, or a Sunday dinner of meat and two vegetables. But is British food really so uninteresting?”（当你想到英国食物时，你会想到什么？你可能想到的是炸鱼薯条，或是一肉两菜的周日晚餐。但是，英国食物真的如此无趣吗？）可知，提及英国食物，大家往往只是想到炸鱼薯条和周日烤肉，所以人们通常会觉得英国食物平平无奇。故选A项。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/6",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 29,
+      "analysis_excerpt": "推理判断题。根据第二段的“It’s thanks to these TV chefs rather than any advertising campaign that Britons are turning away from meat-and-two-veg and ready-made meals and becoming more adventurous in their cooking habits.”（正是由于电视上的这些大厨，而不是凭借广告宣传活动，英国人正在远离“一肉两菜”和速食餐，而变得更加愿意探索新的烹饪习惯。）和“It seems that TV programmes h",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/6",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 30,
+      "analysis_excerpt": "细节理解题。根据第三段的“Almost one third say they now use a wider variety of ingredients (配料) than they used to, and just under 1 in 4 say they now buy better quality ingredients than before.”（几乎三分之一的人表示他们现在使用的配料比以前更多，将近四分之一的人表示他们现在购买的配料质量比以前更好。）可知，三分之一左右的人，也就是33%左右的人，使用的配料比以前更多。故选D项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/6",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 31,
+      "analysis_excerpt": "推理判断题。根据第三段的最后一句“With an increasing number of male chefs on TV, it’s no longer “uncool” for boys to like cooking.（随着电视上出现越来越多男性厨师，男孩子喜欢烹饪不再是一件“不酷”的事了。）可知，接下来，文章应该具体介绍电视上的男性厨师，从而与上文形成语义连贯。故选B项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/7",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 32,
+      "analysis_excerpt": "主旨大意题。根据文章第一段“If you want to tell the history of the whole world, a history that does not privilege one part of humanity, you cannot do it through texts alone, because only some of the world has ever had texts, while most of the world, for most of the time, has not. Writing is one of humanity’s late",
+      "skills": [
+        "推理判断",
+        "主旨大意",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/7",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 33,
+      "analysis_excerpt": "推理判断题。根据文章第二段首句“Ideally a history would bring together texts and objects, and some chapters of this book are able to do just that, but in many cases we simply can’t. (理想情况下，历史应该将文本和物品结合在一起，本书的某些章节能够做到这一点，但在许多情况下，我们根本做不到。)”可推断，作者认为历史应该是文本和物品相结合的产物，但是很多情况下，我们做不到。再根据所举例子的下文“From the English side, we ha",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "非谓语动词",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/8",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 21,
+      "analysis_excerpt": "推理判断题。根据文章第二段“We offer the newest bicycles in a wide variety, including basic bikes with foot brake (刹车), bikes with hand brake and gears (排挡), bikes with child seats, and children’s bikes. (我们提供种类繁多 最新自行车，包括有脚刹的基本自行车、有手刹和带排挡的自行车、带儿童座椅的自行车和儿童自行车)”可推知，MacBike的优势是它提供许多类型的自行车。故选B。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/8",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 22,
+      "analysis_excerpt": "细节理解题。根据定价表可知，租一辆带手刹和三档的自行车一天需要14.75欧元，额外增加天数每天8欧元。所以租一辆带手刹和三档的自行车两天需要14.75+8=22.75欧元。故选C。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/8",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 23,
+      "analysis_excerpt": "细节理解题。根据文章最后一段“The tour departs from Dam Square every hour on the hour, starting at 1:00 pm every day. (旅游团每小时从大坝广场出发，每天下午1点开始)”可知，导游城市之旅从大坝广场开始。故选D。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/9",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 24,
+      "analysis_excerpt": "细节理解题。根据第一段“When John Todd was a child, he loved to explore the woods around his house, observing how nature solved problems. A dirty stream, for example, often became clear after flowing through plants and along rocks where tiny creatures lived. When he got older, John started to wonder if this pro",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/9",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 25,
+      "analysis_excerpt": "细节理解题。根据第三段“After a few weeks, John added the sludge. (几个星期后，约翰把污泥加了进去)”以及倒数第三段“He was amazed at the results. The plants and animals in the eco-machine took the sludge as food and began to eat it! Within weeks, it had all been digested, and all that was left was pure water. (他对结果感到惊讶。生态机器里的动植物把污泥当成了",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/9",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 26,
+      "analysis_excerpt": "推理判断题。根据倒数第二段“Over the years, John has taken on many big jobs. He developed a greenhouse — like facility that treated sewage (污水) from 1,600 homes in South Burlington. He also designed an eco-machine to clean canal water in Fuzhou, a city in southeast China. (这些年来，约翰承担了许多重大工作。他开发了一个类似温室的设施，可以处理来自南伯灵",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/9",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 27,
+      "analysis_excerpt": "推理判断题。根据最后一段“You put organisms in new relationships and observe what’s happening. Then you let these new systems develop their own ways to self-repair. (你把生物体放在新的关系中，观察会发生什么。然后让这些新系统自行发展自我修复的方式)”可知，约翰工作的基础是自然可以自我修复。故选A。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/10",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 28,
+      "analysis_excerpt": "细节理解题。根据文章第一段“The goal of this book is to make the case for digital minimalism, including a detailed exploration of what it asks and why it works, and then to teach you how to adopt this philosophy if you decide it’s right for you. (这本书的目标是为数字极简主义辩护，包括详细探索它的要求和为什么有效，然后如果你认为它适合你，教你如何采用这种哲学)”可知，这本书的目的",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "目的意图",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/10",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 29,
+      "analysis_excerpt": "词句猜测题。根据画线词下文“This process requires you to step away from optional online activities for thirty days. At the end of the thirty days, you will then add back a small number of carefully chosen online activities that you believe will provide massive benefits to the things you value. (这个过程要求你在30天内远离可选的在",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/10",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 30,
+      "analysis_excerpt": "推理判断题。通过文章第四段“In the final chapter of part one, I’ll guide you through carrying out your own digital declutter. In doing so, I’ll draw on an experiment I ran in 2018 in which over 1,600 people agreed to perform a digital declutter. (在第一部分的最后一章中，我将指导您进行自己的数字清理。在这样做的过程中，我将借鉴我在2018年进行的一项实验，在该实验中，1600多人",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "非谓语动词",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/10",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 31,
+      "analysis_excerpt": "推理判断题。通过文章最后一段“You can view these practices as a toolbox meant to aid your efforts to build a minimalist lifestyle that words for your particular circumstances. (你可以将这些实践视为一个工具箱，旨在帮助你建立一种适合自己特定情况的极简主义生活方式)”可推知，作者建议读者根据需要与实际情况使用第二部分中提及的实践。故选A。",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/11",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 32,
+      "analysis_excerpt": "主旨大意题。根据第二段内容“This effect capitalizes on the fact that when people make errors, those errors aren’t always the same. Some people will tend to overestimate, and come to underestimate. When enough of these errors are averaged together, they cancel each other out, resulting in a more accurate estimate.",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "主旨大意",
+        "语境推断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/11",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 33,
+      "analysis_excerpt": "细节理解题。根据第二段的“In more technical terms, the wisdom of crowds requires that people’s estimates be independent. (从更专业的角度来说，群众的智慧要求人们的估计是独立的)”和第三段的“The key finding of the study was that when crowds were further divided into smaller groups that were allowed to have a discussion, the averages from these gr",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/11",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 34,
+      "analysis_excerpt": "推理判断题。根据第四段的“In a follow-up study with 100 university students, the researchers tried to get a better sense of what the group members actually did in their discussion. Did they tend to go with those most confident about their estimates? Did they follow those least willing to change their minds? (在一项",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/11",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 35,
+      "analysis_excerpt": "推理判断题。根据最后一段内容“Although the studies led by Navajas have limitations and many questions remain, the potential implications for group discussion and decision-making are enormous. (尽管Navajas领导的研究有局限性，仍存在许多问题，但对小组讨论和决策的潜在影响是巨大的)”可知，作者认为虽然Navajas领导的研究有局限性也存在许多问题，但对小组讨论和决策的潜在影响巨大。因此推断作者对于Navajas的研究表示一定的赞许",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/12",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 21,
+      "analysis_excerpt": "细节理解题。根据每个项目后的时间“Experiencing Wildlife in Yellowstone (May 26 to September 2) (在黄石体验野生动物（5月26日至9月2日）)”和“Junior Ranger Wildlife Olympics (June 5 to August 21) (少年游骑兵野生动物奥林匹克运动会（6月5日至8月21日）)”与“Canyon Talks at Artist Point (June 9 to September 2) (在Artist Point的峡谷会谈（6月9日至9月2日）)”以及“Photography Workshops",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "作者态度"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/12",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 22,
+      "analysis_excerpt": "细节理解题。根据文章“Canyon Talks at Artist Point (June 9 to September 2) (在Artist Point的峡谷会谈（6月9日至9月2日）)部分中的“From a classic viewpoint, enjoy Lower Falls, the Yellowstone River, and the breathtaking colors of the canyon (峡谷) while learning about the area’s natural and human history. (从一个经典的视角，欣赏瀑布、黄石河和峡谷的壮丽色彩",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "作者态度",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/12",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 23,
+      "analysis_excerpt": "细节理解题。根据文章“Photography Workshops (June 19 & July 10) (摄影研讨会（6月19日和7月10日）)”部分中的“7/10 — Wildflowers &White Balance: meet at Washburn Trailhead in Chittenden parking area. (7/10——Wildflowers &White Balance：在奇滕登停车场的Washburn Trailhead举行)”可知，7月10日的摄影研讨会将在Washburn Trailhead举行。故选B。",
+      "skills": [
+        "细节理解",
+        "推理判断"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/13",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 24,
+      "analysis_excerpt": "细节理解题。根据第一段的“And at first it is, says Abby Jaramillo, who with another teacher started Urban Sprouts, a school garden program at four low-income schools.(起初是这样的，艾比·哈拉米洛说，她和另一位老师在四所低收入学校启动了“Urban Sprouts”学校花园项目。)”可知，艾比·哈拉米洛是Urban Sprouts的发起者。故选D。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/13",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 25,
+      "analysis_excerpt": "推理判断题。根据第二段的“she says. “They come to us thinking vegetables are awful, dirt is awful, insects are awful.” Though some are initially scared of the insects and turned off by the dirt, most are eager to try something new.(她说。“他们来找我们，认为蔬菜很可怕，泥土很可怕，昆虫也很可怕。”虽然有些人一开始害怕昆虫，对泥土感到厌烦，但大多数人都渴望尝试新的东西。)”可知，项目之初，一些",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/13",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 26,
+      "analysis_excerpt": "推理判断题。根据最后一段“She adds that the program’s benefits go beyond nutrition. Some students get so interested in gardening that they bring home seeds to start their own vegetable gardens. Besides, working in the garden seems to have a calming effect on Jaramillo’s special education students, many of whom h",
+      "skills": [
+        "推理判断",
+        "目的意图",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/13",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 27,
+      "analysis_excerpt": "主旨大意题。根据第一段的“And at first it is, says Abby Jaramillo, who with another teacher started Urban Sprouts, a school garden program at four low-income schools. The program aims to help students develop science skills, environmental awareness, and healthy lifestyles.(起初是这样的，艾比·哈拉米洛说，她和另一位老师在四所低收入学校启动了“Urba",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "主旨大意",
+        "标题选择",
+        "定语从句",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/14",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 28,
+      "analysis_excerpt": "推理判断题。In this “book of books,” artworks are selected and arranged in a way that emphasizes these connections between different eras and cultures. (在这本“书之书”中，艺术品的选择和排列方式强调了不同时代和文化之间的联系)”以及第三段“Books themselves may be used symbolically in paintings to demonstrate the intellect, wealth or faith of the s",
+      "skills": [
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/14",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 29,
+      "analysis_excerpt": "细节理解题。通过文章第二段“artworks are selected and arranged in a way that emphasizes these connections between different eras and cultures. We see scenes of children learning to read at home or at school, with the book as a focus for relations between the generations. (艺术品的选择和排列方式强调了不同时代和文化之间的联系。我们看到孩子们在家里或学校学",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/14",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 30,
+      "analysis_excerpt": "词句猜测题。根据画线词上文“artworks are selected and arranged in a way that emphasizes these connections between different eras and cultures. We see scenes of children learning to read at home or at school, with the book as a focus for relations between the generations. (艺术品的选择和排列方式强调了不同时代和文化之间的联系。我们看到孩子们在家里或学校学",
+      "skills": [
+        "推理判断",
+        "冠词介词",
+        "七选五衔接"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/14",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 31,
+      "analysis_excerpt": "推理判断题。通过文章最后一段“it remains as interactive as any battery-powered e-reader (它仍然像任何电池供电的电子阅读器一样具有互动性)”以及“printed book still offers the chance of a wholly private, “off-line” activity (印刷书籍仍然提供了完全私人的“离线”活动的机会)”可推知，本文作者提到电子阅读器想表达的是印刷书籍并没有完全过时。故选A。",
+      "skills": [
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/3",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 32,
+      "analysis_excerpt": "细节理解题。根据第一段中“Grizzly bears, which may grow to about 2.5 m long and weigh over 400 kg, occupy a conflicted corner of the American psyche-we revere them even as they give us frightening dreams. (灰熊可以长到2.5米长，体重超过400公斤，在美国人的心理中占据着一个矛盾的角落——即使它们给我们带来可怕的梦，我们也敬畏它们)”可知，美国人对灰熊既有害怕，又有敬畏，他们的情感是混合的。故选A项。",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/3",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 33,
+      "analysis_excerpt": "推理判断题。根据第三段最后一句“In 1975, grizzlies were listed under the Endangered Species Act. (1975年，灰熊被列入《濒危物种法》)”以及第四段“Today, there are about 2, 000 or more grizzly bears in the U.S. Their recovery has been so successful that the U.S. Fish and Wildlife Service has twice attempted to delist grizzlies, which wou",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/3",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 34,
+      "analysis_excerpt": "细节理解题。根据第四段中“Today, there are about 2,000 or more grizzly bears in the U.S. Their recovery has been so successful that the U.S. Fish and Wildlife Service has twice attempted to delist grizzlies, which would loosen legal protections and allow them to be hunted. Both efforts were overturned due to law",
+      "skills": [
+        "细节理解",
+        "推理判断",
+        "定语从句",
+        "冠词介词"
+      ]
+    },
+    {
+      "parent_id": "gbu/2023_English_Reading_Comp/3",
+      "year": 2023,
+      "question_type": "阅读理解",
+      "sub_question_number": 35,
+      "analysis_excerpt": "推理判断题。根据最后一段中“Obviously, if precautions aren’t taken, grizzlies can become troublesome, sometimes killing farm animals or walking through yards in search of food. If people remove food and attractants from their yards and campsites, grizzlies will typically pass by without trouble. Putting electric ",
+      "skills": [
+        "定语从句",
+        "冠词介词"
+      ]
+    }
+  ]
+}
