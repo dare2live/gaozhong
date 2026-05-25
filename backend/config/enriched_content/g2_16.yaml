@@ -1,0 +1,124 @@
+# Course #16: G2·语法·状语从句 (when/because/although)
+course_id: 16
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [adult]
+  theme: "时间管理"
+
+segments:
+  hook: |
+    **When, Because, Although: The Three Glue Words**
+
+    "**When** I was a child, I wanted to be an astronaut." (时间)
+    "I studied hard **because** I wanted to succeed." (原因)
+    "**Although** the exam was difficult, I did not give up." (让步)
+
+    These three words connect ideas and show the relationship between them. They are the third type of clause you need to master — after object clauses (#14) and relative clauses (#15). Together, these three types cover almost every complex sentence on the gaokao.
+
+  core: |
+    **状语从句 完全讲解**
+
+    ---
+
+    **一、九种状语从句** ⭐⭐
+
+    | 类型 | 连接词 | 例句 |
+    |---|---|---|
+    | 时间 | when/while/as/before/after/until/since | **When** I arrived, she had left. |
+    | 原因 | because/since/as/now that | I stayed home **because** it rained. |
+    | 让步 | although/though/even though/while | **Although** he is young, he is very able. |
+    | 条件 | if/unless/as long as/provided that | **If** you work hard, you will succeed. |
+    | 目的 | so that/in order that | She spoke slowly **so that** we could understand. |
+    | 结果 | so...that/such...that | He was **so** tired **that** he fell asleep. |
+    | 方式 | as/as if/as though | Do **as** I told you. |
+    | 地点 | where/wherever | Sit **wherever** you like. |
+    | 比较 | as...as/not so...as/than | She runs **as fast as** her brother. |
+
+    ---
+
+    **二、时间状语从句重点** ⭐⭐⭐
+
+    **when vs while vs as**:
+    - when: 时间点 (when I arrived = 我到的那一刻)
+    - while: 持续动作 (while I was sleeping = 我睡觉期间)
+    - as: 同时/随着 (as time goes by = 随着时间过去)
+
+    **"主将从现"规则**: 时间/条件从句中, 用一般现在时表将来!
+    - When he **comes** (不用 will come), I will tell him.
+    - If it **rains** (不用 will rain) tomorrow, we will stay home.
+
+    ---
+
+    **三、让步从句重点** ⭐⭐⭐
+
+    although / though / even though 都表"虽然", 但:
+    - 不能和 but 连用! (中文"虽然...但是", 英文只用一个)
+      ✅ Although he is young, he is able.
+      ✅ He is young, but he is able.
+      ❌ ~~Although he is young, but he is able.~~
+
+    ---
+
+    **四、结果状语从句** ⭐⭐
+
+    **so...that vs such...that**:
+    - **so** + adj/adv + **that**: He was **so** tired **that** he fell asleep.
+    - **such** + (a/an) + n + **that**: It was **such** a good book **that** I read it twice.
+
+    口诀: so 后跟"形副", such 后跟"名词"
+
+  relations: |
+    **G2 三大从句总览**
+
+    ```
+    从句家族 (G2 核心)
+    ├── #14 宾语从句 — 做宾语 (动词+从句)
+    ├── #15 定语从句 — 修饰名词 (名词+从句)
+    └── #16 状语从句 — 修饰动词/句子 (连接词+从句) ← 本节
+    ```
+
+    **后续扩展**:
+    - G3 #23: 主语从句 (It is clear that...) + 表语从句
+    - G_FINAL #33: 虚拟语气 (If I were...)
+    - G_FINAL #34: 倒装 (Not until... did he...)
+
+  practice: |
+    **练习 1: 选连接词** ⭐⭐
+
+    1. ___ it was raining, we still went out. (Because/Although/When)
+    答案: Although (让步: 虽然下雨, 仍然出去)
+
+    2. I will call you ___ I arrive. (when/because/although)
+    答案: when (时间: 到了就打)
+
+    3. He studied hard ___ he wanted to pass the exam. (when/because/although)
+    答案: because (原因)
+
+    **练习 2: 改错** ⭐⭐⭐
+
+    4. Although he is poor, but he is happy. → 去掉 but (although 和 but 不能连用)
+    5. If it will rain tomorrow, I will stay home. → If it rains (主将从现)
+    6. When I will finish, I will call you. → When I finish (主将从现)
+
+    **练习 3: so...that vs such...that** ⭐⭐
+
+    7. It was ___ a difficult question ___ nobody could answer it. (so/such...that)
+    答案: such...that (such + a + 名词)
+
+    8. He ran ___ fast ___ nobody could catch him. (so/such...that)
+    答案: so...that (so + 副词)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **九种状语从句**: 时间/原因/让步/条件/目的/结果/方式/地点/比较
+    2. **主将从现**: 时间/条件从句用一般现在时表将来
+    3. **although ≠ although...but**: 不能连用!
+    4. **so + 形副 + that / such + 名词 + that**
+    5. **when (时间点) vs while (持续) vs as (同时/随着)**
+
+    **G2 从句三部曲完成!** #14 宾语 + #15 定语 + #16 状语 = 复合句核心
+
+    **下节预告**: #17 阅读·议论文 main idea — 用从句知识读懂复杂议论文

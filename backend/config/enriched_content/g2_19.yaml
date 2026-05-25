@@ -1,0 +1,101 @@
+# Course #19: G2·完形·语境推断
+course_id: 19
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [approach, argue, assume]
+  theme: "友谊重构"
+
+segments:
+  hook: |
+    **Context Is King**
+
+    Read this sentence with a blank: "She felt ___ when her best friend moved to another city."
+
+    Without reading the full passage, you might choose "sad" or "happy" or "angry." But if the passage tells you that her friend was moving to be closer to family, and that they had planned to video call every week, the answer might be "hopeful" or even "calm."
+
+    This is the key to cloze tests: the answer is not in the single sentence — it is in the CONTEXT. Today you will learn how to read the whole passage before filling in any blank.
+
+  core: |
+    **完形填空 G2 入门策略**
+
+    ---
+
+    **一、完形不是语法题** ⭐
+
+    很多学生把完形当语法题做 — 看一句, 填一空. 这是错误的!
+
+    完形填空是**阅读理解 + 词汇选择**的结合:
+    - 70% 靠语境 (上下文暗示)
+    - 20% 靠搭配 (固定短语)
+    - 10% 靠语法
+
+    ---
+
+    **二、通读策略** ⭐⭐
+
+    Step 1: 跳过空格, 通读全文 (2-3 分钟)
+    - 理解主题 (故事/道理/经历)
+    - 判断感情 (积极/消极/中性)
+    - 把握走向 (转折? 递进? 因果?)
+
+    Step 2: 逐空填写, 用上下文验证 (8-10 分钟)
+
+    Step 3: 代入通读, 检查语感 (2 分钟)
+
+    ---
+
+    **三、四种线索** ⭐⭐⭐
+
+    | 线索 | 方法 | 例子 |
+    |---|---|---|
+    | 复现 | 同词/同义词重复 | "She was anxious... her anxiety grew..." |
+    | 反义 | 转折后意思相反 | "At first sad, but later ___" → happy |
+    | 因果 | because/so 前后 | "She studied hard, so she ___" → succeeded |
+    | 搭配 | 固定短语 | "take an approach to ___" → doing |
+
+    ---
+
+    **核心词完形考法**:
+    - **approach**: a different approach **to** (介词!) — 完形选介词
+    - **argue**: argue **that** / argue **with** / argue **for** — 选搭配
+    - **assume**: assume 后多接 that 从句 — 选连接词
+
+  relations: |
+    **完形与阅读的区别**
+
+    阅读: 读完文章, 答问题 (信息已完整)
+    完形: 文章有空缺, 你补全 (信息不完整, 靠推断)
+
+    完形综合考查:
+    - G1 #1-#5 词汇 (基础选词)
+    - G2 #11-#13 词汇 (高级选词: approach/argue/assume)
+    - G2 #14-#16 从句 (语法辅助判断)
+    - G2 #17-#18 阅读策略 (理解全文)
+
+  practice: |
+    **Mini Cloze: A True Friend** ⭐⭐
+
+    (150 词, 5 空)
+
+    Li Mei and Wang Na had been friends since primary school. When Wang Na ___(1)___ that she would move to another city, Li Mei felt very ___(2)___. She ___(3)___ that their friendship would end.
+
+    However, Wang Na took a different ___(4)___. She suggested that they write letters to each other every month. "Distance does not have to mean the end," she ___(5)___, "it can be a new beginning."
+
+    1. A. approached B. announced C. argued D. assumed → B (宣布消息)
+    2. A. anxious B. angry C. active D. able → A (焦虑, 因好友要走)
+    3. A. achieved B. announced C. assumed D. admired → C (假设友谊会结束)
+    4. A. achievement B. addition C. aspect D. approach → D (采用不同的方法)
+    5. A. argued B. assumed C. admired D. announced → A (论证: 距离不代表结束)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **完形 = 阅读 + 词汇**, 不是纯语法
+    2. **通读第一**: 先读全文再填空 (理解主题+情感)
+    3. **四线索**: 复现/反义/因果/搭配
+    4. **核心搭配**: approach to doing / argue that / assume that
+    5. **检查**: 填完代入通读, 看是否通顺
+
+    **下节预告**: #20 应用文·邀请信+通知 — G2 最后一课, 写作入门

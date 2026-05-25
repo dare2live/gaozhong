@@ -1,0 +1,142 @@
+# Course #20: G2·应用文·邀请信 + 通知
+course_id: 20
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [announce, advance, at]
+  theme: "校园活动"
+
+segments:
+  hook: |
+    **Your First English Letter**
+
+    Writing is the most feared part of the gaokao for many students. But the applied writing task (应用文) is actually the easiest to prepare for. Why? Because it follows a clear format, uses set phrases, and the topics are limited to about 5 types.
+
+    In G2, you will learn two of the most common types: invitation letters and notices. These two alone have appeared in 4 of the last 5 years of gaokao exams.
+
+    By the end of this lesson, you will be able to write a complete 80-word letter in 10 minutes.
+
+  core: |
+    **应用文入门 — 邀请信 + 通知**
+
+    ---
+
+    **一、应用文评分标准 (15 分)** ⭐
+
+    | 项目 | 分值 | 关键 |
+    |---|---|---|
+    | 内容 | 5 分 | 3 个要点全覆盖 (漏 1 个扣 2-3 分) |
+    | 语言 | 5 分 | 高级词汇 + 至少 1 个复合句 |
+    | 格式 | 3 分 | Dear... / Yours... / 段落清晰 |
+    | 连贯 | 2 分 | 逻辑过渡自然 |
+
+    ---
+
+    **二、邀请信模板** ⭐⭐⭐
+
+    ```
+    Dear [Name],
+
+    [P1: 目的] I am writing to invite you to [活动].
+
+    [P2: 详情] The event will be held on [时间] at [地点].
+    [活动内容 2-3 句]. Your presence would mean a lot to us.
+
+    [P3: 结尾] I would appreciate it if you could join us.
+    Looking forward to your reply.
+
+    Yours sincerely,
+    Li Hua
+    ```
+
+    **高分替换**:
+    - "invite you" → "extend a warm invitation to you"
+    - "be held" → "is scheduled for [时间] at [地点]"
+    - "join us" → "make it"
+
+    ---
+
+    **三、通知模板** ⭐⭐
+
+    ```
+    NOTICE
+
+    [活动简介 1 句]. In order to [目的], [活动] will be held
+    on [时间] at [地点].
+
+    [具体要求/注意事项 2-3 句].
+
+    All students are welcome. Those who are interested, please
+    sign up at [地点/方式] in advance.
+
+    Student Union
+    [日期]
+    ```
+
+    ---
+
+    **核心词用法**:
+    - **announce**: The school announces that... (通知类开头)
+    - **advance**: in advance (提前) — "Please sign up in advance."
+    - **at**: at + 具体时间/地点 — "at 3:00 pm / at the school hall"
+
+  relations: |
+    **G2 写作与其他课的关联**
+
+    写好应用文需要:
+    - **从句** (#14-#16): I would appreciate it if you could... (宾语从句)
+    - **词汇** (#11-#13): announce, approach, achieve, aim
+    - **格式规范**: Dear/Yours 是固定的, 不能创新
+
+    **G2 → G_FINAL 的进阶**:
+    G2 #20: 学模板 (邀请+通知)
+    G3 #29: 求职/自荐 (更复杂)
+    G_FINAL #39: 真题 (邀请/感谢/通知三类全覆盖)
+
+  practice: |
+    **练习 1: 填充模板** ⭐⭐
+
+    题目: 你是李华, 邀请外教 Mr. Brown 参加英语角 (Friday 4pm, Room 301, topic: AI)
+
+    补全:
+    Dear Mr. Brown,
+
+    I am writing to ___(1)___ you to our English Corner this Friday.
+
+    The activity is ___(2)___ for 4:00 pm ___(3)___ Room 301. The topic will be "AI in Daily Life." We would love to hear your views on this subject.
+
+    I would ___(4)___ it if you could join us. Please let us know in ___(5)___.
+
+    Yours sincerely,
+    Li Hua
+
+    1. invite  2. scheduled  3. at  4. appreciate  5. advance
+
+    **练习 2: 写通知** ⭐⭐
+
+    题目: 学生会通知 — 周六上午 9 点, 学校操场, 举办运动会, 请提前报名.
+
+    自己写 60-80 词, 按模板格式. 写完检查:
+    - [ ] 有 NOTICE 标题
+    - [ ] 有时间+地点
+    - [ ] 有 "in advance"
+    - [ ] 有落款 (Student Union + 日期)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **邀请信三段**: 目的 → 详情 → 期待回复
+    2. **通知格式**: NOTICE 标题 + 正文 + Student Union 落款
+    3. **in advance**: 提前 (通知必备短语)
+    4. **高分技巧**: 1 个复合句 (if 从句) + 2 个高级词 = 13+ 分
+    5. **时间管理**: 审题 2min + 写 10min + 检查 3min
+
+    **G2 全 10 节完成!** 你掌握了:
+    - 15 个学术核心词
+    - 三大从句 (宾/定/状)
+    - 议论文+说明文阅读
+    - 完形语境推断
+    - 应用文模板
+
+    **下一层 G3 预告**: 学术高频词 + 主语从句 + 非谓语 + 推理判断 + 续写入门

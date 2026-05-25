@@ -1,0 +1,142 @@
+# Course #15: G2·语法·定语从句 (who/which/that)
+course_id: 15
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [approach]
+  theme: "博物馆热"
+
+segments:
+  hook: |
+    **The Museum That Changed Everything**
+
+    Last summer, I visited a museum **which was built 100 years ago**. The guide **who showed us around** was a young woman **whose grandfather had designed the building**. The paintings **that we saw** told the story of a city **where history and modern life meet**.
+
+    Every bold phrase above is a relative clause (定语从句). They add information to a noun, just like an adjective — but with the power of a full sentence. This is the grammar structure that appears most often in gaokao reading passages.
+
+  core: |
+    **定语从句 完全讲解**
+
+    ---
+
+    **一、什么是定语从句?** ⭐
+
+    定语从句 = 修饰名词的从句 (像一个长形容词)
+
+    先行词 (名词) + **关系词** + 从句
+
+    例: The student **who studies hard** will succeed.
+    (先行词: student, 关系词: who, 从句: studies hard)
+
+    ---
+
+    **二、5 个关系代词** ⭐⭐⭐
+
+    | 关系词 | 先行词 | 在从句中做 |
+    |---|---|---|
+    | **who** | 人 | 主语/宾语 |
+    | **whom** | 人 | 宾语 |
+    | **which** | 物 | 主语/宾语 |
+    | **that** | 人+物 | 主语/宾语 |
+    | **whose** | 人+物 | 定语 (的) |
+
+    ---
+
+    **三、3 个关系副词** ⭐⭐⭐
+
+    | 关系词 | 先行词 | 在从句中做 |
+    |---|---|---|
+    | **where** | 地点 | 地点状语 |
+    | **when** | 时间 | 时间状语 |
+    | **why** | reason | 原因状语 |
+
+    ---
+
+    **四、that vs which** ⭐⭐⭐ (高考高频!)
+
+    只用 that (不用 which):
+    1. 先行词有 the first/last/only/very/all/any/no/every
+    2. 先行词是 everything/anything/nothing/something
+    3. 先行词同时包含人和物
+    4. 先行词被序数词或最高级修饰
+
+    只用 which (不用 that):
+    1. 非限制性定语从句 (有逗号): The book, **which** I bought yesterday, is great.
+    2. 介词后: the chair **on which** he sat (不说 on that)
+
+    ---
+
+    **五、限制性 vs 非限制性** ⭐⭐
+
+    | | 限制性 | 非限制性 |
+    |---|---|---|
+    | 标点 | 无逗号 | 有逗号 |
+    | 能删? | 删了意思变 | 删了意思不变 (补充信息) |
+    | that? | 可用 | 不可用 |
+    | 翻译 | "...的" | "...,(补充说明)" |
+
+    ---
+
+    **六、where 的特殊用法** ⭐⭐⭐
+
+    where 不只修饰地点名词! 抽象"场所"也可以:
+    - the situation **where** (= in which) we find ourselves
+    - the point **where** (= at which) two lines meet
+    - a stage **where** (= at which) children learn fastest
+
+  relations: |
+    **定语从句与 #14 宾语从句对比**
+
+    | | 宾语从句 (#14) | 定语从句 (本节) |
+    |---|---|---|
+    | 位置 | 动词后 | 名词后 |
+    | 作用 | 做宾语 | 修饰名词 |
+    | 连接词 | that/whether/wh- | who/which/that/whose/where/when |
+    | that 能省? | 能 | 做宾语时能 |
+    | 语序 | 陈述 | 陈述 |
+
+    **判断方法**: 连接词前面是动词 → 宾语从句; 连接词前面是名词 → 定语从句
+
+  practice: |
+    **练习 1: 选关系词** ⭐⭐
+
+    1. The girl ___ is standing there is my sister. (who/which/whose)
+    答案: who (先行词是人, 做主语)
+
+    2. This is the book ___ I bought yesterday. (who/which/whose)
+    答案: which/that (先行词是物, 做宾语)
+
+    3. The man ___ car was stolen reported to the police. (who/which/whose)
+    答案: whose (先行词是人, "的"→whose)
+
+    4. That is the school ___ I studied for three years. (which/where/when)
+    答案: where (先行词是地点, 从句缺地点状语)
+
+    **练习 2: that vs which** ⭐⭐⭐
+
+    5. This is the best film ___ I have ever seen. (that/which)
+    答案: that (最高级修饰先行词 → 只用 that)
+
+    6. The book, ___ was written in 2020, is very popular. (that/which)
+    答案: which (非限制性, 有逗号 → 只用 which)
+
+    7. Is there anything ___ I can help you with? (that/which)
+    答案: that (先行词是 anything → 只用 that)
+
+    **练习 3: 判断从句类型** ⭐⭐
+
+    8. I know **that he lives in Beijing**. → 宾语从句 (that 前是动词 know)
+    9. The city **that I visited** is very beautiful. → 定语从句 (that 前是名词 city)
+    10. She told me **where she worked**. → 宾语从句 (where 前是动词 told)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **5 代词 3 副词**: who/whom/which/that/whose + where/when/why
+    2. **只用 that**: 最高级/序数词/不定代词/人+物
+    3. **只用 which**: 非限制性 (逗号) / 介词后
+    4. **where 扩展**: 修饰抽象"场所" (situation/stage/point)
+    5. **区分从句**: 连接词前是动词→宾语; 前是名词→定语
+
+    **下节预告**: #16 状语从句 (when/because/although) — 三大从句最后一课

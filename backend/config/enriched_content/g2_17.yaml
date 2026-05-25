@@ -1,0 +1,116 @@
+# Course #17: G2·阅读·议论文 main idea
+course_id: 17
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [achievement, approach, achieve]
+  theme: "学术写作"
+
+segments:
+  hook: |
+    **Opinion + Evidence = Argument**
+
+    An argumentative passage is different from a story or a notice. It has a clear structure: the author states an OPINION, supports it with EVIDENCE, and reaches a CONCLUSION.
+
+    On the gaokao, Passage B or C is often argumentative. The questions ask: "What is the author's main argument?" or "Which of the following would the author most likely agree with?"
+
+    To answer these questions, you need to identify the author's position — not just what the text says, but what the author THINKS.
+
+  core: |
+    **议论文阅读策略**
+
+    ---
+
+    **一、议论文结构** ⭐⭐
+
+    | 段落 | 作用 | 标志词 |
+    |---|---|---|
+    | P1 引入 | 提出话题/问题 | Recently / Nowadays / Many people |
+    | P2-P3 论证 | 证据/例子/数据 | For example / Research shows / According to |
+    | P4 反驳 | 反对意见 | However / Some argue that / Critics say |
+    | P5 结论 | 作者立场 | Therefore / In conclusion / It is clear that |
+
+    **主旨通常在 P1 末尾或 P5 开头**
+
+    ---
+
+    **二、作者态度题** ⭐⭐⭐
+
+    标志词: The author's attitude toward... is ___
+
+    | 态度 | 正面 | 中立 | 负面 |
+    |---|---|---|---|
+    | 词 | positive / supportive / optimistic / approving | objective / neutral | negative / critical / doubtful / opposed |
+
+    线索: 看作者的用词选择
+    - "achieved great success" → 正面
+    - "failed to achieve the goal" → 负面
+    - "the approach has both strengths and weaknesses" → 中立
+
+    ---
+
+    **三、推断作者观点题** ⭐⭐⭐
+
+    题型: "Which would the author most likely agree with?"
+
+    方法:
+    1. 找作者直接表达观点的句子 (I believe / It is clear that / We should)
+    2. 看结论段 (最后一段通常表明立场)
+    3. 排除: 与作者态度相反的选项
+
+    ---
+
+    **核心词在议论文中的考法**:
+    - **achievement**: 正面评价某人/某事的成果
+    - **approach**: 讨论解决方案 ("a new approach to the problem")
+    - **achieve**: 论证是否达到了目标
+
+  relations: |
+    **阅读题型进阶路线**
+
+    G1 #9 细节理解 → G1 #10 主旨大意 → **G2 #17 议论文分析** → G3 #25 推理判断
+
+    议论文阅读需要 G2 从句知识:
+    - 宾语从句: "The author argues **that**..."
+    - 定语从句: "The approach **which** was suggested..."
+    - 状语从句: "**Although** some disagree, the evidence shows..."
+
+  practice: |
+    **Practice Passage: Should Schools Ban Phones?** ⭐⭐
+
+    (模拟 B 篇, 250 词)
+
+    Many schools have recently banned students from using mobile phones during class. Supporters argue that phones are a major distraction. Research shows that students who do not use phones in class achieve better results.
+
+    However, others take a different approach. They believe that phones can be useful learning tools. Some teachers use apps to make learning more interesting. Students can also search for information quickly, which saves time.
+
+    In my view, a complete ban is not the best approach. Instead, schools should teach students how to use technology wisely. The real achievement is not removing phones, but helping young people develop self-control.
+
+    **Q1.** What is the author's main argument?
+    A. Phones should be completely banned.
+    B. Schools should teach wise use of technology instead of banning phones.
+    C. Phones are the best learning tools.
+    D. Research on phone use is not reliable.
+    答案: B (结论段: "not the best approach...teach students how to use technology wisely")
+
+    **Q2.** The author's attitude toward a complete phone ban is ___.
+    A. supportive  B. neutral  C. critical  D. unknown
+    答案: C (critical: "a complete ban is not the best approach")
+
+    **Q3.** Which would the author most likely agree with?
+    A. Technology has no place in schools.
+    B. Students cannot control their phone use.
+    C. Self-control is more important than rules.
+    D. All teachers should use phone apps.
+    答案: C ("The real achievement is...helping young people develop self-control")
+
+  summary: |
+    **本节核心要点:**
+
+    1. **议论文结构**: 引入→论证→反驳→结论 (主旨看 P1 末/P5 首)
+    2. **态度词**: positive/negative/neutral/critical (看作者用词)
+    3. **推断观点**: 找直接表态句 + 结论段
+    4. **与从句联系**: argue that (宾语) / approach which (定语) / although (状语)
+
+    **下节预告**: #18 说明文+数据图表 — 客观描述 vs 议论观点, 读图能力

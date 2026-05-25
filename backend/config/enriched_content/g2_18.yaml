@@ -1,0 +1,104 @@
+# Course #18: G2·阅读·说明文 + 数据图表
+course_id: 18
+generation_meta:
+  principles_version: "1.0"
+  generated_at: "2026-05-25"
+  vocab_layer: G2
+  core_words: [aspect, addition]
+  theme: "科技发展"
+
+segments:
+  hook: |
+    **Numbers Tell Stories**
+
+    Look at this data: "In 2020, 45% of Chinese students used online learning platforms. By 2024, the number had risen to 78%." What does this tell us? Not just that more students study online — it shows a trend, a speed of change, and a direction.
+
+    Expository passages (说明文) on the gaokao present facts, data, and processes. They do not argue — they explain. In addition, some passages include charts or graphs. Reading these requires a different approach from argumentative texts.
+
+  core: |
+    **说明文阅读策略**
+
+    ---
+
+    **一、说明文 vs 议论文** ⭐⭐
+
+    | | 说明文 | 议论文 (#17) |
+    |---|---|---|
+    | 目的 | 解释/描述/介绍 | 说服/论证 |
+    | 态度 | 客观 (objective) | 有立场 (supportive/critical) |
+    | 结构 | 总分/分总/并列 | 引入→论证→反驳→结论 |
+    | 题型 | 细节+主旨为主 | 态度+推断为主 |
+
+    ---
+
+    **二、说明文常见结构** ⭐⭐
+
+    1. **总→分**: P1 总述 → P2-P4 分方面介绍
+    2. **现象→原因→影响**: P1 描述现象 → P2 分析原因 → P3 讨论影响
+    3. **过程描述**: step by step 介绍一个过程
+    4. **对比**: A 方面 vs B 方面 (优缺点)
+
+    ---
+
+    **三、数据题技巧** ⭐⭐⭐
+
+    当文中含数字/百分比/图表:
+    1. 定位数据对应的具体含义
+    2. 注意"变化"类表达: rose / fell / doubled / remained stable
+    3. 区分: "45% of students" vs "students in 45% of schools" (主语不同!)
+    4. 图表题: 先看标题和轴标签, 再看数据
+
+    ---
+
+    **核心词**:
+    - **aspect** /ˈæspekt/ n. 方面; 层面 — every aspect of life; in this aspect
+    - **addition** /əˈdɪʃn/ n. 添加; 此外 — in addition (= besides); in addition to (除...之外还)
+
+    易错: in addition (单独用, 表"另外") vs in addition to + 名词 (除...之外)
+
+  relations: |
+    **G2 阅读两课对比**
+
+    | | #17 议论文 | #18 说明文 |
+    |---|---|---|
+    | 读什么 | 作者观点 | 客观事实 |
+    | 怎么读 | 找态度词 | 找数据+结构 |
+    | 常考题 | 态度/推断 | 细节/主旨 |
+
+    **与词汇联系**: aspect (方面) + addition (补充) = 说明文的核心表达
+    achievement + approach (#17) = 议论文的核心表达
+
+  practice: |
+    **Practice Passage: Online Learning** ⭐⭐
+
+    Online learning has grown rapidly in China. In 2020, about 45% of students used online platforms. By 2024, this number had increased to 78%. There are several aspects to this trend.
+
+    First, technology has made it easier to study at home. In addition, the cost of online courses is usually lower than traditional classes. However, not every aspect of online learning is positive. Some students find it hard to stay focused without a teacher in the room.
+
+    In addition to these challenges, there is the issue of internet access. Students in rural areas may not have a fast connection, which limits their ability to join online classes.
+
+    **Q1.** How much did online learning usage grow from 2020 to 2024?
+    A. From 45% to 78%  B. By 45%  C. To 45%  D. From 78% to 45%
+    答案: A (直接定位数据)
+
+    **Q2.** In addition to staying focused, what other challenge is mentioned?
+    A. High cost  B. Internet access  C. Teacher quality  D. Exam difficulty
+    答案: B (P3: "In addition to these challenges, there is the issue of internet access")
+
+    **Q3.** The passage is mainly about ___.
+    A. why online learning is the best approach
+    B. different aspects of the growth of online learning
+    C. how to use online platforms
+    D. problems with rural schools
+    答案: B (说明文: 客观描述 online learning 的各方面)
+
+  summary: |
+    **本节核心要点:**
+
+    1. **说明文 = 客观描述** (无作者立场, 不同于议论文)
+    2. **数据题**: 定位数字 → 确认主语 → 比对选项
+    3. **aspect**: 方面 (every aspect of)
+    4. **in addition**: 另外 (单独); in addition to + 名词 (除...之外)
+    5. **结构识别**: 总分/因果/过程/对比
+
+    **下节预告**: #19 完形·语境推断 — 用上下文线索选词, 不靠语法硬凑
