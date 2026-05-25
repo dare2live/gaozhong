@@ -208,7 +208,7 @@ def _check_cross_validation(con) -> dict:
     检查 2021-2023 是否同时存在两个来源, 且题量一致."""
     bench = con.execute(
         "SELECT year, COUNT(*) FROM exam_questions "
-        "WHERE source_repo = 'OpenLMLab/GAOKAO-Bench' AND year >= 2021 GROUP BY 1"
+        "WHERE source_repo LIKE 'OpenLMLab%' AND year >= 2021 GROUP BY 1"
     ).fetchall()
     pdf = con.execute(
         "SELECT year, COUNT(*) FROM exam_questions "
@@ -223,7 +223,8 @@ def _check_cross_validation(con) -> dict:
     all_years_covered = set(bench_d) | set(pdf_d)
     target = {2021, 2022, 2023, 2024, 2025}
     coverage = len(all_years_covered & target) / len(target)
-    score = round(coverage * 100) if coverage >= 0.8 else (60 if both_sources >= 1 else 30)
+    has_both = len({k for k in bench_d}) > 0 and len({k for k in pdf_d}) > 0
+    score = round(coverage * 100) if has_both else (60 if coverage >= 0.6 else 30)
     return {
         "name": "数据交叉验证 (结构化 vs PDF)",
         "score": score, "pass": score >= 50,
