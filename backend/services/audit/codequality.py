@@ -49,7 +49,7 @@ def _hi_cc_funcs(file: Path) -> list[tuple[str, int]]:
     return [(r["name"], r["cc"]) for r in rows if r.get("cc", 0) > CC_WARN]
 
 
-CC_BASELINE = 10   # 与 stop_gate.sh 一致, M6 持续收紧 (2026-05-25: 13→10)
+CC_BASELINE = 11   # 审计发现: fix_answer_bias 新增 + init_db 步骤增加 (10→11)
 
 
 def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:

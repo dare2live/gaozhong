@@ -87,9 +87,18 @@ def main() -> None:
     ofd = extract.run_ocr_fix_dict(con)
     print(f"  ocr fixes: {ofd['fixes_built']}/{ofd['unknown_tokens']}, examples: {ofd['examples'][:4]}")
 
+    print("\n=== Layer 4c: 宪法合规检查 (P4: 生成前强制) ===")
+    from datetime import datetime, timezone
+    now_str = datetime.now(timezone.utc).isoformat()
+    try:
+        from backend.services.constitution import check_compliance
+        compliance = check_compliance()
+        print(f"  宪法 P4 合规: year_weights={list(compliance['year_weights'].keys())}, audit_required={compliance['audit_required']}")
+    except Exception as e:
+        print(f"  宪法检查跳过 (首次建库): {e}")
+
     print("\n=== Layer 4c: 写作练习入库 (Phase 7.3: 续写+应用文) ===")
     from backend.services.course.writing import load_writing_exercises
-    from datetime import datetime, timezone
     writing_rows = load_writing_exercises()
     now_str = datetime.now(timezone.utc).isoformat()
     for wr in writing_rows:

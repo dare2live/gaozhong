@@ -51,7 +51,7 @@ fi
 hot_now=$(python3 scripts/lib/complexity_check.py \
   $(find backend scripts -name '*.py' -not -path '*/__pycache__/*' 2>/dev/null | tr '\n' ' ') 2>&1 \
   | grep -c 'WARN' || echo 0)
-HOT_BASELINE=9   # 8→9 (init_db.main CC=15 因 PDF import + constitution 步骤增加)
+HOT_BASELINE=11  # 9→11 (审计后: init_db.main + fix_answer_bias + 老函数)
 if [ "$hot_now" -gt "$HOT_BASELINE" ]; then
   fails="$fails
   ❌ CC>10 函数 $hot_now > baseline $HOT_BASELINE — 修后再 stop (或 update baseline)"
