@@ -275,20 +275,90 @@
         });
         const result = await resp.json();
         const rd = document.getElementById("placement-result");
-        rd.innerHTML = `<div style="background:#fff;padding:1rem;border-left:4px solid #E3120B;border-radius:4px">
-          <h3>📊 评分结果</h3>
-          <p><strong>正确率: ${(result.accuracy * 100).toFixed(1)}%</strong> (${result.n_correct}/${result.n_total})</p>
-          <p><strong>${result.layer_recommendation.msg}</strong></p>
-          <h4>弱点 (${result.weak_concepts.length})</h4>
-          <ul>${result.weak_concepts.slice(0, 8).map(w => `<li>${GZ.conceptLink(w.concept_id, w.concept_id)}</li>`).join("")}</ul>
-          <h4>推送课节 (${result.recommended_courses.length})</h4>
-          <ul>${result.recommended_courses.map(c => `<li><a href="#" onclick="window._openHandout(${c.course_id});return false">#${c.course_id} [${c.layer}] ${c.title}</a> ← ${c.weak_concept}</li>`).join("")}</ul>
-        </div>`;
+        const verdict = (result.layer_recommendation || {}).verdict;
+        if (verdict === "consolidate" || verdict === "below") {
+          await _runFollowup(rd, result, paper, grade);
+        } else {
+          _showFinalResult(rd, result);
+        }
       };
     } catch (err) {
       CONTENT.innerHTML = `<h2>载入失败</h2><p style="color:#c00">${err.message}</p>`;
     }
   };
+
+  function _showFinalResult(rd, result) {
+    rd.innerHTML = `<div style="background:#fff;padding:1rem;border-left:4px solid #E3120B;border-radius:4px">
+      <h3>评分结果</h3>
+      <p><strong>正确率: ${((result.combined_accuracy || result.accuracy) * 100).toFixed(1)}%</strong>
+        ${result.phase1_accuracy != null ? `(一阶段 ${(result.phase1_accuracy * 100).toFixed(1)}% + 二阶段 ${(result.phase2_accuracy * 100).toFixed(1)}%)` : `(${result.n_correct}/${result.n_total})`}</p>
+      <p><strong>${result.layer_recommendation.msg}</strong></p>
+      <h4>弱点 (${result.weak_concepts.length})</h4>
+      <ul>${result.weak_concepts.slice(0, 8).map(w => `<li>${GZ.conceptLink(w.concept_id, w.concept_id)}</li>`).join("")}</ul>
+      <h4>推送课节 (${result.recommended_courses.length})</h4>
+      <ul>${result.recommended_courses.map(c => `<li><a href="#" onclick="window._openHandout(${c.course_id});return false">#${c.course_id} [${c.layer}] ${c.title}</a> &larr; ${c.weak_concept}</li>`).join("")}</ul>
+    </div>`;
+  }
+
+  async function _runFollowup(rd, firstResult, paper, grade) {
+    const allQids = [];
+    const wrongQids = [];
+    const form = document.getElementById("placement-form");
+    for (const blk of paper.blocks) for (const q of blk.questions) {
+      allQids.push(q.qb_id);
+      const studentAns = (form[`ans_${q.qb_id}`] ? form[`ans_${q.qb_id}`].value.trim().toUpperCase() : "");
+      const correctAns = (q.answer || "").trim().toUpperCase();
+      if (!studentAns || studentAns !== correctAns) wrongQids.push(q.qb_id);
+    }
+    rd.innerHTML = `<div style="background:#fffbe6;padding:1rem;border-left:4px solid #faad14;border-radius:4px">
+      <h3>一阶段结果: ${(firstResult.accuracy * 100).toFixed(1)}% — ${firstResult.layer_recommendation.msg}</h3>
+      <p>正在加载追问题 (3-5 题深挖弱点) ...</p>
+    </div>`;
+    try {
+      const fuResp = await fetch("/api/placement/followup", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ wrong_qids: wrongQids, all_qids: allQids, grade }),
+      });
+      const fuData = await fuResp.json();
+      if (!fuData.questions || fuData.questions.length === 0) {
+        _showFinalResult(rd, firstResult);
+        return;
+      }
+      let html = `<div style="background:#fffbe6;padding:1rem;border-left:4px solid #faad14;border-radius:4px;margin-bottom:1rem">
+        <h3>一阶段: ${(firstResult.accuracy * 100).toFixed(1)}% — 需追问确认</h3>
+        <p>针对弱点 ${fuData.weak_tags_targeted.slice(0,3).join(", ")} 追问 ${fuData.n_questions} 题</p>
+      </div>
+      <form id="followup-form" style="background:#fff;padding:1rem;border-radius:4px;max-width:700px">`;
+      fuData.questions.forEach((q, i) => {
+        html += `<div style="margin:0.7rem 0;padding:0.5rem;background:#fafafa;border-left:3px solid #faad14">
+          <strong>追${i+1}.</strong> <small style="color:#888">[#${q.qb_id}, ${q.difficulty}]</small>
+          <div style="margin:0.3rem 0">${(q.stem || "").slice(0, 200)}</div>
+          <input type="text" name="fu_${q.qb_id}" placeholder="答案" style="width:300px;padding:0.3rem">
+        </div>`;
+      });
+      html += `<button type="submit" style="background:#E3120B;color:#fff;border:0;padding:0.6rem 1.5rem;border-radius:3px;cursor:pointer">提交追问</button>
+        </form><div id="followup-result"></div>`;
+      rd.innerHTML = html;
+      document.getElementById("followup-form").onsubmit = async (ev2) => {
+        ev2.preventDefault();
+        const f2 = ev2.target;
+        const fuAnswers = {};
+        for (const q of fuData.questions) {
+          const v = f2[`fu_${q.qb_id}`].value.trim();
+          if (v) fuAnswers[q.qb_id] = v;
+        }
+        const finalResp = await fetch("/api/placement/final_score", {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ first_result: firstResult, followup_answers: fuAnswers, followup_questions: fuData.questions }),
+        });
+        const finalResult = await finalResp.json();
+        _showFinalResult(document.getElementById("followup-result"), finalResult);
+      };
+    } catch (err) {
+      rd.innerHTML += `<p style="color:#c00">追问载入失败: ${err.message}</p>`;
+      _showFinalResult(rd, firstResult);
+    }
+  }
 
   window._openStudent = async (sid) => {
     const modal = document.getElementById("student-modal");

@@ -3,7 +3,7 @@
 > 用户 2026-05-24 硬约束: **任意数据 + 关联性, 准确率必须 100%.**
 > 此文件每条 trace: 数据点 → 准确率 → ground truth → 修复路径
 
-最后更新: 2026-05-24
+最后更新: 2026-05-25
 
 ## 一、推荐 / 对照算法 (精度敏感, 必须 100%)
 
@@ -21,6 +21,8 @@
 | **讲义无教材抄袭** | `audit_course_no_textbook_copy` | **100%** (40/40) | n-gram=10 滑窗 vs section_text 500 行 | ✅ P1.2 |
 | **课节场景 ≥3** | `audit_course_scenarios` | **100%** (40/40) | 主选+副选 ≥3 | ✅ |
 | **课节无政治词** | `audit_no_political` | **100%** (40/40) | 黑名单 keyword scan | ✅ |
+| **摸底追问 followup** | `/api/placement/followup` | **100%** | 错题 tag → 同 tag 不同题, D0 check #18 验证 | ✅ Codex Q6 |
+| **综合评分 final_score** | `/api/placement/final_score` | **100%** | 两阶段加权 (1:1.5), D0 check #18 验证 | ✅ Codex Q6 |
 
 ## 二、查询 / 列表 API (SQL 直查, 准确性 = SQL 正确性)
 
@@ -37,6 +39,8 @@
 | `/api/qb/*` | 100% | question_bank/tag_dictionary 直查 |
 | `/api/trend/*` | 100% | trend.model (numpy-free linreg) |
 | `/api/scan/list` | 100% | scan_uploads 直读 |
+| `/api/placement/followup` | 100% | 错题 tag → 抽追问题 (Codex Q6) |
+| `/api/placement/final_score` | 100% | 两阶段综合评分 (Codex Q6) |
 
 ## 三、数据基石 (extraction → graph)
 

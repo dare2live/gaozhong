@@ -12,6 +12,6 @@ D0 100% 准: layer 推荐 + 弱点 必须可 trace 真题 tag + nodes (不估算
 """
 from __future__ import annotations
 
-from . import loader, generator, scorer    # re-export
+from . import loader, generator, scorer, followup    # re-export
 
-__all__ = ["loader", "generator", "scorer"]
+__all__ = ["loader", "generator", "scorer", "followup"]

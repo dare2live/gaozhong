@@ -75,6 +75,14 @@ class Handler(BaseHTTPRequestHandler):
                 from backend.api.routes import placement as pl
                 self._json(200, pl.api_placement_score(qs, body))
                 return
+            if path == "/api/placement/followup":
+                from backend.api.routes import placement as pl
+                self._json(200, pl.api_placement_followup(qs, body))
+                return
+            if path == "/api/placement/final_score":
+                from backend.api.routes import placement as pl
+                self._json(200, pl.api_placement_final_score(qs, body))
+                return
             self._json(404, {"error": "no POST route", "path": path})
         except Exception as e:
             self._json(500, {"error": str(e), "type": type(e).__name__})

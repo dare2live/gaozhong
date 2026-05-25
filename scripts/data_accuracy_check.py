@@ -227,6 +227,32 @@ def _check_17_cross_version(con):
           f"got {len(res)} 个")
 
 
+def _check_18_followup(con):
+    print("\n=== (18) placement followup (Codex Q6) ===")
+    from backend.services.placement import followup
+    # 抽 G1 placement 的前 3 题假装做错, 验证 followup 能抽到题
+    rows = con.execute(
+        "SELECT qb_id FROM question_bank LIMIT 5"
+    ).fetchall()
+    all_qids = [r[0] for r in rows]
+    wrong_qids = all_qids[:3] if len(all_qids) >= 3 else all_qids
+    result = followup.pick_followup_questions(con, wrong_qids, all_qids, n=5)
+    check("followup 能抽题 (≥1)",
+          result["n_questions"] >= 1,
+          f"got {result['n_questions']}")
+    check("followup questions 有 qb_id+answer",
+          all("qb_id" in q and "answer" in q for q in result["questions"]),
+          f"fields OK")
+    # compute_final_score 基本测试
+    fake_first = {"accuracy": 0.5, "grade": "G1", "target_layer": "G1",
+                  "weak_concepts": [], "recommended_courses": []}
+    fake_answers = {q["qb_id"]: q["answer"] for q in result["questions"]}
+    final = followup.compute_final_score(fake_first, fake_answers, result["questions"])
+    check("final_score 返 combined_accuracy",
+          "combined_accuracy" in final and 0 <= final["combined_accuracy"] <= 1,
+          f"combined={final.get('combined_accuracy')}")
+
+
 # ===== helpers (CC ≤ 4) =====
 
 def _audit_ok(con, kind: str) -> bool:
@@ -264,6 +290,7 @@ CHECKS = [
     _check_9_qbank, _check_10_qbank_options, _check_11_tag_dict,
     _check_12_cefr_node_xref, _check_13_grammar_chain, _check_14_graph_refs,
     _check_15_xref, _check_16_placement, _check_17_cross_version,
+    _check_18_followup,
 ]
 
 

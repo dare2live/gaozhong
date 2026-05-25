@@ -4,7 +4,7 @@
 > 新 session 一打开, 先读本文件 + `goal.md` 顶部 D0, 立即接上.
 
 最后停止时间: **2026-05-25**
-最后 commit: **`9fe5145`** feat(codex review): placement Q2+Q3+Q4+Q5 4 改进落地
+最后 commit: (本 session 完成 Q6, 待 commit)
 
 ---
 
@@ -44,63 +44,32 @@ python3 scripts/init_db.py | tail -5
             + 跨版本算法 v4 100% (30 对验证)
             + D0 强约束 hook + 全数据校验脚本
 
-刚做完 (codex review 落地):
+codex review 全部落地:
   ✅ Q2 加权 greedy (稀有 tag 优先)
   ✅ Q3 阈值 重命名 + 提下界 (consolidate_floor 70/70/65)
   ✅ Q4 弱点 trace 限 kind ('word','grammar' only)
   ✅ Q5 per-student seed (反作弊, alice/bob 不同卷)
+  ✅ Q6 错题追问 followup endpoint (二阶段 3-5 题深挖弱点)
 ```
 
 详 `goal.md` 各阶段 + `docs/data_accuracy_audit.md`.
 
 ---
 
-## 3. 唯一未做 task — 直接续
+## 3. 当前状态 — 全部 task 已完成
 
-### #68 codex Q6: 错题追问 endpoint (1-2 h)
+所有 codex review 改进 (Q2-Q6) 已落地, #68 错题追问 endpoint 已实装.
 
-**背景** (codex 评 placement):
-> "9-11 题只能粗分流, 不能快速测准. 当 screener, 边界再加 3-5 题自适应追问."
+**系统已具备交付运营条件**:
+- D0 100% 准 (18 章 39+ 项, 全绿)
+- 4945 nodes / 34728 edges / 40 节课程 / 509 题库
+- 二阶段摸底 (一阶段粗分 + 追问深挖) 完整闭环
+- 前端 7 tab SPA + 全局图谱浮窗 + 概念互链
 
-**目标**: 新加二阶段测验流程:
-- 一阶段 9-11 题答完 → 根据错题/边界正确率
-- 二阶段抽 3-5 题深挖弱点 concept (eg 错的是 word:until → 追 3 题考 until 的)
-- 最终 layer 推荐综合两阶段 (二阶段权重高)
-
-**实施 (从这里开 1 个 session 能干完)**:
-
-```
-1. backend/services/placement/followup.py — 新模块
-   pick_followup_questions(con, student_id, wrong_qids, n=5):
-     - 抽错题的 word/grammar tag
-     - 从 question_bank 抽其它带相同 tag 的题 (排除一阶段已答)
-     - greedy: 每错点抽 1-2 题 covered
-
-2. backend/api/routes/placement.py — 新 endpoint
-   /api/placement/followup?student_id=&grade=  (POST: {wrong_qids: [...]})
-   → 返 3-5 题 follow-up paper
-   /api/placement/final_score (POST: {first_answers, followup_answers})
-   → 综合两阶段最终 verdict
-
-3. frontend/static/app_router.js — E tab 入测流程改:
-   一阶段答完 → 若边界 (verdict='consolidate' 或 'below') → 自动入二阶段
-   全部答完 → 显示最终 verdict + 弱点 + 推送
-
-4. data_accuracy_check.py +1 章节: followup spec 验证
-   _check_18_followup(con) — 验证 followup pick 工作
-
-5. docs 更新:
-   docs/data_accuracy_audit.md 加 placement followup 条目
-   goal.md 第六阶段标 Q6 ✅
-```
-
-**开干命令**:
-```bash
-cd /Users/dp/Documents/M/gaozhong
-# 这就是新 session 续命第一句
-```
-
-跟我说 "**继续 #68**" 我就开干.
+**后续可考虑 (用户拍前不做)**:
+- 阶段 7: LLM 增强 (Claude API)
+- 阶段 8: sklearn 难度梯度
+- 阶段 9: 跨学科/多校部署
 
 ---
 
