@@ -120,6 +120,20 @@ def main() -> None:
         )
     print(f"  listening exercises: {len(listening_rows)} (短对话+长对话+独白)")
 
+    print("\n=== Layer 4f: 阅读理解练习入库 (Phase 7.4: 趋势驱动) ===")
+    from backend.services.course.reading import load_reading_exercises
+    reading_rows = load_reading_exercises()
+    for rr in reading_rows:
+        con.execute(
+            "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
+            "difficulty, origin, origin_ref, created_at, analysis) "
+            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [rr["question_type"], rr["stem"], rr["options_json"], rr["answer"],
+             rr["difficulty"], rr["origin"], rr["origin_ref"], now_str,
+             rr.get("analysis", "")],
+        )
+    print(f"  reading exercises: {len(reading_rows)} (趋势驱动: 词义猜测/标题/推理/七选五)")
+
     print(f"  qb total: {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
     print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")

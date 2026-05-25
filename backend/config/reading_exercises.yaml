@@ -1,0 +1,333 @@
+# 阅读理解练习 — 基于趋势引擎推荐 (词义猜测↑ 标题选择↑ 推理判断↑)
+# 入库 question_bank, question_type='阅读理解', origin='reading_exercise'
+# 每题贴近 2021-2025 新课标 II 卷命题风格:
+#   - 句长 avg 12 词 (P25-P75: 5-17 词)
+#   - 选项 A/B/C/D
+#   - analysis 含命题术语 (细节/推断/主旨/词义/上下文)
+
+version: "1.0"
+updated: "2026-05-25"
+
+# 趋势引擎推荐: 词义猜测 slope=+0.179, 标题选择 slope=+0.107, 推理判断 slope=0.000 (稳定高频)
+
+reading_comprehension:
+
+  # === 词义猜测题 (上升趋势) ===
+  - id: "reading/vocab_guess/001"
+    skill: "词义猜测"
+    difficulty: hard
+    stem: |
+      The underlined word "harsh" in Paragraph 2 is closest in meaning to _____.
+      A. gentle
+      B. severe
+      C. common
+      D. pleasant
+
+      (Context: The harsh winter conditions forced many birds to migrate earlier than usual. Temperatures dropped to minus 30 degrees, and food became extremely scarce.)
+    answer: "B"
+    analysis: "词义猜测: harsh 后跟 winter conditions + minus 30 degrees + scarce, 语境提示严酷. severe 最贴切. gentle/pleasant 反义排除, common 无关."
+
+  - id: "reading/vocab_guess/002"
+    skill: "词义猜测"
+    difficulty: hard
+    stem: |
+      What does the underlined word "thrive" in Paragraph 3 probably mean?
+      A. Suffer greatly.
+      B. Grow well.
+      C. Move slowly.
+      D. Change direction.
+
+      (Context: Unlike many species that struggle in urban environments, pigeons thrive in cities. They find food easily, build nests on buildings, and their population continues to grow.)
+    answer: "B"
+    analysis: "词义猜测: thrive 与 struggle 对比 (Unlike), 后有 find food easily + population grows 正面语境. grow well 最符合."
+
+  - id: "reading/vocab_guess/003"
+    skill: "词义猜测"
+    difficulty: hard
+    stem: |
+      The underlined phrase "took its toll on" in the last paragraph most probably means _____.
+      A. improved the quality of
+      B. had a harmful effect on
+      C. raised awareness of
+      D. showed great interest in
+
+      (Context: Years of heavy industrial pollution took its toll on the local river. Fish disappeared, and the water turned an unhealthy shade of brown.)
+    answer: "B"
+    analysis: "词义猜测: took its toll on 后跟 fish disappeared + unhealthy brown, 明显负面结果. had a harmful effect on 最准确."
+
+  # === 标题选择题 (上升趋势) ===
+  - id: "reading/title/001"
+    skill: "标题选择"
+    difficulty: hard
+    stem: |
+      What is the best title for this passage?
+      A. The History of Chinese Tea
+      B. How Tea Changed the World
+      C. The Science Behind Tea Making
+      D. Why Chinese People Love Tea
+
+      (Passage summary: The article traces how Chinese tea spread along the Silk Road to Central Asia, then to Europe, triggering the tea trade that shaped colonial economies and even sparked political events like the Boston Tea Party.)
+    answer: "B"
+    analysis: "标题选择: 全文主线是 tea 如何从中国传播到世界并影响殖民经济+政治. A 太窄 (只历史), C 无关 (科学), D 太窄 (只中国). B 覆盖全文 spread+shaped+sparked."
+
+  - id: "reading/title/002"
+    skill: "标题选择"
+    difficulty: hard
+    stem: |
+      Which of the following would be the best title for the passage?
+      A. A New Discovery in Space
+      B. The Challenges of Mars Travel
+      C. Living on Mars: Dream or Reality?
+      D. NASA's Latest Space Mission
+
+      (Passage summary: Scientists discuss whether humans can realistically live on Mars. The article covers both the technological advances that make it possible and the biological challenges — radiation, muscle loss, psychological isolation — that remain unsolved.)
+    answer: "C"
+    analysis: "标题选择: 全文围绕 '能不能住火星' 的正反两面. A/D 太具体, B 只覆盖挑战面. C 的 Dream or Reality 准确概括正反论证结构."
+
+  # === 推理判断题 (稳定高频) ===
+  - id: "reading/inference/001"
+    skill: "推理判断"
+    difficulty: hard
+    stem: |
+      What can be inferred from Paragraph 4?
+      A. The author supports building more highways.
+      B. Public transportation is more efficient than driving.
+      C. The government has solved the traffic problem.
+      D. Most people prefer cycling to driving.
+
+      (Context: Despite the government's investment in new highways, traffic jams in major cities have only gotten worse. Meanwhile, cities that invested in subway systems and bike-sharing programs reported a 30% decrease in commute times.)
+    answer: "B"
+    analysis: "推理判断: highways → worse vs subway+bike → 30% decrease. 对比推出公共交通更高效. A 与文意相反, C/D 无据."
+
+  - id: "reading/inference/002"
+    skill: "推理判断"
+    difficulty: hard
+    stem: |
+      It can be inferred from the passage that the author _____.
+      A. thinks online learning will replace schools completely
+      B. believes a combination of online and classroom learning is ideal
+      C. is against the use of technology in education
+      D. considers traditional teaching methods the best
+
+      (Context: While online platforms offer flexibility and access to global resources, the article stresses that face-to-face interaction, classroom discussions, and teacher mentorship cannot be digitally replicated. The author concludes that the future lies in blending both approaches.)
+    answer: "B"
+    analysis: "推理判断: 作者分析 online 优点 + face-to-face 不可替代 + 结论 blending both. B 最准确. A 太极端, C/D 与文意矛盾."
+
+  - id: "reading/inference/003"
+    skill: "推理判断"
+    difficulty: hard
+    stem: |
+      What is the author's attitude toward artificial intelligence?
+      A. Completely supportive.
+      B. Cautiously optimistic.
+      C. Strongly opposed.
+      D. Totally indifferent.
+
+      (Context: AI has already transformed healthcare, education, and transportation in remarkable ways. However, the author warns that without proper regulation, AI could deepen inequality and threaten privacy. "We must guide this technology wisely," the author writes.)
+    answer: "B"
+    analysis: "推理判断 (作者态度): remarkable ways = 肯定 AI 价值, 但 warns + without regulation + threaten = 有保留. cautiously optimistic 准确. A 忽略警示, C/D 与文意不符."
+
+  # === 细节理解题 (基础高频) ===
+  - id: "reading/detail/001"
+    skill: "细节理解"
+    difficulty: mid
+    stem: |
+      According to the passage, what is the main reason why pandas are endangered?
+      A. Climate change.
+      B. Loss of bamboo forests.
+      C. Hunting by humans.
+      D. Disease.
+
+      (Context: The giant panda's survival depends almost entirely on bamboo, which makes up 99% of its diet. As bamboo forests have been cleared for farming and urban development, pandas have lost their primary food source and habitat.)
+    answer: "B"
+    analysis: "细节理解: 文中明确 bamboo forests cleared → lost food source and habitat. B 直接对应. A/C/D 文中未提及."
+
+  - id: "reading/detail/002"
+    skill: "细节理解"
+    difficulty: mid
+    stem: |
+      According to the passage, how long does the Shenyang Ice Festival last?
+      A. Two weeks.
+      B. One month.
+      C. Three months.
+      D. The whole winter.
+
+      (Context: The annual Shenyang Ice Festival runs from late December to late March, attracting over two million visitors each year with its stunning ice sculptures and winter sports activities.)
+    answer: "C"
+    analysis: "细节理解: late December to late March = 约 3 个月. C 正确. 需注意不是 '整个冬天' (D), 冬天从 11 月算."
+
+  # === 目的意图题 ===
+  - id: "reading/purpose/001"
+    skill: "目的意图"
+    difficulty: hard
+    stem: |
+      What is the purpose of the example mentioned in Paragraph 3?
+      A. To prove that exercise is harmful.
+      B. To show that small changes can make a big difference.
+      C. To introduce a famous athlete.
+      D. To compare different types of exercise.
+
+      (Context: Paragraph 3 describes how a 65-year-old woman started walking just 15 minutes a day. Within six months, her blood pressure returned to normal and she lost 8 kilograms — evidence that even modest physical activity can produce significant health benefits.)
+    answer: "B"
+    analysis: "目的意图: 举例 15 min walking → blood pressure normal + lost 8 kg = 小改变大效果. B 准确概括举例目的."
+
+  # === 综合: 七选五衔接 (上升最快 slope +0.250) ===
+  - id: "reading/coherence/001"
+    skill: "七选五衔接"
+    difficulty: hard
+    stem: |
+      Where does the following sentence best fit in the passage?
+      "However, not everyone agrees with this view."
+
+      A. At the beginning of Paragraph 1.
+      B. At the end of Paragraph 2, before the opposing argument.
+      C. In the middle of Paragraph 4.
+      D. At the very end of the passage.
+
+      (Context: Paragraph 1-2 present the argument that homework is essential for learning. Paragraph 3 presents counter-evidence from Finland where less homework led to higher test scores.)
+    answer: "B"
+    analysis: "七选五衔接: However 转折, not everyone agrees 引出反面观点. 应在正面论证 (P1-2) 之后、反面论证 (P3) 之前. B 最佳."
+
+  # === 补充 10 题到 700 关口 (趋势驱动) ===
+
+  - id: "reading/vocab_guess/004"
+    skill: "词义猜测"
+    difficulty: hard
+    stem: |
+      The underlined word "fragile" in Paragraph 1 probably means _____.
+      A. strong and powerful
+      B. easily broken or damaged
+      C. very expensive
+      D. difficult to find
+
+      (Context: The coral reef ecosystem is surprisingly fragile. A rise of just 1-2 degrees in ocean temperature can cause widespread coral bleaching and death.)
+    answer: "B"
+    analysis: "词义猜测: 1-2 degrees → bleaching and death 说明珊瑚生态脆弱. easily broken or damaged 最准确."
+
+  - id: "reading/inference/004"
+    skill: "推理判断"
+    difficulty: hard
+    stem: |
+      What can we learn from the last paragraph?
+      A. The problem has been completely solved.
+      B. More efforts are needed in the future.
+      C. The government has given up trying.
+      D. Technology alone can solve everything.
+
+      (Context: Although significant progress has been made in reducing air pollution in Chinese cities, experts warn that maintaining these gains will require continued investment in clean energy, stricter regulations, and public participation.)
+    answer: "B"
+    analysis: "推理判断: although progress + warn + require continued investment/stricter/participation → 仍需更多努力. B 正确."
+
+  - id: "reading/detail/003"
+    skill: "细节理解"
+    difficulty: mid
+    stem: |
+      According to the author, what makes the library special?
+      A. It has the largest collection of books in China.
+      B. It is designed to look like a human eye.
+      C. It was built entirely by volunteers.
+      D. It is the oldest library in Shenyang.
+
+      (Context: The Binhai Library in Tianjin has attracted global attention not for its book collection, but for its extraordinary architecture — a central sphere surrounded by terraced bookshelves that create the appearance of a giant eye.)
+    answer: "B"
+    analysis: "细节理解: architecture + central sphere + appearance of a giant eye → 设计成眼睛形状. B 直接对应."
+
+  - id: "reading/purpose/002"
+    skill: "目的意图"
+    difficulty: hard
+    stem: |
+      Why does the author mention the experiment with rats in Paragraph 2?
+      A. To explain how rats learn to solve problems.
+      B. To prove that sleep helps memory formation.
+      C. To show that rats are smarter than expected.
+      D. To argue against animal testing.
+
+      (Context: In the experiment, rats that were allowed to sleep after learning a maze solved it twice as fast the next day compared to rats kept awake. This supports the theory that the brain consolidates memories during sleep.)
+    answer: "B"
+    analysis: "目的意图: 实验结果 (sleep → solve faster) + supports the theory (brain consolidates during sleep) → 举例证明睡眠帮助记忆. B 准确."
+
+  - id: "reading/title/003"
+    skill: "标题选择"
+    difficulty: hard
+    stem: |
+      What would be the best title for the passage?
+      A. The Rise of Electric Cars in China
+      B. Why Traditional Cars Are Better
+      C. A Complete Guide to Car Maintenance
+      D. The History of Automobile Industry
+
+      (Passage summary: China leads the world in electric vehicle adoption. The article discusses government subsidies, growing charging infrastructure, falling battery costs, and consumer attitudes. It concludes that by 2030, over half of new cars sold in China may be electric.)
+    answer: "A"
+    analysis: "标题选择: 全文围绕中国电动车崛起 — 政策/基建/成本/消费者/预测. A 最全面. B 反义, C/D 完全偏离."
+
+  - id: "reading/coherence/002"
+    skill: "七选五衔接"
+    difficulty: hard
+    stem: |
+      Which of the following sentences can be put in the blank?
+      "_____. That is why many schools now include coding classes in their curriculum."
+      A. Computers are expensive machines.
+      B. Not all students enjoy mathematics.
+      C. Programming skills are becoming essential in the modern workplace.
+      D. Schools should focus more on physical education.
+
+      (Context: The paragraph discusses how digital skills are increasingly required in various jobs, from healthcare to agriculture.)
+    answer: "C"
+    analysis: "七选五衔接: That is why 因果连接 → 前句必须是'原因'. C (programming essential) → schools include coding 因果成立."
+
+  - id: "reading/inference/005"
+    skill: "推理判断"
+    difficulty: hard
+    stem: |
+      What is the author's tone in this passage?
+      A. Humorous and light-hearted.
+      B. Objective and informative.
+      C. Angry and critical.
+      D. Sad and hopeless.
+
+      (Context: The passage presents scientific data about global warming trends, quotes experts from both sides, and concludes with a balanced summary of possible actions. No emotional language or personal opinions are expressed.)
+    answer: "B"
+    analysis: "推理判断 (作者语气): scientific data + quotes both sides + balanced summary + no emotional language → 客观信息性. B 准确."
+
+  - id: "reading/vocab_guess/005"
+    skill: "词义猜测"
+    difficulty: hard
+    stem: |
+      What does "spontaneous" most probably mean in this context?
+      A. Carefully planned.
+      B. Happening naturally without planning.
+      C. Very slow and gradual.
+      D. Extremely dangerous.
+
+      (Context: The flash mob was completely spontaneous — nobody organized it. People just started dancing when they heard the music playing in the square.)
+    answer: "B"
+    analysis: "词义猜测: nobody organized it + just started dancing → 没有计划, 自然发生. B 精确匹配. A 是反义."
+
+  - id: "reading/detail/004"
+    skill: "细节理解"
+    difficulty: mid
+    stem: |
+      How many students participated in the study according to the passage?
+      A. 200
+      B. 500
+      C. 1,000
+      D. 2,000
+
+      (Context: The research team surveyed 1,000 high school students across five provinces to understand their reading habits. The survey was conducted online over a period of two weeks.)
+    answer: "C"
+    analysis: "细节理解: surveyed 1,000 high school students — 数字直接出现. C 正确."
+
+  - id: "reading/coherence/003"
+    skill: "七选五衔接"
+    difficulty: hard
+    stem: |
+      Which sentence best fills the gap at the end of Paragraph 2?
+      "Some students prefer working alone, while others learn better in groups. _____"
+      A. Therefore, all homework should be done individually.
+      B. As a result, teachers should offer both options when possible.
+      C. In fact, group work is always more productive.
+      D. Unfortunately, schools have no resources for this.
+
+      (Context: Paragraph 2 discusses different learning styles and the importance of flexibility in teaching methods.)
+    answer: "B"
+    analysis: "七选五衔接: Some...while others 两面论述 → 结论应是兼顾. B (offer both options) 逻辑闭合. A/C 偏一边, D 悲观无据."
