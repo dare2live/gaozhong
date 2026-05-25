@@ -241,3 +241,20 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **自动化兜底**: model_capability_audit.py 的 weight_compliance 检查 (代码 vs 宪法权重一致性).
 
 **教训**: 每写一条宪法规则, 必须同时写一个检查它的 audit 函数. 文档和代码必须原子提交.
+
+---
+
+## L-2026-05-25-N · 真题 paper_type 错标 — 2021/2022/2023 数据污染
+
+**现象**: gaokao agent 审计发现:
+- 2021: 16 条中 8 条是新课标 I 卷 (非辽宁), 被错标为 "新课标 II 卷"
+- 2022: 新课标 II 卷完全缺失 — GAOKAO-Bench 只有全国甲/乙卷, 被错标为 II 卷
+- 2023: 150 条混了 4 套卷 (I/II/甲/乙), 只有 ~1/4 是真正的新课标 II
+
+**根因**: 初始导入时 `infer_province` 推断逻辑不够严格, 把所有"看起来像"的数据都标成了辽宁新课标 II 卷. GAOKAO-Bench 的 category 字段没有被正确解析.
+
+**影响**: 趋势模型训练数据有 ~50% 是错误卷型 → 所有趋势分析结论可能有偏差 → 基于此生成的内容全部不可信.
+
+**自动化兜底**: cross_validation_report.json (交叉验证); model_capability_audit 应加 paper_type 验证维度.
+
+**教训**: D0 100% 准确率不只是"数据入库了", 而是"每条数据的每个字段都正确". paper_type 错标 = 整个模型失效. 宪法 §8 数据获取规范必须包含 paper_type 验证.
