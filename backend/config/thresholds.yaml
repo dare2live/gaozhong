@@ -1,0 +1,73 @@
+# 全局阈值配置 (消灭硬编码 magic numbers)
+# 任何需要数值判断的地方都从这里读取, 不在 .py 中写死数字.
+# 修改阈值只需改本文件, 不需要改代码.
+
+version: "1.0"
+updated: "2026-05-25"
+
+# ===== 代码质量 =====
+code_quality:
+  cc_baseline: 8               # CC>10 函数数上限 (stop_gate)
+  file_size_warn: 250          # .py 文件行数 WARN 阈值
+  file_size_fail: 400          # .py 文件行数 FAIL 阈值
+  inline_css_max_lines: 30     # 前端 <style> 块行数上限
+  inline_js_max_lines: 80      # 前端 <script> 块行数上限
+  inline_baseline: 4           # 前端 inline 大块数上限
+
+# ===== 课程系统 =====
+course:
+  total_courses: 40            # 课程总数
+  blocks_per_layer: 10         # 每层节数
+  layers: ["G1", "G2", "G3", "G_FINAL"]
+  handout_min_chars: 5000      # enriched 讲义最低字符数
+  homework_questions: 10       # 每节作业题数
+  exam_trace_limit: 5          # 真题溯源显示条数
+  section_text_scan_limit: 500 # R2 audit 扫描 section_text 行数
+
+# ===== 词汇 =====
+vocab:
+  cefr_target: 3000            # 课标目标词数 (义教1500+必修500+选必1000)
+  cefr_tolerance_ok: 100       # |actual - target| <= 此值 → OK
+  cefr_tolerance_warn: 300     # |actual - target| <= 此值 → WARN, 否则 FAIL
+  level_expected:
+    义教: 1500
+    必修: 500
+    选必: 1000
+  level_tolerance: 50          # 各层 |actual-expected| <= 此值 → OK
+  level_tolerance_warn: 200    # 各层 |actual-expected| <= 此值 → WARN
+
+# ===== 题库 =====
+question_bank:
+  min_total: 509               # 最低题目数
+  min_tags: 10000              # 最低标签数
+  difficulty_char_threshold: 400  # 题干字符数: < 此值 = mid, >= 此值 = hard
+  synth_n_blanks: 8            # 合成题默认空格数
+  synth_n_quiz: 5              # L1 quiz 默认题数
+
+# ===== 摸底测验 =====
+placement:
+  followup_min: 3              # 追问最少题数
+  followup_max: 5              # 追问最多题数
+  followup_weight_phase1: 1.0  # 一阶段权重
+  followup_weight_phase2: 1.5  # 二阶段权重 (更高)
+  pass_threshold: 0.80         # 综合通过线
+  consolidate_floor: 0.65      # 巩固下限
+
+# ===== 文本处理 =====
+text:
+  raw_question_max_chars: 8000 # exam 题面截断长度
+  analysis_max_chars: 4000     # 解析截断长度
+  stem_display_chars: 40       # 讲义中题面显示长度 (R2 安全)
+  textbook_overlap_ngram: 10   # R2 n-gram 重叠检测窗口
+
+# ===== 审计 =====
+audit:
+  exam_coverage_note_threshold: 334  # 低于此题数标注"样本不足"
+  textbook_min_coverage_pct: 70      # 教材覆盖率最低百分比
+
+# ===== 文本提取 =====
+extraction:
+  section_text_min_chars: 500   # 有效 section 最低字符数
+  section_text_max_chars: 5000  # 有效 section 最大字符数
+  cloze_text_min_chars: 800     # 完形原文最低字符数
+  applied_preview_chars: 400    # 应用文预览截断

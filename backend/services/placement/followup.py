@@ -52,10 +52,13 @@ def compute_final_score(first_result: dict, followup_answers: dict[int, str],
     if n2 == 0:
         return first_result
 
+    from backend.services.course.loader import get_threshold
     n2_correct = _count_correct(followup_answers, followup_questions)
     acc1 = first_result.get("accuracy", 0)
     acc2 = n2_correct / n2
-    combined = (acc1 * 1.0 + acc2 * 1.5) / 2.5
+    w1 = get_threshold("placement.followup_weight_phase1", 1.0)
+    w2 = get_threshold("placement.followup_weight_phase2", 1.5)
+    combined = (acc1 * w1 + acc2 * w2) / (w1 + w2)
 
     target = first_result.get("target_layer", "G1")
     rec = _combined_verdict(combined, target)
@@ -84,11 +87,14 @@ def _count_correct(answers: dict[int, str], questions: list[dict]) -> int:
 
 
 def _combined_verdict(combined: float, target: str) -> dict:
+    from backend.services.course.loader import get_threshold
+    pass_t = get_threshold("placement.pass_threshold", 0.80)
+    consol_t = get_threshold("placement.consolidate_floor", 0.65)
     next_layer = {"G1": "G2", "G2": "G3", "G3": "G_FINAL"}.get(target, target)
-    if combined >= 0.80:
+    if combined >= pass_t:
         return {"verdict": "pass", "next_layer": next_layer,
                 "msg": f"综合水平已达 {target}, 推入 {next_layer} 课节"}
-    if combined >= 0.65:
+    if combined >= consol_t:
         return {"verdict": "consolidate", "next_layer": target,
                 "msg": f"综合水平接近 {target}, 巩固 {target} 课节"}
     return {"verdict": "below", "next_layer": target,

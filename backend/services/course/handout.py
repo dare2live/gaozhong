@@ -12,6 +12,7 @@ import duckdb
 import yaml
 
 from . import homework, relations
+from .loader import get_threshold as _t
 
 ENRICHED_DIR = Path(__file__).resolve().parents[2] / "config" / "enriched_content"
 
@@ -98,10 +99,10 @@ def _seg_exam_trace(con: duckdb.DuckDBPyConnection, c: dict) -> str:
         return "### 真题溯源\n\n(无 homework_tags, 跳过)\n"
     placeholders = ",".join("?" * len(htags))
     rows = con.execute(
-        f"SELECT qb.qb_id, qb.question_type, SUBSTR(qb.stem, 1, 40), qb.origin_ref "
+        f"SELECT qb.qb_id, qb.question_type, SUBSTR(qb.stem, 1, {_t('text.stem_display_chars', 40)}), qb.origin_ref "
         f"FROM question_bank qb JOIN question_tags qt ON qt.qb_id = qb.qb_id "
         f"WHERE qt.tag_id IN ({placeholders}) AND qb.origin='real' "
-        f"ORDER BY qb.qb_id LIMIT 5",
+        f"ORDER BY qb.qb_id LIMIT {_t('course.exam_trace_limit', 5)}",
         htags,
     ).fetchall()
     lines = ["### 真题溯源 (点题号弹原题 + 联通图)\n"]

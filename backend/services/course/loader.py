@@ -4,6 +4,8 @@
   course_templates.yaml     40 节 spec
   theme_pool.yaml           50 主题
   political_blacklist.yaml  政治词
+  thresholds.yaml           全局阈值 (消灭硬编码)
+  content_principles.yaml   内容生成原则
 """
 from __future__ import annotations
 
@@ -86,8 +88,37 @@ def _validate_items(cid: int, items: list[dict]) -> None:
             raise ValueError(f"#{cid} core_items year must be 1|2|3|99 (R6)")
 
 
+@lru_cache(maxsize=1)
+def load_thresholds() -> dict:
+    """读 thresholds.yaml — 全局阈值配置, 消灭代码中的 magic numbers."""
+    data = yaml.safe_load((CONFIG_DIR / "thresholds.yaml").read_text(encoding="utf-8")) or {}
+    return data
+
+
+@lru_cache(maxsize=1)
+def load_content_principles() -> dict:
+    """读 content_principles.yaml — 内容生成约束, 前端 + 重生成时使用."""
+    path = CONFIG_DIR / "content_principles.yaml"
+    if path.exists():
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return {}
+
+
+def get_threshold(path: str, default=None):
+    """按点分隔路径读阈值. 例: get_threshold('placement.followup_max', 5)."""
+    data = load_thresholds()
+    for key in path.split("."):
+        if isinstance(data, dict):
+            data = data.get(key)
+        else:
+            return default
+    return data if data is not None else default
+
+
 def reload_all() -> None:
     """Test only — clear lru_cache so config edits picked up."""
     load_course_templates.cache_clear()
     load_theme_pool.cache_clear()
     load_political_blacklist.cache_clear()
+    load_thresholds.cache_clear()
+    load_content_principles.cache_clear()
