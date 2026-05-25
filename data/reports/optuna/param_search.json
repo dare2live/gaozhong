@@ -1,0 +1,134 @@
+{
+  "n_trials": 10,
+  "best_score": 75.92,
+  "best_params": {
+    "hard_ratio": 0.62,
+    "mid_ratio": 0.159,
+    "stem_len_min": 31.001,
+    "stem_len_max": 106.785,
+    "analysis_min_chars": 118.377,
+    "topic_match_threshold": 0.638
+  },
+  "all_trials": [
+    {
+      "trial": 0,
+      "params": {
+        "hard_ratio": 0.62,
+        "mid_ratio": 0.159,
+        "stem_len_min": 31.001,
+        "stem_len_max": 106.785,
+        "analysis_min_chars": 118.377,
+        "topic_match_threshold": 0.638
+      },
+      "score": 75.92
+    },
+    {
+      "trial": 1,
+      "params": {
+        "hard_ratio": 0.746,
+        "mid_ratio": 0.18,
+        "stem_len_min": 36.877,
+        "stem_len_max": 83.576,
+        "analysis_min_chars": 56.237,
+        "topic_match_threshold": 0.553
+      },
+      "score": 75.92
+    },
+    {
+      "trial": 2,
+      "params": {
+        "hard_ratio": 0.313,
+        "mid_ratio": 0.22,
+        "stem_len_min": 45.995,
+        "stem_len_max": 145.393,
+        "analysis_min_chars": 56.453,
+        "topic_match_threshold": 0.595
+      },
+      "score": 75.92
+    },
+    {
+      "trial": 3,
+      "params": {
+        "hard_ratio": 0.705,
+        "mid_ratio": 0.152,
+        "stem_len_min": 52.233,
+        "stem_len_max": 163.777,
+        "analysis_min_chars": 70.83,
+        "topic_match_threshold": 0.378
+      },
+      "score": 75.92
+    },
+    {
+      "trial": 4,
+      "params": {
+        "hard_ratio": 0.779,
+        "mid_ratio": 0.268,
+        "stem_len_min": 23.71,
+        "stem_len_max": 91.606,
+        "analysis_min_chars": 131.699,
+        "topic_match_threshold": 0.602
+      },
+      "score": 70.92
+    },
+    {
+      "trial": 5,
+      "params": {
+        "hard_ratio": 0.704,
+        "mid_ratio": 0.405,
+        "stem_len_min": 41.449,
+        "stem_len_max": 196.774,
+        "analysis_min_chars": 75.424,
+        "topic_match_threshold": 0.576
+      },
+      "score": 70.92
+    },
+    {
+      "trial": 6,
+      "params": {
+        "hard_ratio": 0.715,
+        "mid_ratio": 0.366,
+        "stem_len_min": 54.468,
+        "stem_len_max": 149.282,
+        "analysis_min_chars": 114.549,
+        "topic_match_threshold": 0.323
+      },
+      "score": 70.92
+    },
+    {
+      "trial": 7,
+      "params": {
+        "hard_ratio": 0.414,
+        "mid_ratio": 0.251,
+        "stem_len_min": 23.192,
+        "stem_len_max": 107.935,
+        "analysis_min_chars": 42.12,
+        "topic_match_threshold": 0.439
+      },
+      "score": 75.92
+    },
+    {
+      "trial": 8,
+      "params": {
+        "hard_ratio": 0.618,
+        "mid_ratio": 0.278,
+        "stem_len_min": 34.807,
+        "stem_len_max": 105.141,
+        "analysis_min_chars": 62.037,
+        "topic_match_threshold": 0.768
+      },
+      "score": 75.92
+    },
+    {
+      "trial": 9,
+      "params": {
+        "hard_ratio": 0.624,
+        "mid_ratio": 0.363,
+        "stem_len_min": 26.846,
+        "stem_len_max": 167.495,
+        "analysis_min_chars": 49.608,
+        "topic_match_threshold": 0.49
+      },
+      "score": 70.92
+    }
+  ]
+}

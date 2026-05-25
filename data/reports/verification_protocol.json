@@ -1,0 +1,109 @@
+{
+  "generated_at": "2026-05-25T21:07:06.524613",
+  "system_stats": {
+    "questions": 700,
+    "courses": 40,
+    "students": 5
+  },
+  "total_duration_min": 63,
+  "checklist": [
+    {
+      "id": "V1",
+      "step": "摸底测验",
+      "desc": "学生完成 G1/G2/G3 摸底测验, 系统推荐课节",
+      "url": "/app#/students",
+      "duration_min": 10
+    },
+    {
+      "id": "V2",
+      "step": "查看推荐课节",
+      "desc": "点击推荐课节, 查看讲义内容",
+      "url": "/app#/teaching",
+      "duration_min": 5
+    },
+    {
+      "id": "V3",
+      "step": "上课 (讲义)",
+      "desc": "阅读一节完整讲义 (7 段), 检查内容可读性",
+      "url": "/app#/teaching → 点课节",
+      "duration_min": 15
+    },
+    {
+      "id": "V4",
+      "step": "课后测验",
+      "desc": "点击'课后测验'按钮, 完成 10 题, 系统批改",
+      "url": "讲义 modal 底部",
+      "duration_min": 10
+    },
+    {
+      "id": "V5",
+      "step": "听力练习",
+      "desc": "进入 C tab, 播放听力, 展开原文, 做题",
+      "url": "/app#/qbank",
+      "duration_min": 10
+    },
+    {
+      "id": "V6",
+      "step": "查看弱点",
+      "desc": "进入 E tab, 查看弱点分析 + 推送课节",
+      "url": "/app#/students → 点学生",
+      "duration_min": 5
+    },
+    {
+      "id": "V7",
+      "step": "知识图谱",
+      "desc": "点击概念链接, 弹出关联图 + 真题",
+      "url": "/app#/graph 或讲义内 concept link",
+      "duration_min": 5
+    },
+    {
+      "id": "V8",
+      "step": "打印讲义",
+      "desc": "点击打印按钮, 检查 PDF 输出",
+      "url": "讲义 modal → 打印按钮",
+      "duration_min": 3
+    }
+  ],
+  "results": {
+    "V1": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V2": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V3": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V4": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V5": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V6": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V7": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    },
+    "V8": {
+      "status": "pending",
+      "feedback": "",
+      "timestamp": ""
+    }
+  }
+}
