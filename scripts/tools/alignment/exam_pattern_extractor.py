@@ -46,24 +46,29 @@ def extract(con: duckdb.DuckDBPyConnection) -> dict:
     return model
 
 
+_Q_PATTERNS = {"What": ["What"], "Which": ["Which"], "Why": ["Why"],
+               "How": ["How"], "Where": ["Where"], "Who": ["Who"]}
+_SKILL_MAP = {
+    "细节理解": ["细节", "detail"], "推理判断": ["推断", "infer", "imply"],
+    "主旨大意": ["主旨", "main idea", "mainly about"],
+    "词义猜测": ["词义", "meaning", "closest"],
+    "标题选择": ["title", "标题"], "目的意图": ["目的", "purpose"],
+}
+
+
+def _match_keywords(text: str, mapping: dict) -> Counter:
+    c = Counter()
+    for label, kws in mapping.items():
+        if any(kw in text for kw in kws):
+            c[label] += 1
+    return c
+
+
 def _extract_reading(rows) -> dict:
-    patterns = Counter()
-    skills = Counter()
+    patterns, skills = Counter(), Counter()
     for _, _, rq, _, anal in rows:
-        text = (rq or "") + (anal or "")
-        for pat, kws in [("What", ["What"]), ("Which", ["Which"]),
-                         ("Why", ["Why"]), ("How", ["How"]),
-                         ("Where", ["Where"]), ("Who", ["Who"])]:
-            if any(k in (rq or "") for k in kws):
-                patterns[pat] += 1
-        for skill, kws in [
-            ("细节理解", ["细节", "detail"]), ("推理判断", ["推断", "infer", "imply"]),
-            ("主旨大意", ["主旨", "main idea", "mainly about"]),
-            ("词义猜测", ["词义", "meaning", "closest"]),
-            ("标题选择", ["title", "标题"]), ("目的意图", ["目的", "purpose"]),
-        ]:
-            if any(k in text for k in kws):
-                skills[skill] += 1
+        patterns += _match_keywords(rq or "", _Q_PATTERNS)
+        skills += _match_keywords((rq or "") + (anal or ""), _SKILL_MAP)
     total = max(len(rows), 1)
     return {
         "n": len(rows),
