@@ -180,45 +180,49 @@ IRREGULAR_FORMS: dict[str, list[str]] = {
 }
 
 
+_REGULAR_SUFFIXES = ["s","es","ed","d","ing","er","est","ly","ness","ful","less","ment","tion","able"]
+
+
 def expand_morphology(base_words: set[str]) -> frozenset[str]:
     """展开词集的所有合法变形 (规则+不规则). 用于超纲检测."""
     expanded = set(base_words)
     for w in base_words:
-        # 不规则
         for form in IRREGULAR_FORMS.get(w, []):
             expanded.add(form)
-        # 规则后缀
-        expanded.add(w + "s")
-        expanded.add(w + "es")
-        expanded.add(w + "ed")
-        expanded.add(w + "d")
-        expanded.add(w + "ing")
-        expanded.add(w + "er")
-        expanded.add(w + "est")
-        expanded.add(w + "ly")
-        expanded.add(w + "ness")
-        expanded.add(w + "ful")
-        expanded.add(w + "less")
-        expanded.add(w + "ment")
-        expanded.add(w + "tion")
-        expanded.add(w + "able")
-        if w.endswith("e"):
-            expanded.add(w[:-1] + "ing")
-            expanded.add(w[:-1] + "ed")
-            expanded.add(w + "r")
-            expanded.add(w + "st")
-        if w.endswith("y") and len(w) > 2 and w[-2] not in "aeiou":
-            expanded.add(w[:-1] + "ies")
-            expanded.add(w[:-1] + "ied")
-            expanded.add(w[:-1] + "ier")
-            expanded.add(w[:-1] + "iest")
-            expanded.add(w[:-1] + "ily")
-        if len(w) > 2 and w[-1] not in "aeiouxy" and w[-2] in "aeiou" and w[-3] not in "aeiou":
-            expanded.add(w + w[-1] + "ed")
-            expanded.add(w + w[-1] + "ing")
-            expanded.add(w + w[-1] + "er")
-            expanded.add(w + w[-1] + "est")
+        for sfx in _REGULAR_SUFFIXES:
+            expanded.add(w + sfx)
+        _expand_special_endings(expanded, w)
     return frozenset(expanded)
+
+
+def _expand_special_endings(expanded: set[str], w: str) -> None:
+    """处理 -e/-y/双写辅音 等特殊变形."""
+    _expand_e_ending(expanded, w)
+    _expand_y_ending(expanded, w)
+    _expand_double_consonant(expanded, w)
+
+
+def _expand_e_ending(expanded: set[str], w: str) -> None:
+    if not w.endswith("e"):
+        return
+    for sfx in ("ing", "ed", "able", "ation", "ive"):
+        expanded.add(w[:-1] + sfx)
+    expanded.add(w + "r")
+    expanded.add(w + "st")
+
+
+def _expand_y_ending(expanded: set[str], w: str) -> None:
+    if not (w.endswith("y") and len(w) > 2 and w[-2] not in "aeiou"):
+        return
+    for sfx in ("ies", "ied", "ier", "iest", "ily"):
+        expanded.add(w[:-1] + sfx)
+
+
+def _expand_double_consonant(expanded: set[str], w: str) -> None:
+    if len(w) <= 2 or w[-1] in "aeiouxy" or w[-2] not in "aeiou" or w[-3] in "aeiou":
+        return
+    for sfx in ("ed", "ing", "er", "est"):
+        expanded.add(w + w[-1] + sfx)
 
 
 # 停用词 (不参与超纲检测)
