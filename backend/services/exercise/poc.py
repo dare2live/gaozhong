@@ -138,7 +138,7 @@ def generate_l2_quiz(con: duckdb.DuckDBPyConnection, version_key: str, volume_ke
 
 def generate_l1_quiz(con: duckdb.DuckDBPyConnection, unit_id: str, n: int = 5,
                      seed: int | None = None) -> dict:
-    """生成 N 道 L1 单选 ('选义' 题型). 返回 {paper_id, unit_id, questions:[...]}"""
+    """生成 N 道 L1 单选 (词义匹配, mid 难度). 两种格式交替: 英→中 / 中→英."""
     rng = random.Random(seed)
     targets = _unit_words(con, unit_id)
     if not targets:
@@ -146,30 +146,38 @@ def generate_l1_quiz(con: duckdb.DuckDBPyConnection, unit_id: str, n: int = 5,
     rng.shuffle(targets)
     picked = targets[:n]
     pool = _distractor_pool(con, level="义教") + _distractor_pool(con, level="必修")
-    # Build questions
     questions = []
-    used_zh = {t["zh_def"] for t in picked}  # 避免选项重复
+    used_zh = {t["zh_def"] for t in picked}
     for i, t in enumerate(picked):
         distractors_src = [p for p in pool if p["zh_def"] not in used_zh and p["zh_def"] != t["zh_def"]]
         rng.shuffle(distractors_src)
         d3 = distractors_src[:3]
         if len(d3) < 3:
-            continue  # 池不够, skip
-        opts = [t["zh_def"]] + [d["zh_def"] for d in d3]
-        rng.shuffle(opts)
-        answer_idx = opts.index(t["zh_def"])
-        questions.append({
-            "seq": i + 1,
-            "stem": f'"{t["word"]}" 的中文意思是?',
-            "options": [{"label": chr(65 + k), "text": opt} for k, opt in enumerate(opts)],
-            "answer": chr(65 + answer_idx),
-            "evidence": {"word_concept": f"word:{t['word']}", "unit_concept": unit_id,
-                          "in_curriculum": t["in_curriculum"]},
-        })
+            continue
+        q = _build_vocab_question(i, t, d3, rng, unit_id)
+        questions.append(q)
     return {
-        "paper_level": "L1",
-        "unit_id": unit_id,
-        "target_count": n,
-        "actual_count": len(questions),
+        "paper_level": "L1", "unit_id": unit_id,
+        "target_count": n, "actual_count": len(questions),
         "questions": questions,
+    }
+
+
+def _build_vocab_question(seq, target, distractors, rng, unit_id) -> dict:
+    """交替出题: 偶数题 英→中 (选中文释义), 奇数题 中→英 (选英文单词)."""
+    if seq % 2 == 0:
+        stem = f"Choose the correct Chinese meaning of \"{target['word']}\"."
+        opts = [target["zh_def"]] + [d["zh_def"] for d in distractors]
+    else:
+        stem = f"选出与「{target['zh_def']}」对应的英语单词."
+        opts = [target["word"]] + [d["word"] for d in distractors]
+    rng.shuffle(opts)
+    answer_idx = opts.index(target["zh_def"] if seq % 2 == 0 else target["word"])
+    return {
+        "seq": seq + 1,
+        "stem": stem,
+        "options": [{"label": chr(65 + k), "text": opt} for k, opt in enumerate(opts)],
+        "answer": chr(65 + answer_idx),
+        "evidence": {"word_concept": f"word:{target['word']}", "unit_concept": unit_id,
+                      "in_curriculum": target["in_curriculum"]},
     }

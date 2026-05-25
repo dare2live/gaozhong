@@ -67,7 +67,7 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 3  # known big: lexicon_filter 283L, data_accuracy_check 362L, exam_alignment_checker 399L
+SIZE_BIG_BASELINE = 4  # known big: lexicon_filter, data_accuracy_check, exam_alignment_checker (×2 paths)
 
 
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:

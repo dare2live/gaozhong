@@ -130,7 +130,7 @@ def load_synthesized_samples(con: duckdb.DuckDBPyConnection,
             qb_id = _insert_question(
                 con, "rule_synth", f"l1/{uid}/{q['seq']}",
                 "选义单选", q["stem"], json.dumps(q["options"], ensure_ascii=False),
-                q["answer"], None, "easy")
+                q["answer"], None, "mid")
             _autotag(con, qb_id, q["stem"], None, "选义单选", cefr)
             # tag with origin unit
             _ensure_tag(con, uid, "unit", uid.split(":", 1)[1])
