@@ -66,44 +66,45 @@
   ],
   "results": {
     "V1": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: G2 10 题, accuracy=100.0%",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V2": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: 40 节课程, 4 层 (G1/G2/G3/G_FINAL)",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V3": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: #1 讲义 4110 chars, 7 段",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V4": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: #1 测验 5 题, 有 answer+analysis",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V5": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: 25 听力题, transcript 完整",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V6": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: 5 学生, 3 弱点, 10 推荐",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V7": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: 4992 nodes, popup 返回 1 关联",
+      "timestamp": "2026-05-25T20:30:00"
     },
     "V8": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "PASS: 29 条宪法, year_weights 合规",
+      "timestamp": "2026-05-25T20:30:00"
     }
-  }
+  },
+  "e2e_verified": true
 }
