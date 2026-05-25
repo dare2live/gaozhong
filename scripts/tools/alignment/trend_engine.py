@@ -71,7 +71,7 @@ def analyze(con: duckdb.DuckDBPyConnection) -> dict:
         "FROM exam_questions WHERE year >= 2017 ORDER BY year"
     ).fetchall()
     years = sorted({r[0] for r in rows})
-    heatmap = _build_heatmap(rows, years)
+    heatmap, year_totals = _build_heatmap(rows, years)
     trends = _compute_trends(heatmap, years)
     cooccurrence = _compute_cooccurrence(rows)
     recommendations = _generate_recommendations(trends, cooccurrence)
@@ -85,15 +85,23 @@ def analyze(con: duckdb.DuckDBPyConnection) -> dict:
     }
 
 
-def _build_heatmap(rows, years) -> dict[str, dict[int, int]]:
-    """年份×考点 频次矩阵."""
-    matrix: dict[str, dict[int, int]] = {p: {y: 0 for y in years} for p in EXAM_POINTS}
-    for year, qtype, rq, ans, anal in rows:
-        text = (rq or "") + " " + (anal or "")
-        for point, keywords in POINT_KEYWORDS.items():
-            if any(kw in text for kw in keywords):
-                matrix[point][year] += 1
-    return matrix
+def _count_raw(rows, years) -> tuple[dict, dict]:
+    """统计原始频次 + 年题量."""
+    raw = {p: {y: 0 for y in years} for p in EXAM_POINTS}
+    totals = {y: 0 for y in years}
+    for year, _, rq, _, anal in rows:
+        totals[year] = totals.get(year, 0) + 1
+        detected = _detect_points((rq or "") + " " + (anal or ""))
+        for point in detected:
+            raw[point][year] += 1
+    return raw, totals
+
+
+def _build_heatmap(rows, years) -> tuple[dict, dict]:
+    """年份×考点 比例矩阵 (归一化: count / year_total)."""
+    raw, totals = _count_raw(rows, years)
+    normed = {p: {y: raw[p][y] / max(totals.get(y, 1), 1) for y in years} for p in EXAM_POINTS}
+    return normed, totals
 
 
 def _wls_slope(x_vals: list, y_vals: list, weights: list) -> float:
@@ -121,7 +129,7 @@ def _compute_trends(heatmap, years) -> list[dict]:
             "point": point, "slope": round(slope, 3),
             "weighted_total": round(w_total, 1), "weighted_recent_3y": round(w_recent, 1),
             "raw_total": sum(vals),
-            "direction": "rising" if slope > 0.1 else ("falling" if slope < -0.1 else "stable"),
+            "direction": "rising" if slope > 0.005 else ("falling" if slope < -0.005 else "stable"),
         })
     results.sort(key=lambda x: x["slope"], reverse=True)
     return results

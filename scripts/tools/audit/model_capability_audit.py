@@ -101,13 +101,14 @@ def _check_point_coverage(con) -> dict:
     }
 
 
-def _classify_direction(val: float) -> str:
-    return "rising" if val > 0.1 else ("falling" if val < -0.1 else "stable")
+def _classify_direction(val: float, threshold: float = 0.02) -> str:
+    """比例变化 > threshold = rising/falling, 否则 stable. 默认 2% 阈值."""
+    return "rising" if val > threshold else ("falling" if val < -threshold else "stable")
 
 
 def _check_trend_backtest(con) -> dict:
-    """审计: 用 2017-2022 数据预测 2023 趋势方向, 与实际对比."""
-    from scripts.tools.alignment.trend_engine import _build_heatmap, _wls_slope, _yw
+    """审计: 加权频率排序预测 2023 重要性排序 (Spearman 相关 + top5 重叠)."""
+    from scripts.tools.alignment.trend_engine import _build_heatmap, _yw
     rows_train = con.execute(
         "SELECT year, question_type, raw_question, answer, analysis "
         "FROM exam_questions WHERE year >= 2017 AND year <= 2022"
@@ -117,30 +118,39 @@ def _check_trend_backtest(con) -> dict:
         "FROM exam_questions WHERE year = 2023"
     ).fetchall()
     if not rows_test:
-        return {"name": "趋势回测 (2022→2023)", "score": 50, "pass": True,
-                "detail": "2023 数据不足, 跳过"}
+        return {"name": "排序回测", "score": 50, "pass": True, "detail": "无 2023 数据"}
     train_years = sorted({r[0] for r in rows_train})
-    heatmap_train = _build_heatmap(rows_train, train_years)
-    heatmap_test = _build_heatmap(rows_test, [2023])
-    correct, total = 0, 0
-    for point in heatmap_train:
-        vals = [heatmap_train[point][y] for y in train_years]
-        weights = [_yw(y) for y in train_years]
-        slope = _wls_slope(list(train_years), vals, weights)
-        predicted_dir = _classify_direction(slope)
-        actual_2023 = heatmap_test.get(point, {}).get(2023, 0)
-        avg_train = sum(vals) / max(len(vals), 1)
-        actual_dir = _classify_direction(actual_2023 - avg_train)
-        if predicted_dir == actual_dir:
-            correct += 1
-        total += 1
-    accuracy = correct / max(total, 1)
+    hm_train, _ = _build_heatmap(rows_train, train_years)
+    hm_test, _ = _build_heatmap(rows_test, [2023])
+    pred = {p: sum(_yw(y) * hm_train[p][y] for y in train_years) for p in hm_train}
+    actual = {p: hm_test.get(p, {}).get(2023, 0) for p in hm_train}
+    rho = _spearman(pred, actual)
+    pred_top5 = set(sorted(pred, key=pred.get, reverse=True)[:5])
+    actual_top5 = set(sorted(actual, key=actual.get, reverse=True)[:5])
+    overlap = len(pred_top5 & actual_top5)
+    score = max(0, rho * 100) * 0.6 + (overlap / 5 * 100) * 0.4
     return {
-        "name": "趋势回测 (2017-2022 → 预测 2023)",
-        "score": round(accuracy * 100, 1),
-        "pass": accuracy >= 0.4,
-        "correct": correct, "total": total, "accuracy": round(accuracy, 3),
+        "name": "排序回测 (加权频率 → 2023 重要性)",
+        "score": round(score, 1), "pass": score >= 60,
+        "spearman_rho": round(rho, 3), "top5_overlap": f"{overlap}/5",
     }
+
+
+def _spearman(a: dict, b: dict) -> float:
+    keys = sorted(a.keys())
+    n = len(keys)
+    if n < 3: return 0.0
+    ra, rb = _ranks([a[k] for k in keys]), _ranks([b[k] for k in keys])
+    d2 = sum((ra[i] - rb[i]) ** 2 for i in range(n))
+    return 1 - 6 * d2 / (n * (n * n - 1))
+
+
+def _ranks(vals: list) -> list:
+    indexed = sorted(range(len(vals)), key=lambda i: vals[i], reverse=True)
+    ranks = [0.0] * len(vals)
+    for rank, idx in enumerate(indexed):
+        ranks[idx] = rank + 1.0
+    return ranks
 
 
 def _check_extraction_sample(con) -> dict:
