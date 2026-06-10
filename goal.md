@@ -1440,51 +1440,90 @@ alerts:
 
 ## 2026-06-10 续航开发计划（非小步、非补丁）
 
-### 目标（本文件为执行单一真相源）
+### 1) 本轮目标（单一真相源：`goal.md`）
 
-把 M3 从“代补闭环”一次性推进到“可复验交付闭环”，不新增功能，先闭环。M3 完成后再进入 M4。
+本轮只做一次性里程碑推进，不接受“补丁式小步”。先把代补闭环补齐到可复验状态，再按序进入课程主链路和运营试运行阶段。当前真实约束：
 
-### 里程碑计划（固定顺序）
+- **数据真相**：`data/reports/m3_closure_20260610T074134Z.json` 及 `verification_protocol.json` 已具备脚本 PASS 迹象，但 V1~V8 仍为 `deferred`。
+- **硬约束**：不在未完成 M3 的前提下进入 M4/M5。
+- **对齐边界**：`goal.md`、`docs/data_accuracy_audit.md`、`data/reports/*` 三者内容必须一一一致。
 
-| 里程碑 | 目标产物（一次交付） | 开始条件 | 结束条件 | 窗口 |
-|---|---|---|---|---|
-| **M3.1 审计闭环收口** | `data/reports/m3_closure_<run_id>.json/.md`、`data/reports/verification_protocol.json`、`data/reports/m3_closure_<run_id>_evidence.jsonl`、`goal.md` 与 `docs/data_accuracy_audit.md` 状态统一快照 | 现有 M3 已运行脚本通过、V1~V8 可回填 | V1~V8 无 `deferred` / `pending`，每条具备 owner+due+plan+闭环路径 | 立即启动，最长 1-2 天 |
-| **M3.2 真实使用验收入档** | `docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`、映射到 V1~V8 的反馈对照表 | M3.1 通过并输出 run_id | 真实用户/老师/学生反馈清单完整，8 项均有“已关闭/不闭环原因+时间”状态 | 建议 2026-06-10 ~ 2026-06-16 |
-| **M3.3 M3 关闭并入 M4** | 更新 `goal.md` M3 状态为 `✅ 已完成`，新增 `M4` 为 `🔶 进行中`，记录新的 `run_id` | M3.1/M3.2 全部完成 | `data_accuracy_check.py`、`stop_gate.sh`、`verification_protocol` 三线一致且可复算 | 2026-06-16 前 |
-| **M4 课程主链路交付闭环** | `data/reports/m4_closure_<run_id>.json/.md`、`data/reports/m4_audit_matrix.jsonl`、`goal.md` 与 `docs/data_accuracy_audit.md` 同步 | M3 已完成 | 课程主流程（课程列表/讲义/作业/弱点推送）验收通过，R1~R6 和前端关键入口形成一次性闭环 | 2026-06-17 ~ 2026-07-07 |
-| **M5 运营试运行闭环** | 交付/巡检手册、周检脚本、演练报告、M5 冻结 run_id | M4 已完成 | 一次完整试运行演练链路闭环，且两周巡检无新增 FAIL/WARN | 2026-07-08 ~ 2026-07-14 |
+### 2) 里程碑顺序（不可跳过）
 
-### 本轮执行口径（禁止小步）
+#### M3.1 真值审计闭环收口（当前阶段）
 
-1. 本会话仅允许按「M3.1 -> M3.2 -> M3.3」推进；未结束 M3 前严禁进入 M4/M5。  
-2. 一次里程碑执行链包含三件事：数据产物、验收报告、文档同步。  
-3. 任何“TODO 未闭环”的项直接阻塞进度；不允许把代补记为完成。  
-4. 每个里程碑只允许提交一批文档/报告更新，不允许反复改动同一小项。
+- **目标产物**：一次性将 `verification_protocol` 的所有项从 `deferred/pending` 切到 `done` 或明确“非闭环+明确替代方案+时限”。
+- **本次一次性交付**
+  - `data/reports/m3_closure_20260610T074134Z.json`
+  - `data/reports/m3_closure_20260610T074134Z.md`
+  - `data/reports/m3_closure_20260610T074134Z_evidence.jsonl`
+  - `data/reports/verification_protocol.json`
+  - `docs/data_accuracy_audit.md` 对应 M3 行更新为可复核状态
+- **通过标准**
+  - `python3 scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh` 均 PASS
+  - `python3 scripts/tools/monitor/verification_protocol.py --generate` 与 `--pending` 输出无长期待办
+  - `V1~V8` 均含 `owner/due/plan` 且有真实复核动作（人工复核/替代协议）
+- **阻塞条件**：任一项长期 `deferred` 且无替代闭环说明
 
-### M3 当前执行清单（可直接执行）
+#### M3.2 人工闭环录入（同一里程碑一次性结束）
 
-#### A. 先补齐代补为闭环（已完成部分）
-- 已落盘：建立统一追踪快照 `data/reports/m3_closure_20260610T074134Z_evidence.jsonl`（V1~V8 owner/due/plan + 代验收证据链）。
-- 剩余：等待真实验收人补录后，将 `verification_protocol.json` 与 `m3_closure` 报告中的对应项从 `deferred` 切为 `done` 或明确不可闭环。
+- **目标产物**：`docs/user_test_round1.md` 与 `docs/teacher_feedback_round1.md` 变为正式验收记录，不再留 TODO。
+- **本次一次性交付**
+  - 8 项验收（V1~V8）映射到用户与教师反馈中的具体条目与结论
+  - 每条补齐 `evidence_file + 复验动作 + 关闭时间 + 责任人`
+- **通过标准**
+  - 两份文档内容与 `verification_protocol` 的条目逐项一一映射
+  - 任何“不可闭环”条目给出执行时间与替代验证（如官方演练协议）
+- **阻塞条件**：反馈缺失条目或映射缺失任一项
 
-#### B. 再补齐反馈闭环
-- 目标：`docs/user_test_round1.md` + `docs/teacher_feedback_round1.md` 写入可复测反馈记录，并补齐到 8 项映射。  
-- 输出：每项反馈给出“证据文件 + 处理动作 + 复验计划”。
+#### M3.3 M3 交付收官（可复算归档）
 
-#### C. 最后做状态收官
-- 目标：M3 全绿后将 `goal.md` 中 M3 标记为 `已完成`，并开启 M4。  
-- 输出：新增 `M3 run_id`、`M4 版本窗口`、`下阶段依赖项`。
+- **目标产物**：把 `M3` 状态从“进行中”切到“✅ 已完成”，并冻结 `run_id`。
+- **本次一次性交付**
+  - 在 `goal.md` 标明 `M3 完成 run_id`
+  - 在 `goal.md` 添加 `M4` 启动 run_id 与窗口
+  - 生成一份 `M3 复盘闭环记录`（路径+命令+输入快照+校验摘要）
+- **通过标准**
+  - 三线文档一致性通过（`goal.md` / `data/reports` / `docs/data_accuracy_audit.md`）
+  - `data_accuracy_check` + `stop_gate` + `verification_protocol` 在同一 run_id 下可复算
 
-## M0/M1 历史复盘锚点（保留）
+#### M4 课程主链路交付闭环（M3 完成后启动）
 
-### Milestone A — 真值基座闭环（已完成）
+- **目标产物**：课程链路“可教可查可复用”一次性闭环，包含课程主流程、课程与题目映射、弱点推送。
+- **本次一次性交付**
+  - `data/reports/m4_closure_<run_id>.json` + `.md`
+  - `data/reports/m4_audit_matrix.jsonl`
+  - 课程主链路前端/接口复核记录（一次性快照）
+- **通过标准**
+  - `courses=40`、`course_materials` 稳定可复算
+  - `R1~R6` 与前端关键路径同批通过
+  - `M4` 文档冻结并与 D0 目标无冲突
+- **阻塞条件**：课程主链路出现未闭环的演示失败点
 
-- 目标：辽宁真题与题库统一真值链路，按缺口留痕策略不做推断填补。  
-- 关键产物：`truth_baseline_2021_2025.json`、`cross_verify_2021_2025.json`、`cross_verify_gaps_2021_2025.json`  
-- 状态：`✅ 已完成`（`run_id=b3fd3dc87989be20`）
+#### M5 运营试运行闭环（M4 完成后启动）
 
-### Milestone B — 图谱与趋势闭环（已完成）
+- **目标产物**：形成可持续运行体系（启动/巡检/周报/演练）并通过一次完整演练复现。
+- **本次一次性交付**
+  - `docs/ops_runbook.md`（运行手册）
+  - `scripts/weekly_healthcheck.sh`（巡检脚本）
+  - 一次完整教师/学生演练报告
+- **通过标准**
+  - 两周内巡检无新增 `FAIL`
+  - 演练闭环可复查、可复算
 
-- 目标：同一真值版本下重建趋势/图谱复算链路。  
-- 关键产物：`trend_input_snapshot_<run_id>.json`、`exam_trend_report_<run_id>.json`、`theme_coverage_report_<run_id>.json`、`graph_connectivity_report_<run_id>.json`  
-- 状态：`✅ 已完成`（`run_id=d0b83b4ef781d247`）
+### 3) 里程碑执行纪律（本文件生效）
+
+1. 里程碑只走“一次收口脚本链”：输入冻结 -> 全量执行 -> 全量验收 -> 文档冻结 -> 状态更新。
+2. 每个里程碑只允许一次主脚本执行周期；不得在同一里程碑内反复补丁式小改。
+3. 所有状态只允许 `未开始 -> 进行中 -> 已完成` 单向推进。
+4. 任何 `FAIL/WARN` 不经过明确处置不允许跨里程碑。
+5. 证据必须含 `run_id + 复算命令 + 输入快照 + 产物路径 + 责任人 + 时间窗`。
+
+### 4) 当前会话就绪状态（按本文件更新）
+
+- **M3.1 状态**：🔶 待收口（已具备脚本环境与 run_id，但反馈闭环未全量落档）
+- **M3.2 状态**：🔶 待人工验收入档（`docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`）
+- **M3.3 状态**：🔶 阻塞（由 M3.1/M3.2 联合门槛决定）
+- **M4 状态**：⏸️ 未开始（依赖 M3.3）
+- **M5 状态**：⏸️ 未开始（依赖 M4.3 完成）
+
