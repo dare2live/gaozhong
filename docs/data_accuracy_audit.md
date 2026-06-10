@@ -128,3 +128,19 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 | 质量指标 | `question_bank=700`、`question_tags=12612`、`courses=40`、`students=5`、`FAIL=0`、`WARN=0` |
 | 验收结论 | `M3` 关键门禁通过：`data_accuracy_check`、`stop_gate`、`verification_protocol`；`verification_protocol.json` 已同步为代补闭环，V1~V8 标记为 `deferred`（待教师/学生真实验收补齐） |
 | 风险与边界 | 真人反馈与 1:1 教师复核仍待补录，见 `docs/user_test_round1.md` / `docs/teacher_feedback_round1.md` |
+
+### M3.2 代补复核追踪（待真人反馈补齐）
+
+| 检验项 | 计划状态 |
+|---|---|
+| V1 摸底测验 | deferred（待学生真实复核，截止 2026-06-17 18:00） |
+| V2 查看推荐课节 | deferred（待教师真实复核，截止 2026-06-17 18:00） |
+| V3 上课（讲义） | deferred（待学生真实复核，截止 2026-06-17 18:00） |
+| V4 课后测验 | deferred（待学生真实复核，截止 2026-06-17 18:00） |
+| V5 听力练习 | deferred（待学生真实复核，截止 2026-06-17 18:00） |
+| V6 查看弱点 | deferred（待学生真实复核，截止 2026-06-17 18:00） |
+| V7 知识图谱 | deferred（待教师/学生真实复核，截止 2026-06-17 18:00） |
+| V8 打印讲义 | deferred（待教师或学生真实复核，截止 2026-06-17 18:00） |
+| 统一来源 | `data/reports/verification_protocol.json`（含 owner/plan/due） |
+
+一旦任一 deferred 补录完成，按本节同步更新状态并推进 `goal.md` 的里程碑 M3 条目。
