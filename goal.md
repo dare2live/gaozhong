@@ -1561,7 +1561,62 @@ alerts:
 ### 4) 当前会话就绪状态（按本文件更新）
 
 - **M3.1 状态**：✅ 已完成（`run_id=20260610T074134Z`，PASS 链路闭合）
-- **M3.2 状态**：🔶 待人工验收入档（`docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`）
+- **M3.2 状态**：🔶 待人工验收入档（`docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`；代补快照：`data/reports/m3_feedback_20260610T074134Z.json`）
 - **M3.3 状态**：🔶 阻塞（由 M3.2 与反馈窗口决定）
 - **M4 状态**：⏸️ 未开始（依赖 M3.3）
 - **M5 状态**：⏸️ 未开始（依赖 M4.3 完成）
+
+### 2026-06-10 之后开发总计划（非小步版，按里程碑推进）
+
+> 原则：同一里程碑只允许一次主链路执行与一次验收。先证据再状态，任何步骤都必须给 run_id + 命令 + 结果路径，禁止用“TODO 已知晓”替代失败闭环。
+
+#### M3：审计与交付闭环（剩余部分）
+
+- **阶段目标**：把 `M3.2 + M3.3` 从“代补”变成“可复验交付”，输出 `M3` 总闭环记录并切换到 `M4`。
+- **窗口**：`2026-06-10` ~ `2026-06-18`
+- **里程碑产物（本会话需一次性交付）**：
+  - `data/reports/m3_feedback_20260610T074134Z.json`（V1~V8 人工/替代闭环映射）
+  - `docs/user_test_round1.md`（每项含 evidence/evidence_file/done/due/owner）
+  - `docs/teacher_feedback_round1.md`（同上字段齐备）
+  - `goal.md` 中 M3 状态改为 `✅ 已完成`，写明 `run_id = 20260610T074134Z` 与本反馈闭包 `data/reports/m3_feedback_20260610T074134Z.json`
+  - `docs/data_accuracy_audit.md` 增补 `M3.2-M3.3` 对齐说明
+- **通过门槛**：
+  - `M3.1` 的主脚本链（`data_accuracy_check` / `stop_gate` / `verification_protocol`）不回退
+  - `verification_protocol.json` 中 V1~V8 不得再出现 `deferred` 无替代闭环；
+  - 所有条目一一映射到 `user_test_round1` / `teacher_feedback_round1`；
+  - 闭环闭链有执行命令和结果路径。
+
+#### M4：课程主链路交付闭环（教学可复用）
+
+- **阶段目标**：把现有课程内容从“可查询”变成“可教学可复用流程”，保留 `M4` 边界，不扩新功能。
+- **窗口**：`2026-06-19` ~ `2026-07-14`
+- **里程碑产物**：
+  - `data/reports/m4_closure_<run_id>.json` / `.md`
+  - `data/reports/m4_audit_matrix_<run_id>.jsonl`
+  - `/app` 核验快照（课程、题库、弱点推送、图谱跳转、作业闭环）
+- **本里程碑范围（大闭包）**：
+  - `courses=40` 与 `course_materials` 的 `course_id/lesson` 映射完整；
+  - R1~R6 审核通过（无阻断 FAIL）；
+  - `data_accuracy_check` + 课堂关键路径 4 类 smoke 一次性通过；
+  - 产出 `M4` 启动 run_id 和验收摘要。
+
+#### M5：运营试运行闭环（持续运行）
+
+- **阶段目标**：让项目具备 2 周连续复跑能力，形成固定周检和演练闭环。
+- **窗口**：`2026-07-15` ~ `2026-07-28`
+- **里程碑产物**：
+  - `docs/ops_runbook.md`（启动、恢复、巡检、回滚）
+  - `scripts/weekly_healthcheck.sh` + `scripts/m4_m5_smoke.sh`
+  - `data/reports/m5_ready_<run_id>.json`
+  - `docs/week1_review_round1.md` + `docs/week2_review_round1.md`
+- **通过门槛**：
+  - 连续 2 周巡检无新增 `FAIL`
+  - 人员演练（老师/学生）全链路复盘有录屏/日志可追溯
+  - `goal.md` 与 `docs/data_accuracy_audit.md` 的 M4/M5 状态一致
+
+#### 贯穿规则（本总计划统一制约）
+
+1. **主链路先行**：任何功能补丁必须在当前里程碑产出验收闭环后才允许进入下一级里程碑。
+2. **单向流转**：里程碑状态只允许从未开始 -> 进行中 -> 已完成，不允许回退和跳步。
+3. **复验可追溯**：每个闭环交付都必须记录 `run_id、命令、输入快照、产物路径、责任人、预计风险`。
+4. **不以文档掩码代替结果**：本地文档状态必须与 `data/reports/*` 与 `verification_protocol.json` 一致；出现不一致直接判阻塞。

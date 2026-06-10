@@ -4,6 +4,7 @@
 - 当前状态：`代补口（待真人补录）`
 - M3 当前阶段结论：`M3.1 审计闭环已完成；M3.2 人工反馈待排期`
 - 追踪同步：`data/reports/m3_closure_20260610T074134Z_evidence.jsonl`
+- 本轮代补闭环报告：`data/reports/m3_feedback_20260610T074134Z.json`
 - 执行目标：由 1 位英语教师完成至少一轮课程演示（10-20 分钟）并形成书面反馈，确认课程链路是否可直接教学。
 
 ## 复核维度（映射到 M3/M4 的可验收项）
@@ -67,14 +68,14 @@
 
 | V# | 对应验收项 | 当前状态 | 责任人 | 代补证据 | 下一步闭环动作 | Evidence File |
 |---|---|---|---|---|---|---|
-| V1 | 学生摸底测验与推荐匹配 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js`（学生入口）/ `docs/app_smoke_round1.md` | 安排 1 名学生完成一次流程并记录 10 题推荐复现 | data/reports/verification_protocol.json |
-| V2 | 查看推荐课节 | deferred（待真人） | 项目用户侧（教师） | `frontend/static/app_router.js`（`#/teaching`） | 安排教师演示 1 次课节选取与讲义打开 | data/reports/verification_protocol.json |
-| V3 | 上课（讲义可读性） | deferred（待真人） | 项目用户侧 | `course/handout.py` + `frontend/static/app_router.js` | 真人跟读 1 节，录入“中断点/不理解点” | data/reports/verification_protocol.json |
-| V4 | 课后测验提交批改 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js`（quiz 流程） / `frontend/app.js` | 安排 10 题提交路径并导出提交/纠错截图 | data/reports/verification_protocol.json |
-| V5 | 听力闭环 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js`（qbank/听力） | 1 条听力从播放、逐段作答到结果回填 | data/reports/verification_protocol.json |
-| V6 | 弱点 drill | deferred（待真人） | 项目用户侧 | `students` tab + `scripts/tools/audit/homework_alignment` | 触发一次弱点 drill，抽查推荐课节与标签一致性 | data/reports/verification_protocol.json |
-| V7 | 知识图谱弹窗 | deferred（待真人） | 项目用户侧 | `frontend/static/graph_popup.js` | 点击 ≥2 个 conceptLink，核验弹窗返回与真题联动 | data/reports/verification_protocol.json |
-| V8 | 打印讲义 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js:117-123` | 真人点击打印并确认 PDF/打印行为正常 | data/reports/verification_protocol.json |
+| V1 | 学生摸底测验与推荐匹配 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js`（学生入口）/ `docs/app_smoke_round1.md` | 安排 1 名学生完成一次流程并记录 10 题推荐复现 | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V2 | 查看推荐课节 | deferred（待真人） | 项目用户侧（教师） | `frontend/static/app_router.js`（`#/teaching`） | 安排教师演示 1 次课节选取与讲义打开 | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V3 | 上课（讲义可读性） | deferred（待真人） | 项目用户侧 | `course/handout.py` + `frontend/static/app_router.js` | 真人跟读 1 节，录入“中断点/不理解点” | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V4 | 课后测验提交批改 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js`（quiz 流程） / `frontend/app.js` | 安排 10 题提交路径并导出提交/纠错截图 | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V5 | 听力闭环 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js`（qbank/听力） | 1 条听力从播放、逐段作答到结果回填 | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V6 | 弱点 drill | deferred（待真人） | 项目用户侧 | `students` tab + `scripts/tools/audit/homework_alignment` | 触发一次弱点 drill，抽查推荐课节与标签一致性 | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V7 | 知识图谱弹窗 | deferred（待真人） | 项目用户侧 | `frontend/static/graph_popup.js` | 点击 ≥2 个 conceptLink，核验弹窗返回与真题联动 | `data/reports/m3_feedback_20260610T074134Z.json` |
+| V8 | 打印讲义 | deferred（待真人） | 项目用户侧 | `frontend/static/app_router.js:117-123` | 真人点击打印并确认 PDF/打印行为正常 | `data/reports/m3_feedback_20260610T074134Z.json` |
 
 ### 本轮执行约束
 
