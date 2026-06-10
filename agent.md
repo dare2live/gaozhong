@@ -61,6 +61,7 @@
 2. 优先处理审计与一致性问题，再优化体验或重构。
 3. 每次改动都写明预期影响面、验证方式与回滚点。
 4. 小片提交，默认可回退，避免一次性大改。
+5. `.codegraph/` 为本地索引缓存，默认保持离线/本地态，不纳入提交；提交前确保该目录未被 `git add` 或提交。
 
 ## Known Hotspots
 - `backend/services/graph.py`, `backend/services/links.py`, `backend/services/canonical.py`
