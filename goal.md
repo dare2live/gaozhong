@@ -1213,7 +1213,7 @@ alerts:
 
 ### 当前会话起点（2026-06-10）
 
-- **M0 真值基座闭环**：`🔶 进行中（已完成 S0+S1，S2已冻结）`
+- **M0 真值基座闭环**：`🔶 进行中（S0-S3 已完成，等待验收阈值确认）`
 - **M1 图谱与趋势闭环**：`⏸️ 等待`
 - **M2 内容与题库质量闭环**：`⏸️ 等待`
 - **M3 审计与交付闭环**：`⏸️ 等待`
@@ -1251,6 +1251,8 @@ alerts:
   - 本轮已产出 `data/reports/import_impact_report_2021_2025.json`，候选 48 条缺口，当前决策：`import_recommended = false`（仅保留缺口，不入库）。
 - S3：
   - 与 `data_accuracy_check.py` 对齐通过截图与日志，确认本里程碑未引入新 FAIL。
+  - 已执行：`python3 scripts/data_accuracy_check.py`（✅ 全部 PASS）；
+  - 已执行：`bash scripts/stop_gate.sh`（✅ 无阻塞，且修复整数解析报错）。
 
 **验收标准（通过才可升 M1）**
 - 产出文件齐全：`data/reports/truth_baseline_2021_2025.json`、`data/reports/cross_verify_2021_2025.json`、`data/reports/cross_verify_gaps_2021_2025.json`。

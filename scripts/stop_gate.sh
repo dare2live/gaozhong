@@ -8,7 +8,17 @@ PROJ="/Users/dp/Documents/M/gaozhong"
 cd "$PROJ" 2>/dev/null || exit 0
 
 # 只在 git working tree 有 .py / *.sql / *.html / *.js 改动时跑
+to_int() {
+  local v=$1
+  if [[ "$v" =~ ^[0-9]+$ ]]; then
+    printf '%s' "$v"
+  else
+    printf '%s' "0"
+  fi
+}
+
 changed=$(git status --porcelain 2>/dev/null | grep -cE '\.(py|sql|html|js|css)$' || echo 0)
+changed=$(to_int "$changed")
 if [ "$changed" -eq 0 ]; then
   exit 0
 fi
@@ -29,6 +39,8 @@ except Exception:
 " 2>/dev/null || echo '0 0')
   n_fail=$(echo "$sev_counts" | awk '{print $1}')
   n_warn=$(echo "$sev_counts" | awk '{print $2}')
+  n_fail=$(to_int "$n_fail")
+  n_warn=$(to_int "$n_warn")
   if [ "$n_fail" -gt 0 ]; then
     fails="$fails
   ❌ D0 违反: audit 有 $n_fail FAIL — 100% 准约束失败"
@@ -51,6 +63,7 @@ fi
 hot_now=$(python3 scripts/lib/complexity_check.py \
   $(find backend scripts -name '*.py' -not -path '*/__pycache__/*' 2>/dev/null | tr '\n' ' ') 2>&1 \
   | grep -c 'WARN' || echo 0)
+hot_now=$(to_int "$hot_now")
 HOT_BASELINE=11  # 9→11 (审计后: init_db.main + fix_answer_bias + 老函数)
 if [ "$hot_now" -gt "$HOT_BASELINE" ]; then
   fails="$fails
@@ -69,6 +82,7 @@ for p in pathlib.Path('frontend').glob('*.html'):
         if block.count(chr(10)) + 1 > 30: n += 1
 print(n)
 " 2>/dev/null || echo 0)
+n_big_inline=$(to_int "$n_big_inline")
 INLINE_BASELINE=4  # 现有重复 baseline; 不允许增
 if [ "$n_big_inline" -gt "$INLINE_BASELINE" ]; then
   fails="$fails
