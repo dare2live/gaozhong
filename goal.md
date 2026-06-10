@@ -1206,65 +1206,102 @@ alerts:
 - 共享层: 高考评价体系 / 课标 / 教材版本
 - gaokao 走真题侧研判, 本项目走教材+教学侧, graph 交汇 (question ↔ word/grammar/theme)
 
-## 本次执行计划（非小步版，按里程碑一次性验收）
+## 开发计划（非小步版，里程碑一次性收口）
 
-### 当前会话起点状态（2026-06-10）
+### 目标
+用一个完整交付节奏把 M0~M3 推进到可交付状态，不再按“文件级小修复”推进；每个里程碑只允许一次性触发验收与状态切换，严格按 evidence-first 证据闭环落地。
 
-- **M0 真值基座闭环**：`🔶 进行中`
+### 当前会话起点（2026-06-10）
+
+- **M0 真值基座闭环**：`🔶 进行中（已完成 S0+S1）`
 - **M1 图谱与趋势闭环**：`⏸️ 等待`
 - **M2 内容与题库质量闭环**：`⏸️ 等待`
 - **M3 审计与交付闭环**：`⏸️ 等待`
 
-### Milestone A — 2021-2025 辽宁真题真值基座（1 周）
+### 统一执行纪律（4 条）
 
-**交付目标**：把 `exam_questions` + `question_bank` 的辽宁真题形成同一可信基底，禁止“估算补位”。
+1. `stop_gate.sh` 与 `scripts/data_accuracy_check.py` 作为每个里程碑启动 gate，先跑后写。  
+2. 每个里程碑只允许状态流转一次：`未开始 → 进行中 → 完成`。  
+3. 里程碑间 **不允许核心写入** 并行开启；必须满足上游完成标准后才允许进入下一里程碑。  
+4. 每一项产出需落盘（脚本、报告、快照、审计记录）且可复算，文件路径写入本节对应“交付物清单”。
 
-- 产出 `2021-2025 辽宁真题映射闭环报告（可追溯每题源）`，含：来源文件、`source`、`source_file`、`year`、`question_id`、缺口清单、污染样本清单。
-- 落盘 `data/reports/cross_verify_*.json` 的可复算快照；`scripts/tools/alignment` 产物与抽取结果一致并可重放。
-- 2021/2022 核对缺口要明确标记为“缺口”而非伪造补齐，保证证据完整性优先于数量。
+### Milestone A — 真值基座闭环（2026-06-10 ~ 2026-06-16）
 
-**完成判据**：  
-`exam_questions` + `question_bank` 的辽宁真题样本可被审计工具交叉复核，且每一条可反查源文件。  
-`stop_gate.sh` 与 `data_accuracy_check.py` 不因该链路新增 FAIL。
+**核心目标**  
+把 `exam_questions` 与 `question_bank` 的辽宁真题建立可追溯、可复算、不可填充的统一真值链路。
 
-### Milestone B — 图谱与趋势模型重建（1~2 周）
+**交付清单（一次性完成）**
+- 建立 `2021-2025 辽宁真题交叉映射报告`（`year`/`question_id`/`source`/`source_file`/缺口/污染样本）。
+- 重新生成并固定版本 `data/reports/truth_baseline_2021_2025.json`，并与 `scripts/tools/alignment` 的交叉复核结果一致。
+- 完成 `2021` 与 `2022` 缺口标注（仅标注，不允许“填充估算”）；输出 `gap` 与 `needs_verification` 列表。
 
-**交付目标**：用 Milestone A 的真值快照重建可复算的图谱/趋势链路。
+**阶段动作（顺序执行）**
+- S0（前置）：
+  - 全量回归 `scripts/tools/audit/truth_baseline_audit.py`，修复所有导致映射失败的结构性异常。
+  - 固定真值候选源清单（PDF/JSONL/CSV）并写入 `docs`。
+- S1：
+  - 一次性产出 `cross_verify_2021_2025.json` 及 `cross_verify_gaps_2021_2025.json`（都带 `run_id` 与 `manifest hash`）。
+  - 本次 run_id：`b3fd3dc87989be20`（输出路径：
+    `data/reports/truth_baseline_2021_2025.json`,
+    `data/reports/cross_verify_2021_2025.json`,
+    `data/reports/cross_verify_gaps_2021_2025.json`）。
+- S2：
+  - 将证据补位策略冻结为 “缺口不填充、缺口留痕”。
+  - 仅在人工确认后执行 `--import-missing`，并产生 `import_impact_report`.
+- S3：
+  - 与 `data_accuracy_check.py` 对齐通过截图与日志，确认本里程碑未引入新 FAIL。
 
-- 统一 `trend_engine`、`exam_pattern_extractor` 输入源到同一真值快照并生成版本化报告。
-- 重建词法、语法、主题关系边与 `course_materials` 映射（含 `ref_id` 可追溯）。
-- 输出三件套：`trend 报告`、`主题覆盖率报告`、`图谱连通率报告`，每份报告必须指向输入快照与版本号。
+**验收标准（通过才可升 M1）**
+- 产出文件齐全：`data/reports/truth_baseline_2021_2025.json`、`data/reports/cross_verify_2021_2025.json`、`data/reports/cross_verify_gaps_2021_2025.json`。
+- `cross_verify_*.json` 每条记录可回溯到真实文件路径与原始文本片段。
+- 停止任何“推断式”补齐（出现 `needs_verification=true` 或 `status=gap` 时不得落库）。
 
-**完成判据**：  
-M1 的三份报告在同一环境、同一输入下可复算一致，且新增样本不引入新的真值缺口。
+### Milestone B — 图谱与趋势闭环（2026-06-17 ~ 2026-06-29）
 
-### Milestone C — 题库与课程闭环（2 周）
+**核心目标**  
+在 A 的真值快照基础上，重建趋势与图谱链路并产出可复算报告。
 
-**交付目标**：把“可验证题库”与“可上课课程”打到一条闭环线上。
+**交付清单（一次性完成）**
+- 固定趋势输入快照：`data/reports/trend_input_snapshot_*.json`
+- 产出并归档：
+  - `data/reports/exam_trend_report_*.json`
+  - `data/reports/theme_coverage_report_*.json`
+  - `data/reports/graph_connectivity_report_*.json`
+- 同步修正 trend 与 graph 关键映射 SQL/服务参数，确保复算一致。
 
-- 一次性完成 `rule_synth` 淘汰与替换，题面、解析、标签、题型分布同步满足 100% 可追溯。
-- 40 节课程 `course_templates` 与课程材料一次性同步（含 quiz/drill、作业闭环、`R2/R3/R4/R5/R6` 约束字段齐全）。
-- 与讲义链路联动：每节 7 段、每节作业 tag 归属本节知识点。
+**验收标准（通过才可升 M2）**
+- 三份报告可用同一真值版本重跑，哈希一致且字段 schema 稳定。
+- `graph_connectivity` 与 `theme_coverage` 不回退。
+- `data_accuracy_check.py` 相关章节通过，不新增 FAIL/WARN。
 
-**完成判据**：  
-`question_bank` 与课程层均有审计通过链路；新增/清退题目有 `M0~M2` 变更记录可追踪。
+### Milestone C — 题库与课程闭环（2026-06-30 ~ 2026-07-13）
 
-### Milestone D — 全面收口与交付闭环（1 周）
+**核心目标**  
+一次性打通“题库审计—课程产出—课堂闭环”三段链路。
 
-**交付目标**：一次性完成验收收口，不再切片式修复。
+**交付清单（一次性完成）**
+- `rule_synth` 整体清退替换完成并落库，保留变更列表与移除原因。
+- 生成可交付课程最小体量链路：
+  - `course_templates` 产物一次性对齐 40 节基础字段
+  - 作业/quiz/drill 与本节知识点闭环可验证
+  - 听力题材料在 `/app# /qbank` 与 `question_bank` 一致。
+- 以 `R2/R3/R4/R5/R6` 为硬约束重跑审计并补齐失败项。
 
-- 同步更新 `docs/data_accuracy_audit.md` 与 `goal.md`，把本期 WARN/FAIL 写为“处理/待处理/不采纳”的明确状态和时点。
-- 固化 `stop_gate + data_accuracy_check + alignment` 全量结果到 `data/reports/`。
-- 完成至少一次真实用户操作路径留痕（学生端/教师端），形成反馈闭环文本。
+**验收标准（通过才可升 M3）**
+- 题库与课程层审计项全部可追溯通过；`audit` 结果有版本化报告与修复记录。
+- `course` 关键字段（`textbook_position`、`year_level`、关联 tags）完整可追溯。
 
-**完成判据**：  
-- 当前周期无新增 FAIL，WARN 仅保留明确收口项。  
-- `goal.md` 里程碑状态行与审计产物一致。  
-- 所有交付物（脚本、报告、快照）在会话内可复核定位。
+### Milestone D — 全面收口与交付闭环（2026-07-14 ~ 2026-07-20）
 
-### 执行纪律
+**核心目标**  
+一次性交付，不再拆小改动，形成 D0 合规闭环可交付文件包。
 
-- 里程碑之间 **必须顺序流转**，每个里程碑在验收完成前不得开启下一阶段核心写入动作。
-- 每个里程碑仅允许状态流转一次：`未开始 → 进行中 → 完成`，并在 `goal.md` 写明产物路径。
-- 每个里程碑前先执行 Gate：`stop_gate.sh` + `data_accuracy_check.py`。
-- Gate 通过后再进行代码/数据写入，跨里程碑不做“边改边验”。
+**交付清单（一次性完成）**
+- 全量更新 `docs/data_accuracy_audit.md` 与 `goal.md`（本节状态与产出逐项对齐）。
+- 固化 `stop_gate + data_accuracy_check + alignment` 全量报告到 `data/reports/`（含时间戳与输入版本）。
+- 完成一次老师/学生真实流程录屏与反馈沉淀（`docs/teacher_feedback_round1.md`）。
+
+**验收标准（项目冻结线）**
+- 本周期无新增 FAIL；剩余 WARN 仅为明确不采纳项且给出时间与原因。
+- `goal.md` 里程碑状态与实际报告一致。
+- 关键交付可在会话内用路径+哈希复查，不允许“结果口径不一致”。
