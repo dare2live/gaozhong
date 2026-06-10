@@ -1,0 +1,16 @@
+kind: profile
+name: gaozhong
+repo_path: /Users/dp/Documents/M/gaozhong
+codegraph_root: .
+complexity_command:
+  - bash
+  - -lc
+  - python scripts/lib/complexity_check.py --json $(find backend scripts tests -name '*.py')
+evidence_paths:
+  goal: /Users/dp/Documents/M/gaozhong/goal.md
+  docs: /Users/dp/Documents/M/gaozhong/docs
+  docs_resme: /Users/dp/Documents/M/gaozhong/docs/RESUME.md
+  analysis: /Users/dp/Documents/M/gaozhong/analysis
+  claude: /Users/dp/Documents/M/gaozhong/CLAUDE.md
+  ledger: /Users/dp/Documents/M/gaozhong/analysis/project_state_ledger.md
+notes: gaozhong bilingual education operations project (backend services + static frontend). Focus on data integrity, API correctness, and audit-first changes. CodeGraph and audit artifacts are primary context for controller decisions.

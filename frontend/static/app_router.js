@@ -210,12 +210,18 @@
     area.innerHTML = "<p>载入题目...</p>";
     try {
       const data = await fetchJSON("/api/course/quiz?id=" + cid);
-      if (!data.questions || data.questions.length === 0) {
+      if (data.error) {
+        area.innerHTML = `<p style="color:#c00">课后测验加载失败: ${data.error}</p>`;
+        return;
+      }
+      const questions = Array.isArray(data.questions) ? data.questions : [];
+      if (questions.length === 0) {
         area.innerHTML = "<p style='color:#888'>本节暂无测验题</p>";
         return;
       }
-      let html = `<div class="gz-quiz"><h3>课后测验 · ${data.title} (${data.count} 题)</h3>`;
-      data.questions.forEach((q, i) => {
+      const totalCount = typeof data.count === "number" ? data.count : questions.length;
+      let html = `<div class="gz-quiz"><h3>课后测验 · ${data.title || "未命名课程"} (${totalCount} 题)</h3>`;
+      questions.forEach((q, i) => {
         html += `<div class="gz-quiz-q" data-qid="${q.qb_id}" data-answer="${(q.answer||'').trim()}">
           <p><strong>${i+1}.</strong> <span class="gz-quiz-type">${q.question_type}</span>
              <span class="gz-quiz-diff">${q.difficulty}</span></p>
@@ -236,7 +242,7 @@
         <button class="gz-quiz-btn" onclick="window._submitQuiz()">提交批改</button>
       </div><div id="quiz-result"></div></div>`;
       area.innerHTML = html;
-      area._quizData = data;
+      area._quizData = Object.assign({}, data, { questions });
     } catch (err) {
       area.innerHTML = `<p style="color:#c00">载入失败: ${err.message}</p>`;
     }
@@ -244,7 +250,13 @@
 
   function _parseOptions(optJson, stem) {
     if (optJson) {
-      try { return JSON.parse(optJson); } catch (_) {}
+      try {
+        const parsed = JSON.parse(optJson);
+        if (Array.isArray(parsed)) return parsed;
+        if (parsed && typeof parsed === "object") {
+          return Object.entries(parsed).map(([label, text]) => ({ label: String(label), text: String(text || "").trim() })).filter(x => x.label && x.text);
+        }
+      } catch (_) {}
     }
     const m = (stem||'').match(/([A-D])\.\s*(.+?)(?=\s+[A-D]\.|$)/gs);
     if (!m) return [];
@@ -624,7 +636,6 @@
     const modal = document.getElementById("student-modal");
     const cont = document.getElementById("student-content");
     modal.classList.add("open");
-    modal.id = "handout-modal";  // reuse 样式
     cont.innerHTML = "载入中...";
     try {
       const [info, weak, rec] = await Promise.all([
@@ -632,17 +643,22 @@
         fetchJSON("/api/students/weakness?id=" + sid),
         fetchJSON("/api/students/recommend?id=" + sid),
       ]);
+      if (info.error) throw new Error(info.error);
+      const weakRows = weak.error ? [] : (weak.weakness || []);
+      const recRows = rec.error ? [] : (rec.recommendations || []);
       let h = `<h2 style="margin:0">${info.student.name} (${sid})</h2>`;
       h += `<p>${info.student.school} · ${info.student.grade} · 答题 ${info.answers.total} 题 (正确 ${info.answers.correct})</p>`;
-      h += `<h3>弱点 (${weak.count})</h3><ul>`;
-      for (const w of weak.weakness) {
+      h += `<h3>弱点 (${weakRows.length})</h3><ul>`;
+      for (const w of weakRows) {
         h += `<li>[${w.kind}] <strong>${w.concept_id}</strong> — 弱化度 ${w.score} (样本 ${w.sample_n})</li>`;
       }
-      h += `</ul><h3>推送课节 (${rec.count})</h3><ul>`;
-      for (const r of rec.recommendations) {
+      h += `</ul><h3>推送课节 (${recRows.length})</h3><ul>`;
+      for (const r of recRows) {
         h += `<li><a href="#" onclick="window._openHandout(${r.course_id});return false">#${r.course_id} [${r.layer}] ${r.title}</a> ← ${r.weak_concept}</li>`;
       }
       h += `</ul>`;
+      if (weak.error) h += `<p style="color:#a66">弱点服务异常: ${weak.error}</p>`;
+      if (rec.error) h += `<p style="color:#a66">推荐服务异常: ${rec.error}</p>`;
       cont.innerHTML = h;
     } catch (err) {
       cont.innerHTML = "载入失败: " + err.message;

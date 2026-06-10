@@ -122,7 +122,7 @@ courses:
       - {kind: grammar, id: "grammar:一/3/(1)", year: 1, position: "课标·语法·义教·形容词基本形式"}
       - {kind: grammar, id: "grammar:一/3/(2)", year: 1, position: "课标·语法·义教·比较级最高级"}
       - {kind: grammar, id: "grammar:一/4/(2)", year: 1, position: "课标·语法·义教·副词比较级"}
-    homework_tags: [word:active, word:able, word:advantage]
+    homework_tags: [word:better, word:best]
     listening_required: false
 
   - course_id: 8
@@ -385,7 +385,7 @@ courses:
     core_items:
       - {kind: grammar, id: "grammar:三/7/(1)", year: 3, position: "课标·语法·选必·动词不定式"}
       - {kind: word,    id: "word:adopt",        year: 3, position: "课标·选必"}
-    homework_tags: [word:adopt, word:advocate, word:abandon]
+    homework_tags: [question_type:语法填空, question_type:语法填空_synth]
     listening_required: false
 
   - course_id: 25
