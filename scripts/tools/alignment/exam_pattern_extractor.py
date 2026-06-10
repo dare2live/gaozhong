@@ -29,7 +29,8 @@ OUTPUT_PATH = ROOT / "data" / "reports" / "exam_patterns.json"
 def extract(con: duckdb.DuckDBPyConnection) -> dict:
     rows = con.execute(
         "SELECT year, question_type, raw_question, answer, analysis "
-        "FROM exam_questions WHERE year >= 2021 AND province LIKE '%新课标 II%' "
+        "FROM exam_questions "
+        "WHERE year >= 2021 AND province LIKE '%辽宁%' AND province LIKE '%新课标 II%' "
         "ORDER BY year"
     ).fetchall()
     years = sorted({r[0] for r in rows})

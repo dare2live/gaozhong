@@ -69,7 +69,7 @@ def _yw(year: int) -> float:
 def analyze(con: duckdb.DuckDBPyConnection) -> dict:
     rows = con.execute(
         "SELECT year, question_type, raw_question, answer, analysis "
-        "FROM exam_questions WHERE year >= 2017 ORDER BY year"
+        "FROM exam_questions WHERE year >= 2017 AND province LIKE '%辽宁%' ORDER BY year"
     ).fetchall()
     years = sorted({r[0] for r in rows})
     heatmap, year_totals = _build_heatmap(rows, years)

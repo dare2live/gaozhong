@@ -4,9 +4,10 @@
 输出: data/external/gaokao_bench/<file_basename>.jsonl + DB exam_questions 行
 
 辽宁卷判别 (启发式, 因 GAOKAO-Bench 不显式标省):
-  - 2021 起新课标 II 卷 → 辽宁 (用户 2026-05-23 硬约束)
-  - 2017-2020 全国卷 II → 辽宁 (省份高考改革前)
-  - 2010-2016 辽宁卷独立命题 → 辽宁 (从题面 grep "辽宁"/"新课标全国" 推断)
+  - 2010-2014: 题面含 "辽宁" 优先，否则按题型语料映射为 "独立命题" 占位
+  - 2015-2016: 辽宁新课标 II 卷 / 全国统一 II 卷混合, 优先按文本证据分层
+  - 2017-2020: 年份已知为 "全国卷 II"；若题面有辽宁标注则标注为“辽宁(全国卷 II, 辽宁证据)"
+  - 2021+: 仅遇到明确新课标/辽宁证据时才认定为辽宁；否则按题面/分类器标记为全国卷或未知
   - 题面无明显省份信息 → "未知" (保留, 不丢)
 不直接覆盖 gaokao 项目 R2 结论 (辽宁卷有效卷级样本 ~11), 我们只做"题级"镜像 + 标 province.
 """
@@ -39,25 +40,44 @@ ENGLISH_SOURCES_2023 = [
     "2023_English_Reading_Comp.json",
 ]
 
-LIAONING_KEYWORDS = ["辽宁", "新课标全国Ⅱ", "新课标Ⅱ", "新课标II", "全国新课标Ⅱ"]
-NATIONAL_II_HINT = ["新课标卷Ⅱ", "全国Ⅱ", "全国II"]
+LIAONING_KEYWORDS = ["辽宁", "辽宁卷", "辽宁(新课标 II", "辽宁(全国"]
+NATIONAL_I_KEYWORDS = ["新课标全国Ⅰ卷", "新课标I卷", "新课标 I", "全国I卷", "全国Ⅰ卷"]
+NATIONAL_II_KEYWORDS = ["全国甲卷", "全国乙卷", "全国Ⅱ", "全国II", "全国二卷", "新课标全国Ⅱ卷", "新课标Ⅱ", "新课标 II"]
 
 
-def infer_province(year: int | None, question_text: str) -> str:
-    """启发式判 province. 返回 "辽宁" / "全国 II 卷" / "未知"."""
+def infer_province(year: int | None, question_text: str, category: str | None = None) -> str:
+    """启发式判 province. 返回标准化 province label."""
     if year is None:
         return "未知"
     text = question_text or ""
+    cat = category or ""
     if _has_keyword(text, LIAONING_KEYWORDS):
         return "辽宁"
+    if _has_keyword(cat, NATIONAL_I_KEYWORDS):
+        return "全国 I 卷"
+    if year <= 2014:
+        return "辽宁 (独立命题, 2010-2014)" if _has_keyword(text, "辽宁") else "辽宁 (独立命题)"
+    if 2015 <= year <= 2016:
+        if _has_keyword(text, "辽宁"):
+            return "辽宁 (新课标 II 卷, 2015-2016)"
+        return "全国 II 卷 (2015-2016)"
+    if 2017 <= year <= 2020:
+        if _has_keyword(cat, NATIONAL_I_KEYWORDS):
+            return "全国 I 卷"
+        return "辽宁 (全国卷 II, 改革前)" if _has_keyword(text, "辽宁") else "全国 II 卷"
     if year >= 2021:
-        return "辽宁 (新课标 II)" if _has_keyword(text, NATIONAL_II_HINT) else "辽宁 (推断, 2021+ 新课标 II)"
-    if 2017 <= year <= 2020 and _has_keyword(text, NATIONAL_II_HINT):
-        return "辽宁 (全国卷 II, 改革前)"
+        if _has_keyword(text, NATIONAL_I_KEYWORDS) or _has_keyword(cat, NATIONAL_I_KEYWORDS):
+            return "全国 I 卷"
+        if _has_keyword(text, NATIONAL_II_KEYWORDS) or _has_keyword(cat, NATIONAL_II_KEYWORDS):
+            # 新课标 II 未必为辽宁，先不默认认定
+            return "全国 II 卷"
+        return "辽宁 (推断, 2021+ 新课标 II)" if _has_keyword(text, "新课标 II") else "未知"
     return "未知"
 
 
-def _has_keyword(text: str, keywords: list[str]) -> bool:
+def _has_keyword(text: str, keywords: list[str] | str) -> bool:
+    if isinstance(keywords, str):
+        return keywords in text
     return any(k in text for k in keywords)
 
 
@@ -91,17 +111,35 @@ def _build_record(id_prefix: str, base: str, i: int, ex: dict,
     try: year = int(year) if year else None
     except: year = None
     qtext = ex.get("question") or ""
-    province = infer_province(year, qtext)
+    province = infer_province(year, qtext, ex.get("category"))
+    paper_type = _infer_paper_type(year, province)
     return {
         "question_id": f"{id_prefix}/{base}/{i}",
-        "year": year, "province": province,
-        "paper_type": "新课标 II 卷" if "辽宁" in province else "未知",
+        "year": year,
+        "province": province,
+        "paper_type": paper_type,
         "question_type": qtype,
         "raw_question": qtext[:8000],
         "answer": ex.get("answer", ""),
         "analysis": ex.get("analysis", "")[:4000] if ex.get("analysis") else "",
         "source_file": base, "source_index": i, "source_repo": repo,
     }
+
+
+def _infer_paper_type(year: int | None, province: str) -> str:
+    if not year:
+        return "未知"
+    if province.startswith("辽宁"):
+        if year >= 2021:
+            return "新课标 II 卷"
+        return "全国 II 卷"
+    if province.startswith("全国 I"):
+        return "全国 I 卷"
+    if province.startswith("全国 II"):
+        return "全国 II 卷"
+    if "2021" in province and "推断" in province:
+        return "新课标 II 卷"
+    return "未知"
 
 
 def mirror_to_jsonl(write_db_conn=None) -> dict:

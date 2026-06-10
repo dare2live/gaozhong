@@ -93,7 +93,7 @@ def load_real_questions(con: duckdb.DuckDBPyConnection) -> dict:
     cefr = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     rows = con.execute(
         "SELECT question_id, year, question_type, raw_question, answer, analysis "
-        "FROM exam_questions"
+        "FROM exam_questions WHERE province LIKE '%辽宁%'"
     ).fetchall()
     inserted = 0
     tags = 0

@@ -12,21 +12,11 @@ from __future__ import annotations
 
 import duckdb
 
+from backend.services.extraction import exam as exam_extract
+
 
 def _infer_v2(year: int | None, text: str) -> str:
-    if not year:
-        return "未知"
-    if text and "辽宁" in text:
-        return "辽宁"
-    if 2010 <= year <= 2014:
-        return "辽宁 (独立命题, 2010-2014)"
-    if 2015 <= year <= 2016:
-        return "辽宁 (新课标 II 卷, 2015-2016)"
-    if 2017 <= year <= 2020:
-        return "辽宁 (全国 II 卷, 2017-2020)"
-    if year >= 2021:
-        return "辽宁 (新课标 II 卷, 2021+)"
-    return "未知"
+    return exam_extract.infer_province(year, text)
 
 
 def refine_province(con: duckdb.DuckDBPyConnection) -> dict:
