@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-10T15:41:28.029809",
+  "generated_at": "2026-06-10T15:51:22.290154",
   "system_stats": {
     "questions": 700,
     "courses": 40,
@@ -66,44 +66,44 @@
   ],
   "results": {
     "V1": {
-      "status": "done",
-      "feedback": "placement generate OK: total_expected=9, total_actual=9, n_answered=9",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "本轮未能安排高一/高二/高三学生真人摸底验收；代录：`students` tab 与推荐区组件在 /app 结构中可复核（见 docs/app_smoke_round1.md）。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V2": {
-      "status": "done",
-      "feedback": "recommend=10条，course 27 讲义 4251 字符，materials=12",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "教师推荐课节链路未执行真人点击；已通过代码与路由证据确认 `#/teaching` 可达、讲义加载逻辑存在（见 docs/app_smoke_round1.md）。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V3": {
-      "status": "done",
-      "feedback": "course 27 讲义段落 8 段，长度 4251",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "未完成 1 名学生真实阅读流程；代录依据为讲义模板与 7 段结构静态可达（`frontend/static/app_router.js` + `course/handout.py`）。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V4": {
-      "status": "done",
-      "feedback": "score n_total=9 n_correct=0 accuracy=0.0; followup=3题",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "课后测验未执行真人交互；可回放链路存在（讲义 modal 有 quiz 发起与提交入口，见 frontend/app.js）。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V5": {
-      "status": "done",
-      "feedback": "listening count=25, first=652, transcript_len=167",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "未执行真人听力闭环；静态链路以 `qbank` tab + 听力题目加载为代证，已纳入 M3 口径替代证据。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V6": {
-      "status": "done",
-      "feedback": "student=sy-2024-001 weakness=3, recommend_feedback=10",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "弱点 drill 未真人复测；代证为 `students` tab 学生弱点/推荐 API 可见且链路完整（见 app_router 组件）。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V7": {
-      "status": "done",
-      "feedback": "graph popup related=4, questions=2, center=word:academic",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "知识图谱未做真人点击验证；代证为图谱弹窗（`frontend/static/graph_popup.js`）与 `course` conceptLink 绑定链路已提交到代码级快照。",
+      "timestamp": "2026-06-10T07:41:55Z"
     },
     "V8": {
-      "status": "done",
-      "feedback": "/app# /#/teaching 讲义弹窗有 print 按钮（class='print-btn'），并绑定 window.print()；teacher 路由兼容也有 c-print 打印入口（teacher.js）",
-      "timestamp": "2026-06-10T15:46:32"
+      "status": "deferred",
+      "feedback": "打印按钮未真人点按；代证为 `frontend/static/app_router.js:117-123` 里的 `onclick=\"window.print()\"`，可复现源码路径。",
+      "timestamp": "2026-06-10T07:41:55Z"
     }
   }
 }

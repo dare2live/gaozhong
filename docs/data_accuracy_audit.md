@@ -126,5 +126,5 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 | 交付协议文件 | `data/reports/verification_protocol.json` |
 | 闭环报告 | `data/reports/m3_closure_20260610T074134Z.md`、`data/reports/m3_closure_20260610T074134Z.json` |
 | 质量指标 | `question_bank=700`、`question_tags=12612`、`courses=40`、`students=5`、`FAIL=0`、`WARN=0` |
-| 验收结论 | `M3` 关键门禁通过：`data_accuracy_check`、`stop_gate`、`verification_protocol`；V1~V8 已补录反馈（V8 打印基于源码证据） |
+| 验收结论 | `M3` 关键门禁通过：`data_accuracy_check`、`stop_gate`、`verification_protocol`；`verification_protocol.json` 已同步为代补闭环，V1~V8 标记为 `deferred`（待教师/学生真实验收补齐） |
 | 风险与边界 | 真人反馈与 1:1 教师复核仍待补录，见 `docs/user_test_round1.md` / `docs/teacher_feedback_round1.md` |

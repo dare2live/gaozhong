@@ -1,7 +1,7 @@
 # teacher_feedback_round1
 
 - run_id: `20260610T074134Z`
-- 当前状态：`待补录`
+- 当前状态：`代补口（真人待补录）`
 - 执行目标：由 1 位英语教师完成至少一轮课程演示（10-20 分钟）并形成书面反馈，确认课程链路是否可直接教学。
 
 ## 复核维度（映射到 M3/M4 的可验收项）
@@ -25,3 +25,16 @@
 - 建议窗口：本周内完成 1 次真人复核并补齐本文件。
 - 若本周无法安排：在 `docs/user_test_round1.md` 写明替代收口原因，`data_accuracy_audit.md` 标注延期原因与下次窗口，不得直接闭环 `M3`。
 - `goal.md` 与 `data/reports/m3_closure_20260610T074134Z.*` 的 `risk/next_action` 必须同步真实补录状态。
+
+## 代补记录（本轮）
+
+- `docs/data_accuracy_audit.md` 与 `goal.md` 已声明：`M3` 当前仅支持代补闭环，不得直接完成，待教师复核补录。
+- 代补依据（本轮无需等待教师）：  
+  - 7-tab 入口与主要路由链路已静态核验：`docs/app_smoke_round1.md`
+  - 作业/讲义/图谱等组件已具备可复算入口：`/app` 相关 tab 与后端 API
+  - 课程材料映射风险（已在 `M2` 闭环处理）：
+    - `course_materials` 与 `nodes.question` 命中率已达 156/156
+    - `rule_synth` 与 `analysis` 缺失问题已清零（见 `rule_synth_replacement`）
+- 真实验证后续动作：
+  - 首选：本周内安排 1 位教师做最小回访（1 轮）
+  - 截止窗：`2026-06-17 18:00` 前补齐后方可推进 `M4`

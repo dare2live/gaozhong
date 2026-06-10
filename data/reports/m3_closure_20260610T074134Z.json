@@ -89,14 +89,14 @@
       "run_id": "20260610T073936Z"
     },
     "M3": {
-      "status": "完成（待真人反馈补录）",
+      "status": "代补闭环（待真人反馈补录）",
       "run_id": "20260610T074134Z",
       "gates": {
         "data_accuracy_check": "PASS",
         "stop_gate": "PASS",
         "verification_protocol": "PASS"
       },
-      "next_action": "补录 docs/user_test_round1.md 与 docs/teacher_feedback_round1.md 后，转 M4 并冻结交付状态"
+      "next_action": "补录教师+学生真人反馈后，补齐 V1~V8 真实状态并转 M4；当前阶段代补证据为 docs/app_smoke_round1.md 与 verification_protocol.json"
     },
     "blocking_issues": []
   }

@@ -1,7 +1,7 @@
 # user_test_round1
 
 - run_id: `20260610T074134Z`
-- 当前状态：`待补录`
+- 当前状态：`代补口（真人待补录）`
 - 执行目标：用 1 名高一/高二/高三学生完成一次真实教学流程闭环（登录→选课节→课件/作业→答题→弱点回推），确认关键路径可用。
 
 ## 真实验收清单
@@ -30,3 +30,18 @@
 - 必须写入：`goal.md`、`docs/data_accuracy_audit.md`、`data/reports/m3_closure_20260610T074134Z.*`
 
 > 目标：`M3` 允许在真实反馈未完成时先做闭环代录，但最终进入 `M4` 前必须补齐真实验收。
+
+## 已录入代补结论（本轮）
+
+- 实体验收状态：`代补闭环完成（真实用户验收待安排）`
+- 证据链补齐：
+  - `/app` 7-tab 与关键路由核验：`docs/app_smoke_round1.md`
+  - 打印链路证据：`frontend/static/app_router.js:117-123`（`window.print()`）
+  - 课程与题库引用一致性：`scripts/tools/audit/rule_synth_replacement.py` + `M2` 产物
+- 变更映射：
+  - `data/reports/m3_closure_20260610T074134Z.md|json`
+  - `docs/data_accuracy_audit.md`
+  - `data/reports/verification_protocol.json`
+- 本文件剩余动作：
+  - 预排真人复核窗口：`2026-06-17` 前完成 1 次学生闭环（预计 30-45 分钟）
+  - 未完成时不得将 `goal.md` 的 `M3` 状态直接改为完成
