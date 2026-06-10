@@ -197,9 +197,16 @@ def _check_15_xref(con):
         WHERE kind IN ('word','grammar','phrase')
         AND ref_id NOT IN (SELECT concept_id FROM nodes)
     """).fetchone()[0]
+    miss_m_exam = con.execute("""
+        SELECT COUNT(*) FROM course_materials
+        WHERE kind = 'exam_question'
+        AND (CASE WHEN ref_id LIKE 'question:%' THEN ref_id ELSE 'question:' || ref_id END)
+                NOT IN (SELECT concept_id FROM nodes)
+    """).fetchone()[0]
     check("units ↔ unit node 一致", miss_u == 0, f"miss={miss_u}")
     check("exam_questions ↔ question node 一致", miss_q == 0, f"miss={miss_q}")
     check("course_materials ref_id 全有 node", miss_m == 0, f"miss={miss_m}")
+    check("course_materials exam_question ref_id 全有 node", miss_m_exam == 0, f"miss={miss_m_exam}")
 
 
 def _check_16_placement(con):

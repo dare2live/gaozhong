@@ -59,23 +59,31 @@ def _add_real_questions(con: duckdb.DuckDBPyConnection, out: list[dict], seq: li
     seen = {m["ref_id"] for m in out}
     placeholders = ",".join("?" * len(htags))
     rows = con.execute(
-        f"SELECT DISTINCT qb.qb_id FROM question_bank qb "
+        f"SELECT DISTINCT qb.origin_ref FROM question_bank qb "
         f"JOIN question_tags qt ON qt.qb_id = qb.qb_id "
         f"WHERE qt.tag_id IN ({placeholders}) AND qb.origin='real' "
         f"ORDER BY qb.qb_id LIMIT 5",
         htags,
     ).fetchall()
-    for (qb_id,) in rows:
-        if str(qb_id) in seen:
+    for (origin_ref,) in rows:
+        if not origin_ref:
             continue
-        seen.add(str(qb_id))
+        q_ref = _question_ref(origin_ref)
+        if q_ref in seen:
+            continue
+        seen.add(q_ref)
         out.append({
             "course_id": course["course_id"], "seq": seq[0],
-            "kind": "exam_question", "ref_id": str(qb_id),
+            "kind": "exam_question", "ref_id": q_ref,
             "year_level": None, "textbook_position": None,
             "source": "auto_from_trend", "reason": "近真题命中本节 homework_tags",
         })
         seq[0] += 1
+
+
+def _question_ref(qb_id: int | str) -> str:
+    """考试题引用统一为 nodes 标准形式."""
+    return f"question:{str(qb_id)}"
 
 
 def _lookup_year_position(con: duckdb.DuckDBPyConnection, ref_id: str, kind: str) -> tuple[int | None, str | None]:

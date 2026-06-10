@@ -1,0 +1,539 @@
+{
+  "run_id": "20260610T073936Z",
+  "before": {
+    "total": 273,
+    "by_type": {
+      "选义单选": 243,
+      "完形填空_synth": 15,
+      "语法填空_synth": 15
+    },
+    "analysis_missing_by_type": {
+      "选义单选": 243,
+      "完形填空_synth": 15,
+      "语法填空_synth": 15
+    },
+    "sample": [
+      {
+        "qb_id": 359,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 360,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 361,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 362,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 363,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 364,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 365,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 366,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 367,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 368,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 369,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 370,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 371,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 372,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 373,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 374,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 375,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 376,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 377,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 378,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 379,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 380,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 381,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 382,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 383,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 384,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 385,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 386,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 387,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 388,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 389,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 390,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 391,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 392,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 393,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 394,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 395,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 396,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 397,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 398,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 399,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 400,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 401,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 402,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 403,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 404,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 405,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 406,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 407,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      },
+      {
+        "qb_id": 408,
+        "question_type": "选义单选",
+        "analysis_len": 0
+      }
+    ]
+  },
+  "action": {
+    "deleted": 273,
+    "regen": {
+      "synth_inserted": 275
+    }
+  },
+  "after": {
+    "total": 275,
+    "by_type": {
+      "选义单选": 245,
+      "完形填空_synth": 15,
+      "语法填空_synth": 15
+    },
+    "analysis_missing_by_type": {
+      "选义单选": 0,
+      "完形填空_synth": 0,
+      "语法填空_synth": 0
+    },
+    "sample": [
+      {
+        "qb_id": 699,
+        "question_type": "选义单选",
+        "analysis_len": 106
+      },
+      {
+        "qb_id": 700,
+        "question_type": "选义单选",
+        "analysis_len": 98
+      },
+      {
+        "qb_id": 701,
+        "question_type": "选义单选",
+        "analysis_len": 107
+      },
+      {
+        "qb_id": 702,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 703,
+        "question_type": "选义单选",
+        "analysis_len": 98
+      },
+      {
+        "qb_id": 704,
+        "question_type": "选义单选",
+        "analysis_len": 97
+      },
+      {
+        "qb_id": 705,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 706,
+        "question_type": "选义单选",
+        "analysis_len": 100
+      },
+      {
+        "qb_id": 707,
+        "question_type": "选义单选",
+        "analysis_len": 98
+      },
+      {
+        "qb_id": 708,
+        "question_type": "选义单选",
+        "analysis_len": 106
+      },
+      {
+        "qb_id": 709,
+        "question_type": "选义单选",
+        "analysis_len": 105
+      },
+      {
+        "qb_id": 710,
+        "question_type": "选义单选",
+        "analysis_len": 98
+      },
+      {
+        "qb_id": 711,
+        "question_type": "选义单选",
+        "analysis_len": 110
+      },
+      {
+        "qb_id": 712,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 713,
+        "question_type": "选义单选",
+        "analysis_len": 101
+      },
+      {
+        "qb_id": 714,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 715,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 716,
+        "question_type": "选义单选",
+        "analysis_len": 96
+      },
+      {
+        "qb_id": 717,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 718,
+        "question_type": "选义单选",
+        "analysis_len": 105
+      },
+      {
+        "qb_id": 719,
+        "question_type": "选义单选",
+        "analysis_len": 107
+      },
+      {
+        "qb_id": 720,
+        "question_type": "选义单选",
+        "analysis_len": 108
+      },
+      {
+        "qb_id": 721,
+        "question_type": "选义单选",
+        "analysis_len": 103
+      },
+      {
+        "qb_id": 722,
+        "question_type": "选义单选",
+        "analysis_len": 100
+      },
+      {
+        "qb_id": 723,
+        "question_type": "选义单选",
+        "analysis_len": 106
+      },
+      {
+        "qb_id": 724,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 725,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 726,
+        "question_type": "选义单选",
+        "analysis_len": 108
+      },
+      {
+        "qb_id": 727,
+        "question_type": "选义单选",
+        "analysis_len": 98
+      },
+      {
+        "qb_id": 728,
+        "question_type": "选义单选",
+        "analysis_len": 99
+      },
+      {
+        "qb_id": 729,
+        "question_type": "选义单选",
+        "analysis_len": 105
+      },
+      {
+        "qb_id": 730,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 731,
+        "question_type": "选义单选",
+        "analysis_len": 108
+      },
+      {
+        "qb_id": 732,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 733,
+        "question_type": "选义单选",
+        "analysis_len": 101
+      },
+      {
+        "qb_id": 734,
+        "question_type": "选义单选",
+        "analysis_len": 100
+      },
+      {
+        "qb_id": 735,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 736,
+        "question_type": "选义单选",
+        "analysis_len": 106
+      },
+      {
+        "qb_id": 737,
+        "question_type": "选义单选",
+        "analysis_len": 100
+      },
+      {
+        "qb_id": 738,
+        "question_type": "选义单选",
+        "analysis_len": 101
+      },
+      {
+        "qb_id": 739,
+        "question_type": "选义单选",
+        "analysis_len": 105
+      },
+      {
+        "qb_id": 740,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 741,
+        "question_type": "选义单选",
+        "analysis_len": 103
+      },
+      {
+        "qb_id": 742,
+        "question_type": "选义单选",
+        "analysis_len": 100
+      },
+      {
+        "qb_id": 743,
+        "question_type": "选义单选",
+        "analysis_len": 106
+      },
+      {
+        "qb_id": 744,
+        "question_type": "选义单选",
+        "analysis_len": 101
+      },
+      {
+        "qb_id": 745,
+        "question_type": "选义单选",
+        "analysis_len": 102
+      },
+      {
+        "qb_id": 746,
+        "question_type": "选义单选",
+        "analysis_len": 104
+      },
+      {
+        "qb_id": 747,
+        "question_type": "选义单选",
+        "analysis_len": 108
+      },
+      {
+        "qb_id": 748,
+        "question_type": "选义单选",
+        "analysis_len": 115
+      }
+    ]
+  }
+}

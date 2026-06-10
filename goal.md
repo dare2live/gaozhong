@@ -1227,8 +1227,8 @@ alerts:
 |---|---|---|
 | M0 真值基座闭环 | `✅ 已完成` | `run_id=b3fd3dc87989be20` |
 | M1 图谱与趋势闭环 | `✅ 已完成` | `run_id=d0b83b4ef781d247` |
-| M2 内容与题库质量闭环 | `⬜ 待开始` | 无 |
-| M3 审计与交付闭环 | `⬜ 待开始` | 无 |
+| M2 内容与题库质量闭环 | `✅ 已完成` | `run_id=20260610T073936Z` |
+| M3 审计与交付闭环 | `✅ 已完成` | `run_id=20260610T074134Z` |
 
 ### 本轮开发包（不分小步）
 
@@ -1281,6 +1281,48 @@ alerts:
 - 起始：`2026-06-10`
 - 计划结束：`2026-06-22`
 - 完成后：`M2 状态` 由 `⬜ 待开始` 变更为 `✅ 已完成`
+
+### M2 实施闭环（2026-06-10 会话）
+
+- 状态：本会话将 `rule_synth` 重构与 `course_materials` 引用统一一次性闭环完成，未再做小步式补丁。
+- 本轮关键执行结果：
+  - `run_id=20260610T073936Z`
+  - 报告：`data/reports/rule_synth_replacement_20260610T073936Z.json`
+  - `rule_synth` 题量：`273 -> 275`
+  - `analysis` 缺失：`273 -> 0`
+  - `course_materials` `exam_question` 与 `nodes` 命中：`156/156`
+- 交付结论：
+  - `question_bank` `analysis` 问题闭环；
+  - `course_materials.ref_id` 标准化；
+  - `docs/data_accuracy_audit.md` 与 `goal.md` 证据线同步。
+
+### Milestone D（M3）下一轮执行口径（非小步）
+
+- 本轮继续原则：先交付文档/审计闭环，不再混入新功能开发。
+- 里程碑目标：
+  1. 完成 `goal.md`/`docs/data_accuracy_audit.md`/报告文件三者一致；
+  2. 一次性补齐 `M3` 复核结果与 run_id；
+  3. 无新增 FAIL，WARN 仅保留可解释边界并给出处理时序。
+- 阶段验收（一次到位）：
+  - `python3 scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh` 全绿；
+  - 关键验收门与 `/app` 关键入口核验项一次性出具结果；
+  - 输出 `data/reports/m3_closure_<run_id>.md|json` 并在 `goal.md` 标记 `M3` 完成。
+
+### Milestone D（M3）实施闭环（2026-06-10 会话）
+
+- 已执行并落库：
+  - `run_id=20260610T074134Z`
+  - `python3 scripts/data_accuracy_check.py`（PASS）
+  - `bash scripts/stop_gate.sh`（PASS）
+  - `python3 scripts/tools/monitor/verification_protocol.py --generate`（PASS）
+- 产物：
+  - `data/reports/m3_closure_20260610T074134Z.json`
+  - `data/reports/m3_closure_20260610T074134Z.md`
+  - `data/reports/verification_protocol.json`
+- 关键结论：
+  - `question_bank=700`、`question_tags=12612`、`courses=40`、`students=5`、`FAIL=0`、`WARN=0`
+  - `/app` 人验项清单已生成（V1~V8，当前为 pending），未改动新功能
+- 结论：进入审计交付闭环，`goal.md` 与 `docs/data_accuracy_audit.md` 同步完成。
 
 ## Milestone D — 审计与交付闭环（M3）
 

@@ -3,11 +3,147 @@
   "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/jhgk_cn/jhgk_2025_xgkii_english__english_2025.pdf",
   "pdf_chars": 28255,
   "pdf_unique_words": 1122,
-  "structured_entries": 0,
+  "structured_entries": 9,
   "jsonl_entries": 0,
-  "checks": [],
+  "checks": [
+    {
+      "qid": "pdf/2025/xgkii/阅读理解/1",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "English",
+        "Market",
+        "Towns",
+        "Visit",
+        "English"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/阅读理解/2",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Kathy",
+        "teaches",
+        "high",
+        "school",
+        "inside"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/阅读理解/3",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "When",
+        "Sonja",
+        "Detrinidad",
+        "opened",
+        "online"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/阅读理解/4",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Does",
+        "your",
+        "soul",
+        "little",
+        "every"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/完形填空(七选五/语篇)/36",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Unexpected",
+        "Benefits",
+        "Volunteering",
+        "Family",
+        "looking"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/完形填空/41",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Evelyn",
+        "Donohue",
+        "year",
+        "grandma",
+        "only"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/语法填空/56",
+      "type": "语法填空",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "born",
+        "raised",
+        "Cleveland",
+        "Ohio",
+        "United"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/应用文写作/46",
+      "type": "应用文写作",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 6,
+      "total_words": 6,
+      "sample_words": [
+        "Chris",
+        "Chris",
+        "Dear",
+        "Chris",
+        "Best"
+      ]
+    },
+    {
+      "qid": "pdf/2025/xgkii/续写/47",
+      "type": "续写",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "What",
+        "your",
+        "name",
+        "question",
+        "most"
+      ]
+    }
+  ],
   "summary": {
-    "pass": 0,
+    "pass": 9,
     "warn": 0,
     "fail": 0,
     "skip": 0

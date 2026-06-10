@@ -3,9 +3,144 @@
   "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/cdn_zgkao_com/zgkao_2024_xgkii_english__english_2024.pdf",
   "pdf_chars": 27475,
   "pdf_unique_words": 1141,
-  "structured_entries": 0,
+  "structured_entries": 9,
   "jsonl_entries": 6,
   "checks": [
+    {
+      "qid": "pdf/2024/xgkii/阅读理解/1",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Choice",
+        "Walks",
+        "Beginner",
+        "Experienced",
+        "Walkers"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/阅读理解/2",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "ever",
+        "train",
+        "station",
+        "realize",
+        "forgot"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/阅读理解/3",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "know",
+        "fresh",
+        "best",
+        "when",
+        "comes"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/阅读理解/4",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Given",
+        "astonishing",
+        "potential",
+        "transform",
+        "lives"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/完形填空(七选五/语篇)/36",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Overtourism",
+        "Real",
+        "Help",
+        "Travel",
+        "promotes"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/完形填空/41",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "When",
+        "decided",
+        "house",
+        "Europe",
+        "years"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/语法填空/56",
+      "type": "语法填空",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Chinese",
+        "cultural",
+        "elements",
+        "commemorating",
+        "Tang"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/应用文写作/46",
+      "type": "应用文写作",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 11,
+      "total_words": 11,
+      "sample_words": [
+        "Chris",
+        "Dear",
+        "Chris",
+        "writing",
+        "share"
+      ]
+    },
+    {
+      "qid": "pdf/2024/xgkii/续写/47",
+      "type": "续写",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Gunter",
+        "cold",
+        "unforgettable",
+        "evening",
+        "September"
+      ]
+    },
     {
       "qid": "GAOKAO-Bench-Updates/2024_English_Cloze_Test.json",
       "type": "完形填空(七选五/语篇)",
@@ -98,7 +233,7 @@
     }
   ],
   "summary": {
-    "pass": 6,
+    "pass": 15,
     "warn": 0,
     "fail": 0,
     "skip": 0

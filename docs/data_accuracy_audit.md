@@ -3,7 +3,7 @@
 > 用户 2026-05-24 硬约束: **任意数据 + 关联性, 准确率必须 100%.**
 > 此文件每条 trace: 数据点 → 准确率 → ground truth → 修复路径
 
-最后更新: 2026-05-25
+最后更新: 2026-06-10
 
 ## 一、推荐 / 对照算法 (精度敏感, 必须 100%)
 
@@ -52,8 +52,8 @@
 | 真题 jsonl 镜像 | gaokao 项目 | 100% | ✅ 镜像无修改 |
 | 4945 graph nodes | canonical.py | 100% | ✅ 来源固定 |
 | 34728 edges | links.py + links_extra | 100% | ✅ SQL 派生 |
-| 509 题库 (334 真+175 合成) | loader.py | 100% | ✅ |
-| 10641 question_tags | autotag SQL | 100% | ✅ 直按词存在性打标 |
+| 700 题库 (334 真题 + 275 合成) | loader.py + rule_synth_replacement | 100% | ✅ |
+| 12612 question_tags | autotag SQL | 100% | ✅ 直按词存在性打标 |
 
 ## 四、Audit 残余 (重归类: 不是 100% 违反, 是数据 OBS)
 
@@ -103,3 +103,28 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 ### 风险与偏差说明
 
 - 本轮主题覆盖率低（2.0%，`no_theme_question_count=73`），为数据语义层面的特征，不是生成错误；后续通过主题池扩展或真题语料增强再评估。
+
+### M2 一次性执行证据（2026-06-10）
+
+| 核验项 | 依据 |
+|---|---|
+| rule_synth 清退替换脚本 | `python3 scripts/tools/audit/rule_synth_replacement.py` |
+| 清退/替换 run_id | `20260610T073936Z` |
+| 替换报告 | `data/reports/rule_synth_replacement_20260610T073936Z.json` |
+| 替换前后对比 | 273 条 rule_synth 全量清退重建；`analysis` 缺失从 273 降到 0；重建后分布 `选义单选=245 / 完形填空_synth=15 / 语法填空_synth=15` |
+| 课程映射修复 | `course_materials` 156 条 `exam_question` 全部改为 `question:<origin_ref>` 且全部命中 `nodes.question` |
+| 质量门 | `python3 scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh` 均 PASS |
+
+### M3 一次性执行证据（2026-06-10）
+
+| 核验项 | 依据 |
+|---|---|
+| 里程碑 run_id | `20260610T074134Z` |
+| 执行脚本 | `python3 scripts/data_accuracy_check.py` |
+| 复核脚本 | `bash scripts/stop_gate.sh` |
+| 交付清单 | `python3 scripts/tools/monitor/verification_protocol.py --generate` |
+| 交付协议文件 | `data/reports/verification_protocol.json` |
+| 闭环报告 | `data/reports/m3_closure_20260610T074134Z.md`、`data/reports/m3_closure_20260610T074134Z.json` |
+| 质量指标 | `question_bank=700`、`question_tags=12612`、`courses=40`、`students=5`、`FAIL=0`、`WARN=0` |
+| 验收结论 | `M3` 关键门禁通过，当前仅 `verification_protocol` 仍待真人执行（V1~V8 均 pending） |
+| 风险与边界 | 人验项未执行完成，需在 `verification_protocol.json` 中登记后更新复核状态 |
