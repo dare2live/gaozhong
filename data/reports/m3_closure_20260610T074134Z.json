@@ -44,28 +44,28 @@
     },
     {
       "path": "data/reports/verification_protocol.json",
-      "sha256": "8a1f0edbe78ad5e11a031ea069b33e094a4da5b189cb767f7753d80ff6931446",
-      "note": "M3 人验入口清单；8 项均已落地，其中 V8 以源码确认 print 机制"
+      "sha256": "6290b220b14bdf8e998dccec1302d926104dc2d91102b0b1cf4d669975987f66f",
+      "note": "M3 人验清单；V1~V8 当前为 deferred（代补闭环）状态并保留代替证据"
     },
     {
       "path": "docs/data_accuracy_audit.md",
-      "sha256": "bad18297126d854fc0b67c849526e96d296f497d8b327a22ad32e087a45ac8da",
-      "note": "M3 一次性执行证据与剩余真人反馈风险补充完备"
+      "sha256": "34ce1bb98d6398c3f7a5c51366ebe4c87801bcb2d6237bc59889ef163c2319f0",
+      "note": "M3 一次性执行证据与剩余真人反馈风险补充（代补闭环）"
     },
     {
       "path": "goal.md",
-      "sha256": "7613fc1f23b1805fe3cc65d4574c304241b961d48dedfdedc470732a7c172cfb",
-      "note": "更新里程碑状态与 M3 执行口径（M3 已闭环，真人反馈待补）"
+      "sha256": "576ce5bc3443be05e31a68b9b187d11a3233ce930975aa1489a9f83e32c47c33",
+      "note": "更新里程碑状态与 M3 执行口径（代补闭环待真实反馈）"
     },
     {
       "path": "data/reports/m3_closure_20260610T074134Z.json",
-      "sha256": "bda05201550c056ab802f441a0a309445b7a46dfa2242e3bc1072cd3b58ae0b3",
-      "note": "本次 M3 闭环报告"
+      "sha256": "c524b07f55db31d384011612486e8829f30af54f3defc7ba5bddbc7751322fd5",
+      "note": "本次 M3 闭环报告（Markdown）（含代补状态）"
     },
     {
       "path": "data/reports/m3_closure_20260610T074134Z.md",
-      "sha256": "1a446813589a9c4a9a3649ab91ac06e598a0c5823253e7cee0957ebb9fffd65a",
-      "note": "本次 M3 闭环报告（Markdown）"
+      "sha256": "d1c597c944502e72f88c43cb1900d7de4916a74960cdcf428bf33d4bd2dea6ae",
+      "note": "本次 M3 闭环报告（含代补状态）"
     },
     {
       "path": "docs/app_smoke_round1.md",
@@ -74,13 +74,13 @@
     },
     {
       "path": "docs/user_test_round1.md",
-      "sha256": "1408c0cf0245aaa9b0e393efcb757f50c3e05f8d063581ec3a957f9872533449",
-      "note": "用户验收记录占位（待安排）"
+      "sha256": "f3f2440ed96c13a95b261f6b50fb4740e2887adf176aaa99413ed4dca8383730",
+      "note": "用户验收代补闭环记录（真人待补）"
     },
     {
       "path": "docs/teacher_feedback_round1.md",
-      "sha256": "777b8faf8b94da1e42a87f45888ffb9765c583981b6a405288620d54dbaf49df",
-      "note": "教师反馈记录占位（待安排）"
+      "sha256": "d761eb3cb0eaa5b887227e9671af8f29f53fd1b5f97b999fe2c3c25ced0c595f",
+      "note": "教师反馈代补闭环记录（真人待补）"
     }
   ],
   "closure_decision": {
