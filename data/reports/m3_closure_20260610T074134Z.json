@@ -48,23 +48,23 @@
       "note": "M3 人验清单；V1~V8 当前为 deferred（代补闭环）状态，并新增负责人/截止窗口/代补计划"
     },
     {
+      "path": "data/reports/m3_closure_20260610T074134Z_evidence.jsonl",
+      "sha256": "61abc2d23c2c83cfa2909a0e7035ba2ef286cc29704858101142edb2b23d87ce",
+      "note": "M3 统一追踪快照（V1~V8 owner/due/plan + 代验闭环依据）"
+    },
+    {
       "path": "docs/data_accuracy_audit.md",
-      "sha256": "4d7ee5dc9929903b4f148a5c7e42b0f8241ea931aea4c7e894cf575189f47ae3",
+      "sha256": "030363b7de4ca998a95e27a3f664c056413c44ae5906a6d86e65c2a771ba4671",
       "note": "M3 一次性执行证据与剩余真人反馈风险补充（代补闭环）; 新增 M3.2 代补复核追踪"
     },
     {
       "path": "goal.md",
-      "sha256": "4b3832ffd25303ee16607c9381bf26d4cfb81b089fe6ae983888947c85c90936",
+      "sha256": "83b9fa8aef9a9970d6703bc37b89ba36b46a502713d4ffdb81244744c2f59da0",
       "note": "更新里程碑状态与 M3 执行口径（代补闭环待真实反馈）；强化 Milestone-M3 与执行规则"
     },
     {
-      "path": "data/reports/m3_closure_20260610T074134Z.json",
-      "sha256": "804678f1ee3e73db2621e939b0d3fa1685e3c5673f3293cf14e3f3ddc34c681e",
-      "note": "本次 M3 闭环报告（含代补状态）；同步补齐文档哈希与计划字段"
-    },
-    {
       "path": "data/reports/m3_closure_20260610T074134Z.md",
-      "sha256": "d1c597c944502e72f88c43cb1900d7de4916a74960cdcf428bf33d4bd2dea6ae",
+      "sha256": "1b52140daac920d2754536dd67ea01088096c6d3207015f8b440009ed87da96a",
       "note": "本次 M3 闭环报告（含代补状态）"
     },
     {
@@ -74,12 +74,12 @@
     },
     {
       "path": "docs/user_test_round1.md",
-      "sha256": "7c3628f00f878db491d0abfc80e0911f402493afa24f52bb85317898333581e5",
+      "sha256": "52ed60f43e91eb15def920c9d06e4767b22568dec26277a24f28d136279f256a",
       "note": "用户验收代补闭环记录（真人待补）"
     },
     {
       "path": "docs/teacher_feedback_round1.md",
-      "sha256": "db61f658d121abd2a1ec1f3d3cc9d2553159ae6db7ac8f8e7ec65fffaffcc8a8",
+      "sha256": "4bfc283ca904f768c5b912324bf5ed05d66c3f94e424369299ebe7cb75702dfd",
       "note": "教师反馈代补闭环记录（真人待补）"
     }
   ],

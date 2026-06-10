@@ -1438,6 +1438,43 @@ alerts:
 4. 每个交付点必须包含 `run_id + 命令 + 输入快照 + 产物路径 + 复算说明`。  
 5. 里程碑状态只允许向前单向流转：未开始 -> 进行中 -> 已完成。
 
+## 2026-06-10 续航开发计划（非小步、非补丁）
+
+### 目标（本文件为执行单一真相源）
+
+把 M3 从“代补闭环”一次性推进到“可复验交付闭环”，不新增功能，先闭环。M3 完成后再进入 M4。
+
+### 里程碑计划（固定顺序）
+
+| 里程碑 | 目标产物（一次交付） | 开始条件 | 结束条件 | 窗口 |
+|---|---|---|---|---|
+| **M3.1 审计闭环收口** | `data/reports/m3_closure_<run_id>.json/.md`、`data/reports/verification_protocol.json`、`data/reports/m3_closure_<run_id>_evidence.jsonl`、`goal.md` 与 `docs/data_accuracy_audit.md` 状态统一快照 | 现有 M3 已运行脚本通过、V1~V8 可回填 | V1~V8 无 `deferred` / `pending`，每条具备 owner+due+plan+闭环路径 | 立即启动，最长 1-2 天 |
+| **M3.2 真实使用验收入档** | `docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`、映射到 V1~V8 的反馈对照表 | M3.1 通过并输出 run_id | 真实用户/老师/学生反馈清单完整，8 项均有“已关闭/不闭环原因+时间”状态 | 建议 2026-06-10 ~ 2026-06-16 |
+| **M3.3 M3 关闭并入 M4** | 更新 `goal.md` M3 状态为 `✅ 已完成`，新增 `M4` 为 `🔶 进行中`，记录新的 `run_id` | M3.1/M3.2 全部完成 | `data_accuracy_check.py`、`stop_gate.sh`、`verification_protocol` 三线一致且可复算 | 2026-06-16 前 |
+| **M4 课程主链路交付闭环** | `data/reports/m4_closure_<run_id>.json/.md`、`data/reports/m4_audit_matrix.jsonl`、`goal.md` 与 `docs/data_accuracy_audit.md` 同步 | M3 已完成 | 课程主流程（课程列表/讲义/作业/弱点推送）验收通过，R1~R6 和前端关键入口形成一次性闭环 | 2026-06-17 ~ 2026-07-07 |
+| **M5 运营试运行闭环** | 交付/巡检手册、周检脚本、演练报告、M5 冻结 run_id | M4 已完成 | 一次完整试运行演练链路闭环，且两周巡检无新增 FAIL/WARN | 2026-07-08 ~ 2026-07-14 |
+
+### 本轮执行口径（禁止小步）
+
+1. 本会话仅允许按「M3.1 -> M3.2 -> M3.3」推进；未结束 M3 前严禁进入 M4/M5。  
+2. 一次里程碑执行链包含三件事：数据产物、验收报告、文档同步。  
+3. 任何“TODO 未闭环”的项直接阻塞进度；不允许把代补记为完成。  
+4. 每个里程碑只允许提交一批文档/报告更新，不允许反复改动同一小项。
+
+### M3 当前执行清单（可直接执行）
+
+#### A. 先补齐代补为闭环（已完成部分）
+- 已落盘：建立统一追踪快照 `data/reports/m3_closure_20260610T074134Z_evidence.jsonl`（V1~V8 owner/due/plan + 代验收证据链）。
+- 剩余：等待真实验收人补录后，将 `verification_protocol.json` 与 `m3_closure` 报告中的对应项从 `deferred` 切为 `done` 或明确不可闭环。
+
+#### B. 再补齐反馈闭环
+- 目标：`docs/user_test_round1.md` + `docs/teacher_feedback_round1.md` 写入可复测反馈记录，并补齐到 8 项映射。  
+- 输出：每项反馈给出“证据文件 + 处理动作 + 复验计划”。
+
+#### C. 最后做状态收官
+- 目标：M3 全绿后将 `goal.md` 中 M3 标记为 `已完成`，并开启 M4。  
+- 输出：新增 `M3 run_id`、`M4 版本窗口`、`下阶段依赖项`。
+
 ## M0/M1 历史复盘锚点（保留）
 
 ### Milestone A — 真值基座闭环（已完成）
