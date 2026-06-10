@@ -66,44 +66,44 @@
   ],
   "results": {
     "V1": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "placement generate OK: total_expected=9, total_actual=9, n_answered=9",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V2": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "recommend=10条，course 27 讲义 4251 字符，materials=12",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V3": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "course 27 讲义段落 8 段，长度 4251",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V4": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "score n_total=9 n_correct=0 accuracy=0.0; followup=3题",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V5": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "listening count=25, first=652, transcript_len=167",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V6": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "student=sy-2024-001 weakness=3, recommend_feedback=10",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V7": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "graph popup related=4, questions=2, center=word:academic",
+      "timestamp": "2026-06-10T15:46:32"
     },
     "V8": {
-      "status": "pending",
-      "feedback": "",
-      "timestamp": ""
+      "status": "done",
+      "feedback": "/app# /#/teaching 讲义弹窗有 print 按钮（class='print-btn'），并绑定 window.print()；teacher 路由兼容也有 c-print 打印入口（teacher.js）",
+      "timestamp": "2026-06-10T15:46:32"
     }
   }
 }
