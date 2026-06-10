@@ -1228,7 +1228,7 @@ alerts:
 | M0 真值基座闭环 | `✅ 已完成` | `run_id=b3fd3dc87989be20` |
 | M1 图谱与趋势闭环 | `✅ 已完成` | `run_id=d0b83b4ef781d247` |
 | M2 内容与题库质量闭环 | `✅ 已完成` | `run_id=20260610T073936Z` |
-| M3 审计与交付闭环 | `✅ 已完成` | `run_id=20260610T074134Z` |
+| M3 审计与交付闭环 | `🟡 进行中` | `run_id=20260610T074134Z` |
 
 ### 本轮开发包（不分小步）
 
@@ -1322,7 +1322,7 @@ alerts:
 - 关键结论：
   - `question_bank=700`、`question_tags=12612`、`courses=40`、`students=5`、`FAIL=0`、`WARN=0`
   - `/app` 人验项清单已生成（V1~V8，当前为 pending），未改动新功能
-- 结论：进入审计交付闭环，`goal.md` 与 `docs/data_accuracy_audit.md` 同步完成。
+- 结论：审计系统口径已闭环；待 `verification_protocol` 人验反馈落库后将 `M3` 置为 `✅ 已完成`。
 
 ## Milestone D — 审计与交付闭环（M3）
 

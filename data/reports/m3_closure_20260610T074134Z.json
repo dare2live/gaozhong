@@ -59,12 +59,12 @@
     },
     {
       "path": "data/reports/m3_closure_20260610T074134Z.json",
-      "sha256": "b1d2d137a5af703c07c4ec59a606bcba92966ac4c60beb531909ac73c00546ef",
+      "sha256": "8c8067ef6166fd8ddcf2073f776d40b80e17ca72e232bafc2f686309ddfb7564",
       "note": "本次 M3 闭环报告"
     },
     {
       "path": "data/reports/m3_closure_20260610T074134Z.md",
-      "sha256": "d5c5874b6d8322924511c9e5f49db315fb6c37b82572deb7ecf957dc1aa63548",
+      "sha256": "9d21305114dbd9f355ab0ca9bfbe510495f8d40a3170f5ab7ab8024846169c04",
       "note": "本次 M3 闭环报告（Markdown）"
     }
   ],
@@ -74,14 +74,14 @@
       "run_id": "20260610T073936Z"
     },
     "M3": {
-      "status": "完成条件满足",
+      "status": "需补足人工验收项",
       "run_id": "20260610T074134Z",
       "gates": {
         "data_accuracy_check": "PASS",
         "stop_gate": "PASS",
         "verification_protocol": "PASS"
       },
-      "next_action": "goal.md 与 docs/data_accuracy_audit.md 对齐，更新 M3 状态"
+      "next_action": "补录 verification_protocol 各项 feedback 后，更新 M3 为完成态"
     },
     "blocking_issues": []
   }
