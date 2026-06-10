@@ -1,0 +1,47 @@
+{
+  "run_id": "d0b83b4ef781d247",
+  "generated_at": "2026-06-10T07:36:05+00:00",
+  "baseline_run_id": "b3fd3dc87989be20",
+  "truth_baseline_path": "data/reports/truth_baseline_2021_2025.json",
+  "input": {
+    "truth_baseline_run_id": "b3fd3dc87989be20",
+    "truth_baseline_path": "data/reports/truth_baseline_2021_2025.json",
+    "year_range": [
+      2021,
+      2025
+    ],
+    "province_like": "%辽宁%",
+    "snapshot_source": "scripts/tools/audit/truth_baseline_audit.py"
+  },
+  "query_rows": 74,
+  "year_counts": {
+    "2021": 16,
+    "2022": 16,
+    "2023": 24,
+    "2024": 9,
+    "2025": 9
+  },
+  "manifest": {
+    "db": {
+      "path": "/Users/dp/Documents/M/gaozhong/data/db/gaozhong.duckdb",
+      "exists": true,
+      "size": 46673920,
+      "mtime_ns": 1781076223672308077,
+      "signature": "f4809288ba835ecd1c118afb5cde17c25e4347dd"
+    },
+    "structured": {
+      "path": "/Users/dp/Documents/M/gaokao/data/structured/english_xgkii_2021_2025.jsonl",
+      "exists": true,
+      "size": 116787,
+      "mtime_ns": 1779719087655565711,
+      "signature": "7c4fab098bf8320c6a7e864e4a9de348b888caf9"
+    },
+    "verified_jsonl": {
+      "path": "/Users/dp/Documents/M/gaozhong/data/gaokao_verified_xgkii_2023_2024.jsonl",
+      "exists": true,
+      "size": 72431,
+      "mtime_ns": 1779718002129729071,
+      "signature": "5c852dbbb6bbde345180d53452ec53fb99a53e8c"
+    }
+  }
+}

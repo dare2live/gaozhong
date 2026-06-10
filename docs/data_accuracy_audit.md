@@ -85,3 +85,21 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 1. 新 API / 新算法落地 **必须** 在此表加一行 + 准确率 + 评估方式
 2. 任何 WARN 必须判 OBS or BUG; BUG → 立即修或入此表"非 100% 待修"
 3. PR 验收门 #14 (新加): "100% 数据准确率 maintain"
+
+## 七、M1 闭环验收（图谱与趋势）
+
+### M1 一次性执行证据（2026-06-10）
+
+| 核验项 | 依据 |
+|---|---|
+| 输入版本锁定 | `data/reports/truth_baseline_2021_2025.json`（run_id: `b3fd3dc87989be20`） |
+| 运行脚本 | `scripts/tools/audit/milestone_b_rebuild.py --truth-baseline data/reports/truth_baseline_2021_2025.json --min-year 2021 --max-year 2025 --province-like %辽宁%` |
+| run_id | `d0b83b4ef781d247` |
+| 四报告产物 | `data/reports/trend_input_snapshot_d0b83b4ef781d247.json`；`data/reports/exam_trend_report_d0b83b4ef781d247.json`；`data/reports/theme_coverage_report_d0b83b4ef781d247.json`；`data/reports/graph_connectivity_report_d0b83b4ef781d247.json` |
+| 闭环关键字段 | `query_rows=74`、`trend.n_questions=74`、`coverage_rate=2.0`、`graph node_count=4992`、`edge_count=37654`、`largest_ratio=0.9884` |
+| 复算一致性 | 剔除 `generated_at` 后 4 报告稳定 hash 一致（见 goal.md 本次 M1 实测结论） |
+| 质量门 | `scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh` 均 PASS |
+
+### 风险与偏差说明
+
+- 本轮主题覆盖率低（2.0%，`no_theme_question_count=73`），为数据语义层面的特征，不是生成错误；后续通过主题池扩展或真题语料增强再评估。

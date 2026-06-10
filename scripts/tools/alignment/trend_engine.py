@@ -62,24 +62,38 @@ YEAR_WEIGHTS = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
 YEAR_WEIGHT_OLD = 0.5
 
 
-def _yw(year: int) -> float:
-    return YEAR_WEIGHTS.get(year, YEAR_WEIGHT_OLD)
+def _yw(year: int, year_weights: dict[int, float] | None = None) -> float:
+    weights = YEAR_WEIGHTS if year_weights is None else year_weights
+    return weights.get(year, YEAR_WEIGHT_OLD)
 
 
-def analyze(con: duckdb.DuckDBPyConnection) -> dict:
+def analyze(
+    con: duckdb.DuckDBPyConnection,
+    *,
+    min_year: int = 2017,
+    max_year: int = 9999,
+    province_like: str = "%辽宁%",
+    year_weights: dict[int, float] | None = None,
+) -> dict:
     rows = con.execute(
-        "SELECT year, question_type, raw_question, answer, analysis "
-        "FROM exam_questions WHERE year >= 2017 AND province LIKE '%辽宁%' ORDER BY year"
+        """
+        SELECT year, question_type, raw_question, answer, analysis
+        FROM exam_questions
+        WHERE year >= ? AND year <= ? AND province LIKE ?
+        ORDER BY year
+        """,
+        [min_year, max_year, province_like],
     ).fetchall()
     years = sorted({r[0] for r in rows})
     heatmap, year_totals = _build_heatmap(rows, years)
-    trends = _compute_trends(heatmap, years)
+    trends = _compute_trends(heatmap, years, year_weights=year_weights)
     cooccurrence = _compute_cooccurrence(rows)
     recommendations = _generate_recommendations(trends, cooccurrence)
     return {
         "years": years, "n_questions": len(rows),
-        "year_weights": {y: _yw(y) for y in years},
+        "year_weights": {y: _yw(y, year_weights) for y in years},
         "heatmap": heatmap,
+        "year_totals": year_totals,
         "trends": trends,
         "cooccurrence": cooccurrence,
         "recommendations": recommendations,
@@ -115,11 +129,11 @@ def _wls_slope(x_vals: list, y_vals: list, weights: list) -> float:
     return num / den if den != 0 else 0
 
 
-def _compute_trends(heatmap, years) -> list[dict]:
+def _compute_trends(heatmap, years, year_weights: dict[int, float] | None = None) -> list[dict]:
     """加权线性回归趋势排序."""
     if len(years) < 2:
         return []
-    weights = [_yw(y) for y in years]
+    weights = [_yw(y, year_weights) for y in years]
     results = []
     for point, year_counts in heatmap.items():
         vals = [year_counts[y] for y in years]
@@ -188,9 +202,22 @@ def save(result: dict) -> Path:
 
 
 def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="真题命题趋势分析")
+    parser.add_argument("--min-year", type=int, default=2017)
+    parser.add_argument("--max-year", type=int, default=9999)
+    parser.add_argument("--province-like", default="%辽宁%")
+    args = parser.parse_args()
+
     con = duckdb.connect(str(DB_PATH), read_only=True)
     try:
-        result = analyze(con)
+        result = analyze(
+            con,
+            min_year=args.min_year,
+            max_year=args.max_year,
+            province_like=args.province_like,
+        )
     finally:
         con.close()
     path = save(result)

@@ -1,0 +1,65 @@
+{
+  "run_id": "d0b83b4ef781d247",
+  "generated_at": "2026-06-10T07:36:05+00:00",
+  "snapshot_run_id": "d0b83b4ef781d247",
+  "graph": {
+    "node_count": 4992,
+    "edge_count": 37654,
+    "relation_count": 15,
+    "relation_distribution": {
+      "tests_word": 28260,
+      "introduces_word": 4047,
+      "cefr_level": 3092,
+      "introduces_phrase": 700,
+      "tests_grammar": 362,
+      "question_type": 358,
+      "in_year": 358,
+      "derive_from": 194,
+      "cat_of": 103,
+      "in_volume": 77,
+      "theme_of_unit": 49,
+      "exam_year_of": 18,
+      "vol_in_ver": 14,
+      "city_uses": 14,
+      "allowed_in_ln": 8
+    },
+    "connected_components": 41,
+    "largest_component_size": 4934,
+    "largest_component_ratio": 0.9884,
+    "component_top_sizes": [
+      4934,
+      10,
+      10,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "edge_missing_src": 0,
+    "edge_missing_dst": 0,
+    "exam_question_nodes_missing": 0,
+    "exam_question_nodes_total": 376,
+    "critical_isolated_count": 0,
+    "course_materials": {
+      "total": 560,
+      "missing_ref": 156,
+      "by_kind": {
+        "word": 114,
+        "cefr_level": 50,
+        "question": 120,
+        "exam_question": 156,
+        "grammar": 42,
+        "unit": 78
+      }
+    }
+  },
+  "nodes": {
+    "total": 4992,
+    "edge_count": 37654,
+    "relation_count": 15,
+    "largest_ratio": 0.9884
+  }
+}

@@ -24,22 +24,42 @@ import duckdb
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 OUTPUT_PATH = ROOT / "data" / "reports" / "exam_patterns.json"
+YEAR_WEIGHTS = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
+YEAR_WEIGHT_OLD = 0.5
 
 
-def extract(con: duckdb.DuckDBPyConnection) -> dict:
+def _make_year_weights(years: set[int], custom: dict[int, float] | None = None) -> dict[int, float]:
+    weights = YEAR_WEIGHTS.copy()
+    if custom:
+        weights.update({int(k): float(v) for k, v in custom.items()})
+    return {y: weights.get(y, YEAR_WEIGHT_OLD) for y in sorted(years)}
+
+
+def extract(
+    con: duckdb.DuckDBPyConnection,
+    *,
+    min_year: int = 2021,
+    max_year: int = 9999,
+    province_like: str = "%辽宁%",
+    paper_like: str = "%新课标 II%",
+    year_weights: dict[int, float] | None = None,
+) -> dict:
     rows = con.execute(
-        "SELECT year, question_type, raw_question, answer, analysis "
-        "FROM exam_questions "
-        "WHERE year >= 2021 AND province LIKE '%辽宁%' AND province LIKE '%新课标 II%' "
-        "ORDER BY year"
+        """
+        SELECT year, question_type, raw_question, answer, analysis
+        FROM exam_questions
+        WHERE year >= ? AND year <= ? AND province LIKE ? AND paper_type LIKE ?
+        ORDER BY year
+        """,
+        [min_year, max_year, province_like, paper_like],
     ).fetchall()
     years = sorted({r[0] for r in rows})
-    year_weights = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
+    weights = _make_year_weights(set(years), year_weights)
     model = {
         "source": "exam_questions (2021+ 新课标 II 辽宁)",
         "n_questions": len(rows),
         "years": years,
-        "year_weights": {y: year_weights.get(y, 0.5) for y in years},
+        "year_weights": weights,
         "data_gap": [y for y in range(2021, 2026) if y not in years],
         "reading": _extract_reading([r for r in rows if r[1] == "阅读理解"]),
         "cloze": _extract_cloze([r for r in rows if "完形" in r[1]]),
@@ -162,9 +182,24 @@ def save(model: dict) -> Path:
 
 
 def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="真题命题特征提取")
+    parser.add_argument("--min-year", type=int, default=2021)
+    parser.add_argument("--max-year", type=int, default=9999)
+    parser.add_argument("--province-like", default="%辽宁%")
+    parser.add_argument("--paper-like", default="%新课标 II%")
+    args = parser.parse_args()
+
     con = duckdb.connect(str(DB_PATH), read_only=True)
     try:
-        model = extract(con)
+        model = extract(
+            con,
+            min_year=args.min_year,
+            max_year=args.max_year,
+            province_like=args.province_like,
+            paper_like=args.paper_like,
+        )
     finally:
         con.close()
     path = save(model)

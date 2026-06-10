@@ -1209,12 +1209,13 @@ alerts:
 ## 开发计划（非小步版，里程碑一次性收口）
 
 ### 目标
-用一个完整交付节奏把 M0~M3 推进到可交付状态，不再按“文件级小修复”推进；每个里程碑只允许一次性触发验收与状态切换，严格按 evidence-first 证据闭环落地。
+用一个完整交付节奏把 M0~M3 推进到可交付状态，不再按“文件级小修复”推进；每个里程碑只允许一次性触发验收与状态切换，严格按 evidence-first 证据闭环落地。  
+本次重点：一次性把 **Milestone B（图谱与趋势）**推进到可验收状态，然后再自然进入 M2。
 
 ### 当前会话起点（2026-06-10）
 
-- **M0 真值基座闭环**：`🔶 进行中（S0-S3 已完成，等待验收阈值确认）`
-- **M1 图谱与趋势闭环**：`⏸️ 等待`
+- **M0 真值基座闭环**：`✅ 已完成（S0-S3 验收通过；run_id=b3fd3dc87989be20）`
+- **M1 图谱与趋势闭环**：`✅ 已完成（复算通过；run_id=d0b83b4ef781d247）`
 - **M2 内容与题库质量闭环**：`⏸️ 等待`
 - **M3 审计与交付闭环**：`⏸️ 等待`
 
@@ -1225,7 +1226,60 @@ alerts:
 3. 里程碑间 **不允许核心写入** 并行开启；必须满足上游完成标准后才允许进入下一里程碑。  
 4. 每一项产出需落盘（脚本、报告、快照、审计记录）且可复算，文件路径写入本节对应“交付物清单”。
 
-### Milestone A — 真值基座闭环（2026-06-10 ~ 2026-06-16）
+### 本会话非小步执行包（仅限 M1）
+
+#### 目标（单次收口）
+在本次会话内执行以下动作并一次性提交验收材料：
+1. 用既定真值快照重建趋势/图谱闭环输出；
+2. 同一参数二次重跑，证明可复算、可重放；
+3. 通过与 M0 一致的质量门并在 `goal.md` 同步 M1 状态；
+4. 给出本轮的 `run_id`、输入清单、输出摘要，后续只允许基于该版本追修复而非继续并行补数据。
+
+#### M1 计划（2026-06-10 ~ 2026-06-11）
+
+**执行序列（只允许这一次触发）**
+- **P1 证据冻结**  
+  - 读取 `data/reports/truth_baseline_2021_2025.json`（确认 manifest hash）；
+  - 记录本轮参数：`min_year=2021`、`max_year=2025`、`province_like=%辽宁%`、`paper_like=%`；
+  - 固定并记录 `run_id`（由脚本输出）。
+- **P2 一次性产出闭环四件套**  
+  - 运行 `scripts/tools/audit/milestone_b_rebuild.py`；
+  - 预期只允许输出：  
+    - `data/reports/trend_input_snapshot_<run_id>.json`
+    - `data/reports/exam_trend_report_<run_id>.json`
+    - `data/reports/theme_coverage_report_<run_id>.json`
+    - `data/reports/graph_connectivity_report_<run_id>.json`
+- **P3 复算与稳定性证据**  
+  - 立即使用同参数二次运行，输出 `run_id`2；
+  - 对比两次输出，`schema` 与关键字段一致，剔除 `generated_at` 后的稳定哈希一致；
+  - 输出摘要写入本地会话日志（路径 + run_id + hash）。
+- **P4 质量门与跨链路回查**  
+  - `scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh`；
+  - 任一 FAIL/WARN 或 hash 漏斗、字段缺失直接阻断，必须返回修复。
+- **P5 状态收口**  
+  - M1 仅在以上三件套全部可追溯通过后，状态才改为 `✅ 完成`；
+  - 同步更新 `docs/data_accuracy_audit.md` 的对应证据行（报告路径、run_id、产物摘要）。
+
+#### 本次 M1 实测结论（已入证）
+
+- 参数固定：`truth_baseline=truth_baseline_2021_2025.json`, `min_year=2021`, `max_year=2025`, `province_like=%辽宁%`
+- `run_id`: `d0b83b4ef781d247`
+- 产物路径：
+  - `data/reports/trend_input_snapshot_d0b83b4ef781d247.json`
+  - `data/reports/exam_trend_report_d0b83b4ef781d247.json`
+  - `data/reports/theme_coverage_report_d0b83b4ef781d247.json`
+  - `data/reports/graph_connectivity_report_d0b83b4ef781d247.json`
+- 关键数值：
+  - `query_rows=74`、`trend.n_questions=74`
+  - `theme_coverage coverage_rate=2.0`
+  - `graph node_count=4992`、`edge_count=37654`、`largest_ratio=0.9884`
+- 重复运行稳定性（剔除 `generated_at` 后哈希一致）：
+  - trend_input_snapshot `9cb314a339273fc412fc7817b95cf4cb6b183ec04a0d8de34927c8463ac74a3c`
+  - exam_trend_report `66b14562ca22fc6a8e5fad261dd94944b6450875cecd8bf517beea9b2c845965`
+  - theme_coverage_report `9a0309e5b595bcb4c60b298fda07a00b2f430743b8f0b4e53c6bcf3ff8c0479b`
+  - graph_connectivity_report `8bd2b8da16a29e6095403bec8f68081f639e25f77d7a62dbc937e7e726fe1cf2`
+
+### Milestone A — 真值基座闭环（已完成基线）
 
 **核心目标**  
 把 `exam_questions` 与 `question_bank` 的辽宁真题建立可追溯、可复算、不可填充的统一真值链路。
@@ -1259,7 +1313,7 @@ alerts:
 - `cross_verify_*.json` 每条记录可回溯到真实文件路径与原始文本片段。
 - 停止任何“推断式”补齐（出现 `needs_verification=true` 或 `status=gap` 时不得落库）。
 
-### Milestone B — 图谱与趋势闭环（2026-06-17 ~ 2026-06-29）
+### Milestone B — 图谱与趋势闭环（2026-06-10 ~ 2026-06-11）
 
 **核心目标**  
 在 A 的真值快照基础上，重建趋势与图谱链路并产出可复算报告。
@@ -1277,7 +1331,15 @@ alerts:
 - `graph_connectivity` 与 `theme_coverage` 不回退。
 - `data_accuracy_check.py` 相关章节通过，不新增 FAIL/WARN。
 
-### Milestone C — 题库与课程闭环（2026-06-30 ~ 2026-07-13）
+### Milestone B 当前验收指标（本轮）
+
+#### 通过才可升至 M2 的条件
+- `trend_input_snapshot` / `exam_trend_report` / `theme_coverage_report` / `graph_connectivity_report` 全量生成，且 run_id 在本次日志中可复查；
+- 同一参数二次重跑后字段 schema 与核心指标（如真值总数、主题覆盖率、连通指标）一致；
+- `graph_connectivity` 与 `theme_coverage` 在本轮无回退；
+- `scripts/data_accuracy_check.py` 与 `stop_gate.sh` 无新增 FAIL/WARN。
+
+### Milestone C — 内容与题库质量闭环（2026-06-12 ~ 2026-06-22）
 
 **核心目标**  
 一次性打通“题库审计—课程产出—课堂闭环”三段链路。
@@ -1293,6 +1355,13 @@ alerts:
 **验收标准（通过才可升 M3）**
 - 题库与课程层审计项全部可追溯通过；`audit` 结果有版本化报告与修复记录。
 - `course` 关键字段（`textbook_position`、`year_level`、关联 tags）完整可追溯。
+
+### Milestone C 当前验收指标（本轮前置）
+
+#### 通过才可升至 M3 的条件
+- `course_templates`、作业闭环、question_bank 一致性和 R2/R3/R4/R5/R6 关键约束均有版本化报告；
+- `rule_synth` 与课程迁移有可追溯变更清单；
+- 与 `docs/data_accuracy_audit.md` 的链接和状态一致。
 
 ### Milestone D — 全面收口与交付闭环（2026-07-14 ~ 2026-07-20）
 

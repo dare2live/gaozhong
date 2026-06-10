@@ -1,0 +1,481 @@
+{
+  "run_id": "d0b83b4ef781d247",
+  "generated_at": "2026-06-10T07:36:05+00:00",
+  "snapshot_run_id": "d0b83b4ef781d247",
+  "theme_pool_count": 50,
+  "coverage": {
+    "version": 1,
+    "generated_at": "2026-06-10T07:36:05+00:00",
+    "theme_count": 50,
+    "covered_count": 1,
+    "coverage_rate": 2.0,
+    "items": [
+      {
+        "theme": "时间管理",
+        "count": 1,
+        "coverage_ratio": 0.0135
+      },
+      {
+        "theme": "AI 辅助科研",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "STEM 跨学科",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "city walk",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "丝路考古",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "人机协作",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "候鸟迁徙",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "博物馆热",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "友谊重构",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "古埃及金字塔解谜",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "哈尔滨冰雪季",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "国潮汉服",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "基因编辑",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "女足世界杯",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "学习动机",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "学术写作规范",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "学术诚信",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "学科前沿讲座",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "实习生日记",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "庞贝古城重现",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "拖延克服",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "故宫文物修复",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "数字游民",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "极地冰川变化",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "极地探险",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "校园食安",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "沙漠星空",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "流感病毒变异",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "海洋塑料治理",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "深海热泉生命",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "滑板入奥",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "火星探索任务",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "灵长类社会行为",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "玛雅遗址新发现",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "田野调查方法",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "电竞奥运",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "系外行星观测",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "脑机接口",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "自习室文化",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "自动驾驶伦理",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "茶道与礼仪",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "跨文化交流",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "远程办公",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "量子计算入门",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "阿尔茨海默症研究",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "雨林生态保护",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "露营复兴",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "青年企业家",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "非遗传承",
+        "count": 0,
+        "coverage_ratio": 0.0
+      },
+      {
+        "theme": "高考压力调节",
+        "count": 0,
+        "coverage_ratio": 0.0
+      }
+    ],
+    "uncovered": [
+      "AI 辅助科研",
+      "STEM 跨学科",
+      "city walk",
+      "丝路考古",
+      "人机协作",
+      "候鸟迁徙",
+      "博物馆热",
+      "友谊重构",
+      "古埃及金字塔解谜",
+      "哈尔滨冰雪季",
+      "国潮汉服",
+      "基因编辑",
+      "女足世界杯",
+      "学习动机",
+      "学术写作规范",
+      "学术诚信",
+      "学科前沿讲座",
+      "实习生日记",
+      "庞贝古城重现",
+      "拖延克服",
+      "故宫文物修复",
+      "数字游民",
+      "极地冰川变化",
+      "极地探险",
+      "校园食安",
+      "沙漠星空",
+      "流感病毒变异",
+      "海洋塑料治理",
+      "深海热泉生命",
+      "滑板入奥",
+      "火星探索任务",
+      "灵长类社会行为",
+      "玛雅遗址新发现",
+      "田野调查方法",
+      "电竞奥运",
+      "系外行星观测",
+      "脑机接口",
+      "自习室文化",
+      "自动驾驶伦理",
+      "茶道与礼仪",
+      "跨文化交流",
+      "远程办公",
+      "量子计算入门",
+      "阿尔茨海默症研究",
+      "雨林生态保护",
+      "露营复兴",
+      "青年企业家",
+      "非遗传承",
+      "高考压力调节"
+    ],
+    "no_theme_question_count": 73,
+    "sample_no_theme": [
+      {
+        "question_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+        "year": 2021,
+        "question_type": "完形填空",
+        "raw_question": "阅读下面短文，从短文后各题所给的A、B、C、D四个选项中，选出可以填入空白处的最佳选项。\nSimply saying thank you doesn't seem enough in certain situations. I was considering this while working as a ___41___ just a few weeks ago. And it came to me then how much easier it would be if we had a range of words that express different ___42___ of gratitude(感谢). \nMy thoughts were soon ___43___. We had a woman patient who was ___44___ from a knee replacement operation. One afternoon, while ___45___ to get into bed she collapsed(倒下) from what was ___46___ discovered to be a heart attack. The collapse was disastrous, ___47___the emergency medical team and good teamwork. But she recovered, though ___48___, and was ready for discharge(出院)after four weeks. \n She was ___49___ for everything that the medical and nursing team had done for her. On her day of discharge, we shared in her _____50_____ at her recovery. As she was _____51_____ she was eager to say _____52_____ to each of us in the nursing team. When she _____53_____ one nurse, she tried to press a five-pound note into her hand. My colleague _____54_____ to accept it, saying that we were all just _____55_____ our job. The patient looked puzzled, and then _____56_____:“Oh this isn't for the_____57_____ I had. I take that as a _____58_____. No, this is for setting my hair yesterday.”\n    And there you have it. To many people,_____59_____lives is part of the job but styling hair is an _____60_____ and should be rewarded.\n41. A. cleaner\tB. chemist\tC. nurse\tD. doctor\n42. A. grades\tB. meanings\tC. needs\tD. expectations\n43. A. brushed aside\tB. put to the test\tC. brought under discussion\tD. taken into account\n44. A. departing\tB. escaping\tC. retiring\tD. recovering\n45. A. attempting\tB. choosing\tC. pausing\tD. promising\n46. A. eventually\tB. fortunately\tC. casually\tD. secretly\n47. A. assessing\tB. requiring\tC. forming\tD. proving\n48. A. slightly\tB. accidentally\tC. slowly\tD. happily\n49. A. grateful\tB. thoughtful\tC. sorrowful\tD. fearful\n50 A. surprise\tB. delight\tC. curiosity\tD. disappointment\n51. A. operating\tB. thinking\tC. hesitating\tD. leaving\n52. A. sorry\tB. hello\tC. goodbye\tD. yes\n53. A. reached\tB. consulted\tC. introduced\tD. persuaded\n54. A. wished\tB. pretended\tC. failed\tD. refused\n55. A. enjoying\tB. doing\tC. securing\tD. starting\n56. A. repeated\tB. recited\tC. replied\tD. reported\n57. A. courage\tB. patience\tC. duty\tD. care\n58. A. goal\tB. given\tC. push\tD. greeting\n59. A. risking\tB. changing\tC. saving\tD. building\n60. A. honour\tB. ability\tC. opening\tD. extra\n",
+        "answer": "[C, A, B, D, A, A, B, C, A, B, D, C, A, D, B, C, D, B, C, D]",
+        "analysis": "【解析】\n【分析】这是一篇夹叙夹议的文章。文章通过作者做护士期间遇到的一个女病人为例，表达了我们应该对别人的付出表示真诚的感谢，即使他们只是做了自己分内的事。\n【41题详解】\n考查名词词义辨析。句意：几周前我在做护士的时候就在考虑这个问题。A. cleaner清洁工；B. chemist化学家，药剂师；C. nurse护士；D. doctor医生。根据下文的“as she was 11 she was eager to say 12 to each of us in the nursing team.”可知，当时作者是一名护士。故选C。\n【42题详解】\n考查名词词义辨析。句意：我突然想到，如果我们有一系列表达不同程度感激之情的词语，那会容易得多。A. grades分数，级别，程度；B. meanings意思；C. needs需求；D. expectations期待。根据上文的“simply saying thank you doesn’t seem enough in certain situations”可知，作者认为如果有表达不同程度感谢的词，那么感谢就容易得多了。故选A。\n【43题详解】\n考查动词短语辨析。句意：我的想法很快就进行了测验。A. brushed aside撇开；B. put to the test经受考验，接受……的考验；C. brought under discussion在讨论中；D. taken into account考虑。结合下文讲述女病人对护士们的所为，可知作者的想法立即接受了测验。故选B。\n【44题详解】\n考查动词词义辨析。句意：我们有一个病人膝盖置换手术后正在康复。A. departing出发，离开；B. escaping逃跑；C. retiring退休；D. recovering恢复。结合下文提到手术和病人从床上摔下来可知，病人正在恢复中。故选D。\n【45题详解】\n考查动词词义辨析。句意：一天下午，当她试图上床睡觉时，她因心脏病而摔倒了。A. attempting试图，尝试；B. choosing选择；C. pausing暂停；D. promising承诺。结合上文提到这是个膝盖有伤的病人，可推知她尝试着自己上床。故选A。\n【46题详解】\n考查副词词义辨析。句意：一天下午，当她试图上床睡觉时，她因心脏病而摔倒了。A. eventually最后；B. fortunately幸运地；C. casually随意地；D. secretly秘密地。结合上文病人是因为膝盖置换手术而住院，由此可知，此处是指最终发现摔倒是因为心脏病。故选A。\n【47题详解】\n考查动词词义辨析。句意：这次摔倒是灾难性的，需要紧急医疗队和良好的团队合作。A. assessing评估；B. requiring需要；C. forming形成；D. proving证明。根据“the collapse was disastrous”可知，要想把病人治好需要紧急医疗队和良好的团队合作。故选B。\n【48题详解】\n考查副词词义辨析。句意：虽然很慢，但她恢复了，四周后就可以出院了。A. slightly轻微地；B. accidently意外地；C. slowly缓慢地；D. happily幸福地。根据上文的“the collapse was disastrous”可知，要从灾难性的病痛中恢复一定很慢。故选C。\n【49题详解】\n考查形容词词义辨析。句意：她对医疗及护士团队为她所作的一切都非常感激。A. grateful感激的；B. thoughtful体贴的；C. sorrowful伤心的，悲伤的；D. fearful恐惧的。结合下文女病人离开前和大家一一道别，推知她对大家的付出表示感激。故选A。\n【50题详解】\n考查名词词义辨析。句意：在她出院那天，我们分享了她康复的喜悦。A. surprise惊喜；B. delight喜悦；C. curiosity好奇心；D. disappointment失望。根据下文的“her recovery”可知，此处是指分享她康复的喜悦。故选B。\n【51题详解】\n考查动词词义辨析。句意：当她要离开时，她急切地想和我们护理队的每一个人说再见。A. operating手术；B. thinking思考；C. hesitating犹豫；D. leaving离开。根据上文的“on her day of discharge”可知，女病人要出院了，所以此处是指当她即将离开医院时。故选D。\n【52题详解】\n考查名词词义辨析。句意：当她要离开时，她急切地想和我们护理队的每一个人说再见。A. sorry抱歉；B. hello你好；C. goodbye再见；D. yes同意。根据上文的“on her day of discharge”可知，女病人要出院了，由此推知她对护理团队的人告别，say goodbye to sb.“和某人告别”符合语境。故选C。\n【53题详解】\n考查动词词义辨析。句意：当她走到一个护士身边时，她试图塞一张五英镑的钞票在她手里。A. reached到达；B. consulted咨询；C. introduced介绍；D. persuaded说服。结合上文提到女病人出院时要和护士们一一道别可知，此处是指她走到一个护士的身边，用“reach”符合语境。故选A。\n【54题详解】\n考查动词词义辨析。句意：我的同事拒绝接受，说我们只是做了自己的工作而已。A. wished希望；B. pretended假装；C. failed失败；D. refused拒绝。结合常识和下文的“we were all just 13 our job”可知，作者的同事拒绝收下女士给的钱。故选D。\n【55题详解】\n考查动词词义辨析。句意：我的同事拒绝接受，说我们只是做了自己的工作而已。A. enjoying享受；B. doing做；C. securing获得，保护；D. starting开始。根据上文提到作者的同事拒绝收下钱可推知，她认为照顾病人只是做了自己应该做的事情而已。故选B。\n【56题详解】\n考查动词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. repeated重复；B. recited背诵；C. replied回答，回应；D. reported报道。结合上文作者同事说照顾女士是自己的工作，不应该得到额外的礼物可知，此处是女病人对同事说的话的回应。故选C。\n【57题详解】\n考查名词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. courage勇气；B. patience耐心；C. duty职责；D. care照顾。根据下文的“No, this is for setting my hair yesterday”可知，女病人并不是因为护士的照顾才给的五英镑。故选D。\n【58题详解】\n考查名词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. goal目标；B. given该给的东西；C. push推力；D. greeting招呼。根据上文的“No, this is for setting my hair yesterday”推知，女病人认为她得到的照顾是护士们应该给她的（东西）。故选B。\n【59题详解】\n考查动词词义辨析。句意：对许多人来说，拯救生命是工作的一部分，但发型是额外的，应该得到奖励。A. risking冒险；B. changing改变；C. saving拯救，挽救；D. building建设。根据上文内容可知，医生和护理团队拯救了女病人的生命可知，此处指很多人认为拯救生命是医生和护士工作的一部分。故选C。\n【60题详解】\n考查名词词义辨析。句意：对许多人来说，拯救生命是工作的一部分，但做发型是额外的事情，应该得到奖励。A. honour荣誉；B. ability能力；C. opening开口处；D. extra额外的东西。根据下文的“To many people，  19   lives is part of the job”和“but”可知，此处指做发型是本职工作以外的事情，即额外做的事情，应该得到奖励。故选D。\n",
+        "source_file": "2010-2022_English_Fill_in_Blanks",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 26
+      },
+      {
+        "question_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+        "year": 2021,
+        "question_type": "完形填空",
+        "raw_question": "阅读下面短文，从短文后各题所给的A、B、C和D四个选项中，选出可以填入空白处的最佳选项。\nIt's the seaside birds that deserve at least part of the blame for getting Nick Burchill blacklisted at the Fairmont Empress Hotel in Victoria, Canada.\nBurchill was ___21___ at the hotel on business and planning to ___22___ some friends in the area. They had asked him to ___23___ some pepperoni (辣香肠) from back east. So he ___24___ a suitcase full of pepperoni. As he was ___25___ that it would be too warm, he ___26___ it out on the table near an open window. He thought his pepperoni was ___27___ and well chilled (冷却) and he ___28___ .\nThat's when things went ____29____ “I remember walking down the long _____30_____ and opening the door to my room to find an entire flock of seagulls,” Burchill said in a recent letter of _____31_____ to the 4-star hotel. \"The seagulls immediately went _____32_____ . They rushed to the window, 30 or 40 birds all trying to _____33_____ at the same time, and pepperoni—everywhere. The curtains were falling down, the lamps were falling down, It was a real _____34_____ .\nOlder and wiser now, Burchill chalked up the incident to youthful indiscretion (莽撞).\n“I have _____35_____ and I admit responsibility of my _____36_____,” he said in the letter. “I come to you, _____37_____ , to apologize for the-damage I had _____38_____ caused and to ask you to _____39_____ my lifetime ban from the hotel.”\nHis letter _____40_____ . Banned from the hotel since 2001.Burchill is now welcome to come back, the Fairmont said.\n21. A. studying\tB. staying\tC. looking\tD. packing\n22. A. visit\tB. help\tC. follow\tD. make\n23. A. sell\tB. have\tC. bring\tD. taste\n24. A. filled\tB. locked\tC. abandoned\tD. lost\n25. A. surprised\tB. pleased\tC. excited\tD. worried\n26. A. dug\tB. cleared\tC. cut\tD. laid\n27. A. delicious\tB. safe\tC. soft\tD. ready\n28. A. left\tB. nodded\tC. waited\tD. regretted\n29. A. far\tB. funny\tC. wrong\tD. blind\n30. A. beach\tB. driveway\tC. hall\tD. table\n31. A. application\tB. apology\tC. request\tD. invitation\n32. A. hungry\tB. dead\tC. missing\tD. wild\n33. A. wake up\tB. get out\tC. take off\tD. break in\n34. A. mess\tB. puzzle\tC. fight\tD. challenge\n35. A. recovered\tB. retired\tC. escaped\tD. matured\n36. A. suffering\tB. plans\tC. madness\tD. actions\n37. A. hands in pocket\tB. nose in the air\tC. hat in hand\tD. feet on the ground\n38. A. indirectly\tB. deliberately\tC. cautiously\tD. secretly\n39. A. replace\tB. remember\tC. reconsider\tD. renew\n40. A. arrived\tB. worked\tC. ended\tD. disappeared\n",
+        "answer": "[D, A, C, A, D, D, B, A, C, C, B, D, B, A, D, D, C, A, C, B]",
+        "analysis": "[解析]\n[分析]这是一篇记叙文。文章主要讲了Burchill住酒店时，给朋友携带的意大利香肠招来了海鸥，海鸥在\n逃跑的过程中，造成了一些东西的损坏，Burchill 间接给酒店造成了损失。酒店把Burchill列入了黑名单，\nBurchill被终身禁止入住该酒店。Burchill 诚恳地写了道歉信，请求酒店重新考虑自己被终身禁止入住酒店\n的决定。最终，他的信起作用了。\n\n[21题详解]\n考查动词词义辨析。句意: Burchill 出差，当时正在酒店收拾行李，准备去拜访当地的一些朋友。A. studying\n研究; B. staying停留; C. looking看; D. packing包装。根据“Burchill was__21 _at the hotel on business and\nplanningto_ 22_ some friends in the area.\"及生活常识可知, Burchill 出差住在酒店，准备去拜访当地的一些朋友，自然是在酒店收拾行李。故选D.\n[22题详解]\n考查动词词义辨析。句意: Burchill 出差，当时正在酒店收拾行李，准备去拜访当地的- -些朋友。A. visit\n拜访; B. help帮助: C. fllow跟随; D. make制作。根据“They had asked himto_ 23_ some pepperoni(辣\n香肠) from back east. So he _24_ a suitase full of pepproni.\"可知，朋友让他带一些东西，由此推知Burchill准备去拜访当地的一-些朋友。故选A.\n[23题详解]\n考查动词词义辨析。句意:他们让他从美国东部带些意大利香肠过来。A. sell卖; B. have有; C. bring带来;\ntaste品尝。根据“Sohe_ 24_ a suitcase full of pepperoni.\"可知，Burchill 的朋友让他从美国东部带些意大利香肠过来。故选C.\n[24题详解]\n考查动词词义辨析。句意:所以他装了满满一箱子意 大利香肠。A. flled装满; B. locked锁上; C. abandoned\n抛弃; D. lost失。根据“a suitcase full of pepperoni\"和“They rushed to the window, 30 or 40 birds all trying\nto_ 33_ at the same timne, and pepperoni一everywhere.\" 可知，他装了满满一箱子意大利香肠。 故选A.\n[25题详解]\n考查形容词词义辨析。句意:因为担心会太热，他把它放在桌子上，靠近- -扇开着的窗户。A. suprised感\n到惊讶的; B. pleased高兴的; C. excited兴奋的; D. woried担心的。根据“he_ 26_ it out on the table near\nan open window.\"可知，他担心意大利香肠会太热，所以把它放在桌子上，靠近一扇开着的窗户。故选D.\n[26题详解]\n考查动词词义辨析。句意:因为担心会太热，他把它放在桌子上,靠近- -扇开着的窗户.A. dug挖; B. cleared\n清除; C.cut切下; D. laid放。根据“it out on the table near an open window”可知，他把它放在桌子上。故选D.\n[27题详解]\n考查形容词词义辨析。句意:他以为他的意大利香肠是安全的，冷却得很好，就走了。A. delicious美味的;\nB. safe安全的; C. soft柔软的; D. ready准备好。根据“I remamber walking down the long_ 30 _and opening\nthe door to my room to find an entire flock of seagulls,\" Burchill said in a recent letter of _31_to the 4-star hotel.\"可知, Burchill 离开了，由此推知，他以为他的意大利香肠是安全的，冷却得很好。故选B. \n\n[28题详解]\n考查动词词义辨析。句意:他以为他的意大利香肠是安全的，冷却得很好，就走了。A. left离开; B. nodded\n点头;C. waited等待; D. regeted后悔。根据“I remember walking downthe long_ 30 _and opening the door\nto my room to find an entire flock of seagulls,s Burchill said in a recent ltter of_ 31_ to the 4-star hotel.\"可知，Burchill 离开了。故选A.\n[29题详解]\n考查形容词词义辨析。句意:事情就在这时出了问题。A. far远的; B. funny有趣的; C. wrong失常的; D. blind\n盲目的。根据“The scagulls immdiatly went_ 32_. They rushed to the window, 30 or 40 birds all trying to_33_ at the same time, and pepperoni 一 everywhere. The curtains were flling down, the lamps were flling down,\nIt was a real _34_”可知，事情就在这时出了问题。故选C.\n[30题详解]\n考查名词词义辨析。句意: Burchill 在最近给这家四星级酒店的一封道歉信中说:“ 我记得我走过长长的大\n厅，打开房门，发现满满- -群海鸥。”A. beach海滩; B. driveway私人车道; C. hall大厅; D. table桌子。\n根据“and opening the door to my room to find an entre flock of seagulls\"可知，Burchill 走过长长的大厅。故\n选C。\n[31题详解]\n考查名词词义辨析。句意: Burchill 在最近给这家四星级酒店的一封道歉信中说:“ 我记得我走过长长的大\n厅，打开房门，发现满满一群海鸥。”A. application申请; B. apology道歉; C. request要求; D. invitation邀请。根据“I have_35_ and I admit responsibility of my_ 36 _.”he said in the letter.“I come to you,_37_， to apologize for the-damage I had_38_caused and to ask you to_39_ my lifetime ban from the hotel.\"”可知，Burchill 给酒店写了一封道歉信。故选B.\n[32题详解]\n考查形容词词义辨析。句意:海鸥立刻变得疯狂起来。A. hungry饥饿的; B. dead死亡的; C. missing失踪\n的; D. wild疯狂的。根据“They rushed to the window, 30 or 40 birds all trying to_ 33_ at the same time, and\npepproni - everywhere.\" 可知，海鸥被突然回到房间的Burchill吓到了，变得疯狂起来。故选D.\n[33题详解]\n考查动词短语辨析。句意:它们冲到窗口，30或40只鸟都想同时出去，到处都是意大利香肠。A. wakeup\n醒来; B. getout出去; C. take off起飞; D. breakin闯入。根据\"They rushed to the window\"及生活常识可知，鸟看到人类很害怕，想同时从窗户逃出去。故选B.\n[34题详解]\n考查名词词义辨析。句意:窗帘在落下，灯也在落下，真是一团糟。A. mess混乱; B. puzzle不解之谜; C.\nfight打架; D. callnge挑战。根据“The curtains were flling down, the lamps were flling down\"可知，现场一片混乱。故选A.\n[35题详解]\n考查动词词义辨析。句意:“ 我成熟了,我承认对自己的行为负责,”他在信中说。A. rcovered恢复; B. retired\n退休; C. escaped逃跑; D. matured成熟。根据“and I admit responsibilityofmy_ 36_ .” 可知，这里意思是Burchill认为自己成熟了。故选D. .\n[ 36题详解]\n考查名词词义辨析。句意:“ 我成熟了，我承认对自己的行为负责，”他在信中说。A. sfering苦难; B. plans\n计划; C. madness疯狂; D. actions行为。根据“I come to you,_ 37_ ， to apologize for the-damage Ihad_ 38_\ncaused and to askyouto_ 39 _my lifetime ban from the hotel.\"可知, Burchill 承认对自己的行为负责。故选D.\n[37题详解]\n考查固定短语辨",
+        "source_file": "2010-2022_English_Fill_in_Blanks",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 27
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/108",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "A\nThe Biggest Stadiums in the World\nPeople have been pouring into stadiums since the days of ancient Greece. In around 80 A.D., the Romans built the Colosseum, which remains the world’s best known stadium and continues to inform contemporary design. Rome’s Colosseum was 157 feet tall and had 80 entrances, seating 50,000 people. However, that was small fry compared with the city’s Circus Maximus, which accommodated around 250,000 people.\nThese days, safety regulations-not to mention the modern sports fan’s desire for a good view and comfortable seat—tend to keep stadium capacities（容量） slightly lower. Even soccer fans tend to have a seat each; gone are the days of thousands standing to watch the match. \nFor the biggest stadiums in the world, we have used data supplied by the World Atlas list so far, which ranks them by their stated permanent capacity, as well as updated information from official stadium websites. \nAll these stadiums are still funtiona1, still open and still hosting the biggest events in world sport. \n·Rungrado 1st of May Stadium, Pyongyang D.P.R. Korea. Capacity: 150,000. Opened: May 1,1989. \n·Michigan Stadium, Ann Arbor, Michigan, U. S. Capacity: 107,601. Opened: October 1, 1927. \n·Beaver Stadium, State College, Pennsylvania, U. S. Capacity: 106,572. Opened: September 17, 1960. \n·Ohio Stadium, Columbus, Ohio, U. S. Capacity: 104,944. Opened: October 7,1922.\n·Kyle Field, College Station, Texas, U. S. Capacity: 102,512. Opened: September 24, 1927.\n21. How many people could the Circus Maximus hold?\nA. 104,944.\tB. 107,601.\tC. About 150,000.\tD. About 250,000.\n22. Of the following stadiums, which is the oldest?\nA. Michigan Stadium.\tB. Beaver Stadium.\tC. Ohio Stadium.\tD. Kyle Field.\n23. What do the listed stadiums have in common?\nA. They host big games.\tB. They have become tourist attractions.\nC. They were built by Americans.\tD. They are favored by architects.\n",
+        "answer": "[D, C, A]",
+        "analysis": "【解析】\n【分析】这是一篇说明文。文章主要介绍了世界上著名的大型竞技场的基本情况。目前这些竞技场仍在运行并且还在承办大型体育赛事。\n【21题详解】\n细节理解题。根据第一段最后一句“However, that was small fry compared with the city’s Circus Maximus, which accommodated around 250,000 people.” (然而，与这座城市容纳了25万人的大竞技场相比，这只是小巫见大巫。)可知，Circus Maximus的可以容纳250,000人。故选D项。\n【22题详解】\n细节理解题。根据文章最后部分中的“Ohio Stadium, Columbus, Ohio, U.S. Capacity: 104,944. Opened October 7, 1922.” (美国俄亥俄州哥伦布市俄亥俄体育场，容纳人数：104,944人。1922年10月7日开业。)及其他四个著名竞技场的开放时间介绍可知，Ohio Stadium开放时间最早在1922年，属于年代最久远的。故选C项。\n【23题详解】\n细节理解题。根据文中“All these stadiums are still functional, still open and still hosting the biggest events in world sport.” (所有这些体育场馆仍在使用，仍在开放，仍在举办世界上最大的体育赛事。)可知，这些体育馆都还在承办大型的体育赛事。故选A项。\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 108
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/109",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "B\nWhen almost everyone has a mobile phone, why are more than half of Australian homes still paying for a landline（座机）?\nThese days you’d be hard pressed to find anyone in Australia over the age of 15 who doesn’t own a mobile phone. In fact plenty of younger kids have one in their pocket. Practically everyone can make and receive calls anywhere, anytime. \nStill, 55 percent of Australians have a landline phone at home and only just over a quarter （29%） rely only on their smartphones according to a survey （调查）. Of those Australians who still have a landline, a third concede that it’s not really necessary and they’re keeping it as a security blanket — 19 percent say they never use it while a further 13 percent keep it in case of emergencies. I think my home falls into that category. \nMore than half of Australian homes are still choosing to stick with their home phone. Age is naturally a factor（因素）— only 58 percent of Generation Ys still use landlines now and then, compared to 84 percent of Baby Boomers who’ve perhaps had the same home number for 50 years. Age isn’t the only factor; I’d say it’s also to do with the makeup of your household. \nGeneration Xers with young families, like my wife and I, can still find it convenient to have a home phone rather than providing a mobile phone for every family member. That said, to be honest the only people who ever ring our home phone are our Baby Boomers parents, to the point where we play a game and guess who is calling before we pick up the phone（using Caller ID would take the fun out of it）. \nHow attached are you to your landline? How long until they go the way of gas street lamps and morning milk deliveries?\n24. What does paragraph 2 mainly tell us about mobile phones?\nA. Their target users.\tB. Their wide popularity.\nC. Their major functions.\tD. Their complex design.\n25. What does the underlined word “concede” in paragraph 3 mean?\nA. Admit.\tB. Argue.\nC. Remember.\tD. Remark.\n26. What can we say about Baby Boomers?\nA. They like smartphone games.\tB. They enjoy guessing callers’ identity.\nC. They keep using landline phones.\tD. They are attached to their family.\n27. What can be inferred about the landline from the last paragraph?\nA. It remains a family necessity.\nB. It will fall out of use some day.\nC. It may increase daily expenses.\nD. It is as important as the gas light.\n",
+        "answer": "[B, A, C, B]",
+        "analysis": "【解析】\n【分析】本文是一篇说明文。文章主要介绍了澳大利亚使用固定电话的情况，并且表达了固定电话是非必需品的观点。\n【24题详解】\n主旨大意题。根据文章第二段“These days you'd be hard pressed to find anyone in Australia over the age of 15 who doesn't own a mobile phone. In fact plenty of younger kids have one in their pocket. Practically everyone can make and receive calls anywhere, anytime. (现在你很难在澳大利亚找到15岁以上的没有手机的人。事实上，很多年幼的孩子口袋里都有手机。几乎每个人都可以随时随地拨打和接听电话)”可推知，本段主要说明手机在澳大利亚广受欢迎。故选B项。\n【25题详解】\n词句猜测题。根据划线单词的上文“Of those Australians who still have a landline (在那些仍然有固定电话的澳大利亚人中)”可知，这个调查的目标人群是仍然有固定电话的澳大利亚人；根据下文“it's not really necessary and they're keeping it as a security blanket — 19 percent say they never use it while a further 13 percent keep it in case of emergencies (固定电话并不是必须的，他们将其作为一种安全保障——19%的人表示他们从未使用过固定电话，另有13%的人保留固定电话以防紧急情况)”可知，很多人认为固定电话并不是必须拥有的，有些人保留固定电话只是为了防止紧急情况。从而推知，在调查中，他们应该是承认了固定电话的非必要性。由此推知，划线单词“concede”意为“承认”。故选A项。\n【26题详解】\n推理判断题。根据文章第四段“84 percent of Baby Boomers who've perhaps had the same home number for 50 years.(婴儿潮时代中有84%的人可能已经有50年相同的家庭号码了)”以及文章第五段“That said, to be honest the only people who ever ring our home phone are our Baby Boomers parents (也就是说，老实说，唯一打过我们家电话的人是婴儿潮一代的父母)”可推知，婴儿潮时代的人一直用固定电话。故选C项。\n【27题详解】\n推理判断题。根据文章最后一段“How attached are you to your landline? How long until they go the way of gas street lamps and morning milk deliveries? (你有多喜欢你的座机？它们还要多久才能走上煤气路灯和早晨送牛奶的道路？)”可推知，本段使用类比的方式，使用煤气路灯以及早晨送牛奶已经被淘汰的例子，侧面说明了固定电话总有一天会废弃的。故选B项。\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 109
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/110",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "C\nYou’ve heard that plastic is polluting the oceans — between 4.8 and 12.7 million tonnes enter ocean ecosystems every year. But does one plastic straw or cup really make a difference? Artist Benjamin Von Wong wants you to know that it does. He builds massive sculptures out of plastic garbage, forcing viewers to re-examine their relationship to single-use plastic products. \nAt the beginning of the year, the artist built a piece called “Strawpocalypse,” a pair of 10-foot-tall plastic waves, frozen mid-crash. Made of 168,000 plastic straws collected from several volunteer beach cleanups, the sculpture made its first appearance at the Estella Place shopping center in Ho Chi Minh City, Vietnam. \nJust 9% of global plastic waste is recycled. Plastic straws are by no means the biggest source（来源）of plastic pollution but they’ve recently come under fire because most people don’t need them to drink with and, because of their small size and weight, they cannot be recycled. Every straw that’s part of Von Wong’s artwork likely came from a drink that someone used for only a few minutes. Once the drink is gone, the straw will take centuries to disappear. \nIn a piece from 2018, Von Wong wanted to illustrate（说明） a specific statistic: Every 60 seconds, a truckload’s worth of plastic enters the ocean. For this work, titled “Truckload of Plastic,” Von Wong and a group of volunteers collected more than 10,000 pieces of plastic, which were then tied together to look like they’d been dumped（倾倒） from a truck all at once. \nVon Wong hopes that his work will also help pressure big companies to reduce their plastic footprint.\n28. What are Von Wong’s artworks intended for?\nA. Beautifying the city he lives in.\tB. Introducing eco-friendly products.\nC. Drawing public attention to plastic waste.\tD. Reducing garbage on the beach.\n29. Why does the author discuss plastic straws in paragraph 3?\nA. To show the difficulty of their recycling.\nB. To explain why they are useful.\nC. To voice his views on modern art.\nD. To find a substitute for them.\n30. What effect would “Truckload of Plastic” have on viewers?\nA. Calming.\tB. Disturbing.\nC. Refreshing.\tD. Challenging.\n31. Which of the following can be the best title for the text?\nA. Artists’ Opinions on Plastic Safety\nB. Media Interest in Contemporary Art\nC. Responsibility Demanded of Big Companies\nD. Ocean Plastics Transformed into Sculptures\n",
+        "answer": "[C, A, C, D]",
+        "analysis": "【解析】\n【分析】本文是一篇说明文。文章介绍了艺术家Benjamin Von Wong用塑料垃圾制作了一个巨大的雕塑作品，让人们通过这个雕塑重新审视自己与一次性塑料制品的关系。此外他在2018的一件作品“Truckload of Plastic”说明了每60秒，就有一卡车塑料进入海洋。Von Wong通过用塑料垃圾制造巨型雕塑来唤醒和提高人们的环保意识。\n【28题详解】\n推理判断题。根据第一段“But does one plastic straw or cup really make a difference? Artist Benjamin Von Wong wants you to know that it does. He builds massive sculptures out of plastic garbage, forcing viewers to re-examine their relationship to single-use plastic products.(但一根塑料吸管或一个塑料杯真的有什么区别吗？艺术家本杰明·冯·王（Benjamin Von Wong）想让你知道，它确实如此。他用塑料垃圾建造巨大的雕塑，迫使观众重新审视他们与一次性塑料产品的关系。)”可知，Von Wong用塑料垃圾制作的雕塑想让人们重新审视与一次性塑料制品的关系，由此可知他做这个雕塑的目的是为了引起公众对塑料垃圾的关注。故选C项。\n【29题详解】\n推理判断题。根据第三段“Just 9% of global plastic waste is recycled. Plastic straws are by no means the biggest source(来源) of plastic pollution, but they’ve recently come under fire because most people don’t need them to drink with and, because of their small size and weight, they cannot be recycled. Every straw that’s part of Von Wong’s artwork likely came from a drink that someone used for only a few minutes. Once the drink is gone, the straw will take centuries to disappear.(全球只有9%的塑料垃圾被回收。塑料吸管绝不是最大的塑料污染源，但它们最近却受到了抨击，因为大多数人不需要吸管喝饮料，而且由于它们体积小、重量轻，无法回收利用。冯·王作品中的每一根吸管都很可能来自只喝了几分钟的饮料。一旦饮料消失了，吸管也要几个世纪才能消失。)”可知，吸管由于体积小，重量轻，无法回收利用，由此可推知，作者在第三段讨论吸管是为了展示它们回收的困难。故选A项。\n【30题详解】\n推理判断题。根据倒数第二段“In a piece form 2018, Von Wong wanted to illustrate(说明) a specific statistic: Every 60 seconds, a truckload’s worth of plastic enters the ocean. For this work, titled “Truckload of Plastic,” Von Wong and a group of volunteers collected more than 10,000 pieces of plastic, which were then tied together to look like they’d been dumped(倾倒) from a truck all at once.(在2018年的一个作品中，冯·王(Von Wong)想要说明一个具体的统计数字：每60秒，就有一卡车塑料进入海洋。这项名为“一卡车塑料”的作品，冯·王和一组志愿者收集了一万多块塑料，然后把它们绑在一起，让它们看起来像是同时从卡车上倾倒下来的。)”可知，这个作品以创新的方式让人们了解到塑料垃圾以很快的速度和很大的量倾入海洋，刷新了观众对海洋塑料污染的认知，由此可推断，这个作品会让观众对塑料垃圾进入海洋这件事“耳目一新”。故选C项。\n【31题详解】\n标题判断题。通读全文，结合第一段“But does one plastic straw or cup really make a difference? Artist Benjamin Von Wong wants you to know that it does. He builds massive sculptures out of plastic garbage, forcing viewers to re-examine their relationship to single-use plastic products.(但一根塑料吸管或一个塑料杯真的有什么区别吗？艺术家本杰明·冯·王(Benjamin Von Wong)想让你知道，它确实如此。他用塑料垃圾建造巨大的雕塑，迫使观众重新审视他们与一次性塑料产品的关系。)”和倒数第二段“In a piece form 2018, Von Wong wanted to illustrate(说明) a specific statistic: Every 60 seconds, a truckload’s worth of plastic enters the ocean. For this work, titled “Truckload of Plastic,” Von Wong and a group of volunteers collected more than 10,000 pieces of plastic, which were then tied together to look like they’d been dumped(倾倒) from a truck all            at once.(在2018年的一个作品中，冯·王(Von Wong)想要说明一个具体的统计数字：每60秒，就有一卡车塑料进入海洋。这项名为“一卡车塑料”的作品，冯·王和一组志愿者收集了一万多块塑料，然后把它们绑在一起，让它们看起来像是同时从卡车上倾倒下来的。)”可知艺术家本杰明·冯·王(Benjamin Von Wong)通过利用塑料垃圾制作巨型雕塑的方法来提示人们重新思考与一次性塑料的关系，唤醒和提高人们循环利用的意识，促进环保的发展。由此可知，D项“海洋塑料变成雕塑”符合文章主旨，适合作为标题。故选D项。\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 110
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/111",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "D\nDuring an interview for one of my books, my interviewer said something I still think about often. Annoyed by the level of distraction（干扰）in his open office, he said, “That’s why I have a membership at the coworking space across the street — so I can focus”. His comment struck me as strange. After all, coworking spaces also typically use an open office layout（布局）. But I recently came across a study that shows why his approach works. \nThe researchers examined various levels of noise on participants as they completed tests of creative thinking. They were randomly divided into four groups and exposed to various noise levels in the background, from total silence to 50 decibels（分贝）, 70 decibels, and 85 decibels. The differences between most of the groups were statistically insignificant; however, the participants in the 70 decibels group — those exposed to a level of noise similar to background chatter in a coffee shop — significantly outperformed the other groups. Since the effects were small, this may suggest that our creative thinking does not differ that much in response to total silence and 85 decibels of background noise. \nBut since the results at 70 decibels were significant, the study also suggests that the right level of background noise — not too loud and not total silence — may actually improve one’s creative thinking ability. The right level of background noise may interrupt our normal patterns of thinking just enough to allow our imaginations to wander, without making it impossible to focus. This kind of “distracted focus” appears to be the best state for working on creative tasks. \nSo why do so many of us hate our open offices? The problem may be that, in our offices, we can’t stop ourselves from getting drawn into others’ conversations while we’re trying to focus. Indeed, the researchers found that face-to-face interactions and conversations affect the creative process, and yet a coworking space or a coffee shop provides a certain level of noise while also providing freedom from interruptions.\n32 Why does the interviewer prefer a coworking space?\nA. It helps him concentrate.\tB. It blocks out background noise.\nC. It has a pleasant atmosphere.\tD. It encourages face-to-face interactions.\n33. Which level of background noise may promote creative thinking ability?\nA. Total silence.\tB. 50 decibels\tC. 70 decibels.\tD. 8 5 decibels.\n34. What makes an open office unwelcome to many people?\nA. Personal privacy unprotected.\tB. Limited working space.\nC. Restrictions on group discussion.\tD. Constant interruptions.\n35. What can we infer about the author from the text?\nA. He’s a news reporter.\nB. He’s an office manager.\nC. He’s a professional designer.\nD. He’s a published writer.\n",
+        "answer": "[A, C, D, D]",
+        "analysis": "【解析】\n【分析】这是一篇说明文。作者通过自身经历讲述人们为什么不喜欢开放性办公室以及有关多少分贝的噪音最有利于人们的创造性思维的研究。\n【32题详解】\n细节理解题。根据第一段“That’s why I have a membership at the coworking space across the street - so I can focus.（这就是为什么我在街对面的公用办公空间有会员资格——这样我就可以集中精力了。）”可知，采访者喜欢共享办公空间的原因是那里可以帮助他集中精力。故选A项。\n【33题详解】\n细节理解题。根据第二段“The differences between most of the groups were statistically insignificant; however, the participants in the 70 decibels group - those exposed to a level of noise similar to background chatter in a coffee shop - significantly outperformed the other groups.（大多数组之间的差异在统计学上是不显著的；然而，音量为70分贝的那组参与者（置身于类似于咖啡店背景噪音的环境中）的表现明显好于其他组。）”和第三段“But since the results at 70 decibels were significant, the study also suggests that the right level of background noise - not too loud and not total silence - may actually improve one's creative thinking ability.（但由于70分贝的结果很显著，该研究还表明，适当的背景噪音——不要太大声，也不要完全安静——实际上可能会提高一个人的创造性思维能力。）”可知，70分贝的那组参与者表现好于其他组，所以70分贝的噪音背景环境更有可能促进创造性思维能力。故选C项。\n34题详解】\n细节理解题。根据最后一段“So why do so many of us hate our open offices? The problem may be that, in our offices, we can't stop ourselves from getting drawn into others' conversations while we're trying to focus. Indeed, the researchers found that face-to-face interactions and conversations affect the creative process, and yet a coworking space or a coffee shop provides a certain level of noise while also providing freedom from interruptions.（那么，为什么我们中有那么多人讨厌开放式办公室呢？问题可能是，在我们的办公室里，当我们试图集中注意力时，我们无法阻止自己卷入别人的谈话中。的确，研究人员发现，面对面的互动和对话会影响创作过程，然而，共同工作空间或咖啡馆在提供一定程度的噪音的同时，也提供不受干扰的自由。）”可知，开放式办公室不受人们欢迎的原因是让我们不断地卷入别人的谈话中，受到很多干扰。故选D 项。\n【35题详解】\n推理判断题。根据第一段“During an interview for one of my books, my interviewer said something I still think about often.（在一次采访我的一本书时，我的采访者说了一些我至今还经常想起的话。）”可知，作者提到有人采访自己的书，所以可以推断，作者是一位作家。故选D项。\n第二节\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 111
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/112",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "A\nA Take a view, the Landscape（风景）Photographer of the Year Award, was the idea of Charlie Waite, one of today's most respected landscape photographers.Each year, the high standard of entries has shown that the Awards are the perfect platform to showcase the very best photography of the British landscape.Take a view is a desirable annual competition for photographers from all comers of the UK and beyond.\n\n1. Who would most probably enter for Take a view?\nA. Writers.\tB. Photographers.\tC. Painters.\tD. Tourists.\n2. What do the works by Shepherd and Smith have in common?\nA. They are winter images.\nB. They are in black and white.\nC. They show mountainous scenes.\nD. They focus on snow—covered forests.\n3. Where can the text be found?\nA. In a history book.\tB. In a novel.\tC. In an art magazine.\tD. In a biography.\n",
+        "answer": "[B, A, C]",
+        "analysis": "[解析]\n[分析]这是一篇应用文。 文章主要介绍了摄影比賽Take a view以及获奖的相关情况。\n[1题详解]\n细节理解题。根据第一段\"Take a view, the Landscape(风景) Photographer of the Year Award,was the idea of\nCharlie Waite, one of today's most respected landscape photographers.”( Take a view，年度风景摄影师奖是\nCharlie Waite的主意,他是当今最受尊敬的风景摄影师之- -) 可知摄影师最有可能参加Take a view.故选B.\n[2题详解]\n细节理解题。根据Mike Shepherd部分“It was an extremely cold wintar's evening and freezing fog hung in the\nair.”(那是- -个极其寒冷的冬天的晚上，空气中弥漫着冰冷的雾)和Timothy Smith部分“I was back in my\nhome town of Maclesfield to take some winter images.\" (我回到我的家乡Macclesfield 拍摄- - 些冬季的照片)\n可知Shepherd和Smith 的作品的共同之处是它们都是冬天的景象。故选A.\n[3题详解]\n推理判断题。根据第- -段“Each year, the high standard of entries has shown that the Awards are the perfect\nplaform to showcase the very best photography of the British landscape. Take a view is a desirable annual\ncompetition for photographers from all comers of the UK and beyond.\" ( 每年参赛作品的高水准表明，该奖项是展示英国风景最佳摄影作品的完美平台。对于英国和世界各地的摄影师来说，Take aview是一项令人向往的年度竞赛)结合下文对两位获奖者及其作品的介绍，可知这篇文章主要介绍了摄影比赛Takeaview以\n及获奖的相关情况，最可能出现在一-本艺术杂志上。故选C.\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 112
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/113",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "B\nPort Lympne Reserve, which runs a breeding (繁育) programme, has welcomed the arrival of a rare black rhino calf (犀牛幼崽). When the tiny creature arrived on January 31, she became the 40th black rhino to be born at the reserve. And officials at Port Lympne were delighted with the new arrival, especially as black rhinos are known for being difficult to breed in captivity (圈养).\nPaul Beer, head of rhino section at Port Lympne, said: “Obviously we're all absolutely delighted to welcome another calf to our black rhino family. She's healthy, strong and already eager to play and explore. Her mother, Solio, is a first-time mum and she is doing a fantastic job. It's still a little too cold for them to go out into the open, but as soon as the weather warms up, I have no doubt that the little one will be out and about exploring and playing every day.”\nThe adorable female calf is the second black rhino born this year at the reserve, but it is too early to tell if the calves will make good candidates to be returned to protected areas of the wild. The first rhino to be born at Port Lympne arrived on January 5 to first-time mother Kisima and weighed about 32kg. His mother, grandmother and great grandmother were all born at the reserve and still live there.\nAccording to the World Wildlife Fund, the global black rhino population has dropped as low as 5500, giving the rhinos a “critically endangered” status.\n4. Which of the following best describes the breeding programme?\nA. Costly.\tB. Controversial.\tC. Ambitious.\tD. Successful.\n5. What does Paul Beer say about the new-born rhino?\nA. She loves staying with her mother.\tB. She dislikes outdoor activities.\nC. She is in good condition\tD. She is sensitive to heat.\n6. What similar experience do Solio and Kisima have?\nA. They had their first born in January.\tB. They enjoyed exploring new places\nC. They lived with their grandmothers.\tD. They were brought to the reserve young\n7. What can be inferred about Porn Lympne Reserve?\nA. The rhino section will be open to the public.\nB. It aims to control the number of the animals.\nC. It will continue to work with the World Wildlife Fund.\nD. Some of its rhinos may be sent to the protected wild areas.\n",
+        "answer": "[D, C, A, D]",
+        "analysis": "[解析]\n[分析]本文是- -篇说明文。文章主要介绍了在Port Lympne保护区的部分黑犀牛现状。\n[4题详解]\n推理判断题。通过文章第-段“she became the 40th black rhino to be bormn at the reserve (她成为该保护区出生\n的第40头黑犀牛)”以及文章倒数第二段“His mother, grandmnother and great grandnother were all bor at the\nreserve and still live there. (他的母亲、祖母和曾祖母都出生在保护区，至今仍住在那里)”可知，保护区的繁\n育计划使很多黑犀牛成功存活，可推知，这计划是成功的。故选D项。\n[5题详解]\n细节理解题。通过文章第二段“She's healthy, strong and already eager to play and explore. (她很健康，很强壮，\n已经渴望玩耍和探索了)”可知，Paul Beer认为新生的犀牛身体状况很好。故选C项。\n[6题详解]\n细节理解题。通过文章第一-段 “When the tinv creature anrived on January 31, she became the 40th black rhinoto\nbe bornat the reserve. (1月31日，当这头小犀牛来到保护区时，她成为了第40头在保护区出生的黑犀牛)”\n以及文章倒数第二段“The first rhino to be bom at Port Lympne arrived on January 5 to first-time mother Kisima\nand weighed about32kg. (1月5日，犀牛妈妈Kisima分娩的第一头小犀牛， 同时也是第一-个出 生在Port\nLympne,体重约为32公斤)”可知，Solio 和Kisima的第-一个孩子都是在- -月 份出生的。故选A项。\n[7题详解]\n推理判断题。通过文章倒数第二二段“it is too early to tell if the calves will make good candidates to be retumed to\nprotected areas of the wild (要判断这些小犀牛是否会成为返回野生保护区的好的候选者还为时过早)”可推\n知，Pon Lynpne保护区的一- 些犀牛可能会被送到野生保护区。故选D项。\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 113
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/114",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "C\nWhen I was 9, we packed up our home in Los Angeles and arrived at Heathrow, London on a gray January morning. Everyone in the family settled quickly into the city except me. Without my beloved beaches and endless blue—sky days, I felt at a loss and out of place. Until I made a discovery.\nSouthbank, at an eastern bend in the Thames, is the center of British skateboarding, where the continuous crashing of skateboards left your head ringing .I loved it. I soon made friends with the local skaters. We spoke our own language. And my favorite: Safe. Safe meant cool. It meant hello. It meant don't worry about it. Once, when trying a certain trick on the beam（横杆）, I fell onto the stones, damaging a nerve in my hand, and Toby came over, helping me up: Safe, man. Safe. A few minutes later, when I landed the trick, my friends beat their boards loud, shouting: “ Safe! Safe! Safe!” And that's what mattered—landing tricks, being a good skater.\nWhen I was 15, my family moved to Washington. I tried skateboarding there, but the locals were far less welcoming. Within a couple of years, I'd given it up.\nWhen I returned to London in 2004, I found myself wandering down to Southbank, spending hours there. I've traveled back several times since, most recently this past spring. The day was cold but clear: tourists and Londoners stopped to watch the skaters. Weaving（穿梭）among the kids who rushed by on their boards, I found my way to the beam. Then a rail—thin teenager, in a baggy white T—shirt, skidded（滑）up to the beam. He sat next to me. He seemed not to notice the man next to him. But soon I caught a few of his glances. “I was a local here 20 years ago,” I told him. Then, slowly, he began to nod his head. “Safe, man. Safe.”\n“Yeah,” I said. “Safe.”\n8. What can we learn about the author soon after he moved to London?\nA. He felt disappointed.\tB. He gave up his hobby.\nC. He liked the weather there.\tD. He had disagreements with his family.\n9. What do the underlined words “Safe! Safe! Safe!” probably mean?\nA. Be careful!\tB. Well done!\tC. No way!\tD. Don't worry!\n10. Why did the author like to spend time in Southbank when he returned to London?\nA. To join the skateboarding.\tB. To make new friends.\nC. To learn more tricks.\tD. To relive his childhood days\n11. What message does the author seem to convey in the text?\nA. Children should learn a second language.\nB. Sport is necessary for children's health.\nC. Children need a sense of belonging\nD. Seeing the world is a must for children.\n",
+        "answer": "[A, B, D, C]",
+        "analysis": "[解析]\n[分析]本文属于记叙文。本文讲述作者自己的经历，起初搬到伦敦很不适应，但是由于找到了玩滑板的\n地方，结识了玩滑板的朋友，因此很好的适应了。作者回到伦敦之后，经常去之前玩滑板的地方寻找自己\n的回忆，在与-个玩滑板的孩子打招呼的时候，终于找到了自己久违的熟悉感。\n[8题详解]\n推理判断题。根据第一段 \"Everyone in the family sttled quickdy into the ceity except me. Without my beloved\nbeaches and endless blue -sky days, I felt at a loss and out of place.(除了我之外的家里人都很快适应这个城市，\n没有了我喜爱的沙滩和蓝天，我感到迷茫和无措)”可知，作者刚到伦敦的时候因为没有喜爱的沙滩，不能很\n好的融入到新的城市，感到很沮丧，故选A.\n[9题详解]\n词义猜测题。根据画线词后文\"And that's what mattered- -landing tricks, being a good skatax. (那才是真正重要\n的一滑 板的落地技巧掌握了才是- - 名好的滑板玩家)\"可知，作者掌握了滑板落地技巧，因此他的朋友大声\n欢呼，因此可以推出本句的Safe是赞关的含义，结合选项，故选B.\n[10题详解]\n推理判断题。根据第四段*I was a local here 20 years ago,\" I told him. Then, slowly, he began to nod his head.\n“Safe, man. sae\"(我告诉他:“我20年前经常在这里玩滑板，”他缓慢地开始向我点头:“嗨，你好!”)”呵\n推知，作者去Southbank这个地方是为了寻找自己玩滑板的回忆，故选D.\n[11题详解]\n推理判断题。根据全文可知，作者起初搬到伦敦很不适应，但是由于找到了玩滑板的地方，结识了玩滑板\n的朋友，因此很好的适应了。但是搬去华盛顿，因为没有遇到很好的玩滑板的朋友，几年之后就不再玩滑\n板，作者回到伦敦之后，经常之前玩滑板的地方寻找自己的回忆，在于-一个孩子打招呼的时候，终于找\n到了自己久违的回忆。通过作者的经历，作者要表达的是，归属感对于孩子是很重要的，故选C.\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 114
+      },
+      {
+        "question_id": "gb/2010-2022_English_Reading_Comp/115",
+        "year": 2021,
+        "question_type": "阅读理解",
+        "raw_question": "D\nWho is a genius? This question has greatly interested humankind for centuries.\nLet's state clearly: Einstein was a genius. His face is almost the international symbol for genius. But we want to go beyond one man and explore the nature of genius itself. Why is it that some people are so much more intelligent or creative than the rest of us? And who are they? \nIn the sciences and arts, those praised as geniuses were most often white men, of European origin. Perhaps this is not a surprise. It's said that history is written by the victors, and those victors set the standards for admission to the genius club. When contributions were made by geniuses outside the club—women, or people of a different color or belief—they were unacknowledged and rejected by others.\nA study recently published by Science found that as young as age six, girls are less likely than boys to say that members of their gender(性别)are “really, really smart.” Even worse, the study found that girls act on that belief: Around age six they start to avoid activities said to be for children who are “really, really smart.” Can our planet afford to have any great thinkers become discouraged and give up? It doesn't take a genius to know the answer: absolutely not.\nHere's the good news. In a wired world with constant global communication, we're all positioned to see flashes of genius wherever they appear. And the more we look, the more we will see that social factors(因素)like gender, race, and class do not determine the appearance of genius. As a writer says, future geniuses come from those with “intelligence, creativity, perseverance(毅力), and simple good fortune, who are able to change the world.”\n12. What does the author think of victors' standards for joining the genius club?\nA. They're unfair.\tB. They're conservative.\nC. They're objective.\tD. They're strict.\n13. What can we infer about girls from the study in Science?\nA. They think themselves smart.\nB. They look up to great thinkers.\nC. They see gender differences earlier than boys.\nD. They are likely to be influenced by social beliefs\n14 Why are more geniuses known to the public?\nA. Improved global communication.\nB. Less discrimination against women.\nC. Acceptance of victors' concepts.\nD. Changes in people's social positions.\n15. What is the best title for the text?\nA. Geniuses Think Alike\tB. Genius Takes Many Forms\nC. Genius and Intelligence\tD. Genius and Luck\n",
+        "answer": "[A, D, A, B]",
+        "analysis": "[解析]\n[分析]这是- -篇议论文。文章由问题“谁是天才?”引入，论述了世人对天才的狭隘定义，提出事实上\n“天才”有很多种形式，不要让思维限制了我们的“天才”能力。\n[12题详解]\n推理判断题。根据第三段的“It is said that history is witen by victors, and those victors set the standards for\nadmision to the genius club. When contributions were made by geniuscs outside the club-women, or people of a\ndifferent color or belief-they were unackanowledged and rejcted by others.(据说历史是由胜利者书写的，而那\n些胜利者为进入天才俱乐部设定了标准。当俱乐部以外的天才一-女 性或不同肤色或信仰的人--做出贡\n献时，他们不会被承认并且被其他人拒绝)”可推知，作者认为那些“胜利者”对进入“天才俱乐部”设置\n的标准是不公平的，因为女性或者不同肤色或信仰的人做出的成就是得不到承认的。故选A. .\n[13题详解]\n推理判断题。根据第四段的“Even worse, the study found that girls act on that belief. Around age six they start to\navoid ativities said to be for children who are“rall rally smart.\" (更糟糕的是,研完发现女孩们是按照这个信\n念行事的。六岁左右，她们开始避免那些据说是“非常非常聪明”的孩子参加的活动)”可推知，女孩容易\n受到社会信仰的影响，认为自己在六岁左右就不适合做“聪明孩子”做的事情。故选D.\n[14题详解]\n细节理解题。根据最后一段的 “In a wired world with constant global communication, we're all positioned to see\nflashes of genius wherever they appear:(在-一个全球通讯不断的有线世界里，我们随时随地都能看到天才的闪\n现)”可知，进步的全球通讯让更多的天才被公众所知道。故选A.\n[15题详解]\n主旨大意题。根据文章的主要内容，结合文章第- -段提出问题“Who is a genius? (谁是天才)”和最后-段\n的“As a witer says, future geniuses come from those with \"inteligence, creativity, perseverance, and simple\ngeniuses, who are able to change the world\"(正如一-位作家所说，未来的天才来自那些具有“智慧、创造力、\n毅力和那些能够改变世界的简单天才。”)”可知，天才不一-定是那些有巨大贡献的人，他们也可以是某一\n方面比较突出的普通人。由此可知B项“天才有多种形式”可以作为本文最佳标题。故选B. .\n\n第二节\n",
+        "source_file": "2010-2022_English_Reading_Comp",
+        "source_repo": "OpenLMLab/GAOKAO-Bench",
+        "source_index": 115
+      }
+    ]
+  },
+  "patterns_snapshot": {
+    "n_questions": 74,
+    "years": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "global_vocab_top": [
+      {
+        "word": "what",
+        "freq": 135
+      },
+      {
+        "word": "more",
+        "freq": 83
+      },
+      {
+        "word": "about",
+        "freq": 79
+      },
+      {
+        "word": "time",
+        "freq": 74
+      },
+      {
+        "word": "people",
+        "freq": 67
+      },
+      {
+        "word": "when",
+        "freq": 63
+      },
+      {
+        "word": "one",
+        "freq": 56
+      },
+      {
+        "word": "all",
+        "freq": 55
+      },
+      {
+        "word": "some",
+        "freq": 54
+      },
+      {
+        "word": "out",
+        "freq": 53
+      }
+    ]
+  }
+}

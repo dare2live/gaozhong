@@ -1,0 +1,526 @@
+{
+  "run_id": "d0b83b4ef781d247",
+  "generated_at": "2026-06-10T07:36:05+00:00",
+  "snapshot_run_id": "d0b83b4ef781d247",
+  "year_weights": {
+    "2025": 5,
+    "2024": 4,
+    "2023": 3,
+    "2022": 2,
+    "2021": 1.5
+  },
+  "trend": {
+    "years": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "n_questions": 74,
+    "year_weights": {
+      "2021": 1.5,
+      "2022": 2,
+      "2023": 3,
+      "2024": 4,
+      "2025": 5
+    },
+    "heatmap": {
+      "细节理解": {
+        "2021": 0.375,
+        "2022": 0.5,
+        "2023": 0.625,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "推理判断": {
+        "2021": 0.375,
+        "2022": 0.25,
+        "2023": 0.4583333333333333,
+        "2024": 0.1111111111111111,
+        "2025": 0.2222222222222222
+      },
+      "主旨大意": {
+        "2021": 0.1875,
+        "2022": 0.25,
+        "2023": 0.16666666666666666,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "词义猜测": {
+        "2021": 0.25,
+        "2022": 0.25,
+        "2023": 0.3333333333333333,
+        "2024": 0.0,
+        "2025": 0.1111111111111111
+      },
+      "标题选择": {
+        "2021": 0.125,
+        "2022": 0.25,
+        "2023": 0.20833333333333334,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "目的意图": {
+        "2021": 0.1875,
+        "2022": 0.4375,
+        "2023": 0.20833333333333334,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "定语从句": {
+        "2021": 0.5,
+        "2022": 0.625,
+        "2023": 0.6666666666666666,
+        "2024": 0.4444444444444444,
+        "2025": 0.4444444444444444
+      },
+      "名词性从句": {
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "状语从句": {
+        "2021": 0.125,
+        "2022": 0.125,
+        "2023": 0.0,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "非谓语动词": {
+        "2021": 0.625,
+        "2022": 0.5625,
+        "2023": 0.4166666666666667,
+        "2024": 0.1111111111111111,
+        "2025": 0.2222222222222222
+      },
+      "时态语态": {
+        "2021": 0.4375,
+        "2022": 0.6875,
+        "2023": 0.3333333333333333,
+        "2024": 0.4444444444444444,
+        "2025": 0.3333333333333333
+      },
+      "冠词": {
+        "2021": 1.0,
+        "2022": 1.0,
+        "2023": 1.0,
+        "2024": 0.8888888888888888,
+        "2025": 0.8888888888888888
+      },
+      "介词搭配": {
+        "2021": 0.3125,
+        "2022": 0.3125,
+        "2023": 0.08333333333333333,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "连词": {
+        "2021": 0.25,
+        "2022": 0.375,
+        "2023": 0.16666666666666666,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "代词": {
+        "2021": 1.0,
+        "2022": 1.0,
+        "2023": 1.0,
+        "2024": 1.0,
+        "2025": 0.8888888888888888
+      },
+      "词性转换": {
+        "2021": 0.375,
+        "2022": 0.375,
+        "2023": 0.16666666666666666,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "完形语境推断": {
+        "2021": 0.1875,
+        "2022": 0.25,
+        "2023": 0.16666666666666666,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "七选五衔接": {
+        "2021": 0.5,
+        "2022": 0.3125,
+        "2023": 0.5,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "短文改错语法": {
+        "2021": 0.125,
+        "2022": 0.125,
+        "2023": 0.0,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "续写情节": {
+        "2021": 0.0,
+        "2022": 0.125,
+        "2023": 0.16666666666666666,
+        "2024": 0.1111111111111111,
+        "2025": 0.1111111111111111
+      },
+      "应用文格式": {
+        "2021": 0.0625,
+        "2022": 0.1875,
+        "2023": 0.0,
+        "2024": 0.2222222222222222,
+        "2025": 0.2222222222222222
+      },
+      "逻辑推理": {
+        "2021": 0.6875,
+        "2022": 0.5625,
+        "2023": 0.625,
+        "2024": 0.0,
+        "2025": 0.0
+      }
+    },
+    "year_totals": {
+      "2021": 16,
+      "2022": 16,
+      "2023": 24,
+      "2024": 9,
+      "2025": 9
+    },
+    "trends": [
+      {
+        "point": "应用文格式",
+        "slope": 0.042,
+        "weighted_total": 2.5,
+        "weighted_recent_3y": 2.0,
+        "raw_total": 0.6944444444444444,
+        "direction": "rising"
+      },
+      {
+        "point": "续写情节",
+        "slope": 0.011,
+        "weighted_total": 1.8,
+        "weighted_recent_3y": 1.5,
+        "raw_total": 0.5138888888888888,
+        "direction": "rising"
+      },
+      {
+        "point": "名词性从句",
+        "slope": 0.0,
+        "weighted_total": 0.0,
+        "weighted_recent_3y": 0.0,
+        "raw_total": 0.0,
+        "direction": "stable"
+      },
+      {
+        "point": "代词",
+        "slope": -0.029,
+        "weighted_total": 14.9,
+        "weighted_recent_3y": 11.4,
+        "raw_total": 4.888888888888889,
+        "direction": "falling"
+      },
+      {
+        "point": "状语从句",
+        "slope": -0.033,
+        "weighted_total": 0.4,
+        "weighted_recent_3y": 0.0,
+        "raw_total": 0.25,
+        "direction": "falling"
+      },
+      {
+        "point": "短文改错语法",
+        "slope": -0.033,
+        "weighted_total": 0.4,
+        "weighted_recent_3y": 0.0,
+        "raw_total": 0.25,
+        "direction": "falling"
+      },
+      {
+        "point": "冠词",
+        "slope": -0.036,
+        "weighted_total": 14.5,
+        "weighted_recent_3y": 11.0,
+        "raw_total": 4.777777777777778,
+        "direction": "falling"
+      },
+      {
+        "point": "定语从句",
+        "slope": -0.044,
+        "weighted_total": 8.0,
+        "weighted_recent_3y": 6.0,
+        "raw_total": 2.6805555555555554,
+        "direction": "falling"
+      },
+      {
+        "point": "推理判断",
+        "slope": -0.048,
+        "weighted_total": 4.0,
+        "weighted_recent_3y": 2.9,
+        "raw_total": 1.4166666666666665,
+        "direction": "falling"
+      },
+      {
+        "point": "时态语态",
+        "slope": -0.05,
+        "weighted_total": 6.5,
+        "weighted_recent_3y": 4.4,
+        "raw_total": 2.236111111111111,
+        "direction": "falling"
+      },
+      {
+        "point": "词义猜测",
+        "slope": -0.058,
+        "weighted_total": 2.4,
+        "weighted_recent_3y": 1.6,
+        "raw_total": 0.9444444444444444,
+        "direction": "falling"
+      },
+      {
+        "point": "标题选择",
+        "slope": -0.061,
+        "weighted_total": 1.3,
+        "weighted_recent_3y": 0.6,
+        "raw_total": 0.5833333333333334,
+        "direction": "falling"
+      },
+      {
+        "point": "主旨大意",
+        "slope": -0.067,
+        "weighted_total": 1.3,
+        "weighted_recent_3y": 0.5,
+        "raw_total": 0.6041666666666666,
+        "direction": "falling"
+      },
+      {
+        "point": "完形语境推断",
+        "slope": -0.067,
+        "weighted_total": 1.3,
+        "weighted_recent_3y": 0.5,
+        "raw_total": 0.6041666666666666,
+        "direction": "falling"
+      },
+      {
+        "point": "介词搭配",
+        "slope": -0.088,
+        "weighted_total": 1.3,
+        "weighted_recent_3y": 0.2,
+        "raw_total": 0.7083333333333334,
+        "direction": "falling"
+      },
+      {
+        "point": "连词",
+        "slope": -0.091,
+        "weighted_total": 1.6,
+        "weighted_recent_3y": 0.5,
+        "raw_total": 0.7916666666666666,
+        "direction": "falling"
+      },
+      {
+        "point": "目的意图",
+        "slope": -0.092,
+        "weighted_total": 1.8,
+        "weighted_recent_3y": 0.6,
+        "raw_total": 0.8333333333333334,
+        "direction": "falling"
+      },
+      {
+        "point": "词性转换",
+        "slope": -0.109,
+        "weighted_total": 1.8,
+        "weighted_recent_3y": 0.5,
+        "raw_total": 0.9166666666666666,
+        "direction": "falling"
+      },
+      {
+        "point": "非谓语动词",
+        "slope": -0.118,
+        "weighted_total": 4.9,
+        "weighted_recent_3y": 2.8,
+        "raw_total": 1.9375,
+        "direction": "falling"
+      },
+      {
+        "point": "七选五衔接",
+        "slope": -0.142,
+        "weighted_total": 2.9,
+        "weighted_recent_3y": 1.5,
+        "raw_total": 1.3125,
+        "direction": "falling"
+      },
+      {
+        "point": "细节理解",
+        "slope": -0.154,
+        "weighted_total": 3.4,
+        "weighted_recent_3y": 1.9,
+        "raw_total": 1.5,
+        "direction": "falling"
+      },
+      {
+        "point": "逻辑推理",
+        "slope": -0.206,
+        "weighted_total": 4.0,
+        "weighted_recent_3y": 1.9,
+        "raw_total": 1.875,
+        "direction": "falling"
+      }
+    ],
+    "cooccurrence": [
+      {
+        "pair": [
+          "代词",
+          "冠词"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "代词",
+          "定语从句"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "代词",
+          "推理判断"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "代词",
+          "时态语态"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "代词",
+          "非谓语动词"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "冠词",
+          "定语从句"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "冠词",
+          "推理判断"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "冠词",
+          "时态语态"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "冠词",
+          "非谓语动词"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "定语从句",
+          "推理判断"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "定语从句",
+          "时态语态"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "定语从句",
+          "非谓语动词"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "推理判断",
+          "时态语态"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "推理判断",
+          "非谓语动词"
+        ],
+        "co_years": 5
+      },
+      {
+        "pair": [
+          "时态语态",
+          "非谓语动词"
+        ],
+        "co_years": 5
+      }
+    ],
+    "recommendations": [
+      {
+        "point": "代词",
+        "reason": "下降趋势 (WLS slope=-0.029), 可适当减少",
+        "priority": "low"
+      },
+      {
+        "point": "冠词",
+        "reason": "下降趋势 (WLS slope=-0.036), 可适当减少",
+        "priority": "low"
+      }
+    ],
+    "input_snapshot_run_id": "d0b83b4ef781d247"
+  },
+  "trend_input_rows": 74,
+  "trend_input_sample": [
+    {
+      "question_id": "gb/2010-2022_English_Fill_in_Blanks/26",
+      "year": 2021,
+      "question_type": "完形填空",
+      "raw_question": "阅读下面短文，从短文后各题所给的A、B、C、D四个选项中，选出可以填入空白处的最佳选项。\nSimply saying thank you doesn't seem enough in certain situations. I was considering this while working as a ___41___ just a few weeks ago. And it came to me then how much easier it would be if we had a range of words that express different ___42___ of gratitude(感谢). \nMy thoughts were soon ___43___. We had a woman patient who was ___44___ from a knee replacement operation. One afternoon, while ___45___ to get into bed she collapsed(倒下) from what was ___46___ discovered to be a heart attack. The collapse was disastrous, ___47___the emergency medical team and good teamwork. But she recovered, though ___48___, and was ready for discharge(出院)after four weeks. \n She was ___49___ for everything that the medical and nursing team had done for her. On her day of discharge, we shared in her _____50_____ at her recovery. As she was _____51_____ she was eager to say _____52_____ to each of us in the nursing team. When she _____53_____ one nurse, she tried to press a five-pound note into her hand. My colleague _____54_____ to accept it, saying that we were all just _____55_____ our job. The patient looked puzzled, and then _____56_____:“Oh this isn't for the_____57_____ I had. I take that as a _____58_____. No, this is for setting my hair yesterday.”\n    And there you have it. To many people,_____59_____lives is part of the job but styling hair is an _____60_____ and should be rewarded.\n41. A. cleaner\tB. chemist\tC. nurse\tD. doctor\n42. A. grades\tB. meanings\tC. needs\tD. expectations\n43. A. brushed aside\tB. put to the test\tC. brought under discussion\tD. taken into account\n44. A. departing\tB. escaping\tC. retiring\tD. recovering\n45. A. attempting\tB. choosing\tC. pausing\tD. promising\n46. A. eventually\tB. fortunately\tC. casually\tD. secretly\n47. A. assessing\tB. requiring\tC. forming\tD. proving\n48. A. slightly\tB. accidentally\tC. slowly\tD. happily\n49. A. grateful\tB. thoughtful\tC. sorrowful\tD. fearful\n50 A. surprise\tB. delight\tC. curiosity\tD. disappointment\n51. A. operating\tB. thinking\tC. hesitating\tD. leaving\n52. A. sorry\tB. hello\tC. goodbye\tD. yes\n53. A. reached\tB. consulted\tC. introduced\tD. persuaded\n54. A. wished\tB. pretended\tC. failed\tD. refused\n55. A. enjoying\tB. doing\tC. securing\tD. starting\n56. A. repeated\tB. recited\tC. replied\tD. reported\n57. A. courage\tB. patience\tC. duty\tD. care\n58. A. goal\tB. given\tC. push\tD. greeting\n59. A. risking\tB. changing\tC. saving\tD. building\n60. A. honour\tB. ability\tC. opening\tD. extra\n",
+      "answer": "[C, A, B, D, A, A, B, C, A, B, D, C, A, D, B, C, D, B, C, D]",
+      "analysis": "【解析】\n【分析】这是一篇夹叙夹议的文章。文章通过作者做护士期间遇到的一个女病人为例，表达了我们应该对别人的付出表示真诚的感谢，即使他们只是做了自己分内的事。\n【41题详解】\n考查名词词义辨析。句意：几周前我在做护士的时候就在考虑这个问题。A. cleaner清洁工；B. chemist化学家，药剂师；C. nurse护士；D. doctor医生。根据下文的“as she was 11 she was eager to say 12 to each of us in the nursing team.”可知，当时作者是一名护士。故选C。\n【42题详解】\n考查名词词义辨析。句意：我突然想到，如果我们有一系列表达不同程度感激之情的词语，那会容易得多。A. grades分数，级别，程度；B. meanings意思；C. needs需求；D. expectations期待。根据上文的“simply saying thank you doesn’t seem enough in certain situations”可知，作者认为如果有表达不同程度感谢的词，那么感谢就容易得多了。故选A。\n【43题详解】\n考查动词短语辨析。句意：我的想法很快就进行了测验。A. brushed aside撇开；B. put to the test经受考验，接受……的考验；C. brought under discussion在讨论中；D. taken into account考虑。结合下文讲述女病人对护士们的所为，可知作者的想法立即接受了测验。故选B。\n【44题详解】\n考查动词词义辨析。句意：我们有一个病人膝盖置换手术后正在康复。A. departing出发，离开；B. escaping逃跑；C. retiring退休；D. recovering恢复。结合下文提到手术和病人从床上摔下来可知，病人正在恢复中。故选D。\n【45题详解】\n考查动词词义辨析。句意：一天下午，当她试图上床睡觉时，她因心脏病而摔倒了。A. attempting试图，尝试；B. choosing选择；C. pausing暂停；D. promising承诺。结合上文提到这是个膝盖有伤的病人，可推知她尝试着自己上床。故选A。\n【46题详解】\n考查副词词义辨析。句意：一天下午，当她试图上床睡觉时，她因心脏病而摔倒了。A. eventually最后；B. fortunately幸运地；C. casually随意地；D. secretly秘密地。结合上文病人是因为膝盖置换手术而住院，由此可知，此处是指最终发现摔倒是因为心脏病。故选A。\n【47题详解】\n考查动词词义辨析。句意：这次摔倒是灾难性的，需要紧急医疗队和良好的团队合作。A. assessing评估；B. requiring需要；C. forming形成；D. proving证明。根据“the collapse was disastrous”可知，要想把病人治好需要紧急医疗队和良好的团队合作。故选B。\n【48题详解】\n考查副词词义辨析。句意：虽然很慢，但她恢复了，四周后就可以出院了。A. slightly轻微地；B. accidently意外地；C. slowly缓慢地；D. happily幸福地。根据上文的“the collapse was disastrous”可知，要从灾难性的病痛中恢复一定很慢。故选C。\n【49题详解】\n考查形容词词义辨析。句意：她对医疗及护士团队为她所作的一切都非常感激。A. grateful感激的；B. thoughtful体贴的；C. sorrowful伤心的，悲伤的；D. fearful恐惧的。结合下文女病人离开前和大家一一道别，推知她对大家的付出表示感激。故选A。\n【50题详解】\n考查名词词义辨析。句意：在她出院那天，我们分享了她康复的喜悦。A. surprise惊喜；B. delight喜悦；C. curiosity好奇心；D. disappointment失望。根据下文的“her recovery”可知，此处是指分享她康复的喜悦。故选B。\n【51题详解】\n考查动词词义辨析。句意：当她要离开时，她急切地想和我们护理队的每一个人说再见。A. operating手术；B. thinking思考；C. hesitating犹豫；D. leaving离开。根据上文的“on her day of discharge”可知，女病人要出院了，所以此处是指当她即将离开医院时。故选D。\n【52题详解】\n考查名词词义辨析。句意：当她要离开时，她急切地想和我们护理队的每一个人说再见。A. sorry抱歉；B. hello你好；C. goodbye再见；D. yes同意。根据上文的“on her day of discharge”可知，女病人要出院了，由此推知她对护理团队的人告别，say goodbye to sb.“和某人告别”符合语境。故选C。\n【53题详解】\n考查动词词义辨析。句意：当她走到一个护士身边时，她试图塞一张五英镑的钞票在她手里。A. reached到达；B. consulted咨询；C. introduced介绍；D. persuaded说服。结合上文提到女病人出院时要和护士们一一道别可知，此处是指她走到一个护士的身边，用“reach”符合语境。故选A。\n【54题详解】\n考查动词词义辨析。句意：我的同事拒绝接受，说我们只是做了自己的工作而已。A. wished希望；B. pretended假装；C. failed失败；D. refused拒绝。结合常识和下文的“we were all just 13 our job”可知，作者的同事拒绝收下女士给的钱。故选D。\n【55题详解】\n考查动词词义辨析。句意：我的同事拒绝接受，说我们只是做了自己的工作而已。A. enjoying享受；B. doing做；C. securing获得，保护；D. starting开始。根据上文提到作者的同事拒绝收下钱可推知，她认为照顾病人只是做了自己应该做的事情而已。故选B。\n【56题详解】\n考查动词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. repeated重复；B. recited背诵；C. replied回答，回应；D. reported报道。结合上文作者同事说照顾女士是自己的工作，不应该得到额外的礼物可知，此处是女病人对同事说的话的回应。故选C。\n【57题详解】\n考查名词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. courage勇气；B. patience耐心；C. duty职责；D. care照顾。根据下文的“No, this is for setting my hair yesterday”可知，女病人并不是因为护士的照顾才给的五英镑。故选D。\n【58题详解】\n考查名词词义辨析。句意：这个病人开起来很困惑，然后回复到：“噢，这不是因为我接受的照顾。我认为它是应该的。不，这是昨天给我做头发的。”A. goal目标；B. given该给的东西；C. push推力；D. greeting招呼。根据上文的“No, this is for setting my hair yesterday”推知，女病人认为她得到的照顾是护士们应该给她的（东西）。故选B。\n【59题详解】\n考查动词词义辨析。句意：对许多人来说，拯救生命是工作的一部分，但发型是额外的，应该得到奖励。A. risking冒险；B. changing改变；C. saving拯救，挽救；D. building建设。根据上文内容可知，医生和护理团队拯救了女病人的生命可知，此处指很多人认为拯救生命是医生和护士工作的一部分。故选C。\n【60题详解】\n考查名词词义辨析。句意：对许多人来说，拯救生命是工作的一部分，但做发型是额外的事情，应该得到奖励。A. honour荣誉；B. ability能力；C. opening开口处；D. extra额外的东西。根据下文的“To many people，  19   lives is part of the job”和“but”可知，此处指做发型是本职工作以外的事情，即额外做的事情，应该得到奖励。故选D。\n",
+      "source_file": "2010-2022_English_Fill_in_Blanks",
+      "source_repo": "OpenLMLab/GAOKAO-Bench",
+      "source_index": 26
+    },
+    {
+      "question_id": "gb/2010-2022_English_Fill_in_Blanks/27",
+      "year": 2021,
+      "question_type": "完形填空",
+      "raw_question": "阅读下面短文，从短文后各题所给的A、B、C和D四个选项中，选出可以填入空白处的最佳选项。\nIt's the seaside birds that deserve at least part of the blame for getting Nick Burchill blacklisted at the Fairmont Empress Hotel in Victoria, Canada.\nBurchill was ___21___ at the hotel on business and planning to ___22___ some friends in the area. They had asked him to ___23___ some pepperoni (辣香肠) from back east. So he ___24___ a suitcase full of pepperoni. As he was ___25___ that it would be too warm, he ___26___ it out on the table near an open window. He thought his pepperoni was ___27___ and well chilled (冷却) and he ___28___ .\nThat's when things went ____29____ “I remember walking down the long _____30_____ and opening the door to my room to find an entire flock of seagulls,” Burchill said in a recent letter of _____31_____ to the 4-star hotel. \"The seagulls immediately went _____32_____ . They rushed to the window, 30 or 40 birds all trying to _____33_____ at the same time, and pepperoni—everywhere. The curtains were falling down, the lamps were falling down, It was a real _____34_____ .\nOlder and wiser now, Burchill chalked up the incident to youthful indiscretion (莽撞).\n“I have _____35_____ and I admit responsibility of my _____36_____,” he said in the letter. “I come to you, _____37_____ , to apologize for the-damage I had _____38_____ caused and to ask you to _____39_____ my lifetime ban from the hotel.”\nHis letter _____40_____ . Banned from the hotel since 2001.Burchill is now welcome to come back, the Fairmont said.\n21. A. studying\tB. staying\tC. looking\tD. packing\n22. A. visit\tB. help\tC. follow\tD. make\n23. A. sell\tB. have\tC. bring\tD. taste\n24. A. filled\tB. locked\tC. abandoned\tD. lost\n25. A. surprised\tB. pleased\tC. excited\tD. worried\n26. A. dug\tB. cleared\tC. cut\tD. laid\n27. A. delicious\tB. safe\tC. soft\tD. ready\n28. A. left\tB. nodded\tC. waited\tD. regretted\n29. A. far\tB. funny\tC. wrong\tD. blind\n30. A. beach\tB. driveway\tC. hall\tD. table\n31. A. application\tB. apology\tC. request\tD. invitation\n32. A. hungry\tB. dead\tC. missing\tD. wild\n33. A. wake up\tB. get out\tC. take off\tD. break in\n34. A. mess\tB. puzzle\tC. fight\tD. challenge\n35. A. recovered\tB. retired\tC. escaped\tD. matured\n36. A. suffering\tB. plans\tC. madness\tD. actions\n37. A. hands in pocket\tB. nose in the air\tC. hat in hand\tD. feet on the ground\n38. A. indirectly\tB. deliberately\tC. cautiously\tD. secretly\n39. A. replace\tB. remember\tC. reconsider\tD. renew\n40. A. arrived\tB. worked\tC. ended\tD. disappeared\n",
+      "answer": "[D, A, C, A, D, D, B, A, C, C, B, D, B, A, D, D, C, A, C, B]",
+      "analysis": "[解析]\n[分析]这是一篇记叙文。文章主要讲了Burchill住酒店时，给朋友携带的意大利香肠招来了海鸥，海鸥在\n逃跑的过程中，造成了一些东西的损坏，Burchill 间接给酒店造成了损失。酒店把Burchill列入了黑名单，\nBurchill被终身禁止入住该酒店。Burchill 诚恳地写了道歉信，请求酒店重新考虑自己被终身禁止入住酒店\n的决定。最终，他的信起作用了。\n\n[21题详解]\n考查动词词义辨析。句意: Burchill 出差，当时正在酒店收拾行李，准备去拜访当地的一些朋友。A. studying\n研究; B. staying停留; C. looking看; D. packing包装。根据“Burchill was__21 _at the hotel on business and\nplanningto_ 22_ some friends in the area.\"及生活常识可知, Burchill 出差住在酒店，准备去拜访当地的一些朋友，自然是在酒店收拾行李。故选D.\n[22题详解]\n考查动词词义辨析。句意: Burchill 出差，当时正在酒店收拾行李，准备去拜访当地的- -些朋友。A. visit\n拜访; B. help帮助: C. fllow跟随; D. make制作。根据“They had asked himto_ 23_ some pepperoni(辣\n香肠) from back east. So he _24_ a suitase full of pepproni.\"可知，朋友让他带一些东西，由此推知Burchill准备去拜访当地的一-些朋友。故选A.\n[23题详解]\n考查动词词义辨析。句意:他们让他从美国东部带些意大利香肠过来。A. sell卖; B. have有; C. bring带来;\ntaste品尝。根据“Sohe_ 24_ a suitcase full of pepperoni.\"可知，Burchill 的朋友让他从美国东部带些意大利香肠过来。故选C.\n[24题详解]\n考查动词词义辨析。句意:所以他装了满满一箱子意 大利香肠。A. flled装满; B. locked锁上; C. abandoned\n抛弃; D. lost失。根据“a suitcase full of pepperoni\"和“They rushed to the window, 30 or 40 birds all trying\nto_ 33_ at the same timne, and pepperoni一everywhere.\" 可知，他装了满满一箱子意大利香肠。 故选A.\n[25题详解]\n考查形容词词义辨析。句意:因为担心会太热，他把它放在桌子上，靠近- -扇开着的窗户。A. suprised感\n到惊讶的; B. pleased高兴的; C. excited兴奋的; D. woried担心的。根据“he_ 26_ it out on the table near\nan open window.\"可知，他担心意大利香肠会太热，所以把它放在桌子上，靠近一扇开着的窗户。故选D.\n[26题详解]\n考查动词词义辨析。句意:因为担心会太热，他把它放在桌子上,靠近- -扇开着的窗户.A. dug挖; B. cleared\n清除; C.cut切下; D. laid放。根据“it out on the table near an open window”可知，他把它放在桌子上。故选D.\n[27题详解]\n考查形容词词义辨析。句意:他以为他的意大利香肠是安全的，冷却得很好，就走了。A. delicious美味的;\nB. safe安全的; C. soft柔软的; D. ready准备好。根据“I remamber walking down the long_ 30 _and opening\nthe door to my room to find an entire flock of seagulls,\" Burchill said in a recent letter of _31_to the 4-star hotel.\"可知, Burchill 离开了，由此推知，他以为他的意大利香肠是安全的，冷却得很好。故选B. \n\n[28题详解]\n考查动词词义辨析。句意:他以为他的意大利香肠是安全的，冷却得很好，就走了。A. left离开; B. nodded\n点头;C. waited等待; D. regeted后悔。根据“I remember walking downthe long_ 30 _and opening the door\nto my room to find an entire flock of seagulls,s Burchill said in a recent ltter of_ 31_ to the 4-star hotel.\"可知，Burchill 离开了。故选A.\n[29题详解]\n考查形容词词义辨析。句意:事情就在这时出了问题。A. far远的; B. funny有趣的; C. wrong失常的; D. blind\n盲目的。根据“The scagulls immdiatly went_ 32_. They rushed to the window, 30 or 40 birds all trying to_33_ at the same time, and pepperoni 一 everywhere. The curtains were flling down, the lamps were flling down,\nIt was a real _34_”可知，事情就在这时出了问题。故选C.\n[30题详解]\n考查名词词义辨析。句意: Burchill 在最近给这家四星级酒店的一封道歉信中说:“ 我记得我走过长长的大\n厅，打开房门，发现满满- -群海鸥。”A. beach海滩; B. driveway私人车道; C. hall大厅; D. table桌子。\n根据“and opening the door to my room to find an entre flock of seagulls\"可知，Burchill 走过长长的大厅。故\n选C。\n[31题详解]\n考查名词词义辨析。句意: Burchill 在最近给这家四星级酒店的一封道歉信中说:“ 我记得我走过长长的大\n厅，打开房门，发现满满一群海鸥。”A. application申请; B. apology道歉; C. request要求; D. invitation邀请。根据“I have_35_ and I admit responsibility of my_ 36 _.”he said in the letter.“I come to you,_37_， to apologize for the-damage I had_38_caused and to ask you to_39_ my lifetime ban from the hotel.\"”可知，Burchill 给酒店写了一封道歉信。故选B.\n[32题详解]\n考查形容词词义辨析。句意:海鸥立刻变得疯狂起来。A. hungry饥饿的; B. dead死亡的; C. missing失踪\n的; D. wild疯狂的。根据“They rushed to the window, 30 or 40 birds all trying to_ 33_ at the same time, and\npepproni - everywhere.\" 可知，海鸥被突然回到房间的Burchill吓到了，变得疯狂起来。故选D.\n[33题详解]\n考查动词短语辨析。句意:它们冲到窗口，30或40只鸟都想同时出去，到处都是意大利香肠。A. wakeup\n醒来; B. getout出去; C. take off起飞; D. breakin闯入。根据\"They rushed to the window\"及生活常识可知，鸟看到人类很害怕，想同时从窗户逃出去。故选B.\n[34题详解]\n考查名词词义辨析。句意:窗帘在落下，灯也在落下，真是一团糟。A. mess混乱; B. puzzle不解之谜; C.\nfight打架; D. callnge挑战。根据“The curtains were flling down, the lamps were flling down\"可知，现场一片混乱。故选A.\n[35题详解]\n考查动词词义辨析。句意:“ 我成熟了,我承认对自己的行为负责,”他在信中说。A. rcovered恢复; B. retired\n退休; C. escaped逃跑; D. matured成熟。根据“and I admit responsibilityofmy_ 36_ .” 可知，这里意思是Burchill认为自己成熟了。故选D. .\n[ 36题详解]\n考查名词词义辨析。句意:“ 我成熟了，我承认对自己的行为负责，”他在信中说。A. sfering苦难; B. plans\n计划; C. madness疯狂; D. actions行为。根据“I come to you,_ 37_ ， to apologize for the-damage Ihad_ 38_\ncaused and to askyouto_ 39 _my lifetime ban from the hotel.\"可知, Burchill 承认对自己的行为负责。故选D.\n[37题详解]\n考查固定短语辨",
+      "source_file": "2010-2022_English_Fill_in_Blanks",
+      "source_repo": "OpenLMLab/GAOKAO-Bench",
+      "source_index": 27
+    },
+    {
+      "question_id": "gb/2010-2022_English_Reading_Comp/108",
+      "year": 2021,
+      "question_type": "阅读理解",
+      "raw_question": "A\nThe Biggest Stadiums in the World\nPeople have been pouring into stadiums since the days of ancient Greece. In around 80 A.D., the Romans built the Colosseum, which remains the world’s best known stadium and continues to inform contemporary design. Rome’s Colosseum was 157 feet tall and had 80 entrances, seating 50,000 people. However, that was small fry compared with the city’s Circus Maximus, which accommodated around 250,000 people.\nThese days, safety regulations-not to mention the modern sports fan’s desire for a good view and comfortable seat—tend to keep stadium capacities（容量） slightly lower. Even soccer fans tend to have a seat each; gone are the days of thousands standing to watch the match. \nFor the biggest stadiums in the world, we have used data supplied by the World Atlas list so far, which ranks them by their stated permanent capacity, as well as updated information from official stadium websites. \nAll these stadiums are still funtiona1, still open and still hosting the biggest events in world sport. \n·Rungrado 1st of May Stadium, Pyongyang D.P.R. Korea. Capacity: 150,000. Opened: May 1,1989. \n·Michigan Stadium, Ann Arbor, Michigan, U. S. Capacity: 107,601. Opened: October 1, 1927. \n·Beaver Stadium, State College, Pennsylvania, U. S. Capacity: 106,572. Opened: September 17, 1960. \n·Ohio Stadium, Columbus, Ohio, U. S. Capacity: 104,944. Opened: October 7,1922.\n·Kyle Field, College Station, Texas, U. S. Capacity: 102,512. Opened: September 24, 1927.\n21. How many people could the Circus Maximus hold?\nA. 104,944.\tB. 107,601.\tC. About 150,000.\tD. About 250,000.\n22. Of the following stadiums, which is the oldest?\nA. Michigan Stadium.\tB. Beaver Stadium.\tC. Ohio Stadium.\tD. Kyle Field.\n23. What do the listed stadiums have in common?\nA. They host big games.\tB. They have become tourist attractions.\nC. They were built by Americans.\tD. They are favored by architects.\n",
+      "answer": "[D, C, A]",
+      "analysis": "【解析】\n【分析】这是一篇说明文。文章主要介绍了世界上著名的大型竞技场的基本情况。目前这些竞技场仍在运行并且还在承办大型体育赛事。\n【21题详解】\n细节理解题。根据第一段最后一句“However, that was small fry compared with the city’s Circus Maximus, which accommodated around 250,000 people.” (然而，与这座城市容纳了25万人的大竞技场相比，这只是小巫见大巫。)可知，Circus Maximus的可以容纳250,000人。故选D项。\n【22题详解】\n细节理解题。根据文章最后部分中的“Ohio Stadium, Columbus, Ohio, U.S. Capacity: 104,944. Opened October 7, 1922.” (美国俄亥俄州哥伦布市俄亥俄体育场，容纳人数：104,944人。1922年10月7日开业。)及其他四个著名竞技场的开放时间介绍可知，Ohio Stadium开放时间最早在1922年，属于年代最久远的。故选C项。\n【23题详解】\n细节理解题。根据文中“All these stadiums are still functional, still open and still hosting the biggest events in world sport.” (所有这些体育场馆仍在使用，仍在开放，仍在举办世界上最大的体育赛事。)可知，这些体育馆都还在承办大型的体育赛事。故选A项。\n",
+      "source_file": "2010-2022_English_Reading_Comp",
+      "source_repo": "OpenLMLab/GAOKAO-Bench",
+      "source_index": 108
+    }
+  ]
+}
