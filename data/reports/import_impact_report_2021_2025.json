@@ -1,0 +1,209 @@
+{
+  "run_id": "b3fd3dc87989be20",
+  "generated_at": "2026-06-10T07:32:25+00:00",
+  "action": "dry_run",
+  "target_files": [
+    "data/reports/truth_baseline_2021_2025.json",
+    "data/reports/cross_verify_2021_2025.json",
+    "data/reports/cross_verify_gaps_2021_2025.json"
+  ],
+  "source": "scripts/tools/audit/truth_baseline_audit.py",
+  "candidate_count": 48,
+  "candidate_by_year": {
+    "2021": 14,
+    "2023": 17,
+    "2024": 17
+  },
+  "candidate_by_source": {
+    "GAOKAO-Bench": 14,
+    "GAOKAO-Bench-Updates": 30,
+    "GAOKAO-Bench-Updates/2023_English_Cloze_Test.json": 1,
+    "GAOKAO-Bench-Updates/2023_English_Fill_in_Blanks.json": 1,
+    "GAOKAO-Bench-Updates/2024_English_Cloze_Test.json": 1,
+    "GAOKAO-Bench-Updates/2024_English_Fill_in_Blanks.json": 1
+  },
+  "sample_rows": [
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-001",
+      "question_type": "阅读理解",
+      "signature": "0cabf0d213919b3b94d643c9aaa721cfdf8ef2fe",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-003",
+      "question_type": "阅读理解",
+      "signature": "75aa3d7fc613da316eb56e56446b2569de628edd",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-004",
+      "question_type": "阅读理解",
+      "signature": "83e8fdb87aca29b98ecae13c95219d92002d550c",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-005",
+      "question_type": "阅读理解",
+      "signature": "e850c8523fbb752faf402b2d4c152d9e4578d50d",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-006",
+      "question_type": "阅读理解",
+      "signature": "6c04b366c2a01dd11c808ac623bc99a34664175f",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-007",
+      "question_type": "阅读理解",
+      "signature": "b81661038f3ce44538ede91b8015ab7171fb2e12",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-008",
+      "question_type": "阅读理解",
+      "signature": "6fc8cbbfe4764c691c0d552b0f679fd2868b395d",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-009",
+      "question_type": "阅读理解",
+      "signature": "b43535d6bf4555e35e97071861f53c68ec2e67ef",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-010",
+      "question_type": "阅读理解",
+      "signature": "582252537dcd7a89cc0276d3ad697a06aece6122",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-011",
+      "question_type": "阅读理解",
+      "signature": "95af3d2f00716354e60282ff44934a153bfccef0",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-012",
+      "question_type": "阅读理解",
+      "signature": "8376dbe9dad554d07c97038b876adeaa350fbb58",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-013",
+      "question_type": "阅读理解",
+      "signature": "a1ec09e0d17f709e6358db3e747c39fb6ca2f837",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-014",
+      "question_type": "阅读理解",
+      "signature": "59ac6f4c3e70755116af51fbcb602c5a744b24c9",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "source": "GAOKAO-Bench",
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-015",
+      "question_type": "阅读理解",
+      "signature": "57867c33fbb29e40263ce80ef8a72a33e2d9c494",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2023,
+      "source": "GAOKAO-Bench-Updates",
+      "source_file": "2023_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2023-020",
+      "question_type": "阅读理解",
+      "signature": "eae97094dd8284870774c207b023bdab5479ce68",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2023,
+      "source": "GAOKAO-Bench-Updates",
+      "source_file": "2023_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2023-021",
+      "question_type": "阅读理解",
+      "signature": "beb742378cdc06f6fe73a9f762dadeec8d8cd32b",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2023,
+      "source": "GAOKAO-Bench-Updates",
+      "source_file": "2023_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2023-022",
+      "question_type": "阅读理解",
+      "signature": "99dc0fd53b9c9f794cdffcc3a560746d33ba1b5c",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2023,
+      "source": "GAOKAO-Bench-Updates",
+      "source_file": "2023_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2023-023",
+      "question_type": "阅读理解",
+      "signature": "8a69e6f41603cdeaa7487ce3d46501f50bbb3b53",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2023,
+      "source": "GAOKAO-Bench-Updates",
+      "source_file": "2023_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2023-024",
+      "question_type": "阅读理解",
+      "signature": "07240514e1b07b3706c574cff09883ec79b334af",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2023,
+      "source": "GAOKAO-Bench-Updates",
+      "source_file": "2023_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2023-025",
+      "question_type": "阅读理解",
+      "signature": "7cce1090d3a7e0da45c5387df305a0e5ec6be88f",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    }
+  ],
+  "import_recommended": false,
+  "decision_note": "缺口先保留，不执行 --import-missing，按计划先冻结不填充策略。"
+}
