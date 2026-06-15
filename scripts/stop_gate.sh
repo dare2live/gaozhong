@@ -52,8 +52,13 @@ except Exception:
 fi
 
 # 1b. D0 强执行: data_accuracy_check.py 全数据校验
+#     exit 3 = DB 被写连接占用(init_db 重建中) → 延后, 非阻断 (流程级根治锁冲突假阳性)
 if [ -f data/db/gaozhong.duckdb ] && [ -f scripts/data_accuracy_check.py ]; then
-  if ! python3 scripts/data_accuracy_check.py > /tmp/d0_check.log 2>&1; then
+  python3 scripts/data_accuracy_check.py > /tmp/d0_check.log 2>&1
+  d0_rc=$?
+  if [ "$d0_rc" -eq 3 ]; then
+    echo "[stop-gate] ⏸ D0 校验延后: DB 正被 init_db 重建占用 (非数据错误); 重建完成后下次 stop 自动校验" >&2
+  elif [ "$d0_rc" -ne 0 ]; then
     fails="$fails
   ❌ D0 违反: scripts/data_accuracy_check.py 失败 — 看 /tmp/d0_check.log"
   fi

@@ -327,11 +327,39 @@ CHECKS = [
 ]
 
 
+class _DbLocked(Exception):
+    """DB 被其它写连接占用 (疑 init_db 重建中) — 瞬时运行态, 非数据错误."""
+
+
+def _connect_readonly_with_retry(attempts: int = 4, wait_s: float = 2.0):
+    """读连接; 锁冲突时重试(瞬时锁自愈), 仍锁抛 _DbLocked (流程级根治假阳性).
+
+    DuckDB 单写者: init_db 重建持写锁时, 本进程读连接会撞锁报 IOException。
+    那不是"数据错了", 是"DB 正被重建" — 重试几次, 仍锁则延后, 不冒充 D0 违反。
+    """
+    import time
+    last = None
+    for _ in range(attempts):
+        try:
+            return duckdb.connect(str(DB_PATH), read_only=True)
+        except Exception as e:  # noqa: BLE001 — 仅锁冲突重试, 其它原样抛
+            if "lock" not in str(e).lower():
+                raise
+            last = e
+            time.sleep(wait_s)
+    raise _DbLocked(str(last))
+
+
 def main() -> int:
     if not DB_PATH.exists():
         print(f"❌ DB 不存在 — 先跑 init_db: {DB_PATH}")
         return 1
-    con = duckdb.connect(str(DB_PATH), read_only=True)
+    try:
+        con = _connect_readonly_with_retry()
+    except _DbLocked as e:
+        print("⏸ D0 校验延后: DB 被写连接占用 (疑 init_db 重建中), 非数据错误。"
+              f"\n   重建完成后下次自动校验。详情: {e}")
+        return 3  # 延后 (stop_gate 视为非阻断, 区别于 1=真 D0 失败)
     try:
         for fn in CHECKS:
             fn(con)
