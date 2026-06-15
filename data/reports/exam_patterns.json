@@ -1,6 +1,6 @@
 {
   "source": "exam_questions (2021+ 新课标 II 辽宁)",
-  "n_questions": 74,
+  "n_questions": 152,
   "years": [
     2021,
     2022,
@@ -17,331 +17,286 @@
   },
   "data_gap": [],
   "reading": {
-    "n": 40,
+    "n": 54,
     "question_patterns": {
-      "What": 0.95,
-      "Which": 0.425,
-      "How": 0.4,
-      "Why": 0.325,
-      "Where": 0.2,
-      "Who": 0.125
+      "What": 0.759,
+      "How": 0.259,
+      "Which": 0.204,
+      "Why": 0.204,
+      "Where": 0.111,
+      "Who": 0.056
     },
     "skill_distribution": {
-      "细节理解": 0.7,
-      "推理判断": 0.35,
-      "主旨大意": 0.25,
-      "目的意图": 0.225,
-      "标题选择": 0.15,
-      "词义猜测": 0.1
+      "细节理解": 0.278,
+      "推理判断": 0.148,
+      "目的意图": 0.093,
+      "标题选择": 0.074,
+      "主旨大意": 0.056,
+      "词义猜测": 0.037
     }
   },
   "cloze": {
-    "n": 16,
-    "article_type_distribution": {
-      "说明文": 4,
-      "应用文": 1,
-      "记叙文": 1
-    }
+    "n": 52,
+    "article_type_distribution": {}
   },
   "grammar_fill": {
-    "n": 10,
-    "grammar_points_ranked": [
-      {
-        "point": "形容词",
-        "freq": 8
-      },
-      {
-        "point": "名词",
-        "freq": 8
-      },
-      {
-        "point": "动词",
-        "freq": 8
-      },
-      {
-        "point": "副词",
-        "freq": 5
-      },
-      {
-        "point": "介词",
-        "freq": 2
-      },
-      {
-        "point": "固定搭配",
-        "freq": 2
-      }
-    ]
+    "n": 22,
+    "grammar_points_ranked": []
   },
   "global_vocab": {
     "top50_content_words": [
       {
         "word": "what",
-        "freq": 135
+        "freq": 125
       },
       {
         "word": "more",
-        "freq": 83
-      },
-      {
-        "word": "about",
-        "freq": 79
-      },
-      {
-        "word": "time",
-        "freq": 74
-      },
-      {
-        "word": "people",
-        "freq": 67
+        "freq": 62
       },
       {
         "word": "when",
-        "freq": 63
+        "freq": 61
       },
       {
-        "word": "one",
+        "word": "about",
+        "freq": 59
+      },
+      {
+        "word": "time",
         "freq": 56
       },
       {
-        "word": "all",
-        "freq": 55
-      },
-      {
-        "word": "some",
-        "freq": 54
-      },
-      {
-        "word": "out",
-        "freq": 53
-      },
-      {
-        "word": "them",
-        "freq": 52
-      },
-      {
-        "word": "how",
+        "word": "people",
         "freq": 51
       },
       {
-        "word": "there",
-        "freq": 47
+        "word": "how",
+        "freq": 48
       },
       {
-        "word": "which",
-        "freq": 47
-      },
-      {
-        "word": "than",
-        "freq": 46
-      },
-      {
-        "word": "like",
-        "freq": 45
-      },
-      {
-        "word": "into",
-        "freq": 43
-      },
-      {
-        "word": "first",
-        "freq": 41
-      },
-      {
-        "word": "where",
-        "freq": 41
-      },
-      {
-        "word": "make",
-        "freq": 39
-      },
-      {
-        "word": "just",
-        "freq": 39
-      },
-      {
-        "word": "most",
-        "freq": 39
-      },
-      {
-        "word": "way",
-        "freq": 36
-      },
-      {
-        "word": "plants",
-        "freq": 36
-      },
-      {
-        "word": "also",
-        "freq": 35
-      },
-      {
-        "word": "world",
-        "freq": 35
-      },
-      {
-        "word": "does",
-        "freq": 35
-      },
-      {
-        "word": "only",
-        "freq": 34
-      },
-      {
-        "word": "new",
-        "freq": 34
-      },
-      {
-        "word": "would",
-        "freq": 33
+        "word": "out",
+        "freq": 44
       },
       {
         "word": "book",
-        "freq": 33
+        "freq": 41
       },
       {
-        "word": "food",
-        "freq": 33
-      },
-      {
-        "word": "around",
-        "freq": 32
+        "word": "one",
+        "freq": 40
       },
       {
         "word": "did",
-        "freq": 32
+        "freq": 40
       },
       {
-        "word": "best",
-        "freq": 32
+        "word": "make",
+        "freq": 38
       },
       {
-        "word": "day",
-        "freq": 32
+        "word": "them",
+        "freq": 38
       },
       {
-        "word": "many",
-        "freq": 32
+        "word": "does",
+        "freq": 38
       },
       {
-        "word": "could",
-        "freq": 32
+        "word": "all",
+        "freq": 37
       },
       {
-        "word": "these",
-        "freq": 31
+        "word": "plants",
+        "freq": 37
       },
       {
-        "word": "now",
-        "freq": 31
+        "word": "there",
+        "freq": 36
       },
       {
-        "word": "after",
-        "freq": 31
+        "word": "some",
+        "freq": 36
       },
       {
-        "word": "work",
-        "freq": 31
+        "word": "where",
+        "freq": 35
       },
       {
-        "word": "family",
-        "freq": 30
+        "word": "which",
+        "freq": 34
+      },
+      {
+        "word": "like",
+        "freq": 34
+      },
+      {
+        "word": "into",
+        "freq": 33
       },
       {
         "word": "get",
+        "freq": 31
+      },
+      {
+        "word": "way",
+        "freq": 31
+      },
+      {
+        "word": "many",
+        "freq": 31
+      },
+      {
+        "word": "than",
+        "freq": 30
+      },
+      {
+        "word": "most",
+        "freq": 30
+      },
+      {
+        "word": "food",
         "freq": 29
       },
       {
-        "word": "take",
-        "freq": 29
-      },
-      {
-        "word": "good",
-        "freq": 29
-      },
-      {
-        "word": "may",
-        "freq": 29
-      },
-      {
-        "word": "help",
+        "word": "first",
         "freq": 28
       },
       {
         "word": "home",
-        "freq": 28
+        "freq": 27
+      },
+      {
+        "word": "only",
+        "freq": 27
+      },
+      {
+        "word": "just",
+        "freq": 27
+      },
+      {
+        "word": "says",
+        "freq": 27
+      },
+      {
+        "word": "after",
+        "freq": 26
+      },
+      {
+        "word": "work",
+        "freq": 26
+      },
+      {
+        "word": "new",
+        "freq": 26
+      },
+      {
+        "word": "help",
+        "freq": 26
       },
       {
         "word": "two",
-        "freq": 28
+        "freq": 25
+      },
+      {
+        "word": "these",
+        "freq": 25
+      },
+      {
+        "word": "why",
+        "freq": 25
+      },
+      {
+        "word": "now",
+        "freq": 25
+      },
+      {
+        "word": "him",
+        "freq": 25
+      },
+      {
+        "word": "could",
+        "freq": 24
+      },
+      {
+        "word": "read",
+        "freq": 24
+      },
+      {
+        "word": "find",
+        "freq": 24
+      },
+      {
+        "word": "look",
+        "freq": 23
+      },
+      {
+        "word": "also",
+        "freq": 23
+      },
+      {
+        "word": "even",
+        "freq": 23
+      },
+      {
+        "word": "been",
+        "freq": 22
+      },
+      {
+        "word": "around",
+        "freq": 22
       }
     ]
   },
   "global_sentence": {
-    "avg_sentence_words": 12.8,
-    "median_sentence_words": 11,
-    "p25": 6,
-    "p75": 18
+    "avg_sentence_words": 11.9,
+    "median_sentence_words": 9,
+    "p25": 5,
+    "p75": 16
   },
   "question_design_terms": {
     "ranked": [
       {
         "term": "细节",
-        "freq": 28
+        "freq": 15
       },
       {
         "term": "下文",
-        "freq": 20
-      },
-      {
-        "term": "上文",
-        "freq": 18
-      },
-      {
-        "term": "目的",
-        "freq": 14
-      },
-      {
-        "term": "主旨",
-        "freq": 11
-      },
-      {
-        "term": "词义",
-        "freq": 10
-      },
-      {
-        "term": "语境",
         "freq": 9
       },
       {
-        "term": "推断",
+        "term": "上文",
         "freq": 8
       },
       {
-        "term": "时态",
-        "freq": 7
+        "term": "推断",
+        "freq": 5
       },
       {
-        "term": "非谓语",
-        "freq": 6
+        "term": "目的",
+        "freq": 5
+      },
+      {
+        "term": "主旨",
+        "freq": 4
+      },
+      {
+        "term": "语境",
+        "freq": 4
+      },
+      {
+        "term": "词义",
+        "freq": 4
+      },
+      {
+        "term": "总结",
+        "freq": 2
       },
       {
         "term": "转折",
-        "freq": 5
+        "freq": 2
       },
       {
         "term": "搭配",
-        "freq": 5
-      },
-      {
-        "term": "从句",
-        "freq": 5
-      },
-      {
-        "term": "比较",
-        "freq": 3
-      },
-      {
-        "term": "原因",
         "freq": 2
       },
       {
@@ -349,8 +304,8 @@
         "freq": 2
       },
       {
-        "term": "总结",
-        "freq": 2
+        "term": "原因",
+        "freq": 1
       }
     ]
   }
