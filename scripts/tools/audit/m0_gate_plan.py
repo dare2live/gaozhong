@@ -30,10 +30,12 @@ def validate_gates(gates: list[dict[str, Any]]) -> None:
     if not gates:
         raise ValueError("m0 gate config has no gates")
 
+    # order 连续无缺无重; 允许 0-indexed (order 0 = 控制面门) 或 1-indexed, 二者皆契约合法
     orders = [int(gate.get("order", 0)) for gate in gates]
-    expected_orders = list(range(1, len(gates) + 1))
-    if orders != expected_orders:
-        raise ValueError(f"m0 gate orders must be contiguous from 1: actual={orders}, expected={expected_orders}")
+    start = orders[0] if orders else 0
+    expected_orders = list(range(start, start + len(gates)))
+    if start not in (0, 1) or orders != expected_orders:
+        raise ValueError(f"m0 gate orders 必须从 0 或 1 起连续: actual={orders}, expected={expected_orders}")
 
     names = [str(gate.get("name") or "") for gate in gates]
     duplicate_names = sorted({name for name in names if names.count(name) > 1})
