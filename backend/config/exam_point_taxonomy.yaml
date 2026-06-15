@@ -1,73 +1,109 @@
 # 考点 canonical 分类体系 (件2 地基) — 数据化判断规则 (§3.5 不 hardcode)
 #
-# 这是"辽宁高考英语考什么"的受控词表 (controlled vocabulary): 四个维度的合法 label 全集。
-# 任何真题考点标注 (人工/双模型) 只能从这里取 label, 不许自创; 标注落 nodes(node_type=exam_point)
-# + edges(relation=tests_exam_point), evidence_json 带 provenance + confidence。
+# 2026-06-16 细化 (回应用户"太粗/考纲就是这么分类的吗"): 升到官方层级 + 每 label 带 provenance。
+# 详据 docs/exam_point_taxonomy_research.md (每分类 🟢官方/🟡实证/🔴民间 + 来源)。
 #
-# 来源 (可溯源, 非臆造):
-#   - 设问类型 / 体裁 / 语法考点: docs/exam_scenario_patterns.md 实证规律 (188 辽宁真题)
-#   - 题材语境: 课标主题语境 data/structured/curriculum/theme_contexts.jsonl + docs/exam_topic_landscape.md
-#   - 语法考点大类: 官方课标语法体系 (data 已入库 grammar 106 项, 此处取高考高频考查面)
+# provenance 取值 (§3.2 可信度分层, moth 锁"🟡不冒充🟢"):
+#   official_curriculum — 普通高中英语课程标准(2017年版2020修订), 课标逐字
+#   official_neea       — 教育部考试中心《中国高考评价体系》/官方考试说明
+#   empirical_liaoning  — 本项目辽宁真题实证归纳 (非考纲明列, 诚实标注)
+#   convention          — 教辅通用名/民间约定 (映射到官方, 不单独入 canonical)
 #
-# provenance 红线 (C 级可信度, CLAUDE.md §3.2): LLM 单模型拆的标注必标 llm_single, 不冒充核验;
-# 双模型一致才 dual_model_agree; 教师核验才 human_verified。趋势/分布按 provenance 分层, 不混。
+# 标注落 nodes(node_type=exam_point) + edges(tests_exam_point), evidence_json 带 provenance+confidence。
+# 真相源: theme_contexts.jsonl(48, 课标L1/L2逐字) + grammar_items.jsonl(106) + 上述官方文件。
 
-version: 1
-status: draft  # 件2 标注落库前为 draft; 标注+审计闭环后转 active
+version: 2
+status: draft  # 细化标注落库前为 draft
 
 dimensions:
 
-  # 维度 1: 设问类型 (阅读理解 — 一道小题考查的能力)
-  question_intent:
-    desc: 阅读理解小题的设问意图 (从设问句判断)
-    applies_to: [阅读理解]
-    labels:
-      - {id: 主旨大意, desc: 主旨/标题/段落大意/写作目的, cue: "main idea / title / purpose / mainly about"}
-      - {id: 细节理解, desc: 事实细节定位, cue: "according to / what / when / where / which"}
-      - {id: 推理判断, desc: 隐含信息/作者暗示/推断, cue: "infer / imply / suggest / learn from"}
-      - {id: 词义猜测, desc: 划线词/短语/指代义猜测, cue: "underlined word / refers to / means"}
-      - {id: 态度观点, desc: 作者/人物态度倾向, cue: "attitude / tone / think of"}
+  # 维度 1: 主题语境 (课标官方三级: 3大主题 → 10主题群(L2) → 35子主题(L3); canonical 用到 L2)
+  theme_context:
+    desc: 课标官方主题语境层级 (本表 L1+L2 与课标逐字一致, 见 theme_contexts.jsonl)
+    provenance: official_curriculum
+    curriculum_ref: "普通高中英语课程标准(2017年版2020修订) §主题语境"
+    applies_to: [阅读理解, 完形填空, "完形填空(七选五/语篇)", 语法填空, 读后续写]
+    hierarchy:
+      人与自我:
+        - 生活与学习
+        - 做人与做事
+      人与社会:
+        - 社会服务与人际沟通
+        - "文学、艺术与体育"
+        - "历史、社会与文化"
+        - 科学与技术
+      人与自然:
+        - 自然生态
+        - 环境保护
+        - 灾害防范
+        - 宇宙探索
 
-  # 维度 2: 体裁 (语篇类型)
+  # 维度 2: 设问类型 (阅读理解理解性技能 — 教育部考试中心《中国高考评价体系》7项, 3独立官方源印证)
+  question_intent:
+    desc: 阅读理解理解性技能 (官方 L1 7项; 项目原5类降为教辅别名 L2)
+    provenance: official_neea
+    curriculum_ref: "教育部考试中心《中国高考评价体系》阅读理解能力层级"
+    applies_to: [阅读理解]
+    labels:  # L1 官方7项 (🟢)
+      - {id: 理解词汇, prov: official_neea}
+      - {id: 理解具体信息, prov: official_neea}
+      - {id: 理解主旨要义, prov: official_neea}
+      - {id: 理解观点态度, prov: official_neea}
+      - {id: 理解目的, prov: official_neea, note: "项目原5类漏此项, 官方明列且趋势上升"}
+      - {id: 推断, prov: official_neea}
+      - {id: 理解文章结构类型, prov: official_neea, note: "项目原5类漏此项"}
+    aliases:  # 项目原5类(教辅通用名 🟡 convention) → 官方L1, 不单独入canonical
+      细节理解: 理解具体信息
+      主旨大意: 理解主旨要义
+      态度观点: 理解观点态度
+      词义猜测: 理解词汇
+      推理判断: 推断
+
+  # 维度 3: 体裁 (课标官方文体 + 命题实证子类)
   genre:
-    desc: 语篇文体类型
+    desc: 语篇文体 (课标官方文体 🟢 + 命题实证细分 🟡)
+    provenance: official_curriculum
+    curriculum_ref: "普通高中英语课程标准 §语篇类型"
     applies_to: [阅读理解, 完形填空, "完形填空(七选五/语篇)", 语法填空, 读后续写, 应用文写作]
     labels:
-      - {id: 记叙文, desc: 故事/人物经历/第一人称叙事}
-      - {id: 说明文, desc: 客观说明事物/现象/科普}
-      - {id: 议论文, desc: 观点论证/评论}
-      - {id: 应用文, desc: 活动通知/景区导览/书信/邮件/须知}
-      - {id: 新闻报道, desc: 时事/事件报道体}
-      - {id: 书评介绍, desc: 书/画册/作品介绍}
+      - {id: 记叙文, prov: official_curriculum}
+      - {id: 说明文, prov: official_curriculum}
+      - {id: 议论文, prov: official_curriculum}
+      - {id: 应用文, prov: official_curriculum}
+      - {id: 新闻报道, prov: official_curriculum}
+      - {id: 书评介绍, prov: empirical_liaoning, note: "命题实证细分, 非课标明列"}
 
-  # 维度 3: 语法考点 (语法填空 / 完形 — 一空考查的语法面)
+  # 维度 4: 文本连续性 (课标正交维度, 项目此前未建; 待落)
+  text_continuity:
+    desc: 连续性文本 vs 非连续性文本 (课标官方正交维度)
+    provenance: official_curriculum
+    curriculum_ref: "普通高中英语课程标准 §语篇类型(连续/非连续)"
+    status: pending  # 暂未标注, 列出以备件2后续
+    labels:
+      - {id: 连续性文本, prov: official_curriculum}
+      - {id: 非连续性文本, prov: official_curriculum, note: "图表/广告/活动单/目录等"}
+
+  # 维度 5: 语法考点 (语法填空/完形 — 映射课标 106 项官方语法; 9类粒度是高频面归纳 🟡)
   grammar_point:
-    desc: 语法填空/完形挖空考查的语法点 (从答案+解析判断)
+    desc: 语法填空/完形挖空考查的语法点 (映射课标 grammar_items 106 项; 9类粒度=高考高频面归纳)
+    provenance: empirical_liaoning
+    curriculum_ref: "可映射 grammar_items.jsonl(课标106项); 9类聚合为高频考查面"
     applies_to: [语法填空, 完形填空]
     labels:
-      - {id: 动词时态语态, desc: 时态/语态/主谓一致}
-      - {id: 非谓语动词, desc: 不定式/动名词/分词}
-      - {id: 定语从句, desc: 关系代词/关系副词}
-      - {id: 名词性从句, desc: 主/宾/表/同位语从句}
-      - {id: 状语从句, desc: 时间/条件/原因/让步等}
-      - {id: 连词介词, desc: 并列/从属连词 + 介词}
-      - {id: 冠词代词, desc: 冠词/代词}
-      - {id: 构词派生, desc: 词性转换/派生 (形容词↔副词↔名词)}
-      - {id: 形容词副词比较, desc: 比较级/最高级}
+      - {id: 动词时态语态, prov: empirical_liaoning}
+      - {id: 非谓语动词, prov: empirical_liaoning}
+      - {id: 定语从句, prov: empirical_liaoning}
+      - {id: 名词性从句, prov: empirical_liaoning}
+      - {id: 状语从句, prov: empirical_liaoning}
+      - {id: 连词介词, prov: empirical_liaoning}
+      - {id: 冠词代词, prov: empirical_liaoning}
+      - {id: 构词派生, prov: empirical_liaoning}
+      - {id: 形容词副词比较, prov: empirical_liaoning}
 
-  # 维度 4: 题材语境 (课标主题语境 — 语篇话题归属)
-  theme_context:
-    desc: 课标三大主题语境 (骨架取自 theme_contexts.jsonl, 不自创)
-    applies_to: [阅读理解, 完形填空, "完形填空(七选五/语篇)", 语法填空, 读后续写]
-    labels:
-      - {id: 人与自我, desc: 生活学习/兴趣爱好/自我认知/职业体验}
-      - {id: 人与社会, desc: 社会服务人际/历史社会文化/科技信息/文学艺术体育}
-      - {id: 人与自然, desc: 自然生态/环境保护/灾害防范/宇宙探索}
-
-# 标注落库契约 (件2 实现时遵守):
+# 落库契约:
 sink:
-  node_type: exam_point          # nodes.node_type
-  node_id_pattern: "exam_point:{dimension}:{label_id}"   # concept_id
-  edge_relation: tests_exam_point # edges.relation (question:X → exam_point:Y)
-  evidence_fields: [provenance, confidence, cue_matched]  # edges.evidence_json
-  provenance_levels: [human_verified, dual_model_agree, llm_single]  # 分层, 不混算趋势
+  node_type: exam_point
+  node_id_pattern: "exam_point:{dimension}:{label_id}"   # L2 用 "exam_point:theme_context:历史、社会与文化"
+  edge_relation: tests_exam_point
+  evidence_fields: [provenance, confidence, cue_matched, curriculum_ref]
+  provenance_levels: [official_curriculum, official_neea, empirical_liaoning, convention]  # 分层不混, 趋势按层加权
