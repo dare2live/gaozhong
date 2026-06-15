@@ -4,7 +4,7 @@ endpoints:
   /api/students/list                列表 (可 ?class_id=, ?city=, ?grade= 过滤)
   /api/students/get?id=             单生详情 + 班级 + 弱点
   /api/students/classes             班级列表
-  /api/students/weakness?id=        学生弱点 heatmap (按 word/grammar)
+  /api/students/weakness?id=        学生弱点 (按 exam_point 真考点; 2026-06-16 改, 返 label/dimension)
   /api/students/recommend?id=       弱点 → 推送对应课节
 """
 from __future__ import annotations
@@ -85,22 +85,32 @@ def api_students_weakness(qs: dict) -> dict:
         return {"error": "missing ?id"}
     con = db_ro()
     try:
+        # join nodes 取可读 label (薄弱环节=exam_point真考点, 非裸 concept_id); 维度=concept_id 中段
         rows = con.execute(
-            "SELECT concept_id, weakness_score, sample_n "
-            "FROM student_weakness WHERE student_id = ? "
-            "ORDER BY weakness_score DESC LIMIT 30",
+            "SELECT w.concept_id, COALESCE(n.label, w.concept_id) AS label, "
+            "       w.weakness_score, w.sample_n "
+            "FROM student_weakness w LEFT JOIN nodes n ON n.concept_id = w.concept_id "
+            "WHERE w.student_id = ? ORDER BY w.weakness_score DESC LIMIT 30",
             [sid],
         ).fetchall()
         return {
             "weakness": [
-                {"concept_id": r[0], "score": r[1], "sample_n": r[2],
-                 "kind": r[0].split(":", 1)[0]}
+                {"concept_id": r[0], "label": r[1], "score": r[2], "sample_n": r[3],
+                 "dimension": _ep_dimension(r[0])}
                 for r in rows
             ],
             "count": len(rows),
         }
     finally:
         con.close()
+
+
+def _ep_dimension(concept_id: str) -> str:
+    """exam_point:theme_l2:环境保护 → 'theme_l2' (考点维度); 非 exam_point → 前缀."""
+    parts = concept_id.split(":")
+    if parts[0] == "exam_point" and len(parts) >= 3:
+        return parts[1]
+    return parts[0]
 
 
 def api_students_recommend(qs: dict) -> dict:

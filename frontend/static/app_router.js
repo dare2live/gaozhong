@@ -541,7 +541,7 @@
         ${result.phase1_accuracy != null ? `(一阶段 ${(result.phase1_accuracy * 100).toFixed(1)}% + 二阶段 ${(result.phase2_accuracy * 100).toFixed(1)}%)` : `(${result.n_correct}/${result.n_total})`}</p>
       <p><strong>${result.layer_recommendation.msg}</strong></p>
       <h4>弱点 (${result.weak_concepts.length})</h4>
-      <ul>${result.weak_concepts.slice(0, 8).map(w => `<li>${GZ.conceptLink(w.concept_id, w.concept_id)}</li>`).join("")}</ul>
+      <ul>${result.weak_concepts.slice(0, 8).map(w => `<li>${GZ.conceptLink(w.concept_id, w.label || w.concept_id.split(":").pop())}</li>`).join("")}</ul>
       <h4>推送课节 (${result.recommended_courses.length})</h4>
       <ul>${result.recommended_courses.map(c => `<li><a href="#" onclick="window._openHandout(${c.course_id});return false">#${c.course_id} [${c.layer}] ${c.title}</a> &larr; ${c.weak_concept}</li>`).join("")}</ul>
     </div>`;
