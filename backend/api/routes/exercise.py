@@ -97,14 +97,14 @@ def api_exercise_narrative_passages(_qs: dict) -> dict:
     finally: con.close()
 
 
-def api_exercise_predicted(qs: dict) -> dict:
+def api_exercise_blueprint_practice(qs: dict) -> dict:
     from backend.services.exercise import predicted
     try: total = min(int(qs.get("n", ["30"])[0]), 80)
     except ValueError: total = 30
     seed_s = qs.get("seed", [None])[0]
     seed = int(seed_s) if seed_s and seed_s.isdigit() else None
     con = db_ro()
-    try: return predicted.generate_predicted_paper(con, total=total, seed=seed)
+    try: return predicted.generate_blueprint_practice_paper(con, total=total, seed=seed)
     finally: con.close()
 
 
@@ -116,5 +116,6 @@ ROUTES = {
     "/api/exercise/grammar_fill": api_exercise_grammar_fill,
     "/api/exercise/applied_templates": api_exercise_applied_templates,
     "/api/exercise/narrative_passages": api_exercise_narrative_passages,
-    "/api/exercise/predicted": api_exercise_predicted,
+    # 2026-06-15 REVISE: /predicted → /blueprint_practice (去"预测"营销话术, 非押题)
+    "/api/exercise/blueprint_practice": api_exercise_blueprint_practice,
 }
