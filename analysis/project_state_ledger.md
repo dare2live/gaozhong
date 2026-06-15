@@ -821,3 +821,19 @@
 - Added top-level design note `docs/top_level_module_data_config_architecture_20260615.md` and linked it from `docs/architecture.md`.
 - Updated `goal.md`, `.moth/profile.yaml`, and `backend/config/m0_gates.yaml` so new sessions and M0 planning see the architecture control plane first.
 - Scope: borrowed reusable patterns from gaokao, LifeHack, and ChunkyMonkey without importing their domain truth or modules; no DuckDB write performed.
+
+---
+
+## 2026-06-15 / 数据诚实性整改 (6 commits)
+
+接手发现"理解→深度整改"链条, 6 commit 闭环真题真值 + 工程纪律:
+- `18c01f6` 真题 province/paper_type provenance-aware(假辽宁降级)+ check_21 防回归 + 学情写死改派生(对抗审查 4/4 真修复)
+- `4f32fad` 回滚 Phase 7 生成层(删 enriched 讲义40/合成题275/生成练习67/week演练65; question_bank 仅真题; course_handouts 0)— 教材基石不完整不该有生成范文 §1.1
+- `fafd3d7` EOL 真题入库: 2021/2022 辽宁新高考全国II卷走 review gate 入 exam_questions(替换 GAOKAO 混合卷占位); exam_questions 376→454
+- `4bd83d8` autotag/tests_word 去停用词(config/stopwords.yaml); tests_word 28430→16540
+- `d250543` 注册 .moth/assertions/claims.yaml(12 条 claims-vs-reality 弹仓)
+- `ea8fd98` 拆 4 个 god-module(verification_protocol/truth_baseline_audit/exam_eol/project_architecture)到 <400; 行为等价证明; run_all 可复现 44 OK(解决 L-S 陈旧快照)
+
+三门: data_accuracy_check exit 0 / moth assert PASS 12 / stop_gate exit 0。
+沉淀: gaozhong-ops skill(坑库8) + feedback-tool-first-discovery 记忆 + lessons L-R..V。
+下一前沿: 教材基石完整提取(外研选必4 零单元/覆盖46%)→ 趋势模型在干净数据上重建。

@@ -71,19 +71,26 @@
 | 架构 gate | `python3 scripts/tools/audit/project_architecture_audit.py --strict --output data/reports/project_architecture_audit_20260615.json` |
 | sibling 项目 | gaokao / LifeHack / ChunkyMonkey 只作为 pattern reference；不得成为 gaozhong 数据真相源 |
 | 奥卡姆约束 | 不新建大平台；沿用现有 `data_sources` / `contracts` / `audit` / `imports` 模块，新增机器契约和只读审计防漂移 |
+| **数据诚实性守护** | `moth assert --repo .`(12 条 claims-vs-reality 弹仓); `gaozhong-ops` skill(坑库); 定位用 codegraph 不 grep |
+
+### 2026-06-15 数据诚实性整改 (6 commits, 详 RESUME.md + lessons L-R..V)
+- **真题 provenance 闭环**: 假"辽宁新课标II卷"诚实降级 + check_21 防回归; **EOL 2021/2022 真题入库**(替换 GAOKAO 占位)。exam_questions 376→454, 真辽宁卷 152。
+- **Phase 7 生成层回滚**: 删 enriched 讲义/合成题/生成练习(教材基石不完整不该有生成范文 §1.1); question_bank 仅真题; course_handouts 0。
+- **学情派生 + 去停用词 + god-module 拆分**: 弱点从写死改答题派生; autotag 去功能词; 4 个 >400 行治理 god-module 拆到 <400, run_all 可复现绿。
+- 三门全绿: data_accuracy_check / moth assert / stop_gate。
 
 ---
 
-## 阶段速览 (2026-05-24 当日)
+## 阶段速览 (2026-05-24 当日; ⚠️ 2026-06-15 已部分回滚, 以上"数据诚实性整改"段为准)
 
 | # | 阶段 | 状态 |
 |---|---|---|
-| 1 | 数据基石 + 框架 | ✅ 4945 nodes / 34697 edges |
-| 2 | 题库 + 条件组卷 | ✅ 509 题 + 10641 mapping |
+| 1 | 数据基石 + 框架 | ✅ 图谱核心(2026-06-15 去停用词后 nodes ~5073 / edges ~26066) |
+| 2 | 题库 + 条件组卷 | ⚠️ 2026-06-15 改为**仅真题**(回滚合成题/生成练习) |
 | 3 | 教师端 + 本地部署 | ✅ start.command |
-| 4 | 真问题修 (data/UI/趋势/economist) | ✅ 完整 (4.7.C-E 全做完) |
-| **5** | **统一教学系统 + 40 节分层课程** | **✅ 13 复核门 12 ✅ + 1 OK 升级** |
-| 6 | 运营交付准备 | 🚧 持续推进 (Docker 暂缓) |
+| 4 | 真问题修 (data/UI/趋势/economist) | ✅ + 2026-06-15 真题 provenance/EOL/学情 深度整改 |
+| **5** | **统一教学系统 + 40 节分层课程** | ⚠️ **课程结构骨架保留, 生成讲义/范文已回滚**(教材基石不完整 §1.1; 待基石完整后重建) |
+| 6 | 运营交付准备 | 🚧 数据基石(教材完整提取)是前置, 见 RESUME.md §4 |
 
 **用户 2026-05-24 决策**:
 - ⏸️ 跳过 6.F Docker 部署

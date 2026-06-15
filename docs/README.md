@@ -2,7 +2,9 @@
 
 日期：2026-06-15
 
-本文件是当前文档入口。Codex 接手顺序：`AGENTS.md` -> `agent.md` -> `goal.md` -> 本文件。
+本文件是当前文档入口。接手顺序：**invoke `gaozhong-ops` skill** -> `docs/RESUME.md`(断点续传, 最新状态) -> `AGENTS.md` -> `agent.md` -> `goal.md` -> 本文件。
+
+> 2026-06-15: 数据诚实性整改 6 commits 已闭环(真题 provenance / EOL 入库 / Phase 7 回滚 / 去停用词 / god-module 拆分)。三门全绿。守护: `moth assert --repo .`(12 条) + `gaozhong-ops` skill(坑库)。详 `RESUME.md`。
 
 ## Current law
 
