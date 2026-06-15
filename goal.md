@@ -97,13 +97,17 @@
 | 件 | 内容 | 状态 |
 |---|---|---|
 | 0 | **项目地图 CLI** `python3 -m scripts.tools.map [doctor\|modules\|gates\|drift\|stats] [--json] [--strict]` 只读聚合 4 套真相源 | ✅ |
-| 1 | 趋势"分析诚实"护栏: province 过滤 + 卷制分段(PIT) + 样本量护栏 + difficulty 标 estimated | ⏳ |
+| 1 | **趋势分析诚实护栏** `backend/services/trend/scope.py`: province 锚定(§7) + 卷制分段(PIT) + 样本量守门(reliable=False→'样本不足'不冒充slope); 修 lesson_plan 硬编码假slope; moth+2断言 | ✅ |
 | 2 | **考点 canonical 维度**(拱心石): 188 辽宁题标 体裁/设问/语法考点 + provenance, 落 question_tags + edges; 趋势/热力/关联/错题→薄弱环节 全改读它 | ⏳ |
 | 3 | 趋势/考点**落表**(灭 Rule 1 三套并行口径) + 接前端热力矩阵/斜率可视化 | ⏳ |
 | ⚠ gate | **消费者验证**(最高杠杆, AI 做不了): 1 名辽宁英语老师真用 30 分钟 — Rule 10 people-not-agents, 需用户动员 | 待用户 |
 
 已知 fail(非回归, gate0 预期): 架构审计 block=2 — legacy 直写 exam_questions/硬编码 PDF 路径未登记 import_policies(M0 闭合独立任务)。
 顺带修: m0_gate_plan.load_gates() order 0/1-indexed off-by-one(死代码 bug, 无 live 影响)。
+
+**真题实证分析(为教程铺路, 不建库)**: [docs/exam_topic_landscape.md](exam_topic_landscape.md)(话题/题材: 人与社会55%, 体裁强规律) + [docs/exam_scenario_patterns.md](exam_scenario_patterns.md)(场景/篇章/设问: 阅读A=应用文全细节/C篇主旨恒Q31/续写=第一人称困境截断)。
+**"预测高考"诚实定位** (用户提的目标): ✅可造结构高度贴近真实的模拟题(题型骨架+篇章+设问+语域对齐) / ❌不可预测具体内容——"AI押中高考"是营销话术违反D0; 正确定位="结构对齐+课标合规造题"非"押题"。选题可借鉴雅思真源(TIME/科学美国人/TED)话题方向但文本必降级到课标3500词。
+待审: predicted.py "预测试卷"按不可信 slope 加权, 与押题红线张力(已 flag 独立 review)。
 
 ### 2026-06-15 数据诚实性整改 (9 commits, 详 lessons L-R..W + data_accuracy_audit; live 状态看 `moth assert`)
 - **真题 provenance 闭环**: 假"辽宁新课标II卷"诚实降级 + check_21 防回归; **EOL 2021/2022 真题入库**(替换 GAOKAO 占位)。exam_questions 376→**472**(含 EOL 110 + 本地 PDF 18), 辽宁卷 **188**(M6 可复现)。
