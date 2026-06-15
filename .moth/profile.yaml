@@ -21,4 +21,7 @@ evidence_paths:
   architecture_control: /Users/dp/Documents/M/gaozhong/backend/config/project_architecture.yaml
   architecture_gate: /Users/dp/Documents/M/gaozhong/scripts/tools/audit/project_architecture_audit.py
 complexity_baseline_path: data/reports/tooling/complexity_baseline.json
+# 2026-06-15: 注册 claims-vs-reality 弹仓 — moth assert 守本 session 数据诚实性成果不回退
+assertion_packs:
+  - .moth/assertions/claims.yaml
 notes: gaozhong bilingual education operations project (backend services + static frontend). Focus on data integrity, API correctness, and audit-first changes. CodeGraph and audit artifacts are primary context for controller decisions.
