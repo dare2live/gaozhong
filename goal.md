@@ -89,6 +89,17 @@
 - 修 2 个 init_db 全量重建 bug: (1) `load.py` 用 `git ls-files -z` 防中文名八进制引号炸 file_manifest; (2) Layer 4g PDF 导入从 subprocess 改 in-process `import_pdfs(con)` 防 DuckDB 单写者锁冲突。
 - **init_db 可复现** exam_questions=472 / 辽宁=188 / eol=110 / local_pdf=18; 三门全绿(data_accuracy_check exit0 · moth PASS 17/0 · stop_gate exit0); 详 lessons L-Z/ZA/ZB。
 
+### M7 真题分析层 — verified-complete 状态 (2026-06-16 整固)
+> **真题分析层已 thorough 且经真相源验证**(含一次自我纠错)。24 commits。
+> - **考点 canonical(498 边)**: genre + theme L1(3大) + theme L2(课标官方10群)。分布揭示: 做人与做事4.9%→21.9%暴涨/人与自然翻倍/记叙文↔说明文翻转。
+> - **聚合分布(artifact)**: 设问类型(**显式解析真相源**: 推断50%主导, 已推翻inference版) + 语法考点(构词派生+非谓语两大盘)。
+> - **6 研究文档**: 话题/题材 · 场景篇章设问 · 阅读源头(NYT/NPR真出处) · 考点分布 · 官方分类研究 · exam_overview。
+> - **趋势诚实护栏(件1)** · **教师端考点分布可视化(件3)** · **项目地图CLI(件0)** · **Mio全局skill**。
+> - **方法硬教训**: 分类输入是**真相源**(语篇/答案)→可信; 输入是**代理**(设问句缺答案)→危险; dual-model一致只防随机不防系统偏差(坑16)。
+>
+> **剩余缺口(已记录, 递减回报; 非阻塞)**: 2024/2025答案(0覆盖, 可从 gaokao jsonl/PDF键填补但需passage正文匹配, fiddly) + 2024/2025/2022解析(本地无, 外部C级) — 任务#15。名词数/词形 taxonomy补全。趋势落表灭Rule1(内部hygiene)。
+> **下一相位瓶颈 = 消费者验证(任务#14, 用户)**: 数据底座已足够厚, 真老师30分钟试用是比继续自动建设更高杠杆的独立真相源校验。
+
 ### M7 真题分析有效性 + 项目地图 (2026-06-15 架构师顶层设计; 进行中)
 > 架构师 controller 复核出**核心盲点**: 项目工程纪律守护的是"数据诚实", 不是"分析有效性"——两者被悄悄等同。
 > **顶层设计决策**: D0 必须从"数据诚实"扩展到"**分析诚实**"(趋势 province-scoped + 样本量护栏 + 考点带 provenance)。
