@@ -97,6 +97,27 @@ def _word_teaching_hint(status: str, freq: int) -> str:
     return "常规教学"
 
 
+def _unit_related_exams(con: duckdb.DuckDBPyConnection, unit_id: str,
+                        limit: int = 8) -> list[dict]:
+    """备课 killer: 单元主题 → (theme_aligns) 考点 → (tests_exam_point 反) 相关辽宁真题.
+
+    "我要教这个单元(主题=X) → 高考考过这些同主题真题" — 用 4 路追溯桥(theme_aligns)反查。
+    """
+    rows = con.execute(
+        "SELECT DISTINCT SUBSTR(te.src_id, 10) AS qid, q.year, q.question_type, ep.label AS theme_point "
+        "FROM edges tou "
+        "JOIN edges ta ON ta.dst_id = tou.dst_id AND ta.relation = 'theme_aligns' "
+        "JOIN nodes ep ON ep.concept_id = ta.src_id "
+        "JOIN edges te ON te.dst_id = ta.src_id AND te.relation = 'tests_exam_point' "
+        "JOIN exam_questions q ON q.question_id = SUBSTR(te.src_id, 10) AND q.province LIKE '辽宁%' "
+        "WHERE tou.src_id = ? AND tou.relation = 'theme_of_unit' "
+        "ORDER BY q.year DESC LIMIT ?",
+        [unit_id, limit],
+    ).fetchall()
+    return [{"question_id": r[0], "year": r[1], "question_type": r[2], "theme_point": r[3]}
+            for r in rows]
+
+
 def generate_lesson_plan(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict:
     """完整教案输出."""
     # unit 基础
@@ -127,6 +148,7 @@ def generate_lesson_plan(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict:
         "words": _unit_words_with_trace(con, unit_id),
         "phrases": [{"canonical": p[0], "type": p[1], "evidence": p[2][:100]}
                      for p in phrases],
+        "related_exams": _unit_related_exams(con, unit_id),  # 同主题高考真题 (4路桥反查)
         "teaching_notes": {
             "评估说明": ("words.recent_exam_trace 列出每词近 N 次高考真题考查"
                           " (question_id 含 year + 题型, 老师可点查原题)"),

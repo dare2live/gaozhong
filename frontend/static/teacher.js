@@ -99,13 +99,18 @@ async function renderLesson(uid) {
   const themes = sub.nodes.filter(n => n.node_type === "theme").map(n => n.label);
   // 4.2.F 深度交叉关联 — 加 unit→真题考过词 (现 API 已通)
   const align = await fetchJSON(`/api/recommend/unit_exam_alignment?unit=${encodeURIComponent(uid)}`);
+  // 4路桥: 本单元主题 → 高考同主题真题 (备课锚: 教此主题, 高考这么考)
+  const lp = await fetchJSON(`/api/lesson_plan?unit=${encodeURIComponent(uid)}`).catch(() => ({}));
+  const rex = lp.related_exams || [];
   $("#lp-body").innerHTML = `
     <h3>词汇 (${words.length})</h3>
     <div>${words.map(w => tagChip(w, "word")).join("")}</div>
     <h3>主题</h3>
     <div>${themes.length ? themes.map(t => tagChip(t, "theme")).join("") : "<em>未匹配</em>"}</div>
     <h3>真题对齐 — 本 unit 引入词中, 高考考过的 ${align.exam_overlap}/${align.intro_total}</h3>
-    <div>${(align.examples || []).map(e => tagChip(`${e.word} · ${e.exam_freq}次`, "year")).join("")}</div>`;
+    <div>${(align.examples || []).map(e => tagChip(`${e.word} · ${e.exam_freq}次`, "year")).join("")}</div>
+    <h3>同主题高考真题 (${rex.length}) — 教此单元主题, 高考这么考 (4路追溯)</h3>
+    <div>${rex.length ? rex.map(e => tagChip(`${e.year} ${e.question_type} · ${e.theme_point}`, "year")).join("") : "<em>无</em>"}</div>`;
 }
 
 async function browseQbank() {
