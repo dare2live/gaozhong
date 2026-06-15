@@ -74,3 +74,14 @@ ChinaTextbook 北师大版每册被切成 `.pdf.1 + .pdf.2` (因为 GitHub 单�
 下载脚本已 `cat` 合并, 但**未做完整性核验**:
 - TODO: 用 pdfinfo / pdftotext 试打开每个合并后的 PDF, 检查是否真正可读.
 - TODO: 与原仓库 README / commit message 提到的 sha256 (如有) 对照.
+
+---
+
+## 2026-06-15 更新: 官方源印证已取得 (推翻"拿不到")
+
+用户 push back "反爬拿不到" 是错的 —— 充分利用工具后官方源都拿到了:
+
+- **G2 课标 3500 词官方表**: ✅ 从**本地英语课标 PDF** (`data/curriculum/national/.../4.普通高中英语课程标准(2017年版2020年修订).pdf` 附录2, PDF p128-186) 抽出官方词汇表 **2931 词带层级**(必修/选修I/选修II), 存 `data/structured/curriculum/official_curriculum_vocab.jsonl`。交叉验证 cefr_vocab: 97% 官方词被覆盖, cefr 缺 66 官方词。官方源就在仓里, 不用 crawl。
+- **沈阳/辽宁 外研版官方印证**: ✅ **Chrome MCP 浏览器**导航到官方 gov 站 `jyt.ln.gov.cn` 取得「辽宁省教育厅关于印发2023年中小学教学用书目录的通知」(抬头含沈阳), 框架已官方印证; 外研版由官方框架 + 国家目录 + 多源一致支撑。证据 `data/external/official_sources/liaoning_textbook_catalog_2023.md`。
+
+**方法教训**: 官方源不要预设"反爬拿不到"; 本地 PDF 优先(truth source 常在仓里), 在线官方源用 Chrome MCP(agent-browser)/crawl4ai 实测可达。

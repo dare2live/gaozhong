@@ -32,9 +32,20 @@ PDF_FALLBACK_MAP = {
 }
 
 
+class PdfUnreadableError(Exception):
+    """PDF 非有效格式 (HTML 伪装/损坏下载) — 不静默吞 (§1.5), 由 verify_year 转为 skip."""
+
+
 def extract_pdf_text(pdf_path: Path) -> str:
-    reader = pypdf.PdfReader(str(pdf_path))
-    return "".join(p.extract_text() or "" for p in reader.pages)
+    # 校验真 PDF: 防 HTML 伪装/损坏下载 (如反爬墙存成 .pdf) 崩溃整个 init_db
+    head = Path(pdf_path).read_bytes()[:5]
+    if not head.startswith(b"%PDF"):
+        raise PdfUnreadableError(f"{pdf_path.name} 非有效 PDF (文件头 {head!r}, 疑下载为 HTML/损坏)")
+    try:
+        reader = pypdf.PdfReader(str(pdf_path))
+        return "".join(p.extract_text() or "" for p in reader.pages)
+    except Exception as e:
+        raise PdfUnreadableError(f"{pdf_path.name} PDF 解析失败: {type(e).__name__}: {e}")
 
 
 def _source_is_usable_pdf_truth(source: SourceSpec) -> bool:
@@ -182,7 +193,11 @@ def verify_year(year: int, con=None) -> dict:
     pdf_source_id, pdf_path = pdf_source
     if not pdf_path.exists():
         return {"year": year, "status": "skip", "reason": f"PDF not found: {pdf_path}", "pdf_source_id": pdf_source_id}
-    pdf_text = extract_pdf_text(pdf_path)
+    try:
+        pdf_text = extract_pdf_text(pdf_path)
+    except PdfUnreadableError as e:
+        # 损坏/非PDF源 → skip (不崩 init_db, 不假过): 该年真题数据另有可信源 (如 Updates JSON)
+        return {"year": year, "status": "skip", "reason": str(e), "pdf_source_id": pdf_source_id}
     pdf_words = set(re.findall(r"[a-zA-Z]{4,}", pdf_text.lower()))
     rows, jsonl_entries = _load_structured(year, con)
     sources = list(rows) + [(e.get("source", ""), e.get("question_type", ""),

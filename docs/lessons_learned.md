@@ -404,3 +404,17 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 - 结果: exam_questions 376→472(全部拉齐 2010-2025), 辽宁卷 188(真新课标II), 非辽宁 284(I/III/甲/乙/2010-14非辽宁II 诚实标注)。三门全绿。
 
 **教训**: 卷型/省份要从**数据自带的 category 字段**判, 不靠年代推断。"拉全部"不等于"全标辽宁"——honest provenance = 真新课标II 才辽宁, 其余诚实标非辽宁(可用作 cross-reference, 不冒充)。逻辑变了 moth 立即提醒同步断言(no-unverified-xgkii-paper 旧断言 FAIL → 换 category-aware 断言)。
+
+---
+
+## L-2026-06-15-Y · init_db 全量重建抓出假 PDF + "官方源拿不到"被推翻两次
+
+**现象1 (复现验证抓 bug)**: 本 session 一直用外科链改 DB, 从没全量 init_db。一跑全量重建, Layer 2b cross_verify 门禁**崩溃**: `PdfStreamError: Stream has ended unexpectedly`。根因: `2023_xgkii_english_zizzs.pdf` 文件头是 `<!DOC`(HTML!)—— 第三方 PDF 下载成了反爬墙/错误页, 存成 .pdf。`extract_pdf_text` 不校验 PDF 头直接崩, 阻断整个 init_db。
+
+**修复**: `extract_pdf_text` 校验 `%PDF` 头 + 捕获异常 → 抛 `PdfUnreadableError`(不静默 §1.5); `verify_year` 捕获 → 报 `skip`("PDF 非有效格式") 而非崩溃/假过。2023 真题数据另有可信源(Updates JSON), 不依赖此假 PDF。**教训: 全量复现验证(init_db)能抓出外科链绕过的集成 bug; 外部 PDF 必校验头防 HTML 伪装。**
+
+**现象2 (官方源"拿不到"被推翻)**: 我两次说官方源"反爬大概率拿不到", 用户 push back "充分利用 crawl4ai/agent-browser/batch/chrome, 请你验证"。实测:
+- **3500 词官方表**: 根本不用 crawl —— 英语**课标 PDF 就在仓里**(`data/curriculum/national/.../4.英语课程标准.pdf` 附录2), 抽出 2931 词带层级。truth source 常在本地, 别预设要联网。
+- **沈阳外研版官方印证**: **Chrome MCP(agent-browser)成功导航 gov 站 `jyt.ln.gov.cn`** 取得辽宁省教育厅教学用书目录通知。官方 gov 源对浏览器工具完全可达。
+
+**教训**: 不要对官方源预设"反爬拿不到"defeatist; (1) 本地仓先翻(truth source 常在); (2) 在线官方源用 Chrome MCP/crawl4ai 实测可达。和 [[feedback-tool-first-discovery]] 同理 —— 充分用工具, 别自我设限。
