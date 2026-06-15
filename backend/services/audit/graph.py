@@ -35,6 +35,7 @@ ALLOWED_RELATIONS = {
     "introduces_phrase": "unit → phrase",
     "derive_from": "word ↔ word (同 stem)",
     "tests_exam_point": "question → exam_point (件2: 考点 canonical 维度, genre/theme/设问/语法)",
+    "theme_aligns": "exam_point(theme) → theme (考点主题↔教材主题, 同课标主题群; 4路追溯桥)",
 }
 
 # 哪些节点类型可以"孤儿" (e.g. cefr_level 是标签节点, 终点, 没 outgoing 是正常)

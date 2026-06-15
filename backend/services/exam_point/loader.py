@@ -100,6 +100,40 @@ def load_exam_points(con: duckdb.DuckDBPyConnection) -> dict:
 _ERA_SQL = "CASE WHEN q.year >= 2021 THEN '2021+_新高考II' ELSE '2015-2020_旧课标II' END"
 
 
+def bridge_exam_point_themes(con: duckdb.DuckDBPyConnection) -> dict:
+    """桥接 exam_point 主题考点 ↔ 教材 theme 节点 (同课标主题群) — 补 4 路追溯断缝.
+
+    真题 → exam_point:theme_l2:历史社会文化 → (theme_aligns) → theme:人与社会/历史社会文化
+    → (theme_of_unit) → 教材单元。让老师从"这题考某主题"跳到"哪个教材单元也讲该主题"。
+    匹配: L1 exam_point:theme_context:{X} → theme:{X}; L2 exam_point:theme_l2:{X} → theme:%/{X}(2级路径)。
+    """
+    made = 0
+    # L1: theme_context → theme:{label}
+    for ep, tgt in con.execute(
+        "SELECT ep.concept_id, t.concept_id FROM nodes ep "
+        "JOIN nodes t ON t.node_type='theme' AND t.concept_id = 'theme:' || ep.label "
+        "WHERE ep.concept_id LIKE 'exam_point:theme_context:%'").fetchall():
+        made += _bridge_edge(con, ep, tgt)
+    # L2: theme_l2 → theme:{L1}/{label} (2 级路径: 恰 1 个斜杠)
+    for ep, tgt in con.execute(
+        "SELECT ep.concept_id, t.concept_id FROM nodes ep "
+        "JOIN nodes t ON t.node_type='theme' AND t.concept_id LIKE 'theme:%/' || ep.label "
+        "  AND length(t.concept_id) - length(replace(t.concept_id, '/', '')) = 1 "
+        "WHERE ep.concept_id LIKE 'exam_point:theme_l2:%'").fetchall():
+        made += _bridge_edge(con, ep, tgt)
+    return {"theme_aligns_edges": made}
+
+
+def _bridge_edge(con: duckdb.DuckDBPyConnection, src: str, dst: str) -> int:
+    if con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=? AND relation='theme_aligns'",
+                   [src, dst]).fetchone():
+        return 0
+    con.execute(
+        "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?, ?, ?, ?, ?)",
+        [src, dst, "theme_aligns", 1.0, '{"basis":"同课标主题群"}'])
+    return 1
+
+
 def exam_point_distribution(con: duckdb.DuckDBPyConnection,
                             dimension: str | None = None) -> dict:
     """辽宁考点分布 — **按卷制 era 分层 + 占比** (单一计算点, 从 tests_exam_point 边算一次).
