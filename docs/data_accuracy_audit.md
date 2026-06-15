@@ -865,3 +865,23 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 - 2022 decisions：覆盖 written rows 21-65、writing prompt rescope。
 - 所有新增 source/data overlay 均未写 DuckDB。
 - 未运行 coverage/backlog/import-readiness/M0 gates；不能把当前状态当作准确性通过。
+
+## 2026-06-15 / 真题 province·paper_type 维度 D0 闭环 (L-R)
+
+**背景**: L-N/L-P 记录的 2021/2022 污染长期未从已落库数据清除, 且 D0 绿门零覆盖该维度 (self-scoped 假绿).
+
+**闭环动作**:
+| 项 | 修复 | 验证 |
+|---|---|---|
+| 单一计算点 | `exam_province.refine_province` → provenance-aware (按 source_repo 区分可信源) | 334 行重算; 2024/2025(local_pdf)/2023(Updates)/2015-2020(国家卷期) 保辽宁; 2010-2014/2021-2022 降级 |
+| 已落库数据 | 2021/2022 各 16 行 `辽宁(新课标II卷)`→`未知(GAOKAO-Bench 混合卷, 待 M0 核验)`; 2010-2014→`全国卷(非辽宁)` | smoking gun `Reading_Comp/112` 现标"未知" |
+| 防回归 gate | `data_accuracy_check.py` 加 `_check_21_exam_provenance` (3 断言) | 对抗验证: 污染 1 行→FAIL(exit 1), refine 自愈→OK(exit 0) |
+| 图谱归一 | `exam_year_of`(重复关系)→`in_year`(canonical, Rule 3) | `graph_relation_dict` 0 未知 relation |
+
+**准确率声明 (修正后)**: `exam_questions.province/paper_type` 现满足 D0 —— 凡断言"辽宁新课标II卷"的行均有可信 provenance(PDF 核验 / Updates repo / 国家卷期史实); 无可信源的一律标"未知"(宁缺毋滥, 不伪造). `exam_paper_contract_audit --strict` 仍 fail 属 **M0 里程碑**(真题 item 级覆盖不足), 与 D0(无虚假声明)是两个 bar, 不混淆.
+
+**残留 (非本轮, 已甩独立任务)**: `audit_findings` 陈旧快照掩盖的工程债 —— 44 个 CC>10 函数 + 4 个 >400 行 god-module(治理机器自身), 见 L-S. `question_bank` autotag 含停用词(每题打满 tag), 致 demo 学情弱点偏多.
+
+**对抗审查闭环 (subagent, 2026-06-15)**: 总判 4/4 真修复, 无掩盖/无数据回归 (所有 DATA 审计因 province/weakness 改动后仍全 OK; stop_gate 23→44 经核本轮新增 0 个 CC>10). 据审查修两项:
+- 🔴 `weakness/__init__.py` SQL 运算符优先级 bug (`AND a OR b` 缺括号 → grammar autotag 上线会跨学生泄漏): 加括号修复 (当前 0 grammar tag 故结果不变).
+- ⚠️ 2015-2020 band 标签加"史实推断未逐题核验"限定, 与 2024/2025 的 PDF 核验源区分可信度 (保留辽宁因史实上辽宁确坐全国新课标II).

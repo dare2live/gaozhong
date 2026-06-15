@@ -6,7 +6,7 @@
   exit 0 = 全 100% 准
   exit 1 = 任一项不达
 
-模块化设计 (M6 CC ≤ 10): 17 个 _check_* 章节函数, main 只调度.
+模块化设计 (M6 CC ≤ 10): 21 个 _check_* 章节函数, main 只调度.
 """
 from __future__ import annotations
 
@@ -304,6 +304,30 @@ def _check_20_enriched_vocab(con):
           f"{n_beyond_total} 超纲" + (f" (worst: #{worst[0][0]} {worst[0][2]})" if worst else ""))
 
 
+def _check_21_exam_provenance(con):
+    print("\n=== (21) 真题卷型 provenance 诚实性 (L-N/L-P 防回归) ===")
+    # 任何断言"新课标 II 卷"的行必须有可信 provenance (PDF 核验 或 Updates repo 标卷型)
+    bad_paper = con.execute(
+        "SELECT COUNT(*) FROM exam_questions "
+        "WHERE (paper_type LIKE '%新课标%' OR paper_type LIKE '%II 卷%') "
+        "AND source_repo <> 'local_pdf' AND source_repo NOT LIKE '%Updates%'"
+    ).fetchone()[0]
+    # GAOKAO-Bench base 在辽宁非国家卷期 (<=2014 自主命题 / >=2021 新高考) 不得冒充辽宁
+    bad_prov = con.execute(
+        "SELECT COUNT(*) FROM exam_questions "
+        "WHERE source_repo = 'OpenLMLab/GAOKAO-Bench' "
+        "AND (year <= 2014 OR year >= 2021) AND province LIKE '辽宁%'"
+    ).fetchone()[0]
+    # L-P smoking gun: 2021 全国甲卷 "Landscape Photographer" 行不得标辽宁
+    smoking = con.execute(
+        "SELECT COUNT(*) FROM exam_questions "
+        "WHERE raw_question LIKE '%Landscape%Photographer%' AND province LIKE '辽宁%'"
+    ).fetchone()[0]
+    check("无未核验行冒充新课标 II 卷", bad_paper == 0, f"{bad_paper} 行")
+    check("GAOKAO-Bench 非国家卷期不冒充辽宁", bad_prov == 0, f"{bad_prov} 行")
+    check("L-P smoking gun 行已诚实标注", smoking == 0, f"{smoking} 行仍标辽宁")
+
+
 # ===== helpers (CC ≤ 4) =====
 
 def _audit_ok(con, kind: str) -> bool:
@@ -342,6 +366,7 @@ CHECKS = [
     _check_12_cefr_node_xref, _check_13_grammar_chain, _check_14_graph_refs,
     _check_15_xref, _check_16_placement, _check_17_cross_version,
     _check_18_followup, _check_19_listening_writing, _check_20_enriched_vocab,
+    _check_21_exam_provenance,
 ]
 
 

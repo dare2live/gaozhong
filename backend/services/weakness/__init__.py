@@ -51,7 +51,7 @@ def _compute_one_student(con: duckdb.DuckDBPyConnection, sid: str) -> int:
         "JOIN question_bank qb ON qb.qb_id = sa.question_id::BIGINT "
         "JOIN question_tags qt ON qt.qb_id = qb.qb_id "
         "WHERE sa.student_id = ? "
-        "AND qt.tag_id LIKE 'word:%' OR qt.tag_id LIKE 'grammar:%'",
+        "AND (qt.tag_id LIKE 'word:%' OR qt.tag_id LIKE 'grammar:%')",
         [sid],
     ).fetchall()
     # 聚合 concept → (n, n_correct)

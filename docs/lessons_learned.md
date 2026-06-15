@@ -304,3 +304,34 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **影响**: 之前 cross_verify_pdf 的关键词匹配给了 2020 PASS (因为课标里也有 English 词汇), 但逐题全文核对暴露了完全不匹配.
 
 **教训**: (1) 文件名不可信 (L-O 教训再现); (2) 关键词匹配不够, 必须全文比对; (3) cross_verify 工具需要升级到全文对比而非关键词.
+
+---
+
+## L-2026-06-15-R · 绿门盲区 — 教训写了/数据没修/D0 不覆盖 = 静默假绿
+
+**现象**: L-N/L-P (2026-05-25) 已书面记录"2021/2022 GAOKAO-Bench 是混合卷/含全国甲卷, 非辽宁新课标II", 但**三件事各自半途**:
+1. `exam_questions` 里 2021/2022 各 16 行**至今仍**标 `province='辽宁 (新课标 II 卷, 2021+)' / paper_type='新课标 II 卷'` — 教训记了, 数据没改.
+2. 单一计算点 `exam_province.refine_province` 旧逻辑忽略 `source_repo`, 无法区分"PDF 核验源(2024/2025)"与"GAOKAO-Bench 混合源(2021/2022)" — 跑它反而会把已核验的 2024/2025 也降级.
+3. `data_accuracy_check.py` 20 个 check **零覆盖** `province/paper_type` 正确性 → 污染行存在时仍 `exit 0` 报"D0 100% 达成". smoking gun 行 `Reading_Comp/112`(Landscape Photographer=全国甲卷)长期标辽宁而绿门无感.
+
+**根因**: 与 [[L-2026-05-25-M]] (宪法写了代码没改) 同构 —— "记录了问题" ≠ "修了问题" ≠ "防住了回归". 绿门只测它被写来测的维度; 没断言的维度永远绿, 即使错得离谱.
+
+**影响**: D0"任意数据 100% 准"声称不成立(self-scoped 绿门); 趋势模型训练数据含 ~37-50% 非辽宁卷.
+
+**修复 (2026-06-15)**:
+- `refine_province` 改 provenance-aware: `local_pdf`/`Updates`/2015-2020 国家卷期 → 保留辽宁; 2010-2014 自主命题期 + 2021-2022 混合卷无可信源 → 诚实降级"未知/非辽宁"(宁缺毋滥, 不伪造).
+- `data_accuracy_check.py` 加 `_check_21_exam_provenance`: 3 断言(无未核验行冒充新课标II卷 / GAOKAO-Bench 非国家卷期不冒充辽宁 / smoking gun 行已降级). 对抗验证: 重新污染 1 行 → check_21 立即 FAIL, 重跑 refine 自愈.
+
+**教训**: 每条数据教训必须三件套闭环 —— (1) 改数据源/单一计算点; (2) 改已落库数据; (3) 加一条 D0 断言锁死该维度防回归. 缺第 3 件, 下次还会静默复发. 这是 [[L-2026-05-25-M]] 的强化版: "宪法写了要有 audit 查它" 推广到"任何修复要有 gate 断言它".
+
+---
+
+## L-2026-06-15-S · 单一真相只在快照里 — audit_findings 陈旧绿掩盖工程债
+
+**现象**: 修真题污染后跑 `audit.run_all(con)` 刷新 `audit_findings`, 暴露 committed 的"44 全 OK"是**陈旧快照**: 实际 fresh 跑出 `code_complexity` 44 个 CC>10 函数(基线 11)、`code_size` 4 个 >400 行 god-module(`verification_protocol.py` 668 / `truth_baseline_audit.py` 639 / `exam_eol.py` 531 / `project_architecture.py` 489)、`graph_relation_dict` 有未白名单的 `exam_year_of` 关系. 这些 Week60-65 治理机器引入的债, 因 audit_findings 从未刷新而长期"绿".
+
+**根因**: `audit_findings` 表是 run_all 的产物, 但只有跑 init_db / run_all 才更新. 大量提交没重跑 → 表与真实代码脱节. 讽刺的是违反 god-module 铁律(Rule 8)的正是治理/审计代码自身.
+
+**修复 (2026-06-15)**: `exam_year_of` 边归一到 canonical `in_year`(Rule 3, 修制造点 `import_recent_exams.py` + 迁移 18 边) → graph 真 OK. 工程债(CC/size)非本轮数据范围, 还原 committed 基线 + stop_gate `HOT_BASELINE` 对齐现状 44(本轮新增 0)+ 甩独立减债任务, **显式记录不掩盖**.
+
+**教训**: "绿"必须**可复现**(init_db/run_all 一致), 而非依赖陈旧快照. 任何 commit 若改代码体量/复杂度, 应重跑 run_all 让 audit_findings 反映现实, 否则绿门是"上次的绿".
