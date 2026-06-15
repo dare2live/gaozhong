@@ -2,8 +2,10 @@
 
 灌:
   courses          (from course_templates.yaml)
-  course_materials (build_materials_for_course 生成)
-  course_handouts  (handout.render_handout 持久化, P1.2 R2 audit 前提)
+  course_materials (build_materials_for_course 生成 — canonical 引用, 非生成范文)
+
+2026-06-15 Phase 7 生成层回滚: 不再生成 course_handouts (讲义范文).
+教材基石不完整前, 只保留课程结构骨架 + canonical 引用, 不灌生成内容 (项目 §1.1).
 """
 from __future__ import annotations
 
@@ -12,7 +14,7 @@ from datetime import datetime, timezone
 
 import duckdb
 
-from . import handout, lexicon_filter, loader, materials
+from . import loader, materials
 
 
 COURSE_HANDOUTS_DDL = """
@@ -35,28 +37,14 @@ def run(con: duckdb.DuckDBPyConnection) -> dict:
 
     n_courses = 0
     n_materials = 0
-    n_handouts = 0
-    now = datetime.now(timezone.utc).isoformat()
     for c in courses:
         _insert_course(con, c)
         n_courses += 1
         for m in materials.build_materials_for_course(con, c):
             _insert_material(con, m)
             n_materials += 1
-        # P1.2 持久化讲义 md → 让 audit_course_no_textbook_copy 真扫
-        md = handout.render_handout(con, c)["md"]
-        # R5 程序级超纲拦截: enriched content 必须通过词汇校验
-        beyond = lexicon_filter.validate_content_vocab(con, md, c["layer"])
-        if beyond:
-            print(f"  ⚠️ #{c['course_id']} [{c['layer']}] R5 超纲词 {len(beyond)}: {beyond[:10]}")
-        con.execute(
-            "INSERT INTO course_handouts (course_id, md, md_chars, generated_at) "
-            "VALUES (?, ?, ?, ?)",
-            [c["course_id"], md, len(md), now],
-        )
-        n_handouts += 1
 
-    return {"courses": n_courses, "materials": n_materials, "handouts": n_handouts}
+    return {"courses": n_courses, "materials": n_materials, "handouts": 0}
 
 
 def _insert_course(con, c: dict) -> None:

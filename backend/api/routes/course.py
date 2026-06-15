@@ -9,7 +9,7 @@ endpoints:
 from __future__ import annotations
 
 from backend.api.db import db_ro
-from backend.services.course import handout, loader
+from backend.services.course import loader
 
 
 def api_course_list(qs: dict) -> dict:
@@ -71,21 +71,6 @@ def api_course_session(qs: dict) -> dict:
                 for m in mats
             ],
         }
-    finally:
-        con.close()
-
-
-def api_course_handout(qs: dict) -> dict:
-    cid = _course_id(qs)
-    if cid is None:
-        return {"error": "missing or invalid ?id (1..40)"}
-    courses = loader.load_course_templates()
-    course = next((c for c in courses if c["course_id"] == cid), None)
-    if not course:
-        return {"error": f"course {cid} not in yaml"}
-    con = db_ro()
-    try:
-        return handout.render_handout(con, course)
     finally:
         con.close()
 
@@ -157,7 +142,6 @@ def api_course_quiz(qs: dict) -> dict:
 ROUTES = {
     "/api/course/list":    api_course_list,
     "/api/course/session": api_course_session,
-    "/api/course/handout": api_course_handout,
     "/api/course/stats":   api_course_stats,
     "/api/course/quiz":    api_course_quiz,
 }

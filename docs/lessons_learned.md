@@ -335,3 +335,22 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **修复 (2026-06-15)**: `exam_year_of` 边归一到 canonical `in_year`(Rule 3, 修制造点 `import_recent_exams.py` + 迁移 18 边) → graph 真 OK. 工程债(CC/size)非本轮数据范围, 还原 committed 基线 + stop_gate `HOT_BASELINE` 对齐现状 44(本轮新增 0)+ 甩独立减债任务, **显式记录不掩盖**.
 
 **教训**: "绿"必须**可复现**(init_db/run_all 一致), 而非依赖陈旧快照. 任何 commit 若改代码体量/复杂度, 应重跑 run_all 让 audit_findings 反映现实, 否则绿门是"上次的绿".
+
+---
+
+## L-2026-06-15-T · Phase 7 生成层回滚 — 不完整教材上的生成范文是债不是产
+
+**现象**: 用户指出 `backend/config/enriched_content/*.yaml`(40 篇讲义范文)+ reading/writing/listening 生成练习 + 275 synth 题, 都是**依据教材生成的范文**, 而教材基石本身不完整(46% 覆盖率、外研选必4 零单元、无结构化短语/语法源)。结论: **建在不完整地基上的生成内容不可信, 应全删**, 而非保留。
+
+**根因**: Phase 7 在 STEP 1 教材基石未完成时就抢跑"可教学产品"(LLM 充实讲义/生成练习), 违反项目 §1.1"数据基石优先 — STEP1 前任何模型/生成/前端都是降级话题"。绿门(data_accuracy_check)还把"讲义==40 / 续写≥10 / 超纲扫描"当成 D0 项校验, 等于给premature生成内容背书。
+
+**修复 (2026-06-15 协同回滚)**:
+- 删 40 enriched_content + 3 exercises yaml + 65 week 演练 + 38 moth 报告 + fix_answer_bias + rule_synth_replacement + 4 course 生成 loader (handout/reading/writing/listening.py)。
+- 剥离 pipeline: `extract.run_question_bank` 仅真题(去 synth)、`init_courses.run` 不建 handouts、`init_db` 删 Layer 4c/4d/4f、`loader.py` 删 load_synthesized_samples。
+- `question_bank` 700 → **178 纯真题**(2015-2020 + 2023-2025 辽宁)。`course_handouts` 40 → 0。
+- D0 绿门改为对「仅真题」诚实: 去掉 check_5/19/20, check_9(无合成)/10(真题篇章格式)/16(placement 真题池降级)重写。
+- API/前端协同: 移除 /api/course/handout 端点 + 讲义 modal + C tab 听力面板(保留基于真题的 quiz)。
+
+**附带抓到的 bug**: 我给 2010-2014 起的诚实标签含"非辽宁", 而下游 5 处 `province LIKE '%辽宁%'` **子串匹配把"非辽宁"也算辽宁** → qb 误收 166 道外省题。修为精确 `LIKE '辽宁%'`(以辽宁开头)。教训: 标签含否定词("非X")时, 用 `%X%` 的下游会被反向命中, 必须用前缀/精确匹配。
+
+**教训**: "可教学产品"必须等数据基石(教材完整提取)完成再做。生成内容在不完整地基上 = 形式 OK 实质不可信(L-J 的内容版)。绿门不该校验"生成内容存在", 该校验"真题真实准确"。

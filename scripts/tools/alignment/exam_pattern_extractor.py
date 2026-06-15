@@ -40,7 +40,7 @@ def extract(
     *,
     min_year: int = 2021,
     max_year: int = 9999,
-    province_like: str = "%辽宁%",
+    province_like: str = "辽宁%",
     paper_like: str = "%新课标 II%",
     year_weights: dict[int, float] | None = None,
 ) -> dict:
@@ -187,7 +187,7 @@ def main():
     parser = argparse.ArgumentParser(description="真题命题特征提取")
     parser.add_argument("--min-year", type=int, default=2021)
     parser.add_argument("--max-year", type=int, default=9999)
-    parser.add_argument("--province-like", default="%辽宁%")
+    parser.add_argument("--province-like", default="辽宁%")
     parser.add_argument("--paper-like", default="%新课标 II%")
     args = parser.parse_args()
 

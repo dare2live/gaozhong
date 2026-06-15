@@ -32,10 +32,14 @@ PAPER_UNKNOWN = "未知"
 
 
 def _is_trusted_xgkii(year: int | None, repo: str) -> bool:
-    """2021+ 是否有可信 provenance 可断言辽宁新课标 II 卷."""
+    """2021+ 是否有可信 provenance 可断言辽宁新课标 II 卷.
+
+    可信源: local_pdf(2024/2025 PDF 核验) / *Updates*(2023 repo 标卷型) /
+    eol_xgkii*(2021/2022 中国教育在线官方真题, 经 M0 review_decisions 核验入库).
+    """
     if not year or year < 2021:
         return False
-    return repo == "local_pdf" or "Updates" in repo
+    return repo == "local_pdf" or "Updates" in repo or repo.startswith("eol_xgkii")
 
 
 def _classify(year: int | None, repo: str) -> tuple[str, str]:

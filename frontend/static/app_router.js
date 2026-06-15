@@ -181,21 +181,14 @@
     </div>`;
   }
 
-  // 全局: 打开讲义 modal
-  window._openHandout = async (cid) => {
+  // 全局: 打开课节 modal (讲义生成层 2026-06-15 已回滚, 仅保留基于真题的课后测验)
+  window._openHandout = (cid) => {
     const modal = $("#handout-modal");
     const md = $("#handout-md");
     modal.classList.add("open");
-    md.textContent = "载入中 ...";
-    try {
-      const data = await fetchJSON("/api/course/handout?id=" + cid);
-      const raw = data.md || "";
-      let html = raw.includes("\n---\n") ? _renderSegments(raw) : mdToHtml(raw);
-      html += _renderQuizButton(cid);
-      md.innerHTML = html || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-    } catch (err) {
-      md.innerHTML = "讲义载入失败: " + err.message;
-    }
+    md.innerHTML = '<p style="color:#888;line-height:1.7">📋 讲义生成层已下线（2026-06-15 回滚）。<br>' +
+      '依据不完整教材生成的范文不可信，待教材基石完善后重建。<br>下方课后测验基于已核验真题，仍可用。</p>' +
+      _renderQuizButton(cid);
   };
 
   function _renderQuizButton(cid) {
@@ -304,29 +297,11 @@
   // ===================================================================
   register("qbank", async () => {
     CONTENT.innerHTML = `<h2>C. 题库 + 组卷</h2><p>载入中...</p>`;
-    const [stats, listening] = await Promise.all([
-      fetchJSON("/api/stats"),
-      fetchJSON("/api/listening/list"),
-    ]);
-    let html = `<h2>C. 题库 + 组卷</h2>
-      <p>当前题库: <strong>${stats.question_bank ?? "-"}</strong> 题 / <strong>${stats.question_tags ?? "-"}</strong> 标签</p>
+    const stats = await fetchJSON("/api/stats");
+    CONTENT.innerHTML = `<h2>C. 题库 + 组卷</h2>
+      <p>当前题库: <strong>${stats.question_bank ?? "-"}</strong> 题 (仅已核验真题) / <strong>${stats.question_tags ?? "-"}</strong> 标签</p>
       <p>详细组卷器: <a href="/teacher#compose" target="_blank">/teacher tab "组卷"</a> (兼容旧 UI)</p>
-
-      <section class="layer-section">
-        <h3>🎧 听力练习 <span class="layer-meta">${listening.count} 题 · 高考 30 分</span></h3>
-        <div style="display:flex;gap:0.5rem;margin:0.5rem 0 0.7rem">
-          <button class="gz-qfilter active" data-section="all" onclick="window._filterListening('all',this)">全部 (${listening.count})</button>
-          <button class="gz-qfilter" data-section="听力短对话" onclick="window._filterListening('听力短对话',this)">短对话</button>
-          <button class="gz-qfilter" data-section="听力长对话" onclick="window._filterListening('听力长对话',this)">长对话</button>
-          <button class="gz-qfilter" data-section="听力独白" onclick="window._filterListening('听力独白',this)">独白</button>
-        </div>
-        <div id="listening-list">`;
-    for (const q of listening.questions) {
-      html += _renderListeningCard(q);
-    }
-    html += `</div></section>`;
-    CONTENT.innerHTML = html;
-    window._listeningData = listening.questions;
+      <p style="color:#888;font-size:0.9em">🎧 听力练习区块已随 Phase 7 生成层下线（2026-06-15：生成范文回滚，教材基石完善后重建）。</p>`;
   });
 
   function _renderListeningCard(q) {

@@ -114,53 +114,9 @@ def main() -> None:
     except Exception as e:
         print(f"  宪法检查跳过 (首次建库): {e}")
 
-    print("\n=== Layer 4c: 写作练习入库 (Phase 7.3: 续写+应用文) ===")
-    from backend.services.course.writing import load_writing_exercises
-    writing_rows = load_writing_exercises()
-    now_str = datetime.now(timezone.utc).isoformat()
-    for wr in writing_rows:
-        con.execute(
-            "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
-            "difficulty, origin, origin_ref, created_at, analysis) "
-            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [wr["question_type"], wr["stem"], wr["options_json"], wr["answer"],
-             wr["difficulty"], wr["origin"], wr["origin_ref"], now_str,
-             wr.get("analysis", "")],
-        )
-    print(f"  writing exercises: {len(writing_rows)} (续写+应用文)")
-
-    print("\n=== Layer 4d: 听力练习入库 (Phase 7.2: 短对话/长对话/独白) ===")
-    from backend.services.course.listening import load_listening_exercises
-    listening_rows = load_listening_exercises()
-    for lr in listening_rows:
-        con.execute(
-            "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
-            "difficulty, origin, origin_ref, created_at, analysis, "
-            "has_audio, audio_id, transcript, audio_speakers, audio_duration) "
-            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [lr["question_type"], lr["stem"], lr["options_json"], lr["answer"],
-             lr["difficulty"], lr["origin"], lr["origin_ref"], now_str,
-             lr.get("analysis", ""),
-             lr["has_audio"], lr["audio_id"], lr["transcript"],
-             lr["audio_speakers"], lr["audio_duration"]],
-        )
-    print(f"  listening exercises: {len(listening_rows)} (短对话+长对话+独白)")
-
-    print("\n=== Layer 4f: 阅读理解练习入库 (Phase 7.4: 趋势驱动) ===")
-    from backend.services.course.reading import load_reading_exercises
-    reading_rows = load_reading_exercises()
-    for rr in reading_rows:
-        con.execute(
-            "INSERT INTO question_bank (qb_id, question_type, stem, options_json, answer, "
-            "difficulty, origin, origin_ref, created_at, analysis) "
-            "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [rr["question_type"], rr["stem"], rr["options_json"], rr["answer"],
-             rr["difficulty"], rr["origin"], rr["origin_ref"], now_str,
-             rr.get("analysis", "")],
-        )
-    print(f"  reading exercises: {len(reading_rows)} (趋势驱动: 词义猜测/标题/推理/七选五)")
-
-    print(f"  qb total: {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
+    # 2026-06-15 Phase 7 生成层回滚: 续写/应用文/听力/阅读练习均为生成范文,
+    # 教材基石不完整前不入库 (项目 §1.1). question_bank 只保留已核验真题.
+    print(f"\n  qb total (仅真题): {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
     print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")
 

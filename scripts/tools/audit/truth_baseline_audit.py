@@ -108,7 +108,7 @@ def load_db_records(con) -> list[dict[str, Any]]:
                source_file, source_repo, source_index, province, paper_type
         FROM exam_questions
         WHERE year BETWEEN 2021 AND 2025
-          AND province LIKE '%辽宁%'
+          AND province LIKE '辽宁%'
         ORDER BY year, question_id
         """
     ).fetchall()

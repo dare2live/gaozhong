@@ -72,7 +72,7 @@ def analyze(
     *,
     min_year: int = 2017,
     max_year: int = 9999,
-    province_like: str = "%辽宁%",
+    province_like: str = "辽宁%",
     year_weights: dict[int, float] | None = None,
 ) -> dict:
     rows = con.execute(
@@ -207,7 +207,7 @@ def main():
     parser = argparse.ArgumentParser(description="真题命题趋势分析")
     parser.add_argument("--min-year", type=int, default=2017)
     parser.add_argument("--max-year", type=int, default=9999)
-    parser.add_argument("--province-like", default="%辽宁%")
+    parser.add_argument("--province-like", default="辽宁%")
     args = parser.parse_args()
 
     con = duckdb.connect(str(DB_PATH), read_only=True)

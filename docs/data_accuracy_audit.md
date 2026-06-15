@@ -885,3 +885,10 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **对抗审查闭环 (subagent, 2026-06-15)**: 总判 4/4 真修复, 无掩盖/无数据回归 (所有 DATA 审计因 province/weakness 改动后仍全 OK; stop_gate 23→44 经核本轮新增 0 个 CC>10). 据审查修两项:
 - 🔴 `weakness/__init__.py` SQL 运算符优先级 bug (`AND a OR b` 缺括号 → grammar autotag 上线会跨学生泄漏): 加括号修复 (当前 0 grammar tag 故结果不变).
 - ⚠️ 2015-2020 band 标签加"史实推断未逐题核验"限定, 与 2024/2025 的 PDF 核验源区分可信度 (保留辽宁因史实上辽宁确坐全国新课标II).
+
+## 2026-06-15 / Phase 7 生成层回滚 (L-T)
+
+**动作**: 删除依据不完整教材生成的全部范文/练习/合成题 + 协同回滚 pipeline/门禁/前端 (详 L-2026-06-15-T)。
+**结果**: question_bank 700→178 纯真题; course_handouts 40→0; data_accuracy_check 去 check_5/19/20, check_9/10/16 改为对真题诚实; D0 exit 0 / stop_gate exit 0 / audit 44 OK (工程债 code_complexity/size 重归类, 减债 task_90d55f25)。
+**保留**: 课程结构骨架(courses 40 + course_materials 560 canonical 引用)、真题、canonical/图谱、基于真题的 quiz。
+**原则**: 数据基石(教材完整提取)完成前不重建生成内容 (项目 §1.1)。

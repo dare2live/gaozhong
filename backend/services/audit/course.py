@@ -38,13 +38,13 @@ def audit_course_no_textbook_copy(con: duckdb.DuckDBPyConnection) -> list[dict]:
     """R2: 讲义里去除 HTML 后, 与教材 section_text 无 ≥10 词连续重叠.
 
     P1.2 实装: 从 course_handouts 表读 md (init_db 灌), 调 scenarios.has_textbook_copy.
-    若 course_handouts 空 → WARN; 否则真扫.
+    2026-06-15 Phase 7 回滚: 讲义生成层已移除, course_handouts 恒空 →
+    "讲义不抄教材" 不变式 vacuously 满足 (无讲义可抄), 返 OK 不 WARN.
     """
     n_handouts = con.execute("SELECT COUNT(*) FROM course_handouts").fetchone()[0]
     if n_handouts == 0:
-        return [_o("audit_course_no_textbook_copy", "WARN", "(no handouts)",
-                   "course_handouts table populated",
-                   "init_db 未灌讲义, 跑 init_db 后再 audit")]
+        return [_o("audit_course_no_textbook_copy", "OK", "(no handouts — Phase 7 生成层已回滚)",
+                   "no textbook copy", "讲义生成层移除, vacuously pass")]
     rows = con.execute("SELECT course_id, md FROM course_handouts").fetchall()
     out: list[dict] = []
     fail_n = 0

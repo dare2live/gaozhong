@@ -248,7 +248,7 @@ def main() -> None:
     parser.add_argument("--truth-baseline", default=str(TRUTH_BASELINE_DEFAULT))
     parser.add_argument("--min-year", type=int, default=2021)
     parser.add_argument("--max-year", type=int, default=2025)
-    parser.add_argument("--province-like", default="%辽宁%")
+    parser.add_argument("--province-like", default="辽宁%")
     args = parser.parse_args()
 
     tb_path = Path(args.truth_baseline)

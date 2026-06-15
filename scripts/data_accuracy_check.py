@@ -6,7 +6,9 @@
   exit 0 = 全 100% 准
   exit 1 = 任一项不达
 
-模块化设计 (M6 CC ≤ 10): 21 个 _check_* 章节函数, main 只调度.
+模块化设计 (M6 CC ≤ 10): _check_* 章节函数, main 只调度.
+2026-06-15 Phase 7 生成层回滚: 移除 check_5(讲义)/19(听力写作)/20(enriched 超纲) 三项
+(校验已删的生成内容); check_9/10/16 改为对「仅真题」题库诚实校验.
 """
 from __future__ import annotations
 
@@ -74,15 +76,6 @@ def _check_4_phrases(con):
     check("phrases > 100", n_ph > 100, f"{n_ph}")
 
 
-def _check_5_handouts(con):
-    print("\n=== (5) 教案 (course_handouts) ===")
-    n_h = con.execute("SELECT COUNT(*) FROM course_handouts").fetchone()[0]
-    n_short = con.execute("SELECT COUNT(*) FROM course_handouts WHERE md_chars < 1000").fetchone()[0]
-    check("40 节讲义全持久化", n_h == 40, f"{n_h}")
-    check("每节 md ≥ 1000 字符", n_short == 0, f"{n_short} 节短")
-    check("R2 audit OK", _audit_ok(con, "audit_course_no_textbook_copy"))
-
-
 def _check_6_graph(con):
     print("\n=== (6) 知识图谱 ===")
     n_n = con.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
@@ -113,28 +106,28 @@ def _check_8_course_audits(con):
 
 
 def _check_9_qbank(con):
-    print("\n=== (9) 题库 + 标签 ===")
+    print("\n=== (9) 题库 (仅真题, Phase 7 生成层已回滚) ===")
     n_qb = con.execute("SELECT COUNT(*) FROM question_bank").fetchone()[0]
+    n_nonreal = con.execute("SELECT COUNT(*) FROM question_bank WHERE origin <> 'real'").fetchone()[0]
     n_qt = con.execute("SELECT COUNT(*) FROM question_tags").fetchone()[0]
     n_orphan = con.execute(
         "SELECT COUNT(*) FROM question_tags WHERE qb_id NOT IN (SELECT qb_id FROM question_bank)"
     ).fetchone()[0]
-    check("question_bank ≥509", n_qb >= 509, f"{n_qb}")
-    check("question_tags > 10000", n_qt > 10000, f"{n_qt}")
+    check("question_bank > 0 (真题)", n_qb > 0, f"{n_qb}")
+    check("无合成/生成题 (origin 全 real)", n_nonreal == 0, f"非真题={n_nonreal}")
+    check("question_tags > 0", n_qt > 0, f"{n_qt}")
     check("question_tags 引用完整", n_orphan == 0, f"orphan={n_orphan}")
 
 
 def _check_10_qbank_options(con):
-    print("\n=== (10) 题库 options + answer 完整性 ===")
-    rows = con.execute(
-        "SELECT qb_id, stem, options_json, answer FROM question_bank "
-        "WHERE question_type IN ('单选(语法/词汇)','选义单选','阅读理解')"
-    ).fetchall()
-    bad = [qid for qid, stem, opts, ans in rows
-           if not ans or (not opts and not _stem_has_abcd(stem))]
-    n_no_ans = con.execute("SELECT COUNT(*) FROM question_bank WHERE answer IS NULL OR answer=''").fetchone()[0]
-    check("选择题 options 完整", len(bad) == 0, f"bad={len(bad)}: {bad[:5]}")
-    check("answer 非空率", n_no_ans <= 50, f"无 answer={n_no_ans} (容忍非选择题)")
+    # Phase 7 回滚后题库仅真题 (篇章格式), 选项内嵌于题干/原文; 不再按合成题的独立 options 校验.
+    # D0 关注真实性: 真题 stem 必须有真实内容; 答案缺失(2024/2025 PDF 未抽答案/写作主观题)属已知 gap 非造假.
+    print("\n=== (10) 题库真题内容完整性 (仅真题) ===")
+    n_empty = con.execute("SELECT COUNT(*) FROM question_bank WHERE stem IS NULL OR TRIM(stem)=''").fetchone()[0]
+    n_total = con.execute("SELECT COUNT(*) FROM question_bank").fetchone()[0]
+    n_ans = con.execute("SELECT COUNT(*) FROM question_bank WHERE answer IS NOT NULL AND answer<>''").fetchone()[0]
+    check("真题 stem 全非空 (有真实内容)", n_empty == 0, f"空={n_empty}")
+    check("客观题答案有覆盖 (写作/PDF未抽属gap)", n_ans > 0, f"{n_ans}/{n_total} 有答案")
 
 
 def _check_11_tag_dict(con):
@@ -210,16 +203,19 @@ def _check_15_xref(con):
 
 
 def _check_16_placement(con):
-    print("\n=== (16) 摸底测验卷 placement ===")
+    # Phase 7 回滚后题库仅真题, 池容量小于合成题时代; placement 按可用真题降级出卷.
+    # D0 验证 placement 能跑通且返真题 (got<=spec, got>=1), 不再要求抽满合成时代的额度.
+    print("\n=== (16) 摸底测验卷 placement (真题池降级出卷) ===")
     from backend.services.placement import generator, loader
     specs = loader.load_specs()
     check("3 套 spec (G1/G2/G3)", len(specs) == 3, f"{len(specs)} 套")
     for s in specs:
         try:
             p = generator.generate_paper(con, s)
-            check(f"{s['grade']} 抽足题",
-                  p["total_actual"] == s["total_questions"],
-                  f"exp={s['total_questions']} got={p['total_actual']}")
+            got = p["total_actual"]
+            check(f"{s['grade']} 出卷可用 (真题上限)",
+                  1 <= got <= s["total_questions"],
+                  f"got={got}/{s['total_questions']}")
         except Exception as e:
             check(f"{s['grade']} generate 跑通", False, f"err: {e}")
 
@@ -260,57 +256,15 @@ def _check_18_followup(con):
           f"combined={final.get('combined_accuracy')}")
 
 
-def _check_19_listening_writing(con):
-    print("\n=== (19) 听力 + 写作 (Phase 7.2/7.3) ===")
-    n_listen = con.execute("SELECT COUNT(*) FROM question_bank WHERE has_audio = true").fetchone()[0]
-    n_transcript = con.execute(
-        "SELECT COUNT(*) FROM question_bank WHERE has_audio = true "
-        "AND transcript IS NOT NULL AND transcript != ''"
-    ).fetchone()[0]
-    n_narrative = con.execute("SELECT COUNT(*) FROM question_bank WHERE question_type = '续写'").fetchone()[0]
-    n_applied = con.execute("SELECT COUNT(*) FROM question_bank WHERE question_type = '应用文'").fetchone()[0]
-    check("听力题 ≥ 20", n_listen >= 20, f"{n_listen}")
-    check("听力全有 transcript", n_listen == n_transcript, f"audio={n_listen} transcript={n_transcript}")
-    check("续写 ≥ 10", n_narrative >= 10, f"{n_narrative}")
-    check("应用文 ≥ 10", n_applied >= 10, f"{n_applied}")
-
-
-def _check_20_enriched_vocab(con):
-    print("\n=== (20) enriched content 超纲词校验 (R5 程序级) ===")
-    from backend.services import vocab_guard
-    import yaml
-    from pathlib import Path
-    enriched_dir = Path("backend/config/enriched_content")
-    if not enriched_dir.exists():
-        check("enriched_content 目录存在", False, "目录不存在")
-        return
-    n_files = 0
-    n_beyond_total = 0
-    worst = []
-    for f in sorted(enriched_dir.glob("*.yaml")):
-        data = yaml.safe_load(f.read_text(encoding="utf-8"))
-        cid = data.get("course_id")
-        layer = data.get("generation_meta", {}).get("vocab_layer", "G_FINAL")
-        text = "\n".join(data.get("segments", {}).values())
-        result = vocab_guard.check_text(con, text, layer)
-        n_files += 1
-        n_beyond_total += result["beyond_count"]
-        if result["beyond_words"]:
-            worst.append((cid, layer, result["beyond_words"][:5]))
-    check(f"enriched {n_files} 文件已扫描",
-          n_files > 0, f"{n_files} files")
-    check(f"超纲词总数 = 0",
-          n_beyond_total == 0,
-          f"{n_beyond_total} 超纲" + (f" (worst: #{worst[0][0]} {worst[0][2]})" if worst else ""))
-
-
 def _check_21_exam_provenance(con):
     print("\n=== (21) 真题卷型 provenance 诚实性 (L-N/L-P 防回归) ===")
-    # 任何断言"新课标 II 卷"的行必须有可信 provenance (PDF 核验 或 Updates repo 标卷型)
+    # 任何断言"新课标 II 卷"的行必须有可信 provenance:
+    #   local_pdf(PDF 核验) / *Updates*(repo 标卷型) / eol_xgkii*(EOL 官方真题经 M0 review 核验)
     bad_paper = con.execute(
         "SELECT COUNT(*) FROM exam_questions "
         "WHERE (paper_type LIKE '%新课标%' OR paper_type LIKE '%II 卷%') "
-        "AND source_repo <> 'local_pdf' AND source_repo NOT LIKE '%Updates%'"
+        "AND source_repo <> 'local_pdf' AND source_repo NOT LIKE '%Updates%' "
+        "AND source_repo NOT LIKE 'eol_xgkii%'"
     ).fetchone()[0]
     # GAOKAO-Bench base 在辽宁非国家卷期 (<=2014 自主命题 / >=2021 新高考) 不得冒充辽宁
     bad_prov = con.execute(
@@ -359,13 +313,15 @@ def _bad_grammar_chain(gid: str, by_id: dict) -> bool:
 
 # ===== main 调度 (CC = 2) =====
 
+# 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
+# _check_20(enriched 超纲) — 这些断言生成内容存在, 内容已删故不再校验.
 CHECKS = [
     _check_1_manifest, _check_2_vocab, _check_3_grammar, _check_4_phrases,
-    _check_5_handouts, _check_6_graph, _check_7_audit_summary, _check_8_course_audits,
+    _check_6_graph, _check_7_audit_summary, _check_8_course_audits,
     _check_9_qbank, _check_10_qbank_options, _check_11_tag_dict,
     _check_12_cefr_node_xref, _check_13_grammar_chain, _check_14_graph_refs,
     _check_15_xref, _check_16_placement, _check_17_cross_version,
-    _check_18_followup, _check_19_listening_writing, _check_20_enriched_vocab,
+    _check_18_followup,
     _check_21_exam_provenance,
 ]
 

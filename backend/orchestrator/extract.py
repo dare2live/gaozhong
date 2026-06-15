@@ -99,11 +99,13 @@ def run_derive_edges(con: duckdb.DuckDBPyConnection) -> int:
 
 
 def run_question_bank(con: duckdb.DuckDBPyConnection) -> dict:
-    """题库装载: 真题 + 合成题入 question_bank, 自动打标."""
+    """题库装载: 仅真题入 question_bank, 自动打标.
+
+    2026-06-15 Phase 7 生成层回滚: 教材基石不完整前不合成样题/范文 (项目 §1.1 数据基石优先).
+    只 mirror 已核验真题, 不再 load_synthesized_samples.
+    """
     from backend.services.question_bank import loader
-    real = loader.load_real_questions(con)
-    synth = loader.load_synthesized_samples(con, samples_per_type=15)
-    return {**real, **synth}
+    return loader.load_real_questions(con)
 
 
 def run_ocr_fix_dict(con: duckdb.DuckDBPyConnection) -> dict:
