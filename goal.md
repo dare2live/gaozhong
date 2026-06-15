@@ -98,7 +98,7 @@
 |---|---|---|
 | 0 | **项目地图 CLI** `python3 -m scripts.tools.map [doctor\|modules\|gates\|drift\|stats] [--json] [--strict]` 只读聚合 4 套真相源 | ✅ |
 | 1 | **趋势分析诚实护栏** `backend/services/trend/scope.py`: province 锚定(§7) + 卷制分段(PIT) + 样本量守门(reliable=False→'样本不足'不冒充slope); 修 lesson_plan 硬编码假slope; moth+2断言 | ✅ |
-| 2 | **考点 canonical 维度**(拱心石): 188 辽宁题双模型标注落 exam_point nodes+edges(498条 dual_model_agree). **genre + theme L1(3) + theme L2(课标官方10主题群)** 已落; taxonomy v2 升官方层级(设问7技能/provenance分层, docs/exam_point_taxonomy_research). **分层揭示**: 做人与做事 4.9%→21.9%暴涨(立德树人)、记叙文↔说明文翻转、人与自然翻倍. **设问类型**(官方7理解性技能)已出 era 分层分布(推断8.7%→15.2%升; sub-question聚合非canonical边). 待: 语法考点(语法填空/完形) | 🔵 大部分 |
+| 2 | **考点 canonical 维度**(拱心石): 188 辽宁题双模型标注落 exam_point nodes+edges(498条 dual_model_agree). **genre + theme L1(3) + theme L2(课标官方10主题群)** 已落; taxonomy v2 升官方层级(设问7技能/provenance分层, docs/exam_point_taxonomy_research). **分层揭示**: 做人与做事 4.9%→21.9%暴涨(立德树人)、记叙文↔说明文翻转、人与自然翻倍. **考点5维分布全出**: genre/theme L1/theme L2(官方10群=canonical边) + 设问类型(官方7技能)/语法考点(9类=聚合分布). 命题趋势: 做人与做事暴涨/推断上升/记叙文崛起. 待: 名词数词形taxonomy补全 + 2021+解析采集(任务#15) | ✅ 主体完成 |
 | 3 | 趋势/考点落表 + 接前端可视化. **考点分布已接前端**(教师端"考点分布"tab: era分层横条热力, genre/theme L1/theme L2 课标10群; /api/exam_point/distribution 单一计算点; HTTP实测三证). 待: 趋势结果落表灭 Rule1 三并行口径 | 🔵 部分 |
 | ⚠ gate | **消费者验证**(最高杠杆, AI 做不了): 1 名辽宁英语老师真用 30 分钟 — Rule 10 people-not-agents, 需用户动员 | 待用户 |
 
