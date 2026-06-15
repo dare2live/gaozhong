@@ -98,7 +98,7 @@
 |---|---|---|
 | 0 | **项目地图 CLI** `python3 -m scripts.tools.map [doctor\|modules\|gates\|drift\|stats] [--json] [--strict]` 只读聚合 4 套真相源 | ✅ |
 | 1 | **趋势分析诚实护栏** `backend/services/trend/scope.py`: province 锚定(§7) + 卷制分段(PIT) + 样本量守门(reliable=False→'样本不足'不冒充slope); 修 lesson_plan 硬编码假slope; moth+2断言 | ✅ |
-| 2 | **考点 canonical 维度**(拱心石): 188 辽宁题双模型标注. **genre+theme 已落** nodes(exam_point)+edges(tests_exam_point 343条, dual_model_agree); **分层分布**(非平均)揭示 记叙文↔说明文翻转/人与自然翻倍. 待: 设问类型+语法考点(需拆sub-question) | 🔵 部分 |
+| 2 | **考点 canonical 维度**(拱心石): 188 辽宁题双模型标注落 exam_point nodes+edges(498条 dual_model_agree). **genre + theme L1(3) + theme L2(课标官方10主题群)** 已落; taxonomy v2 升官方层级(设问7技能/provenance分层, docs/exam_point_taxonomy_research). **分层揭示**: 做人与做事 4.9%→21.9%暴涨(立德树人)、记叙文↔说明文翻转、人与自然翻倍. 待: 设问类型+语法考点(需拆sub-question) | 🔵 大部分 |
 | 3 | 趋势/考点**落表**(灭 Rule 1 三套并行口径) + 接前端热力矩阵/斜率可视化 | ⏳ |
 | ⚠ gate | **消费者验证**(最高杠杆, AI 做不了): 1 名辽宁英语老师真用 30 分钟 — Rule 10 people-not-agents, 需用户动员 | 待用户 |
 
