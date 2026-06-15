@@ -125,5 +125,10 @@
 但**解析几乎没有**(2015-2020 各题型解析 100% 全)。根因: EOL 源给答案不给解析, 占位为"答案核验: Answer X verified"。
 
 影响: (1) 语法考点只能从答案+上下文判(无解析确认, 中置信); (2) **教程要讲"为什么这么填/选"需要解析, 锚定期几乎没有**;
-(3) cross_verify 的 analysis 维度被抽空。**建议**: 从官方/可信源(官方答案解析/权威教辅)采集 2021+ 真解析入库
-(走 review gate, provenance 标注), 这是教程"讲解"层的前置数据底座。
+(3) cross_verify 的 analysis 维度被抽空。
+
+**2026-06-16 精确化 (Mio #2 narrow-enough-to-verify, 避免 grind 非缺口)**:
+- **答案(answer)不缺**: 收口的 `data/structured/exam_subquestions/xgkii_2021_2025_subquestions.jsonl`(gaokao 真相源)
+  **2024/2025 sub-question 答案 100% 全**(27+45 行); exam_questions 表 passage 级答案空是粒度问题, 更细数据已在 jsonl, 不必聚合回填。
+- **真缺口 = 解析(analysis)**: 2021/2023 已有 36 行真解析(jsonl); **2024/2025 解析仅 2/72**, **2022 整缺**(gaokao jsonl 无 2022)。
+- 这部分解析本地无, 仅外部 C 级(权威教辅)可得 — **低优先**(走 review gate + provenance, §1.4 ≥2源)。**建议**: 不为它 grind, 教程"讲解"层可先用 2021/2023 的 36 行真解析起步, 2024/2025 解析随用随补。
