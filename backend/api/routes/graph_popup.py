@@ -45,15 +45,24 @@ def _fetch_center(con, cid: str) -> dict | None:
     return {"id": r[0], "type": r[1], "label": r[2], "attrs_json": r[3]}
 
 
+# 关系优先级 (讲课浮窗: 真考点/题型/年份/课标/教材 先于 tests_word 词噪声, 否则真考点被 LIMIT 截掉)
+_REL_PRIORITY = (
+    "CASE e.relation WHEN 'tests_exam_point' THEN 0 WHEN 'question_type' THEN 1 "
+    "WHEN 'in_year' THEN 2 WHEN 'tests_grammar' THEN 3 WHEN 'cefr_level' THEN 4 "
+    "WHEN 'tests_word' THEN 8 ELSE 5 END"
+)
+
+
 def _fetch_related(con, cid: str) -> list[dict]:
-    """非真题相关 (outgoing + incoming, 去重, 排除 question_type)."""
+    """非真题相关 (outgoing + incoming, 去重). 真题的真考点(tests_exam_point)优先于词噪声."""
     out: list[dict] = []
     seen: set[str] = {cid}
-    # outgoing
-    for tgt, ntype, label, rel in con.execute(
-        "SELECT DISTINCT e.dst_id, n.node_type, n.label, e.relation "
+    # outgoing — 按关系优先级排 (真考点先出, 不被 38 条/题的 tests_word 淹没); pr 仅排序用
+    for tgt, ntype, label, rel, _pr in con.execute(
+        "SELECT DISTINCT e.dst_id, n.node_type, n.label, e.relation, " + _REL_PRIORITY + " AS pr "
         "FROM edges e JOIN nodes n ON n.concept_id = e.dst_id "
         "WHERE e.src_id = ? AND n.node_type <> 'question' "
+        "ORDER BY pr, n.label "
         "LIMIT ?",
         [cid, LIMIT_RELATED * 2],
     ).fetchall():
