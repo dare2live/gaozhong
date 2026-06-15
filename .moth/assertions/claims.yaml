@@ -78,6 +78,20 @@ assertions:
     command: ["bash", "-c", "find backend scripts -name '*.py' -not -path '*__pycache__*' | xargs wc -l 2>/dev/null | awk '$2!=\"total\" && $1>400' | wc -l | tr -d ' '"]
     expect: {op: "==", value: "0"}
 
+  # ===== 教材基石完整性 (防"零单元"陈旧说法复发) =====
+  - id: textbook-units-extracted
+    claim: "教材 77 单元全已抽 (含 waiyan/xuanze_4 6 单元; 反 lessons-L 旧'零单元'陈旧引用)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM units"
+    expect: {op: ">=", value: 77}
+  - id: textbook-sections-have-text
+    claim: "150 sections 全有 raw_text 正文 (n_chars>50)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM section_text WHERE n_chars <= 50"
+    expect: {op: "==", value: 0}
+
   # ===== D0 总门禁 (权威) =====
   - id: d0-accuracy-green
     claim: "scripts/data_accuracy_check.py 全绿 (D0 100% 准确率)"

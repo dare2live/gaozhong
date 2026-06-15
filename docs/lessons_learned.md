@@ -376,3 +376,15 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **修复 (2026-06-15)**: codegraph 查 fan-in(全部 0-2 个外部 importer)→ 4 个 subagent 并行各拆一个, 抽 cohesive 簇到 sibling 模块(parse/io/load/report/common/checks), 原文件保留公开 API(re-import)。**全部证明行为等价**(exam_eol/project_architecture 字节级 diff identical, 其余 CLI 跑通)。huge 4→0(Rule 8 满足), CC 42→37。codequality 基线对齐现状(SIZE_BIG 4→12, CC 11→37, iron-law huge>400=FAIL 不变), **run_all 现 reproducibly 44 OK 不靠 inline patch** — 真正解决 L-S 陈旧快照。moth 加 no-god-module 断言锁死。
 
 **教训**: (1) 治理/审计代码自己也要守铁律, 别灯下黑。(2) 拆 god-module 用 codegraph 查 fan-in 决定哪些是公开 API, 抽 cohesive 簇 + 原文件 re-import 保 API 稳定, **每个抽走的逻辑证明行为等价**(diff 对 git HEAD)。(3) 拆分自然产生更多中型文件(big>250), iron-law 只卡 >400, 软基线对齐现状即可。(4) 独立文件拆分是并行 subagent 的好场景(互不相干)。
+
+---
+
+## L-2026-06-15-W · 陈旧文档引用差点复发 — 照抄前先 DB 验证
+
+**现象**: "继续推进"时我把"外研选必4 零单元 / 教材基石不完整"当未关项写进 RESUME.md §4 + 当作下一前沿。一查 DB: waiyan/xuanze_4 实有 6 单元, 77 单元全已抽, 150 sections 全有 raw_text 正文, unit_vocab_intro 4056 词 100% 课标对齐。"零单元"是 lessons-L(旧状态, 早已修)的陈旧引用; "46% 覆盖"是数据特征(教材显式引入约 46% 课标 3500 词)非提取缺口。
+
+**根因**: 照抄 data_gaps/lessons 旧结论, 没对当前 DB 验证。这正是 [[feedback-tool-first-discovery]] + L-S(陈旧快照)的同类——**文档是 point-in-time, 不是 live state**。
+
+**修复**: 纠正 RESUME.md §4; moth 加 textbook-units-extracted / textbook-sections-have-text 断言钉死(防"零单元"复发)。
+
+**教训**: 把任何文档里"带数字/状态的未关项"当行动依据前, 先对真相源(DB/代码)验证一次; 验证后把结论挂成 moth 断言, 让陈旧说法下次自动现形。
