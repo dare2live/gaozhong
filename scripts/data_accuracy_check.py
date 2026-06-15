@@ -258,28 +258,28 @@ def _check_18_followup(con):
 
 
 def _check_21_exam_provenance(con):
-    print("\n=== (21) 真题卷型 provenance 诚实性 (L-N/L-P 防回归) ===")
-    # 任何断言"新课标 II 卷"的行必须有可信 provenance:
-    #   local_pdf(PDF 核验) / *Updates*(repo 标卷型) / eol_xgkii*(EOL 官方真题经 M0 review 核验)
-    bad_paper = con.execute(
-        "SELECT COUNT(*) FROM exam_questions "
-        "WHERE (paper_type LIKE '%新课标%' OR paper_type LIKE '%II 卷%') "
-        "AND source_repo <> 'local_pdf' AND source_repo NOT LIKE '%Updates%' "
-        "AND source_repo NOT LIKE 'eol_xgkii%'"
+    print("\n=== (21) 真题卷型 provenance 诚实性 (L-N/L-P/L-R, category-aware) ===")
+    # 21a: 非新课标II卷 (新课标I/III/全国甲/全国乙) 的行不得标辽宁 (辽宁只用新课标II)
+    bad_nonln = con.execute(
+        "SELECT COUNT(*) FROM exam_questions WHERE province LIKE '辽宁%' "
+        "AND paper_type IN ('新课标 I 卷','新课标 III 卷','全国甲卷','全国乙卷')"
     ).fetchone()[0]
-    # GAOKAO-Bench base 在辽宁非国家卷期 (<=2014 自主命题 / >=2021 新高考) 不得冒充辽宁
-    bad_prov = con.execute(
-        "SELECT COUNT(*) FROM exam_questions "
-        "WHERE source_repo = 'OpenLMLab/GAOKAO-Bench' "
-        "AND (year <= 2014 OR year >= 2021) AND province LIKE '辽宁%'"
+    # 21b: 2010-2014 辽宁自主命题期, gb 数据非辽宁卷, 不得标辽宁
+    bad_pre2015 = con.execute(
+        "SELECT COUNT(*) FROM exam_questions WHERE year <= 2014 AND province LIKE '辽宁%'"
     ).fetchone()[0]
-    # L-P smoking gun: 2021 全国甲卷 "Landscape Photographer" 行不得标辽宁
+    # 21c: 辽宁卷的 paper_type 必为新课标II卷 (辽宁 2015 起只用新课标II)
+    bad_ln_paper = con.execute(
+        "SELECT COUNT(*) FROM exam_questions WHERE province LIKE '辽宁%' AND paper_type <> '新课标 II 卷'"
+    ).fetchone()[0]
+    # 21d: L-P smoking gun — 2021 全国甲卷 "Landscape Photographer" 行不得标辽宁
     smoking = con.execute(
         "SELECT COUNT(*) FROM exam_questions "
         "WHERE raw_question LIKE '%Landscape%Photographer%' AND province LIKE '辽宁%'"
     ).fetchone()[0]
-    check("无未核验行冒充新课标 II 卷", bad_paper == 0, f"{bad_paper} 行")
-    check("GAOKAO-Bench 非国家卷期不冒充辽宁", bad_prov == 0, f"{bad_prov} 行")
+    check("非新课标II卷(I/III/甲/乙)不冒充辽宁", bad_nonln == 0, f"{bad_nonln} 行")
+    check("2010-2014 自主命题期不冒充辽宁", bad_pre2015 == 0, f"{bad_pre2015} 行")
+    check("辽宁卷 paper_type 必为新课标II卷", bad_ln_paper == 0, f"{bad_ln_paper} 行")
     check("L-P smoking gun 行已诚实标注", smoking == 0, f"{smoking} 行仍标辽宁")
 
 

@@ -40,45 +40,74 @@ ENGLISH_SOURCES_2023 = [
     "2023_English_Reading_Comp.json",
 ]
 
-LIAONING_KEYWORDS = ["辽宁", "辽宁卷", "辽宁(新课标 II", "辽宁(全国"]
-NATIONAL_I_KEYWORDS = ["新课标全国Ⅰ卷", "新课标I卷", "新课标 I", "全国I卷", "全国Ⅰ卷"]
-NATIONAL_II_KEYWORDS = ["全国甲卷", "全国乙卷", "全国Ⅱ", "全国II", "全国二卷", "新课标全国Ⅱ卷", "新课标Ⅱ", "新课标 II"]
+UPDATES_DIR_2024 = ROOT / "data" / "external" / "gaokao_bench_2024"
+ENGLISH_SOURCES_2024 = [
+    "2024_English_Cloze_Test.json",
+    "2024_English_Fill_in_Blanks.json",
+    "2024_English_Reading_Comp.json",
+]
+
+# 卷型 ↔ 辽宁 (provenance honest): GAOKAO-Bench/Updates 的 category 区分
+# 新课标I/II/III/甲/乙. 辽宁卷型史: 2010-2014 自主命题(无国家卷) / 2015 起用新课标全国II卷.
+# 故只有 "新课标II + year>=2015" = 辽宁卷; 其余诚实标非辽宁卷型, 不冒充辽宁 (L-N/L-P/L-R 防回归).
+LN_II_2015_2020 = "辽宁 (新课标 II 卷, 2015-2020)"
+LN_II_2021 = "辽宁 (新课标 II 卷, 2021+)"
 
 
-def infer_province(year: int | None, question_text: str, category: str | None = None) -> str:
-    """启发式判 province. 返回标准化 province label."""
+def _norm_cat(category: str | None) -> str:
+    c = category or ""
+    for a, b in (("Ⅰ", "I"), ("Ⅱ", "II"), ("Ⅲ", "III"), ("ⅰ", "I"), ("ⅱ", "II"), ("ⅲ", "III")):
+        c = c.replace(a, b)
+    return c.upper()
+
+
+def _juan_token(c: str) -> str:
+    """normalized category → 卷型 token (甲/乙/III/II/I/'')."""
+    if "甲" in c:
+        return "甲"
+    if "乙" in c:
+        return "乙"
+    if "III" in c or "三" in c:
+        return "III"
+    if "II" in c or "二" in c:
+        return "II"
+    if "I" in c or "一" in c:
+        return "I"
+    return ""
+
+
+# 卷型 token → (province, paper_type); II 因 year 区分辽宁与否, 单独处理.
+_JUAN_MAP = {
+    "甲": ("全国甲卷 (非辽宁)", "全国甲卷"),
+    "乙": ("全国乙卷 (非辽宁)", "全国乙卷"),
+    "III": ("全国新课标 III 卷 (非辽宁)", "新课标 III 卷"),
+    "I": ("全国新课标 I 卷 (非辽宁)", "新课标 I 卷"),
+}
+
+
+def classify_paper(year: int | None, category: str | None,
+                   question_text: str = "") -> tuple[str, str]:
+    """(province, paper_type) — category-aware 诚实卷型标注 (见上注释).
+
+    只有 "新课标II + year>=2015" = 辽宁卷; 其余诚实标非辽宁卷型.
+    """
     if year is None:
-        return "未知"
-    text = question_text or ""
-    cat = category or ""
-    if _has_keyword(text, LIAONING_KEYWORDS):
-        return "辽宁"
-    if _has_keyword(cat, NATIONAL_I_KEYWORDS):
-        return "全国 I 卷"
-    if year <= 2014:
-        return "辽宁 (独立命题, 2010-2014)" if _has_keyword(text, "辽宁") else "辽宁 (独立命题)"
-    if 2015 <= year <= 2016:
-        if _has_keyword(text, "辽宁"):
-            return "辽宁 (新课标 II 卷, 2015-2016)"
-        return "全国 II 卷 (2015-2016)"
-    if 2017 <= year <= 2020:
-        if _has_keyword(cat, NATIONAL_I_KEYWORDS):
-            return "全国 I 卷"
-        return "辽宁 (全国卷 II, 改革前)" if _has_keyword(text, "辽宁") else "全国 II 卷"
-    if year >= 2021:
-        if _has_keyword(text, NATIONAL_I_KEYWORDS) or _has_keyword(cat, NATIONAL_I_KEYWORDS):
-            return "全国 I 卷"
-        if _has_keyword(text, NATIONAL_II_KEYWORDS) or _has_keyword(cat, NATIONAL_II_KEYWORDS):
-            # 新课标 II 未必为辽宁，先不默认认定
-            return "全国 II 卷"
-        return "辽宁 (推断, 2021+ 新课标 II)" if _has_keyword(text, "新课标 II") else "未知"
-    return "未知"
+        return "未知", "未知"
+    tok = _juan_token(_norm_cat(category))
+    if tok in _JUAN_MAP:
+        return _JUAN_MAP[tok]
+    if tok == "II":
+        if year >= 2015:
+            return (LN_II_2021 if year >= 2021 else LN_II_2015_2020), "新课标 II 卷"
+        return "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "新课标 II 卷"
+    if "解析版" in (category or ""):
+        return "未知 (解析版, 待核验卷型)", "未知"
+    return "未知 (GAOKAO-Bench 无明确卷型)", "未知"
 
 
-def _has_keyword(text: str, keywords: list[str] | str) -> bool:
-    if isinstance(keywords, str):
-        return keywords in text
-    return any(k in text for k in keywords)
+def infer_province(year: int | None, question_text: str = "", category: str | None = None) -> str:
+    """compat wrapper — 仅返 province. 实际分类见 classify_paper."""
+    return classify_paper(year, category, question_text)[0]
 
 
 def infer_question_type(file_basename: str) -> str:
@@ -111,8 +140,7 @@ def _build_record(id_prefix: str, base: str, i: int, ex: dict,
     try: year = int(year) if year else None
     except: year = None
     qtext = ex.get("question") or ""
-    province = infer_province(year, qtext, ex.get("category"))
-    paper_type = _infer_paper_type(year, province)
+    province, paper_type = classify_paper(year, ex.get("category"), qtext)
     return {
         "question_id": f"{id_prefix}/{base}/{i}",
         "year": year,
@@ -126,22 +154,6 @@ def _build_record(id_prefix: str, base: str, i: int, ex: dict,
     }
 
 
-def _infer_paper_type(year: int | None, province: str) -> str:
-    if not year:
-        return "未知"
-    if province.startswith("辽宁"):
-        if year >= 2021:
-            return "新课标 II 卷"
-        return "全国 II 卷"
-    if province.startswith("全国 I"):
-        return "全国 I 卷"
-    if province.startswith("全国 II"):
-        return "全国 II 卷"
-    if "2021" in province and "推断" in province:
-        return "新课标 II 卷"
-    return "未知"
-
-
 def mirror_to_jsonl(write_db_conn=None) -> dict:
     """Mirror to data/external/gaokao_bench/*.jsonl, optionally load to DB."""
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -150,6 +162,7 @@ def mirror_to_jsonl(write_db_conn=None) -> dict:
     all_sources = [
         (GAOKAO_DATA, ENGLISH_SOURCES, "gb", "OpenLMLab/GAOKAO-Bench"),
         (UPDATES_DIR, ENGLISH_SOURCES_2023, "gbu", "OpenLMLab/GAOKAO-Bench-Updates"),
+        (UPDATES_DIR_2024, ENGLISH_SOURCES_2024, "gbu24", "OpenLMLab/GAOKAO-Bench-Updates-2024"),
     ]
     for base_dir, src_list, id_prefix, repo in all_sources:
         for relsrc in src_list:

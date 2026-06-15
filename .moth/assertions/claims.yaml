@@ -6,17 +6,23 @@ name: gaozhong-claims
 # 全部只读; duckdb 连接由 moth 引擎强制 read_only。DB 需先 init_db 建好。
 assertions:
   # ===== 真题 provenance 诚实性 (L-N/L-P/L-R) =====
-  - id: no-gaokao-fake-liaoning
-    claim: "GAOKAO-Bench 非国家卷期(<=2014自主命题/>=2021新高考)不冒充辽宁 (L-P; 回退=省份污染复发)"
+  - id: nonII-not-faking-liaoning
+    claim: "非新课标II卷(I/III/甲/乙)不冒充辽宁 (category-aware; 辽宁只用新课标II; L-N/L-P/L-R)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM exam_questions WHERE source_repo='OpenLMLab/GAOKAO-Bench' AND (year<=2014 OR year>=2021) AND province LIKE '辽宁%'"
+    query: "SELECT count(*) FROM exam_questions WHERE province LIKE '辽宁%' AND paper_type IN ('新课标 I 卷','新课标 III 卷','全国甲卷','全国乙卷')"
     expect: {op: "==", value: 0}
-  - id: no-unverified-xgkii-paper
-    claim: "无未核验源冒充新课标II卷; 仅 local_pdf/Updates/eol_xgkii 可断言 (check_21)"
+  - id: liaoning-is-xgkii
+    claim: "辽宁卷 paper_type 必为新课标II卷 (辽宁 2015 起只用新课标II)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM exam_questions WHERE (paper_type LIKE '%新课标%' OR paper_type LIKE '%II 卷%') AND source_repo<>'local_pdf' AND source_repo NOT LIKE '%Updates%' AND source_repo NOT LIKE 'eol_xgkii%'"
+    query: "SELECT count(*) FROM exam_questions WHERE province LIKE '辽宁%' AND paper_type <> '新课标 II 卷'"
+    expect: {op: "==", value: 0}
+  - id: pre2015-not-liaoning
+    claim: "2010-2014 辽宁自主命题期不冒充辽宁 (gb 数据为他省新课标II)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE year <= 2014 AND province LIKE '辽宁%'"
     expect: {op: "==", value: 0}
   - id: smoking-gun-gone
     claim: "全国甲卷 'Landscape Photographer' 行不再标辽宁 (L-P smoking gun; 已随 GAOKAO 占位删除)"

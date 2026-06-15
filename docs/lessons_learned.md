@@ -388,3 +388,19 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **修复**: 纠正 RESUME.md §4; moth 加 textbook-units-extracted / textbook-sections-have-text 断言钉死(防"零单元"复发)。
 
 **教训**: 把任何文档里"带数字/状态的未关项"当行动依据前, 先对真相源(DB/代码)验证一次; 验证后把结论挂成 moth 断言, 让陈旧说法下次自动现形。
+
+---
+
+## L-2026-06-15-X · 拉取全部 gaokao 英语题 — category-aware 诚实卷型, 非按年代粗标
+
+**现象**: 用户要求从 /gaokao 拉全部高考英语题。GAOKAO-Bench/Updates 是**混合卷**(每年含新课标I/II/III/甲/乙, 由 category 字段区分)。旧 refine 按**年代**粗标(2015-2020 全标辽宁新课标II), 会把同年的新课标I/III/甲/乙 也误标成辽宁(L-N/L-P 同类, 更细粒度)。
+
+**根因**: 用年代推断卷型, 忽略 category 字段的真实卷型。辽宁卷型史: 2010-2014 自主命题(无国家卷) / 2015 起用新课标全国II卷。故"新课标II + year>=2015"才是辽宁, 其余非辽宁。
+
+**修复 (2026-06-15)**:
+- `exam.classify_paper(year, category)` category-aware: 解析 category(全半角 Ⅰ/Ⅱ/Ⅲ/ⅰ/ⅱ/ⅲ + 甲/乙)→ 诚实卷型; 只有"新课标II + year>=2015"标辽宁。这是 gb/Updates 卷型的单一计算点。
+- `exam_province.refine_province` 改为只统一可信源(local_pdf/eol_xgkii→辽宁新课标II), gb/Updates 信任 mirror 的 category-aware 标注(不用年代逻辑覆盖)。
+- 补 Updates 2024 源(18 题)。check_21 + moth 改 category-aware 不变式(非II卷不冒充辽宁 / 辽宁卷必新课标II / 2010-2014 不冒充辽宁)。
+- 结果: exam_questions 376→472(全部拉齐 2010-2025), 辽宁卷 188(真新课标II), 非辽宁 284(I/III/甲/乙/2010-14非辽宁II 诚实标注)。三门全绿。
+
+**教训**: 卷型/省份要从**数据自带的 category 字段**判, 不靠年代推断。"拉全部"不等于"全标辽宁"——honest provenance = 真新课标II 才辽宁, 其余诚实标非辽宁(可用作 cross-reference, 不冒充)。逻辑变了 moth 立即提醒同步断言(no-unverified-xgkii-paper 旧断言 FAIL → 换 category-aware 断言)。
