@@ -5,8 +5,10 @@
   即 正确率低 + 样本足 → 弱化度高
   样本 < 3 不入弱点 (避免单样本误判)
 
-每个学生针对每个 concept (word/grammar) 单独算:
-  通过 question_tags + nodes 反查 — 每题考的 concept 全部归入该学生的命中点
+2026-06-16 (件2 拱心石落地后): 弱点维度从 **word token(假象)** 改为 **exam_point 真考点**
+  (genre/theme/主题群; critic 盲点#2 修复)。每题考的真考点(tests_exam_point 边)归入该生命中点 —
+  错题 → 其真考点 → 薄弱环节。取代"把整篇实词当考点"的 token 假象 (一题错≠该篇每个词都弱)。
+  路径: student_answers → question_bank.origin_ref(=exam_questions.id) → 'question:'||id → tests_exam_point 边 → exam_point 节点。
 """
 from __future__ import annotations
 
@@ -46,12 +48,12 @@ def recompute_one(con: duckdb.DuckDBPyConnection, student_id: str) -> dict:
 def _compute_one_student(con: duckdb.DuckDBPyConnection, sid: str) -> int:
     """算 1 学生的弱点, 写表, 返回新增行数."""
     rows = con.execute(
-        "SELECT qt.tag_id, sa.is_correct "
+        "SELECT e.dst_id AS concept_id, sa.is_correct "
         "FROM student_answers sa "
         "JOIN question_bank qb ON qb.qb_id = sa.question_id::BIGINT "
-        "JOIN question_tags qt ON qt.qb_id = qb.qb_id "
-        "WHERE sa.student_id = ? "
-        "AND (qt.tag_id LIKE 'word:%' OR qt.tag_id LIKE 'grammar:%')",
+        "JOIN edges e ON e.src_id = ('question:' || qb.origin_ref) "
+        "  AND e.relation = 'tests_exam_point' "
+        "WHERE sa.student_id = ?",
         [sid],
     ).fetchall()
     # 聚合 concept → (n, n_correct)

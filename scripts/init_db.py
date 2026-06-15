@@ -148,6 +148,10 @@ def main() -> None:
     from backend.services.exam_point import load_exam_points
     print(f"  {load_exam_points(con)}")
 
+    print("\n=== Layer 4j: 学情薄弱环节重算 (4i 考点边就绪后, 错题→真考点→薄弱; 取代Layer4e的token派生) ===")
+    from backend.services import weakness
+    print(f"  {weakness.recompute_all(con)}")
+
     print("\n=== Layer 3: audit ===")
     for k, v in audit.run_all(con).items():
         print(f"  {k}: {v}")

@@ -53,10 +53,16 @@ assertions:
 
   # ===== 学情派生诚实性 (无假推) =====
   - id: weakness-derived-no-orphan
-    claim: "student_weakness 全有 student_answers 支撑 (无写死假推; 0 orphan)"
+    claim: "student_weakness 全有 student_answers 在该真考点上的错题支撑 (2026-06-16改: 弱点维度=exam_point真考点非word token; 0 orphan)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM student_weakness w WHERE NOT EXISTS (SELECT 1 FROM student_answers sa JOIN question_tags qt ON qt.qb_id=sa.question_id::BIGINT WHERE sa.student_id=w.student_id AND qt.tag_id=w.concept_id)"
+    query: "SELECT count(*) FROM student_weakness w WHERE NOT EXISTS (SELECT 1 FROM student_answers sa JOIN question_bank qb ON qb.qb_id=sa.question_id::BIGINT JOIN edges e ON e.src_id=('question:'||qb.origin_ref) AND e.relation='tests_exam_point' WHERE sa.student_id=w.student_id AND e.dst_id=w.concept_id)"
+    expect: {op: "==", value: 0}
+  - id: weakness-is-exam-point
+    claim: "学情薄弱环节维度=exam_point真考点(非word token假象; critic#2修复, 错题→真考点→薄弱)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM student_weakness WHERE concept_id NOT LIKE 'exam_point:%'"
     expect: {op: "==", value: 0}
 
   # ===== Phase 7 生成层回滚 (仅真题, 无生成范文) =====
