@@ -91,6 +91,18 @@ assertions:
     command: ["grep", "-c", "english_stopwords", "backend/config/stopwords.yaml"]
     expect: {op: ">=", value: 1}
 
+  # ===== 分析诚实 (件1: D0 从"数据诚实"扩展到"分析诚实") =====
+  - id: trend-province-scoped
+    claim: "命题趋势默认锚定辽宁卷 + 样本量护栏 (件1; 防混284全国卷/薄样本伪装趋势回归)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services import trend;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);r=trend.question_type_year_trend(c)[0];print('OK' if r.get('province_scope')=='辽宁卷' and 'reliable' in r else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: trend-summary-anchored
+    claim: "trend_summary 锚定辽宁卷 + 带样本量诊断 (前端首页趋势不混全国卷)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services import trend;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=trend.trend_summary(c);print('OK' if s.get('province_scope')=='辽宁卷' and 'sample_diagnosis' in s else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+
   # ===== 工程纪律 (Rule 8) =====
   - id: no-god-module
     claim: "无 >400 行 god-module (Rule 8; 2026-06-15 拆 4 个治理 god-module 后 huge=0)"

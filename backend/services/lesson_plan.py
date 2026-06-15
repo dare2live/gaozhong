@@ -130,8 +130,8 @@ def generate_lesson_plan(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict:
         "teaching_notes": {
             "评估说明": ("words.recent_exam_trace 列出每词近 N 次高考真题考查"
                           " (question_id 含 year + 题型, 老师可点查原题)"),
-            "趋势说明": ("阅读理解题型 slope +0.028/年, 阅读类 word 频次"
-                          "持续上升, 应重点教高频实义词 + 词形变形"),
+            "趋势说明": ("题型分布大体由考纲蓝图固定; 命题趋势以 /api/trend (辽宁卷锚定 + 样本量护栏)"
+                          " live 结果为准, 薄样本年标'样本不足'不外推 (件1 分析诚实, 不写死 slope)"),
             "教学建议": ("HV_extra ⭐ 必教 / core 高频 必背 / "
                           "LV_extra 选学; 配套 graph cross-link 见 /api/recommend/"),
         },

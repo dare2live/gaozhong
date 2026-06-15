@@ -6,6 +6,8 @@ from collections import Counter, defaultdict
 
 import duckdb
 
+from . import scope
+
 _WORD_RE = re.compile(r"[A-Za-z][A-Za-z'\-]{1,}")
 
 STOPWORDS = {
@@ -35,7 +37,8 @@ def word_freq_by_year(con: duckdb.DuckDBPyConnection,
     cefr = _load_cefr_set(con) if restrict_to_cefr else set()
     out: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
     rows = con.execute(
-        "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
+        f"SELECT year, raw_question FROM exam_questions "
+        f"WHERE {scope.LIAONING_PREDICATE} AND year IS NOT NULL"
     ).fetchall()
     for yr, qtext in rows:
         _tally_year(out, yr, qtext, cefr, exclude_stopwords, restrict_to_cefr)
@@ -70,7 +73,8 @@ def top_high_freq_words(con: duckdb.DuckDBPyConnection, top_n: int = 50) -> list
 def type_freq_by_year(con: duckdb.DuckDBPyConnection) -> dict[int, Counter]:
     out: dict[int, Counter] = defaultdict(Counter)
     for yr, qt in con.execute(
-        "SELECT year, question_type FROM exam_questions WHERE year IS NOT NULL"
+        f"SELECT year, question_type FROM exam_questions "
+        f"WHERE {scope.LIAONING_PREDICATE} AND year IS NOT NULL"
     ).fetchall():
         if yr and qt:
             out[yr][qt] += 1
@@ -78,11 +82,14 @@ def type_freq_by_year(con: duckdb.DuckDBPyConnection) -> dict[int, Counter]:
 
 
 def trend_summary(con: duckdb.DuckDBPyConnection) -> dict:
+    """件1: 全部趋势锚定辽宁卷 (§7); 附样本量诊断, 薄样本年不冒充趋势."""
     top = top_high_freq_words(con, top_n=30)
     type_by_year = type_freq_by_year(con)
     type_by_year_serialized = {y: dict(c) for y, c in sorted(type_by_year.items())}
     return {
+        "province_scope": "辽宁卷",
         "top_words": top,
         "type_distribution_by_year": type_by_year_serialized,
         "years_covered": sorted(type_by_year),
+        "sample_diagnosis": scope.diagnose(con)["by_segment"],
     }

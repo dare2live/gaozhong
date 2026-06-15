@@ -15,6 +15,7 @@ from collections import Counter, defaultdict
 
 import duckdb
 
+from . import scope
 from .raw import _WORD_RE, STOPWORDS
 
 
@@ -32,11 +33,15 @@ def _linreg(xs: list[float], ys: list[float]) -> tuple[float, float]:
     return slope, intercept
 
 
-def question_type_year_trend(con: duckdb.DuckDBPyConnection) -> list[dict]:
-    """每年每题型占比, 用线性回归算 slope. slope 高 = 该题型占比逐年上升."""
-    rows = con.execute("""
+def question_type_year_trend(con: duckdb.DuckDBPyConnection,
+                             province_scoped: bool = True) -> list[dict]:
+    """每年每题型占比线性回归 slope. 件1 护栏: 默认只对**辽宁卷**算 (§7);
+    样本不达标时 reliable=False + trend='样本不足', 不冒充可信趋势 (分析诚实)."""
+    rows = con.execute(f"""
         SELECT year, question_type, COUNT(*) AS n
-        FROM exam_questions WHERE year IS NOT NULL AND question_type IS NOT NULL
+        FROM exam_questions
+        WHERE {scope.liaoning_clause(province_scoped)}
+          AND year IS NOT NULL AND question_type IS NOT NULL
         GROUP BY year, question_type
         ORDER BY year
     """).fetchall()
@@ -45,44 +50,57 @@ def question_type_year_trend(con: duckdb.DuckDBPyConnection) -> list[dict]:
     for y, t, n in rows:
         by_year_type[y][t] = n
         year_totals[y] += n
+    reliable = scope.is_reliable(scope.sample_diagnosis(dict(year_totals)))
+    scope_label = "辽宁卷" if province_scoped else "全部(非锚定)"
     all_types = sorted({t for ys in by_year_type.values() for t in ys})
     years = sorted(year_totals)
     out = []
     for qt in all_types:
-        xs: list[float] = []
-        ys: list[float] = []
-        for y in years:
-            xs.append(float(y))
-            ys.append(by_year_type[y].get(qt, 0) / max(1, year_totals[y]))
-        slope, intercept = _linreg(xs, ys)
+        ys = [by_year_type[y].get(qt, 0) / max(1, year_totals[y]) for y in years]
+        slope, _intercept = _linreg([float(y) for y in years], ys)
         out.append({
             "question_type": qt,
             "slope_per_year": round(slope, 5),
             "avg_share": round(sum(ys) / len(ys), 4) if ys else 0,
-            "trend": "上升" if slope > 0.001 else "下降" if slope < -0.001 else "持平",
+            "trend": _trend_label(slope, reliable),
             "n_years": len(years),
+            "province_scope": scope_label,
+            "reliable": reliable,
         })
     return sorted(out, key=lambda r: -r["slope_per_year"])
 
 
-def vocab_year_growth(con: duckdb.DuckDBPyConnection) -> dict:
-    """所有真题年总实义词 token 数 → 线性回归."""
-    by_year = _tokens_per_year(con)
+def _trend_label(slope: float, reliable: bool) -> str:
+    """样本不达标 → '样本不足'(不冒充趋势); 达标才给上升/下降/持平."""
+    if not reliable:
+        return "样本不足"
+    return "上升" if slope > 0.001 else "下降" if slope < -0.001 else "持平"
+
+
+def vocab_year_growth(con: duckdb.DuckDBPyConnection,
+                      province_scoped: bool = True) -> dict:
+    """辽宁卷年总实义词 token 数 → 线性回归 (件1: province 锚定 + 样本量护栏)."""
+    by_year = _tokens_per_year(con, province_scoped)
     years = sorted(by_year)
     xs = [float(y) for y in years]
     ys = [float(by_year[y]) for y in years]
     slope, _intercept = _linreg(xs, ys)
+    reliable = scope.is_reliable(scope.diagnose(con, province_scoped)["by_segment"])
     return {
         "years": years,
         "tokens_per_year": [by_year[y] for y in years],
         "slope_per_year": round(slope, 2),
-        "interpretation": _slope_interp(slope),
+        "interpretation": _slope_interp(slope) if reliable else "样本不足, 不下趋势结论",
+        "province_scope": "辽宁卷" if province_scoped else "全部(非锚定)",
+        "reliable": reliable,
     }
 
 
-def _tokens_per_year(con: duckdb.DuckDBPyConnection) -> dict[int, int]:
+def _tokens_per_year(con: duckdb.DuckDBPyConnection,
+                     province_scoped: bool = True) -> dict[int, int]:
     rows = con.execute(
-        "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
+        f"SELECT year, raw_question FROM exam_questions "
+        f"WHERE {scope.liaoning_clause(province_scoped)} AND year IS NOT NULL"
     ).fetchall()
     by_year: dict[int, int] = defaultdict(int)
     for y, q in rows:
@@ -102,23 +120,28 @@ def _slope_interp(slope: float) -> str:
 
 
 def top_rising_words(con: duckdb.DuckDBPyConnection,
-                       recent_years: int = 3, top_n: int = 20) -> list[dict]:
-    """近 N 年新出现 / 频次上升的词. (M6 拆: 主函数 ≤10)"""
-    by_word_year = _word_year_counts(con)
+                       recent_years: int = 3, top_n: int = 20,
+                       province_scoped: bool = True) -> list[dict]:
+    """近 N 年新出现 / 频次上升的词 (件1: province 锚定; 跨卷制断点的'新词'不可信故附 reliable)."""
+    by_word_year = _word_year_counts(con, province_scoped)
     all_years = sorted({y for d in by_word_year.values() for y in d})
     if len(all_years) < recent_years * 2:
         return []
     recent = set(all_years[-recent_years:])
     older = set(all_years[:-recent_years])
+    reliable = scope.is_reliable(scope.diagnose(con, province_scoped)["by_segment"])
     rising = _filter_rising(by_word_year, recent, older)
     rising.sort(key=lambda x: -x[1])
     return [{"word": w, "recent_freq": r, "older_freq": o,
-              "rise_ratio": (r + 1) / (o + 1)} for w, r, o in rising[:top_n]]
+              "rise_ratio": (r + 1) / (o + 1), "reliable": reliable}
+            for w, r, o in rising[:top_n]]
 
 
-def _word_year_counts(con: duckdb.DuckDBPyConnection) -> dict[str, dict[int, int]]:
+def _word_year_counts(con: duckdb.DuckDBPyConnection,
+                      province_scoped: bool = True) -> dict[str, dict[int, int]]:
     rows = con.execute(
-        "SELECT year, raw_question FROM exam_questions WHERE year IS NOT NULL"
+        f"SELECT year, raw_question FROM exam_questions "
+        f"WHERE {scope.liaoning_clause(province_scoped)} AND year IS NOT NULL"
     ).fetchall()
     by_wy: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
     for y, q in rows:
