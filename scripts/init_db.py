@@ -144,6 +144,10 @@ def main() -> None:
     cs = constitution.seed(con)
     print(f"  constitution: {cs['total']} 条 ({cs['principles']} 原则 + {cs['iron_laws']} 铁律 + {cs['violations']} 违宪)")
 
+    print("\n=== Layer 4i: 考点 canonical 维度 (件2: genre/theme 双模型标注 → edges) ===")
+    from backend.services.exam_point import load_exam_points
+    print(f"  {load_exam_points(con)}")
+
     print("\n=== Layer 3: audit ===")
     for k, v in audit.run_all(con).items():
         print(f"  {k}: {v}")

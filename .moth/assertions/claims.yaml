@@ -108,6 +108,26 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services.exercise.predicted import generate_blueprint_practice_paper as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=g(c,total=10);b=p['composition_basis']['selection_basis'];print('OK' if 'blueprint_fixed' in b and p['paper_type']=='blueprint_structured_practice' else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
 
+  # ===== 考点 canonical 维度 (件2 拱心石: 取代 word-token 冒充考点) =====
+  - id: exam-point-edges-present
+    claim: "考点 canonical 维度已落库: tests_exam_point 边 ≥300 (188辽宁题 genre/theme 双模型标注)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
+    expect: {op: ">=", value: 300}
+  - id: exam-point-dual-model-only
+    claim: "考点边只入 dual_model_agree (歧义 needs_review 不入 canonical; provenance 诚实, 不冒充人工核验)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') <> 'dual_model_agree'"
+    expect: {op: "==", value: 0}
+  - id: exam-point-no-orphan-edge
+    claim: "考点边 src 必为真实 question 节点 (无悬挂; Rule 3 edges 一等公民)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges e WHERE e.relation='tests_exam_point' AND NOT EXISTS (SELECT 1 FROM nodes n WHERE n.concept_id=e.src_id AND n.node_type='question')"
+    expect: {op: "==", value: 0}
+
   # ===== 工程纪律 (Rule 8) =====
   - id: no-god-module
     claim: "无 >400 行 god-module (Rule 8; 2026-06-15 拆 4 个治理 god-module 后 huge=0)"
