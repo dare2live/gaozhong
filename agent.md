@@ -110,7 +110,7 @@
 - `CLAUDE.md` for history/reference (treat as secondary unless user explicitly requests migration).
 - `docs/architecture.md` for layering and request flow.
 - `docs/data_accuracy_audit.md` for quality gates.
-- `docs/RESUME.md` for current open problems.
+- `moth assert --repo .` + `.moth/assertions/claims.yaml` for live data-honesty state (stage-snapshot docs like RESUME removed — they rot/mislead).
 - `analysis/project_state_ledger.md` for completed work and historical evidence.
 - `.moth/profile.yaml` for local project tooling profile.
 - `.codegraph/codegraph.db` for dependency map and query context.

@@ -14,7 +14,6 @@ evidence_paths:
   agent: /Users/dp/Documents/M/gaozhong/agent.md
   docs: /Users/dp/Documents/M/gaozhong/docs
   docs_index: /Users/dp/Documents/M/gaozhong/docs/README.md
-  docs_resume: /Users/dp/Documents/M/gaozhong/docs/RESUME.md
   analysis: /Users/dp/Documents/M/gaozhong/analysis
   claude_legacy: /Users/dp/Documents/M/gaozhong/CLAUDE.md
   ledger: /Users/dp/Documents/M/gaozhong/analysis/project_state_ledger.md

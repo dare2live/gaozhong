@@ -2,9 +2,10 @@
 
 日期：2026-06-15
 
-本文件是当前文档入口。接手顺序：**invoke `gaozhong-ops` skill** -> `docs/RESUME.md`(断点续传, 最新状态) -> `AGENTS.md` -> `agent.md` -> `goal.md` -> 本文件。
+本文件是当前文档入口。接手顺序：**invoke `gaozhong-ops` skill** -> `moth assert --repo .`(看 live 状态, 阶段性快照文档已删, 不再有 RESUME) -> `AGENTS.md` -> `agent.md` -> `goal.md` -> 本文件。
 
-> 2026-06-15: 数据诚实性整改 6 commits 已闭环(真题 provenance / EOL 入库 / Phase 7 回滚 / 去停用词 / god-module 拆分)。三门全绿。守护: `moth assert --repo .`(12 条) + `gaozhong-ops` skill(坑库)。详 `RESUME.md`。
+> 2026-06-15: 数据诚实性整改 9 commits 已闭环(真题 provenance / EOL 真题入库 / Phase 7 回滚 / 去停用词 / god-module 拆分 / 趋势模型干净重建)。三门全绿。守护: `moth assert --repo .`(14 条断言) + `gaozhong-ops` skill(坑库)。详 `goal.md` 数据诚实性整改段 + `lessons_learned.md` L-R..W。
+> **文档原则**: 阶段性/快照类文档(RESUME/round/closure-checkpoint)易腐烂误导, 已删; live 状态以 `moth assert` + DB 实测为准, 不靠快照文档。
 
 ## Current law
 
@@ -22,7 +23,7 @@
 | 文件 | 用途 |
 |---|---|
 | `docs/data_accuracy_audit.md` | D0 数据准确率审计总表 |
-| `docs/M0_CLOSURE_CHECKPOINT_2026-06-12.md` | M0 EOL overlay partial closure checkpoint |
+| `.moth/assertions/claims.yaml` | claims-vs-reality 弹仓(14 条, `moth assert` 守漂移) |
 | `analysis/project_state_ledger.md` | 历史工作与证据 ledger |
 | `backend/config/m0_gates.yaml` | M0 gate 顺序和期望状态 |
 | `scripts/tools/audit/project_architecture_audit.py` | 模块 / 数据 / 配置架构只读 gate |
@@ -39,7 +40,6 @@
 | 文件 | 状态 |
 |---|---|
 | `CLAUDE.md` | 历史 Claude 规则。Codex 不默认作为当前规则源，除非用户要求迁移/对比 |
-| `docs/RESUME.md` | 历史恢复文档。若与本索引、`goal.md` 或 `project_architecture.yaml` 冲突，以当前索引为准 |
 
 ## Gate order
 
