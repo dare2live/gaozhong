@@ -63,7 +63,12 @@ def _replace(con: duckdb.DuckDBPyConnection, relation: str, rows: list) -> int:
 
 
 def build_tests_word(con: duckdb.DuckDBPyConnection) -> int:
-    """question → word: 题面 token 在 cefr_vocab 中即建 edge (评估考点)."""
+    """question → word: 题面实词 (cefr ∩ token − 停用词) 即建 edge (评估考点).
+
+    2026-06-15: 去停用词污染 — 旧版把 the/it/to 等功能词也建边, 41% tests_word 是噪声,
+    稀释真实考点关联. 用共享 stopwords 过滤 (项目 §3.5 规则在 config/stopwords.yaml).
+    """
+    from backend.services.stopwords import content_tokens
     cefr = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     rows: list[tuple] = []
     for qid, qtext in con.execute(
@@ -71,7 +76,7 @@ def build_tests_word(con: duckdb.DuckDBPyConnection) -> int:
     ).fetchall():
         if not qtext:
             continue
-        toks = {t.lower() for t in _TOKEN_RE.findall(qtext)} & cefr
+        toks = content_tokens({t.lower() for t in _TOKEN_RE.findall(qtext)}, cefr)
         for w in toks:
             rows.append((f"question:{qid}", f"word:{w}", 1.0, None))
     return _replace(con, "tests_word", rows)

@@ -72,9 +72,10 @@ def _autotag(con: duckdb.DuckDBPyConnection, qb_id: int, stem: str,
         tid = f"year:{year}"
         _ensure_tag(con, tid, "year", str(year))
         _tag_question(con, qb_id, tid); n += 1
-    # word tags (cefr ∩ stem tokens)
-    toks = {t.lower() for t in _TOKEN_RE.findall(stem or "")} & cefr
-    for w in list(toks)[:30]:  # cap to avoid bloat
+    # word tags (实词考点 = cefr ∩ stem tokens − 停用词; 2026-06-15 去停用词污染)
+    from backend.services.stopwords import content_tokens
+    toks = content_tokens({t.lower() for t in _TOKEN_RE.findall(stem or "")}, cefr)
+    for w in sorted(toks)[:30]:  # cap to avoid bloat
         tid = f"word:{w}"
         _ensure_tag(con, tid, "word", w)
         _tag_question(con, qb_id, tid); n += 1

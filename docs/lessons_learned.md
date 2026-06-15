@@ -354,3 +354,15 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **附带抓到的 bug**: 我给 2010-2014 起的诚实标签含"非辽宁", 而下游 5 处 `province LIKE '%辽宁%'` **子串匹配把"非辽宁"也算辽宁** → qb 误收 166 道外省题。修为精确 `LIKE '辽宁%'`(以辽宁开头)。教训: 标签含否定词("非X")时, 用 `%X%` 的下游会被反向命中, 必须用前缀/精确匹配。
 
 **教训**: "可教学产品"必须等数据基石(教材完整提取)完成再做。生成内容在不完整地基上 = 形式 OK 实质不可信(L-J 的内容版)。绿门不该校验"生成内容存在", 该校验"真题真实准确"。
+
+---
+
+## L-2026-06-15-U · autotag 停用词污染 — 功能词稀释考点关联
+
+**现象**: `_autotag` / `build_tests_word` 把"题面 token ∩ cefr_vocab"全建成 word tag/边, 而 cefr 义教层含 the/it/to/they 等功能词 → question_tags 41% / tests_word 边 41% 是停用词噪声。后果: 学情弱点派生出"弱在 they", 知识图谱 tests_word 边 (75% edges) 被功能词稀释, 趋势/热力图 concept 统计被高频功能词主导。
+
+**根因**: token∩词表 = 考点 的假设忽略了停用词. cefr_vocab 不区分功能词/实词。
+
+**修复 (2026-06-15)**: 停用词表数据化 `backend/config/stopwords.yaml` (~180 词, 项目 §3.5 规则不 hardcode); 共享 `backend/services/stopwords.py` (Rule 5, content_tokens = token∩cefr−停用词); `_autotag` + `build_tests_word` 复用。tests_word 28430→16540, question_tags 0 停用词, weakness 0 停用词概念, 考点 top 变为 first/get/best/day 等实词。edges 阈值 30000→20000 反映清洗后真实图谱。
+
+**教训**: "实体∩词表=语义关联"必须先剔功能词, 否则噪声淹没信号。判断词表 (停用词) 数据化进 YAML。

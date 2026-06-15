@@ -81,7 +81,8 @@ def _check_6_graph(con):
     n_n = con.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
     n_e = con.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
     check("nodes ≥ 4000", n_n >= 4000, f"{n_n}")
-    check("edges ≥ 30000", n_e >= 30000, f"{n_e}")
+    # 2026-06-15 去停用词污染后 tests_word 边减少 (41% 是 the/it 噪声边); 阈值从 30000 降到 20000 反映清洗后真实图谱
+    check("edges ≥ 20000", n_e >= 20000, f"{n_e}")
     for k in ("graph_edge_validity", "graph_orphans", "graph_grammar_dag", "graph_relation_dict"):
         check(f"{k} OK", _audit_ok(con, k))
 
