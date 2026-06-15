@@ -127,6 +127,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges e WHERE e.relation='tests_exam_point' AND NOT EXISTS (SELECT 1 FROM nodes n WHERE n.concept_id=e.src_id AND n.node_type='question')"
     expect: {op: "==", value: 0}
+  - id: exam-point-theme-l2-official
+    claim: "theme 已细化到课标官方10主题群(L2)落库 (taxonomy v2; 回应'太粗', ≥100条 theme_l2 边)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges WHERE relation='tests_exam_point' AND json_extract_string(evidence_json,'$.dimension')='theme_l2'"
+    expect: {op: ">=", value: 100}
 
   # ===== 工程纪律 (Rule 8) =====
   - id: no-god-module

@@ -15,9 +15,12 @@ from pathlib import Path
 import duckdb
 
 ROOT = Path(__file__).resolve().parents[3]
-LABELS_PATH = ROOT / "data" / "structured" / "exam_point" / "genre_theme_labels.jsonl"
+_EP_DIR = ROOT / "data" / "structured" / "exam_point"
+LABELS_PATH = _EP_DIR / "genre_theme_labels.jsonl"
+THEME_L2_PATH = _EP_DIR / "theme_l2_labels.jsonl"
 
 # 标注字段 dimension → exam_point node 维度名 (与 taxonomy node_id_pattern 对齐)
+# theme=L1(3大主题, 粗) 与 theme_l2=课标官方10主题群(细) 并存 (Rule 6 可扩展; L2 含 L1)
 _DIMENSIONS = (("genre", "genre_prov", "genre"),
                ("theme", "theme_prov", "theme_context"))
 
@@ -26,10 +29,10 @@ def _point_node_id(dimension: str, label: str) -> str:
     return f"exam_point:{dimension}:{label}"
 
 
-def _read_labels() -> list[dict]:
-    if not LABELS_PATH.exists():
+def _read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
         return []
-    return [json.loads(line) for line in LABELS_PATH.read_text(encoding="utf-8").splitlines()
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
             if line.strip()]
 
 
@@ -43,39 +46,54 @@ def _ensure_point_node(con: duckdb.DuckDBPyConnection, dimension: str, label: st
     return True
 
 
+def _add_point_edge(con: duckdb.DuckDBPyConnection, qnode: str, dimension: str,
+                    label, prov, cue) -> tuple[int, int, int]:
+    """落一条 question→exam_point 边 (只 dual_model_agree 非 NA). 返回 (nodes+, edges+, skipped)."""
+    if label == "NA" or not label:
+        return (0, 0, 0)
+    if prov != "dual_model_agree":
+        return (0, 0, 1)
+    nm = int(_ensure_point_node(con, dimension, label))
+    pnode = _point_node_id(dimension, label)
+    if con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=? AND relation='tests_exam_point'",
+                   [qnode, pnode]).fetchone():
+        return (nm, 0, 0)
+    con.execute(
+        "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?, ?, ?, ?, ?)",
+        [qnode, pnode, "tests_exam_point", 1.0,
+         json.dumps({"dimension": dimension, "provenance": prov, "cue": (cue or "")[:200]},
+                    ensure_ascii=False)])
+    return (nm, 1, 0)
+
+
+def _node_exists(con: duckdb.DuckDBPyConnection, concept_id: str) -> bool:
+    return bool(con.execute("SELECT 1 FROM nodes WHERE concept_id = ?", [concept_id]).fetchone())
+
+
 def load_exam_points(con: duckdb.DuckDBPyConnection) -> dict:
-    """读标注 artifact → 落 exam_point 节点 + tests_exam_point 边 (只 dual_model_agree, 非 NA)."""
-    rows = _read_labels()
-    nodes_made = 0
-    edges_made = 0
-    skipped_review = 0
-    for row in rows:
+    """读标注 artifact → 落 exam_point 节点 + tests_exam_point 边 (只 dual_model_agree, 非 NA).
+
+    两源: genre_theme_labels(genre + theme L1 3大主题) + theme_l2_labels(课标官方10主题群)。
+    """
+    nodes_made = edges_made = skipped = 0
+    for row in _read_jsonl(LABELS_PATH):
         qnode = f"question:{row['question_id']}"
-        if not con.execute("SELECT 1 FROM nodes WHERE concept_id = ?", [qnode]).fetchone():
+        if not _node_exists(con, qnode):
             continue
         for label_key, prov_key, dimension in _DIMENSIONS:
-            label = row.get(label_key)
-            prov = row.get(prov_key)
-            if label == "NA":
-                continue
-            if prov != "dual_model_agree":
-                skipped_review += 1
-                continue
-            nodes_made += int(_ensure_point_node(con, dimension, label))
-            pnode = _point_node_id(dimension, label)
-            exists = con.execute(
-                "SELECT 1 FROM edges WHERE src_id = ? AND dst_id = ? AND relation = 'tests_exam_point'",
-                [qnode, pnode]).fetchone()
-            if exists:
-                continue
-            con.execute(
-                "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?, ?, ?, ?, ?)",
-                [qnode, pnode, "tests_exam_point", 1.0,
-                 json.dumps({"dimension": dimension, "provenance": prov,
-                             "cue": (row.get("evidence") or "")[:200]}, ensure_ascii=False)])
-            edges_made += 1
-    return {"labels": len(rows), "nodes_made": nodes_made,
-            "edges_made": edges_made, "skipped_needs_review": skipped_review}
+            nm, em, sk = _add_point_edge(con, qnode, dimension,
+                                         row.get(label_key), row.get(prov_key), row.get("evidence"))
+            nodes_made += nm; edges_made += em; skipped += sk
+    l2_rows = _read_jsonl(THEME_L2_PATH)
+    for row in l2_rows:
+        qnode = f"question:{row['question_id']}"
+        if not _node_exists(con, qnode):
+            continue
+        nm, em, sk = _add_point_edge(con, qnode, "theme_l2",
+                                     row.get("theme_l2"), row.get("prov"), row.get("evidence"))
+        nodes_made += nm; edges_made += em; skipped += sk
+    return {"labels": len(_read_jsonl(LABELS_PATH)), "theme_l2_labels": len(l2_rows),
+            "nodes_made": nodes_made, "edges_made": edges_made, "skipped_needs_review": skipped}
 
 
 # 卷制断点 (PIT §3.1): 2021 起辽宁用新高考全国 II 卷; 与 trend.scope.segment 同口径。
