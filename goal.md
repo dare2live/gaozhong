@@ -844,12 +844,12 @@ exam_alignment_checker.py --json
 - 每个里程碑必须产出：代码/脚本变更 + 结果报告 + 审计快照 + 文档状态行。
 - 里程碑之间禁止“边改边验”切片推进；允许在同里程碑内并行做法和修复，但复核只在里程碑边界确认。
 
-#### 里程碑当前状态（会话内更新）
+#### 里程碑当前状态（2026-06-15 对照更新，11 commits 数据诚实性整改）
 
-- ✅ **M0 已完成项**：真题映射与溯源骨架完整、`import_recent_exams.py` 与 cross_verify 链路可复验；`2024/2025` 可核对样例跑通。
-- 🔶 **M0 待收口项**：`2021/2022` 新高考 II 卷仍需完整入库与污染剔除，当前取消挂起，作为 Phase A/M0 优先缺口推进。
-- 🔶 **M1 与 M2**：阶段性成果已沉淀（趋势/题库/讲义）但仍按闭环门槛复验，暂不宣告全部达成。
-- 🔶 **M3**：`goal.md` 目标下继续收口，核心目标是把复核链条和复核反馈一次性闭环（run_id 已记录，结果待最终入档）。
+- ✅ **M0 真值基座闭环（已收口）**：原待收口项"2021/2022 新高考II卷完整入库 + 污染剔除"**已完成** —— EOL 中国教育在线真题走 M0 review gate 入 `exam_questions`(2021 共 65 + 2022 共 45)，替换 GAOKAO 混合卷占位；全部 gaokao 英语题拉齐(376→**472**, 2010-2025)，**category-aware 诚实卷型标注**(辽宁卷 188 真新课标II / 非辽宁 284 诚实标注 I/III/甲/乙)；GAOKAO 全国甲卷"Landscape Photographer"污染已删。provenance 由 `moth assert`(non-II-not-faking-liaoning / liaoning-is-xgkii / pre2015-not-liaoning / eol-truth-imported) + check_21 守。
+- ✅ **M1 图谱与趋势闭环（清洗后重建）**：真题清洗后 `trend_analysis`(288题, 2015-2025)/`exam_patterns` 在干净数据重建(旧版训练在污染数据上已弃)；知识图谱去停用词(tests_word 28430→16540, 功能词不再稀释考点)。
+- ⚠️ **M2 内容与题库闭环（已被 foundation-first 决策取代，需重定义）**：原目标"≥700 题 + 40 节讲义结构化上线"**已回滚** —— 用户 2026-06-15 决策：教材基石不完整前不要生成范文(§1.1)，删 enriched 讲义/合成题/生成练习；`question_bank` 改为**仅真题**(无合成)。课程结构骨架(40 + course_materials)保留。**M2 重定义**：教材基石(实测已抽全 77 单元)+ 干净真题为前置，教学内容重建是后续方向决策，不再以"700题/讲义上线"为门槛。
+- ✅ **M3 审计与交付闭环**：`data_accuracy_check`/`moth assert`(15 条)/`stop_gate` 三门全绿；4 个治理 god-module 拆 <400 行后 `run_all` 可复现 44 OK(解决陈旧快照)。M3.2 原引用的 `teacher_feedback_round1`/`user_test_round1` 等阶段性快照文档已删(易腐烂误导)，交付状态以 `moth assert` + DB 实测为准。
 
 #### 7.9.2 本会话开发计划（非小步版）
 

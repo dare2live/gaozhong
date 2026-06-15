@@ -837,3 +837,10 @@
 三门: data_accuracy_check exit 0 / moth assert PASS 12 / stop_gate exit 0。
 沉淀: gaozhong-ops skill(坑库8) + feedback-tool-first-discovery 记忆 + lessons L-R..V。
 下一前沿: 教材基石完整提取(外研选必4 零单元/覆盖46%)→ 趋势模型在干净数据上重建。
+
+## 2026-06-15 (续) / 文档去腐 + gaokao 全量拉取 + 里程碑对齐
+
+- 删 13 阶段性快照文档(RESUME/closure/round, 易腐烂误导); live 状态以 moth assert + DB 实测为准。
+- 拉全部 gaokao 英语题 376→472; category-aware 诚实卷型(辽宁 188 真新课标II / 非辽宁 284)。
+- 里程碑对照: M0 真值基座**已闭环**, M1 趋势/图谱**清洗重建**, M2 **被 foundation-first 取代需重定义**(生成内容回滚), M3 三门绿 + run_all 可复现。
+- 本 session 累计 ~12 commits; moth 15 条断言守漂移; lessons L-R..X。

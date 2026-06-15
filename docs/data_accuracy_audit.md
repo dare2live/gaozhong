@@ -899,3 +899,9 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **结果**: 2021 入 65 题 (听力20+完形15+七选五5+语法10+阅读15)、2022 入 45 题; 全部有核验答案 (笔试源=官方EOL参考答案表偏移已核验, 听力源=Sohu候选 analysis 留 lineage); 写作 rescope 留外 (宁缺毋滥)。GAOKAO 全国甲卷 "Landscape Photographer" 已随占位删除 (smoking gun=0)。
 **验证**: D0 exit 0 / stop_gate exit 0 / check_21 全绿 / course_materials 重建 0 悬空 / 幂等。exam_questions 376->454 (真辽宁卷 152: 2021-2025)。
 **意义**: L-R 从"止血(降级未知)"推进到"真值补全(真题入库)"; M0 2021/2022 真题真值基座从 staged 变为 imported_canonical。
+
+## 2026-06-15 / 全量 gaokao 拉取 + category-aware provenance (L-X) + 里程碑对齐
+
+**动作**: 从 /gaokao 拉全部英语题(376→472, 2010-2025); `exam.classify_paper` category-aware 诚实卷型(只有新课标II+year>=2015=辽宁)。详 L-2026-06-15-X。
+**结果**: 辽宁卷 188(真新课标II) / 非辽宁 284(新课标I 111 / 2010-14非辽宁II 72 / 未知 43 / III 40 / 甲 12 / 乙 6, 诚实标注可作 cross-ref)。三门绿; moth 15 条(含 nonII-not-faking-liaoning / liaoning-is-xgkii / pre2015-not-liaoning)。
+**里程碑对齐 (goal.md §7.9)**: M0 真值基座**已闭环**(2021/2022 EOL 入库 + 污染剔除 + 全量拉取); M1 趋势/图谱**清洗后重建**; M2 内容题库**被 foundation-first 取代需重定义**(生成内容回滚, 仅真题); M3 审计三门绿 + god-module 拆分后 run_all 可复现。
