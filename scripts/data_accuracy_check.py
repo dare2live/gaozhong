@@ -312,6 +312,12 @@ def _bad_grammar_chain(gid: str, by_id: dict) -> bool:
     return False
 
 
+def _check_22_exam_point(con):
+    """考点 canonical + 4路桥 + 薄弱环节 D0 校验 (抽到 lib/d0_exam_point_check, 避 god-module)."""
+    from scripts.lib.d0_exam_point_check import check_exam_point
+    check_exam_point(con, check)
+
+
 # ===== main 调度 (CC = 2) =====
 
 # 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
@@ -324,6 +330,7 @@ CHECKS = [
     _check_15_xref, _check_16_placement, _check_17_cross_version,
     _check_18_followup,
     _check_21_exam_provenance,
+    _check_22_exam_point,
 ]
 
 
