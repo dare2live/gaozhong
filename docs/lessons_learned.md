@@ -418,3 +418,39 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 - **沈阳外研版官方印证**: **Chrome MCP(agent-browser)成功导航 gov 站 `jyt.ln.gov.cn`** 取得辽宁省教育厅教学用书目录通知。官方 gov 源对浏览器工具完全可达。
 
 **教训**: 不要对官方源预设"反爬拿不到"defeatist; (1) 本地仓先翻(truth source 常在); (2) 在线官方源用 Chrome MCP/crawl4ai 实测可达。和 [[feedback-tool-first-discovery]] 同理 —— 充分用工具, 别自我设限。
+
+---
+
+## L-2026-06-15-Z · init_db file_manifest 被 git 中文文件名引号炸 (load.py)
+
+**现象**: 全量 init_db 在 `load_file_manifest` 阶段崩 `FileNotFoundError`, 路径形如 `"data/structured/.../上海市初中英语词汇表（2020年版）.pdf"`(带前导双引号 + 八进制转义)。
+
+**根因**: `backend/orchestrator/load.py` 的 `_tracked_files_under` 用 `git ls-files` 解析输出当路径, 但 git 默认 `core.quotepath=true`, 对非 ASCII 文件名(中文 PDF)会八进制加引号(如 `\344\270\212`), 直接 `ROOT/line` 得到伪路径 → `_sha256` 打不开。共 11 个中文名文件受影响。
+
+**修复 (2026-06-15)**: 改用 `git ls-files -z`(NUL 分隔且不转义), `split('\0')`。file_manifest 现 216 条正常。
+
+**教训 / 防复发**: 任何解析 `git ls-files` 输出的代码必须加 `-z`; 全量 init_db 重建(非增量)才暴露这类边界 —— 和 L-Y 同理, 外科链改库永远碰不到 file_manifest 全量重扫。
+
+---
+
+## L-2026-06-15-ZA · DuckDB 单写者 — init_db Layer 4g subprocess 开第二写连接锁冲突
+
+**现象**: clean init_db 后 `local_pdf` 题数=0; init_db 输出 `PDF import warning: Traceback ... line 110 in <module>`; 但手工单独跑 `import_recent_exams` 却成功导入 18 题。DB 状态 472/188 是手工补出来的态, clean rebuild 只能复现 454/170。
+
+**根因**: init_db 持有 DuckDB 写连接的**同时**, Layer 4g 用 subprocess 调 `import_recent_exams.py`, 后者 `import_to_db` 又 `duckdb.connect()` 开**第二个写连接** → DuckDB 单写者 → IOException 锁冲突崩。local_pdf 行历来靠 init_db 外手工补, 不可复现。
+
+**修复 (2026-06-15)**: `import_recent_exams` 重构出 `import_pdfs(con)` / `import_to_db(questions, con)` 用**传入**的写连接; init_db Layer 4g 改 in-process 调用(像 mirror/eol/courses 一样); cross-verify 经 `verify_year(year, con=con)` 复用连接。现 clean init_db 可复现 `local_pdf=18`, 三门全绿 472/188。
+
+**教训 / 防复发**: 入库逻辑一律**接受并复用调用方的写连接**, 不自开第二写连接; subprocess 调写库脚本 = 单写者反模式(parallel-grid-runner skill 同一坑的 init_db 版)。
+
+---
+
+## L-2026-06-15-ZB · crawl4ai 默认下 chromium — 应配本机 Chrome (chrome_channel 非 channel)
+
+**现象**: 装 crawl4ai 0.8.9 后, `crawl4ai-setup` 默认下 531M bundled chromium; 用户要求"本机开 chrome 效果更好, 不要装 chromium"。
+
+**根因 / 坑**: crawl4ai `BrowserConfig` 有 `channel` 和 `chrome_channel` 两个参数, 但 0.8.x 启动(`browser_manager.py:1115`)实际只读 **`chrome_channel`** 透传给 playwright launch 的 `browser_args['channel']`; 只设 `channel` 不生效(仍启 bundled chromium)。
+
+**修复 (2026-06-15)**: `acquire/web.py` 设 `chrome_channel="chrome"`(+`channel` 兼容)→ 驱动本机 Google Chrome 149, 删 531M chromium 后实测 example.com 200 OK 仍工作。裸 playwright `p.chromium.launch(channel="chrome")` 也证实本机 Chrome 可用、无需 chromium。
+
+**教训 / 防复发**: 用 crawl4ai 驱动系统 Chrome 必须设 `chrome_channel`(不是 `channel`); 官方反爬站升级走 Chrome MCP(承接 L-Y 现象2 的工具路径)。

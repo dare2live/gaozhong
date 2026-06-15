@@ -2,11 +2,15 @@
 """解析 2024/2025 高考英语 PDF → 入 exam_questions 表.
 
 从 gaokao 项目的 PDF 提取阅读/完形/语法填空/写作题, 结构化入库.
-不处理听力 (PDF 无音频). 用 pypdf 抽文字, 按题型分段.
+不处理听力 (PDF 无音频).
+
+2026-06-15 模块化 (M6): PDF→文本 + 题型分段下沉到 extract 层
+  backend/services/data_sources/extract/pdf.py
+  (extract_text / parse_exam_sections / PdfUnreadableError, 与本文件原逻辑字节等价).
+本脚本只保留"入库 + 入库后交叉核对"编排.
 """
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
@@ -14,7 +18,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import duckdb
-import pypdf
+
+from backend.services.data_sources.extract.pdf import (
+    PdfUnreadableError,
+    extract_text,
+    parse_exam_sections,
+)
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 
@@ -26,145 +35,44 @@ PDFS = [
 ]
 
 
-def extract_text(pdf_path: Path) -> str:
-    reader = pypdf.PdfReader(str(pdf_path))
-    return "".join(p.extract_text() or "" for p in reader.pages)
+def import_to_db(questions: list[dict], con) -> int:
+    """用**传入的写连接**入库 + 挂 question/exam_year 节点边.
+
+    单一写连接纪律 (DuckDB 单写者): 不自开第二个写连接, 由调用方 (init_db / main) 统一持有,
+    否则与 init_db 的写连接锁冲突 (Layer 4g subprocess 崩 → local_pdf 行历来靠 out-of-band 手工补).
+    """
+    existing = {r[0] for r in con.execute("SELECT question_id FROM exam_questions").fetchall()}
+    n = 0
+    for q in questions:
+        if q["question_id"] in existing:
+            continue
+        con.execute(
+            "INSERT INTO exam_questions VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            [q["question_id"], q["year"], q["province"], q["paper_type"],
+             q["question_type"], q["raw_question"], q["answer"], q["analysis"],
+             q["source_file"], q["source_index"], q["source_repo"]],
+        )
+        cid = f"question:{q['question_id']}"
+        if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [cid]).fetchone():
+            con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [cid, "question", q["question_id"]])
+        year_node = f"exam_year:{q['year']}"
+        if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [year_node]).fetchone():
+            con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [year_node, "exam_year", str(q["year"])])
+        if not con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=?", [cid, year_node]).fetchone():
+            con.execute("INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?,?,?,?,?)",
+                        [cid, year_node, "in_year", 1.0, '{"source":"pdf_import"}'])
+        n += 1
+    return n
 
 
-def parse_questions(text: str, year: int) -> list[dict]:
-    """按大题块分段: 阅读 A-D + 七选五 + 完形 + 语法填空 + 应用文 + 续写."""
-    parts = _split_parts(text)
-    questions = _parse_reading(parts["part2"], year)
-    questions += _parse_language(parts["part3"], year)
-    questions += _parse_writing(parts["part4"], year)
-    return questions
+def _post_import_verify(year: int, con=None) -> bool:
+    """入库后立即 cross-verify — FAIL 则示警 (宪法 §8.3 程序化执行).
 
-
-def _split_parts(text: str) -> dict:
-    return {
-        "part2": _extract_between(text, "第二部分", "第三部分") or "",
-        "part3": _extract_between(text, "第三部分", "第四部分") or "",
-        "part4": _extract_between(text, "第四部分", None) or "",
-    }
-
-
-def _parse_reading(part2: str, year: int) -> list[dict]:
-    qs = []
-    for label in ["A", "B", "C", "D"]:
-        block = _extract_passage(part2, label)
-        if block and len(block) > 100:
-            qs.append(_make_q(year, "阅读理解", block, ord(label) - ord("A") + 1))
-    qiwu = _extract_between(part2, "第二节", None) or ""
-    if len(qiwu) > 100:
-        qs.append(_make_q(year, "完形填空(七选五/语篇)", qiwu, 36))
-    return qs
-
-
-def _parse_language(part3: str, year: int) -> list[dict]:
-    qs = []
-    cloze = _extract_between(part3, "第一节", "第二节") or part3[:2000]
-    if len(cloze) > 100:
-        qs.append(_make_q(year, "完形填空", cloze, 41))
-    grammar = _extract_between(part3, "第二节", None) or ""
-    if len(grammar) > 50:
-        qs.append(_make_q(year, "语法填空", grammar, 56))
-    return qs
-
-
-def _parse_writing(part4: str, year: int) -> list[dict]:
-    qs = []
-    applied = _extract_between(part4, "第一节", "第二节") or ""
-    if len(applied) > 50:
-        qs.append(_make_q(year, "应用文写作", applied, 46))
-    narrative = _extract_between(part4, "第二节", None) or ""
-    if len(narrative) > 50:
-        qs.append(_make_q(year, "续写", narrative, 47))
-    return qs
-
-    return questions
-
-
-def _extract_passage(text: str, label: str) -> str:
-    """提取阅读理解 A/B/C/D 篇."""
-    next_label = chr(ord(label) + 1) if label < "D" else None
-    pattern = rf'\n{label}\n'
-    m = re.search(pattern, text)
-    if not m:
-        pattern = rf'\n{label}\s'
-        m = re.search(pattern, text)
-    if not m:
-        return ""
-    start = m.start()
-    if next_label:
-        end_pattern = rf'\n{next_label}\n|\n{next_label}\s'
-        m2 = re.search(end_pattern, text[start + 2:])
-        end = start + 2 + m2.start() if m2 else start + 3000
-    else:
-        end = min(start + 3000, len(text))
-    return text[start:end].strip()
-
-
-def _extract_between(text: str, start: str, end: str | None) -> str | None:
-    si = text.find(start)
-    if si < 0:
-        return None
-    si += len(start)
-    if end:
-        ei = text.find(end, si)
-        return text[si:ei] if ei > si else text[si:]
-    return text[si:]
-
-
-def _make_q(year: int, qtype: str, raw: str, qnum: int) -> dict:
-    return {
-        "question_id": f"pdf/{year}/xgkii/{qtype}/{qnum}",
-        "year": year,
-        "province": f"辽宁 (新课标 II 卷, 2021+)",
-        "paper_type": "新课标 II 卷",
-        "question_type": qtype,
-        "raw_question": raw[:2000],
-        "answer": "",
-        "analysis": "",
-        "source_file": f"gaokao_pdf_{year}",
-        "source_index": qnum,
-        "source_repo": "local_pdf",
-    }
-
-
-def import_to_db(questions: list[dict]) -> int:
-    con = duckdb.connect(str(DB_PATH))
-    try:
-        existing = {r[0] for r in con.execute("SELECT question_id FROM exam_questions").fetchall()}
-        n = 0
-        for q in questions:
-            if q["question_id"] in existing:
-                continue
-            con.execute(
-                "INSERT INTO exam_questions VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                [q["question_id"], q["year"], q["province"], q["paper_type"],
-                 q["question_type"], q["raw_question"], q["answer"], q["analysis"],
-                 q["source_file"], q["source_index"], q["source_repo"]],
-            )
-            cid = f"question:{q['question_id']}"
-            if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [cid]).fetchone():
-                con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [cid, "question", q["question_id"]])
-            year_node = f"exam_year:{q['year']}"
-            if not con.execute("SELECT 1 FROM nodes WHERE concept_id=?", [year_node]).fetchone():
-                con.execute("INSERT INTO nodes VALUES (?,?,?,NULL)", [year_node, "exam_year", str(q["year"])])
-            if not con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=?", [cid, year_node]).fetchone():
-                con.execute("INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?,?,?,?,?)",
-                            [cid, year_node, "in_year", 1.0, '{"source":"pdf_import"}'])
-            n += 1
-        return n
-    finally:
-        con.close()
-
-
-def _post_import_verify(year: int) -> bool:
-    """入库后立即 cross-verify — FAIL 则回滚 (宪法 §8.3 程序化执行)."""
+    con 传入时 verify_year 复用该连接 (无第二连接, 适配 init_db in-process 调用).
+    """
     try:
         from scripts.tools.audit.cross_verify_pdf import verify_year
-        result = verify_year(year)
+        result = verify_year(year, con=con)
         status = result.get("overall", result.get("status", "skip"))
         n_fail = result.get("summary", {}).get("fail", 0)
         print(f"    cross-verify {year}: {status} (fail={n_fail})")
@@ -174,27 +82,44 @@ def _post_import_verify(year: int) -> bool:
         return True
 
 
-def main():
+def import_pdfs(con) -> dict:
+    """编排 PDF→入库 (用传入写连接), 返回 {total, by_year, verify}. init_db Layer 4g 调用.
+
+    PDF→文本→分段 走 extract 层 (pdf.extract_text / parse_exam_sections); 本函数只编排 + 入库 + 核对.
+    """
     total = 0
-    for year, paper, pdf_path in PDFS:
+    by_year: dict[int, int] = {}
+    verify_ok = True
+    for year, _paper, pdf_path in PDFS:
         if not pdf_path.exists():
             print(f"  SKIP {year}: {pdf_path} not found")
             continue
-        text = extract_text(pdf_path)
-        qs = parse_questions(text, year)
-        print(f"  {year}: extracted {len(qs)} questions from {len(text)} chars")
-        for q in qs[:3]:
-            print(f"    {q['question_id']}: {q['raw_question'][:80]}...")
-        n = import_to_db(qs)
+        try:
+            text = extract_text(pdf_path)
+        except PdfUnreadableError as e:
+            # 非有效 PDF (HTML 伪装/损坏) → 诚实跳过, 不静默吞 (§1.5), 不崩流程
+            print(f"  SKIP {year}: {e}")
+            continue
+        qs = parse_exam_sections(text, year)
+        n = import_to_db(qs, con)
         total += n
-        print(f"    imported {n} new (skipped {len(qs) - n} existing)")
-        if not _post_import_verify(year):
+        by_year[year] = n
+        print(f"  {year}: extracted {len(qs)}, imported {n} new (skipped {len(qs) - n} existing)")
+        if not _post_import_verify(year, con=con):
+            verify_ok = False
             print(f"    ❌ cross-verify FAIL for {year} — 数据可能不一致, 请检查")
-    print(f"\nTotal imported: {total}")
-    con = duckdb.connect(str(DB_PATH), read_only=True)
-    for r in con.execute("SELECT year, COUNT(*) FROM exam_questions WHERE year >= 2024 GROUP BY 1").fetchall():
-        print(f"  DB year {r[0]}: {r[1]} questions")
-    con.close()
+    return {"total": total, "by_year": by_year, "verify_ok": verify_ok}
+
+
+def main():
+    con = duckdb.connect(str(DB_PATH))
+    try:
+        result = import_pdfs(con)
+        print(f"\nTotal imported: {result['total']}")
+        for r in con.execute("SELECT year, COUNT(*) FROM exam_questions WHERE year >= 2024 GROUP BY 1 ORDER BY 1").fetchall():
+            print(f"  DB year {r[0]}: {r[1]} questions")
+    finally:
+        con.close()
 
 
 if __name__ == "__main__":

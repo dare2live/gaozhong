@@ -31,14 +31,16 @@ def _tracked_files_under(base: Path) -> list[Path]:
         return []
     rel = str(base.relative_to(ROOT))
     try:
+        # -z: NUL 分隔且不转义路径; 否则 git 对非 ASCII 文件名 (如中文 PDF) 默认八进制加引号,
+        # 直接拼成 ROOT/line 会得到带引号的伪路径 → _sha256 FileNotFoundError (§1.5 不静默).
         out = subprocess.check_output(
-            ["git", "-C", str(ROOT), "ls-files", "--", rel],
+            ["git", "-C", str(ROOT), "ls-files", "-z", "--", rel],
             text=True,
             stderr=subprocess.DEVNULL,
         )
     except Exception:
         return []
-    return [ROOT / line for line in out.splitlines() if line.strip()]
+    return [ROOT / line for line in out.split("\0") if line.strip()]
 
 
 def _input_files(base: Path) -> list[Path]:

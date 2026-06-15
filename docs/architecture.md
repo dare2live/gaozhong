@@ -134,6 +134,51 @@ SELECT * FROM vocab_with_unit WHERE word = ?
 
 ---
 
+## 2.5 数据获取层 (backend/services/data_sources/)
+
+> 2026-06-15 M6 数据模块系统化. 把"获取/提取/清洗"从各入口散落的一次性逻辑收敛为三层通用工具, 服从 Rule 1 单一计算点: 原始入口只剩薄壳委托, 不再各写各的 extract.
+
+### 三层职责
+
+```
+acquire (获取)        ──→  extract (提取/加工)    ──→  clean (清洗/分类)
+HTTP / 浏览器抓取            PDF/JSON → raw record       category-aware 卷型分类
+                       registry/fetcher = 根层共享 (数据源目录 + 下载校验)
+```
+
+### 模块树
+
+| 文件 | 层 | 职责 |
+|---|---|---|
+| `registry.py` | 根 (共享) | 数据源目录: 读 `backend/config/sources.yaml` → `SourceSpec` / `load_registry` |
+| `fetcher.py` | 根 (共享) | acquire: HTTP urllib 下载 + sha256/size/text 校验 + 写 manifest (直连下载源, 无浏览器) |
+| `acquire/web.py` | acquire | crawl4ai 驱动**本机 Google Chrome** (`BrowserConfig chrome_channel="chrome"`, 不下 chromium), 用于 JS/在线页; lazy import + 优雅降级 (crawl4ai 没装也能 import) |
+| `extract/gaokao_bench.py` | extract | GAOKAO-Bench JSON → raw record (含 category, 不算卷型) |
+| `extract/pdf.py` | extract | PDF→文本 (校验 `%PDF` 头, 抛 `PdfUnreadableError`) + `parse_exam_sections` 按题型分段 |
+| `extract/curriculum_vocab.py` | extract | 课标 PDF 附录 → 词表 |
+| `clean/exam_paper.py` | clean | category-aware 卷型 provenance 分类 `classify_paper(year, category, text)` → `(province, paper_type)` |
+
+### 薄壳化的三个原始入口 (委托通用工具, 不再各写各的 extract)
+
+| 入口 | 委托 |
+|---|---|
+| `backend/services/extraction/exam.py` (105 行薄壳) | `gaokao_bench.iter_records()` + `exam_paper.classify_paper()` |
+| `scripts/import_recent_exams.py` | `extract/pdf.extract_text` + `parse_exam_sections` |
+| `scripts/tools/audit/cross_verify_pdf.py` | `extract/pdf.extract_text` (别名 `extract_pdf_text`) |
+
+### 浏览器策略 (用户 2026-06-15 硬约束: "本机开 chrome 效果更好, 不要装 chromium")
+
+二者互补 — `web.py` = programmatic 切片, Chrome MCP = agent-interactive 切片:
+
+- **默认 programmatic 抓取**: crawl4ai + `chrome_channel="chrome"` → 本机 Chrome 149, 不依赖 bundled chromium (已删 531M).
+- **强反爬 / 需登陆导航的官方站** (如辽宁教育厅 `jyt.ln.gov.cn`): 升级走 **Chrome MCP** (`mcp__Claude_in_Chrome__*`, agent 驱动真实运行的 Chrome, 已实证可达).
+
+### 单写连接纪律 (DuckDB 单写者)
+
+所有入库走 `init_db` 持有的同一写连接, 不开第二写连接. (Layer 4g PDF 导入已从 subprocess 改 in-process `import_pdfs(con)`.)
+
+---
+
 ## 3. 数据流 (从 PDF 到出题, 端到端)
 
 ```

@@ -36,6 +36,20 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE source_repo LIKE 'eol_xgkii%'"
     expect: {op: "==", value: 110}
+  - id: local-pdf-reproducible
+    claim: "2024/2025 真题 PDF 18 题入库 (M6: init_db Layer 4g 改 in-process import_pdfs(con) 后可复现; 防 subprocess 第二写连接锁冲突回归 → local_pdf=0)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE source_repo = 'local_pdf'"
+    expect: {op: "==", value: 18}
+
+  # ===== init_db 全量重建鲁棒性 (M6: git 非 ASCII 路径 + file_manifest) =====
+  - id: manifest-nonascii-ok
+    claim: "中文名文件正确入 file_manifest (M6: load.py 用 git ls-files -z; 防 quotepath 八进制引号致 init_db 崩回归)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM file_manifest WHERE rel_path LIKE '%上海市初中%'"
+    expect: {op: "==", value: 1}
 
   # ===== 学情派生诚实性 (无假推) =====
   - id: weakness-derived-no-orphan

@@ -71,10 +71,26 @@
 | 架构 gate | `python3 scripts/tools/audit/project_architecture_audit.py --strict --output data/reports/project_architecture_audit_20260615.json` |
 | sibling 项目 | gaokao / LifeHack / ChunkyMonkey 只作为 pattern reference；不得成为 gaozhong 数据真相源 |
 | 奥卡姆约束 | 不新建大平台；沿用现有 `data_sources` / `contracts` / `audit` / `imports` 模块，新增机器契约和只读审计防漂移 |
-| **数据诚实性守护** | `moth assert --repo .`(12 条 claims-vs-reality 弹仓); `gaozhong-ops` skill(坑库); 定位用 codegraph 不 grep |
+| **数据诚实性守护** | `moth assert --repo .`(17 条 claims-vs-reality 弹仓); `gaozhong-ops` skill(坑库); 定位用 codegraph 不 grep |
+
+### M6 数据模块系统化 ✅ 已完成 (2026-06-15: 数据获取→加工→清洗收口到专门模块 + 通用工具)
+> 原则: 散落的数据代码(exam.py/exam_eol/eol_import/import_recent_exams/cross_verify_pdf/inline vocab+browser)收口到 `backend/services/data_sources/`, 按源类型建**通用工具**, 各 loader 变薄壳调通用工具。
+
+| 层 | 模块 | 职责 (通用工具) | 状态 |
+|---|---|---|---|
+| 获取 acquire | `data_sources/acquire/web.py` · `fetcher.py` | web.py: crawl4ai 驱动**本机 Chrome**(`chrome_channel="chrome"`, 不下 chromium); fetcher.py: HTTP 下载+sha256+manifest | ✅ |
+| 提取 extract | `data_sources/extract/{pdf,gaokao_bench,curriculum_vocab}.py` | PDF→文本(校验%PDF头)+题型分段 · GAOKAO-Bench JSON→records · 课标PDF附录→词汇表 | ✅ |
+| 清洗 clean | `data_sources/clean/exam_paper.py` | category-aware 卷型 provenance 分类 | ✅ |
+| 注册 registry | `data_sources/registry.py` | sources.yaml 源注册 | ✅ |
+
+**完成证据**:
+- 三入口薄壳化委托: `extraction/exam.py`(105 行)→ `gaokao_bench.iter_records`+`exam_paper.classify_paper`; `import_recent_exams.py`→`extract/pdf`; `cross_verify_pdf.py`→`extract/pdf`(单一计算点 Rule 1)。
+- crawl4ai 0.8.9 作通用工具, `chrome_channel="chrome"` 驱动本机 Chrome 149 (实测 example.com 200; 删 531M bundled chromium); 强反爬官方站升级走 Chrome MCP(jyt.ln.gov.cn 实证)。
+- 修 2 个 init_db 全量重建 bug: (1) `load.py` 用 `git ls-files -z` 防中文名八进制引号炸 file_manifest; (2) Layer 4g PDF 导入从 subprocess 改 in-process `import_pdfs(con)` 防 DuckDB 单写者锁冲突。
+- **init_db 可复现** exam_questions=472 / 辽宁=188 / eol=110 / local_pdf=18; 三门全绿(data_accuracy_check exit0 · moth PASS 17/0 · stop_gate exit0); 详 lessons L-Z/ZA/ZB。
 
 ### 2026-06-15 数据诚实性整改 (9 commits, 详 lessons L-R..W + data_accuracy_audit; live 状态看 `moth assert`)
-- **真题 provenance 闭环**: 假"辽宁新课标II卷"诚实降级 + check_21 防回归; **EOL 2021/2022 真题入库**(替换 GAOKAO 占位)。exam_questions 376→454, 真辽宁卷 152。
+- **真题 provenance 闭环**: 假"辽宁新课标II卷"诚实降级 + check_21 防回归; **EOL 2021/2022 真题入库**(替换 GAOKAO 占位)。exam_questions 376→**472**(含 EOL 110 + 本地 PDF 18), 辽宁卷 **188**(M6 可复现)。
 - **Phase 7 生成层回滚**: 删 enriched 讲义/合成题/生成练习(教材基石不完整不该有生成范文 §1.1); question_bank 仅真题; course_handouts 0。
 - **学情派生 + 去停用词 + god-module 拆分**: 弱点从写死改答题派生; autotag 去功能词; 4 个 >400 行治理 god-module 拆到 <400, run_all 可复现绿。
 - 三门全绿: data_accuracy_check / moth assert / stop_gate。

@@ -1,5 +1,6 @@
 {
   "year": 2020,
+  "pdf_source_id": "legacy_fallback_pdf_map",
   "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/scmlzx_net/scmlzx_english_2017_rev2020__english_2020.pdf",
   "pdf_chars": 161448,
   "pdf_unique_words": 3554,
@@ -372,6 +373,11 @@
     "warn": 0,
     "fail": 0,
     "skip": 0
+  },
+  "html_identity_checks": [],
+  "html_summary": {
+    "pass": 0,
+    "fail": 0
   },
   "overall": "PASS"
 }

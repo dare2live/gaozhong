@@ -1,11 +1,282 @@
 {
   "year": 2024,
-  "pdf_path": "/Users/dp/Documents/M/gaokao/data/raw/pdfs/cdn_zgkao_com/zgkao_2024_xgkii_english__english_2024.pdf",
+  "pdf_source_id": "legacy_local_pdf_xgkii_english_2024",
+  "pdf_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/local_pdfs/2024_xgkii_english.pdf",
   "pdf_chars": 27475,
   "pdf_unique_words": 1141,
-  "structured_entries": 9,
+  "structured_entries": 27,
   "jsonl_entries": 6,
   "checks": [
+    {
+      "qid": "gbu24/2024_English_Cloze_Test/0",
+      "type": "完形填空(七选五/语篇)",
+      "match": "warn",
+      "match_rate": 0.55,
+      "matched_words": 11,
+      "total_words": 20,
+      "sample_words": [
+        "What",
+        "moderation",
+        "Basically",
+        "means",
+        "eating"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Cloze_Test/1",
+      "type": "完形填空(七选五/语篇)",
+      "match": "warn",
+      "match_rate": 0.4,
+      "matched_words": 8,
+      "total_words": 20,
+      "sample_words": [
+        "great",
+        "writers",
+        "great",
+        "spellers",
+        "want"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Cloze_Test/2",
+      "type": "完形填空(七选五/语篇)",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Overtourism",
+        "Real",
+        "Help",
+        "Travel",
+        "promotes"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Fill_in_Blanks/0",
+      "type": "完形填空",
+      "match": "warn",
+      "match_rate": 0.5,
+      "matched_words": 10,
+      "total_words": 20,
+      "sample_words": [
+        "family",
+        "dinner",
+        "While",
+        "adults",
+        "were"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Fill_in_Blanks/1",
+      "type": "完形填空",
+      "match": "warn",
+      "match_rate": 0.55,
+      "matched_words": 11,
+      "total_words": 20,
+      "sample_words": [
+        "been",
+        "motivated",
+        "demotivated",
+        "other",
+        "folks"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Fill_in_Blanks/2",
+      "type": "完形填空",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "When",
+        "decided",
+        "house",
+        "Europe",
+        "years"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/0",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.45,
+      "matched_words": 9,
+      "total_words": 20,
+      "sample_words": [
+        "Each",
+        "ARTS",
+        "FIRST",
+        "festival",
+        "unique"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/1",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.4,
+      "matched_words": 8,
+      "total_words": 20,
+      "sample_words": [
+        "Animals",
+        "express",
+        "their",
+        "needs",
+        "using"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/2",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.3,
+      "matched_words": 6,
+      "total_words": 20,
+      "sample_words": [
+        "Saint",
+        "Lukas",
+        "train",
+        "doesn",
+        "accept"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/3",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.45,
+      "matched_words": 9,
+      "total_words": 20,
+      "sample_words": [
+        "didn",
+        "like",
+        "ending",
+        "said",
+        "favorite"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/4",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.3,
+      "matched_words": 6,
+      "total_words": 20,
+      "sample_words": [
+        "HABITAT",
+        "RESTORATION",
+        "TEAM",
+        "Help",
+        "restore"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/5",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.5,
+      "matched_words": 10,
+      "total_words": 20,
+      "sample_words": [
+        "crazy",
+        "says",
+        "William",
+        "Farber",
+        "shortly"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/6",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.4,
+      "matched_words": 8,
+      "total_words": 20,
+      "sample_words": [
+        "comprehension",
+        "same",
+        "whether",
+        "person",
+        "reads"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/7",
+      "type": "阅读理解",
+      "match": "warn",
+      "match_rate": 0.35,
+      "matched_words": 7,
+      "total_words": 20,
+      "sample_words": [
+        "race",
+        "document",
+        "species",
+        "Earth",
+        "before"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/8",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Choice",
+        "Walks",
+        "Beginner",
+        "Experienced",
+        "Walkers"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/9",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "ever",
+        "train",
+        "station",
+        "realize",
+        "forgot"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/10",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "know",
+        "fresh",
+        "best",
+        "when",
+        "comes"
+      ]
+    },
+    {
+      "qid": "gbu24/2024_English_Reading_Comp/11",
+      "type": "阅读理解",
+      "match": "pass",
+      "match_rate": 1.0,
+      "matched_words": 20,
+      "total_words": 20,
+      "sample_words": [
+        "Given",
+        "astonishing",
+        "potential",
+        "transform",
+        "lives"
+      ]
+    },
     {
       "qid": "pdf/2024/xgkii/阅读理解/1",
       "type": "阅读理解",
@@ -233,10 +504,15 @@
     }
   ],
   "summary": {
-    "pass": 15,
-    "warn": 0,
+    "pass": 21,
+    "warn": 12,
     "fail": 0,
     "skip": 0
+  },
+  "html_identity_checks": [],
+  "html_summary": {
+    "pass": 0,
+    "fail": 0
   },
   "overall": "PASS"
 }

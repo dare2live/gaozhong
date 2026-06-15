@@ -19,9 +19,11 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
 import duckdb
-import pypdf
 
 from backend.services.contracts.source_crosscheck import html_identity_required_groups
+# M6 模块化: PDF→文本 + %PDF 头校验下沉到 extract 层 (extract_text 别名为本文件原 extract_pdf_text)
+from backend.services.data_sources.extract.pdf import PdfUnreadableError
+from backend.services.data_sources.extract.pdf import extract_text as extract_pdf_text
 from backend.services.data_sources.registry import SourceSpec, load_registry
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
@@ -30,22 +32,6 @@ REPORT_DIR = ROOT / "data" / "reports"
 PDF_FALLBACK_MAP = {
     2020: ROOT.parent / "gaokao/data/raw/pdfs/scmlzx_net/scmlzx_english_2017_rev2020__english_2020.pdf",
 }
-
-
-class PdfUnreadableError(Exception):
-    """PDF 非有效格式 (HTML 伪装/损坏下载) — 不静默吞 (§1.5), 由 verify_year 转为 skip."""
-
-
-def extract_pdf_text(pdf_path: Path) -> str:
-    # 校验真 PDF: 防 HTML 伪装/损坏下载 (如反爬墙存成 .pdf) 崩溃整个 init_db
-    head = Path(pdf_path).read_bytes()[:5]
-    if not head.startswith(b"%PDF"):
-        raise PdfUnreadableError(f"{pdf_path.name} 非有效 PDF (文件头 {head!r}, 疑下载为 HTML/损坏)")
-    try:
-        reader = pypdf.PdfReader(str(pdf_path))
-        return "".join(p.extract_text() or "" for p in reader.pages)
-    except Exception as e:
-        raise PdfUnreadableError(f"{pdf_path.name} PDF 解析失败: {type(e).__name__}: {e}")
 
 
 def _source_is_usable_pdf_truth(source: SourceSpec) -> bool:
