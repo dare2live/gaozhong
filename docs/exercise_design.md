@@ -151,7 +151,7 @@ paper    -[contains_question]-> question     (新, 走 edges)
 
 ## 5. STEP 推进 (本设计的落地节奏)
 
-| 阶段 | 输出 | 验收 |
+| 阶段 | 输出 | 复核 |
 |---|---|---|
 | **S2** (教材结构化) | unit/section/vocab_intro 入表 + edges | edges introduces_word ≥ 3k |
 | **S3** (真题考点抽) | exam_questions → tests_word/tests_grammar/tests_theme | 每题平均 ≥ 3 个 edges |

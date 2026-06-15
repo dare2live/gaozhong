@@ -1,0 +1,56 @@
+# Import readiness policies.
+#
+# Importers must read policy instead of hard-coding readiness rules.
+
+policies:
+  exam_truth_source_import:
+    applies_to:
+      - exam_questions
+      - question_bank
+      - question_tags
+      - nodes
+      - edges
+    required_source_state: import_ready
+    require_dry_run: true
+    require_controller_write_window: true
+    require_source_fields:
+      - source_id
+      - source_file
+      - source_repo
+      - source_sha256
+      - source_state
+      - source_span
+      - observed_question_number
+      - reference_answer_number
+      - review_status
+    nullable_source_fields:
+      - observed_question_number
+      - reference_answer_number
+    block_if:
+      - missing_stem_preview
+      - answer_section_contamination
+      - shifted_numbering_unexplained
+      - duplicate_question_id_unexplained
+      - source_contract_failed
+      - empty_or_zero_rows
+      - unknown_paper_type
+      - candidate_only_source
+    post_import_gates:
+      - python3 scripts/tools/audit/truth_baseline_audit.py --strict
+      - python3 scripts/data_accuracy_check.py
+
+  benchmark_seed_import:
+    applies_to:
+      - exam_questions
+      - question_bank
+    required_source_state: raw_acquired
+    require_dry_run: true
+    require_controller_write_window: true
+    allowed_status_after_import: imported_canonical_but_not_d0_verified
+    block_if:
+      - source_contract_failed
+      - empty_or_zero_rows
+      - missing_origin_ref
+    notes:
+      - Benchmark imports may support trend and question-bank functions.
+      - They must not close paper-specific D0 contracts unless separately reviewed against exam_paper_contracts.yaml.

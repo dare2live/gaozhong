@@ -329,6 +329,111 @@ def write_report(report: dict[str, Any], out_path: Path) -> Path:
     return out_path
 
 
+def build_findings(summary: dict[int, dict[str, Any]], rows: list[dict[str, Any]]) -> dict[str, Any]:
+    db_target_gaps = {
+        str(year): {
+            "db_count": values["db_count"],
+            "target_min": values["target_min"],
+            "gap": values["target_min"] - values["db_count"],
+        }
+        for year, values in summary.items()
+        if values["target_min"] and values["db_count"] < values["target_min"]
+    }
+    truth_target_gaps = {
+        str(year): {
+            "truth_count": values["truth_count"],
+            "target_min": values["target_min"],
+            "gap": values["target_min"] - values["truth_count"],
+        }
+        for year, values in summary.items()
+        if values["target_min"] and values["truth_count"] < values["target_min"]
+    }
+    truth_only = [row for row in rows if row["status"] == "in_truth_source_only"]
+    pollution = [
+        row for row in rows
+        if row["status"] == "in_exam_questions_only" and row["source"] != "local_pdf"
+    ]
+    bank_missing = [
+        row for row in rows
+        if row["status"] in {"mapped", "in_exam_questions_only"}
+        and not row.get("question_bank_mapped")
+    ]
+    return {
+        "db_target_gaps": db_target_gaps,
+        "truth_target_gaps": truth_target_gaps,
+        "truth_only_count": len(truth_only),
+        "pollution_candidate_count": len(pollution),
+        "question_bank_missing_count": len(bank_missing),
+        "truth_only_sample": truth_only[:20],
+        "pollution_candidate_sample": pollution[:20],
+        "question_bank_missing_sample": bank_missing[:20],
+    }
+
+
+def overall_status(findings: dict[str, Any]) -> str:
+    if findings["db_target_gaps"]:
+        return "FAIL"
+    if findings["truth_target_gaps"]:
+        return "FAIL"
+    if findings["truth_only_count"]:
+        return "FAIL"
+    if findings["pollution_candidate_count"]:
+        return "FAIL"
+    if findings["question_bank_missing_count"]:
+        return "FAIL"
+    return "PASS"
+
+
+def write_markdown_report(report: dict[str, Any], out_path: Path) -> Path:
+    lines = [
+        "# Truth Baseline Audit 2021-2025",
+        "",
+        f"- Generated at: `{report['generated_at']}`",
+        f"- Run ID: `{report['run_id']}`",
+        f"- Status: `{report['status']}`",
+        f"- DB: `{report['db_path']}`",
+        f"- Structured truth source: `{report['structured_path']}`",
+        f"- Verified JSONL: `{report['verified_jsonl']}`",
+        "",
+        "## Summary by Year",
+        "",
+        "| Year | DB rows | Truth rows | Matched | DB only | Truth only | QB mapped | Target min | Gap |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for year in TARGET_YEARS:
+        values = report["summary_by_year"][str(year)] if str(year) in report["summary_by_year"] else report["summary_by_year"][year]
+        target = values["target_min"] if values["target_min"] is not None else ""
+        gap = values["gap_to_target"] if values["gap_to_target"] is not None else ""
+        lines.append(
+            f"| {year} | {values['db_count']} | {values['truth_count']} | {values['matched']} | "
+            f"{values['db_only']} | {values['truth_only']} | {values['db_have_question_bank']} | {target} | {gap} |"
+        )
+    findings = report["findings"]
+    lines.extend([
+        "",
+        "## Findings",
+        "",
+        f"- DB target gaps: `{len(findings['db_target_gaps'])}`",
+        f"- Truth-source target gaps: `{len(findings['truth_target_gaps'])}`",
+        f"- Truth-only rows: `{findings['truth_only_count']}`",
+        f"- Pollution candidates: `{findings['pollution_candidate_count']}`",
+        f"- Missing question_bank real mappings: `{findings['question_bank_missing_count']}`",
+        "",
+        "## Interpretation",
+        "",
+    ])
+    if report["status"] == "PASS":
+        lines.append("- PASS: `exam_questions`, truth source, and `question_bank` mapping are aligned for the configured target scope.")
+    else:
+        lines.extend([
+            "- FAIL: M0 truth baseline is not closed for the configured target scope.",
+            "- Do not treat Phase A / M0 as complete until DB target gaps, truth-only rows, pollution candidates, and question_bank mapping gaps are resolved or explicitly re-scoped.",
+        ])
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out_path
+
+
 def build_audit_rows(recon: dict[str, Any], bank_ids: set[str]) -> list[dict[str, Any]]:
     lines: list[dict[str, Any]] = []
     for group in ("matched", "db_only", "truth_only"):
@@ -421,6 +526,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--import-missing", action="store_true", help="是否把结构化真值缺口补入 exam_questions")
     parser.add_argument("--report", type=Path, default=REPORT_DIR / "truth_baseline_2021_2025.json")
+    parser.add_argument("--markdown", type=Path, default=REPORT_DIR / "truth_baseline_2021_2025.md")
+    parser.add_argument("--strict", action="store_true", help="存在真值缺口/污染候选/question_bank 映射缺口时返回非 0")
     args = parser.parse_args()
 
     db_records = []
@@ -461,6 +568,8 @@ def main() -> None:
         item for item in rows_after
         if item["status"] == "in_exam_questions_only" and item["source"] != "local_pdf"
     ]
+    findings = build_findings(summary_after, rows_after)
+    status = overall_status(findings)
     run_id, manifest = manifest_hash()
     cross_base = args.report.parent / "cross_verify_2021_2025.json"
     cross_gap = args.report.parent / "cross_verify_gaps_2021_2025.json"
@@ -468,6 +577,7 @@ def main() -> None:
     report = {
         "generated_at": now_iso(),
         "run_id": run_id,
+        "status": status,
         "manifest": manifest,
         "years": TARGET_YEARS,
         "db_path": str(DB_PATH),
@@ -484,11 +594,13 @@ def main() -> None:
         "summary_by_year": summary_after,
         "gaps_to_target": data_gap,
         "pollution_candidates": pollution,
+        "findings": findings,
         "import": {"enabled": args.import_missing, "inserted_rows": len(inserted_question_ids), "inserted_question_ids": inserted_question_ids},
         "audit_rows": rows_after,
     }
 
     out = write_report(report, args.report)
+    md_out = write_markdown_report(report, args.markdown)
     write_report({
         "run_id": run_id,
         "manifest": manifest,
@@ -509,13 +621,18 @@ def main() -> None:
         },
     }, cross_gap)
     print(f"Truth baseline report: {out}")
+    print(f"Truth baseline markdown: {md_out}")
+    print(f"  status={status}")
     print(f"  db_rows={report['totals']['db_rows']} truth_rows={report['totals']['truth_rows']}")
     print(f"  mapped={report['totals']['matched_rows']} truth_only={report['totals']['truth_only']} db_only={report['totals']['db_only']}")
+    print(f"  pollution_candidates={findings['pollution_candidate_count']} question_bank_missing={findings['question_bank_missing_count']}")
     if args.import_missing:
         print(f"  inserted={len(inserted_question_ids)}")
     if data_gap:
         for y, s in sorted(data_gap.items()):
             print(f"  Year {y}: truth_count={s['truth_count']} target={s['target_min']} gap={s['gap_to_target']}")
+    if args.strict and status != "PASS":
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from backend.api.db import db_ro, rows_to_dicts
+from backend.api.db import db_ro, db_write, rows_to_dicts
 
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 SCAN_DIR = ROOT / "data" / "scans"
@@ -49,8 +49,6 @@ def api_scan_meta(qs: dict) -> dict:
 def _record_upload(student_id: str | None, kind: str,
                     file_path: Path, ocr_text: str | None) -> str:
     """Insert into scan_uploads (read-only DB → would need RW; placeholder for POST handler)."""
-    import duckdb
-    con = duckdb.connect(str(ROOT / "data/db/gaozhong.duckdb"))
     upload_id = uuid.uuid4().hex[:12]
     now = datetime.now(timezone.utc).isoformat()
     sha = hashlib.sha256(file_path.read_bytes()).hexdigest() if file_path.exists() else ""
@@ -59,11 +57,11 @@ def _record_upload(student_id: str | None, kind: str,
     if ocr_text:
         text_path = str((SCAN_DIR / f"{upload_id}.txt").relative_to(ROOT))
         (ROOT / text_path).write_text(ocr_text, encoding="utf-8")
-    con.execute("""
-        INSERT INTO scan_uploads VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, [upload_id, student_id, rel, sha, kind, now,
-          "done" if ocr_text else "pending", text_path])
-    con.close()
+    with db_write() as con:
+        con.execute("""
+            INSERT INTO scan_uploads VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, [upload_id, student_id, rel, sha, kind, now,
+              "done" if ocr_text else "pending", text_path])
     return upload_id
 
 

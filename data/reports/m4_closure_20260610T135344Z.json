@@ -1,0 +1,268 @@
+{
+  "run_id": "20260610T135344Z",
+  "scope": "M4 课程主链路交付闭环",
+  "executed_at": "2026-06-10T13:55:23Z",
+  "kicked_from": "data/reports/m4_kickoff_20260610T135344Z.json",
+  "m4_window": {
+    "start": "2026-06-17",
+    "end": "2026-07-07"
+  },
+  "prechecks": {
+    "m3_gate_status": "PASS",
+    "m3_verification_protocol_done": 8,
+    "m3_verification_protocol_deferred": 0,
+    "m3_verification_protocol_pending": 0
+  },
+  "data_snapshot": {
+    "courses": 40,
+    "course_materials": 560,
+    "question_bank": 700,
+    "question_tags": 12612,
+    "students": 5,
+    "failures": 0,
+    "warns": 0,
+    "oks": 44
+  },
+  "courses": {
+    "layer_distribution": [
+      {
+        "layer": "G1",
+        "courses": 10
+      },
+      {
+        "layer": "G2",
+        "courses": 10
+      },
+      {
+        "layer": "G3",
+        "courses": 10
+      },
+      {
+        "layer": "G_FINAL",
+        "courses": 10
+      }
+    ],
+    "block_kind_distribution": [
+      {
+        "block_kind": "vocab",
+        "courses": 12
+      },
+      {
+        "block_kind": "grammar",
+        "courses": 10
+      },
+      {
+        "block_kind": "reading",
+        "courses": 8
+      },
+      {
+        "block_kind": "applied",
+        "courses": 3
+      },
+      {
+        "block_kind": "cloze",
+        "courses": 3
+      },
+      {
+        "block_kind": "gramfill",
+        "courses": 2
+      },
+      {
+        "block_kind": "mock",
+        "courses": 1
+      },
+      {
+        "block_kind": "narrative",
+        "courses": 1
+      }
+    ],
+    "material_kind_distribution": [
+      {
+        "kind": "cefr_level",
+        "rows": 50
+      },
+      {
+        "kind": "exam_question",
+        "rows": 156
+      },
+      {
+        "kind": "grammar",
+        "rows": 42
+      },
+      {
+        "kind": "question",
+        "rows": 120
+      },
+      {
+        "kind": "unit",
+        "rows": 78
+      },
+      {
+        "kind": "word",
+        "rows": 114
+      }
+    ]
+  },
+  "r1_to_r6_status": {
+    "audit_course_relations": "OK",
+    "audit_course_no_textbook_copy": "OK",
+    "audit_course_scenarios": "OK",
+    "audit_homework_alignment": "OK",
+    "audit_course_lexical_layer": "OK",
+    "audit_course_textbook_position": "OK",
+    "audit_listening_transcript_required": "OK",
+    "audit_no_political": "OK"
+  },
+  "course_materials_by_course_head": [
+    {
+      "course_id": 1,
+      "layer": "G1",
+      "block_kind": "vocab",
+      "kind_counts": {
+        "cefr_level": 1,
+        "exam_question": 5,
+        "question": 9,
+        "word": 6
+      },
+      "material_count": 21
+    },
+    {
+      "course_id": 2,
+      "layer": "G1",
+      "block_kind": "vocab",
+      "kind_counts": {
+        "cefr_level": 1,
+        "exam_question": 5,
+        "question": 9,
+        "word": 6
+      },
+      "material_count": 21
+    },
+    {
+      "course_id": 3,
+      "layer": "G1",
+      "block_kind": "vocab",
+      "kind_counts": {
+        "cefr_level": 1,
+        "exam_question": 5,
+        "question": 9,
+        "word": 5
+      },
+      "material_count": 20
+    },
+    {
+      "course_id": 4,
+      "layer": "G1",
+      "block_kind": "vocab",
+      "kind_counts": {
+        "cefr_level": 1,
+        "exam_question": 5,
+        "question": 10,
+        "word": 5
+      },
+      "material_count": 21
+    },
+    {
+      "course_id": 5,
+      "layer": "G1",
+      "block_kind": "vocab",
+      "kind_counts": {
+        "cefr_level": 1,
+        "exam_question": 4,
+        "question": 6,
+        "word": 7
+      },
+      "material_count": 18
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 scripts/data_accuracy_check.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_tail": "✅ 孤立 critical node = 0  (iso=0)\n\n=== (15) units/exam/course_materials ↔ nodes 一致 ===\n  ✅ units ↔ unit node 一致  (miss=0)\n  ✅ exam_questions ↔ question node 一致  (miss=0)\n  ✅ course_materials ref_id 全有 node  (miss=0)\n  ✅ course_materials exam_question ref_id 全有 node  (miss=0)\n\n=== (16) 摸底测验卷 placement ===\n  ✅ 3 套 spec (G1/G2/G3)  (3 套)\n  ✅ G1 抽足题  (exp=9 got=9)\n  ✅ G2 抽足题  (exp=10 got=10)\n  ✅ G3 抽足题  (exp=11 got=11)\n\n=== (17) 跨版本对照 v4 100% (30 对扩验) ===\n  ✅ nature 主题种子返 3 same-cefr  (got 3 个)\n\n=== (18) placement followup (Codex Q6) ===\n  ✅ followup 能抽题 (≥1)  (got 5)\n  ✅ followup questions 有 qb_id+answer  (fields OK)\n  ✅ final_score 返 combined_accuracy  (combined=0.8)\n\n=== (19) 听力 + 写作 (Phase 7.2/7.3) ===\n  ✅ 听力题 ≥ 20  (25)\n  ✅ 听力全有 transcript  (audio=25 transcript=25)\n  ✅ 续写 ≥ 10  (10)\n  ✅ 应用文 ≥ 10  (10)\n\n=== (20) enriched content 超纲词校验 (R5 程序级) ===\n  ✅ enriched 40 文件已扫描  (40 files)\n  ✅ 超纲词总数 = 0  (0 超纲)\n\n============================================================\n✅ D0 100% 准确率达成, 全部检查通过\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "python3 scripts/tools/monitor/verification_protocol.py --generate --run-id 20260610T135344Z",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_tail": "验证清单已生成: /Users/dp/Documents/M/gaozhong/data/reports/verification_protocol.json\n共 8 步, 预计 63 分钟\n  V1. 摸底测验 (10min) — 学生完成 G1/G2/G3 摸底测验, 系统推荐课节\n  V2. 查看推荐课节 (5min) — 点击推荐课节, 查看讲义内容\n  V3. 上课 (讲义) (15min) — 阅读一节完整讲义 (7 段), 检查内容可读性\n  V4. 课后测验 (10min) — 点击'课后测验'按钮, 完成 10 题, 系统批改\n  V5. 听力练习 (10min) — 进入 C tab, 播放听力, 展开原文, 做题\n  V6. 查看弱点 (5min) — 进入 E tab, 查看弱点分析 + 推送课节\n  V7. 知识图谱 (5min) — 点击概念链接, 弹出关联图 + 真题\n  V8. 打印讲义 (3min) — 点击打印按钮, 检查 PDF 输出\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": "python3 scripts/tools/monitor/verification_protocol.py --batch-record data/reports/m4_closure_batch_20260610T135344Z.json --run-id 20260610T135344Z",
+      "exit_code": 0,
+      "result": "PASS",
+      "stdout_tail": "已批量更新复核项，来源文件: data/reports/m4_closure_batch_20260610T135344Z.json",
+      "stderr_tail": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "data/reports/m4_audit_matrix_20260610T135344Z.jsonl",
+      "sha256": "573f1ab55b0f325bd11f1512b944805ca6ba569298d8953e3ef639630892bd35",
+      "size": 18808,
+      "note": "M4 audit 项矩阵（40 节课程、R1-R6 与题目映射的静态核验结果）"
+    },
+    {
+      "path": "data/reports/m4_reproducibility_snapshot_20260610T135344Z.json",
+      "sha256": "50069466fbadf6267be1a453494b0906c0f268a8d67521b9ddc820878c5d1e3c",
+      "size": 3891,
+      "note": "run_id 复算快照（静态快照 + 命令 + 关键产物哈希）"
+    },
+    {
+      "path": "data/reports/m4_closure_20260610T135344Z.md",
+      "sha256": "818b59e8b3513f782a572cf80ee6cfa53343cf5ecb00edf38cd1d9bcf77d0557",
+      "size": 1738,
+      "note": "M4 课程主链路静态复核报告与产物清单"
+    },
+    {
+      "path": "goal.md",
+      "sha256": "a56165bfb72c42aa767fae7de7b0ada71fbedc5d29cbdfdc657b6bea25083829",
+      "size": 86867,
+      "note": "将 M4 交付产物、进度与静态闭环引用回写到里程碑状态"
+    },
+    {
+      "path": "docs/data_accuracy_audit.md",
+      "sha256": "b2fb45673651adff00bc19289e267401ff9afc2a5172887dff06281fa4150127",
+      "size": 11246,
+      "note": "M4 一次性执行 evidence 与静态快照入口同步更新"
+    },
+    {
+      "path": "data/reports/m4_closure_batch_20260610T135344Z.json",
+      "sha256": "cb866e6f349e37068d8322c1f0b29cf20e1a28bb557e22cd958f6c93f73491e8",
+      "size": 2667,
+      "note": "M4 复核批量模板（证据复核）"
+    },
+    {
+      "path": "data/reports/m4_kickoff_20260610T135344Z.json",
+      "sha256": "33611b4368f5c84a57f8f25675cb6c92282ea868cc44582c61acc486b40f40c0",
+      "size": 1218,
+      "note": "M4 启动文件：m3 完成门禁与里程碑任务边界同步"
+    },
+    {
+      "path": "data/reports/verification_protocol.json",
+      "sha256": "be434275e8af7ea259fc889d784d063fae6c8b29d6f57dcf9f34f42c460f3a35",
+      "size": 5255,
+      "note": "V1~V8 复核协议（状态已可追溯）"
+    },
+    {
+      "path": "docs/app_smoke_round1.md",
+      "sha256": "a7069eea9cbbad9436fc81d9d79576acfc3d93fc2d52c0c9491ef2dc6f7e83f4",
+      "size": 1689,
+      "note": "M3 阶段课程/前端静态核验快照（历史对齐参考）"
+    },
+    {
+      "path": "docs/app_smoke_round2_m4.md",
+      "sha256": "b35ee8e2b16221b49bd18acd9bf27c805dd0842968c949634edac3c1c85529e2",
+      "size": 3088,
+      "note": "M4 课程主链路静态复核快照（教学/弱点/图谱/扫描）"
+    }
+  ],
+  "acceptance": {
+    "status": "done",
+    "placement": "evidence_batch",
+    "notes": "复核采用证据闭环模式完成。"
+  }
+}

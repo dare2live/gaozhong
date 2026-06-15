@@ -1,0 +1,339 @@
+{
+  "run_id": "20260610154632",
+  "timestamp": "2026-06-10T15:46:32",
+  "v1_score": {
+    "grade": "G1",
+    "target_layer": "G1",
+    "n_total": 9,
+    "n_correct": 0,
+    "accuracy": 0.0,
+    "layer_recommendation": {
+      "verdict": "below",
+      "next_layer": "G1",
+      "msg": "水平低于 G1, 从 G1 基础课节开始"
+    },
+    "weak_concepts": [
+      {
+        "concept_id": "word:until",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:nice",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:expensive",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:as",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:match",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:so",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:to",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:too",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:are",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:everything",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:duty",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:everyone",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:stress",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:up",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:if",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:for",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:further",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:since",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:meal",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:though",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:generous",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:can",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:whether",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:little",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:they",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:average",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:whose",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:we",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:lesson",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:down",
+        "kind": "word"
+      }
+    ],
+    "recommended_courses": []
+  },
+  "v4_follow": {
+    "questions": [
+      {
+        "qb_id": 141,
+        "question_type": "阅读理解",
+        "stem": "E \nHow  words  came  into being  is unknown . All we assume（推测） is that some  \nearly  men invented  certain  sounds , in one way or another , to express  thoughts  and \nfeelings , actions  and things , so that they could  talk with each other . Later  they agreed  \nupon  certain  signs , called  letters , which  could  be put together  to show  those  sounds , \nand which  could  be written  down . Those  sounds , whether  spoken  or written  in letters , \nare called  words .  \nThe power  of words , then, lies in their associations ---the things  they bring  up to \nour minds . Words  become  filled  with meaning  for us by experience ; and the longer  \nwe tire, the more  certain  words  bring  back  to us the happy  and sad events  of our past; \nand the more  we read and learn , the more  the number  of words  that mean  something  \nto us increases .  \nGreat  writers  are those  who not only have  great  thoughts  but also express  these  \nthoughts  in words  which  have  powerful  effects  on our minds  and feelings . This clever  \nuse of words  is what  we call literary  style（文体） . Above  all, the real poet is a \nmaster  of words . He can express  his meaning  in words  which  sing like music , and \nwhich  by their position  and association  can move  men to tears . We should  therefore  \nlearn  to choose  our words  carefully  and use them  correctly , or they will make  our \nspeech  silly and common .  \n58. We learn  from  the text that language  might  have  begun  with　   　. \nA. expressions          B. actions         C. signs            D. sounds  \n59. What  is mainly  discussed  in Paragraph  2? 　   　 \nA. The learning  of new words .  \nB. The importance  of old words  \nC. The relation  of human  experience  with words .  \nD. The gradual  change  and development  of words .  \n60. In the last paragraph , what  does the author  suggest  that we should  do? 　   　 \nA. Use words  skillfully .            B. Make  musical  speeches  \nC. Learn  poems  by heart .           D. Associate  with listeners .\n",
+        "options_json": null,
+        "answer": "[D, C, A]",
+        "difficulty": "hard",
+        "matched_tags": [
+          "word:meaning"
+        ]
+      },
+      {
+        "qb_id": 699,
+        "question_type": "选义单选",
+        "stem": "Choose the correct Chinese meaning of \"arrangement\".",
+        "options_json": "[{\"label\": \"A\", \"text\": \"标准，准则\"}, {\"label\": \"B\", \"text\": \"尽管，虽然\"}, {\"label\": \"C\", \"text\": \"安排；筹备\"}, {\"label\": \"D\", \"text\": \"级别（或地位）高的\"}]",
+        "answer": "C",
+        "difficulty": "mid",
+        "matched_tags": [
+          "word:choose"
+        ]
+      },
+      {
+        "qb_id": 196,
+        "question_type": "阅读理解",
+        "stem": "A \nIn the coming  months,  we are bringing  together  artists  form  all over the globe,  to \nenjoy  speaking  Shakespeare’s  plays  in their own language,  in our Globe,  within  the \narchitecture  Shakespeare  wrote  for. Please  come  and join us. \nNational  Theatre  of China    Beijing  | Chinese  \nThis great  occasion  (盛会 ) will be the National  Theatre  of China’s  first visit to \nthe UK. The company’s  productions  show  the new face of 21st century  Chinese  \ntheatre.  This production  of Shakespeare’s  Richard  III will be directed  by the \nNational’s  Associate  Director , Wang  Xiaoying.  \nDate  & Time:  Saturday  28 April,  2:30pm  & Sunday  29 April,  1:30pm  & 6:30pm  \n \nMarjanishvili  Theatre    Tbilisi  | Georgian   \nOne of the most  famous  theatres  in Georgia,  the Marjanishvili,  founded  in 1928,  \nappears  regularly  at theatre  festivals  all over the world.  This new production  of As \nYou Like It is helmed（指导） by the company’s  Artistic  Director  Levan  Tsuladze.  \nDate  & Time:  Friday  18 May,  2:30pm  & Saturday  19 May,  7:30pm  \n \nDeafinitely  Theatre   London  | British  Sign Language （BSL） \nBy translating  the rich and humourous  text of Love’s  Labour’s  Lost into the \nphysical  language  of BSL,  Deafinitely  Theatre  creates  a new interpretation  of \nShakespeare’s  comedy  and aims  to build  a bridge  between  deaf and hearing  worlds  by \nperforming  to both groups  as one audience.  \nDate  & Time:  Tuesday  22 May,  2:30pm  & Wednesday  23 May,  7:30pm  \n \nHabima  National  Theatre    Tel Aviv  | Hebrew  \n  The Habima  is the centre  of Hebrew-language  theatre  worldwide,  Founded  in \nMoscow  after the 1905  revolution,  the company  eventually  settled  in Tel Aviv  in the \nlate 1920s . Since  1958,  they have  been  recognised  as the national  theatre  of Israel.  \nThis production  of Shakespeare’s  The Merchant  of Venice  marks  their first visit to the \nUK. \nDate  & Time:  Monday  28 May,  7:30pm & Tuesday  29 May,  7:30pm  \n21. Which play will be performed  by the National  Theatre  of China?  \nA. Richard  Ⅲ.                B. Lover’s  Labour’s  Lost. \nC. As You Like It.              D. The Merchant  of Venice . \n22. What  is special  about  Deafinitely  Theatre?  \nA. It has two groups  of actors .    B. It is the leading  theatre  in London . \nC. It performs  plays  in BSL.      D. It is good  at producing  comedies . \n23. When  can you see a play in Hebrew?  \nA. On Saturday  28 April.          B. On Sunday  29 April . \nC. On Tuesday  22 May.           D. On Tuesday  29 May.\n",
+        "options_json": null,
+        "answer": "[A, C, D]",
+        "difficulty": "hard",
+        "matched_tags": [
+          "word:chinese"
+        ]
+      }
+    ],
+    "n_questions": 3,
+    "tag_coverage": [
+      "word:chinese",
+      "word:choose",
+      "word:meaning"
+    ],
+    "weak_tags_targeted": [
+      "word:bomb",
+      "word:chinese",
+      "word:choose",
+      "word:correct",
+      "word:meaning",
+      "word:of",
+      "word:publish",
+      "word:the",
+      "word:ultimately"
+    ]
+  },
+  "v4_final": {
+    "grade": "G1",
+    "target_layer": "G1",
+    "phase1_accuracy": 0.0,
+    "phase2_accuracy": 1.0,
+    "phase2_correct": 3,
+    "phase2_total": 3,
+    "combined_accuracy": 0.6,
+    "layer_recommendation": {
+      "verdict": "below",
+      "next_layer": "G1",
+      "msg": "综合水平低于 G1, 从 G1 基础课节开始"
+    },
+    "weak_concepts": [
+      {
+        "concept_id": "word:until",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:nice",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:expensive",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:as",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:match",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:so",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:to",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:too",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:are",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:everything",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:duty",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:everyone",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:stress",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:up",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:if",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:for",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:further",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:since",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:meal",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:though",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:generous",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:can",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:whether",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:little",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:they",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:average",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:whose",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:we",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:lesson",
+        "kind": "word"
+      },
+      {
+        "concept_id": "word:down",
+        "kind": "word"
+      }
+    ],
+    "recommended_courses": []
+  },
+  "v8_tabs": [
+    "workbench",
+    "teaching",
+    "qbank",
+    "data",
+    "students",
+    "graph",
+    "scan"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-06-15T07:15:38+00:00",
+  "tool": "backend.services.audit.source_contracts",
+  "status": "warn",
+  "summary": {
+    "sources": 10,
+    "quarantined_sources": 1,
+    "contracts": 2,
+    "referenced_sources": 9,
+    "source_state_tokens": 12,
+    "block_findings": 0,
+    "warn_findings": 1
+  },
+  "source_states": [
+    {
+      "source_id": "eol_xgkii_english_2021",
+      "status": "raw_source_acquired_not_import_ready",
+      "matched_state": "raw_source_acquired",
+      "risky": false
+    },
+    {
+      "source_id": "eol_xgkii_english_2022",
+      "status": "raw_source_acquired_partial_not_import_ready",
+      "matched_state": "raw_source_acquired",
+      "risky": false
+    },
+    {
+      "source_id": "eol_xgkii_english_2023_page",
+      "status": "raw_acquired_html_landing_page_needs_pdf_crosscheck",
+      "matched_state": "raw_acquired",
+      "risky": false
+    },
+    {
+      "source_id": "gaokao_bench_english_2010_2022",
+      "status": "imported_canonical_but_not_new_curriculum_ii_truth_baseline",
+      "matched_state": "imported_canonical",
+      "risky": false
+    },
+    {
+      "source_id": "gaokao_bench_updates_english_2023",
+      "status": "imported_canonical_partial_needs_paper_contract_review",
+      "matched_state": "imported_canonical",
+      "risky": false
+    },
+    {
+      "source_id": "gaokao_verified_xgkii_2023_2024",
+      "status": "structured_draft_partial_verified_not_full_paper",
+      "matched_state": "structured_draft",
+      "risky": false
+    },
+    {
+      "source_id": "legacy_local_pdf_xgkii_english_2024",
+      "status": "raw_acquired_local_mirror_passage_level_legacy_imported",
+      "matched_state": "raw_acquired",
+      "risky": false
+    },
+    {
+      "source_id": "legacy_local_pdf_xgkii_english_2025",
+      "status": "raw_acquired_local_mirror_passage_level_legacy_imported",
+      "matched_state": "raw_acquired",
+      "risky": false
+    },
+    {
+      "source_id": "sohu_shared_new_gaokao_listening_2021_candidate",
+      "status": "raw_source_acquired_candidate_shared_listening_needs_crosscheck",
+      "matched_state": "raw_source_acquired",
+      "risky": true
+    },
+    {
+      "source_id": "third_party_pdf_xgkii_english_2023_zizzs",
+      "status": "raw_acquired_third_party_pdf_needs_eol_crosscheck",
+      "matched_state": "raw_acquired",
+      "risky": false
+    }
+  ],
+  "findings": [
+    {
+      "code": "exam_source_not_referenced_by_contract",
+      "severity": "WARN",
+      "target": "sohu_shared_new_gaokao_listening_2021_candidate",
+      "detail": "listening_source_candidate"
+    }
+  ]
+}

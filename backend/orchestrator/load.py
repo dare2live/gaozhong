@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -23,6 +24,26 @@ def _sha256(path: Path) -> str:
 def _read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
             if line.strip()]
+
+
+def _tracked_files_under(base: Path) -> list[Path]:
+    if not base.exists():
+        return []
+    rel = str(base.relative_to(ROOT))
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", str(ROOT), "ls-files", "--", rel],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception:
+        return []
+    return [ROOT / line for line in out.splitlines() if line.strip()]
+
+
+def _input_files(base: Path) -> list[Path]:
+    tracked = _tracked_files_under(base)
+    return sorted(tracked or [p for p in base.rglob("*") if p.is_file()])
 
 
 def load_main_tables(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
@@ -90,12 +111,9 @@ def load_file_manifest(con: duckdb.DuckDBPyConnection) -> int:
                         (ROOT/"data/structured", "structured"),
                         (ROOT/"data/external", "external")]:
         if not base.exists(): continue
-        for f in base.rglob("*"):
-            if f.is_file():
-                try:
-                    rows.append((str(f.relative_to(ROOT)), kind,
-                                  _sha256(f), f.stat().st_size, None, now))
-                except Exception: pass
+        for f in _input_files(base):
+            rows.append((str(f.relative_to(ROOT)), kind,
+                          _sha256(f), f.stat().st_size, None, now))
     con.executemany("INSERT OR REPLACE INTO file_manifest VALUES (?, ?, ?, ?, ?, ?)", rows)
     return len(rows)
 

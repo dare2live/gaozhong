@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-06-12T02:56:25+00:00",
+  "tool": "scripts/tools/data_sources/acquire_external_source.py",
+  "records": [
+    {
+      "generated_at": "2026-06-12T02:56:25+00:00",
+      "source_id": "eol_xgkii_english_2023_page",
+      "name": "2023 新课标 II 卷英语 EOL landing page",
+      "family": "exam_truth_source_landing_page",
+      "org": "China Education Online / EOL",
+      "publish_url": "https://gaokao.eol.cn/shiti/yy/202306/t20230611_2435440.shtml",
+      "year": 2023,
+      "paper_type": "新高考全国II卷",
+      "configured_status": "declared_external_html_pending_acquisition",
+      "observed_scope": "EOL landing page for 2023 New Curriculum II English; used to cross-check third-party PDF identity and source lineage, not sufficient as item-level truth by itself",
+      "status": "ok",
+      "findings": [],
+      "attachments": [
+        {
+          "kind": "html",
+          "url": "https://gaokao.eol.cn/shiti/yy/202306/t20230611_2435440.shtml",
+          "local_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/eol/2023_xgkii_english_eol.html",
+          "text_path": null,
+          "expected_sha256": null,
+          "actual_sha256": "acf5ddd6e6be42fbfd39b05304bf0abca2a9997802a9f9cd2e70c30cb04cc140",
+          "bytes": 167619,
+          "text_chars": null,
+          "status": "ok",
+          "action": "downloaded",
+          "findings": []
+        }
+      ]
+    }
+  ],
+  "status": "ok"
+}

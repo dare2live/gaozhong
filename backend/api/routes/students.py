@@ -9,9 +9,7 @@ endpoints:
 """
 from __future__ import annotations
 
-import duckdb
-
-from backend.api.db import DB_PATH, db_ro
+from backend.api.db import db_ro, db_write
 from backend.services import weakness as weakness_svc
 
 
@@ -141,14 +139,10 @@ def _student_dict(r: tuple) -> dict:
 def api_students_weakness_recompute(qs: dict) -> dict:
     """重算弱点 — 从 student_answers 真实数据算 (4.7.E)."""
     sid = qs.get("id", [None])[0]
-    # weakness 需要写表, 走独立 rw conn (db.py fan-in 20, 不改 signature)
-    con = duckdb.connect(str(DB_PATH), read_only=False)
-    try:
+    with db_write() as con:
         if sid:
             return weakness_svc.recompute_one(con, sid)
         return weakness_svc.recompute_all(con)
-    finally:
-        con.close()
 
 
 def api_students_import_csv(qs: dict, body: bytes | None = None) -> dict:
@@ -174,8 +168,7 @@ def _do_csv_import(csv_text: str) -> dict:
     required = {"student_id", "name", "school", "grade"}
     seen_classes: dict[str, tuple] = {}
     n_students = 0
-    con = duckdb.connect(str(DB_PATH), read_only=False)
-    try:
+    with db_write() as con:
         for row in reader:
             if not required.issubset(row.keys()):
                 return {"error": f"csv 缺列, 必填: {sorted(required)}"}
@@ -200,8 +193,6 @@ def _do_csv_import(csv_text: str) -> dict:
                 [cid, school, grade, f"{school} {grade} {cid}", now],
             )
             n_classes += 1
-    finally:
-        con.close()
     return {"students_imported": n_students, "classes_touched": n_classes}
 
 

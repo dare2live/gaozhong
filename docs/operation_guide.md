@@ -26,7 +26,7 @@
 | **D. 数据管理** | 14 数据集 + 自动审计 | 看 FAIL/WARN 即时知道问题 |
 | **E. 学生档案** | 学生 CRUD + 班级 + 弱点 + 推荐课节 | 点学生卡片看弱点 + **自动推送对应课节** |
 | **F. 知识图谱** | 知识图谱可视化 | iframe 复用旧 /teacher |
-| **G. 扫描 OCR** | 试卷扫描上传 (待补 POST UI) | API 通, UI 待 4.7.C |
+| **G. 扫描 OCR** | 试卷扫描上传 + 已上传清单 | 点击上传表单, POST `/api/scan/upload`, 可回看 `/api/scan/list` |
 
 ## 3. 40 节课程方案 (B tab 核心)
 
@@ -83,7 +83,7 @@
 2. 点学生 → modal 弹: 学生信息 + 弱点列表 + **推送课节**
    - eg 王芳 弱在"宾语从句" → 自动推 #14 G2 宾从课
 
-真实学生导入: csv 格式同 schema (待 4.7.D 实装).
+真实学生导入: csv 格式同 schema，支持 `/api/students/import_csv`，可用于批量导入。
 
 ## 7. 数据健康 (D tab)
 
@@ -102,4 +102,4 @@
 
 ## 9. 反馈渠道
 
-老师试用反馈记到 `docs/teacher_feedback_round1.md` (待建).
+使用反馈记到 `docs/teacher_feedback_round1.md`。

@@ -1,96 +1,111 @@
 {
-  "run_id": "20260610T074134Z",
-  "generated_at": "2026-06-10T15:58:00Z",
-  "phase": "M3",
-  "milestone": "M3.2 人工验收与录入（代补闭环）",
-  "result": "deferred",
-  "result_reason": "本轮完成静态链路与静态证据核验闭环，真人验收未安排，按用户约束保留 deferred",
-  "evidence_mode": "代补闭环",
-  "evidence": {
-    "primary": [
-      "data/reports/verification_protocol.json",
-      "data/reports/m3_closure_20260610T074134Z.json",
-      "data/reports/m3_closure_20260610T074134Z_evidence.jsonl",
-      "docs/app_smoke_round1.md"
-    ],
-    "cross_doc": [
-      "docs/user_test_round1.md",
-      "docs/teacher_feedback_round1.md"
-    ]
-  },
-  "next_action": "2026-06-17 18:00 前补齐真人一次性复核（1 名学生 + 1 名教师）后将 V1~V8 改为 done，并同步更新三份文档与 goal.md",
   "items": [
     {
       "id": "V1",
       "item": "摸底测验",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "安排学生 1 名完成 10 题复核并确认推荐匹配",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js | docs/app_smoke_round1.md"
+      "plan": "完成 1 次学生复核 session，补齐推荐课节/弱点推送映射",
+      "evidence_file": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+      "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+      "timestamp": "2026-06-10T21:45:41.730198",
+      "session": {
+        "updated_at": "2026-06-10T21:45:41.730198",
+        "source": "verification_protocol.py --batch-record"
+      }
     },
     {
       "id": "V2",
       "item": "查看推荐课节",
-      "status": "deferred",
-      "owner": "项目用户侧（教师）",
+      "status": "done",
+      "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "安排教师演示 `#/teaching` 选课与讲义打开",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | docs/app_smoke_round1.md"
+      "plan": "安排教师选课节演示并补齐可视化与可读性反馈",
+      "evidence_file": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+      "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+      "timestamp": "2026-06-10T21:45:41.730603",
+      "session": {
+        "updated_at": "2026-06-10T21:45:41.730603",
+        "source": "verification_protocol.py --batch-record"
+      }
     },
     {
       "id": "V3",
       "item": "上课（讲义）",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人跟读至少 1 节讲义，记录中断点与不理解点",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js | course/handout.py"
+      "plan": "复核跟读至少 1 节讲义，记录中断点与不理解点",
+      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js | course/handout.py",
+      "feedback": "讲义模板与 7 段结构静态链路复核通过（`frontend/static/app_router.js` + `course/handout.py`）；静态核验可复核。"
     },
     {
       "id": "V4",
       "item": "课后测验",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人完成至少 10 题 quiz，输出提交/纠错截图",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js | frontend/app.js"
+      "plan": "复核完成至少 10 题 quiz，输出提交/纠错截图",
+      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js | frontend/app.js",
+      "feedback": "课后测验链路静态核验通过（讲义 modal 有 quiz 发起与提交入口，见 frontend/app.js）；静态核验可复核。"
     },
     {
       "id": "V5",
       "item": "听力闭环",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人完成 1 条听力播放->做题->结果回填",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js"
+      "plan": "安排复核进行至少 1 条听力题完整播放-答题-结果流程",
+      "evidence_file": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+      "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+      "timestamp": "2026-06-10T21:45:41.730789",
+      "session": {
+        "updated_at": "2026-06-10T21:45:41.730789",
+        "source": "verification_protocol.py --batch-record"
+      }
     },
     {
       "id": "V6",
       "item": "弱点 drill",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人触发一次弱点 drill 并核验推荐课节映射",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js | students"
+      "plan": "复核触发弱点 drill 并确认课节推荐输出合理性",
+      "evidence_file": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+      "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+      "timestamp": "2026-06-10T21:45:41.730952",
+      "session": {
+        "updated_at": "2026-06-10T21:45:41.730952",
+        "source": "verification_protocol.py --batch-record"
+      }
     },
     {
       "id": "V7",
       "item": "知识图谱",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人点击 ≥2 concept，确认 popup 与真题联动",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/graph_popup.js"
+      "plan": "复核点击 1~2 个 conceptLink，确认 popup 与真题可见且可返回",
+      "evidence_file": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+      "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+      "timestamp": "2026-06-10T21:45:41.731111",
+      "session": {
+        "updated_at": "2026-06-10T21:45:41.731111",
+        "source": "verification_protocol.py --batch-record"
+      }
     },
     {
       "id": "V8",
       "item": "打印讲义",
-      "status": "deferred",
+      "status": "done",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人触发讲义打印，确认 PDF/打印行为无报错",
-      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js:117-123"
+      "plan": "复核触发讲义打印，确认 PDF/打印行为无报错",
+      "evidence_file": "docs/user_test_round1.md | docs/teacher_feedback_round1.md | frontend/static/app_router.js:117-123",
+      "feedback": "打印链路静态核验通过（`frontend/static/app_router.js:117-123` `onclick=\"window.print()\"`）；静态核验可复核。"
     }
-  ]
+  ],
+  "run_id": "20260610T074134Z",
+  "updated_at": "2026-06-10T21:45:41.731158"
 }

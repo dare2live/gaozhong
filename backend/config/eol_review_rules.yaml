@@ -1,0 +1,45 @@
+# EOL structured-draft review rules.
+#
+# Purpose:
+# - Keep item-level review backlog rules configurable.
+# - Make "not import-ready" reasons explicit before DB writes.
+
+eol_review_backlog:
+  required_fields:
+    - year
+    - paper_type
+    - question_type
+    - source_id
+    - source_span
+    - review_status
+
+  blocking_review_status_tokens:
+    - draft_not_import_ready
+    - structured_draft_not_import_ready
+    - not_import_ready
+    - review_decision_needs_followup
+    - review_decision_rejected
+
+  allowed_empty_answer_question_type_tokens:
+    - writing_prompt
+    - writing
+
+  answer_required_question_type_tokens:
+    - listening
+    - reading
+    - seven_choose_five
+    - cloze
+    - grammar
+
+  priority_issue_codes:
+    - duplicate_review_decision_key
+    - unmatched_review_decision_key
+    - review_decision_status_unknown
+    - review_decision_required_field_missing
+    - review_decision_import_ready_field_missing
+    - review_decision_non_import_ready_field_missing
+    - listening_answer_missing
+    - answer_required_but_missing
+    - review_status_blocked
+    - source_span_missing
+    - required_field_missing

@@ -1,0 +1,177 @@
+# M0 gate sequence.
+#
+# Purpose:
+# - Keep gate order in config instead of hard-coded Python.
+# - Make planner output machine-readable without executing gates.
+# - Preserve current expected failures while M0 remains open.
+
+gates:
+  - order: 0
+    name: project_architecture_control_plane
+    command: python3 scripts/tools/audit/project_architecture_audit.py --strict --output data/reports/project_architecture_audit_20260615.json
+    purpose: Check module/data/config/instruction-source ownership before interpreting business gates or release claims.
+    expected_current_status: fail while legacy direct exam importers bypass source registry/import policy
+    failure_action: Fix architecture ownership gaps, especially direct DB writers and stale instruction sources, before claiming M0 closure.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 1
+    name: source_contract_consistency
+    command: python3 scripts/tools/audit/source_contract_audit.py --strict
+    purpose: Check that sources.yaml and exam_paper_contracts.yaml are internally consistent before touching files or DB.
+    expected_current_status: pass_or_warn; candidate/suspicious sources should remain visible
+    failure_action: Fix config references, attachments, min_bytes, or candidate/suspicious scope before any source verification.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 2
+    name: external_source_inventory
+    command: python3 scripts/tools/audit/external_source_inventory.py --strict --fail-on-warn
+    purpose: Inventory every registered source artifact and expose missing, undersized, outside-project, candidate, or suspicious sources before acquisition checks.
+    expected_current_status: should pass only if active source artifacts are project-local, acquired, non-candidate, non-suspicious, and identity-rule complete; 2021/2023 still require later content gates before D0 closure
+    failure_action: Mirror required artifacts into this project, replace suspicious files, or explicitly re-scope candidate dependencies before import work.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 3
+    name: source_acquisition_verification
+    command: python3 scripts/tools/data_sources/acquire_external_source.py --reuse-existing --strict
+    purpose: Verify registered local source artifacts by sha256, size, and text extraction requirements.
+    expected_current_status: fail until the 427-byte 2023 PDF candidate is replaced or explicitly re-scoped
+    failure_action: Replace bad local artifacts, correct sha/min-byte contracts, or downgrade source state; do not import around a failed source contract.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 4
+    name: pdf_cross_verify_2023
+    command: python3 scripts/tools/audit/cross_verify_pdf.py --year 2023 --strict
+    purpose: Cross-check 2023 structured seed and DB rows against the registry-owned 2023 PDF, and verify the EOL landing page identity markers before parser/import work treats the third-party PDF as usable truth evidence.
+    expected_current_status: fail_or_warn until the third-party PDF is reconciled with EOL page identity evidence and structured rows
+    failure_action: Inspect mismatch rows, verify whether the PDF source is wrong/incomplete, or adjust the structured seed before any 2023 DB import.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 5
+    name: eol_2021_draft_rebuild
+    command: python3 scripts/tools/extraction/build_eol_exam_draft.py --year 2021
+    purpose: Rebuild the 2021 EOL structured draft using the service-backed extraction CLI before import readiness checks.
+    expected_current_status: should produce review-only JSONL/audit; import_ready remains false
+    failure_action: Fix extraction parser/source-span issues before running import readiness.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 6
+    name: eol_2022_draft_rebuild
+    command: python3 scripts/tools/extraction/build_eol_exam_draft.py --year 2022
+    purpose: Rebuild the 2022 EOL structured draft using the service-backed extraction CLI before import readiness checks.
+    expected_current_status: should produce review-only JSONL/audit; written-paper-only scope remains visible
+    failure_action: Fix extraction parser/source-span issues or source scope before running import readiness.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 7
+    name: eol_2021_draft_field_audit
+    command: python3 scripts/tools/audit/eol_draft_field_audit.py --year 2021 --strict
+    purpose: Check that the rebuilt 2021 EOL draft carries fields required by the import policy before semantic readiness checks.
+    expected_current_status: should pass only after draft rebuild emits all required lineage/source fields
+    failure_action: Fix extraction output fields before import readiness.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 8
+    name: eol_2022_draft_field_audit
+    command: python3 scripts/tools/audit/eol_draft_field_audit.py --year 2022 --strict
+    purpose: Check that the rebuilt 2022 EOL draft carries fields required by the import policy before semantic readiness checks.
+    expected_current_status: should pass only after draft rebuild emits all required lineage/source fields
+    failure_action: Fix extraction output fields before import readiness.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 9
+    name: eol_2021_review_decision_coverage
+    command: python3 scripts/tools/audit/eol_review_decision_coverage.py --year 2021 --strict
+    purpose: Check official 2021 EOL review decisions against the current draft stable keys before applying them in the backlog gate.
+    expected_current_status: fail while decisions are missing, stale, unmatched, or the resulting backlog remains unresolved
+    failure_action: Regenerate worksheet, materialize corrected decisions, or clear stale/unmatched decision rows before review backlog gate.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 10
+    name: eol_2022_review_decision_coverage
+    command: python3 scripts/tools/audit/eol_review_decision_coverage.py --year 2022 --strict
+    purpose: Check official 2022 EOL review decisions against the current draft stable keys before applying them in the backlog gate.
+    expected_current_status: fail while decisions are missing, stale, unmatched, or the resulting backlog remains unresolved
+    failure_action: Regenerate worksheet, materialize corrected decisions, or split the written-paper-only scope before review backlog gate.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 11
+    name: eol_2021_review_backlog
+    command: python3 scripts/tools/audit/eol_review_backlog.py --year 2021 --strict
+    purpose: List and block unresolved item-level review issues in the 2021 EOL draft, especially unkeyed listening rows, before import readiness dry-run.
+    expected_current_status: fail until listening answers and draft_not_import_ready rows are reviewed or explicitly re-scoped
+    failure_action: Resolve backlog rows by reviewing source spans, answers, and review_status before import readiness.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 12
+    name: eol_2022_review_backlog
+    command: python3 scripts/tools/audit/eol_review_backlog.py --year 2022 --strict
+    purpose: List and block unresolved item-level review issues in the 2022 EOL draft before import readiness dry-run.
+    expected_current_status: fail while written-paper-only scope, missing answers, or draft_not_import_ready rows remain unresolved
+    failure_action: Resolve backlog rows or split the paper contract before import readiness.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 13
+    name: eol_2021_import_readiness
+    command: python3 scripts/tools/imports/dry_run_exam_import.py data/external/exam_sources/eol/2021_xgkii_english_eol_structured_draft.jsonl --strict
+    purpose: Check whether the 2021 EOL structured draft satisfies import_policies.yaml.
+    expected_current_status: blocked while draft_not_import_ready rows or missing source fields remain
+    failure_action: Improve parser/review fields and source spans; do not write exam_questions.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 14
+    name: eol_2022_import_readiness
+    command: python3 scripts/tools/imports/dry_run_exam_import.py data/external/exam_sources/eol/2022_xgkii_english_eol_structured_draft.jsonl --strict
+    purpose: Check whether the 2022 EOL structured draft satisfies import_policies.yaml.
+    expected_current_status: blocked while written-paper-only scope and missing listening source remain unresolved
+    failure_action: Obtain listening source or explicitly split the paper contract before import.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 15
+    name: paper_contract_coverage
+    command: python3 scripts/tools/audit/exam_paper_contract_audit.py --strict
+    purpose: Compare current DuckDB exam_questions rows against exam_paper_contracts.yaml expected item-level coverage.
+    expected_current_status: fail until 2021-2025 New Curriculum II item-level targets are satisfied or explicitly re-scoped
+    failure_action: Use the per-year gaps to pick the next source/extraction/import slice.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false
+
+  - order: 16
+    name: truth_baseline_strict
+    command: python3 scripts/tools/audit/truth_baseline_audit.py --strict
+    purpose: Final M0 reconciliation gate across DB rows, truth rows, pollution candidates, and question_bank mappings.
+    expected_current_status: fail while M0 is open
+    failure_action: Treat failure findings as the controller board for the next M0 repair slice.
+    writes_artifacts: true
+    writes_db: false
+    executes_external_fetch: false

@@ -4,8 +4,13 @@ __pycache__/
 *.pyo
 
 # Database (runtime generated)
+data/db/
 data/db/*.duckdb
 data/db/*.duckdb.wal
+
+# Local tooling/runtime artifacts
+.codegraph/
+logs/
 
 # Large PDFs (local only, use manifest for lineage)
 data/textbooks/**/*.pdf

@@ -1,0 +1,730 @@
+{
+  "run_id": "20260610T135344Z",
+  "milestone": "M5",
+  "status": "pass",
+  "created_at": "2026-06-10T22:16:30+08:00",
+  "blockers": [],
+  "artifacts": {
+    "docs/ops_runbook.md": {
+      "path": "docs/ops_runbook.md",
+      "sha256": "ba0780d3f50b157eed1700c1607affc46868f6b0d641054d36b93882797f9f47"
+    },
+    "docs/week10_review_round1.md": {
+      "path": "docs/week10_review_round1.md",
+      "sha256": "93a170b220153ea6948861dbed216e756850837d821624989a1f5f188ff13c33",
+      "size": 1328
+    },
+    "docs/week11_review_round1.md": {
+      "path": "docs/week11_review_round1.md",
+      "sha256": "031742a4d59ab8771a4ab01fb14329d93d147611042445b153edfe21546b8c64",
+      "size": 1328
+    },
+    "docs/week12_review_round1.md": {
+      "path": "docs/week12_review_round1.md",
+      "sha256": "8bb7b4c4809bde75007309daba291b186e570232ccf6483d40b2641f82099042",
+      "size": 1328
+    },
+    "docs/week13_review_round1.md": {
+      "path": "docs/week13_review_round1.md",
+      "sha256": "f3363e80e5bf7e6b8edce34e9d707a2aeb2a0fe80e6ea07aa1bded1516624a8e",
+      "size": 1328
+    },
+    "docs/week14_review_round1.md": {
+      "path": "docs/week14_review_round1.md",
+      "sha256": "1c47cc0807bc7c8e1bb4ddb73ddd55aafb4cef0846ee932c0d1cf47b4310498c",
+      "size": 1328
+    },
+    "docs/week15_review_round1.md": {
+      "path": "docs/week15_review_round1.md",
+      "sha256": "a72dc36b9d2b156fe9275555453d8d67f8f5869e65fadec1189ec6fda29b3d0d",
+      "size": 1328
+    },
+    "docs/week16_review_round1.md": {
+      "path": "docs/week16_review_round1.md",
+      "sha256": "f84c5027de28648ccb2c0cd21a53a940f1d4a991287696151e0bf94a47978921",
+      "size": 1328
+    },
+    "docs/week17_review_round1.md": {
+      "path": "docs/week17_review_round1.md",
+      "sha256": "96daae56634b0454b404981d3bfb4c6b865779e11bbc68120d60d94f4bc62cd1",
+      "size": 1328
+    },
+    "docs/week18_review_round1.md": {
+      "path": "docs/week18_review_round1.md",
+      "sha256": "c3b58df793decf3fc4e555982e6168a27522758bdcd4803443fe2c4895cf3348",
+      "size": 1328
+    },
+    "docs/week19_review_round1.md": {
+      "path": "docs/week19_review_round1.md",
+      "sha256": "6991da9d2d2ad4b62b11b567adf63dbb206983fafcd628cc22bd3d8a637e4140",
+      "size": 1328
+    },
+    "docs/week1_review_round1.md": {
+      "path": "docs/week1_review_round1.md",
+      "sha256": "4222fd157c7d48b818be6c98ec96350fde2fbd0ec91d0ca5a5c11443c7b2e590"
+    },
+    "docs/week20_review_round1.md": {
+      "path": "docs/week20_review_round1.md",
+      "sha256": "a2d959c24724e37db0f4d560194972c124d997148ef9e8cea1b92e0ea6d8598f",
+      "size": 1353
+    },
+    "docs/week21_review_round1.md": {
+      "path": "docs/week21_review_round1.md",
+      "sha256": "7b48c4bf577e14941b96fab2edd5ce23f4c2f39de2e5fef3f8c65812759cca4f",
+      "size": 1349
+    },
+    "docs/week22_review_round1.md": {
+      "path": "docs/week22_review_round1.md",
+      "sha256": "7d05fc2ba68c584d991de6e02ce6b4ad7954ba91c0a494a9e57f161826e2b44b",
+      "size": 1349
+    },
+    "docs/week23_review_round1.md": {
+      "path": "docs/week23_review_round1.md",
+      "sha256": "8cdbefda30c0c4971168b7a33e1702c610f496e13b4764ef101a8b29ccdfd6f3",
+      "size": 1349
+    },
+    "docs/week24_review_round1.md": {
+      "path": "docs/week24_review_round1.md",
+      "sha256": "47e9eb0cfae4225a355877226df8ec54165afcbce7a118b4e0d393486b70f041",
+      "size": 1349
+    },
+    "docs/week25_review_round1.md": {
+      "path": "docs/week25_review_round1.md",
+      "sha256": "1f59ef2dc0fa79e52f32d4ae21e4c136df92f22e4fa9c8091623cf1da85064be",
+      "size": 1349
+    },
+    "docs/week26_review_round1.md": {
+      "path": "docs/week26_review_round1.md",
+      "sha256": "31590530a5007438e37c6f8855538ea9bb1b900f494e0c06ae0698dc53bf11d7",
+      "size": 1349
+    },
+    "docs/week27_review_round1.md": {
+      "path": "docs/week27_review_round1.md",
+      "sha256": "b2366354c184fb08eb8e790f678a2c553089ea8b76582edcb2c8ff1cde30b2a3",
+      "size": 1349
+    },
+    "docs/week28_review_round1.md": {
+      "path": "docs/week28_review_round1.md",
+      "sha256": "de3974f765ed6ba92ea45f855c692eb6812075a4b72f12656aff579d08cd7c5a",
+      "size": 1349
+    },
+    "docs/week29_review_round1.md": {
+      "path": "docs/week29_review_round1.md",
+      "sha256": "c15188890410f59c85842c0f22230f611359c08b9b2a0e75ae9e3620688c7700",
+      "size": 1349
+    },
+    "docs/week2_review_round1.md": {
+      "path": "docs/week2_review_round1.md",
+      "sha256": "8667a9ce6d4e0ae70e474d9e39d9051b52363f70bad1fe0f212338a7c211d226"
+    },
+    "docs/week30_review_round1.md": {
+      "path": "docs/week30_review_round1.md",
+      "sha256": "00a6b9dfb8cb3301328bd23013bddab458fd2c039d833de08d5a77bac63f5f13",
+      "size": 1349
+    },
+    "docs/week31_review_round1.md": {
+      "path": "docs/week31_review_round1.md",
+      "sha256": "80fbe13170a6da0239b016fcee14f34b1dc2b469d60e43919cd66b4a8e30cdae",
+      "size": 1335
+    },
+    "docs/week32_review_round1.md": {
+      "path": "docs/week32_review_round1.md",
+      "sha256": "28e58eb4d233299d9e2e2ec7567a2310352e3be7025efc7860b0d1abe0a96ac1",
+      "size": 1375
+    },
+    "docs/week33_review_round1.md": {
+      "path": "docs/week33_review_round1.md",
+      "sha256": "6f771a5de7435b3dbc1a08cd5f5c0189e674ef0daab4f137d712ba6d8f05d42e",
+      "size": 1258
+    },
+    "docs/week34_review_round1.md": {
+      "path": "docs/week34_review_round1.md",
+      "sha256": "29c527de78135a0fdeb4282ee7ea30534b62bd7335f5655629812d24ab8cb768",
+      "size": 1258
+    },
+    "docs/week3_review_round1.md": {
+      "path": "docs/week3_review_round1.md",
+      "sha256": "608488463eaa951580d43193fd336986d915706d30c22320d2f42b18ce9a8880"
+    },
+    "docs/week4_review_round1.md": {
+      "path": "docs/week4_review_round1.md",
+      "sha256": "31ec6a8fb84c6cbfaae1fc61e921e3f1be65270a225fa79d549915c9ecc78372"
+    },
+    "docs/week5_review_round1.md": {
+      "path": "docs/week5_review_round1.md",
+      "sha256": "6c5e39922889e5577026dd84f322749a60768ac22fc45e612bfb83ffc04c2e92"
+    },
+    "docs/week6_review_round1.md": {
+      "path": "docs/week6_review_round1.md",
+      "sha256": "05a8dd304fceedf2e08ccf0d49f73a49620ea78f59263d9da81f387dac5c3283"
+    },
+    "docs/week7_review_round1.md": {
+      "path": "docs/week7_review_round1.md",
+      "sha256": "f0651c61eaa723ee6f9ae88d75dbb05b5979bef2a555d1ecbdcceb5c4a445d6a"
+    },
+    "docs/week8_review_round1.md": {
+      "path": "docs/week8_review_round1.md",
+      "sha256": "c8a67b151c79eb5c4e7929988397ad3834932cfac5b61baa848568c71969e1c3"
+    },
+    "docs/week9_review_round1.md": {
+      "path": "docs/week9_review_round1.md",
+      "sha256": "ba21a3b13f7f0e49e66b087aa9ed47ebdaf63741eeec2ec0380065ac69637c25"
+    },
+    "scripts/m4_m5_smoke.sh": {
+      "path": "scripts/m4_m5_smoke.sh",
+      "sha256": "8d8ec4d4dd7fa4331730a2cc4d48525edb3765cc5eef3815e356ca13c00ced59"
+    },
+    "scripts/weekly_healthcheck.sh": {
+      "path": "scripts/weekly_healthcheck.sh",
+      "sha256": "6ea1a1e84cf4bd5d247b618ccb7a6d506b57cae88ad3fe42228dcd2c8d9b3b65"
+    },
+    "docs/week35_review_round1.md": {
+      "path": "docs/week35_review_round1.md",
+      "sha256": "5175289389fb46dd9e225acfb47954d4a0ee321ae8246adcf17ecc7effb2cb75"
+    },
+    "docs/week36_review_round1.md": {
+      "path": "docs/week36_review_round1.md",
+      "sha256": "a35c4083377bf5ab4e5230376ebec2c06856368e0933b68abca46288c03b68fe",
+      "size": 1258
+    },
+    "docs/week37_review_round1.md": {
+      "path": "docs/week37_review_round1.md",
+      "sha256": "0de16474869ed7d31b9e86dd8da0196766bfdba934894a7cd5c9bfe2a5fefa51",
+      "size": 1258
+    }
+  },
+  "checks": [
+    {
+      "name": "runbook",
+      "command": "docs/ops_runbook.md",
+      "status": "pass",
+      "result": "docs/ops_runbook.md"
+    },
+    {
+      "name": "weekly_healthcheck_sh",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8765",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-094559.log",
+      "run_at": "2026-06-11T09:45:59+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh",
+      "command": "bash scripts/m4_m5_smoke.sh",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-094618.log",
+      "run_at": "2026-06-11T09:46:18+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_2",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8765",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-095040.log",
+      "run_at": "2026-06-11T09:50:40+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_2",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8765",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-095057.log",
+      "run_at": "2026-06-11T09:50:57+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_3",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-100108.log",
+      "run_at": "2026-06-11T10:01:08+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_3",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-100246.log",
+      "run_at": "2026-06-11T10:02:46+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_4",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-100631.log",
+      "run_at": "2026-06-11T10:06:31+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_4",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-100647.log",
+      "run_at": "2026-06-11T10:06:47+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_5",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-100752.log",
+      "run_at": "2026-06-11T10:07:52+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_5",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-100807.log",
+      "run_at": "2026-06-11T10:08:07+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_6",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-100957.log",
+      "run_at": "2026-06-11T10:09:57+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_6",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-101013.log",
+      "run_at": "2026-06-11T10:10:13+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_7",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-101844.log",
+      "run_at": "2026-06-11T10:18:44+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_7",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-101918.log",
+      "run_at": "2026-06-11T10:19:18+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_8",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-102357.log",
+      "run_at": "2026-06-11T10:23:57+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_8",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-102422.log",
+      "run_at": "2026-06-11T10:24:22+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_9",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-103114.log",
+      "run_at": "2026-06-11T10:31:14+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_9",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-103114.log",
+      "run_at": "2026-06-11T10:31:14+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_10",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-103645.log",
+      "run_at": "2026-06-11T10:36:45+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_10",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-103645.log",
+      "run_at": "2026-06-11T10:36:45+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_11",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-103855.log",
+      "run_at": "2026-06-11T10:38:55+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_11",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-103855.log",
+      "run_at": "2026-06-11T10:38:55+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_12",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-104318.log",
+      "run_at": "2026-06-11T10:43:18+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_12",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-104318.log",
+      "run_at": "2026-06-11T10:43:18+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_13",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-104533.log",
+      "run_at": "2026-06-11T10:45:33+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_13",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-104552.log",
+      "run_at": "2026-06-11T10:45:52+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_14",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-105335.log",
+      "run_at": "2026-06-11T10:53:35+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_14",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-105401.log",
+      "run_at": "2026-06-11T10:54:01+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_15",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-110238.log",
+      "run_at": "2026-06-11T11:02:38+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_15",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-110259.log",
+      "run_at": "2026-06-11T11:02:59+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_16",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-110759.log",
+      "run_at": "2026-06-11T11:07:59+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_16",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-110815.log",
+      "run_at": "2026-06-11T11:08:15+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_17",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-111222.log",
+      "run_at": "2026-06-11T11:12:22+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_17",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-111237.log",
+      "run_at": "2026-06-11T11:12:37+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_18",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-111427.log",
+      "run_at": "2026-06-11T11:14:27+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_18",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-111442.log",
+      "run_at": "2026-06-11T11:14:42+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_19",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-111605.log",
+      "run_at": "2026-06-11T11:16:05+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_19",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-111620.log",
+      "run_at": "2026-06-11T11:16:20+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_20",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-111812.log",
+      "run_at": "2026-06-11T11:18:12+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_20",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-111812.log",
+      "run_at": "2026-06-11T11:18:12+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_21",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-112042.log",
+      "run_at": "2026-06-11T11:20:42+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_21",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-112042.log",
+      "run_at": "2026-06-11T11:20:42+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_22",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-112151.log",
+      "run_at": "2026-06-11T11:21:51+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_22",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-112151.log",
+      "run_at": "2026-06-11T11:21:51+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_23",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-112254.log",
+      "run_at": "2026-06-11T11:22:54+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_23",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-112254.log",
+      "run_at": "2026-06-11T11:22:54+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_24",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-112449.log",
+      "run_at": "2026-06-11T11:24:49+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_24",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-112504.log",
+      "run_at": "2026-06-11T11:25:04+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_25",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-112754.log",
+      "run_at": "2026-06-11T11:27:54+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_25",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-112809.log",
+      "run_at": "2026-06-11T11:27:54+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_26",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-113148.log",
+      "run_at": "2026-06-11T11:31:48+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_26",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-113207.log",
+      "run_at": "2026-06-11T11:32:07+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_27",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-113522.log",
+      "run_at": "2026-06-11T11:35:22+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_27",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-113522.log",
+      "run_at": "2026-06-11T11:35:22+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_28",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-113814.log",
+      "run_at": "2026-06-11T11:38:14+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_28",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-113830.log",
+      "run_at": "2026-06-11T11:38:30+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_29",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-114018.log",
+      "run_at": "2026-06-11T11:40:18+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_29",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-114032.log",
+      "run_at": "2026-06-11T11:40:32+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_30",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-114223.log",
+      "run_at": "2026-06-11T11:42:23+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_30",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-114238.log",
+      "run_at": "2026-06-11T11:42:38+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_31",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-114410.log",
+      "run_at": "2026-06-11T11:44:10+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_31",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-114425.log",
+      "run_at": "2026-06-11T11:44:25+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_32",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8766",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-114646.log",
+      "run_at": "2026-06-11T11:46:46+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_32",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8766",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-114703.log",
+      "run_at": "2026-06-11T11:47:03+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_33",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8765",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-115651.log",
+      "run_at": "2026-06-11T11:56:51+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_33",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8765",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-115710.log",
+      "run_at": "2026-06-11T11:57:10+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_34",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8765",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-120029.log",
+      "run_at": "2026-06-11T12:00:29+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_34",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8765",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-120047.log",
+      "run_at": "2026-06-11T12:00:47+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_36",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8765",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-120241.log",
+      "run_at": "2026-06-11T12:02:41+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_36",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8765",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-120256.log",
+      "run_at": "2026-06-11T12:02:56+08:00"
+    },
+    {
+      "name": "weekly_healthcheck_sh_37",
+      "command": "bash scripts/weekly_healthcheck.sh --port 8765",
+      "status": "pass",
+      "result": "logs/gaozhong-weekly-healthcheck-20260611-120444.log",
+      "run_at": "2026-06-11T12:04:44+08:00"
+    },
+    {
+      "name": "m4_m5_smoke_sh_37",
+      "command": "bash scripts/m4_m5_smoke.sh --run-id 20260610T135344Z --port 8765",
+      "status": "pass",
+      "result": "logs/m4_m5_smoke_20260611-120459.log",
+      "run_at": "2026-06-11T12:04:59+08:00"
+    }
+  ],
+  "next_actions": [
+    "M5 演练已完成：`logs/gaozhong-weekly-healthcheck-20260611-094559.log`、`logs/m4_m5_smoke_20260611-094618.log`、`logs/gaozhong-weekly-healthcheck-20260611-095040.log`、`logs/m4_m5_smoke_20260611-095057.log`、`logs/gaozhong-weekly-healthcheck-20260611-100108.log`、`logs/m4_m5_smoke_20260611-100246.log`、`logs/gaozhong-weekly-healthcheck-20260611-100631.log`、`logs/m4_m5_smoke_20260611-100647.log`、`logs/gaozhong-weekly-healthcheck-20260611-100752.log`、`logs/m4_m5_smoke_20260611-100807.log`、`logs/gaozhong-weekly-healthcheck-20260611-100957.log`、`logs/m4_m5_smoke_20260611-101013.log`、`logs/gaozhong-weekly-healthcheck-20260611-101844.log`、`logs/m4_m5_smoke_20260611-101918.log`、`logs/gaozhong-weekly-healthcheck-20260611-102357.log`、`logs/m4_m5_smoke_20260611-102422.log`、`logs/gaozhong-weekly-healthcheck-20260611-103114.log`、`logs/m4_m5_smoke_20260611-103114.log`、`logs/gaozhong-weekly-healthcheck-20260611-103645.log`、`logs/m4_m5_smoke_20260611-103645.log`、`logs/gaozhong-weekly-healthcheck-20260611-103855.log`、`logs/m4_m5_smoke_20260611-103855.log`、`logs/gaozhong-weekly-healthcheck-20260611-104318.log`、`logs/m4_m5_smoke_20260611-104318.log`、`logs/gaozhong-weekly-healthcheck-20260611-104533.log`、`logs/m4_m5_smoke_20260611-104552.log`、`logs/gaozhong-weekly-healthcheck-20260611-105335.log`、`logs/m4_m5_smoke_20260611-105401.log`、`logs/gaozhong-weekly-healthcheck-20260611-110238.log`、`logs/m4_m5_smoke_20260611-110259.log`",
+    "`Week19 追加`: `logs/gaozhong-weekly-healthcheck-20260611-111605.log`、`logs/m4_m5_smoke_20260611-111620.log`（与 Week19 演练记录 `docs/week19_review_round1.md` 一致）",
+    "`Week20 追加`: `logs/gaozhong-weekly-healthcheck-20260611-111812.log`、`logs/m4_m5_smoke_20260611-111812.log`（与 Week20 演练记录 `docs/week20_review_round1.md` 一致）",
+    "`Week21 追加`: `logs/gaozhong-weekly-healthcheck-20260611-112042.log`、`logs/m4_m5_smoke_20260611-112042.log`（与 Week21 演练记录 `docs/week21_review_round1.md` 一致）",
+    "`Week22 追加`: `logs/gaozhong-weekly-healthcheck-20260611-112151.log`、`logs/m4_m5_smoke_20260611-112151.log`（与 Week22 演练记录 `docs/week22_review_round1.md` 一致）",
+    "`Week23 追加`: `logs/gaozhong-weekly-healthcheck-20260611-112254.log`、`logs/m4_m5_smoke_20260611-112254.log`（与 Week23 演练记录 `docs/week23_review_round1.md` 一致）",
+    "`Week24 追加`: `logs/gaozhong-weekly-healthcheck-20260611-112449.log`、`logs/m4_m5_smoke_20260611-112504.log`（与 Week24 演练记录 `docs/week24_review_round1.md` 一致）",
+    "`Week25 追加`: `logs/gaozhong-weekly-healthcheck-20260611-112754.log`、`logs/m4_m5_smoke_20260611-112809.log`（与 Week25 演练记录 `docs/week25_review_round1.md` 一致）",
+    "`Week26 追加`: `logs/gaozhong-weekly-healthcheck-20260611-113148.log`、`logs/m4_m5_smoke_20260611-113207.log`（与 Week26 演练记录 `docs/week26_review_round1.md` 一致）",
+    "`Week27 追加`: `logs/gaozhong-weekly-healthcheck-20260611-113522.log`、`logs/m4_m5_smoke_20260611-113522.log`（与 Week27 演练记录 `docs/week27_review_round1.md` 一致）",
+    "`Week28 追加`: `logs/gaozhong-weekly-healthcheck-20260611-113814.log`、`logs/m4_m5_smoke_20260611-113830.log`（与 Week28 演练记录 `docs/week28_review_round1.md` 一致）",
+    "`Week29 追加`: `logs/gaozhong-weekly-healthcheck-20260611-114018.log`、`logs/m4_m5_smoke_20260611-114032.log`（与 Week29 演练记录 `docs/week29_review_round1.md` 一致）",
+    "`Week30 追加`: `logs/gaozhong-weekly-healthcheck-20260611-114223.log`、`logs/m4_m5_smoke_20260611-114238.log`（与 Week30 演练记录 `docs/week30_review_round1.md` 一致）",
+    "`Week31 追加`: `logs/gaozhong-weekly-healthcheck-20260611-114410.log`、`logs/m4_m5_smoke_20260611-114425.log`（与 Week31 演练记录 `docs/week31_review_round1.md` 一致）",
+    "`Week32 追加`: `logs/gaozhong-weekly-healthcheck-20260611-114646.log`、`logs/m4_m5_smoke_20260611-114703.log`（与 Week32 演练记录 `docs/week32_review_round1.md` 一致）",
+    "`Week34 追加`: `logs/gaozhong-weekly-healthcheck-20260611-115651.log`、`logs/m4_m5_smoke_20260611-115710.log`（与 Week34 演练记录 `docs/week34_review_round1.md` 一致）",
+    "`Week35 追加`: `logs/gaozhong-weekly-healthcheck-20260611-120029.log`、`logs/m4_m5_smoke_20260611-120047.log`（与 Week35 演练记录 `docs/week35_review_round1.md` 一致）",
+    "继续维持周检节奏，持续复核 M5 运行闭环",
+    "`Week36 追加`: `logs/gaozhong-weekly-healthcheck-20260611-120241.log`、`logs/m4_m5_smoke_20260611-120256.log`（与 Week36 演练记录 `docs/week36_review_round1.md` 一致）",
+    "`Week37 追加`: `logs/gaozhong-weekly-healthcheck-20260611-120444.log`、`logs/m4_m5_smoke_20260611-120459.log`（与 Week37 演练记录 `docs/week37_review_round1.md` 一致）"
+  ]
+}

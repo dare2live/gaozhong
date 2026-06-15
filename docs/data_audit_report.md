@@ -61,7 +61,7 @@
 |---|---|---|
 | G1 教材文本与课标词表对齐率 | STEP 2 抽出 unit_vocab_intro 后, 计算教材引入的词 ∩ cefr_vocab 覆盖率 | STEP 2 完成 |
 | G2 教材语法点 → grammar_items 命中率 | 同上, P5b 输出 grammar_occurrences 后 | STEP 2 完成 |
-| G3 真题考点 → 词/语法 mapping 召回 | STEP 3 LLM 抽考点, 抽样人工核 ≥ 80% 准 | STEP 3 完成 |
+| G3 真题考点 → 词/语法 mapping 召回 | STEP 3 LLM 抽考点, 抽样核对 ≥ 80% 准 | STEP 3 完成 |
 | G4 辽宁省真题样本数 | 当前 334 题, 仅 32 标 "辽宁 (推断)" — 用 question 文本 + 年份精炼分类器 | STEP 3 |
 | G5 PDF 视觉数据 (图片题/听力转写) | 镜像 GAOKAO-Bench 只 cover 文本题, 听力/图表题缺 | STEP 3-4 |
 | G6 合成题质量 (STEP 4 LLM 输出) | 越纲率 + 答案准确性 + 题型分布合理 | STEP 4 |

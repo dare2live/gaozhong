@@ -1,0 +1,32 @@
+{
+  "run_id": "20260610T135344Z",
+  "goal_run_id": "20260610T074134Z",
+  "kicked_off_at": "2026-06-10T13:53:44Z",
+  "scope": "M4 课程主链路交付闭环",
+  "trigger": "goal.md M3.3 收口完成，进入 M4 课程主链路交付",
+  "prechecks": {
+    "m3_gate_status": "PASS",
+    "m3_verification_protocol_done": 8,
+    "m3_verification_protocol_deferred": 0,
+    "m3_verification_protocol_pending": 0
+  },
+  "evidence": {
+    "m3_closure": "data/reports/m3_closure_20260610T074134Z.json",
+    "m3_closure_md": "data/reports/m3_closure_20260610T074134Z.md",
+    "m3_feedback": "data/reports/m3_feedback_20260610T074134Z.json",
+    "m3_closure_batch": "data/reports/m3_closure_batch_20260610T074134Z.json",
+    "m3_repro": "data/reports/m3_reproducibility_snapshot_20260610T074134Z.json",
+    "verification_protocol": "data/reports/verification_protocol.json",
+    "goal": "goal.md",
+    "audit_doc": "docs/data_accuracy_audit.md"
+  },
+  "m4_window": {
+    "start": "2026-06-17",
+    "end": "2026-07-07"
+  },
+  "m4_next_steps": [
+    "冻结课程主链路输入范围与校验清单",
+    "形成 /app 主流程与 R1~R6 闭环核验清单",
+    "输出 m4_closure 与 m4_audit_matrix 报告并回写 goal.md"
+  ]
+}

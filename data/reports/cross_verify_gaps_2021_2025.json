@@ -1,12 +1,12 @@
 {
-  "run_id": "b3fd3dc87989be20",
+  "run_id": "36f7ccf98310f763",
   "manifest": {
     "db": {
       "path": "/Users/dp/Documents/M/gaozhong/data/db/gaozhong.duckdb",
       "exists": true,
-      "size": 46673920,
-      "mtime_ns": 1781076223672308077,
-      "signature": "f4809288ba835ecd1c118afb5cde17c25e4347dd"
+      "size": 46411776,
+      "mtime_ns": 1781077201061657780,
+      "signature": "2276147e65219b1930730e13f2e86e685857f50d"
     },
     "structured": {
       "path": "/Users/dp/Documents/M/gaokao/data/structured/english_xgkii_2021_2025.jsonl",

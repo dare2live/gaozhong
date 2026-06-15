@@ -20,9 +20,9 @@ DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 
 PDFS = [
     (2024, "新课标 II 卷",
-     Path("/Users/dp/Documents/M/gaokao/data/raw/pdfs/cdn_zgkao_com/zgkao_2024_xgkii_english__english_2024.pdf")),
+     ROOT / "data/external/exam_sources/local_pdfs/2024_xgkii_english.pdf"),
     (2025, "新课标 II 卷",
-     Path("/Users/dp/Documents/M/gaokao/data/raw/pdfs/jhgk_cn/jhgk_2025_xgkii_english__english_2025.pdf")),
+     ROOT / "data/external/exam_sources/local_pdfs/2025_xgkii_english.pdf"),
 ]
 
 

@@ -3,14 +3,22 @@ name: gaozhong
 repo_path: /Users/dp/Documents/M/gaozhong
 codegraph_root: .
 complexity_command:
-  - bash
-  - -lc
-  - python scripts/lib/complexity_check.py --json $(find backend scripts tests -name '*.py')
+  - python
+  - /Users/dp/.agents/skills/complexity-optimizer/scripts/analyze_complexity.py
+  - /Users/dp/Documents/M/gaozhong
+  - --format
+  - markdown
 evidence_paths:
   goal: /Users/dp/Documents/M/gaozhong/goal.md
+  agents: /Users/dp/Documents/M/gaozhong/AGENTS.md
+  agent: /Users/dp/Documents/M/gaozhong/agent.md
   docs: /Users/dp/Documents/M/gaozhong/docs
-  docs_resme: /Users/dp/Documents/M/gaozhong/docs/RESUME.md
+  docs_index: /Users/dp/Documents/M/gaozhong/docs/README.md
+  docs_resume: /Users/dp/Documents/M/gaozhong/docs/RESUME.md
   analysis: /Users/dp/Documents/M/gaozhong/analysis
-  claude: /Users/dp/Documents/M/gaozhong/CLAUDE.md
+  claude_legacy: /Users/dp/Documents/M/gaozhong/CLAUDE.md
   ledger: /Users/dp/Documents/M/gaozhong/analysis/project_state_ledger.md
+  architecture_control: /Users/dp/Documents/M/gaozhong/backend/config/project_architecture.yaml
+  architecture_gate: /Users/dp/Documents/M/gaozhong/scripts/tools/audit/project_architecture_audit.py
+complexity_baseline_path: data/reports/tooling/complexity_baseline.json
 notes: gaozhong bilingual education operations project (backend services + static frontend). Focus on data integrity, API correctness, and audit-first changes. CodeGraph and audit artifacts are primary context for controller decisions.

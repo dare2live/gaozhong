@@ -1,0 +1,277 @@
+version: 1
+status: active
+owner: gaozhong-controller
+purpose: >
+  Machine-readable module/data/config ownership contract for the gaozhong
+  project. Keep business rules in config, reusable computation in services,
+  evidence in data, and audit verdicts reproducible by scripts.
+
+instruction_sources:
+  codex_entrypoint:
+    path: AGENTS.md
+    role: Standard Codex discovery entrypoint.
+  codex_policy:
+    path: agent.md
+    role: Current project-specific Codex policy.
+  legacy_reference:
+    path: CLAUDE.md
+    role: Historical compatibility reference, not primary Codex policy.
+  moth_profile:
+    path: .moth/profile.yaml
+    required_tokens:
+      - agent.md
+      - AGENTS.md
+      - backend/config/project_architecture.yaml
+      - scripts/tools/audit/project_architecture_audit.py
+
+truth_sources:
+  source_registry:
+    path: backend/config/sources.yaml
+    owner_module: backend.services.data_sources.registry
+    truth_role: Registered external exam/source evidence and local artifacts.
+  paper_contracts:
+    path: backend/config/exam_paper_contracts.yaml
+    owner_module: backend.services.audit.source_contracts
+    truth_role: Declared paper/source contract, not inferred from file names.
+  review_decision_contract:
+    path: backend/config/eol_review_decisions.yaml
+    owner_module: backend.services.contracts.eol_review_decisions
+    truth_role: Official review-decision statuses, required fields, and key fallbacks.
+  import_policy:
+    path: backend/config/import_policies.yaml
+    owner_module: backend.services.imports.readiness
+    truth_role: Import-readiness scope and fail-closed policy.
+
+sibling_projects:
+  gaokao:
+    path: /Users/dp/Documents/M/gaokao
+    relationship: reference_only
+    allowed_use:
+      - Borrow architecture-control patterns, source-tier discipline, and DS-gate thinking.
+      - Mirror explicitly exported evidence only when this project owns a local copy and lineage.
+    forbidden_use:
+      - Do not ATTACH or read gaokao DuckDB as a gaozhong truth source.
+      - Do not inherit gaokao verdicts, sample counts, or PDF lineage as gaozhong facts.
+      - Do not let gaokao model/prediction gates justify gaozhong teaching outputs.
+  lifehack:
+    path: /Users/dp/Documents/M/lifehack
+    relationship: pattern_reference
+    allowed_use:
+      - Borrow DataHub/core boundary, manifest/readiness discipline, and controller audit templates.
+    forbidden_use:
+      - Do not import LifeHack modules or copy vocational-domain scoring rules.
+  chunkymonkey:
+    path: /Users/dp/Documents/M/stock/chunkymonkey
+    relationship: pattern_reference
+    allowed_use:
+      - Borrow goal.md as live board, Moth as tooling snapshot, and verify-the-verifier discipline.
+    forbidden_use:
+      - Do not import stock-domain modules, PIT stock rules, or provider-job assumptions.
+
+module_contracts:
+  data_sources:
+    path: backend/services/data_sources
+    owner_config: backend/config/sources.yaml
+    owner_module: backend.services.data_sources.registry
+    role: Registry-driven external source acquisition and local artifact metadata.
+    required_files:
+      - backend/services/data_sources/__init__.py
+      - backend/services/data_sources/registry.py
+      - backend/services/data_sources/fetcher.py
+  contracts:
+    path: backend/services/contracts
+    owner_config: backend/config/eol_review_decisions.yaml
+    owner_module: backend.services.contracts.eol_review_decisions
+    role: Config/schema validators for review, source-state, crosscheck, and import contracts.
+    required_files:
+      - backend/services/contracts/eol_review.py
+      - backend/services/contracts/eol_review_decisions.py
+      - backend/services/contracts/import_policy.py
+      - backend/services/contracts/source_crosscheck.py
+      - backend/services/contracts/source_state.py
+      - backend/services/contracts/project_architecture.py
+  audit:
+    path: backend/services/audit
+    owner_config: backend/config/m0_gates.yaml
+    owner_module: backend.services.audit.source_contracts
+    role: Read-only evidence builders that emit reports and never mutate canonical data.
+    required_files:
+      - backend/services/audit/source_contracts.py
+      - backend/services/audit/eol_review_decision_coverage.py
+      - backend/services/audit/eol_review_backlog.py
+      - backend/services/audit/exam_contracts.py
+      - backend/services/audit/project_architecture.py
+  imports:
+    path: backend/services/imports
+    owner_config: backend/config/import_policies.yaml
+    owner_module: backend.services.imports.readiness
+    role: Import readiness and DB-write gate; source evidence must pass contracts first.
+    required_files:
+      - backend/services/imports/__init__.py
+      - backend/services/imports/readiness.py
+  extraction:
+    path: backend/services/extraction
+    owner_config: backend/config/exam_paper_contracts.yaml
+    owner_module: backend.services.extraction.exam_eol
+    role: Raw/local source artifacts to structured draft rows; not final truth without review gates.
+    required_files:
+      - backend/services/extraction/exam.py
+      - backend/services/extraction/exam_eol.py
+      - backend/services/extraction/exam_province.py
+  course:
+    path: backend/services/course
+    owner_config: backend/config/course_templates.yaml
+    owner_module: backend.services.course.loader
+    role: Teaching content composition from canonical facts, templates, and audit-backed constraints.
+    required_files:
+      - backend/services/course/loader.py
+      - backend/services/course/registry.py
+      - backend/services/course/homework.py
+  api_routes:
+    path: backend/api/routes
+    role: Thin API layer. Routes may call services but must not own source truth or business rules.
+  database_access:
+    path: backend/db
+    role: DB connection/schema boundary. DB writes require import readiness or explicit migration gate.
+
+data_zones:
+  external_evidence:
+    path: data/external
+    owner_module: backend.services.data_sources
+    write_policy: Registry/acquisition tools may write local source artifacts; review gates read only.
+    truth_policy: Evidence artifact, not canonical until contract and review gates pass.
+  generated_reports:
+    path: data/reports
+    owner_module: backend.services.audit
+    write_policy: Audit/report CLIs may write deterministic reports.
+    truth_policy: Evidence output; never treat a stale report as live truth without rerunning gate.
+  config_control_plane:
+    path: backend/config
+    owner_module: backend.services.contracts
+    write_policy: Controller-owned config changes; code consumes config, not duplicated constants.
+    truth_policy: Business rules, thresholds, source lists, state tokens, and gate definitions.
+  service_control_plane:
+    path: backend/services
+    owner_module: backend.services
+    write_policy: Service code implements reusable mechanisms and reads config.
+    truth_policy: Mechanism layer only; facts still come from source/config/data contracts.
+
+config_contracts:
+  project_architecture:
+    path: backend/config/project_architecture.yaml
+    owner_module: backend.services.audit.project_architecture
+    owns: Module/data/config ownership map, instruction sources, policy lints, and sibling-project boundaries.
+  sources:
+    path: backend/config/sources.yaml
+    owner_module: backend.services.data_sources.registry
+    owns: External source registry and local artifact metadata.
+  exam_paper_contracts:
+    path: backend/config/exam_paper_contracts.yaml
+    owner_module: backend.services.audit.source_contracts
+    owns: Paper/source linkage contract.
+  source_states:
+    path: backend/config/source_states.yaml
+    owner_module: backend.services.contracts.source_state
+    owns: Allowed source status tokens and state taxonomy.
+  source_crosscheck_rules:
+    path: backend/config/source_crosscheck_rules.yaml
+    owner_module: backend.services.contracts.source_crosscheck
+    owns: HTML/source identity rules and crosscheck guards.
+  eol_review_rules:
+    path: backend/config/eol_review_rules.yaml
+    owner_module: backend.services.contracts.eol_review
+    owns: EOL review issue taxonomy and backlog classification.
+  eol_review_decisions:
+    path: backend/config/eol_review_decisions.yaml
+    owner_module: backend.services.contracts.eol_review_decisions
+    owns: Official review-decision schema, allowed statuses, key fallbacks, and source-family policy.
+  import_policies:
+    path: backend/config/import_policies.yaml
+    owner_module: backend.services.imports.readiness
+    owns: Import readiness rules and DB-write preconditions.
+  m0_gates:
+    path: backend/config/m0_gates.yaml
+    owner_module: backend.services.audit
+    owns: M0 gate catalog and evidence routing.
+  question_types:
+    path: backend/config/question_types.yaml
+    owner_module: backend.services.question_bank.loader
+    owns: Question type taxonomy.
+  thresholds:
+    path: backend/config/thresholds.yaml
+    owner_module: backend.services.constitution
+    owns: Data accuracy and quality thresholds.
+
+documentation_authority:
+  required_index:
+    path: docs/README.md
+  current_docs:
+    - docs/architecture.md
+    - docs/top_level_module_data_config_architecture_20260615.md
+    - docs/data_accuracy_audit.md
+    - docs/M0_CLOSURE_CHECKPOINT_2026-06-12.md
+  evidence_ledgers:
+    - goal.md
+    - analysis/project_state_ledger.md
+
+gate_contracts:
+  project_architecture_audit:
+    script: scripts/tools/audit/project_architecture_audit.py
+    command: python3 scripts/tools/audit/project_architecture_audit.py --strict --output data/reports/project_architecture_audit_20260615.json
+    severity: BLOCK
+    verifies:
+      - Declared instruction sources and Moth evidence paths exist.
+      - Declared module paths exist.
+      - Declared data zones and config files exist.
+      - Owner modules resolve to code files or packages.
+      - Sibling-project paths are reference-only and explicit.
+      - Legacy importer policy lints surface direct DB writers and hardcoded PDF paths.
+  source_contract_audit:
+    script: scripts/tools/audit/source_contract_audit.py
+    command: python3 scripts/tools/audit/source_contract_audit.py --strict
+    severity: BLOCK
+    verifies:
+      - Source registry, source states, EOL rules, decision contracts, and paper contracts agree.
+  m0_truth_baseline:
+    script: scripts/tools/audit/truth_baseline_audit.py
+    command: python3 scripts/tools/audit/truth_baseline_audit.py --strict
+    severity: BLOCK
+    verifies:
+      - M0 final DB/source/question-bank truth baseline is reconciled before release claims.
+
+legacy_policy_lints:
+  direct_exam_questions_writer:
+    path: scripts/import_recent_exams.py
+    severity: BLOCK
+    forbidden_patterns:
+      - INSERT INTO exam_questions
+      - data/external/exam_sources/local_pdfs
+    required_config_refs:
+      - backend/config/sources.yaml
+      - backend/config/import_policies.yaml
+    rationale: Direct exam imports must be registry/import-policy driven before they can be considered current architecture.
+  init_db_legacy_importer_call:
+    path: scripts/init_db.py
+    severity: WARN
+    forbidden_patterns:
+      - import_recent_exams
+    required_config_refs:
+      - backend/config/import_policies.yaml
+    rationale: DB rebuild entrypoints must not silently call legacy direct importers.
+
+architecture_rules:
+  - code: no_ad_hoc_external_source
+    severity: BLOCK
+    rule: External source evidence must be registered in sources.yaml before use in decisions.
+  - code: no_double_truth_source
+    severity: BLOCK
+    rule: Business thresholds, statuses, source IDs, field aliases, and gate definitions live in config, not duplicated in route/script bodies.
+  - code: reports_are_evidence_not_truth
+    severity: WARN
+    rule: Generated reports are stale after source/config/data changes until their gate reruns.
+  - code: gaokao_reference_only
+    severity: BLOCK
+    rule: gaokao may inform architecture patterns but cannot be attached as a live DB or inherited verdict source.
+  - code: unknown_over_fake
+    severity: BLOCK
+    rule: Missing source, missing snapshot, or out-of-scope row propagates unknown/rescope, not 0/default/import_ready.

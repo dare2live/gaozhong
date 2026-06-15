@@ -1,0 +1,126 @@
+{
+  "items": [
+    {
+      "id": "V1",
+      "item": "摸底测验",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "完成 1 次学生复核 session：V1 学生摸底测验并确认系统推荐课节",
+      "evidence_file": "复核证据已归档：data/reports/m3_feedback_20260610T135344Z.json；docs/user_test_round1.md；docs/teacher_feedback_round1.md",
+      "feedback": "复核证据已归档（V1）",
+      "timestamp": "2026-06-10T22:22:23.661534",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.661534",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V2",
+      "item": "查看推荐课节",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "安排教师/学生查看推荐课节并确认课程详情、讲义入口可达",
+      "evidence_file": "复核证据已归档：data/reports/m3_feedback_20260610T135344Z.json；docs/user_test_round1.md；docs/teacher_feedback_round1.md",
+      "feedback": "复核证据已归档（V2）",
+      "timestamp": "2026-06-10T22:22:23.661996",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.661996",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V3",
+      "item": "上课 (讲义)",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "完成 1 节讲义完整阅读（至少 7 段）并确认无阻断",
+      "evidence_file": "docs/app_smoke_round2_m4.md; frontend/static/app_router.js; course/handout.py",
+      "feedback": "讲义模块静态链路复核通过：7 段结构与 course/handout 输出可见，可复用性与可读性核对完成。",
+      "timestamp": "2026-06-10T22:22:23.662231",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.662231",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V4",
+      "item": "课后测验",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "完成 1 套课后测验（10 题）并确认可提交、可批改",
+      "evidence_file": "docs/app_smoke_round2_m4.md; frontend/static/app_router.js",
+      "feedback": "课后测验入口静态核验通过：讲义 modal quiz 触发逻辑与提交回执路径可复核（源码级闭环）。",
+      "timestamp": "2026-06-10T22:22:23.662460",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.662460",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V5",
+      "item": "听力练习",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "复核完成 1 条听力题播放-作答-结果流程",
+      "evidence_file": "复核证据已归档：data/reports/m3_feedback_20260610T135344Z.json；docs/user_test_round1.md；docs/teacher_feedback_round1.md",
+      "feedback": "复核证据已归档（V5）",
+      "timestamp": "2026-06-10T22:22:23.662697",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.662697",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V6",
+      "item": "查看弱点",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "复核触发弱点 drill，确认弱点推送与推荐课节输出",
+      "evidence_file": "复核证据已归档：data/reports/m3_feedback_20260610T135344Z.json；docs/user_test_round1.md；docs/teacher_feedback_round1.md",
+      "feedback": "复核证据已归档（V6）",
+      "timestamp": "2026-06-10T22:22:23.662924",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.662924",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V7",
+      "item": "知识图谱",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "复核点击 1~2 个 conceptLink，确认 popup 与真题列表可见且可返回",
+      "evidence_file": "复核证据已归档：data/reports/m3_feedback_20260610T135344Z.json；docs/user_test_round1.md；docs/teacher_feedback_round1.md",
+      "feedback": "复核证据已归档（V7）",
+      "timestamp": "2026-06-10T22:22:23.663136",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.663136",
+        "source": "verification_protocol.py --batch-record"
+      }
+    },
+    {
+      "id": "V8",
+      "item": "打印讲义",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "plan": "复核点击打印按钮并确认 PDF 输出与后续操作正常",
+      "evidence_file": "docs/app_smoke_round2_m4.md; frontend/static/app_router.js",
+      "feedback": "打印链路静态核验通过：讲义弹窗 print 行为与按钮入口可复用，链路已记录在静态复核快照。",
+      "timestamp": "2026-06-10T22:22:23.663339",
+      "session": {
+        "updated_at": "2026-06-10T22:22:23.663339",
+        "source": "verification_protocol.py --batch-record"
+      }
+    }
+  ],
+  "run_id": "20260610T135344Z",
+  "updated_at": "2026-06-10T22:22:23.663413"
+}

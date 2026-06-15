@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -46,6 +47,29 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _tracked_files_under(base: Path) -> list[Path]:
+    if not base.exists():
+        return []
+    rel = str(base.relative_to(ROOT))
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", str(ROOT), "ls-files", "--", rel],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception:
+        return []
+    return [ROOT / line for line in out.splitlines() if line.strip()]
+
+
+def _input_files(base: Path, suffix: str | None = None) -> list[Path]:
+    tracked = _tracked_files_under(base)
+    files = tracked or [p for p in base.rglob("*") if p.is_file()]
+    if suffix:
+        files = [p for p in files if p.suffix == suffix]
+    return sorted(files)
+
+
 def build_textbook_manifest() -> list[dict]:
     rows = []
     base = ROOT / "data" / "textbooks"
@@ -53,7 +77,7 @@ def build_textbook_manifest() -> list[dict]:
         if not ver_dir.is_dir():
             continue
         label, src_url = VERSION_LABEL.get(ver_dir.name, (ver_dir.name, ""))
-        for pdf in sorted(ver_dir.glob("*.pdf")):
+        for pdf in _input_files(ver_dir, ".pdf"):
             rows.append({
                 "type": "textbook",
                 "version_key": ver_dir.name,
@@ -64,7 +88,6 @@ def build_textbook_manifest() -> list[dict]:
                 "sha256": _sha256(pdf),
                 "source_repo": "TapXWorld/ChinaTextbook",
                 "source_dir_url": src_url,
-                "fetched_at": _now(),
             })
     return rows
 
@@ -72,7 +95,7 @@ def build_textbook_manifest() -> list[dict]:
 def build_curriculum_manifest() -> list[dict]:
     rows = []
     base = ROOT / "data" / "curriculum" / "national"
-    for pdf in sorted(base.rglob("*.pdf")):
+    for pdf in _input_files(base, ".pdf"):
         rows.append({
             "type": "curriculum_standard",
             "subject": pdf.stem,
@@ -82,7 +105,6 @@ def build_curriculum_manifest() -> list[dict]:
             "source_org": "教育部 (MoE)",
             "source_url": "http://www.moe.gov.cn/srcsite/A26/s8001/202006/t20200603_462199.html",
             "source_attachment_url": "http://www.moe.gov.cn/srcsite/A26/s8001/202006/W020200603315372317586.zip",
-            "fetched_at": _now(),
         })
     return rows
 
@@ -98,14 +120,15 @@ def build_structured_manifest() -> list[dict]:
     for repo_dir in sorted(base.iterdir()):
         if not repo_dir.is_dir():
             continue
-        sz = sum(f.stat().st_size for f in repo_dir.rglob("*") if f.is_file())
+        repo_files = _input_files(repo_dir)
+        sz = sum(f.stat().st_size for f in repo_files)
         rows.append({
             "type": "structured_repo",
             "repo": repo_dir.name,
             "rel_path": str(repo_dir.relative_to(ROOT)),
             "size_bytes": sz,
+            "tracked_file_count": len(repo_files),
             "source_url": repo_to_url.get(repo_dir.name, ""),
-            "fetched_at": _now(),
         })
     return rows
 
@@ -118,11 +141,25 @@ def write_jsonl(rows: list[dict], path: Path) -> None:
     print(f"wrote {len(rows):4d} rows -> {path.relative_to(ROOT)}")
 
 
+def write_run_metadata(path: Path) -> None:
+    payload = {
+        "generated_at": _now(),
+        "input_scope": (
+            "git ls-files under data/textbooks, data/curriculum, data/structured; "
+            "fallback to filesystem scan only when no tracked files are available"
+        ),
+        "row_timestamps": "omitted to keep row-level lineage stable across reruns",
+    }
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"wrote run metadata -> {path.relative_to(ROOT)}")
+
+
 def main() -> None:
     MANIFEST_DIR.mkdir(parents=True, exist_ok=True)
     write_jsonl(build_textbook_manifest(), MANIFEST_DIR / "textbook_manifest.jsonl")
     write_jsonl(build_curriculum_manifest(), MANIFEST_DIR / "curriculum_manifest.jsonl")
     write_jsonl(build_structured_manifest(), MANIFEST_DIR / "structured_manifest.jsonl")
+    write_run_metadata(MANIFEST_DIR / "_manifest_run.json")
 
 
 if __name__ == "__main__":

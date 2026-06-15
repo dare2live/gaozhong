@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-06-12T01:13:52Z",
+  "source_family": "China Education Online / EOL",
+  "purpose": "Phase A/M0 raw truth-source acquisition for 2021/2022 New Curriculum Paper II English",
+  "items": [
+    {
+      "year": 2021,
+      "paper_type": "新高考全国II卷",
+      "landing_page": "https://gaokao.eol.cn/shiti/zhenti/202204/t20220430_2223302.shtml",
+      "download_url": "https://gaokao.eol.cn/shiti/zhenti/202204/W020220531349552764808.docx",
+      "local_docx": "data/external/exam_sources/eol/2021_xgkii_english_eol.docx",
+      "local_text": "data/external/exam_sources/eol/2021_xgkii_english_eol.txt",
+      "sha256": "d5f5bf68536c09240533809b1f6cb7bd2f54256bb668069e5ebfabf2293caee3",
+      "text_chars": 20472,
+      "observed_scope": "includes listening, reading, language use, writing, and answer text markers in extracted docx text",
+      "status": "raw_source_acquired_not_structured"
+    },
+    {
+      "year": 2022,
+      "paper_type": "新高考全国II卷",
+      "landing_page": "https://gaokao.eol.cn/shiti/yy/202207/t20220713_2237604.shtml",
+      "download_url": "https://gaokao.eol.cn/shiti/yy/202207/W020220713420511245022.docx",
+      "local_docx": "data/external/exam_sources/eol/2022_xgkii_english_eol.docx",
+      "local_text": "data/external/exam_sources/eol/2022_xgkii_english_eol.txt",
+      "sha256": "092466a264b8effda7eca0703949dd9f2470c0e3069815096afc2ec79477854f",
+      "text_chars": 16921,
+      "observed_scope": "starts at reading section; no listening section observed in extracted docx text",
+      "status": "raw_source_acquired_partial_not_structured"
+    }
+  ],
+  "next_gate": "Convert raw docx text to reviewed structured JSONL, cross-check item counts and answers, then import only after truth_baseline --strict deltas are understood."
+}

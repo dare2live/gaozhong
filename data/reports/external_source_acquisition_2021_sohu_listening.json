@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-06-12T06:33:56+00:00",
+  "tool": "scripts/tools/data_sources/acquire_external_source.py",
+  "records": [
+    {
+      "generated_at": "2026-06-12T06:33:56+00:00",
+      "source_id": "sohu_shared_new_gaokao_listening_2021_candidate",
+      "name": "2021 全国新高考卷英语听力试题及答案 Sohu mirror candidate",
+      "family": "listening_source_candidate",
+      "org": "Sohu / 培训是个简单事",
+      "publish_url": "https://www.sohu.com/a/755417015_121124334",
+      "year": 2021,
+      "paper_type": "全国新高考卷听力",
+      "configured_status": "raw_source_pending_acquisition_candidate_shared_listening",
+      "observed_scope": "Sohu mirror labels the page as 2021 national new-gaokao listening and gives answer key plus transcripts; question text matches the 2021 EOL New Curriculum II listening prompts, but this remains a candidate source until local acquisition and cross-check evidence are recorded",
+      "status": "ok",
+      "findings": [],
+      "attachments": [
+        {
+          "kind": "html",
+          "url": "https://www.sohu.com/a/755417015_121124334",
+          "local_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/listening/2021_new_gaokao_listening_sohu.html",
+          "text_path": null,
+          "expected_sha256": null,
+          "actual_sha256": "6089470a8e3ac4ba7fe2694c13333016af74486ca516a8662b3bd6c9b36021b0",
+          "bytes": 35820,
+          "text_chars": null,
+          "status": "ok",
+          "action": "downloaded",
+          "findings": []
+        }
+      ]
+    }
+  ],
+  "status": "ok"
+}

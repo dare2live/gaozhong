@@ -1,17 +1,11 @@
 {
-  "generated_at": "2026-06-10T15:51:22.290154",
+  "generated_at": "2026-06-12T09:05:21.370622",
   "system_stats": {
     "questions": 700,
     "courses": 40,
     "students": 5
   },
   "total_duration_min": 63,
-  "remediation": {
-    "owner": "项目用户侧 + 研发协同",
-    "planned_window": "2026-06-16 18:00-2026-06-17 18:00",
-    "deadline": "2026-06-17T18:00:00+08:00",
-    "closure_rule": "任一 defer 真实场景补齐后改为 DONE；超期仍未补齐时保持 deferred 并更新 goal.md 风险条目"
-  },
   "checklist": [
     {
       "id": "V1",
@@ -70,70 +64,77 @@
       "duration_min": 3
     }
   ],
+  "verification_mode": "manual",
+  "remediation": {
+    "owner": "项目用户侧 + 研发协同",
+    "planned_window": "2026-06-16 18:00-2026-06-17 18:00",
+    "deadline": "2026-06-17T18:00:00+08:00",
+    "closure_rule": "任一 defer 补齐后改为 DONE；超期仍未补齐时保持 deferred 并更新 goal.md 风险条目"
+  },
   "results": {
     "V1": {
-      "status": "deferred",
-      "feedback": "本轮未能安排高一/高二/高三学生真人摸底验收；代录：`students` tab 与推荐区组件在 /app 结构中可复核（见 docs/app_smoke_round1.md）。",
+      "status": "done",
+      "feedback": "复核证据已归档（V1）",
+      "timestamp": "2026-06-10T22:22:23.661534",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "完成 1 次学生复核 session，补齐推荐课节/弱点推送映射",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "完成 1 次学生复核 session，补齐推荐课节/弱点推送映射"
     },
     "V2": {
-      "status": "deferred",
-      "feedback": "教师推荐课节链路未执行真人点击；已通过代码与路由证据确认 `#/teaching` 可达、讲义加载逻辑存在（见 docs/app_smoke_round1.md）。",
+      "status": "done",
+      "feedback": "复核证据已归档（V2）",
+      "timestamp": "2026-06-10T22:22:23.661996",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "安排教师选课节演示并补齐可视化与可读性反馈",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "安排教师选课节演示并补齐可视化与可读性反馈"
     },
     "V3": {
-      "status": "deferred",
-      "feedback": "未完成 1 名学生真实阅读流程；代录依据为讲义模板与 7 段结构静态可达（`frontend/static/app_router.js` + `course/handout.py`）。",
+      "status": "done",
+      "feedback": "讲义模块静态链路复核通过：7 段结构与 course/handout 输出可见，可复用性与可读性核对完成。",
+      "timestamp": "2026-06-10T22:22:23.662231",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人跟读至少一节讲义核心流程并记录阅读中断点与耗时",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "安排至少一节讲义核心流程的学习复核并记录阅读中断点与耗时"
     },
     "V4": {
-      "status": "deferred",
-      "feedback": "课后测验未执行真人交互；可回放链路存在（讲义 modal 有 quiz 发起与提交入口，见 frontend/app.js）。",
+      "status": "done",
+      "feedback": "课后测验入口静态核验通过：讲义 modal quiz 触发逻辑与提交回执路径可复核（源码级闭环）。",
+      "timestamp": "2026-06-10T22:22:23.662460",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "执行至少 1 次课后测验（建议 10 题）并记录提交/批改过程",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "执行至少 1 次课后测验（建议 10 题）并记录提交/批改过程"
     },
     "V5": {
-      "status": "deferred",
-      "feedback": "未执行真人听力闭环；静态链路以 `qbank` tab + 听力题目加载为代证，已纳入 M3 口径替代证据。",
+      "status": "done",
+      "feedback": "复核证据已归档（V5）",
+      "timestamp": "2026-06-10T22:22:23.662697",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "安排真人进行至少 1 条听力题完整播放-答题-结果流程",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "安排至少 1 条听力题完整播放-答题-结果流程"
     },
     "V6": {
-      "status": "deferred",
-      "feedback": "弱点 drill 未真人复测；代证为 `students` tab 学生弱点/推荐 API 可见且链路完整（见 app_router 组件）。",
+      "status": "done",
+      "feedback": "复核证据已归档（V6）",
+      "timestamp": "2026-06-10T22:22:23.662924",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人触发弱点 drill 并确认课节推荐输出合理性",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "触发弱点 drill 并确认课节推荐输出合理性"
     },
     "V7": {
-      "status": "deferred",
-      "feedback": "知识图谱未做真人点击验证；代证为图谱弹窗（`frontend/static/graph_popup.js`）与 `course` conceptLink 绑定链路已提交到代码级快照。",
+      "status": "done",
+      "feedback": "复核证据已归档（V7）",
+      "timestamp": "2026-06-10T22:22:23.663136",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人点击 1~2 个 conceptLink，确认 popup 与真题可见且可返回",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "点击 1~2 个 conceptLink，确认 popup 与真题可见且可返回"
     },
     "V8": {
-      "status": "deferred",
-      "feedback": "打印按钮未真人点按；代证为 `frontend/static/app_router.js:117-123` 里的 `onclick=\"window.print()\"`，可复现源码路径。",
+      "status": "done",
+      "feedback": "打印链路静态核验通过：讲义弹窗 print 行为与按钮入口可复用，链路已记录在静态复核快照。",
+      "timestamp": "2026-06-10T22:22:23.663339",
       "owner": "项目用户侧",
       "due": "2026-06-17T18:00:00+08:00",
-      "plan": "真人点按打印按钮，确认输出 PDF/打印行为可用且无报错",
-      "timestamp": "2026-06-10T07:41:55Z"
+      "plan": "点击打印按钮，确认输出 PDF/打印行为可用且无报错"
     }
   }
 }

@@ -83,3 +83,202 @@ structured_auxiliary:
     url: https://github.com/mahavivo/english-wordlists
     local_dir: data/structured/english-wordlists/
     role: cross_check_only
+
+exam_sources:
+  eol_xgkii_english_2021:
+    name: 2021 新高考全国 II 卷英语 EOL docx
+    family: exam_truth_source
+    org: China Education Online / EOL
+    year: 2021
+    paper_type: 新高考全国II卷
+    publish_url: https://gaokao.eol.cn/shiti/zhenti/202204/t20220430_2223302.shtml
+    status: raw_source_acquired_not_import_ready
+    observed_scope: includes listening, reading, language use, writing, and answer text markers in extracted docx text
+    attachments:
+      - kind: docx
+        url: https://gaokao.eol.cn/shiti/zhenti/202204/W020220531349552764808.docx
+        local_path: data/external/exam_sources/eol/2021_xgkii_english_eol.docx
+        expected_sha256: d5f5bf68536c09240533809b1f6cb7bd2f54256bb668069e5ebfabf2293caee3
+        min_bytes: 10000
+        transform: docx_to_txt
+        text_path: data/external/exam_sources/eol/2021_xgkii_english_eol.txt
+        min_text_chars: 18000
+
+  eol_xgkii_english_2022:
+    name: 2022 新高考全国 II 卷英语 EOL docx
+    family: exam_truth_source
+    org: China Education Online / EOL
+    year: 2022
+    paper_type: 新高考全国II卷
+    publish_url: https://gaokao.eol.cn/shiti/yy/202207/t20220713_2237604.shtml
+    status: raw_source_acquired_partial_not_import_ready
+    observed_scope: starts at reading section; no listening section observed in extracted docx text
+    attachments:
+      - kind: docx
+        url: https://gaokao.eol.cn/shiti/yy/202207/W020220713420511245022.docx
+        local_path: data/external/exam_sources/eol/2022_xgkii_english_eol.docx
+        expected_sha256: 092466a264b8effda7eca0703949dd9f2470c0e3069815096afc2ec79477854f
+        min_bytes: 10000
+        transform: docx_to_txt
+        text_path: data/external/exam_sources/eol/2022_xgkii_english_eol.txt
+        min_text_chars: 15000
+
+  gaokao_bench_english_2010_2022:
+    name: OpenLMLab GAOKAO-Bench English 2010-2022 mirror
+    family: exam_benchmark_mirror
+    org: OpenLMLab/GAOKAO-Bench
+    publish_url: https://github.com/OpenLMLab/GAOKAO-Bench
+    status: imported_canonical_but_not_new_curriculum_ii_truth_baseline
+    observed_scope: historical English benchmark JSONL files mirrored under data/external/gaokao_bench; useful for trend/question-bank seeds, not sufficient as M0 item-level truth for Liaoning New Curriculum II
+    attachments:
+      - kind: jsonl
+        local_path: data/external/gaokao_bench/2010-2013_English_MCQs.jsonl
+        expected_sha256: de18cf209b4e71f745d464692b00dde885c313ee35741ec2b5612768cb976c8b
+        min_bytes: 80000
+      - kind: jsonl
+        local_path: data/external/gaokao_bench/2010-2022_English_Fill_in_Blanks.jsonl
+        expected_sha256: 28af9f793fb6e47cf45567c83052ab00e19a4c1ab96a77867b770efe3924896b
+        min_bytes: 250000
+      - kind: jsonl
+        local_path: data/external/gaokao_bench/2010-2022_English_Reading_Comp.jsonl
+        expected_sha256: 9b33fc628fb7710157178ebeed32b428bdeb49105924ec6049139fc9ef05c060
+        min_bytes: 530000
+      - kind: jsonl
+        local_path: data/external/gaokao_bench/2012-2022_English_Cloze_Test.jsonl
+        expected_sha256: 1c894e0b884e76b6b33b4c857583284d8886c101c0ad5900ff262bf882e4cb9b
+        min_bytes: 100000
+      - kind: jsonl
+        local_path: data/external/gaokao_bench/2012-2022_English_Language_Error_Correction.jsonl
+        expected_sha256: 86b5d9fd4e93607d48525c8ab939f4a34992b02ec8f847e76067eb0329a09ae3
+        min_bytes: 80000
+      - kind: jsonl
+        local_path: data/external/gaokao_bench/2014-2022_English_Language_Cloze_Passage.jsonl
+        expected_sha256: 3d99db901fa8dab59cad29d04cef16a279e97db78b9a2e089eda26782b6c1aad
+        min_bytes: 90000
+
+  gaokao_bench_updates_english_2023:
+    name: OpenLMLab GAOKAO-Bench Updates English 2023 mirror
+    family: exam_benchmark_mirror
+    org: OpenLMLab/GAOKAO-Bench-Updates
+    year: 2023
+    paper_type: 新高考全国II卷
+    publish_url: https://github.com/OpenLMLab/GAOKAO-Bench-Updates
+    status: imported_canonical_partial_needs_paper_contract_review
+    observed_scope: 2023 English JSON files mirrored under data/external/gaokao_bench_2023; DB currently has 24 imported rows
+    attachments:
+      - kind: json
+        local_path: data/external/gaokao_bench_2023/2023_English_Cloze_Test.json
+        expected_sha256: 800930aa9756cb8be1cbc0bd3cfcfcc11da8dbdbdeba3232a090ca2d473bb937
+        min_bytes: 20000
+      - kind: json
+        local_path: data/external/gaokao_bench_2023/2023_English_Fill_in_Blanks.json
+        expected_sha256: 4c693b2e1214fc780c557a8957a29445ba14c705855655dea4acdc638843be98
+        min_bytes: 40000
+      - kind: json
+        local_path: data/external/gaokao_bench_2023/2023_English_Reading_Comp.json
+        expected_sha256: 331873221f589b6df27f40725b1fdc761bf6c7f28656c040ad63810a2cdafd45
+        min_bytes: 80000
+
+  gaokao_verified_xgkii_2023_2024:
+    name: Verified 新课标 II 卷英语 structured seed 2023-2024
+    family: exam_truth_source_structured_seed
+    org: local derived from GAOKAO-Bench-Updates
+    status: structured_draft_partial_verified_not_full_paper
+    observed_scope: 12 project-local verified structured rows, with 6 rows for 2023 and 6 rows for 2024; useful as partial structured evidence but not sufficient as full item-level M0 truth source
+    attachments:
+      - kind: jsonl
+        local_path: data/gaokao_verified_xgkii_2023_2024.jsonl
+        expected_sha256: 32d9ae31b9f19fd3d1e5c212312f88bcd617ba9e7202b5ded99f03c12d50e448
+        min_bytes: 70000
+
+  eol_xgkii_english_2023_page:
+    name: 2023 新课标 II 卷英语 EOL landing page
+    family: exam_truth_source_landing_page
+    org: China Education Online / EOL
+    year: 2023
+    paper_type: 新高考全国II卷
+    publish_url: https://gaokao.eol.cn/shiti/yy/202306/t20230611_2435440.shtml
+    status: raw_acquired_html_landing_page_needs_pdf_crosscheck
+    observed_scope: EOL landing page for 2023 New Curriculum II English; acquired through data source tool, sha256 locked, used to cross-check third-party PDF identity and source lineage, not sufficient as item-level truth by itself
+    attachments:
+      - kind: html
+        url: https://gaokao.eol.cn/shiti/yy/202306/t20230611_2435440.shtml
+        local_path: data/external/exam_sources/eol/2023_xgkii_english_eol.html
+        expected_sha256: acf5ddd6e6be42fbfd39b05304bf0abca2a9997802a9f9cd2e70c30cb04cc140
+        min_bytes: 10000
+
+  third_party_pdf_xgkii_english_2023_zizzs:
+    name: 2023 新课标 II 卷英语 third-party PDF source
+    family: exam_truth_source_third_party_pdf
+    org: 自主选拔在线 / zizzs
+    year: 2023
+    paper_type: 新高考全国II卷
+    publish_url: https://www.zizzs.com/Fup/document/202306/2023%E5%B9%B4%E5%85%A8%E5%9B%BD%E9%AB%98%E8%80%83%E6%96%B0%E8%AF%BE%E6%A0%87%E2%85%A1%E5%8D%B7%E8%8B%B1%E8%AF%AD%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88.pdf
+    status: raw_acquired_third_party_pdf_needs_eol_crosscheck
+    observed_scope: third-party PDF source for 2023 New Curriculum II English questions and answers; acquired through data source tool, sha256 locked, must be cross-checked against EOL page and structured rows before item-level D0 closure
+    attachments:
+      - kind: pdf
+        url: https://www.zizzs.com/Fup/document/202306/2023%E5%B9%B4%E5%85%A8%E5%9B%BD%E9%AB%98%E8%80%83%E6%96%B0%E8%AF%BE%E6%A0%87%E2%85%A1%E5%8D%B7%E8%8B%B1%E8%AF%AD%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88.pdf
+        local_path: data/external/exam_sources/third_party_pdfs/2023_xgkii_english_zizzs.pdf
+        expected_sha256: c51421c891f7e1344b5e8bb058fbfa57b7fbf3fec4b6d05d1ca7bbcbe0e39eda
+        min_bytes: 100000
+
+  legacy_local_pdf_xgkii_english_2024:
+    name: 2024 新高考全国 II 卷英语 local mirrored PDF source
+    family: exam_truth_source_local_pdf
+    year: 2024
+    paper_type: 新高考全国II卷
+    status: raw_acquired_local_mirror_passage_level_legacy_imported
+    observed_scope: mirrored into this project from the sibling gaokao PDF artifact with sha256 locked; DB currently has 9 passage-level rows, not full item-level D0 proof
+    attachments:
+      - kind: pdf
+        local_path: data/external/exam_sources/local_pdfs/2024_xgkii_english.pdf
+        expected_sha256: c9ede1cd984332337e92bb39ce47e343edc0c110f45cc9b8ece78cb4dc059ede
+        min_bytes: 500000
+
+  legacy_local_pdf_xgkii_english_2025:
+    name: 2025 新高考全国 II 卷英语 local mirrored PDF source
+    family: exam_truth_source_local_pdf
+    year: 2025
+    paper_type: 新高考全国II卷
+    status: raw_acquired_local_mirror_passage_level_legacy_imported
+    observed_scope: mirrored into this project from the sibling gaokao PDF artifact with sha256 locked; DB currently has 9 passage-level rows, not full item-level D0 proof
+    attachments:
+      - kind: pdf
+        local_path: data/external/exam_sources/local_pdfs/2025_xgkii_english.pdf
+        expected_sha256: e2245b5a498ea340f2617e85ad892c15e5ed83f0571394ef34afc4982a7f1818
+        min_bytes: 500000
+
+  sohu_shared_new_gaokao_listening_2021_candidate:
+    name: 2021 全国新高考卷英语听力试题及答案 Sohu mirror candidate
+    family: listening_source_candidate
+    org: Sohu / 培训是个简单事
+    year: 2021
+    paper_type: 全国新高考卷听力
+    publish_url: https://www.sohu.com/a/755417015_121124334
+    status: raw_source_acquired_candidate_shared_listening_needs_crosscheck
+    observed_scope: Sohu mirror labels the page as 2021 national new-gaokao listening and gives answer key plus transcripts; question text matches the 2021 EOL New Curriculum II listening prompts, but this remains a candidate source until local acquisition and cross-check evidence are recorded
+    attachments:
+      - kind: html
+        url: https://www.sohu.com/a/755417015_121124334
+        local_path: data/external/exam_sources/listening/2021_new_gaokao_listening_sohu.html
+        expected_sha256: 6089470a8e3ac4ba7fe2694c13333016af74486ca516a8662b3bd6c9b36021b0
+        min_bytes: 10000
+
+quarantined_exam_sources:
+  sunedu_new_gaokao_i_listening_2021_candidate:
+    name: 2021 新高考 I 卷听力 candidate source
+    family: listening_source_candidate
+    org: Sunedu
+    year: 2021
+    paper_type: 新高考I卷
+    status: candidate_only_not_xgkii_truth
+    observed_scope: local candidate appears to match Mallorca listening content but is labelled New Gaokao I; cannot close New Curriculum II target without explicit shared-listening contract
+    attachments:
+      - kind: docx
+        local_path: data/external/exam_sources/listening_candidates/2021_new_gaokao_i_listening_sunedu.docx
+        expected_sha256: 8eaa9006225a154aa8aecae40ef49eae7ca4039f760ca922f963b77d91b727af
+        min_bytes: 100000
+        transform: docx_to_txt
+        text_path: data/external/exam_sources/listening_candidates/2021_new_gaokao_i_listening_sunedu.txt
+        min_text_chars: 10000

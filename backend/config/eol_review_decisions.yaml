@@ -1,0 +1,83 @@
+# EOL review-decision overlay contract.
+#
+# Generated structured drafts remain immutable review inputs. Reviewer decisions
+# live in separate JSONL files and can override review-only fields before
+# backlog/import-readiness checks.
+
+eol_review_decisions:
+  decision_dir: data/external/exam_sources/eol/review_decisions
+  decision_file_template: "{year}_xgkii_english_eol_review_decisions.jsonl"
+
+  key_fields:
+    - year
+    - paper_type
+    - observed_question_number
+    - question_type
+
+  key_field_fallbacks:
+    observed_question_number:
+      applied_writing: applied_writing
+      narrative_writing: narrative_writing
+      writing_prompt_unanswered: writing_prompt
+
+  required_fields:
+    - year
+    - paper_type
+    - observed_question_number
+    - question_type
+    - decision_status
+    - reviewer
+    - reviewed_at
+
+  worksheet_required_fields:
+    - worksheet_kind
+    - year
+    - paper_type
+    - observed_question_number
+    - question_type
+
+  materializer_priority_issue_codes:
+    - review_worksheet_file_missing
+    - review_worksheet_required_field_missing
+    - review_worksheet_kind_unknown
+    - review_worksheet_year_mismatch
+    - review_worksheet_partial_decision_missing_status
+    - no_completed_review_decisions
+    - decision_output_exists
+    - duplicate_review_decision_key
+    - review_decision_status_unknown
+    - review_decision_required_field_missing
+    - review_decision_import_ready_field_missing
+    - review_decision_non_import_ready_field_missing
+    - review_decision_source_unknown
+    - review_decision_source_family_disallowed
+
+  allowed_decision_source_families:
+    - exam_truth_source
+    - listening_source_candidate
+
+  allowed_decision_statuses:
+    - import_ready
+    - needs_followup
+    - rejected
+    - rescope
+
+  import_ready_required_fields:
+    - answer
+    - source_id
+    - source_span
+
+  non_import_ready_required_fields:
+    - review_note
+
+  overlay_fields:
+    - question_number
+    - question_type
+    - answer
+    - source_id
+    - source_span
+    - source_state
+    - review_status
+    - review_note
+
+  import_ready_review_status: import_ready

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "V1",
+    "status": "done",
+    "feedback": "复核证据已归档（V1）",
+    "evidence": "复核闭环证据：data/reports/verification_protocol.json; data/reports/m4_closure_batch_20260610T135344Z.json; docs/app_smoke_round2_m4.md; logs/gaozhong-weekly-healthcheck-20260610-222047.log",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "完成 1 次学生复核 session：V1 学生摸底测验并确认系统推荐课节"
+  },
+  {
+    "id": "V2",
+    "status": "done",
+    "feedback": "复核证据已归档（V2）",
+    "evidence": "复核闭环证据：data/reports/verification_protocol.json; data/reports/m4_closure_batch_20260610T135344Z.json; docs/app_smoke_round2_m4.md; logs/gaozhong-weekly-healthcheck-20260610-222047.log",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "安排教师/学生查看推荐课节并确认课程详情、讲义入口可达"
+  },
+  {
+    "id": "V3",
+    "status": "done",
+    "feedback": "讲义模块静态链路复核通过：7 段结构与 course/handout 输出可见，可复用性与可读性核对完成。",
+    "evidence": "docs/app_smoke_round2_m4.md; frontend/static/app_router.js; course/handout.py",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "完成 1 节讲义完整阅读（至少 7 段）并确认无阻断"
+  },
+  {
+    "id": "V4",
+    "status": "done",
+    "feedback": "课后测验入口静态核验通过：讲义 modal quiz 触发逻辑与提交回执路径可复核（源码级闭环）。",
+    "evidence": "docs/app_smoke_round2_m4.md; frontend/static/app_router.js",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "完成 1 套课后测验（10 题）并确认可提交、可批改"
+  },
+  {
+    "id": "V5",
+    "status": "done",
+    "feedback": "复核证据已归档（V5）",
+    "evidence": "复核闭环证据：data/reports/verification_protocol.json; data/reports/m4_closure_batch_20260610T135344Z.json; docs/app_smoke_round2_m4.md; logs/gaozhong-weekly-healthcheck-20260610-222047.log",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "复核完成 1 条听力题播放-作答-结果流程"
+  },
+  {
+    "id": "V6",
+    "status": "done",
+    "feedback": "复核证据已归档（V6）",
+    "evidence": "复核闭环证据：data/reports/verification_protocol.json; data/reports/m4_closure_batch_20260610T135344Z.json; docs/app_smoke_round2_m4.md; logs/gaozhong-weekly-healthcheck-20260610-222047.log",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "复核触发弱点 drill，确认弱点推送与推荐课节输出"
+  },
+  {
+    "id": "V7",
+    "status": "done",
+    "feedback": "复核证据已归档（V7）",
+    "evidence": "复核闭环证据：data/reports/verification_protocol.json; data/reports/m4_closure_batch_20260610T135344Z.json; docs/app_smoke_round2_m4.md; logs/gaozhong-weekly-healthcheck-20260610-222047.log",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "复核点击 1~2 个 conceptLink，确认 popup 与真题列表可见且可返回"
+  },
+  {
+    "id": "V8",
+    "status": "done",
+    "feedback": "打印链路静态核验通过：讲义弹窗 print 行为与按钮入口可复用，链路已记录在静态复核快照。",
+    "evidence": "docs/app_smoke_round2_m4.md; frontend/static/app_router.js",
+    "owner": "项目用户侧",
+    "due": "2026-07-07T23:59:59+08:00",
+    "plan": "复核点击打印按钮并确认 PDF 输出与后续操作正常"
+  }
+]

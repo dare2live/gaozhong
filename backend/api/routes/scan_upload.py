@@ -20,11 +20,10 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-import duckdb
+from backend.api.db import db_write
 
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 SCAN_DIR = ROOT / "data" / "scans"
-DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024   # 20 MB
 
@@ -58,17 +57,14 @@ def handle(qs: dict, body: bytes, headers) -> tuple[int, dict]:
     if text:
         text_path = str((SCAN_DIR / f"{upload_id}.txt").relative_to(ROOT))
         (ROOT / text_path).write_text(text, encoding="utf-8")
-    # DB insert (RW connection)
-    con = duckdb.connect(str(DB_PATH))
-    try:
+    # DB insert (serialized runtime write connection)
+    with db_write() as con:
         con.execute("""
             INSERT INTO scan_uploads VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, [upload_id, student_id,
               str(file_path.relative_to(ROOT)), sha, kind,
               datetime.now(timezone.utc).isoformat(),
               ocr_status, text_path])
-    finally:
-        con.close()
     return 200, {
         "upload_id": upload_id, "file_size": len(body),
         "sha256": sha[:16], "ext": ext,

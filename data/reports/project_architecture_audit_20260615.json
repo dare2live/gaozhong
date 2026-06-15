@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-06-15T07:29:57+00:00",
+  "tool": "backend.services.audit.project_architecture",
+  "config_path": "/Users/dp/Documents/M/gaozhong/backend/config/project_architecture.yaml",
+  "status": "fail",
+  "summary": {
+    "instruction_sources": 4,
+    "truth_sources": 4,
+    "sibling_projects": 3,
+    "module_contracts": 8,
+    "data_zones": 4,
+    "config_contracts": 11,
+    "gate_contracts": 3,
+    "legacy_policy_lints": 2,
+    "architecture_rules": 5,
+    "block_findings": 1,
+    "warn_findings": 1
+  },
+  "findings": [
+    {
+      "code": "legacy_policy_lint_failed",
+      "severity": "BLOCK",
+      "target": "legacy_policy_lints.direct_exam_questions_writer",
+      "detail": "matched=['INSERT INTO exam_questions', 'data/external/exam_sources/local_pdfs']; missing_config_refs=['backend/config/sources.yaml', 'backend/config/import_policies.yaml']; rationale=Direct exam imports must be registry/import-policy driven before they can be considered current architecture."
+    },
+    {
+      "code": "legacy_policy_lint_failed",
+      "severity": "WARN",
+      "target": "legacy_policy_lints.init_db_legacy_importer_call",
+      "detail": "matched=['import_recent_exams']; missing_config_refs=['backend/config/import_policies.yaml']; rationale=DB rebuild entrypoints must not silently call legacy direct importers."
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+# Exam paper coverage contracts.
+#
+# Purpose:
+# - Define what "complete" means before parser/import code runs.
+# - Keep target scope out of importer code.
+# - Preserve D0 rule: unknown or partial sources must not be normalized into success.
+
+contracts:
+  xgkii_english_m0_2021_2025:
+    subject: English
+    paper_type: 新高考全国II卷
+    paper_type_aliases:
+      - 新高考全国II卷
+      - 新课标 II 卷
+      - 新课标II卷
+    project_focus: 辽宁新高考英语教学与命题模型
+    status: active_m0_truth_baseline
+    truth_gate: scripts/tools/audit/truth_baseline_audit.py --strict
+    source_state_required_for_import: import_ready
+    source_state_required_for_completion: d0_verified
+    notes:
+      - 2021 and 2022 are the current known M0 weak years.
+      - Historical GAOKAO-Bench rows can seed trend and question-bank views, but they are not enough to prove item-level New Curriculum II truth coverage.
+      - Listening and written-paper sources may need separate provenance, but the contract must make that split explicit before completion.
+    years:
+      2021:
+        expected_min_rows: 55
+        expected_sections:
+          - listening
+          - reading
+          - language_use
+          - writing
+        current_known_sources:
+          - eol_xgkii_english_2021
+        current_status: structured_draft_not_import_ready
+        known_gaps:
+          - EOL listening rows are currently unkeyed.
+          - Previous Sunedu New Gaokao I listening candidate is quarantined and must not close the New Curriculum II contract without an explicit shared-listening proof.
+          - Sunedu listening source is labelled New Gaokao I and must not be treated as II without shared-source evidence.
+      2022:
+        expected_min_rows: 55
+        expected_sections:
+          - listening
+          - reading
+          - language_use
+          - writing
+        current_known_sources:
+          - eol_xgkii_english_2022
+        current_status: raw_partial_and_structured_draft_not_import_ready
+        known_gaps:
+          - EOL source appears written-paper-only; listening 1-20 not observed.
+      2023:
+        expected_min_rows: 55
+        expected_sections:
+          - listening
+          - reading
+          - language_use
+          - writing
+        current_known_sources:
+          - eol_xgkii_english_2023_page
+          - gaokao_bench_updates_english_2023
+          - gaokao_verified_xgkii_2023_2024
+          - third_party_pdf_xgkii_english_2023_zizzs
+        current_status: imported_canonical_partial_needs_source_review
+        known_gaps:
+          - Previous local PDF artifact at data/external/gaokao_2023_xgkii_english.pdf was only 427 bytes and has been removed from active source contracts.
+          - EOL landing page and third-party PDF are acquired and sha256 locked, but still require content-level cross-check before item-level D0 proof.
+          - Imported GAOKAO-Bench rows are not item-level full-paper proof.
+          - Project-local verified structured seed only covers 6 rows for 2023; it cannot close full item-level M0 coverage.
+      2024:
+        expected_min_rows: 55
+        expected_sections:
+          - listening
+          - reading
+          - language_use
+          - writing
+        current_known_sources:
+          - gaokao_verified_xgkii_2023_2024
+          - legacy_local_pdf_xgkii_english_2024
+        current_status: imported_canonical_passage_level_not_item_level
+        known_gaps:
+          - Project-local verified structured seed only covers 6 rows for 2024; it cannot close full item-level M0 coverage.
+          - Current local PDF importer produced 9 passage-level rows, not full item-level rows.
+      2025:
+        expected_min_rows: 55
+        expected_sections:
+          - listening
+          - reading
+          - language_use
+          - writing
+        current_known_sources:
+          - legacy_local_pdf_xgkii_english_2025
+        current_status: imported_canonical_passage_level_not_item_level
+        known_gaps:
+          - Current local PDF importer produced 9 passage-level rows, not full item-level rows.
+
+  historical_gaokao_bench_english_2010_2022:
+    subject: English
+    paper_type: mixed_or_unknown_until_row_level_review
+    status: benchmark_seed_not_d0_truth_baseline
+    current_known_sources:
+      - gaokao_bench_english_2010_2022
+    allowed_uses:
+      - trend_seed
+      - question_bank_seed_after_origin_trace
+      - pattern_mining
+    forbidden_uses:
+      - claim Liaoning/New Curriculum II full-paper completeness
+      - close M0 strict truth baseline by row count alone

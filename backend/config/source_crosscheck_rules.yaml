@@ -1,0 +1,20 @@
+# Source cross-check rules.
+#
+# Keep source identity and matching rules in config, not parser code.
+# These rules are intentionally small: they guard source identity before
+# parser/import work treats a source as usable truth evidence.
+
+html_identity:
+  default_required_groups: {}
+  sources:
+    eol_xgkii_english_2023_page:
+      required_groups:
+        year:
+          - "2023"
+        subject:
+          - 英语
+        paper:
+          - 新课标II卷
+          - 新课标Ⅱ卷
+          - 新高考全国II卷
+          - 新高考全国Ⅱ卷

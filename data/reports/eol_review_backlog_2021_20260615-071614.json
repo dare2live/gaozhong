@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-06-15T07:16:14+00:00",
+  "tool": "backend.services.audit.eol_review_backlog",
+  "year": 2021,
+  "draft_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/eol/2021_xgkii_english_eol_structured_draft.jsonl",
+  "decision_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/eol/review_decisions/2021_xgkii_english_eol_review_decisions.jsonl",
+  "status": "pass",
+  "summary": {
+    "rows": 67,
+    "review_decisions": 67,
+    "applied_review_decisions": 67,
+    "decision_findings": 0,
+    "backlog_items": 0,
+    "issue_counts": {},
+    "question_type_counts": {},
+    "priority_buckets": {}
+  },
+  "backlog": []
+}

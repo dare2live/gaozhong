@@ -127,7 +127,7 @@
 
 ---
 
-## 5. STEP 1 验收门 (gate)
+## 5. STEP 1 复核门 (gate)
 
 全绿才能开 STEP 2:
 - [ ] 8 个版本教材 PDF 全下完 + sha256 manifest

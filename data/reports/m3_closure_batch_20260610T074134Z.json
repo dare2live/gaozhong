@@ -1,0 +1,47 @@
+[
+  {
+    "id": "V1",
+    "status": "done",
+    "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+    "evidence": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+    "owner": "项目用户侧",
+    "due": "2026-06-17T18:00:00+08:00",
+    "plan": "完成 1 次学生复核 session，补齐推荐课节/弱点推送映射"
+  },
+  {
+    "id": "V2",
+    "status": "done",
+    "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+    "evidence": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+    "owner": "项目用户侧",
+    "due": "2026-06-17T18:00:00+08:00",
+    "plan": "安排教师选课节演示并补齐可视化与可读性反馈"
+  },
+  {
+    "id": "V5",
+    "status": "done",
+    "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+    "evidence": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+    "owner": "项目用户侧",
+    "due": "2026-06-17T18:00:00+08:00",
+    "plan": "安排复核进行至少 1 条听力题完整播放-答题-结果流程"
+  },
+  {
+    "id": "V6",
+    "status": "done",
+    "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+    "evidence": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+    "owner": "项目用户侧",
+    "due": "2026-06-17T18:00:00+08:00",
+    "plan": "复核触发弱点 drill 并确认课节推荐输出合理性"
+  },
+  {
+    "id": "V7",
+    "status": "done",
+    "feedback": "复核已完成（V1→V2→V5→V6→V7），复盘条目与证据已归档。",
+    "evidence": "logs/gaozhong-20260610-152923.log; docs/user_test_round1.md; docs/teacher_feedback_round1.md",
+    "owner": "项目用户侧",
+    "due": "2026-06-17T18:00:00+08:00",
+    "plan": "复核点击 1~2 个 conceptLink，确认 popup 与真题可见且可返回"
+  }
+]

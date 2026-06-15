@@ -1,0 +1,104 @@
+{
+  "run_id": "20260610T135344Z",
+  "generated_at": "2026-06-10T21:58:10Z",
+  "status": "done",
+  "goal_alignment": {
+    "goal_md": "goal.md",
+    "goal_run_id_line": "M4 课程主链路交付闭环",
+    "responsibility": "项目用户侧 + 研发协同"
+  },
+  "window": {
+    "start": "2026-06-17",
+    "end": "2026-07-07"
+  },
+  "gate_snapshot": {
+    "data_accuracy_check": "PASS",
+    "stop_gate": "PASS",
+    "verification_protocol": {
+      "done": 8,
+      "deferred": 0,
+      "pending": 0,
+      "total": 8
+    }
+  },
+  "m4_items": [
+    {
+      "id": "教学主链路",
+      "type": "snapshot",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "evidence_file": "docs/app_smoke_round2_m4.md",
+      "notes": "课程列表/课程详情/讲义与课后测验入口静态可复核"
+    },
+    {
+      "id": "学生弱点闭环",
+      "type": "snapshot",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "evidence_file": "frontend/static/app_router.js + docs/app_smoke_round2_m4.md",
+      "notes": "students tab 与 /api/students/weakness/recommend 读写链路可复核"
+    },
+    {
+      "id": "图谱联动",
+      "type": "snapshot",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "evidence_file": "frontend/static/graph_popup.js + docs/app_smoke_round2_m4.md",
+      "notes": "conceptLink→graph_popup fetch JSON popup + 真题列表可复核"
+    },
+    {
+      "id": "扫描/OCR",
+      "type": "snapshot",
+      "status": "done",
+      "owner": "项目用户侧",
+      "due": "2026-07-07T23:59:59+08:00",
+      "evidence_file": "frontend/static/app_router.js + docs/app_smoke_round2_m4.md",
+      "notes": "scan tab 上传 + 列表读取入口静态可复核"
+    }
+  ],
+  "commands": [
+    "python3 scripts/data_accuracy_check.py",
+    "python3 scripts/tools/monitor/verification_protocol.py --generate --run-id 20260610T135344Z",
+    "python3 scripts/tools/monitor/verification_protocol.py --batch-record data/reports/m4_closure_batch_20260610T135344Z.json --run-id 20260610T135344Z"
+  ],
+  "artifacts": {
+    "data/reports/m4_kickoff_20260610T135344Z.json": {
+      "path": "data/reports/m4_kickoff_20260610T135344Z.json",
+      "sha256": "33611b4368f5c84a57f8f25675cb6c92282ea868cc44582c61acc486b40f40c0",
+      "size": 1218
+    },
+    "data/reports/verification_protocol.json": {
+      "path": "data/reports/verification_protocol.json",
+      "sha256": "be434275e8af7ea259fc889d784d063fae6c8b29d6f57dcf9f34f42c460f3a35",
+      "size": 5255
+    },
+    "data/reports/m4_closure_20260610T135344Z.md": {
+      "path": "data/reports/m4_closure_20260610T135344Z.md",
+      "sha256": "818b59e8b3513f782a572cf80ee6cfa53343cf5ecb00edf38cd1d9bcf77d0557",
+      "size": 1738
+    },
+    "data/reports/m4_audit_matrix_20260610T135344Z.jsonl": {
+      "path": "data/reports/m4_audit_matrix_20260610T135344Z.jsonl",
+      "sha256": "573f1ab55b0f325bd11f1512b944805ca6ba569298d8953e3ef639630892bd35",
+      "size": 18808
+    },
+    "docs/app_smoke_round2_m4.md": {
+      "path": "docs/app_smoke_round2_m4.md",
+      "sha256": "b35ee8e2b16221b49bd18acd9bf27c805dd0842968c949634edac3c1c85529e2",
+      "size": 3088
+    },
+    "data/reports/m4_closure_batch_20260610T135344Z.json": {
+      "path": "data/reports/m4_closure_batch_20260610T135344Z.json",
+      "sha256": "cb866e6f349e37068d8322c1f0b29cf20e1a28bb557e22cd958f6c93f73491e8",
+      "size": 2667
+    }
+  },
+  "acceptance": {
+    "status": "done",
+    "placement": "evidence_batch",
+    "notes": "复核采用证据闭环模式完成。"
+  }
+}

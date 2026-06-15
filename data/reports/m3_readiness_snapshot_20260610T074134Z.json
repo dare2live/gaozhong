@@ -1,0 +1,44 @@
+{
+  "run_id": "20260610T074134Z",
+  "generated_at": "2026-06-10T21:40:43.266495+08:00",
+  "milestone": "M3.2",
+  "status": "done",
+  "gate_status": {
+    "data_accuracy_check": "PASS",
+    "stop_gate": "PASS",
+    "verification_protocol": {
+      "done": 8,
+      "deferred": 0,
+      "pending": 0,
+      "total": 8
+    }
+  },
+  "deferred_items": [],
+  "static_done_items": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8"
+  ],
+  "runbook": {
+    "record_file": "data/reports/m3_closure_batch_20260610T074134Z.json",
+    "record_command": "python3 scripts/tools/monitor/verification_protocol.py --batch-record data/reports/m3_closure_batch_20260610T074134Z.json --run-id 20260610T074134Z",
+    "post_report_command": "python3 scripts/tools/monitor/verification_protocol.py --report"
+  },
+  "evidence_inputs": [
+    "data/reports/verification_protocol.json",
+    "data/reports/m3_feedback_20260610T074134Z.json",
+    "data/reports/m3_closure_20260610T074134Z.json",
+    "data/reports/m3_closure_20260610T074134Z.md",
+    "data/reports/m3_closure_20260610T074134Z_evidence.jsonl",
+    "goal.md",
+    "docs/data_accuracy_audit.md",
+    "docs/user_test_round1.md",
+    "docs/teacher_feedback_round1.md"
+  ],
+  "next_action": "复核（V1→V2→V5→V6→V7）一次性复核后，快照进入收官态。"
+}

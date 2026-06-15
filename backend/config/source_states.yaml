@@ -1,0 +1,69 @@
+# Source state taxonomy.
+#
+# Purpose:
+# - Keep source status strings machine-checkable.
+# - Allow descriptive statuses while preserving one recognizable state token.
+# - Do not let "candidate", "partial", or "suspicious" silently look complete.
+
+states:
+  declared:
+    rank: 10
+    import_allowed: false
+    description: Source is declared in config only.
+  raw_acquired:
+    rank: 20
+    import_allowed: false
+    description: Raw artifact exists and should pass source verification before use.
+  raw_source_acquired:
+    rank: 20
+    alias_of: raw_acquired
+    import_allowed: false
+    deprecated: true
+    description: Legacy alias kept for existing source statuses.
+  text_extracted:
+    rank: 30
+    import_allowed: false
+    description: Text has been extracted from a raw artifact.
+  structured_draft:
+    rank: 40
+    import_allowed: false
+    description: Parser emitted review-only structured rows.
+  reviewed:
+    rank: 50
+    import_allowed: false
+    description: Item-level human/tool review resolved ambiguity.
+  import_ready:
+    rank: 60
+    import_allowed: true
+    description: Dry-run gates allow controller-owned DB import.
+  imported_canonical:
+    rank: 70
+    import_allowed: false
+    description: Rows exist in canonical DB tables.
+  linked:
+    rank: 80
+    import_allowed: false
+    description: Canonical rows have graph/tag/linkage coverage.
+  d0_verified:
+    rank: 90
+    import_allowed: false
+    description: End-to-end D0 gates prove the configured target scope.
+
+non_importable_states:
+  candidate_only:
+    description: Candidate source that cannot be used as truth without another contract.
+  suspicious:
+    description: Source has known integrity or scope risk.
+
+qualifiers:
+  - partial
+  - not_import_ready
+  - written_paper_only
+  - passage_level
+  - legacy_local_path
+  - needs_review
+  - too_small
+
+rules:
+  status_must_include_state_or_non_importable_state: true
+  import_ready_is_the_only_import_allowed_state: true

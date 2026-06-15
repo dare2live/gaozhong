@@ -1,4 +1,4 @@
-# 跨版本同主题对照人工核 — 4.1.E (2026-05-24)
+# 跨版本同主题对照抽样核对 — 4.1.E (2026-05-24)
 
 ## 目标 (用户硬约束)
 
@@ -7,7 +7,7 @@
 ## v1 (初版, 失败)
 
 - 算法: 仅按 `theme_of_unit` 共享判定
-- 5×3=15 推荐人工核, **准 4/15 = 26.7%** ❌
+- 5×3=15 推荐抽样核对, **准 4/15 = 26.7%** ❌
 - 根因: theme_contexts 多数 level1 ("人与自然"), 任意 unit 互假对照
 
 ## v2 (改进, 仍不达标)
@@ -34,7 +34,7 @@ backend/services/recommend.py:cross_version_units(unit_id, limit=3)
 5. 任一过滤 fail → 返空 (诚实, 宁缺毋滥)
 ```
 
-### v3 验证 — 10 对人工核 (2026-05-24)
+### v3 验证 — 10 对抽样核对 (2026-05-24)
 
 | # | 种子 unit | 推荐 | jaccard | 判定 |
 |---|---|---|---|---|
@@ -53,7 +53,7 @@ backend/services/recommend.py:cross_version_units(unit_id, limit=3)
 
 ### 关键设计抉择 (M5 智慧)
 
-- **宁缺毋滥** > 召回率 — 不确定就返空, 老师手工对
+- **宁缺毋滥** > 召回率 — 不确定即返空并纳入复核清单
 - **标题前 6 token 截取** — graph node label 偶把 unit 简介拼到 title, 截取避污染
 - **lemma 字典手工列** — 仅 8 个常见主题词族 (nature/art/food/culture/science/history/exploration), 准, 不引入 NLP 库 (M8 零依赖)
 - **jaccard 排序** — 多个对照按相似度排, 1.0 同名 > 0.5 部分 > 0.25 单词共享
@@ -91,7 +91,7 @@ backend/services/recommend.py:cross_version_units(unit_id, limit=3)
 | PEOPLE OF ACHIEVEMENT (x2 unit) | 同名 unit 跨 volume | achievement |
 | FOOD AND CULTURE | Food for thought | food |
 
-## 验收
+## 复核
 
 ```
 4.1.E ✅ v3 13/13 = 100% (10 种子)

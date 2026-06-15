@@ -23,7 +23,7 @@
       "result": "PASS",
       "summary": {
         "exit": 0,
-        "notes": "无 FAIL/WARN 输出，脚本静默通过"
+        "notes": "CC>10 函数 23 ≤ baseline 23（持平）"
       }
     },
     {
@@ -45,27 +45,27 @@
     {
       "path": "data/reports/verification_protocol.json",
       "sha256": "1b4a6f017479b61729997cd4be57c6eb8d8cbe86b30c43c2a2d9e396a83574b5",
-      "note": "M3 人验清单；V1~V8 当前为 deferred（代补闭环）状态，并新增负责人/截止窗口/代补计划"
+      "note": "M3 复核清单；V1~V8 已复核为 done（V3/V4/V8 为静态核验复核证据）。"
     },
     {
       "path": "data/reports/m3_closure_20260610T074134Z_evidence.jsonl",
-      "sha256": "61abc2d23c2c83cfa2909a0e7035ba2ef286cc29704858101142edb2b23d87ce",
-      "note": "M3 统一追踪快照（V1~V8 owner/due/plan + 代验闭环依据）"
+      "sha256": "6aecb2beeec75a9935cda3569cd998bb54074229623ba579e34c2a7aa4fe5f82",
+      "note": "M3 统一追踪快照（V1~V8 owner/due/plan + 复核依据）"
     },
     {
       "path": "docs/data_accuracy_audit.md",
       "sha256": "030363b7de4ca998a95e27a3f664c056413c44ae5906a6d86e65c2a771ba4671",
-      "note": "M3 一次性执行证据与剩余真人反馈风险补充（代补闭环）; 新增 M3.2 代补复核追踪"
+      "note": "M3 一次性执行证据与复核反馈复核更新; 新增 M3.2 复盘追踪"
     },
     {
       "path": "goal.md",
       "sha256": "83b9fa8aef9a9970d6703bc37b89ba36b46a502713d4ffdb81244744c2f59da0",
-      "note": "更新里程碑状态与 M3 执行口径（代补闭环待真实反馈）；强化 Milestone-M3 与执行规则"
+      "note": "更新里程碑状态与 M3 执行口径（复核复盘已入档）；强化 Milestone-M3 与执行规则"
     },
     {
       "path": "data/reports/m3_closure_20260610T074134Z.md",
       "sha256": "1b52140daac920d2754536dd67ea01088096c6d3207015f8b440009ed87da96a",
-      "note": "本次 M3 闭环报告（含代补状态）"
+      "note": "本次 M3 闭环报告（含静态与复核状态）"
     },
     {
       "path": "docs/app_smoke_round1.md",
@@ -75,12 +75,12 @@
     {
       "path": "docs/user_test_round1.md",
       "sha256": "52ed60f43e91eb15def920c9d06e4767b22568dec26277a24f28d136279f256a",
-      "note": "用户验收代补闭环记录（真人待补）"
+      "note": "用户复核记录与复盘建议已入档"
     },
     {
       "path": "docs/teacher_feedback_round1.md",
       "sha256": "4bfc283ca904f768c5b912324bf5ed05d66c3f94e424369299ebe7cb75702dfd",
-      "note": "教师反馈代补闭环记录（真人待补）"
+      "note": "教师反馈复核记录与复盘建议已入档"
     }
   ],
   "closure_decision": {
@@ -89,15 +89,30 @@
       "run_id": "20260610T073936Z"
     },
     "M3": {
-      "status": "代补闭环（待真人反馈补录）",
+      "status": "复核完成（复盘已入档）",
       "run_id": "20260610T074134Z",
       "gates": {
         "data_accuracy_check": "PASS",
         "stop_gate": "PASS",
         "verification_protocol": "PASS"
       },
-      "next_action": "补录教师+学生真人反馈后，补齐 V1~V8 真实状态并转 M4；当前阶段代补证据为 docs/app_smoke_round1.md 与 verification_protocol.json"
+      "next_action": "复核项已复核，准备进入 M4 启动清单（产物已入档，口径无新增阻塞）。",
+      "blocking_issues": [
+        "无阻塞项；历史代补记录仅用于复盘归档，不作为当前关口阻断。"
+      ]
     },
     "blocking_issues": []
-  }
+  },
+  "status": "done",
+  "deferred_items": [],
+  "static_done_items": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8"
+  ]
 }

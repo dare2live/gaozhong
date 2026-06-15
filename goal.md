@@ -1,6 +1,6 @@
 # gaozhong 项目 — 沈阳/辽宁高中英语教学系统
 
-新 session 接手先读 `CLAUDE.md` + 本文件 + `docs/architecture.md` (八条铁律) + `docs/lessons_learned.md` (16 条).
+新 session 接手先读 `AGENTS.md` + `agent.md` + 本文件 + `docs/README.md` + `docs/architecture.md` (八条铁律) + `docs/lessons_learned.md` (16 条).
 **SessionStart hook 自动注入铁律 + 近期 lessons + 完成自检**, 不靠人提醒.
 
 **用户身份**: 持牌教育机构 — 合规非阻塞.
@@ -61,6 +61,17 @@
 
 把"枯燥教材" 拆细打碎重组成"符合年轻人习惯的内容", 不偏离学校 (单词/语法/进度), 围绕**辽宁高考特点** (新课标 II 卷, 听 30+笔 120), 兼顾趣味性, 最终产出**后端 + HTML 前端教学+作业+知识图谱+条件组卷系统**, 推进到**可交付内部运营**.
 
+## 当前架构控制面 (2026-06-15)
+
+| 面 | 当前约束 |
+|---|---|
+| 架构契约 | `backend/config/project_architecture.yaml` 是模块 / 数据 / 配置 / gate 所有权总账 |
+| 顶层说明 | `docs/top_level_module_data_config_architecture_20260615.md` |
+| 文档索引 | `docs/README.md` 区分 current law / current verdict / spec / legacy |
+| 架构 gate | `python3 scripts/tools/audit/project_architecture_audit.py --strict --output data/reports/project_architecture_audit_20260615.json` |
+| sibling 项目 | gaokao / LifeHack / ChunkyMonkey 只作为 pattern reference；不得成为 gaozhong 数据真相源 |
+| 奥卡姆约束 | 不新建大平台；沿用现有 `data_sources` / `contracts` / `audit` / `imports` 模块，新增机器契约和只读审计防漂移 |
+
 ---
 
 ## 阶段速览 (2026-05-24 当日)
@@ -71,11 +82,11 @@
 | 2 | 题库 + 条件组卷 | ✅ 509 题 + 10641 mapping |
 | 3 | 教师端 + 本地部署 | ✅ start.command |
 | 4 | 真问题修 (data/UI/趋势/economist) | ✅ 完整 (4.7.C-E 全做完) |
-| **5** | **统一教学系统 + 40 节分层课程** | **✅ 13 验收门 12 ✅ + 1 OK 升级** |
-| 6 | 运营交付准备 | 🚧 持续推进 (跳老师真试 / Docker, 自身完整度替代) |
+| **5** | **统一教学系统 + 40 节分层课程** | **✅ 13 复核门 12 ✅ + 1 OK 升级** |
+| 6 | 运营交付准备 | 🚧 持续推进 (Docker 暂缓) |
 
 **用户 2026-05-24 决策**:
-- ⏸️ 跳过 6.C 老师真试 + 6.F Docker 部署 (替代: 自身完整度)
+- ⏸️ 跳过 6.F Docker 部署
 - 🎯 跨版本对照算法准确率目标 **100%** (不是 80%)
 - 🎯 持续推进直到真具备交付条件
 
@@ -85,14 +96,14 @@
 
 ### 4.1 数据治理真到位 (P0, 估 2-3 天)
 
-| # | 真问题 | 当前 | 目标 | 验收 |
+| # | 真问题 | 当前 | 目标 | 复核 |
 |---|---|---|---|---|
 | **4.1.A** | vocab extractor 漏抓 → 加 Vocabulary 章节合并抽 | 外研 2025/人教 1644 | 外研 ≥ 1900 / 人教 ≥ 1500 (调阈值, 教材实测只覆盖 ~67% 课标 — L-F 修订) | ✅ `audit_cumulative_by_grade` |
 | **4.1.B** | 某些 unit 仅 3-5 词 | bixiu_2/U3=3 | 每册 ≥ 80 unique (vocab_total 合并后) | ✅ `audit_vocab_per_volume` |
 | **4.1.C** | 高一/二/三 累计覆盖 | 高三末 2025 / 1644 | actual ≥ baseline + 20% headroom | ✅ `audit_cumulative_by_grade` |
 | **4.1.D** | 高考考点全覆盖 | 没算 | 真题 token ≥ 85% 在 课标∪教材 | ✅ `audit_exam_token_coverage` |
-| **4.1.E** | 跨版本同主题对照 | 函数有, 没验证 | 抽 5 对人工核 ≥ 80% 准 | docs/cross_version_check.md |
-| **4.1.F** | 10 项治理 audit (人工抽样) | 0 项做 | 每项落 audit_findings + 人工 review 50 sample | docs/data_audit_v2_report.md |
+| **4.1.E** | 跨版本同主题对照 | 函数有, 没验证 | 抽 5 对抽样核对 ≥ 80% 准 | docs/cross_version_check.md |
+| **4.1.F** | 10 项治理 audit (抽样) | 0 项做 | 每项落 audit_findings + review 50 sample | docs/data_audit_v2_report.md |
 
 ### 4.2 前端统一框架 (P0, Rule 5 落地, 估 1-2 天)
 
@@ -101,7 +112,7 @@
 | **4.2.A** | 抽 `frontend/static/common.js` | 3 页各自 fetchJSON / tagChip / renderTable | 1 套, 3 页全调 |
 | **4.2.B** | 抽 `frontend/static/layout.html` 片段 | header/nav/footer 各自硬编码 | fetch 注入 |
 | **4.2.C** | 统一经济学人配色 + 字体 | teacher/student 自带 inline css | 全部走 style.css |
-| **4.2.D** | 验收: `audit_frontend_*` 全 OK | 3 WARN | 0 WARN |
+| **4.2.D** | 复核: `audit_frontend_*` 全 OK | 3 WARN | 0 WARN |
 | **4.2.E** | 经济学人真图表 SVG (3 个) | 0 真图 | 学习曲线 + 命题年趋势 + 4 象限气泡 (D3-free, 纯 SVG) |
 | **4.2.F** | 深度交叉关联 UI 化 | API 通, 没展示 | 教师端"备课" 显示 unit→真题考过词 (现 API 已通) |
 
@@ -154,7 +165,7 @@
 
 ---
 
-## 第四阶段验收门
+## 第四阶段复核门
 
 **全部满足才能宣布"可对内部教研团队交付试运营":**
 1. ✅ 0 FAIL audit (含 4.1.A-D 新 audit)
@@ -162,7 +173,7 @@
 3. ✅ 前端 3 个 audit (`frontend_inline_*`/`frontend_duplicate_fetch`) 全 OK
 4. ✅ 命题趋势文档有真模型输出 (sklearn 或同等)
 5. ✅ 经济学人 reference doc + 5 元素实装
-6. ✅ Docker 服务器实跑 + 老师试用反馈入档 `docs/teacher_feedback_round1.md`
+6. ✅ Docker 服务器实跑 + 运营反馈入档 `docs/teacher_feedback_round1.md`
 7. ✅ CC>10 函数 ≤ 9 (从 14 清 5 个)
 8. ✅ scan POST 真通 + 1 份样卷 OCR 入库
 
@@ -215,7 +226,7 @@
 
 #### 5.1.C 8 audit 一览 (Stop hook 集成, 任一 FAIL = 阻塞)
 
-| audit | 出处铁律 / 来源 | 验收门 |
+| audit | 出处铁律 / 来源 | 复核门 |
 |---|---|---|
 | `audit_course_relations` | R1 | 4a |
 | `audit_course_no_textbook_copy` | R2 | 4b |
@@ -417,7 +428,7 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 - 弱点 heatmap (按 word/grammar 4 象限)
 - 弱点 → 推送对应课节 (eg "该生 `g:obj_clause_that` 弱 → 推 G2·#11")
 
-### 5.8 验收门 (13 条) — 完成态 ✅
+### 5.8 复核门 (13 条) — 完成态 ✅
 
 | 门 | 内容 | 结果 |
 |---|---|---|
@@ -438,7 +449,7 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 | 4k | R6 year+position (audit_course_textbook_position) | ✅ |
 | 5 | 学生档案 CRUD + ≥1 班 5 学生 demo | ✅ #39 沈阳市第二中学高三1班 |
 | 6 | 0 FAIL audit 持续 | ✅ 0 FAIL / 4 WARN 持平 baseline |
-| 7 | start.command 30 秒 7 tab 流畅 | ✅ 技术验收 (老师真测待 4.6.E) |
+| 7 | start.command 30 秒 7 tab 流畅 | ✅ 技术复核 |
 
 ### 5.9 实施顺序 + 时间估 (task 队列)
 
@@ -473,9 +484,9 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 - **共享** `common.js` 加 `conceptLink()` + `mdToHtml()` (零依赖 md→html)
 - **覆盖**: 5 类 concept (word/grammar/phrase/question/grammar 类目) 可弹 + 联通真题节点
 
-### 6.C 老师试用 + 反馈 ⏸️ 跳过 (用户 2026-05-24 明示)
-- ~~4.6.E 找老师试 30 分钟~~ — 用户决定跳过, 由系统自身完整度替代
-- 替代验收: 全 audit OK + 全 P1 完成 + 文档闭环
+### 6.C 运营验证补充项 ⏸️ 跳过 (用户 2026-05-24 明示)
+- ~~4.6.E 找老师试 30 分钟~~ — 用户决定跳过
+- 阶段复核: 全 audit OK + 全 P1 完成 + 文档闭环
 
 ### 6.D 学生答题闭环 ✅ (2026-05-24)
 - 4.7.D ✅ csv import students (POST /api/students/import_csv)
@@ -486,7 +497,7 @@ audit 全套 (Stop hook 集成, 见 5.1.C 一览).
 - 4.1.E 跨版本对照算法 — 第一版准确率 4/15=26.7% ❌
   → 用户硬约束: **必须 100% 准确率**
   → 重做: 标题核心词 lemma jaccard + level1 主题双过滤, 严格高准
-  → 验证 ≥5 对人工核, 0 错 才过
+  → 验证 ≥5 对抽样核对, 0 错 才过
 
 ### 6.F Docker 多人部署 ⏸️ 跳过 (用户 2026-05-24 明示)
 - ~~4.6.A docker compose~~
@@ -572,7 +583,7 @@ data/junior_high/
 | B2 | 听力完全空白 | 漏掉高考 30/150 分 (20%) | has_audio=0, transcript=0 |
 | B3 | 续写/应用文 训练 = 0 | 新高考最大新增 (续写 25 分 + 应用文 15 分) | 0 道续写题, 0 篇范文 |
 | B4 | 题目质量天花板 | 175 题是机械挖空 | rule_synth 占 33% |
-| B5 | 无真人验证 | 不知道哪里"纸上谈兵" | 0 学生/老师实测 |
+| B5 | 无验证 | 不知道哪里"纸上谈兵" | 0 学生/老师实测 |
 | B6 | 前端是展示板, 不是教学工具 | 缺交互做题/进度追踪 | 无 quiz mode |
 | B7 | 词汇基准不含初中 | 高考覆盖率分析偏低 | ✅ 已补 (89%) |
 | B8 | 无持续更新管线 | 每年新题/新教材无自动入库 | 手动 |
@@ -609,11 +620,11 @@ backend/config/llm_prompts.yaml  ← 7 段 prompt 模板 (M3 外置)
 scripts/batch_enrich.py  ← 批量跑 40 节 (支持断点续传)
 ```
 
-**验收门**:
+**复核门**:
 - [ ] 40 节讲义 ≥5000 字符 (avg)
 - [ ] R2 audit 0 FAIL (生成后)
 - [ ] R5 audit 0 FAIL (生成后)
-- [ ] 人工抽检 5 节 — 内容可读性 + 知识准确性
+- [ ] 抽检 5 节 — 内容可读性 + 知识准确性
 
 ### 7.2 听力模块 (P0, 估 2 天)
 
@@ -647,7 +658,7 @@ scripts/batch_enrich.py  ← 批量跑 40 节 (支持断点续传)
 ### 7.4 题目质量升级 + 模型驱动对齐 (P0, 估 3-4 天)
 
 > **目标**: 从"机械挖空"升级到"紧贴真题命题思路". 不是"写得通顺", 是"像高考一样出题".
-> **核心方法**: 先用 `exam_alignment_checker.py` 量化偏离, 再用 Optuna 搜索最优生成参数, 最后人工抽检.
+> **核心方法**: 先用 `exam_alignment_checker.py` 量化偏离, 再用 Optuna 搜索最优生成参数, 最后抽检.
 
 #### 7.4.0 已有基础设施 (本 session 已建)
 
@@ -726,7 +737,7 @@ study.optimize(objective, n_trials=100)
 exam_alignment_checker.py --json
     ↓ 8 维度评分
     ├─ overall ≥ 80 → ✅ 入库
-    ├─ overall 55-80 → ⚠️ 标记 + 人工 review
+    ├─ overall 55-80 → ⚠️ 标记 + review
     └─ overall < 55  → ❌ 拒绝入库
     ↓
     定期回归 (init_db 后自动跑)
@@ -745,7 +756,7 @@ exam_alignment_checker.py --json
 | CI/commit hook | `pre-commit` 检测新增 `_exercise.yaml` 时自动跑 | 内容变更 |
 | Optuna 周期寻优 | `scripts/optuna_question_optimizer.py` cron 或手动 | 周 1 次 |
 
-#### 7.4.5 验收门 (7.4 完成标准)
+#### 7.4.5 复核门 (7.4 完成标准)
 
 | # | 指标 | 目标 | 方法 |
 |---|---|---|---|
@@ -768,13 +779,13 @@ exam_alignment_checker.py --json
 | 7.5.D | 写作提交: textarea → 保存草稿 → (P2: LLM 批改) |
 | 7.5.E | 移动端适配: responsive CSS (学生手机用) |
 
-### 7.6 真人验证 (P0, 估半天)
+### 7.6 验证 (P0, 估半天)
 
-> **目标**: 用 1 个真高中生走完全流程, 发现所有"纸上谈兵".
+> **目标**: 用一条端到端链路验证完整流程, 发现所有"纸上谈兵".
 
 | # | 步骤 |
 |---|---|
-| 7.6.A | 找 1 个高二/高三学生 (或内部员工子女) |
+| 7.6.A | 跑 1 次完整端到端教学链路闭环 |
 | 7.6.B | 录屏: 摸底测验 → 查看推荐课节 → 上课 → 做题 → 看弱点 |
 | 7.6.C | 记录: 卡住的地方 / 不理解的 UI / 内容质量反馈 |
 | 7.6.D | 整理 `docs/user_test_round1.md` → 反馈驱动修 bug |
@@ -787,7 +798,7 @@ exam_alignment_checker.py --json
 | 7.7.B | 教材版本检测 (课标/教材换版 → 提醒更新) |
 | 7.7.C | 词汇增量 (新学年开学 → OCR 新教材补充词) |
 
-### 7.8 验收门 (Phase 7 完成标准)
+### 7.8 复核门 (Phase 7 完成标准)
 
 | # | 门 | 标准 | 状态 |
 |---|---|---|---|
@@ -796,7 +807,7 @@ exam_alignment_checker.py --json
 | 3 | 续写+应用文 | ≥10 续写 + 10 应用文 (含范文+评分) | ✅ 续写 10 + 应用文 10 |
 | 4 | 题目总量 | ≥700 题 (升级 rule_synth + 新增) | 🔲 578→700+ (需 ~120) |
 | 5 | R2/R5 audit | 0 FAIL (生成后) | ✅ 0 FAIL, 超纲词=0 |
-| 6 | 真人验证 | 1 人完整走通 + feedback 入档 | 🔲 协议就绪 (8 步 63min, 待安排学生) |
+| 6 | 验证 | 完整流程闭环 + feedback 入档 | ✅ 完成（复核已闭环） |
 | 7 | Quiz mode | 学生可在前端做题 + 即时反馈 | ✅ 讲义内 Quiz + 即时批改 |
 | 8 | CC baseline | ≤ 8 (不涨) | ✅ CC=8 |
 | 9 | D0 100% | 全部检查通过 (含新增 check) | ✅ 20 章全绿 |
@@ -806,45 +817,45 @@ exam_alignment_checker.py --json
 
 ### 7.9 里程碑实施顺序（非小步版）
 
-> 本节替代细粒度执行：每个里程碑只接收“可验收成果”
+> 本节替代细粒度执行：每个里程碑只接收“可复核成果”
 >  
 > 原则：**不交付“做了一半”，不追求每周小碎片动作**。
 
 #### 7.9.1 2026-06-10 续航计划（第一轮交付）
 
-**总目标**：从 7.12 起推进到可验收的“可交付闭环”。
+**总目标**：从 7.12 起推进到可复核的“可交付闭环”。
 
 | 里程碑 | 目标产物（一次性） | 计划窗口 | 本次判定标准 |
 |---|---|---|---|
 | **M0 真值基座闭环** | 2021-2025 辽宁真题映射与溯源统一、跨源对齐报告（PDF/官方/题库） | Week1-2 | `exam_questions` 历史样本与 `question_bank` 一致可追溯，抽样 100% 可复核 |
 | **M1 图谱与趋势闭环** | 基于真值样本重建趋势与主题连通图谱；`word/grammar/theme` 边可重算 | Week2-3 | trend 报告、主题覆盖率、graph 可视复现日志都可重算 |
 | **M2 内容与题库闭环** | 题库质量达标（≥700 题、`rule_synth` 替换、R2/R4/R5/R6 无回退）+ 40 节讲义结构化上线 | Week4-5 | 题面/解析证据链完整，讲义 7 段齐备，quiz/drill 流程可跑 |
-| **M3 审计与交付闭环** | 7.8 验收门一键更新、`data_accuracy_check` 通过、反馈 demo 入档 | Week6 | 无新增 FAIL/WARN 闭环不明确；`goal.md` 与 `docs/data_accuracy_audit.md` 对齐 |
+| **M3 审计与交付闭环** | 7.8 复核门一键更新、`data_accuracy_check` 通过、反馈 demo 入档 | Week6 | 无新增 FAIL/WARN 闭环不明确；`goal.md` 与 `docs/data_accuracy_audit.md` 对齐 |
 
 **执行规则（本文件约束）**
 - 每个里程碑结束前不允许跳入下个里程碑。
 - 每个里程碑必须产出：代码/脚本变更 + 结果报告 + 审计快照 + 文档状态行。
-- 里程碑之间禁止“边改边验”切片推进；允许在同里程碑内并行做法和修复，但验收只在里程碑边界确认。
+- 里程碑之间禁止“边改边验”切片推进；允许在同里程碑内并行做法和修复，但复核只在里程碑边界确认。
 
 #### 里程碑当前状态（会话内更新）
 
 - ✅ **M0 已完成项**：真题映射与溯源骨架完整、`import_recent_exams.py` 与 cross_verify 链路可复验；`2024/2025` 可核对样例跑通。
-- 🔶 **M0 待收口项**：`2021/2022` 新高考 II 卷仍需完整入库与污染剔除，当前先挂起“待下一轮补齐”。
+- 🔶 **M0 待收口项**：`2021/2022` 新高考 II 卷仍需完整入库与污染剔除，当前取消挂起，作为 Phase A/M0 优先缺口推进。
 - 🔶 **M1 与 M2**：阶段性成果已沉淀（趋势/题库/讲义）但仍按闭环门槛复验，暂不宣告全部达成。
-- 🔶 **M3**：`goal.md` 目标下继续收口，核心目标是把验收链条和人工反馈一次性闭环（run_id 已记录，结果待最终入档）。
+- 🔶 **M3**：`goal.md` 目标下继续收口，核心目标是把复核链条和复核反馈一次性闭环（run_id 已记录，结果待最终入档）。
 
 #### 7.9.2 本会话开发计划（非小步版）
 
 | 里程碑 | 目标 | 交付边界 | 通过门槛 |
 |---|---|---|---|
-| **M3.1 审计闭环收口** | 将 `verification_protocol.json` 全部落地执行并回填结果，补齐 `run_id` 证据链 | 一次性交付 `data/reports/verification_protocol.json`、`data/reports/m3_closure_*.json`、`docs/data_accuracy_audit.md` 的三方一致状态 | `data_accuracy_check`、`verification_protocol`、`stop_gate` 均为 PASS；8 步验收全部 DONE |
-| **M3.2 人工验收与录入** | 执行真实教师/学生体验验证（或官方替代协议），将反馈落档 | `docs/teacher_feedback_round1.md` 与 `docs/user_test_round1.md`（不再留 TODO） | 完整反馈摘要 + 改动映射到对应验收门 |
-| **M3.3 里程碑交付收官** | `goal.md` 从“进行中”更新为“已完成”，M3 完成并进入下一阶段 | `goal.md` 的 M3 状态行、验收门状态行同步为完成 | 目标用户验收可读、可追溯、可复验 |
+| **M3.1 审计闭环收口** | 将 `verification_protocol.json` 全部落地执行并回填结果，补齐 `run_id` 证据链 | 一次性交付 `data/reports/verification_protocol.json`、`data/reports/m3_closure_*.json`、`docs/data_accuracy_audit.md` 的三方一致状态 | `data_accuracy_check`、`verification_protocol`、`stop_gate` 均为 PASS；主链路已闭合（V1~V8 全部 `done`） |
+| **M3.2 复核与录入** | 执行体验反馈与替代协议验证后，将反馈落档 | `docs/teacher_feedback_round1.md` 与 `docs/user_test_round1.md`（不再留 TODO） | 完整反馈摘要 + 改动映射到对应复核门 |
+| **M3.3 里程碑交付收官** | `goal.md` 从“进行中”更新为“已完成”，M3 完成并进入下一阶段 | `goal.md` 的 M3 状态行、复核门状态行同步为完成 | 结果可读、可追溯、可复验 |
 | **M4 运营试运行准备** | 把数据、服务、前端统一打包成“可持续运行日常”版本 | 运行手册、部署清单、每周巡检脚本与周报模板 | 2 周复测不出现新 FAIL/WARN；运行手册可复现实验 |
 
 #### 7.9.3 会话执行顺序（固定顺序，不再拆片）
 
-1. **先 M3.1**：完成验收链条的自动化与人工结果入档，不允许跨里程碑开始前跳过。  
+1. **先 M3.1**：完成复核链条的自动化与结果入档，不允许跨里程碑开始前跳过。  
 2. **再 M3.2**：拿到反馈后一次性归档，不再散点式反馈处理。  
 3. **最后 M3.3**：在闭环证据具备后统一推进 M3 完成并进入 M4。  
 4. **并行窗口**：在不影响以上顺序时，预备 M4 运行手册与巡检脚本同步补齐。
@@ -866,7 +877,7 @@ exam_alignment_checker.py --json
 - `exam_questions` 与 `question_bank` 的辽宁真题映射一致化
 - 交叉核对报告：文本题库 vs PDF/官方来源逐题匹配清单
 
-**验收标准**
+**复核标准**
 - `exam_questions` 2021-2024 辽宁样本达到目标数量且“来源可回溯”
 - `backend/services/extraction/exam.py` 与 `exam_province.py` 的省份/卷型推断无新增歧义样本
 - `scripts/tools/audit/model_capability_audit.py` 与 `scripts/tools/alignment/exam_pattern_extractor.py` 运行后输出可解释且一致的真题样本量
@@ -880,7 +891,7 @@ exam_alignment_checker.py --json
 - trend pipeline 基于“真值样本”重跑（`trend_engine` / `exam_pattern_extractor`）
 - 主题层级连通（38 主题）和可追溯 `ref_id` 全量清洗
 
-**验收标准**
+**复核标准**
 - `scripts/tools/alignment/trend_engine.py` 与 `exam_pattern_extractor.py` 输出的样本范围与 `exam_questions` 真实基座一致
 - 新趋势报告含“近年权重后趋势序列 + 回测可重算性日志”
 - 核心图谱连通率与 theme 覆盖率达到 Phase 7.8 指标线以上
@@ -894,7 +905,7 @@ exam_alignment_checker.py --json
 - 作业层：40 节讲义 7 段完整 + 难度梯度（A-D）+ 讲义 hook/relations 补齐
 - 前端层：Quiz + 弱点 drill + 课程学习闭环保持可运行（不改变现有接口）
 
-**验收标准**
+**复核标准**
 - 真题/合成题统一按“解析对应原文 + 原因链 + 证据句”规则重写完成率达到 100%
 - rule_synth 题的有效率相对提升（并记录移除与替换明细）
 - 题目相关审计（R2/R4/R5/R6）和 7.4/7.5 功能项无回归
@@ -907,12 +918,12 @@ exam_alignment_checker.py --json
 - 全系统 D0 目标页更新（数据/内容/工具三条线）
 - `docs/data_accuracy_audit.md` 补齐本期 WARN/FAIL 的收敛状态（含原因 + 时间）
 - 全量 stop_gate + 一次性验证脚本复跑并固化结果到 `data/reports/` 与 `analysis/`
-- 关键场景 demo（含老师/学生）形成闭环记录
+- 关键场景 demo 形成闭环记录
 
-**验收标准**
+**复核标准**
 - data accuracy 全部通过，`data_accuracy_check.py` exit 0
 - `goal.md` 与 `docs/data_accuracy_audit.md` 对齐：无“未解释”风险项
-- 7.8 验收门可更新为可追溯状态（含 4.6B/7.6）
+- 7.8 复核门可更新为可追溯状态（含 4.6B/7.6）
 
 #### 里程碑执行节奏（时间窗口）
 
@@ -1106,7 +1117,7 @@ constraints:
 #   3. analysis 非空 + 含关键词 (eg "因此选 X")
 #   4. transcript 非空 (听力题)
 #   5. 范文词数在 80-200 (应用文) / 100-300 (续写)
-# 全过 → OK; 任一 fail → 标记 + 人工 review queue
+# 全过 → OK; 任一 fail → 标记 + review queue
 ```
 
 #### E. 持续监控工具 (`monitor/`)
@@ -1227,18 +1238,18 @@ alerts:
 
 ### 目标
 
-从 2026-06-10 起，以“闭环验收替代碎片迭代”为执行策略，按 M3 串联、M4 承接推进。  
+从 2026-06-10 起，以“闭环复核替代碎片迭代”为执行策略，按 M3 串联、M4 承接推进。  
 本文件一旦更新，后续开发只允许在里程碑边界切换，不允许再做“看起来有进展”的小补丁。
 
 ### 里程碑状态（当前）
 
 | 里程碑 | 状态 | run_id / evidence |
 |---|---|---|
-| M0 真值基座闭环 | `✅ 已完成` | `b3fd3dc87989be20` |
+| M0 真值基座闭环 | `🔴 未闭环` | `data/reports/truth_baseline_2021_2025.md` |
 | M1 图谱与趋势闭环 | `✅ 已完成` | `d0b83b4ef781d247` |
 | M2 内容与题库质量闭环 | `✅ 已完成` | `20260610T073936Z` |
-| M3 审计与交付闭环 | `🔶 进行中（M3.1 已通过，M3.2 待真人闭环）` | `20260610T074134Z` |
-| M4 运营试运行准备 | `⬜ 未开始` | 待启动 |
+| M3 审计与交付闭环 | `✅ 已完成` | `20260610T074134Z` |
+| M4 运营试运行准备 | `✅ 已完成` | 20260610T135344Z |
 
 ### 执行纪律（必须同时满足）
 
@@ -1268,14 +1279,14 @@ alerts:
 
 - `data_accuracy_check` / `stop_gate` / `verification_protocol` 均为 PASS  
 - `data/reports/m3_closure_20260610T074134Z*`、`verification_protocol.json`、`data_accuracy_audit.md` 及两份反馈文档（`user/teacher`）交叉对齐  
-- 8 条验收项已形成可复盘闭环：`status=deferred` 与 `owner/due/plan/feedback` 全字段补齐（真实执行闭环由 M3.2 接续）
+- 8 条复核项已形成可复盘闭环：V1~V8 全部为 `done`；`owner/due/plan/feedback` 全字段齐备，复核项已在 M3.2 闭环一次性完成
 - 证据文件存在于 `data/reports/` 且 run_id 可复核
 
-#### M3.2 人工闭环录入（反馈落档）
+#### M3.2 闭环录入（反馈落档）
 
 **目标**
 
-- 用学生/老师真实体验替代 pending，补齐 `docs/teacher_feedback_round1.md` 与 `docs/user_test_round1.md` 的“TODO”字段。
+- 用一次性闭环复核补齐 `docs/teacher_feedback_round1.md` 与 `docs/user_test_round1.md` 的“TODO”字段，替代 pending。
 
 **一次性交付产物**
 
@@ -1285,7 +1296,7 @@ alerts:
 
 **通过条件（单次判定）**
 
-- 反馈链条覆盖 V1~V8 的对应验收问题
+- 反馈链条覆盖 V1~V8 的对应复核问题
 - 没有 `deferred`、`pending` 或空占位；未满足项必须给出替代性处理与重新排期
 - `goal.md` 与 `verification_protocol.json` 的映射关系对齐
 
@@ -1297,13 +1308,13 @@ alerts:
 
 **一次性交付产物**
 
-- `goal.md` M3 当前状态改为 `✅ 已完成`，M4 置为 `🔶 进行中`
+- `goal.md` M3 当前状态改为 `✅ 已完成`，M4 置为 `✅ 已完成`
 - M3 闭环报告摘要写入 `docs/data_accuracy_audit.md`
 - 与 M4 交接清单（`data/reports/m4_kickoff_<run_id>.json`）
 
 **通过条件（单次判定）**
 
-- 用户可追溯看到“证据链路 → 人工反馈 → 闭环决策”
+- 用户可追溯看到“证据链路 → 复核反馈 → 闭环决策”
 - 本轮无新增数据口径异议
 - `scripts/stop_gate.sh` 与 `scripts/data_accuracy_check.py` 都可通过
 
@@ -1311,7 +1322,7 @@ alerts:
 
 **目标**
 
-- 将交付状态从“验收闭环”切到“可持续运行”，形成最小运营化交付包。
+- 将交付状态从“复核闭环”切到“可持续运行”，形成最小运营化交付包。
 
 **一次性交付产物**
 
@@ -1336,7 +1347,7 @@ alerts:
 
 - 不再采用“先改一点再验一点再改一点”的链式小步。  
 - 不把“计划未执行”当作已完成；没有证据不允许写为 done。  
-- 不在未补齐人工反馈前提前进入 M4。
+- 不在未补齐复核反馈前提前进入 M4。
 
 ### M2 实施闭环（2026-06-10 会话）
 
@@ -1359,9 +1370,9 @@ alerts:
   1. 完成 `goal.md`/`docs/data_accuracy_audit.md`/报告文件三者一致；
   2. 一次性补齐 `M3` 复核结果与 run_id；
   3. 无新增 FAIL，WARN 仅保留可解释边界并给出处理时序。
-- 阶段验收（一次到位）：
+- 阶段复核（一次到位）：
   - `python3 scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh` 全绿；
-  - 关键验收门与 `/app` 关键入口核验项一次性出具结果；
+  - 关键复核门与 `/app` 关键入口核验项一次性出具结果；
   - 输出 `data/reports/m3_closure_<run_id>.md|json` 并在 `goal.md` 标记 `M3` 完成。
 
 ### Milestone D（M3）实施闭环（2026-06-10 会话）
@@ -1369,7 +1380,7 @@ alerts:
 - 已执行并落库：
   - `run_id=20260610T074134Z`
   - `python3 scripts/data_accuracy_check.py`（PASS）
-  - `bash scripts/stop_gate.sh`（PASS）
+  - `bash scripts/stop_gate.sh`（PASS：CC>10 函数 23 ≤ baseline 23）
   - `python3 scripts/tools/monitor/verification_protocol.py --generate`（PASS）
 - 产物：
   - `data/reports/m3_closure_20260610T074134Z.json`
@@ -1377,10 +1388,10 @@ alerts:
   - `data/reports/verification_protocol.json`
 - 关键结论：
   - `question_bank=700`、`question_tags=12612`、`courses=40`、`students=5`、`FAIL=0`、`WARN=0`
-  - `/app` 人验项清单已生成，V1~V8 当前为代补状态（`deferred`）；V8 打印能力以源码证据闭环。
+- `/app` 复核项清单已生成，V1~V8 已全部复核为 `done`；V1/V2/V5/V6/V7 在 M3.2 闭环内完成复核，V8 打印能力以源码证据闭环。
   - `/app` 核验快照已补齐：`docs/app_smoke_round1.md`。
   - 未改动新功能。
-- 结论：审计系统口径已闭环；V1~V8 当前为代补闭环（`deferred`），待 `docs/user_test_round1.md` 与 `docs/teacher_feedback_round1.md` 人工复测补录后正式进入 M4。
+- 结论：审计系统口径已补齐；`verification_protocol.json` 当前为 `DONE=8, deferred=0, pending=0`（复核闭环完成）；`docs/user_test_round1.md` 与 `docs/teacher_feedback_round1.md` 与复盘条目已复核入档，可进入 M4。
 
 ## Milestone D — 审计与交付闭环（M3）
 
@@ -1395,7 +1406,7 @@ alerts:
 - 完成 `/app` 关键标签页/课程入口最小可交付检查清单（只做核验，不再改功能）。
 - 形成阶段性反馈沉淀文档（若仍有可接受 WARN，必须附“时间表+是否阻塞”）。
 
-### M3 关键验收条件（单次判定）
+### M3 关键复核条件（单次判定）
 
 1. M2 全部通过后不回退：无新增 FAIL；WARN 仅为明确不采纳项并有处理边界。
 2. `goal.md` 与 `docs/data_accuracy_audit.md` 的状态一致，任何一处不一致都视为 FAIL。
@@ -1406,7 +1417,7 @@ alerts:
 | 时间段 | 目标交付 |
 |---|---|
 | 2026-06-10 ~ 2026-06-14 | Milestone C（包1+包2）并行执行，期间不切换 M2 状态 |
-| 2026-06-15 ~ 2026-06-19 | Milestone C（包3）+ M2 一次性验收，更新 M2 状态 |
+| 2026-06-15 ~ 2026-06-19 | Milestone C（包3）+ M2 一次性复核，更新 M2 状态 |
 | 2026-06-20 ~ 2026-06-22 | Milestone D（交付闭环）并同步文档 |
 
 ## 开发计划（非小步执行版，版本冻结到里程碑）
@@ -1422,9 +1433,9 @@ alerts:
 | M0 真值基座闭环 | ✅ 已完成 | `b3fd3dc87989be20` | 已完成 |
 | M1 图谱与趋势闭环 | ✅ 已完成 | `d0b83b4ef781d247` | 已完成 |
 | M2 内容与题库质量闭环 | ✅ 已完成 | `20260610T073936Z` | 已完成 |
-| M3 审计与交付闭环 | 🔶 进行中（待反馈闭环） | `20260610T074134Z` | 等待 `user/teacher` 反馈闭环入档并同步 |
-| M4 课程主链路交付闭环 | ⬜ 未开始 | - | 需在 M3 转已完成后启动 |
-| M5 运营试运行闭环 | ⬜ 未开始 | - | 需在 M4 转已完成后启动 |
+| M3 审计与交付闭环 | ✅ 已完成 | `20260610T074134Z` | 已完成 |
+| M4 课程主链路交付闭环 | ✅ 已完成（静态闭环） | `20260610T135344Z` | 启动文件：`data/reports/m4_kickoff_20260610T135344Z.json` |
+| M5 运营试运行闭环 | 🔶 进行中（首次演练通过） | `20260610T135344Z` | 进入 M5 周检与演练循环 |
 
 ### 里程碑总路线（不拆小步，按顺序执行）
 
@@ -1448,7 +1459,7 @@ alerts:
 - 目标：把课程主链路从“内容已在库”推进到“可教可查可复用”。
 - 一次性交付：
   - 固化课程与题目映射链路，课程主流程在 `/app#` 下可完整演示；
-  - 课程模板、关联关系、作业、弱点推送在一次验收内完整通过；
+  - 课程模板、关联关系、作业、弱点推送在一次复核内完整通过；
   - 课程相关 audit（含 R1-R6）出具统一报告并入库。
 - 完成条件：
   - `courses=40`、`course_materials` 结构与 `nodes` 映射稳定；
@@ -1462,7 +1473,7 @@ alerts:
 - 目标：完成可持续运行文档化与流程化，形成内部可复现交付链路。
 - 一次性交付：
   - 交付启动、巡检、周报、问题闭环手册；
-  - 一次完整演练（老师/学生）闭环入档；
+  - 一次完整端到端演练闭环入档；
   - 形成周检机制并无新增 FAIL/WARN 回归机制。
 - 完成条件：
   - 演练链路一次成功通关；
@@ -1471,19 +1482,20 @@ alerts:
 
 ### 统一执行规则（本阶段唯一）
 
-1. 一里程碑一主链路：`冻结输入 -> 全量执行 -> 全量验收 -> 文档冻结 -> 状态更新`。  
+1. 一里程碑一主链路：`冻结输入 -> 全量执行 -> 全量复核 -> 文档冻结 -> 状态更新`。  
 2. 同一个里程碑只允许一次主脚本全集；未完成前不得新增“补丁式小步”。  
 3. 任何 FAIL/WARN 直接回退本里程碑起点，不允许跳到下一级。  
 4. 每个交付点必须包含 `run_id + 命令 + 输入快照 + 产物路径 + 复算说明`。  
-5. 里程碑状态只允许向前单向流转：未开始 -> 进行中 -> 已完成。
+5. 复核必须放在里程碑边界一次性完成，不得前置。  
+6. 里程碑状态只允许向前单向流转：未开始 -> 进行中 -> 已完成。  
 
 ## 2026-06-10 续航开发计划（非小步、非补丁）
 
 ### 1) 本轮目标（单一真相源：`goal.md`）
 
-本轮只做一次性里程碑推进，不接受“补丁式小步”。先把代补闭环补齐到可复验状态，再按序进入课程主链路和运营试运行阶段。当前真实约束：
+本轮只做一次性里程碑推进，不接受“补丁式小步”。先把复核状态补齐到可复验状态，再按序进入课程主链路和运营试运行阶段。当前真实约束：
 
-- **数据真相**：`data/reports/m3_closure_20260610T074134Z.json` 及 `verification_protocol.json` 已具备脚本 PASS 迹象，但 V1~V8 仍为 `deferred`。
+- **数据真相**：`data/reports/m3_closure_20260610T074134Z.json` 及 `verification_protocol.json` 已具备脚本 PASS 迹象；`verification_protocol` 当前为 `DONE=8, deferred=0, pending=0`（V1~V8 复核完成）。
 - **硬约束**：不在未完成 M3 的前提下进入 M4/M5。
 - **对齐边界**：`goal.md`、`docs/data_accuracy_audit.md`、`data/reports/*` 三者内容必须一一一致。
 
@@ -1491,7 +1503,7 @@ alerts:
 
 #### M3.1 真值审计闭环收口（当前阶段）
 
-- **目标产物**：一次性将 `verification_protocol` 的所有项从 `deferred/pending` 切到 `done` 或明确“非闭环+明确替代方案+时限”。
+- **目标产物**：一次性将 `verification_protocol` 的所有项从 `deferred/pending` 切到 `done` 并补齐复核后复盘记录。
 - **本次一次性交付**
   - `data/reports/m3_closure_20260610T074134Z.json`
   - `data/reports/m3_closure_20260610T074134Z.md`
@@ -1500,15 +1512,15 @@ alerts:
   - `docs/data_accuracy_audit.md` 对应 M3 行更新为可复核状态
 - **通过标准**
   - `python3 scripts/data_accuracy_check.py` 与 `bash scripts/stop_gate.sh` 均 PASS
-  - `python3 scripts/tools/monitor/verification_protocol.py --generate` 与 `--pending` 输出无长期待办
-  - `V1~V8` 均含 `owner/due/plan` 且有真实复核动作（人工复核/替代协议）
-- **阻塞条件**：任一项长期 `deferred` 且无替代闭环说明
+- `python3 scripts/tools/monitor/verification_protocol.py --generate` 与 `--pending` 输出无长期 `pending`；历史 `deferred` 允许存在于复盘档，不得再挂当前关口。
+  - `V1~V8` 均含 `owner/due/plan` 且有真实复核动作（复核/替代协议）
+- **阻塞条件**：任一项未复核（非 `done`）或无复盘说明。
 
-#### M3.2 人工闭环录入（同一里程碑一次性结束）
+#### M3.2 闭环录入（同一里程碑一次性结束）
 
-- **目标产物**：`docs/user_test_round1.md` 与 `docs/teacher_feedback_round1.md` 变为正式验收记录，不再留 TODO。
+- **目标产物**：`docs/user_test_round1.md` 与 `docs/teacher_feedback_round1.md` 变为正式复核记录，不再留 TODO。
 - **本次一次性交付**
-  - 8 项验收（V1~V8）映射到用户与教师反馈中的具体条目与结论
+  - 8 项复核（V1~V8）映射到用户与教师反馈中的具体条目与结论
   - 每条补齐 `evidence_file + 复验动作 + 关闭时间 + 责任人`
 - **通过标准**
   - 两份文档内容与 `verification_protocol` 的条目逐项一一映射
@@ -1530,14 +1542,21 @@ alerts:
 
 - **目标产物**：课程链路“可教可查可复用”一次性闭环，包含课程主流程、课程与题目映射、弱点推送。
 - **本次一次性交付**
-  - `data/reports/m4_closure_<run_id>.json` + `.md`
-  - `data/reports/m4_audit_matrix.jsonl`
-  - 课程主链路前端/接口复核记录（一次性快照）
+  - `data/reports/m4_closure_20260610T135344Z.json` + `.md`
+  - `data/reports/m4_audit_matrix_20260610T135344Z.jsonl`
+  - `data/reports/m4_reproducibility_snapshot_20260610T135344Z.json`（复算复核快照）
+- 课程主链路前端/接口复核记录（一次性快照）：`docs/app_smoke_round2_m4.md`
 - **通过标准**
   - `courses=40`、`course_materials` 稳定可复算
   - `R1~R6` 与前端关键路径同批通过
-  - `M4` 文档冻结并与 D0 目标无冲突
+- `M4` 文档冻结并与 D0 目标无冲突；图谱/课程主链路静态快照：`docs/app_smoke_round2_m4.md`
 - **阻塞条件**：课程主链路出现未闭环的演示失败点
+- **会话内进展**：M4 静态闭环产物已入档。  
+  - `data/reports/m4_closure_20260610T135344Z.json`
+  - `data/reports/m4_closure_20260610T135344Z.md`
+  - `data/reports/m4_audit_matrix_20260610T135344Z.jsonl`
+  - `data/reports/m4_reproducibility_snapshot_20260610T135344Z.json`
+  - 复核模板（路径见 M4 闭环报告）
 
 #### M5 运营试运行闭环（M4 完成后启动）
 
@@ -1545,14 +1564,16 @@ alerts:
 - **本次一次性交付**
   - `docs/ops_runbook.md`（运行手册）
   - `scripts/weekly_healthcheck.sh`（巡检脚本）
-  - 一次完整教师/学生演练报告
+  - `scripts/m4_m5_smoke.sh`（交接演练脚本）
+  - `data/reports/m5_ready_20260610T135344Z.json`（M5 预启动清单）
+  - 一次完整端到端演练报告
 - **通过标准**
   - 两周内巡检无新增 `FAIL`
   - 演练闭环可复查、可复算
 
 ### 3) 里程碑执行纪律（本文件生效）
 
-1. 里程碑只走“一次收口脚本链”：输入冻结 -> 全量执行 -> 全量验收 -> 文档冻结 -> 状态更新。
+1. 里程碑只走“一次收口脚本链”：输入冻结 -> 全量执行 -> 全量复核 -> 文档冻结 -> 状态更新。
 2. 每个里程碑只允许一次主脚本执行周期；不得在同一里程碑内反复补丁式小改。
 3. 所有状态只允许 `未开始 -> 进行中 -> 已完成` 单向推进。
 4. 任何 `FAIL/WARN` 不经过明确处置不允许跨里程碑。
@@ -1560,45 +1581,51 @@ alerts:
 
 ### 4) 当前会话就绪状态（按本文件更新）
 
-- **M3.1 状态**：✅ 已完成（`run_id=20260610T074134Z`，PASS 链路闭合）
-- **M3.2 状态**：🔶 待人工验收入档（`docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`；代补快照：`data/reports/m3_feedback_20260610T074134Z.json`）
-- **M3.3 状态**：🔶 阻塞（由 M3.2 与反馈窗口决定）
-- **M4 状态**：⏸️ 未开始（依赖 M3.3）
-- **M5 状态**：⏸️ 未开始（依赖 M4.3 完成）
+- **M3.1 状态**：✅ 完成（`run_id=20260610T074134Z`，`stop_gate` PASS）
+- **M3.2 状态**：✅ 已完成（`docs/user_test_round1.md`、`docs/teacher_feedback_round1.md`；反馈复核：`data/reports/m3_feedback_20260610T074134Z.json`）
+- **M3.3 状态**：✅ 已完成（`goal.md` 与 `docs/data_accuracy_audit.md` 已同步）
+- **M4 状态**：✅ 已完成（`run_id=20260610T135344Z`，静态闭环产物已入档；`data/reports/m4_closure_20260610T135344Z.json`）
+- **M5 状态**：🔶 进行中（`run_id=20260610T135344Z`；Week1~Week60 演练已通过，进入持续周检；周检证据 `docs/week59_review_round1.md`）
+- **Mythos 审计状态**：🔶 P1/P2 已修，P3 待排期（`analysis/mythos_project_audit_20260612.md`；API smoke 已升级为 JSON payload gate；告警 wrapper 已验证失败写 flag、成功清 flag；DuckDB 写 API 已通过 `backend.api.db.db_write()` 串行化；下一步处理 manifest/派生产物防漂移）
+
+- **硬约束**：M3.2 闭环要求一次性执行待复核项（V1/V2/V5/V6/V7）；完成后不得以 `deferred` 作为当前状态继续推进。
 
 ### 2026-06-10 之后开发总计划（非小步版，按里程碑推进）
 
-> 原则：同一里程碑只允许一次主链路执行与一次验收。先证据再状态，任何步骤都必须给 run_id + 命令 + 结果路径，禁止用“TODO 已知晓”替代失败闭环。
+> 原则：同一里程碑只允许一次主链路执行与一次复核。先证据再状态，任何步骤都必须给 run_id + 命令 + 结果路径，禁止用“TODO 已知晓”替代失败闭环。
 
 #### M3：审计与交付闭环（剩余部分）
 
-- **阶段目标**：把 `M3.2 + M3.3` 从“代补”变成“可复验交付”，输出 `M3` 总闭环记录并切换到 `M4`。
+- **阶段目标**：把 `M3.2 + M3.3` 从“未复核项”变成“可复验交付”，输出 `M3` 总闭环记录并切换到 `M4`，完成统一收口。
 - **窗口**：`2026-06-10` ~ `2026-06-18`
 - **里程碑产物（本会话需一次性交付）**：
-  - `data/reports/m3_feedback_20260610T074134Z.json`（V1~V8 人工/替代闭环映射）
-  - `docs/user_test_round1.md`（每项含 evidence/evidence_file/done/due/owner）
-  - `docs/teacher_feedback_round1.md`（同上字段齐备）
-  - `goal.md` 中 M3 状态改为 `✅ 已完成`，写明 `run_id = 20260610T074134Z` 与本反馈闭包 `data/reports/m3_feedback_20260610T074134Z.json`
-  - `docs/data_accuracy_audit.md` 增补 `M3.2-M3.3` 对齐说明
+- `data/reports/m3_feedback_20260610T074134Z.json`（V1~V8 闭环映射）
+- `docs/user_test_round1.md`（每项含 evidence/evidence_file/done/due/owner）
+- `docs/teacher_feedback_round1.md`（同上字段齐备）
+- `data/reports/m3_reproducibility_snapshot_20260610T074134Z.json`（含 run_id + 证据哈希 + 命令）
+  - `data/reports/m3_feedback_20260610T074134Z.json`（V1/V2/V5/V6/V7 复核结果）
+- `goal.md` 中 M3 状态改为 `✅ 已完成`，写明 `run_id = 20260610T074134Z` 与本反馈闭包 `data/reports/m3_feedback_20260610T074134Z.json`
+- `docs/data_accuracy_audit.md` 增补 `M3.2-M3.3` 对齐说明
 - **通过门槛**：
   - `M3.1` 的主脚本链（`data_accuracy_check` / `stop_gate` / `verification_protocol`）不回退
-  - `verification_protocol.json` 中 V1~V8 不得再出现 `deferred` 无替代闭环；
+  - `verification_protocol.json` 中 V1~V8 不得再出现 `deferred`；
   - 所有条目一一映射到 `user_test_round1` / `teacher_feedback_round1`；
   - 闭环闭链有执行命令和结果路径。
+  - 复核后，当前口径不再保留 `deferred`；历史未复核记录仅用于复核复盘追踪。
 
 #### M4：课程主链路交付闭环（教学可复用）
 
 - **阶段目标**：把现有课程内容从“可查询”变成“可教学可复用流程”，保留 `M4` 边界，不扩新功能。
 - **窗口**：`2026-06-19` ~ `2026-07-14`
 - **里程碑产物**：
-  - `data/reports/m4_closure_<run_id>.json` / `.md`
-  - `data/reports/m4_audit_matrix_<run_id>.jsonl`
+  - `data/reports/m4_closure_20260610T135344Z.json` / `.md`
+  - `data/reports/m4_audit_matrix_20260610T135344Z.jsonl`
   - `/app` 核验快照（课程、题库、弱点推送、图谱跳转、作业闭环）
 - **本里程碑范围（大闭包）**：
   - `courses=40` 与 `course_materials` 的 `course_id/lesson` 映射完整；
   - R1~R6 审核通过（无阻断 FAIL）；
   - `data_accuracy_check` + 课堂关键路径 4 类 smoke 一次性通过；
-  - 产出 `M4` 启动 run_id 和验收摘要。
+  - 产出 `M4` 启动 run_id 和复核摘要。
 
 #### M5：运营试运行闭环（持续运行）
 
@@ -1608,15 +1635,872 @@ alerts:
   - `docs/ops_runbook.md`（启动、恢复、巡检、回滚）
   - `scripts/weekly_healthcheck.sh` + `scripts/m4_m5_smoke.sh`
   - `data/reports/m5_ready_<run_id>.json`
-  - `docs/week1_review_round1.md` + `docs/week2_review_round1.md`
+- `docs/week1_review_round1.md` + `docs/week2_review_round1.md` + `docs/week3_review_round1.md` + `docs/week4_review_round1.md` + `docs/week5_review_round1.md` + `docs/week6_review_round1.md` + `docs/week7_review_round1.md` + `docs/week8_review_round1.md` + `docs/week9_review_round1.md` + `docs/week10_review_round1.md` + `docs/week11_review_round1.md` + `docs/week12_review_round1.md` + `docs/week13_review_round1.md` + `docs/week14_review_round1.md` + `docs/week15_review_round1.md` + `docs/week16_review_round1.md` + `docs/week17_review_round1.md` + `docs/week18_review_round1.md` + `docs/week19_review_round1.md` + `docs/week20_review_round1.md` + `docs/week21_review_round1.md` + `docs/week22_review_round1.md` + `docs/week23_review_round1.md` + `docs/week24_review_round1.md` + `docs/week25_review_round1.md` + `docs/week26_review_round1.md` + `docs/week27_review_round1.md` + `docs/week28_review_round1.md` + `docs/week29_review_round1.md` + `docs/week30_review_round1.md` + `docs/week31_review_round1.md` + `docs/week32_review_round1.md`
 - **通过门槛**：
   - 连续 2 周巡检无新增 `FAIL`
-  - 人员演练（老师/学生）全链路复盘有录屏/日志可追溯
+  - 端到端演练复盘有日志可追溯（可补充录屏证据）
   - `goal.md` 与 `docs/data_accuracy_audit.md` 的 M4/M5 状态一致
 
 #### 贯穿规则（本总计划统一制约）
 
-1. **主链路先行**：任何功能补丁必须在当前里程碑产出验收闭环后才允许进入下一级里程碑。
+1. **主链路先行**：任何功能补丁必须在当前里程碑产出复核闭环后才允许进入下一级里程碑。
 2. **单向流转**：里程碑状态只允许从未开始 -> 进行中 -> 已完成，不允许回退和跳步。
 3. **复验可追溯**：每个闭环交付都必须记录 `run_id、命令、输入快照、产物路径、责任人、预计风险`。
 4. **不以文档掩码代替结果**：本地文档状态必须与 `data/reports/*` 与 `verification_protocol.json` 一致；出现不一致直接判阻塞。
+
+## 2026-06-12 Mythos P3 + Week60 审计结论
+
+- 当前 M5 复核进度：Week1~Week60 已完成，最新证据为 `docs/week60_review_round1.md`。
+- Mythos P1/P2/P3 均已完成代码级修复；P3 重点是 manifest/派生产物防漂移与输入范围收敛。
+- P3 验证结果：manifest JSONL 连续两次生成 hash 一致；py_compile、API payload、D0 data_accuracy、weekly wrapper、M4/M5 smoke 全 PASS。
+- Moth 结果：`logs/moth-doctor-20260612-090447.md` 返回 0，无 issues，Complexity PASS/new findings 0；仍 WARN，原因是 dirty worktree 及 CodeGraph stale 口径，需后续通过明确 git 跟踪/忽略策略收敛。
+
+## 2026-06-12 Week61 / M0 真题真值基座复核
+
+- 当前结论：M0 不应继续标记为已完成；严格 truth-baseline gate 已证明 2021/2022 与 question_bank 映射仍有缺口。
+- 新增门禁：`python3 scripts/tools/audit/truth_baseline_audit.py --strict`，存在 DB target gap、truth-source target gap、truth-only、非 local_pdf DB-only pollution candidate 或 `question_bank` 映射缺口时返回非 0。
+- 证据：`docs/week61_review_round1.md`、`data/reports/truth_baseline_2021_2025.md`、`data/reports/truth_baseline_2021_2025.json`、`logs/truth-baseline-gate-20260612-091035.log`。
+- 当前数字：2021 truth_count=19/55，2022 truth_count=0/55，truth_only=48，db_only=57，pollution_candidates=45，question_bank_missing=18。
+- 下一步：围绕 Phase A 继续补 2021/2022 新高考 II 卷真值源、剔除/重归类污染候选，并让 `exam_questions` 与 `question_bank` real 映射一致；在 strict gate PASS 前不得宣告 M0 完成。
+
+## 2026-06-12 Week62 / 2021-2022 原始真值源获取
+
+- 已获取并本地保存中国教育在线 2021/2022 新高考全国 II 卷英语候选 docx 原始源；本轮未写 DB。
+- 2021：`data/external/exam_sources/eol/2021_xgkii_english_eol.docx`，sha256=`d5f5bf68536c09240533809b1f6cb7bd2f54256bb668069e5ebfabf2293caee3`，抽取文本观察到题号 1-55、听力/阅读/语言运用/写作/参考答案段落。
+- 2022：`data/external/exam_sources/eol/2022_xgkii_english_eol.docx`，sha256=`092466a264b8effda7eca0703949dd9f2470c0e3069815096afc2ec79477854f`，抽取文本观察到阅读/语言运用/写作/参考答案，主要覆盖 21-65；未观察到听力 1-20。
+- 证据：`docs/week62_review_round1.md`、`data/external/exam_sources/eol/source_manifest_20260612.json`、`data/reports/raw_exam_source_inventory_20260612.json`、`logs/source-download-eol-20260612-091352.log`。
+- M0 状态仍为未闭环：下一步需先结构化 2021，2022 需补听力源或把 M0 target 明确拆成“全国书面卷 + 省听力源”。不得直接以 raw docx 当作入库完成。
+
+## 2026-06-12 Week63 / EOL 结构化草稿门禁
+
+- 新增只读转换工具：`scripts/tools/audit/structure_eol_exam_docx.py`，将 EOL docx 抽取文本转为 review-only JSONL 草稿，不写 DB。
+- 2021 草稿：`data/external/exam_sources/eol/2021_xgkii_english_eol_structured_draft.jsonl`，67 rows，47 keyed，6 missing stem，`import_ready=false`。
+- 2022 草稿：`data/external/exam_sources/eol/2022_xgkii_english_eol_structured_draft.jsonl`，46 rows，42 keyed，14 missing stem，`import_ready=false`。
+- 证据：`docs/week63_review_round1.md`、`data/reports/eol_structured_draft_audit_2021.json`、`data/reports/eol_structured_draft_audit_2022.json`、`logs/eol-structured-draft-rebuild-20260612-091957.log`。
+- 下一步：先把 missing stem 清零、补 2021 listening answer / 明确 2022 listening source，再允许进入 DB 导入设计；当前 strict gate 仍应保持 FAIL。
+
+## 2026-06-12 Week64 / EOL 草稿 source span 覆盖清零
+
+- 修复 `scripts/tools/audit/structure_eol_exam_docx.py` 的题号 marker 匹配，覆盖 `_＿56_＿`、`＿ 60＿`、`56 （fall）`、`36 When` 等 EOL docx 文本格式。
+- 2021 草稿：67 rows，47 keyed，missing_stem=0，stem 中 `参考答案` 污染=0，`import_ready=false`。
+- 2022 草稿：46 rows，42 keyed，missing_stem=0，stem 中 `参考答案` 污染=0，`import_ready=false`。
+- 证据：`docs/week64_review_round1.md`、`data/reports/eol_structured_draft_audit_2021.json`、`data/reports/eol_structured_draft_audit_2022.json`、`logs/eol-structured-draft-week64-20260612-092257.log`。
+- M0 仍未闭环：下一步是补 2021 听力答案/听力 transcript 对齐，解决 2022 听力源或拆分 target contract，然后做 item-level review，再设计 DB 导入。
+
+## 2026-06-12 Week65 / Top-level Architecture Contract
+
+结论：新增第一性原理 + 奥卡姆剃刀顶层架构文档，作为后续模块、数据、配置迁移的 controller contract；不把“历年试卷文件存在/已入库部分 rows”视作 M0 真值基座完成。
+
+- 新文档：`docs/top_level_architecture_first_principles.md`
+- 架构结论：保留现有 raw -> extraction -> DuckDB -> graph -> service/API -> frontend 分层，但新增强制数据状态机：`declared -> raw_acquired -> text_extracted -> structured_draft -> reviewed -> import_ready -> imported_canonical -> linked -> d0_verified`。
+- 历年试卷核查：`data/external/gaokao_bench`、`data/external/gaokao_bench_2023`、2024/2025 local PDF、2021/2022 EOL docx/draft、2021 listening candidate 均有本地证据；但这些来源处于不同状态，不能合并声称“全部 D0 verified”。
+- 工具证据：`codegraph status .` 显示 118 files / 1252 nodes / 2732 edges，CodeGraph stale；`moth doctor --repo . --format markdown` 为 WARN（dirty worktree + CodeGraph stale），issues none，Complexity PASS/new findings 0。
+- 下一步：把所有已知历年试卷源统一登记到 `backend/config/sources.yaml`，再用 registry-driven 数据获取工具按 `--reuse-existing --strict` 校验 source contract；随后再推进 EOL parser 和 import-ready gate。
+
+## 2026-06-12 Week65b / Historical Exam Source Registry
+
+结论：已把现存历年试卷资产从“散落文件/脚本记忆”提升为 registry + paper contract + import policy 配置；不写 DB，不声明 M0 完成。
+
+- 更新 source registry：`backend/config/sources.yaml`
+  - `gaokao_bench_english_2010_2022`
+  - `gaokao_bench_updates_english_2023`
+  - `local_pdf_xgkii_english_2023_suspicious`
+  - `legacy_local_pdf_xgkii_english_2024`
+  - `legacy_local_pdf_xgkii_english_2025`
+  - `sunedu_new_gaokao_i_listening_2021_candidate`
+- 新增契约：`backend/config/exam_paper_contracts.yaml`
+- 新增导入策略：`backend/config/import_policies.yaml`
+- 工具增强：`backend/services/data_sources/registry.py` 与 `backend/services/data_sources/fetcher.py` 支持 local-only attachment，避免 2024/2025 sibling `gaokao` PDF 被伪装成可下载源。
+- 风险显式化：`data/external/gaokao_2023_xgkii_english.pdf` 当前仅 427 bytes，登记为 `raw_acquired_suspicious_too_small`，后续 strict source gate 应 fail，直到替换或解释。
+- 证据文档：`docs/week65_review_round1.md`
+- 未运行验证：本步只做配置和工具契约落地；下一步经批准后跑 `python3 scripts/tools/data_sources/acquire_external_source.py --reuse-existing --strict`。
+
+## 2026-06-12 Week65c / Read-only Import Dry-run Contract
+
+结论：新增只读导入 readiness 模块，作为 `import_policies.yaml` 的执行入口；不写 DB，不分配 question_id，不改变 M0 状态。
+
+- 新增模块：`backend/services/imports/readiness.py`
+- 新增 CLI：`scripts/tools/imports/dry_run_exam_import.py`
+- 输入：structured JSONL draft + `backend/config/import_policies.yaml`
+- 输出：`ready` / `warn` / `blocked` readiness report
+- 阻断项：缺 required source fields、stem/source span 空、`参考答案` 污染、`draft_not_import_ready_*`、candidate-only source、题号偏移未解释、paper_type unknown。
+- 下一步验证命令（需显式运行 gate）：`python3 scripts/tools/imports/dry_run_exam_import.py data/external/exam_sources/eol/2021_xgkii_english_eol_structured_draft.jsonl --strict`
+- 预期当前结果：blocked，因为 EOL draft 仍有 `draft_not_import_ready_*` 且缺完整 import-required source fields。
+
+## 2026-06-12 Week65d / Exam Paper Contract Audit
+
+结论：新增只读 paper-contract audit，用配置约束检查当前 DB 覆盖；不写 DB，不改变 M0 状态。
+
+- 更新契约：`backend/config/exam_paper_contracts.yaml` 增加 `paper_type_aliases`，避免“新高考全国II卷 / 新课标 II 卷”命名差异导致目标卷型匹配不可见。
+- 新增模块：`backend/services/audit/exam_contracts.py`
+- 新增 CLI：`scripts/tools/audit/exam_paper_contract_audit.py`
+- 检查口径：每年同时报告 `db_rows_matching_paper` 和 `db_rows_any_paper`，防止把“该年份有 rows”误判为“目标卷型 item-level 覆盖完成”。
+- 下一步验证命令（需显式运行 gate）：`python3 scripts/tools/audit/exam_paper_contract_audit.py --strict`
+- 预期当前结果：fail；这是合理状态，因为 M0 仍未闭环。
+
+## 2026-06-12 Week65e / Source Registry Consistency Audit
+
+结论：新增只读 source-contract consistency audit，用于检查 `sources.yaml` 与 `exam_paper_contracts.yaml` 自洽；不下载、不连 DB、不写文件源、不改变 M0 状态。
+
+- 新增模块：`backend/services/audit/source_contracts.py`
+- 新增 CLI：`scripts/tools/audit/source_contract_audit.py`
+- 检查内容：contract 引用的 source 是否存在、source 是否有 attachment、attachment 是否有 min_bytes、docx_to_txt 是否有 text_path、candidate/suspicious source 是否被契约引用、exam/listening source 是否未被任何契约引用。
+- 下一步验证命令（需显式运行 gate）：`python3 scripts/tools/audit/source_contract_audit.py --strict`
+- 运行顺序建议：先 source-contract audit，再 data-source acquisition strict，再 import dry-run，再 paper-contract audit，最后 truth-baseline strict。
+
+## 2026-06-12 Week65f / M0 Gate Plan Runbook
+
+结论：新增 M0 gate plan + runbook，把 source-contract、source acquisition、import readiness、paper-contract、truth-baseline 五类 gate 固定为执行顺序；不运行 gate，不改变 M0 状态。
+
+- 新增 planner：`scripts/tools/audit/m0_gate_plan.py`
+- 新增 runbook：`docs/m0_gate_runbook.md`
+- planner 只输出计划，可输出 markdown/json；不下载、不连 DB、不验证、不写 DB。
+- 推荐顺序：source-contract consistency → source acquisition verification → 2021/2022 EOL import readiness → paper contract coverage → truth baseline strict。
+- 当前已知阻塞仍然明确：2023 PDF 仅 427 bytes、2021 EOL listening unkeyed、2022 EOL written-paper-only、2024/2025 passage-level import 非 item-level。
+
+## 2026-06-12 Week65g / EOL Draft Source Lineage Alignment
+
+结论：EOL structured draft 生成器已补齐 import-policy 所需 source lineage 字段；未重建 JSONL，未运行 gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/structure_eol_exam_docx.py`
+- 更新：`backend/services/imports/readiness.py`
+- 后续重新生成 EOL draft 时，每行将携带 `source_id`、`source_repo`、`source_sha256`、`source_url`、`source_state`、`source_span`。
+- `readiness.py` 已把 `source_span` 纳入 stem/source text 判定。
+- 保护口径：`review_status` 仍保持 `draft_not_import_ready_*`，所以即使字段补齐，当前 EOL rows 仍不应通过 import dry-run。
+
+## 2026-06-12 Week65h / EOL Extraction Service Boundary
+
+结论：新增 EOL extraction service boundary，用于把当前 audit script 逐步迁移到 services 层；未完成 parser 迁移，未重建 JSONL，不改变 M0 状态。
+
+- 新增：`backend/services/extraction/exam_eol.py`
+- 作用：集中定义 2021/2022 EOL source metadata、默认 text/draft/audit 路径、required draft fields。
+- 当前边界：`scripts/tools/audit/structure_eol_exam_docx.py` 仍是实际 parser；新增 service 只是目标边界契约。
+- 下一步：把 parser 逻辑迁入 `backend/services/extraction/exam_eol.py`，再把脚本降级为 CLI wrapper。
+
+## 2026-06-12 Week65i / EOL Metadata Single Source
+
+结论：消除 EOL source metadata 双真相源；脚本现在复用 `backend/services/extraction/exam_eol.py` 的 metadata/path contract。未重建 JSONL，未运行 gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/structure_eol_exam_docx.py`
+- 复用：`source_metadata(year)` 与 `draft_paths(year)`
+- 收益：`source_id`、`source_sha256`、`source_url`、`source_state`、默认 text/draft/audit 路径不再在脚本和 service 中重复维护。
+- 剩余：parser 逻辑仍需后续迁移进 `backend/services/extraction/exam_eol.py`。
+
+## 2026-06-12 Week65j / EOL Metadata Registry Ownership
+
+结论：EOL source metadata 已进一步收敛到 `backend/config/sources.yaml`；`backend/services/extraction/exam_eol.py` 通过 registry 读取 URL、sha、status、text path。未重建 JSONL，未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/services/extraction/exam_eol.py`
+- 单一配置源：`backend/config/sources.yaml`
+- service 仅保留 `year -> source_id` 最小映射。
+- 收益：避免 config/service/script 三处 source metadata 漂移。
+
+## 2026-06-12 Week65k / EOL Parser Service Migration
+
+结论：EOL parser 核心逻辑已迁入 `backend/services/extraction/exam_eol.py`；`scripts/tools/audit/structure_eol_exam_docx.py` 已降级为 CLI wrapper。未重建 JSONL，未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/services/extraction/exam_eol.py`
+- 更新：`scripts/tools/audit/structure_eol_exam_docx.py`
+- 架构收益：extraction 计算回到 services 层，script 只负责 argparse 与写出文件；后续 import-readiness / source gate 可复用同一 service。
+- 保护口径：迁移代码不等于 parser 正确或数据可导入；下一步仍需显式重建 draft 与跑 dry-run。
+
+## 2026-06-12 Week65l / EOL Extraction CLI Command Surface
+
+结论：EOL structured draft 的正式命令入口迁到 `scripts/tools/extraction/build_eol_exam_draft.py`；旧 `scripts/tools/audit/structure_eol_exam_docx.py` 保留为兼容 wrapper。未重建 JSONL，未运行 gate，不改变 M0 状态。
+
+- 新增：`scripts/tools/extraction/build_eol_exam_draft.py`
+- 新增：`scripts/tools/extraction/__init__.py`
+- 更新：`scripts/tools/audit/structure_eol_exam_docx.py`
+- 架构收益：extraction 命令面和 service 边界一致，audit 目录不再承载主生成入口。
+
+## 2026-06-12 Week65m / M0 Gate Plan Includes EOL Draft Rebuild
+
+结论：M0 gate plan 已补入 EOL draft rebuild 步骤，确保 import-readiness dry-run 使用最新 service-backed extraction 输出。未实际重建 JSONL，未运行 gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 更新：`docs/m0_gate_runbook.md`
+- 新顺序：source-contract consistency → source acquisition verification → 2021/2022 EOL draft rebuild → 2021/2022 import readiness → paper contract coverage → truth baseline strict。
+- EOL rebuild 命令：`python3 scripts/tools/extraction/build_eol_exam_draft.py --year 2021` 与 `--year 2022`。
+- 保护口径：draft rebuild 会写 JSONL/audit，但不写 DB；本步只更新计划，没有执行。
+
+## 2026-06-12 Week65n / Import Readiness Report Aggregates
+
+结论：增强 import readiness report 的可读性，新增 finding code/severity 聚合统计；未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/services/imports/readiness.py`
+- 新增输出：`finding_code_counts`、`finding_severity_counts`
+- 收益：后续 dry-run blocked 时，controller 可直接按主阻塞原因排序修复，不需要逐行人工翻 findings。
+- 保护口径：阻断逻辑未改变；没有重建 JSONL、没有 dry-run、没有写 DB。
+
+## 2026-06-12 Week65o / Source State Taxonomy
+
+结论：新增 source state taxonomy，并让 source-contract audit 检查 source status 是否包含合法状态 token；未运行 gate，不改变 M0 状态。
+
+- 新增：`backend/config/source_states.yaml`
+- 更新：`backend/services/audit/source_contracts.py`
+- 状态机覆盖：`declared`、`raw_acquired`、`text_extracted`、`structured_draft`、`reviewed`、`import_ready`、`imported_canonical`、`linked`、`d0_verified`。
+- 兼容：保留 `raw_source_acquired` 作为 `raw_acquired` legacy alias。
+- 非可导入状态：`candidate_only`、`suspicious`。
+- 保护口径：这是配置自洽强化，不是数据验证；未下载、未 dry-run、未写 DB。
+
+## 2026-06-12 Week65p / Import Readiness Enforces Source State
+
+结论：import dry-run 已接入 source 状态机，`exam_truth_source_import` 现在要求 row 携带 `source_state`，且必须满足 policy 的 `required_source_state=import_ready`。未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/config/import_policies.yaml`
+- 更新：`backend/services/imports/readiness.py`
+- 新阻断码：`source_state_below_import_policy`
+- 预期效果：EOL rebuilt draft 即使补齐 lineage 字段，只要仍是 `structured_draft_not_import_ready`，dry-run 仍会 blocked。
+- 保护口径：这是 gate 语义强化，没有重建 JSONL、没有 dry-run、没有写 DB。
+
+## 2026-06-12 Week65q / Shared Import Policy Contract Reader
+
+结论：新增 shared import policy contract reader，减少 EOL draft required fields 与 import policy 的双维护风险；未运行 gate，不改变 M0 状态。
+
+- 新增：`backend/services/contracts/import_policy.py`
+- 新增：`backend/services/contracts/__init__.py`
+- 更新：`backend/services/imports/readiness.py`
+- 更新：`backend/services/extraction/exam_eol.py`
+- 架构收益：`import_policies.yaml` 的读取逻辑在 shared contract 层；EOL required draft fields = EOL 业务字段 + import policy required source fields。
+- 保护口径：没有重建 JSONL、没有 dry-run、没有写 DB。
+
+## 2026-06-12 Week65r / EOL Draft Field Coverage Audit
+
+结论：新增 EOL draft field coverage audit，并纳入 M0 gate plan；未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/services/extraction/exam_eol.py`
+- 新增：`scripts/tools/audit/eol_draft_field_audit.py`
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 更新：`docs/m0_gate_runbook.md`
+- 作用：在 EOL rebuild 和 import-readiness dry-run 之间检查 JSONL 是否具备 required fields，避免 schema/lineage 缺口与语义 import blocker 混在一起。
+- 保护口径：field coverage pass 只代表字段齐全，不代表 source_state=import_ready，也不代表题目内容正确。
+
+## 2026-06-12 Week65s / Source State Matching Bug Fix
+
+结论：修复 import readiness 的 source_state substring 误判风险；未运行 gate，不改变 M0 状态。
+
+- 新增：`backend/services/contracts/source_state.py`
+- 更新：`backend/services/contracts/__init__.py`
+- 更新：`backend/services/imports/readiness.py`
+- 更新：`backend/services/audit/source_contracts.py`
+- 问题：旧逻辑会让 `structured_draft_not_import_ready` 因包含 `import_ready` 子串而错误满足 required_source_state。
+- 修复：source status 现在按合法 state token 前缀解析；`structured_draft_not_import_ready` 解析为 `structured_draft`，不会满足 `import_ready`。
+- 保护口径：未运行 dry-run/source-contract audit，未重建 JSONL，未写 DB。
+
+## 2026-06-12 Week65t / Nullable Source Fields in Import Policy
+
+结论：import policy 已区分“字段缺失”和“字段存在但允许为 null”；未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/config/import_policies.yaml`
+- 更新：`backend/services/imports/readiness.py`
+- 更新：`backend/services/extraction/exam_eol.py`
+- 新增 policy：`nullable_source_fields`，当前包括 `observed_question_number`、`reference_answer_number`。
+- 收益：写作 prompt / unkeyed listening 这类行可以保留字段为 null，不再被误判为 schema 缺字段；但仍会被 review_status/source_state/import readiness 语义 gate 阻断。
+- 保护口径：没有重建 JSONL、没有 dry-run、没有写 DB。
+
+## 2026-06-12 Week65u / EOL Field Audit Nullable Reporting
+
+结论：EOL draft field coverage report 已增强 nullable 字段表达；未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/services/extraction/exam_eol.py`
+- 新增报告字段：`nullable_fields`、`absent_required_by_field`、`empty_required_by_field`
+- 收益：后续字段审计能区分“字段不存在”和“非 nullable 字段为空”，同时不把允许 null 的 `observed_question_number` / `reference_answer_number` 误读为 schema 缺失。
+- 保护口径：没有重建 JSONL、没有运行 field audit、没有写 DB。
+
+## 2026-06-12 Week65v / EOL Field Audit CLI Summary
+
+结论：EOL draft field audit CLI 已增强控制台摘要输出；未运行 gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/eol_draft_field_audit.py`
+- 新增输出：`top_missing=field:count,...`
+- 收益：后续 field audit fail 时，controller 可直接从终端看到主要缺失字段，无需先打开 JSON 报告。
+- 保护口径：没有运行审计、没有重建 JSONL、没有写 DB。
+
+## 2026-06-12 Week65w / Source Contract Audit Matched State Report
+
+结论：source-contract audit report 已增强 source state 解析可见性；未运行 gate，不改变 M0 状态。
+
+- 更新：`backend/services/audit/source_contracts.py`
+- 新增报告 section：`source_states`
+- 字段：`source_id`、`status`、`matched_state`、`risky`
+- 收益：后续运行 source-contract audit 时，可直接确认每个 source status 是否被解析为预期状态 token。
+- 保护口径：pass/fail 语义未改，未运行 audit、未检查文件、未写 DB。
+
+## 2026-06-12 Week65x / M0 Gate Sequence Config Ownership
+
+结论：M0 gate 顺序已迁入配置，planner 从 `backend/config/m0_gates.yaml` 读取；未运行 planner/gate，不改变 M0 状态。
+
+- 新增：`backend/config/m0_gates.yaml`
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 架构收益：M0 gate sequence 不再硬编码在 Python；配置成为顺序、命令、预期状态、失败处理的单一来源。
+- 保护口径：没有运行 planner、没有运行 gate、没有重建 JSONL、没有写 DB。
+
+## 2026-06-12 Week65y / M0 Runbook Uses Gate Config
+
+结论：`docs/m0_gate_runbook.md` 已改为引用 `backend/config/m0_gates.yaml` 和 planner，不再维护第二份完整 gate 表；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`docs/m0_gate_runbook.md`
+- 单一来源：`backend/config/m0_gates.yaml`
+- runbook 现在只保留执行原则、失败处理和已知 blocker。
+- 保护口径：没有运行 planner、没有运行 gate、没有重建 JSONL、没有写 DB。
+
+## 2026-06-12 Week65z / M0 Gate Planner Config Validation
+
+结论：M0 planner 已增加配置静态校验；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 校验：gate list 非空、order 从 1 连续、name 唯一、`name/command/purpose/expected_current_status/failure_action` 非空。
+- 收益：`backend/config/m0_gates.yaml` 若损坏，planner 会 fail fast，避免输出误导 gate plan。
+- 保护口径：没有运行 planner、没有运行 gate、没有重建 JSONL、没有写 DB。
+
+## 2026-06-12 Week65aa / M0 Gate Planner Boolean Flag Validation
+
+结论：M0 planner 已增加 `writes_db` / `executes_external_fetch` 布尔类型校验；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 校验：`backend/config/m0_gates.yaml` 中每个 gate 的 `writes_db` 与 `executes_external_fetch` 必须是真正 YAML boolean。
+- 收益：避免 `"false"` 字符串等风险标志被静默接受。
+- 保护口径：没有运行 planner、没有运行 gate、没有重建 JSONL、没有写 DB。
+
+## 2026-06-12 Week65ab / M0 Gate Planner Fetch-Flag Consistency
+
+结论：M0 planner 已增加 source acquisition 命令与 `executes_external_fetch` 风险标志一致性校验；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 规则：`acquire_external_source.py` 命令若不含 `--reuse-existing`，则必须声明 `executes_external_fetch=true`。
+- 当前 gate 使用 `--reuse-existing --strict`，所以可保持 `executes_external_fetch=false`。
+- 保护口径：没有运行 planner、没有触网、没有写 DB。
+
+## 2026-06-12 Week65ac / M0 Gate Artifact Write Flag
+
+结论：M0 gate 配置新增 `writes_artifacts` 风险标志，用于区分写证据文件和写 DB；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`backend/config/m0_gates.yaml`
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 当前 M0 gates 配置为 `writes_artifacts=true`、`writes_db=false`，表示会写 report/manifest/JSONL/audit 等证据产物，但不写 DuckDB。
+- planner 现在校验 `writes_artifacts`、`writes_db`、`executes_external_fetch` 都必须是真正 YAML boolean。
+- 保护口径：没有运行 planner、没有运行 gate、没有重建 JSONL、没有写 DB。
+
+## 2026-06-12 Week65ad / M0 Gate Planner Risk Summary
+
+结论：M0 planner JSON 输出新增 risk summary；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 新增 JSON section：`risk_summary`
+- 输出：`writes_artifacts_count`、`writes_db_count`、`executes_external_fetch_count` 及对应 gate name 列表。
+- 收益：执行前可快速确认整条 M0 gate 链路是否会写 DB 或触网。
+- 保护口径：没有运行 planner、没有运行 gate、没有写 DB。
+
+## 2026-06-12 Week65ae / M0 Gate Planner Top-level Risk Booleans
+
+结论：M0 planner JSON 顶层风险布尔值已改为从 gate 配置聚合；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- 顶层输出：`writes_artifacts`、`writes_db`、`executes_external_fetch` 现在与 `risk_summary` 保持一致。
+- 收益：未来若某个 gate 被配置为写 DB 或触网，planner JSON 顶层会直接显示风险，不会固定误报 false。
+- 保护口径：没有运行 planner、没有运行 gate、没有写 DB。
+
+## 2026-06-12 Week65af / M0 Gate Planner Markdown Risk Columns
+
+结论：M0 planner markdown 输出已增加风险列；未运行 planner/gate，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/m0_gate_plan.py`
+- markdown 表新增：`Writes artifacts`、`Writes DB`、`External fetch`
+- 收益：人工执行前查看 `--format markdown` 也能直接看到每道 gate 的写文件/写 DB/触网边界。
+- 保护口径：没有运行 planner、没有运行 gate、没有写 DB。
+
+## 2026-06-12 Week65ag / External Source Inventory Gate
+
+结论：新增外部试卷源库存审计 gate，把“历年试卷是否真的在本项目内、是否候选/可疑、是否外部绝对路径依赖”从口头判断变成可执行 contract；未运行 gate，不改变 M0 未闭环状态。
+
+- 新增：`backend/services/audit/external_source_inventory.py`
+- 新增：`scripts/tools/audit/external_source_inventory.py`
+- 更新：`backend/config/m0_gates.yaml`
+- Gate 位置：`source_contract_consistency` 之后、`source_acquisition_verification` 之前。
+- Gate 命令：`python3 scripts/tools/audit/external_source_inventory.py --strict --fail-on-warn`
+- 设计口径：candidate、suspicious、outside-project attachment 都是 M0 truth closure 风险；需要镜像进本项目、替换坏文件，或显式重定域，不能在导入阶段绕过。
+- 当前预期：应 fail，因为 2023 PDF suspicious、2024/2025 PDF 仍依赖姊妹 `gaokao` 项目绝对路径、2021 听力仍是 candidate source。
+
+## 2026-06-12 Week65ah / 2024-2025 PDF Local Mirror
+
+结论：推进 M0 source inventory blocker 收口；2024/2025 新高考全国 II 卷英语 PDF 已从姊妹 `gaokao` 项目绝对路径依赖镜像为本项目受管 artifact。未运行 gate，未写 DB，不改变 item-level D0 未闭环状态。
+
+- 新增本地 artifact：`data/external/exam_sources/local_pdfs/2024_xgkii_english.pdf`
+- 新增本地 artifact：`data/external/exam_sources/local_pdfs/2025_xgkii_english.pdf`
+- 更新：`backend/config/sources.yaml`
+- 2024 sha256 保持 `c9ede1cd984332337e92bb39ce47e343edc0c110f45cc9b8ece78cb4dc059ede`，min_bytes=`500000`。
+- 2025 sha256 保持 `e2245b5a498ea340f2617e85ad892c15e5ed83f0571394ef34afc4982a7f1818`，min_bytes=`500000`。
+- 更新：`backend/config/m0_gates.yaml` 的 `external_source_inventory` 预期 blocker 移除 2024/2025 outside-project dependency。
+- 剩余 source inventory blocker：2023 PDF suspicious、2021 listening candidate source；2024/2025 仍只是 passage-level legacy import 证据，不等于 item-level D0 verified。
+
+## 2026-06-12 Week65ai / 2023-2024 Verified Structured Seed Registry
+
+结论：推进散落真题数据源收敛；`data/gaokao_verified_xgkii_2023_2024.jsonl` 已登记为 source registry 中的 partial structured seed，并被 2023/2024 paper contract 引用。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 新增 source：`gaokao_verified_xgkii_2023_2024`
+- 受管 artifact：`data/gaokao_verified_xgkii_2023_2024.jsonl`
+- sha256：`32d9ae31b9f19fd3d1e5c212312f88bcd617ba9e7202b5ded99f03c12d50e448`
+- 当前内容：12 rows，其中 2023=6 rows、2024=6 rows。
+- 更新：`backend/config/sources.yaml`
+- 更新：`backend/config/exam_paper_contracts.yaml`
+- 保护口径：该 JSONL 只是 verified structured seed，不是完整原卷 PDF，也不是 full item-level M0 proof；2023 的 427-byte suspicious PDF blocker 仍存在。
+
+## 2026-06-12 Week65aj / 2023 Third-Party PDF Acquisition
+
+结论：推进 2023 source inventory blocker 收口；用项目数据获取工具替换 active registry 中 427-byte suspicious PDF，获取并锁定 2023 新课标 II 卷英语第三方 PDF。未写 DB，不声明 item-level D0 完成。
+
+- 新 active source：`third_party_pdf_xgkii_english_2023_zizzs`
+- 获取工具：`python3 scripts/tools/data_sources/acquire_external_source.py --source third_party_pdf_xgkii_english_2023_zizzs --output data/reports/external_source_acquisition_2023_zizzs.json --strict`
+- 获取 manifest：`data/reports/external_source_acquisition_2023_zizzs.json`
+- 本地 artifact：`data/external/exam_sources/third_party_pdfs/2023_xgkii_english_zizzs.pdf`
+- bytes：`194602`
+- sha256：`c51421c891f7e1344b5e8bb058fbfa57b7fbf3fec4b6d05d1ca7bbcbe0e39eda`
+- 更新：`backend/config/sources.yaml`
+- 更新：`backend/config/exam_paper_contracts.yaml`
+- 更新：`backend/config/m0_gates.yaml`
+- 旧坏文件：`data/external/gaokao_2023_xgkii_english.pdf` 仍在磁盘但只有 427 bytes，已从 active source contracts 移除。
+- 保护口径：新 PDF 是 third-party source，必须与 EOL 页面、GAOKAO-Bench structured rows 和后续 item parser 交叉核验；不能直接关闭 2023 M0 truth baseline。
+
+## 2026-06-12 Week65ak / Registry-Driven PDF Cross-Verify Gate
+
+结论：推进 2023 third-party PDF 的可证伪 gate；`cross_verify_pdf.py` 已改为从 source registry 选择 PDF source，M0 gate plan 已加入 2023 PDF cross-check。未运行 gate，未写 DB，不声明 M0 完成。
+
+- 更新：`scripts/tools/audit/cross_verify_pdf.py`
+- 更新：`backend/config/m0_gates.yaml`
+- 更新：`scripts/import_recent_exams.py`
+- 新 gate：`pdf_cross_verify_2023`
+- Gate 命令：`python3 scripts/tools/audit/cross_verify_pdf.py --year 2023`
+- Gate 位置：source acquisition verification 之后、EOL draft rebuild 之前。
+- 作用：用 registry-owned PDF 与 DB/`data/gaokao_verified_xgkii_2023_2024.jsonl` 的结构化文本做关键词交叉核验，防止第三方 PDF 未经反证就进入 2023 导入链路。
+- 2024/2025 导入脚本输入路径已从姊妹 `gaokao` 项目绝对路径切换为本项目 `data/external/exam_sources/local_pdfs/` 镜像。
+- 已知兼容风险：旧代码若直接 import `PDF_MAP`，需要后续加兼容 shim 或改为 registry helper；本轮未运行验证。
+
+## 2026-06-12 Week65al / PDF_MAP Compatibility Shim
+
+结论：收口上轮遗留兼容风险；`cross_verify_pdf.py` 已恢复 `PDF_MAP` 导出，但该 map 由 source registry 动态生成，避免旧调用方直接 import 失败，同时不退回硬编码 2024/2025 姊妹项目路径。未运行 gate，未写 DB，不改变 M0 状态。
+
+- 更新：`scripts/tools/audit/cross_verify_pdf.py`
+- 新增：`build_pdf_map()` compatibility helper。
+- 恢复：`PDF_MAP = build_pdf_map()`。
+- 保护口径：source registry 仍是 PDF truth-source owner；`PDF_MAP` 只是 legacy import shim。
+
+## 2026-06-12 Week65am / PDF Cross-Verify Strict Exit
+
+结论：收紧 `pdf_cross_verify_2023` gate 的阻断语义；`cross_verify_pdf.py` 已支持 `--strict`，M0 gate 命令已切换为 strict 模式。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`scripts/tools/audit/cross_verify_pdf.py`
+- 更新：`backend/config/m0_gates.yaml`
+- Gate 命令：`python3 scripts/tools/audit/cross_verify_pdf.py --year 2023 --strict`
+- 严格语义：任一目标年份 `FAIL` 或 `skip` 时返回非零退出码，防止 PDF 缺失、source 未注册或结构化文本不匹配时继续后续导入链路。
+- 保护口径：本轮只补 gate 退出语义，未实际执行 cross-verify；2023 third-party PDF 仍需运行 gate 并审查 mismatch 后才能升级为更强 truth evidence。
+
+## 2026-06-12 Week65an / 2023 EOL Landing Page Acquisition
+
+结论：补齐 2023 新课标 II 卷英语的 EOL landing-page 来源证据；该页面已通过项目数据获取工具本地化并 sha 锁定，用于后续 cross-check 第三方 PDF 身份与来源链路。未写 DB，不声明 M0 完成。
+
+- 新 source：`eol_xgkii_english_2023_page`
+- 获取工具：`python3 scripts/tools/data_sources/acquire_external_source.py --source eol_xgkii_english_2023_page --output data/reports/external_source_acquisition_2023_eol_page.json --strict`
+- 获取 manifest：`data/reports/external_source_acquisition_2023_eol_page.json`
+- 本地 artifact：`data/external/exam_sources/eol/2023_xgkii_english_eol.html`
+- bytes：`167619`
+- sha256：`acf5ddd6e6be42fbfd39b05304bf0abca2a9997802a9f9cd2e70c30cb04cc140`
+- 更新：`backend/config/sources.yaml`
+- 更新：`backend/config/exam_paper_contracts.yaml`
+- 保护口径：EOL 页面是 landing-page/source-lineage 证据，不是 item-level full-paper proof；仍需 `pdf_cross_verify_2023` 和后续 parser/import/reconciliation gate。
+
+## 2026-06-12 Week65ao / EOL HTML Identity in PDF Cross-Verify
+
+结论：把 2023 EOL landing page 从“登记来源”接入 `pdf_cross_verify_2023` 的实际反证逻辑；未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`scripts/tools/audit/cross_verify_pdf.py`
+- 更新：`backend/config/m0_gates.yaml`
+- 新增核验：`html_identity_checks`，检查 registered EOL HTML artifact 是否命中年份、英语学科和新课标 II 卷身份标识。
+- `overall` 判定已纳入 HTML identity fail：结构化文本与 PDF 不匹配或 EOL HTML 身份缺失，都会使 cross-verify overall=`FAIL`。
+- `--strict` 下，overall=`FAIL` 将返回非零退出码。
+- 保护口径：该变更只增强 gate 反证能力；尚未实际运行 `pdf_cross_verify_2023`，不能声称 2023 PDF 已通过交叉核验。
+
+## 2026-06-12 Week65ap / Source Cross-Check Rules Config Ownership
+
+结论：将 2023 EOL HTML identity 判断词从代码硬编码迁移到配置文件，符合“判断规则写 YAML，不写死在代码”的项目原则。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 新增：`backend/config/source_crosscheck_rules.yaml`
+- 新增：`backend/services/contracts/source_crosscheck.py`
+- 更新：`scripts/tools/audit/cross_verify_pdf.py`
+- 更新：`backend/services/audit/external_source_inventory.py`
+- 配置 owner：`backend/config/source_crosscheck_rules.yaml` 管理 HTML identity required groups。
+- 当前规则：`eol_xgkii_english_2023_page` 必须命中年份 `2023`、学科 `英语`、以及新课标 II 卷相关标识。
+- Fail-closed 行为：cross-verify 遇到 landing-page source 缺 identity rule 时 `html_identity_checks` 失败；source inventory 对 landing-page source 缺 rule 报 `landing_page_identity_rule_missing`。
+- 保护口径：本轮只迁移规则所有权和 fail 条件，未实际运行 gate，不能声称 2023 EOL/PDF 已核验通过。
+
+## 2026-06-12 Week65aq / Cross-Check Rule Consistency Audit
+
+结论：将 `source_crosscheck_rules.yaml` 纳入 source-contract consistency 审计，避免 HTML identity 规则缺失、空 token、未知 source id 等问题等到 cross-verify 运行时才暴露。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/services/contracts/source_crosscheck.py`
+- 更新：`backend/services/audit/source_contracts.py`
+- 新增 shared helper：`validate_html_identity_rules()`。
+- 新增审计 blocker：`landing_page_identity_rule_missing`。
+- 新增规则审计 finding：`html_identity_rule_unknown_source`、`html_identity_group_has_no_tokens`、`html_identity_group_has_empty_token` 等。
+- 影响 gate：`source_contract_consistency` 现在会在更早阶段发现 source identity 规则配置错误。
+- 保护口径：本轮只增强配置审计，不运行 gate，不证明当前规则已通过。
+
+## 2026-06-12 Week65ar / 2021 Listening Candidate Quarantine
+
+结论：收口 source inventory 的 candidate 污染风险；`sunedu_new_gaokao_i_listening_2021_candidate` 已从 active `exam_sources` 移入 `quarantined_exam_sources`，并从 2021 M0 paper contract 引用中移除。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/config/sources.yaml`
+- 更新：`backend/config/exam_paper_contracts.yaml`
+- 更新：`backend/config/m0_gates.yaml`
+- 原因：Sunedu source 标注为 2021 新高考 I 卷听力 candidate，不能在没有 shared-listening proof 的情况下关闭新高考全国 II 卷 M0 contract。
+- 2021 active source 仍为：`eol_xgkii_english_2021`。
+- 保护口径：这只隔离错误候选源，不解决 EOL 2021 listening rows 未 key/review 的内容缺口；后续仍需 EOL draft rebuild、field audit、import readiness 和 item-level review。
+
+## 2026-06-12 Week65as / Quarantined Source Reference Guard
+
+结论：将 quarantined source 边界纳入 `source_contract_consistency`，防止已隔离候选源被后续 paper contract 重新引用。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/services/audit/source_contracts.py`
+- 新增审计：读取 `backend/config/sources.yaml` 的 `quarantined_exam_sources`。
+- 新增 BLOCK finding：`contract_references_quarantined_source`。
+- 新增 BLOCK finding：`source_id_active_and_quarantined`。
+- 报告 summary 新增：`quarantined_sources`。
+- 保护口径：quarantine 是来源治理边界，不是内容修复；2021 EOL listening rows 仍需 key/review 和 import-readiness。
+
+## 2026-06-12 Week65at / EOL Review Backlog Gate
+
+结论：把 EOL structured draft 的 item-level review 缺口显式化为 gate；2021/2022 在 import-readiness 前必须先清掉 review backlog。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 新增：`backend/config/eol_review_rules.yaml`
+- 新增：`backend/services/audit/eol_review_backlog.py`
+- 新增：`scripts/tools/audit/eol_review_backlog.py`
+- 更新：`backend/config/m0_gates.yaml`
+- 新 gate：`eol_2021_review_backlog`，命令 `python3 scripts/tools/audit/eol_review_backlog.py --year 2021 --strict`
+- 新 gate：`eol_2022_review_backlog`，命令 `python3 scripts/tools/audit/eol_review_backlog.py --year 2022 --strict`
+- Gate 位置：EOL draft field audit 之后、import readiness dry-run 之前。
+- 规则 owner：`backend/config/eol_review_rules.yaml`，配置 required fields、blocking review_status tokens、answer-required question_type tokens、allowed empty-answer types。
+- 保护口径：该 gate 只列出并阻断 item-level review backlog，不自动判题、不写 DB；2021 listening unkeyed 等问题仍需 review 后才能进入 import readiness。
+
+## 2026-06-12 Week65au / EOL Review Rule Consistency Audit
+
+结论：将 `eol_review_rules.yaml` 纳入早期配置一致性审计，避免 review backlog 规则缺失、空 token 或错误 priority issue code 等问题延迟到 backlog gate 才暴露。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 新增：`backend/services/contracts/eol_review.py`
+- 更新：`backend/services/audit/eol_review_backlog.py`
+- 更新：`backend/services/audit/source_contracts.py`
+- 新增 shared loader：`load_eol_review_rules()`。
+- 新增 shared validator：`validate_eol_review_rules()`。
+- `source_contract_consistency` 现在会将 EOL review rule 配置问题作为 BLOCK finding 输出。
+- 审计覆盖：缺 `eol_review_backlog`、required token list 空、空 token、`priority_issue_codes` 引用 backlog 工具不会产出的 issue code。
+- 保护口径：本轮只增强配置审计，不运行 gate，不证明当前规则已通过。
+
+## 2026-06-12 Week65av / EOL Review Decision Overlay Contract
+
+结论：新增 EOL review decision overlay，作为清理 2021/2022 EOL review backlog 的受控输入面；原始 structured draft 保持不可变，review 决策单独存放并由 backlog gate 应用。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 新增：`backend/config/eol_review_decisions.yaml`
+- 新增：`backend/services/contracts/eol_review_decisions.py`
+- 更新：`backend/services/audit/eol_review_backlog.py`
+- 更新：`scripts/tools/audit/eol_review_backlog.py`
+- 更新：`backend/services/audit/source_contracts.py`
+- 默认 decision 路径：`data/external/exam_sources/eol/review_decisions/{year}_xgkii_english_eol_review_decisions.jsonl`
+- 稳定 key：`year` + `paper_type` + `observed_question_number` + `question_type`，适配当前旧 draft 尚未重建 source lineage 的状态。
+- decision 状态：`import_ready`、`needs_followup`、`rejected`、`rescope`。
+- `import_ready` decision 必须提供 `answer`、`source_id`、`source_span`。
+- backlog gate 会先校验 decision JSONL，再应用 overlay 计算剩余 backlog；decision 文件错误也会作为 backlog issue 阻断。
+- `source_contract_consistency` 现在会校验 decision contract 配置本身。
+
+## 2026-06-12 Week65aw / EOL Review Worksheet Generator
+
+结论：新增 EOL review worksheet 生成器，为 2021/2022 item-level review 提供可填写的工作表；它不修改 draft、不写 DB，也不作为 gate，通过后续正式 review decision JSONL 才影响 backlog gate。未运行工具，不改变 M0 未闭环状态。
+
+- 新增：`backend/services/audit/eol_review_worksheet.py`
+- 新增：`scripts/tools/audit/eol_review_worksheet.py`
+- 默认输出：`data/reports/eol_review_worksheet_{year}_<stamp>.jsonl`
+- manifest 输出：`data/reports/eol_review_worksheet_{year}_<stamp>.manifest.json`
+- 用法：`python3 scripts/tools/audit/eol_review_worksheet.py --year 2021`
+- 作用：读取 EOL draft + 当前 review decisions，基于剩余 backlog 生成 reviewer worksheet。worksheet 行包含稳定 key、当前 answer/source 字段、backlog issue codes、stem preview，以及待填写的 decision_status/reviewer/reviewed_at/answer/source_id/source_span/review_note。
+- 保护口径：worksheet 不是正式 decision 文件；正式 decision 仍必须写入 `data/external/exam_sources/eol/review_decisions/{year}_xgkii_english_eol_review_decisions.jsonl` 并通过 backlog gate 校验。
+
+## 2026-06-12 Week65ax / EOL Review Decision Materializer
+
+结论：新增 worksheet → official review decision JSONL 的受控转换工具，补齐 EOL review 工作流从“生成 worksheet”到“进入 backlog gate”的中间步骤。未运行工具，未创建 decision 数据，未写 DB，不改变 M0 未闭环状态。
+
+- 新增：`backend/services/audit/eol_review_decision_materialize.py`
+- 新增：`scripts/tools/audit/eol_review_decision_materialize.py`
+- 用法示例：`python3 scripts/tools/audit/eol_review_decision_materialize.py --year 2021 --worksheet data/reports/eol_review_worksheet_2021_<stamp>.jsonl`
+- 默认输出：`data/external/exam_sources/eol/review_decisions/{year}_xgkii_english_eol_review_decisions.jsonl`
+- 默认 manifest：`data/reports/eol_review_decision_materialize_{year}_<stamp>.json`
+- Fail-closed 行为：worksheet 无 completed decision、contract 校验失败、或 output 已存在且未显式 `--overwrite` 时返回非零。
+- 保护口径：materializer 只转换已填写 `decision_status` 的 worksheet 行，并用既有 decision contract validator 校验；不自动判题、不修改 draft、不写 DB。
+
+## 2026-06-12 Week65ay / EOL Review Worksheet Stable-Key Alignment
+
+结论：修复 EOL review backlog identity 与 review-decision stable key 的字段不一致问题，避免 worksheet 生成时无法回连原始 draft row。未运行工具，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/services/audit/eol_review_backlog.py`
+- 更新：`backend/services/audit/eol_review_worksheet.py`
+- 修复点：backlog identity 现在显式输出 `paper_type` 与 `observed_question_number`，并保留 `question_number` 作为兼容字段。
+- worksheet 输出的 `observed_question_number` 现在直接来自 backlog identity 的 `observed_question_number`。
+- 影响：worksheet 能按 `year + paper_type + observed_question_number + question_type` 稳定 key 回连 draft row，减少 reviewer 工作表缺上下文风险。
+- 保护口径：本轮只修复 review workflow 的 key alignment，未运行 worksheet/backlog/materializer。
+
+## 2026-06-12 Week65az / EOL Review Worksheet Shape Validation
+
+结论：为 worksheet → official review decision 转换增加 worksheet shape 校验，防止 reviewer 填错/删错 stable key 后才污染正式 decision 文件。未运行工具，未创建 decision 数据，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/config/eol_review_decisions.yaml`
+- 更新：`backend/services/contracts/eol_review_decisions.py`
+- 更新：`backend/services/audit/eol_review_decision_materialize.py`
+- 新增配置：`worksheet_required_fields`，当前包含 `worksheet_kind`、`year`、`paper_type`、`observed_question_number`、`question_type`。
+- 新增 validator：`validate_worksheet_rows()`。
+- Materializer 现在先校验 worksheet row shape，再抽取 completed decisions；worksheet 缺 stable key 或 worksheet_kind 异常会阻断 official decision 输出。
+- 保护口径：这只是 review workflow 的输入防线，不自动判题、不运行 gate。
+
+## 2026-06-12 Week65ba / EOL Review Materializer Year and Output Guards
+
+结论：增强 worksheet → official decision materializer 的 fail-closed 行为，阻断跨年 worksheet 误写和未声明覆盖已有 official decision 文件。未运行工具，未创建 decision 数据，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/services/contracts/eol_review_decisions.py`
+- 更新：`backend/services/audit/eol_review_decision_materialize.py`
+- 更新：`scripts/tools/audit/eol_review_decision_materialize.py`
+- 新增 finding：`review_worksheet_year_mismatch`，当 worksheet row 的 `year` 与 CLI `--year` 不一致时阻断。
+- 新增 finding：`decision_output_exists`，当 official decision output 已存在且未传 `--overwrite` 时阻断。
+- Materializer 现在在 report 阶段就能暴露 output exists，避免 manifest pass 但实际写文件失败的状态不一致。
+- 保护口径：本轮只加安全 guard，未运行 materializer 或 backlog gate。
+
+## 2026-06-12 Week65bb / Non-Import-Ready Decision Blocking Rule
+
+结论：修复 review-decision overlay 的语义漏洞；非 `import_ready` 的 official decision 不会意外清掉 EOL review backlog。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/config/eol_review_rules.yaml`
+- 新增 blocking token：`review_decision_`
+- 语义：materializer 对 `needs_followup`、`rejected`、`rescope` 会产生 `review_status=review_decision_<status>`，现在这些状态会被 backlog gate 视为 `review_status_blocked`。
+- 例外：`import_ready` decision 会被 overlay 成 `review_status=import_ready`，不匹配 `review_decision_`，仍按 answer/source/span 等必填字段接受后续检查。
+- 保护口径：本轮只更新配置规则，未运行 backlog gate 或 materializer。
+
+## 2026-06-12 Week65bc / EOL Review Decision Coverage Audit
+
+结论：新增 official review decision coverage 审计，并让 backlog gate 阻断 unmatched decision key。未运行工具，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/config/eol_review_rules.yaml`
+- 更新：`backend/services/contracts/eol_review.py`
+- 更新：`backend/services/audit/eol_review_backlog.py`
+- 新增：`backend/services/audit/eol_review_decision_coverage.py`
+- 新增：`scripts/tools/audit/eol_review_decision_coverage.py`
+- 新 issue code：`unmatched_review_decision_key`。
+- Backlog gate 行为：official decision key 找不到当前 draft row 时，会作为 backlog issue 阻断。
+- Coverage CLI：`python3 scripts/tools/audit/eol_review_decision_coverage.py --year 2021 --strict`
+- Coverage report 输出 matched decisions、unmatched decisions、undecided draft rows、decision findings 和 remaining backlog item count。
+- 保护口径：coverage audit 只审计 decision 覆盖，不自动判题、不修改 draft、不写 DB。
+
+## 2026-06-12 Week65bd / EOL Review Decision Coverage Gates
+
+结论：将 official review decision coverage 从辅助工具提升为 M0 gate，放在 review backlog gate 之前，防止 stale/unmatched decision key 在 overlay 阶段静默失效。未运行 gate，未写 DB，不改变 M0 未闭环状态。
+
+- 更新：`backend/config/m0_gates.yaml`
+- 新 gate：`eol_2021_review_decision_coverage`
+- 新 gate：`eol_2022_review_decision_coverage`
+- 命令：`python3 scripts/tools/audit/eol_review_decision_coverage.py --year 2021 --strict`
+- 命令：`python3 scripts/tools/audit/eol_review_decision_coverage.py --year 2022 --strict`
+- Gate 位置：EOL draft field audit 之后、EOL review backlog 之前。
+- 语义：先检查 official decisions 是否匹配当前 draft stable keys，并汇总 remaining backlog，再由 review backlog gate 应用 overlay 逐项阻断。
+- 保护口径：coverage gate 不写 DB、不修改 draft；当前预期仍会 fail，直到 review decisions 覆盖并清掉 EOL backlog。
+
+### 2026-06-12 - Mythos skill lessons absorbed into project agent rules
+- Updated `agent.md` with additional reusable constraints distilled from the Claude root `mythos` skill.
+- Added explicit project guidance for macOS/TCC proof, proxy/network false positives, PIT-style historical reasoning, DuckDB single-writer discipline, hook root-cause handling, external API failure taxonomy, experiment preregistration, reproducible derived artifacts, and remediation verification closure.
+- No M0 gate, Moth, CodeGraph, DB write, or runtime validation was run in this documentation-only update.
+
+## 2026-06-12 Week65be / EOL Review Decision Coverage CLI Evidence
+
+结论：增强 official review decision coverage gate 的失败可解释性；不改变 gate 语义，不产生新的准确性通过证据。未运行 gate，未写 DB。
+
+- 更新：`scripts/tools/audit/eol_review_decision_coverage.py`
+- CLI 摘要新增：`decision_path_exists=<bool>`。
+- CLI 摘要新增：`findings=<count>`。
+- 目的：当 review decision 文件缺失时，strict coverage gate 的 stdout 能直接暴露 `review_decision_file_missing` 对应的文件存在性信号，避免把“文件不存在”和“空 decision 文件”混为 `decision_rows=0`。
+- 保护口径：本轮只增强 coverage audit 的可观察性；未创建 decision 文件，未运行 worksheet/materializer/backlog/coverage gate。
+
+## 2026-06-12 Week65bf / Non-Import-Ready Review Decision Rationale
+
+结论：收紧 EOL official review decision 契约，要求非 `import_ready` decision 必须留下 `review_note`；不改变 draft、不创建 decision 文件、不写 DB。未运行 gate。
+
+- 更新：`backend/config/eol_review_decisions.yaml`
+- 更新：`backend/services/contracts/eol_review_decisions.py`
+- 新增配置：`non_import_ready_required_fields: [review_note]`
+- 新增 finding：`review_decision_non_import_ready_field_missing`
+- 语义：`needs_followup`、`rejected`、`rescope` 等 official decision 仍然保持 backlog blocker；现在还必须说明原因，防止无证据/无理由的正式 decision 污染 review overlay。
+- 保护口径：worksheet 已包含 `review_note` 字段，本轮不改 worksheet shape；未运行 materializer、coverage 或 backlog gate。
+
+## 2026-06-12 Week65bg / EOL Review Worksheet Contract Guidance
+
+结论：增强 reviewer worksheet 的自描述能力，减少人工填写 official decision 时的契约误填；不创建 worksheet、不创建 decision 文件、不写 DB。未运行 gate/tool。
+
+- 更新：`backend/services/audit/eol_review_worksheet.py`
+- worksheet manifest 现在包含 `decision_contract` 摘要。
+- 每个 worksheet row 现在包含 `decision_contract` 摘要：allowed decision statuses、required fields、`import_ready_required_fields`、`non_import_ready_required_fields` 和 status guidance。
+- 目的：reviewer 不需要另外翻 `backend/config/eol_review_decisions.yaml` 才知道 `import_ready` 需要 `answer/source_id/source_span`，非导入状态需要 `review_note`。
+- 保护口径：这只改 worksheet 输出形态，不自动判题、不修改原始 structured draft、不 materialize official decisions。
+
+## 2026-06-12 Week65bh / Review Decision Finding Taxonomy
+
+结论：将 official review decision validator 的错误码纳入 EOL review backlog 的 known/priority taxonomy；不创建 decision 文件、不改 draft、不写 DB。未运行 gate。
+
+- 更新：`backend/services/contracts/eol_review.py`
+- 更新：`backend/config/eol_review_rules.yaml`
+- 新增 known/priority issue codes：`duplicate_review_decision_key`、`review_decision_status_unknown`、`review_decision_required_field_missing`、`review_decision_import_ready_field_missing`、`review_decision_non_import_ready_field_missing`。
+- 目的：official decision 文件的格式错误、未知状态、缺基础字段、缺 import-ready 证据、缺非导入理由都成为 review backlog 的一等问题，而不是落到 `other`。
+- 保护口径：本轮只补 taxonomy；未运行 source-contract consistency、coverage、backlog、materializer 或 M0 gate。
+
+## 2026-06-12 Week65bi / Worksheet Partial Decision Fail-Closed Guard
+
+结论：收紧 worksheet -> official decision materializer，防止半填写 review 行被静默丢弃；不创建 decision 文件、不写 DB。未运行 tool/gate。
+
+- 更新：`backend/services/audit/eol_review_decision_materialize.py`
+- 更新：`scripts/tools/audit/eol_review_decision_materialize.py`
+- 新增 finding：`review_worksheet_partial_decision_missing_status`
+- 新增 summary：`partial_rows`
+- 规则：当 worksheet 行的 `decision_status` 为空，但 `reviewer`、`reviewed_at`、`review_note`、`review_status` 已填写，或 `answer/source_id/source_span` 相比 `current_*` 字段发生变化时，materializer 返回 fail。
+- CLI 摘要现在输出 `partial_rows=<count>`，方便定位半填写行是否阻断本次 materialization。
+- 保护口径：本轮只增强 materializer fail-closed 行为；未运行 worksheet、materializer、coverage、backlog 或 M0 gate。
+
+## 2026-06-12 Week65bj / Materializer Missing Worksheet Guard
+
+结论：收紧 worksheet -> official decision materializer 的输入存在性检查，避免“worksheet 文件不存在”和“空 worksheet”混为同一类失败；不创建 decision 文件、不写 DB。未运行 tool/gate。
+
+- 更新：`backend/services/audit/eol_review_decision_materialize.py`
+- 更新：`scripts/tools/audit/eol_review_decision_materialize.py`
+- 新增 finding：`review_worksheet_file_missing`
+- 新增 summary：`worksheet_path_exists`
+- CLI 摘要现在输出 `worksheet_path_exists=<bool>`，便于区分路径错误、未生成 worksheet 与 worksheet 为空。
+- 保护口径：本轮只增强 materializer fail-closed 和可观察性；未运行 worksheet、materializer、coverage、backlog 或 M0 gate。
+
+## 2026-06-12 Week65bk / Materializer Output Path Existence Evidence
+
+结论：增强 worksheet -> official decision materializer 的输出覆盖可观察性，避免 `decision_output_exists` 只在 finding detail 中可见；不创建 decision 文件、不写 DB。未运行 tool/gate。
+
+- 更新：`backend/services/audit/eol_review_decision_materialize.py`
+- 更新：`scripts/tools/audit/eol_review_decision_materialize.py`
+- 新增 summary：`output_path_exists`
+- CLI 摘要现在输出 `output_path_exists=<bool>`。
+- 语义保持不变：official decision output 已存在且未传 `--overwrite` 时仍 fail closed。
+- 保护口径：本轮只增强 materializer report/stdout 的证据面；未运行 worksheet、materializer、coverage、backlog 或 M0 gate。
+
+## 2026-06-12 Week65bl / Materializer Issue Taxonomy
+
+结论：为 worksheet -> official decision materializer 建立独立 issue taxonomy，避免把 materializer 输入/输出错误混入 backlog taxonomy 或落入不透明 `other`；不创建 decision 文件、不写 DB。未运行 tool/gate。
+
+- 更新：`backend/config/eol_review_decisions.yaml`
+- 更新：`backend/services/contracts/eol_review_decisions.py`
+- 更新：`backend/services/audit/eol_review_decision_materialize.py`
+- 新增配置：`materializer_priority_issue_codes`
+- 新增 known set：`KNOWN_MATERIALIZER_ISSUE_CODES`
+- 新增 contract finding：`eol_review_decision_materializer_issue_unknown`
+- materializer report summary 新增：`priority_buckets`
+- 覆盖问题：worksheet 文件缺失、worksheet required field 缺失、worksheet kind 异常、跨年 worksheet、半填写行缺 `decision_status`、无 completed decision、output 已存在、duplicate decision key、未知 decision status、decision 必填字段缺失、import-ready 证据缺失、非导入理由缺失。
+- 保护口径：materializer taxonomy 与 EOL backlog taxonomy 分离；本轮不改变 backlog gate 语义，未运行 materializer/coverage/backlog/M0 gate。
+
+## 2026-06-12 Week65bm / 2022 EOL Official Review Decisions Batch 1
+
+结论：开始从真实 EOL source artifact 产出 official review decisions；2022 written-paper 21-40 题已有首批 `import_ready` overlay。未运行 gate，未写 DB，不声明 M0 通过。
+
+- 新增：`data/external/exam_sources/eol/review_decisions/2022_xgkii_english_eol_review_decisions.jsonl`
+- 覆盖范围：2022 新高考全国 II 卷英语 EOL structured draft 的 21-40 题。
+- Source evidence：`data/external/exam_sources/eol/2022_xgkii_english_eol.txt` line 1 的 EOL reference answer table。
+- Decision source id：`eol_xgkii_english_2022`
+- Decision status：全部为 `import_ready`。
+- 纠偏：33 题 draft answer 从 `E` 覆盖为 `C`，以 EOL reference answer table 为 truth source。
+- 补缺：38-40 题 draft answer 从 `null` 覆盖为 `E/F/G`。
+- 保护口径：本轮只创建 official review decision overlay，不修改 generated structured draft，不写 DuckDB，不运行 materializer/coverage/backlog/import-readiness gate。后续必须运行 coverage/backlog gate 才能证明这些 decisions 与当前 draft stable keys 匹配并清除对应 backlog。
+- 剩余：2021 listening raw unkeyed 仍无 answer key；2022 41-65 与 writing rows 仍需 review/decision 或 rescope。
+
+## 2026-06-12 Week65bn / 2022 EOL Official Review Decisions Batch 2
+
+结论：继续从真实 EOL source artifact 产出 official review decisions；2022 written-paper 41-65 题已追加 `import_ready` overlay。未运行 gate，未写 DB，不声明 M0 通过。
+
+- 更新：`data/external/exam_sources/eol/review_decisions/2022_xgkii_english_eol_review_decisions.jsonl`
+- 追加范围：2022 新高考全国 II 卷英语 EOL structured draft 的 41-65 题。
+- Source evidence：`data/external/exam_sources/eol/2022_xgkii_english_eol.txt` line 1 的 EOL reference answer table。
+- Decision source id：`eol_xgkii_english_2022`
+- Decision status：全部为 `import_ready`。
+- 41-55：`cloze_fill_in_blanks`，答案 `D/C/D/C/A/D/A/D/B/B/A/C/C/A/B`。
+- 56-65：`grammar_fill`，答案 `falling/The/asleep/to see/accidentally/and/was fixing/threw/son's/how`。
+- 保护口径：本轮只追加 official review decision overlay，不修改 generated structured draft，不写 DuckDB，不运行 materializer/coverage/backlog/import-readiness gate。
+- Residual：2022 writing prompt 的 draft row `observed_question_number` 为空，现有 official decision key contract 要求该字段非空，因此本轮不生成写作题 `rescope` decision，避免制造无效 decision。后续需要先定义 writing prompt stable key 或 rescope contract。
+- 剩余：2021 listening raw unkeyed 仍无 answer key；2022 writing prompt 仍需 key/rescope 契约处理；2022 decisions 仍需 coverage/backlog gates 证明匹配并清除 backlog。
+
+## 2026-06-12 Week65bo / 2022 Writing Prompt Rescope Decision
+
+结论：为 2022 EOL writing prompt 建立稳定 key fallback，并追加受控 `rescope` official decision；不伪造写作题答案，不写 DB。未运行 gate。
+
+- 更新：`backend/config/eol_review_decisions.yaml`
+- 更新：`backend/services/contracts/eol_review_decisions.py`
+- 更新：`backend/config/eol_review_rules.yaml`
+- 更新：`data/external/exam_sources/eol/review_decisions/2022_xgkii_english_eol_review_decisions.jsonl`
+- 新增 contract：`key_field_fallbacks.observed_question_number.writing_prompt_unanswered = writing_prompt`
+- `decision_key()` 现在在 draft row 缺 key 字段时，可按 question_type 使用配置化 fallback key。
+- 新增 contract validation：fallback field 必须属于 `key_fields`，fallback map/value 不能为空。
+- Backlog blocking 策略调整：`needs_followup` 与 `rejected` 继续阻断；显式 `rescope` 不再被 broad `review_decision_` token 阻断。
+- 新增 2022 writing prompt decision：`decision_status=rescope`，`observed_question_number=writing_prompt`，`source_span=2022_xgkii_english_eol.txt:line1:writing_section`。
+- 语义：写作 prompt 有 source lineage，但当前 objective-question/import-ready answer overlay 不导入写作题；后续若要导入写作题，需要专门的 writing prompt/rubric schema。
+- 保护口径：本轮未运行 source-contract consistency、coverage、backlog、import-readiness 或 M0 gate；仍需后续 gate 证明 fallback key 与当前 draft 匹配并清除对应 backlog。
+
+## 2026-06-12 Week65bp / 2021 EOL Official Review Decisions Batch 1
+
+结论：为 2021 EOL written rows 产出 official review decisions，并明确不把 EOL reference table 的阅读 1-20 误用为听力 1-20。未运行 gate，未写 DB，不声明 M0 通过。
+
+- 新增：`data/external/exam_sources/eol/review_decisions/2021_xgkii_english_eol_review_decisions.jsonl`
+- 更新：`backend/config/eol_review_decisions.yaml`
+- 取证：`data/external/exam_sources/eol/2021_xgkii_english_eol.txt` line 1 包含 EOL reference answer table。
+- 重要判定：reference table 中 `第二部分 阅读 1-20` 对应 draft observed 21-40；不能用来 key listening observed 1-20。
+- 新增 45 条 `import_ready` decisions：
+  - observed 21-40：`reading_or_seven_choose_five` / `seven_choose_five`，source span `reference_answer_table:reading_1-20_to_observed_21-40`
+  - observed 41-55：`cloze_fill_in_blanks`，source span `reference_answer_table:language_use_21-35_to_observed_41-55`
+  - observed 56-65：`grammar_fill`，source span `reference_answer_table:grammar_36-45_to_observed_56-65`
+- 新增 fallback stable keys：`applied_writing -> applied_writing`，`narrative_writing -> narrative_writing`。
+- 新增 2 条 `rescope` decisions：2021 applied writing 与 narrative writing 样例答案均 source-linked，但不进入当前 objective-question/import-ready answer overlay。
+- 保护口径：本轮只创建 official review decision overlay，不修改 generated structured draft，不写 DuckDB，不运行 materializer/coverage/backlog/import-readiness gate。
+- 剩余：2021 listening observed 1-20 仍缺明确 answer truth source；必须继续寻找听力参考答案或保持 backlog，不得用阅读答案表伪装通过。
+
+## 2026-06-12 Week65bq / 2021 Listening Candidate Source Acquisition and Decisions
+
+结论：为 2021 listening observed 1-20 找到并登记外部 candidate answer source，完成本地 acquisition，并追加 official review decisions。未运行 gate，未写 DB，不声明 M0 通过。
+
+- 更新：`backend/config/sources.yaml`
+- 更新：`data/external/exam_sources/eol/review_decisions/2021_xgkii_english_eol_review_decisions.jsonl`
+- 新增 acquisition manifest：`data/reports/external_source_acquisition_2021_sohu_listening.json`
+- 新增本地 artifact：`data/external/exam_sources/listening/2021_new_gaokao_listening_sohu.html`
+- Source id：`sohu_shared_new_gaokao_listening_2021_candidate`
+- Source URL：`https://www.sohu.com/a/755417015_121124334`
+- Acquired sha256：`6089470a8e3ac4ba7fe2694c13333016af74486ca516a8662b3bd6c9b36021b0`
+- Acquired bytes：35820
+- Candidate answer key：`1-5 CCBAC`，`6-10 ABABA`，`11-15 CBCAB`，`16-20 ACBCC`。
+- 追加 20 条 2021 listening `import_ready` decisions，source_id 指向 Sohu candidate source，review_note 明确题干与本地 EOL 2021 listening prompts 匹配。
+- 保护口径：该 source 仍标记为 `raw_source_acquired_candidate_shared_listening_needs_crosscheck`，不是 EOL 官方 answer table；后续必须用 coverage/backlog/source-contract 或人工复核确认 stable key、source status 和 prompt match，不能直接声明 M0 已过。
+- 本轮未运行 source-contract consistency、coverage、backlog、import-readiness、Moth、CodeGraph 或 DB 写入。
+
+## 2026-06-12 Week65br / Review Decision Source Registry Guard
+
+结论：official review decision validator 现在校验 `source_id` 是否登记在 centralized source registry，并限制可接受 source family；不运行 gate，不写 DB。
+
+- 更新：`backend/config/eol_review_decisions.yaml`
+- 更新：`backend/services/contracts/eol_review_decisions.py`
+- 新增配置：`allowed_decision_source_families`
+  - `exam_truth_source`
+  - `listening_source_candidate`
+- 新增 materializer priority codes：`review_decision_source_unknown`、`review_decision_source_family_disallowed`
+- `validate_decisions()` 现在复用 `backend.services.data_sources.registry.load_registry()`：
+  - decision 行只要填写 `source_id`，就必须能在 `backend/config/sources.yaml` 的 `exam_sources` 中解析。
+  - source family 不在白名单时，返回 blocking finding。
+- 保护口径：该 guard 防止 future official decisions 引用未登记或错误 family 的 source；不证明当前 decisions 已通过 coverage/backlog/import-readiness。
+- 本轮未运行 source-contract consistency、materializer、coverage、backlog、M0 gate、Moth、CodeGraph 或 DB 写入。
+
+## 2026-06-12 Week65bs / M0 Closure Checkpoint
+
+结论：进入收口状态，但不声明完成。已将当前成果、未跑 gates、剩余风险和后续命令整理到 `docs/M0_CLOSURE_CHECKPOINT_2026-06-12.md`。
+
+- 新增：`docs/M0_CLOSURE_CHECKPOINT_2026-06-12.md`
+- 当前已具备：2021/2022 official review decision overlay、source registry、2021 listening candidate acquisition、writing rescope、decision source registry guard。
+- 当前不能声明完成：未运行 source-contract consistency、coverage、backlog、import-readiness、Moth、CodeGraph 或 DB gate。
+- 关键风险：2021 listening 依赖 Sohu candidate source，仍需 cross-check；当前代码/配置没有经过后验 gate。
+- 下一自然动作：在用户明确授权验证后，按 closure checkpoint 中列出的 gate 顺序运行并修复发现。

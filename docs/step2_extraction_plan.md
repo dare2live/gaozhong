@@ -67,7 +67,7 @@ Textbook (version=waiyan|renjiao, volume=必修1..选必4)
 - 输入: `data/curriculum/national/.../4.普通高中英语课程标准（2017年版2020年修订）.pdf`
 - P0.1 **附录 2 词汇表** (p129-182): 一行一词 + 后缀 `*` / `**` 极易解析
   - 输出: `data/structured/curriculum/cefr_vocab.jsonl`
-  - 验收: 总词数 ≈ 3000 (允许 ±50), 含 `*` 词 ≈ 500, 含 `**` 词 ≈ 1000
+  - 复核: 总词数 ≈ 3000 (允许 ±50), 含 `*` 词 ≈ 500, 含 `**` 词 ≈ 1000
 - P0.2 **附录 3 语法项目表** (p187-191): 编号 + 标题层级 + `*`/`**` 标
   - 输出: `data/structured/curriculum/grammar_items.jsonl`
 - P0.3 **主题语境清单** (p20-46 课程内容章节): 三大语境 → 子主题
@@ -98,7 +98,7 @@ Textbook (version=waiyan|renjiao, volume=必修1..选必4)
 - 解析:
   1. 用 pypdf 切出 vocabulary section 的页范围 (P3 给出).
   2. 正则 `^([a-zA-Z][a-zA-Z\-']+)\s+([\/\[].*?[\/\]])?\s+([a-z]+\.)\s+(.+)$` 抓行.
-  3. 失败行单独入 `data/structured/extracted/<version>/<book>/vocab_failed.txt`, 人工校.
+  3. 失败行单独入 `data/structured/extracted/<version>/<book>/vocab_failed.txt`, 进入复核队列.
 - **课标对齐**: 每个教材词 → join `cefr_vocab.jsonl` 看是否在 3000 词内.
   - 在 → `UnitVocabIntro(word, first_seen_unit, in_curriculum=true, cefr_level)`
   - 不在 → 标 `in_curriculum=false`, **教材在课标 200 词地方权限内的扩展** (各地最多再加 200), 这部分要单独审查
@@ -111,11 +111,11 @@ Textbook (version=waiyan|renjiao, volume=必修1..选必4)
   - "只抽**多词单位**: 动词短语 / 固定搭配 / 习语 / 功能表达 (邀请/拒绝/建议/感谢等)."
   - "拒绝单词. 单词查 cefr_vocab.jsonl."
   - "每条必须带: (a) 原句 evidence, (b) 主题语境标签 (从 theme_contexts.jsonl 选), (c) 功能/类型标签."
-- 双校验: 两个 LLM 独立抽, 交集 ≥ 0.7 κ, 否则交叉评 + 人审.
+- 双校验: 两个 LLM 独立抽, 交集 ≥ 0.7 κ, 否则交叉评 + 规则复核.
 - **越纲判 (机器化)**: 抽出的 phrase 逐 token 查 cefr_vocab.jsonl, 不在的列 `oo_syllabus_words[]`.
   - 全在课标内 → `keep` (主推)
   - 含 1-2 `**` 词 → `keep_extension` (选必扩展, 可教但标黄)
-  - 含完全表外词 → `flag_for_human` (人审决定是否教)
+  - 含完全表外词 → `flag_for_human` (低置信样本降级, 进入后续复核)
 
 ### P5b. 语法点抽 (Mapping 到课标 GrammarItem)
 - 教材里的 grammar 板块都对应一个或多个课标语法项目 (P0.2 的 grammar_items.jsonl).
@@ -137,7 +137,7 @@ Textbook (version=waiyan|renjiao, volume=必修1..选必4)
 - ❌ 抽 PDF 中的图片 / 听力音频 (STEP 1+2 范围之外)
 - ❌ 跨版本 Unit 主题对齐 (STEP 3 任务, 不在 STEP 2)
 
-## 评估指标 (STEP 2 验收门)
+## 评估指标 (STEP 2 复核门)
 
 课标层 (P0):
 - `cefr_vocab.jsonl` 总词数 = 3000 ± 50, 含 `*` ≈ 500, `**` ≈ 1000
