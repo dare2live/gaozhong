@@ -39,6 +39,10 @@ def main() -> None:
     print("\n=== Layer 2: exam mirror ===")
     print(f"  {extract.run_exam_extract(con)}")
 
+    print("\n=== Layer 2a: EOL 真题入库 (2021/2022 辽宁新高考全国II卷, 替换 GAOKAO 混合卷占位) ===")
+    from backend.services.imports import eol_import
+    print(f"  {eol_import.import_eol_exams(con)}")
+
     print("\n=== Layer 2b: 真题 cross-verify 门禁 (宪法 §8.3) ===")
     try:
         from scripts.tools.audit.cross_verify_pdf import verify_year, PDF_MAP

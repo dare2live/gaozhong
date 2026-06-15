@@ -892,3 +892,10 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **结果**: question_bank 700→178 纯真题; course_handouts 40→0; data_accuracy_check 去 check_5/19/20, check_9/10/16 改为对真题诚实; D0 exit 0 / stop_gate exit 0 / audit 44 OK (工程债 code_complexity/size 重归类, 减债 task_90d55f25)。
 **保留**: 课程结构骨架(courses 40 + course_materials 560 canonical 引用)、真题、canonical/图谱、基于真题的 quiz。
 **原则**: 数据基石(教材完整提取)完成前不重建生成内容 (项目 §1.1)。
+
+## 2026-06-15 / EOL 真题入库闭环 (L-R 真值补全)
+
+**动作**: 写 `backend/services/imports/eol_import.py`, 把 M0 已 review 的真实 2021/2022 辽宁新高考全国II卷 (structured_draft + review_decisions import_ready) 入 exam_questions, 替换 GAOKAO-Bench 混合卷占位; 集成进 init_db Layer 2a (可复现)。
+**结果**: 2021 入 65 题 (听力20+完形15+七选五5+语法10+阅读15)、2022 入 45 题; 全部有核验答案 (笔试源=官方EOL参考答案表偏移已核验, 听力源=Sohu候选 analysis 留 lineage); 写作 rescope 留外 (宁缺毋滥)。GAOKAO 全国甲卷 "Landscape Photographer" 已随占位删除 (smoking gun=0)。
+**验证**: D0 exit 0 / stop_gate exit 0 / check_21 全绿 / course_materials 重建 0 悬空 / 幂等。exam_questions 376->454 (真辽宁卷 152: 2021-2025)。
+**意义**: L-R 从"止血(降级未知)"推进到"真值补全(真题入库)"; M0 2021/2022 真题真值基座从 staged 变为 imported_canonical。
