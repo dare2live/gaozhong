@@ -1,250 +1,58 @@
 #!/usr/bin/env python3
-"""M0 真值基座核验脚本：对齐 exam_questions 与公开真值源（2021-2025）."""
+"""M0 真值基座核验脚本：对齐 exam_questions 与公开真值源（2021-2025）.
+
+公开 API + CLI 入口. 装载簇 / 报告簇 / 共享底层工具已抽到 sibling 模块
+(truth_baseline_load / truth_baseline_report / truth_baseline_common),
+此处 re-export 以保持对外符号稳定 (e.g. milestone_b_rebuild 引用路径不变).
+"""
 from __future__ import annotations
 
 import argparse
-import hashlib
-import json
-import re
+import sys
 from collections import defaultdict
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[3]
-
 import duckdb
 
-DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
-REPORT_DIR = ROOT / "data" / "reports"
-STRUCTURE_PATH = Path("/Users/dp/Documents/M/gaokao/data/structured/english_xgkii_2021_2025.jsonl")
-VERIFIED_JSONL = ROOT / "data" / "gaokao_verified_xgkii_2023_2024.jsonl"
+# 直接以文件路径运行时 (python3 scripts/tools/audit/truth_baseline_audit.py),
+# 项目根不在 sys.path, 下面的 scripts.* 绝对导入会失败; 先 bootstrap.
+_ROOT = Path(__file__).resolve().parents[3]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
-TARGET_YEARS = [2021, 2022, 2023, 2024, 2025]
-TARGET_MIN_COUNT = {2021: 55, 2022: 55}
-QTYPE_MAP = {
-    "reading_comprehension": "阅读理解",
-    "grammar_fill": "语法填空",
-    "cloze_fill_in_blanks": "完形填空",
-    "seven_choose_five": "完形填空(七选五/语篇)",
-    "error_correction": "短文改错",
-}
-
-
-def now_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-
-
-def normalize_text(value: str) -> str:
-    text = re.sub(r"\s+", " ", (value or "").strip().lower())
-    text = re.sub(r"[^a-z0-9 ]", " ", text)
-    return text.strip()
-
-
-def _textify(value: Any) -> str:
-    if value is None:
-        return ""
-    if isinstance(value, (str, int, float, bool)):
-        return str(value)
-    if isinstance(value, (list, tuple)):
-        return " ".join(_textify(item) for item in value)
-    if isinstance(value, dict):
-        return json.dumps(value, ensure_ascii=False, sort_keys=True)
-    return str(value)
-
-
-def signature(year: int | None, qtype: str, text: str, answer: Any = "") -> str:
-    norm = normalize_text(f"{qtype or ''}||{text or ''}||{_textify(answer)}")
-    digest = hashlib.sha1((norm or str(year or "")).encode("utf-8")).hexdigest()
-    return digest
-
-
-def _token_set(text: Any) -> set[str]:
-    if isinstance(text, list):
-        text = " ".join(str(x) for x in text)
-    if isinstance(text, (dict, tuple)):
-        text = json.dumps(text, ensure_ascii=False)
-    return {w for w in re.findall(r"[a-z0-9]+", normalize_text(str(text))) if len(w) > 2}
-
-
-def _overlap_score(a: set[str], b: set[str]) -> float:
-    if not a or not b:
-        return 0.0
-    union = a | b
-    if not union:
-        return 0.0
-    return len(a & b) / len(union)
-
-
-def manifest_hash() -> tuple[str, dict[str, Any]]:
-    entries: dict[str, dict[str, Any]] = {}
-    parts: list[str] = []
-    for label, path in {
-        "db": DB_PATH,
-        "structured": STRUCTURE_PATH,
-        "verified_jsonl": VERIFIED_JSONL,
-    }.items():
-        if not path.exists():
-            entries[label] = {"path": str(path), "exists": False}
-            continue
-        st = path.stat()
-        sig = f"{path}|{st.st_size}|{int(st.st_mtime_ns)}"
-        entries[label] = {
-            "path": str(path),
-            "exists": True,
-            "size": st.st_size,
-            "mtime_ns": int(st.st_mtime_ns),
-            "signature": hashlib.sha1(sig.encode("utf-8")).hexdigest(),
-        }
-        parts.append(entries[label]["signature"])
-    run_id = hashlib.sha1(("|".join(parts) + "|" + now_iso()).encode("utf-8")).hexdigest()[:16]
-    return run_id, entries
-
-
-def load_db_records(con) -> list[dict[str, Any]]:
-    rows = con.execute(
-        """
-        SELECT question_id, year, question_type, raw_question, answer, analysis,
-               source_file, source_repo, source_index, province, paper_type
-        FROM exam_questions
-        WHERE year BETWEEN 2021 AND 2025
-          AND province LIKE '辽宁%'
-        ORDER BY year, question_id
-        """
-    ).fetchall()
-    items = []
-    for qid, year, qtype, raw, ans, anl, source_file, source_repo, source_index, prov, paper_type in rows:
-        if year is None:
-            continue
-        qtype_norm = (qtype or "").strip()
-        items.append({
-            "item_id": qid,
-            "year": int(year),
-            "question_type": qtype_norm,
-            "raw_question": raw or "",
-            "answer": ans or "",
-            "analysis": anl or "",
-            "source_file": source_file,
-            "source_repo": source_repo,
-            "source_index": source_index,
-            "province": prov,
-            "paper_type": paper_type,
-            "answer": ans or "",
-            "signature": signature(year, qtype_norm, raw or "", ans or ""),
-            "token_set": _token_set(f"{raw or ''} {_textify(ans)}"),
-            "row_source": "exam_questions",
-        })
-    return items
-
-
-def load_bank_ids(con) -> set[str]:
-    rows = con.execute("SELECT origin_ref FROM question_bank WHERE origin='real' AND origin_ref IS NOT NULL").fetchall()
-    return {r[0] for r in rows}
-
-
-def _map_qtype(qtype: str) -> str:
-    return QTYPE_MAP.get((qtype or "").strip(), qtype or "")
-
-
-def _flatten_options(options: Any) -> str:
-    if not isinstance(options, dict):
-        return ""
-    parts: list[str] = []
-    for key in sorted(options.keys()):
-        parts.append(f"{key}:{options[key]}")
-    return " ".join(parts)
-
-
-def load_structured_records() -> list[dict[str, Any]]:
-    if not STRUCTURE_PATH.exists():
-        return []
-    items: list[dict[str, Any]] = []
-    for idx, line in enumerate(STRUCTURE_PATH.read_text(encoding="utf-8").splitlines()):
-        if not line.strip():
-            continue
-        try:
-            payload = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        year = payload.get("year")
-        try:
-            year = int(year)
-        except Exception:
-            continue
-        if year not in TARGET_YEARS:
-            continue
-        qtype = _map_qtype(payload.get("question_type", ""))
-        stem = (payload.get("stem") or "").strip()
-        if not stem:
-            continue
-        options = _flatten_options(payload.get("options", {}))
-        answer_text = _textify(payload.get("answer", ""))
-        qtext = f"{stem}\n{options}" if options else stem
-        item_id = payload.get("id") or f"structured-xgkii-{year}-{idx:03d}"
-        items.append({
-            "item_id": str(item_id),
-            "year": year,
-            "question_type": qtype,
-            "raw_question": qtext,
-            "answer": payload.get("answer", "") or "",
-            "analysis": payload.get("analysis", "") or "",
-            "source_file": payload.get("source_file", STRUCTURE_PATH.name),
-            "source_repo": payload.get("source", "gaokao_structured_xgkii"),
-            "source_index": payload.get("question_number"),
-            "province": payload.get("province", "辽宁"),
-            "paper_type": payload.get("paper_type", "新课标 II 卷"),
-            "signature": signature(year, qtype, qtext, answer_text),
-            "token_set": _token_set(f"{qtext} {answer_text}"),
-            "row_source": "structured_xgkii_jsonl",
-            "source_order": idx,
-        })
-    return items
-
-
-def load_verified_jsonl() -> list[dict[str, Any]]:
-    if not VERIFIED_JSONL.exists():
-        return []
-    items: list[dict[str, Any]] = []
-    for idx, line in enumerate(VERIFIED_JSONL.read_text(encoding="utf-8").splitlines()):
-        if not line.strip():
-            continue
-        try:
-            payload = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        year = payload.get("year")
-        try:
-            year = int(year)
-        except Exception:
-            continue
-        if year not in TARGET_YEARS:
-            continue
-        qtype = payload.get("question_type", "")
-        stem = (payload.get("question") or "").strip()
-        if not stem:
-            continue
-        answer_text = _textify(payload.get("answer", ""))
-        source = payload.get("source", "gaokao_verified")
-        source_file = payload.get("source_file", "gaokao_verified_xgkii_2023_2024.jsonl")
-        item_id = f"{source_file}:{source}:{year}:{idx}"
-        items.append({
-            "item_id": item_id,
-            "year": year,
-            "question_type": qtype,
-            "raw_question": stem,
-            "answer": payload.get("answer", "") or "",
-            "analysis": payload.get("analysis", "") or "",
-            "source_file": source_file,
-            "source_repo": source,
-            "source_index": payload.get("index"),
-            "province": payload.get("province", "辽宁"),
-            "paper_type": payload.get("paper_type", "新课标 II 卷"),
-            "signature": signature(year, qtype, stem, answer_text),
-            "token_set": _token_set(f"{stem} {answer_text}"),
-            "row_source": "gaokao_verified_jsonl",
-            "source_order": idx,
-        })
-    return items
+from scripts.tools.audit.truth_baseline_common import (  # noqa: E402,F401  re-export
+    DB_PATH,
+    QTYPE_MAP,
+    REPORT_DIR,
+    ROOT,
+    STRUCTURE_PATH,
+    TARGET_MIN_COUNT,
+    TARGET_YEARS,
+    VERIFIED_JSONL,
+    _flatten_options,
+    _map_qtype,
+    _overlap_score,
+    _textify,
+    _token_set,
+    manifest_hash,
+    normalize_text,
+    now_iso,
+    signature,
+)
+from scripts.tools.audit.truth_baseline_load import (  # noqa: E402,F401  re-export
+    import_truth_rows,
+    load_bank_ids,
+    load_db_records,
+    load_structured_records,
+    load_verified_jsonl,
+)
+from scripts.tools.audit.truth_baseline_report import (  # noqa: E402,F401  re-export
+    build_findings,
+    overall_status,
+    write_markdown_report,
+    write_report,
+)
 
 
 def build_reconciliation(db_rows: list[dict[str, Any]], truth_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -323,117 +131,6 @@ def make_year_summary(recon: dict[str, Any], bank_ids: set[str]) -> dict[int, di
     return summary
 
 
-def write_report(report: dict[str, Any], out_path: Path) -> Path:
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    return out_path
-
-
-def build_findings(summary: dict[int, dict[str, Any]], rows: list[dict[str, Any]]) -> dict[str, Any]:
-    db_target_gaps = {
-        str(year): {
-            "db_count": values["db_count"],
-            "target_min": values["target_min"],
-            "gap": values["target_min"] - values["db_count"],
-        }
-        for year, values in summary.items()
-        if values["target_min"] and values["db_count"] < values["target_min"]
-    }
-    truth_target_gaps = {
-        str(year): {
-            "truth_count": values["truth_count"],
-            "target_min": values["target_min"],
-            "gap": values["target_min"] - values["truth_count"],
-        }
-        for year, values in summary.items()
-        if values["target_min"] and values["truth_count"] < values["target_min"]
-    }
-    truth_only = [row for row in rows if row["status"] == "in_truth_source_only"]
-    pollution = [
-        row for row in rows
-        if row["status"] == "in_exam_questions_only" and row["source"] != "local_pdf"
-    ]
-    bank_missing = [
-        row for row in rows
-        if row["status"] in {"mapped", "in_exam_questions_only"}
-        and not row.get("question_bank_mapped")
-    ]
-    return {
-        "db_target_gaps": db_target_gaps,
-        "truth_target_gaps": truth_target_gaps,
-        "truth_only_count": len(truth_only),
-        "pollution_candidate_count": len(pollution),
-        "question_bank_missing_count": len(bank_missing),
-        "truth_only_sample": truth_only[:20],
-        "pollution_candidate_sample": pollution[:20],
-        "question_bank_missing_sample": bank_missing[:20],
-    }
-
-
-def overall_status(findings: dict[str, Any]) -> str:
-    if findings["db_target_gaps"]:
-        return "FAIL"
-    if findings["truth_target_gaps"]:
-        return "FAIL"
-    if findings["truth_only_count"]:
-        return "FAIL"
-    if findings["pollution_candidate_count"]:
-        return "FAIL"
-    if findings["question_bank_missing_count"]:
-        return "FAIL"
-    return "PASS"
-
-
-def write_markdown_report(report: dict[str, Any], out_path: Path) -> Path:
-    lines = [
-        "# Truth Baseline Audit 2021-2025",
-        "",
-        f"- Generated at: `{report['generated_at']}`",
-        f"- Run ID: `{report['run_id']}`",
-        f"- Status: `{report['status']}`",
-        f"- DB: `{report['db_path']}`",
-        f"- Structured truth source: `{report['structured_path']}`",
-        f"- Verified JSONL: `{report['verified_jsonl']}`",
-        "",
-        "## Summary by Year",
-        "",
-        "| Year | DB rows | Truth rows | Matched | DB only | Truth only | QB mapped | Target min | Gap |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
-    ]
-    for year in TARGET_YEARS:
-        values = report["summary_by_year"][str(year)] if str(year) in report["summary_by_year"] else report["summary_by_year"][year]
-        target = values["target_min"] if values["target_min"] is not None else ""
-        gap = values["gap_to_target"] if values["gap_to_target"] is not None else ""
-        lines.append(
-            f"| {year} | {values['db_count']} | {values['truth_count']} | {values['matched']} | "
-            f"{values['db_only']} | {values['truth_only']} | {values['db_have_question_bank']} | {target} | {gap} |"
-        )
-    findings = report["findings"]
-    lines.extend([
-        "",
-        "## Findings",
-        "",
-        f"- DB target gaps: `{len(findings['db_target_gaps'])}`",
-        f"- Truth-source target gaps: `{len(findings['truth_target_gaps'])}`",
-        f"- Truth-only rows: `{findings['truth_only_count']}`",
-        f"- Pollution candidates: `{findings['pollution_candidate_count']}`",
-        f"- Missing question_bank real mappings: `{findings['question_bank_missing_count']}`",
-        "",
-        "## Interpretation",
-        "",
-    ])
-    if report["status"] == "PASS":
-        lines.append("- PASS: `exam_questions`, truth source, and `question_bank` mapping are aligned for the configured target scope.")
-    else:
-        lines.extend([
-            "- FAIL: M0 truth baseline is not closed for the configured target scope.",
-            "- Do not treat Phase A / M0 as complete until DB target gaps, truth-only rows, pollution candidates, and question_bank mapping gaps are resolved or explicitly re-scoped.",
-        ])
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return out_path
-
-
 def build_audit_rows(recon: dict[str, Any], bank_ids: set[str]) -> list[dict[str, Any]]:
     lines: list[dict[str, Any]] = []
     for group in ("matched", "db_only", "truth_only"):
@@ -485,41 +182,6 @@ def build_audit_rows(recon: dict[str, Any], bank_ids: set[str]) -> list[dict[str
                     "note": "DB 中缺失，当前可判定为未入库缺口",
                 })
     return lines
-
-
-def import_truth_rows(con, rows: list[dict[str, Any]]) -> list[str]:
-    inserted_ids: list[str] = []
-    existing = {r[0] for r in con.execute("SELECT question_id FROM exam_questions").fetchall()}
-    to_insert = []
-    for row in rows:
-        qid = row.get("item_id") or ""
-        if not qid:
-            qid = f"{row.get('source_file')}/{row.get('year')}/{row.get('question_type')}/{row.get('source_index')}"
-        if qid in existing:
-            continue
-        to_insert.append((
-            qid,
-            int(row["year"]),
-            row.get("province") or "辽宁 (新课标 II 卷, 2021+)",
-            row.get("paper_type") or "新课标 II 卷",
-            row.get("question_type") or "阅读理解",
-            row.get("raw_question") or "",
-            row.get("answer") or "",
-            row.get("analysis") or "",
-            row.get("source_file") or STRUCTURE_PATH.name,
-            row.get("source_index"),
-            row.get("source_repo") or "gaokao_structured_xgkii",
-        ))
-
-    if to_insert:
-        con.executemany(
-            """
-            INSERT INTO exam_questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            to_insert
-        )
-        inserted_ids = [r[0] for r in to_insert]
-    return inserted_ids
 
 
 def main() -> None:

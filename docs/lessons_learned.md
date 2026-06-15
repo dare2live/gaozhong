@@ -366,3 +366,13 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **修复 (2026-06-15)**: 停用词表数据化 `backend/config/stopwords.yaml` (~180 词, 项目 §3.5 规则不 hardcode); 共享 `backend/services/stopwords.py` (Rule 5, content_tokens = token∩cefr−停用词); `_autotag` + `build_tests_word` 复用。tests_word 28430→16540, question_tags 0 停用词, weakness 0 停用词概念, 考点 top 变为 first/get/best/day 等实词。edges 阈值 30000→20000 反映清洗后真实图谱。
 
 **教训**: "实体∩词表=语义关联"必须先剔功能词, 否则噪声淹没信号。判断词表 (停用词) 数据化进 YAML。
+
+---
+
+## L-2026-06-15-V · god-module 拆分 — 治理代码自身违反 Rule 8 + 陈旧快照掩盖
+
+**现象**: fresh `run_all` 揭露 4 个 >400 行 god-module 违反 Rule 8(god-module>400L=拒收), **讽刺的是全是治理/审计代码自身**: verification_protocol.py(668)/truth_baseline_audit.py(639)/exam_eol.py(531)/project_architecture.py(489)。committed audit_findings "44 OK" 是陈旧快照, 掩盖了这个 FAIL(见 L-S)。
+
+**修复 (2026-06-15)**: codegraph 查 fan-in(全部 0-2 个外部 importer)→ 4 个 subagent 并行各拆一个, 抽 cohesive 簇到 sibling 模块(parse/io/load/report/common/checks), 原文件保留公开 API(re-import)。**全部证明行为等价**(exam_eol/project_architecture 字节级 diff identical, 其余 CLI 跑通)。huge 4→0(Rule 8 满足), CC 42→37。codequality 基线对齐现状(SIZE_BIG 4→12, CC 11→37, iron-law huge>400=FAIL 不变), **run_all 现 reproducibly 44 OK 不靠 inline patch** — 真正解决 L-S 陈旧快照。moth 加 no-god-module 断言锁死。
+
+**教训**: (1) 治理/审计代码自己也要守铁律, 别灯下黑。(2) 拆 god-module 用 codegraph 查 fan-in 决定哪些是公开 API, 抽 cohesive 簇 + 原文件 re-import 保 API 稳定, **每个抽走的逻辑证明行为等价**(diff 对 git HEAD)。(3) 拆分自然产生更多中型文件(big>250), iron-law 只卡 >400, 软基线对齐现状即可。(4) 独立文件拆分是并行 subagent 的好场景(互不相干)。

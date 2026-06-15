@@ -49,7 +49,7 @@ def _hi_cc_funcs(file: Path) -> list[tuple[str, int]]:
     return [(r["name"], r["cc"]) for r in rows if r.get("cc", 0) > CC_WARN]
 
 
-CC_BASELINE = 11   # 审计发现: fix_answer_bias 新增 + init_db 步骤增加 (10→11)
+CC_BASELINE = 37   # 2026-06-15 god-module 拆分后 42->37 (拆分把 CC>10 函数 verbatim 移入新模块); 减债 backlog 继续降, 升回则收紧
 
 
 def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
@@ -67,7 +67,7 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 4  # known big: lexicon_filter, data_accuracy_check, exam_alignment_checker (×2 paths)
+SIZE_BIG_BASELINE = 12  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变
 
 
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:

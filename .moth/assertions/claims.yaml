@@ -71,6 +71,13 @@ assertions:
     command: ["grep", "-c", "english_stopwords", "backend/config/stopwords.yaml"]
     expect: {op: ">=", value: 1}
 
+  # ===== 工程纪律 (Rule 8) =====
+  - id: no-god-module
+    claim: "无 >400 行 god-module (Rule 8; 2026-06-15 拆 4 个治理 god-module 后 huge=0)"
+    type: shell
+    command: ["bash", "-c", "find backend scripts -name '*.py' -not -path '*__pycache__*' | xargs wc -l 2>/dev/null | awk '$2!=\"total\" && $1>400' | wc -l | tr -d ' '"]
+    expect: {op: "==", value: "0"}
+
   # ===== D0 总门禁 (权威) =====
   - id: d0-accuracy-green
     claim: "scripts/data_accuracy_check.py 全绿 (D0 100% 准确率)"
