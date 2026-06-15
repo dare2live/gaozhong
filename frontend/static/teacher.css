@@ -38,3 +38,14 @@ main.tab-body { padding: 18px 24px; }
               border: 1px solid #e8e6e0; min-width: 140px; }
 .stat-tile .n { font-family: Georgia, serif; font-size: 26px; color: #0a4d75; font-weight: 700; }
 .stat-tile .l { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* 考点分布 (件3) — era 分层横条热力 */
+.ep-note { font-size: 11px; color: #888; margin: 2px 0 10px; }
+.ep-grid { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 14px; }
+.ep-era { flex: 1; min-width: 280px; }
+.ep-era h4 { color: #0a4d75; font-size: 13px; margin: 4px 0 6px; }
+.ep-bar { display: flex; align-items: center; font-size: 12px; margin: 3px 0; }
+.ep-lab { width: 110px; flex-shrink: 0; color: #444; }
+.ep-track { flex: 1; background: #eee; height: 14px; margin: 0 8px; }
+.ep-fill { display: block; height: 14px; background: #0a4d75; }
+.ep-n { width: 80px; flex-shrink: 0; color: #777; text-align: right; }

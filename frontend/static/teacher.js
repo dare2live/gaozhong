@@ -19,6 +19,23 @@ const LOADERS = {
       <h3>标签维度</h3>
       <table>${Object.entries(qb.tag_by_kind || {}).map(([k, v]) => `<tr><td>${k}</td><td><b>${v}</b></td></tr>`).join("")}</table>`;
   },
+  exam_point: async () => {
+    const d = await fetchJSON("/api/exam_point/distribution");
+    const DIM = { genre: "体裁", theme_l2: "主题群 (课标官方10群)", theme_context: "主题 (3大类)" };
+    const dimBlock = (dim) => d.eras.map(era => {
+      const rows = (d.distribution[era] || {})[dim] || [];
+      const bars = rows.map(r =>
+        `<div class="ep-bar"><span class="ep-lab">${r.label}</span>` +
+        `<span class="ep-track"><span class="ep-fill" style="width:${r.pct}%"></span></span>` +
+        `<span class="ep-n">${r.n} · ${r.pct}%</span></div>`).join("");
+      return `<div class="ep-era"><h4>${era}</h4>${bars || "<i>无数据</i>"}</div>`;
+    }).join("");
+    $("#tab-exam_point").innerHTML = `
+      <h2>考点分布 — ${d.province_scope}</h2>
+      <p class="ep-note">${d.layered_by} · provenance: ${d.provenance}</p>
+      ${["genre", "theme_l2", "theme_context"].map(dim =>
+        `<h3>${DIM[dim] || dim}</h3><div class="ep-grid">${dimBlock(dim)}</div>`).join("")}`;
+  },
   lesson: async () => {
     if (!$("#tab-lesson").innerHTML) {
       $("#tab-lesson").innerHTML = `
