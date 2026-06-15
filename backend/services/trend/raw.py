@@ -86,10 +86,13 @@ def trend_summary(con: duckdb.DuckDBPyConnection) -> dict:
     top = top_high_freq_words(con, top_n=30)
     type_by_year = type_freq_by_year(con)
     type_by_year_serialized = {y: dict(c) for y, c in sorted(type_by_year.items())}
+    diag = scope.diagnose(con)
     return {
         "province_scope": "辽宁卷",
         "top_words": top,
         "type_distribution_by_year": type_by_year_serialized,
         "years_covered": sorted(type_by_year),
-        "sample_diagnosis": scope.diagnose(con)["by_segment"],
+        "sample_diagnosis": diag["by_segment"],
+        "distribution_reliable": diag["distribution_reliable"],  # 辽宁新高考II 140题 → True
+        "trend_reliable": diag["trend_reliable"],                # 逐年slope → False
     }

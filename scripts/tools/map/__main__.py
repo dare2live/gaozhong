@@ -92,7 +92,7 @@ def cmd_stats(args) -> bool:
 def _warn_thin_years(by_year: dict, threshold: int = 10) -> None:
     thin = {y: n for y, n in by_year.items() if n < threshold}
     if thin:
-        print(f"  ⚠️ 样本不足 (<{threshold}, 不可下趋势结论): {thin}")
+        print(f"  ⚠️ 这些年 <{threshold} 题, 不锚定**逐年趋势 slope** (考点分布快照不受影响): {thin}")
 
 
 def cmd_doctor(args) -> bool:

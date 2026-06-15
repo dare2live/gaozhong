@@ -71,9 +71,12 @@ def question_type_year_trend(con: duckdb.DuckDBPyConnection,
 
 
 def _trend_label(slope: float, reliable: bool) -> str:
-    """样本不达标 → '样本不足'(不冒充趋势); 达标才给上升/下降/持平."""
+    """趋势(逐年slope)样本不达标 → '趋势样本不足(分布可用)'; 达标才给上升/下降/持平.
+
+    注: 这只判'逐年趋势'是否可信; '考点分布'另由 distribution_reliable 判 (辽宁 140 题→可报).
+    """
     if not reliable:
-        return "样本不足"
+        return "趋势样本不足(分布可用)"
     return "上升" if slope > 0.001 else "下降" if slope < -0.001 else "持平"
 
 
@@ -90,7 +93,7 @@ def vocab_year_growth(con: duckdb.DuckDBPyConnection,
         "years": years,
         "tokens_per_year": [by_year[y] for y in years],
         "slope_per_year": round(slope, 2),
-        "interpretation": _slope_interp(slope) if reliable else "样本不足, 不下趋势结论",
+        "interpretation": _slope_interp(slope) if reliable else "逐年趋势样本不足(辽宁仅5年); 分布快照仍可用",
         "province_scope": "辽宁卷" if province_scoped else "全部(非锚定)",
         "reliable": reliable,
     }
