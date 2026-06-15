@@ -281,6 +281,9 @@ def _check_21_exam_provenance(con):
     check("2010-2014 自主命题期不冒充辽宁", bad_pre2015 == 0, f"{bad_pre2015} 行")
     check("辽宁卷 paper_type 必为新课标II卷", bad_ln_paper == 0, f"{bad_ln_paper} 行")
     check("L-P smoking gun 行已诚实标注", smoking == 0, f"{smoking} 行仍标辽宁")
+    # 21e: local_pdf PDF 全文完整性 (抽到 lib, 避 god-module Rule 8)
+    from scripts.lib.d0_local_pdf_check import check_local_pdf_integrity
+    check_local_pdf_integrity(con, check)
 
 
 # ===== helpers (CC ≤ 4) =====

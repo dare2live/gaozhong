@@ -108,9 +108,12 @@ def _extract_passage(text: str, label: str) -> str:
     if next_label:
         end_pattern = rf"\n{next_label}\n|\n{next_label}\s"
         m2 = re.search(end_pattern, text[start + 2:])
-        end = start + 2 + m2.start() if m2 else start + 3000
+        # 边界取下一篇起点; 找不到则到段末 (不再硬截 3000, 否则长篇 D 丢后段小题, D0 缺陷)
+        end = start + 2 + m2.start() if m2 else len(text)
     else:
-        end = min(start + 3000, len(text))
+        # D 篇 (无下一篇) → 取到"第二节"(七选五起点)前, 否则段末; 避免吃进七选五
+        qiwu = text.find("第二节", start)
+        end = qiwu if qiwu > start else len(text)
     return text[start:end].strip()
 
 
@@ -125,14 +128,31 @@ def _extract_between(text: str, start: str, end: str | None) -> str | None:
     return text[si:]
 
 
+# 卷尾附录起点标记 (锦宏/学科网 mock-PDF 把听力/答题卡注意事项/参考答案重印在卷尾):
+# 末段 (续写 第二节→文末) 会吃进它们 → D0 数据污染。英语题干/写作 prompt 不会出现这些中文结构词,
+# 故在末段安全裁剪 (前段已被 第N部分/第N节 界定, 不触及卷尾, 命中即附录)。
+_POST_EXAM_MARKERS = (
+    "英语听力", "第一部分听力", "第一部分 听力", "听力材料", "听力原文",
+    "参考答案", "答案与解析", "绝密★启用前", "普通高等学校招生", "准考证",
+)
+
+
+def _strip_post_exam_tail(raw: str) -> str:
+    """裁掉卷尾附录 (听力重印/答题卡注意事项/参考答案); 命中最早标记处截断."""
+    cut = min((p for p in (raw.find(m) for m in _POST_EXAM_MARKERS) if p >= 0), default=-1)
+    return raw[:cut].rstrip("_ \n") if cut >= 0 else raw
+
+
 def _make_section(year: int, qtype: str, raw: str, qnum: int) -> dict:
+    raw = _strip_post_exam_tail(raw)
     return {
         "question_id": f"pdf/{year}/xgkii/{qtype}/{qnum}",
         "year": year,
         "province": "辽宁 (新课标 II 卷, 2021+)",
         "paper_type": "新课标 II 卷",
         "question_type": qtype,
-        "raw_question": raw[:2000],
+        # 不再硬截 2000 (D0 缺陷: 截断丢后段小题题干); 与 exam.py 一致用 8000 上限保护超长
+        "raw_question": raw[:8000],
         "answer": "",
         "analysis": "",
         "source_file": f"gaokao_pdf_{year}",

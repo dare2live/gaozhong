@@ -905,3 +905,15 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **动作**: 从 /gaokao 拉全部英语题(376→472, 2010-2025); `exam.classify_paper` category-aware 诚实卷型(只有新课标II+year>=2015=辽宁)。详 L-2026-06-15-X。
 **结果**: 辽宁卷 188(真新课标II) / 非辽宁 284(新课标I 111 / 2010-14非辽宁II 72 / 未知 43 / III 40 / 甲 12 / 乙 6, 诚实标注可作 cross-ref)。三门绿; moth 15 条(含 nonII-not-faking-liaoning / liaoning-is-xgkii / pre2015-not-liaoning)。
 **里程碑对齐 (goal.md §7.9)**: M0 真值基座**已闭环**(2021/2022 EOL 入库 + 污染剔除 + 全量拉取); M1 趋势/图谱**清洗后重建**; M2 内容题库**被 foundation-first 取代需重定义**(生成内容回滚, 仅真题); M3 审计三门绿 + god-module 拆分后 run_all 可复现。
+
+## 2026-06-16 / local_pdf 真题题干硬截断 + 空答案缺陷修复 (D0)
+
+**缺陷 (用户报)**: 2024/2025 (新高考全国II卷, local_pdf) 阅读理解 `raw_question` 被硬截到恰好 2000 字符 (丢后段小题题干), `answer` 列全空。
+**根因 (单一计算点)**: `backend/services/data_sources/extract/pdf.py` — ① `_make_section` `raw[:2000]` 硬截; ② `_extract_passage` D 篇/无下篇分支 `+3000` 硬截 + 吃进七选五; ③ 入库从不填 answer (PDF 无答案键)。
+**修复**:
+- pdf.py `_extract_passage`: 阅读边界取下一篇/「第二节」起点, 不再 +3000 硬截 (4 篇 15 小题全捕获, 无七选五 bleed)。
+- pdf.py `_make_section`: 上限 2000→8000 (与 exam.py 一致); 新增 `_strip_post_exam_tail` 裁掉卷尾附录 (听力重印/答题卡注意事项/参考答案/卷头), 防末段(续写)吃进非题干内容。
+- `scripts/import_recent_exams.py`: 新增 `_enrich_answers` — 用 gaokao 收口真值 `data/structured/exam_subquestions/xgkii_2021_2025_subquestions.jsonl` 填 answer (PDF 给全文, jsonl 给答案键; 异构: 2025 逐题 / 2024 整段 list 两形态统一)。
+**结果**: 18 行 local_pdf 截断2000=0 / 撞8000上限=0 / 阅读无答案=0。2025 阅读答案 A:CBA B:ADCB C:DDCB D:ABCA 逐题号匹配; 应用文/续写写作题无客观答案键, 留空诚实 (宁缺毋滥)。
+**防回归 (坑17)**: `scripts/lib/d0_local_pdf_check.py` (check_local_pdf_integrity, 经 _check_21 调用) 锁 3 维度 — 无硬截断(len=2000) / 客观题 answer 已填 / 题干无卷尾附录污染。
+**验证**: D0 exit 0 / moth PASS 25/0 / stop_gate exit 0。data_accuracy_check.py 抽 lib 后 389 行 (< 400, 不触 god-module)。

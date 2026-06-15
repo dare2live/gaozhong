@@ -26,6 +26,8 @@ from backend.services.data_sources.extract.pdf import (
 )
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
+# 答案真相源 (gaokao 收口 sub-question, 含 2024/2025 答案键); PDF 给全文, jsonl 给答案
+GAOKAO_SUBQ = ROOT / "data" / "structured" / "exam_subquestions" / "xgkii_2021_2025_subquestions.jsonl"
 
 PDFS = [
     (2024, "新课标 II 卷",
@@ -33,6 +35,72 @@ PDFS = [
     (2025, "新课标 II 卷",
      ROOT / "data/external/exam_sources/local_pdfs/2025_xgkii_english.pdf"),
 ]
+
+# jsonl question_type → (pdf qtype, pdf source_index/qnum); 阅读按 passage 映 1-4
+_QT_MAP = {
+    "seven_choose_five": ("完形填空(七选五/语篇)", 36),
+    "cloze_fill_in_blanks": ("完形填空", 41),
+    "grammar_fill": ("语法填空", 56),
+}
+_PASSAGE_QNUM = {"A": 1, "B": 2, "C": 3, "D": 4}
+
+
+def _jsonl_answer_map(year: int) -> dict:
+    """从 gaokao jsonl 聚合该年答案: (pdf_qtype, qnum) → 答案串.
+
+    源数据异构 (D0 真相源诚实): 2025 逐题存 (question_number + 标量 answer),
+    2024 整段存单行 (question_number=None + answer 为 list)。两形态统一:
+    - 逐题行 → 按题号排 '1.C 2.B ...'
+    - 整段 list 行 → 保序拼 'D B A ...' (无题号, 不臆造起始号)
+    """
+    import json
+    from collections import defaultdict
+    if not GAOKAO_SUBQ.exists():
+        return {}
+    groups: dict = defaultdict(list)
+    for line in GAOKAO_SUBQ.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        if str(r.get("year")) != str(year) or not r.get("answer"):
+            continue
+        jqt = r.get("question_type")
+        if jqt == "reading_comprehension":
+            qn = _PASSAGE_QNUM.get(r.get("passage_label"))
+            key = ("阅读理解", qn) if qn else None
+        elif jqt in _QT_MAP:
+            key = _QT_MAP[jqt]
+        else:
+            key = None
+        if not key:
+            continue
+        ans = r["answer"]
+        if isinstance(ans, list):
+            # 整段答案键 (2024 形态): 保序拼, 整组只此一条, 用 num=-1 标识整段串
+            groups[key].append((-1, " ".join(str(x) for x in ans)))
+        else:
+            try:
+                num = int(r.get("question_number") or 0)
+            except (TypeError, ValueError):
+                num = 0
+            groups[key].append((num, str(ans)))
+
+    def _fmt(v: list) -> str:
+        if len(v) == 1 and v[0][0] == -1:  # 整段 list 串, 直接用
+            return v[0][1]
+        return " ".join(f"{n}.{a}" for n, a in sorted(v))
+
+    return {k: _fmt(v) for k, v in groups.items()}
+
+
+def _enrich_answers(sections: list[dict], year: int) -> list[dict]:
+    """用 gaokao jsonl 答案真相源填 PDF section 的 answer (原为空; D0 缺陷修复)."""
+    amap = _jsonl_answer_map(year)
+    for s in sections:
+        a = amap.get((s["question_type"], s["source_index"]))
+        if a:
+            s["answer"] = a
+    return sections
 
 
 def import_to_db(questions: list[dict], con) -> int:
@@ -100,7 +168,7 @@ def import_pdfs(con) -> dict:
             # 非有效 PDF (HTML 伪装/损坏) → 诚实跳过, 不静默吞 (§1.5), 不崩流程
             print(f"  SKIP {year}: {e}")
             continue
-        qs = parse_exam_sections(text, year)
+        qs = _enrich_answers(parse_exam_sections(text, year), year)
         n = import_to_db(qs, con)
         total += n
         by_year[year] = n
