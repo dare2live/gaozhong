@@ -949,3 +949,14 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **honest 修法 (下一 tick, 需谨慎设计非仓促)**: curated **英文语法主题 → 课标项 YAML 映射** (Modals→情态动词 / attributive clauses→定语从句 等标准术语等价, 非估算; 数据化进 `backend/config/`) + 从 Grammar section 标题行提取每单元主题 + dual_model 或人工核验存 provenance。grammar_item_id 无清晰匹配则留 NULL (诚实, 不强配)。
 **结论 (修正"地基100%")**: units/词表/section 三轴 100%, 但**语法 per-unit 是真缺口** (grammar_occurrences=0)。§1.2 语法进度约束暂无法机器执行 — 教程生成涉及语法时需此映射, 标为下一地基任务 (非估算, 走真相源+curated映射)。
 **(已建 2026-06-16, commit 26d22db)**: `backend/config/grammar_topic_map.yaml`(教材主题→课标项 curated 映射) + `grammar_occurrence.py`(读 Grammar段→映射→入表, 不命中诚实跳过)。26 Grammar段→**18 命中/8 跳过**(歧义交际指令); 单元→课标语法项(情态动词/定语从句/被动语态/动词不定式/-ing-ed形式/主谓一致/时态/状语从句/基本句型)全人工核验正确。接 init_db Layer2 可复现; D0(_check_3: ≥15+FK有效) + moth(grammar-occurrences-derived, 29条)。**教材地基四轴(units/词表/section/语法)全完整, §1.2 语法≤已学单元现可机器执行**。
+
+## 2026-06-16 / 备课整合前 耦合性+DB结构审计 (2 subagent) + unit5 blocker 修复
+
+**触发**: 建"备课整合"前用户要求审计耦合性+DB结构 (地基先行)。2 个 general-purpose subagent 并行 (codegraph + DB只读) + 主控 verify-the-verifier 复核。
+**总评**: 门级全绿 (无 god-module/无循环依赖/db层干净/架构契约PASS), 但有 1 D0 blocker + 几处 Rule1/Rule3 双算债。
+**🔴 D0 blocker 已修 (commit dd9ae8e)**: `unit_vocab_intro` 9 词 (renjiao/bixiu_2 unit5) 悬挂孤儿 — 人教必修2 PDF p56 确有 UNIT5 MUSIC 但 regex 漏抓 ("MUSIC"无干净"UNIT5"前缀)。修: unit_overrides.json 加 bixiu_2 5单元 + extract_units override优先。units 77→78(**修正上轮"100%"漏数**), 孤儿→0, 全14册单元数核验符合预期(bixiu_2 是唯一漏)。moth +unit-vocab-no-orphan 防回归(30条)。
+**待还耦合债 (备课整合前/后, 追踪)**:
+- 🟡 [整合前] 图遍历越层 (Rule3): `lesson_plan.py` + `api/routes/graph_popup.py` 内联 `SELECT edges JOIN nodes` 做 1-hop, 而 `services/graph.neighbors()` 是正版。备课浮窗必踩 → 先收口走 services/graph。
+- 🟡 [整合前] "单元词∩真题"双算 (Rule1): `recommend.unit_exam_alignment` + `lesson_plan._unit_words_with_trace` 各遍历一遍 → 抽 `services/` 单一函数两边调 (否则备课整合成第三套)。
+- 🟢 [整合后] `question_tags(word)` vs `edges(tests_word)` 双算 (Rule1, blast-radius 最大, 独立排期); schema.sql `phrases` 重复定义(第二版死定义) + `course_handouts` CREATE 散落 service → 收口 schema.sql 单一定义点; `units.theme_context_id` 死列 + `courses.themes_aux` JSON编码N:M(轻度Rule3) + `teachers`/`course_sessions` 死schema(M5规划未实装)。
+**架构建议**: 备课整合**扩 lesson_plan.py** (fan-in=0 叶子, 已是迷你整合器, 4路桥已接), 不新建协调层(Occam); 接 trend/exam_point/course **只调函数不重写JOIN**; `trend.scope` fan-in=4 改前必 codegraph。
