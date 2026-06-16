@@ -17,6 +17,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash /Users/dp/Documents/M/gaozhong/scripts/plan_cycle_hook.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
             "command": "bash /Users/dp/Documents/M/gaozhong/scripts/user_prompt_continuity_hook.sh",
             "timeout": 5
           }

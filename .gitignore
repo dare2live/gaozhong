@@ -20,3 +20,6 @@ data/external/gaokao_2023_xgkii_english.pdf
 
 # OS
 .DS_Store
+
+# 架构审计生成工件 (一次性产物, 不入仓; stop_gate 写 /tmp)
+data/reports/project_architecture_audit_*.json
