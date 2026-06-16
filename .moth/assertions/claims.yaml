@@ -233,3 +233,8 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM nodes n WHERE n.concept_id LIKE 'exam_point:theme_l3:%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id AND e.relation='theme_aligns')"
     expect: {op: "==", value: 0}
+  - id: graph-popup-questions-liaoning-only
+    claim: "讲课浮窗真题 facet 只来自 qbank(157辽宁, §7); _fetch_questions INNER JOIN question_bank 不漏外省空行"
+    type: shell
+    command: ["bash", "-c", "grep -A8 'def _fetch_questions' backend/api/routes/graph_popup.py | grep -q 'INNER JOIN question_bank' && echo SCOPED || echo LEAK"]
+    expect: {op: regex, pattern: "SCOPED"}

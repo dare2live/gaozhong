@@ -86,15 +86,20 @@ def _fetch_related(con, cid: str) -> list[dict]:
 
 
 def _fetch_questions(con, cid: str) -> list[dict]:
-    """真题题目节点 (tests_word / tests_grammar 反向)."""
+    """真题题目节点 (tests_word / tests_grammar 反向).
+
+    INNER JOIN question_bank: 浮窗真题只来自 qbank (157 辽宁真题, §7 锚定); 外省题节点虽在
+    tests_word 边里, 但不在 qbank → 不漏进浮窗 (原 LEFT JOIN + NULLS LAST 会把外省以空行带出)。
+    """
     rows = con.execute(
         "SELECT DISTINCT n.concept_id, q.qb_id, q.question_type, q.stem, "
-        "       (SELECT dst_id FROM edges WHERE src_id = n.concept_id AND relation='in_year' LIMIT 1) "
+        "       (SELECT dst_id FROM edges WHERE src_id = n.concept_id AND relation='in_year' "
+        "        ORDER BY dst_id LIMIT 1) "
         "FROM edges e JOIN nodes n ON n.concept_id = e.src_id "
-        "LEFT JOIN question_bank q ON q.origin_ref = REPLACE(n.concept_id, 'question:', '') "
+        "INNER JOIN question_bank q ON q.origin_ref = REPLACE(n.concept_id, 'question:', '') "
         "WHERE e.dst_id = ? AND e.relation IN ('tests_word', 'tests_grammar') "
         "AND n.node_type = 'question' "
-        "ORDER BY q.qb_id NULLS LAST LIMIT ?",
+        "ORDER BY q.qb_id LIMIT ?",
         [cid, LIMIT_QUESTIONS],
     ).fetchall()
     out: list[dict] = []
