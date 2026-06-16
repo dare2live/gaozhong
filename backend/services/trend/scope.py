@@ -22,6 +22,11 @@ LIAONING_PREDICATE = "province LIKE '辽宁%'"
 MIN_DISTRIBUTION_SAMPLE = 30  # 同卷制 era 总题数 ≥ 此 → 考点分布(占比)可报
 MIN_YEAR_SAMPLE = 10          # 一年真题 < 此, 该年趋势点不可靠
 MIN_TREND_YEARS = 5           # 一段内达标年 < 此, 不输出可信逐年 slope
+# 卷制断点单点 (PIT §3.1): 2021 起辽宁用新高考全国 II 卷, 此前旧课标全国 II。
+# segment()/era_sql() 都用这三个常量, 下游 (loader._ERA_SQL / cooccur) 复用 era_sql() 不再各自硬编码 2021。
+ERA_BOUNDARY_YEAR = 2021
+ERA_NEW = "2021+_新高考II"
+ERA_OLD = "2015-2020_旧课标II"
 
 
 def liaoning_clause(province_scoped: bool = True) -> str:
@@ -31,7 +36,12 @@ def liaoning_clause(province_scoped: bool = True) -> str:
 
 def segment(year: int) -> str:
     """PIT 卷制分段: 2021 起辽宁用新高考全国 II 卷, 此前旧课标全国 II (§3.1 不可混算)."""
-    return "2021+_新高考II" if year >= 2021 else "2015-2020_旧课标II"
+    return ERA_NEW if year >= ERA_BOUNDARY_YEAR else ERA_OLD
+
+
+def era_sql(year_col: str = "q.year") -> str:
+    """SQL era CASE 片段 (与 segment() 同口径单点); 供 loader/cooccur 复用, 不各自硬编码 2021。"""
+    return f"CASE WHEN {year_col} >= {ERA_BOUNDARY_YEAR} THEN '{ERA_NEW}' ELSE '{ERA_OLD}' END"
 
 
 def year_totals(con: duckdb.DuckDBPyConnection, province_scoped: bool = True) -> dict[int, int]:

@@ -167,3 +167,22 @@ assertions:
     type: shell
     command: ["python3", "scripts/data_accuracy_check.py"]
     expect: {op: regex, pattern: "D0 100% 准确率达成"}
+
+  # ===== 件3 趋势/考点分布/关联性 (materialize=none, 服务即时算 + D0锁) =====
+  - id: exam-point-cooccur-substrate
+    claim: "关联性第三条腿底料: 辽宁 ≥100 题挂≥2考点 (跨轴共现源; 件3)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM (SELECT q.question_id FROM exam_questions q JOIN edges e ON 'question:'||q.question_id=e.src_id AND e.relation='tests_exam_point' WHERE q.province LIKE '辽宁%' GROUP BY 1 HAVING count(DISTINCT e.dst_id)>=2)"
+    expect: {op: ">=", value: 100}
+  - id: trend-distribution-not-materialized
+    claim: "趋势/分布/关联性 不落表 (materialize=none 决策; 防快照表悄悄回归致 staleness §3.5)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM information_schema.tables WHERE lower(table_name) LIKE '%exam_trend%' OR lower(table_name) LIKE '%distribution_snapshot%' OR lower(table_name) LIKE '%cooccur%'"
+    expect: {op: "==", value: 0}
+  - id: heatmap-route-no-inline-agg
+    claim: "heatmap 路由无内联 GROUP BY (聚合下沉 services/heatmap, Rule1; 件3)"
+    type: shell
+    command: ["bash", "-c", "grep 'GROUP BY' backend/api/routes/heatmap.py | wc -l | tr -d ' '"]
+    expect: {op: "==", value: "0"}

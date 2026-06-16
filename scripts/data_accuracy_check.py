@@ -321,6 +321,12 @@ def _check_22_exam_point(con):
     check_exam_point(con, check)
 
 
+def _check_23_trend_distribution(con):
+    """件3: 趋势/考点分布/关联性 数值正确性 (抽到 lib/d0_trend_distribution_check)."""
+    from scripts.lib.d0_trend_distribution_check import check_trend_distribution
+    check_trend_distribution(con, check)
+
+
 # ===== main 调度 (CC = 2) =====
 
 # 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
@@ -334,6 +340,7 @@ CHECKS = [
     _check_18_followup,
     _check_21_exam_provenance,
     _check_22_exam_point,
+    _check_23_trend_distribution,
 ]
 
 

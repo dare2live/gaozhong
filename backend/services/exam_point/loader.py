@@ -14,6 +14,8 @@ from pathlib import Path
 
 import duckdb
 
+from backend.services.trend import scope
+
 ROOT = Path(__file__).resolve().parents[3]
 _EP_DIR = ROOT / "data" / "structured" / "exam_point"
 LABELS_PATH = _EP_DIR / "genre_theme_labels.jsonl"
@@ -96,8 +98,8 @@ def load_exam_points(con: duckdb.DuckDBPyConnection) -> dict:
             "nodes_made": nodes_made, "edges_made": edges_made, "skipped_needs_review": skipped}
 
 
-# 卷制断点 (PIT §3.1): 2021 起辽宁用新高考全国 II 卷; 与 trend.scope.segment 同口径。
-_ERA_SQL = "CASE WHEN q.year >= 2021 THEN '2021+_新高考II' ELSE '2015-2020_旧课标II' END"
+# 卷制断点 (PIT §3.1) 走 trend.scope 单点, 不再各自硬编码 2021 (与 segment() 同口径)。
+_ERA_SQL = scope.era_sql("q.year")
 
 
 def bridge_exam_point_themes(con: duckdb.DuckDBPyConnection) -> dict:

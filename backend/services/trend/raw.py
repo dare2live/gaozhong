@@ -86,11 +86,17 @@ def trend_summary(con: duckdb.DuckDBPyConnection) -> dict:
     top = top_high_freq_words(con, top_n=30)
     type_by_year = type_freq_by_year(con)
     type_by_year_serialized = {y: dict(c) for y, c in sorted(type_by_year.items())}
+    # 件3: 题型分布按卷制 era 聚合 (PIT §3.1 不混算 2021 断点; 复用上面已取的 by_year + scope.segment 单点)
+    by_era: dict[str, Counter] = defaultdict(Counter)
+    for yr, c in type_by_year.items():
+        by_era[scope.segment(yr)] += c
+    type_by_era = {era: dict(c) for era, c in sorted(by_era.items(), reverse=True)}
     diag = scope.diagnose(con)
     return {
         "province_scope": "辽宁卷",
         "top_words": top,
         "type_distribution_by_year": type_by_year_serialized,
+        "type_distribution_by_era": type_by_era,  # 件3 前端 era 分隔渲染源 (分布层, 不画跨era斜率)
         "years_covered": sorted(type_by_year),
         "sample_diagnosis": diag["by_segment"],
         "distribution_reliable": diag["distribution_reliable"],  # 辽宁新高考II 140题 → True
