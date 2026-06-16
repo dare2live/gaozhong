@@ -45,14 +45,35 @@ _QT_MAP = {
 _PASSAGE_QNUM = {"A": 1, "B": 2, "C": 3, "D": 4}
 
 
-def _jsonl_answer_map(year: int) -> dict:
-    """从 gaokao jsonl 聚合该年答案: (pdf_qtype, qnum) → 答案串.
+def _row_key(jqt, r) -> tuple | None:
+    """jsonl question_type → (pdf_qtype, qnum) 聚合键; 阅读按 passage_label 映 1-4, 不匹配 None."""
+    if jqt == "reading_comprehension":
+        qn = _PASSAGE_QNUM.get(r.get("passage_label"))
+        return ("阅读理解", qn) if qn else None
+    return _QT_MAP.get(jqt)
 
-    源数据异构 (D0 真相源诚实): 2025 逐题存 (question_number + 标量 answer),
-    2024 整段存单行 (question_number=None + answer 为 list)。两形态统一:
-    - 逐题行 → 按题号排 '1.C 2.B ...'
-    - 整段 list 行 → 保序拼 'D B A ...' (无题号, 不臆造起始号)
-    """
+
+def _row_contrib(r) -> tuple:
+    """单行 → (排序号, 答案串). 源数据异构: list 型(2024整段)保序拼并用 -1 标识整段串."""
+    ans = r["answer"]
+    if isinstance(ans, list):
+        return (-1, " ".join(str(x) for x in ans))
+    try:
+        num = int(r.get("question_number") or 0)
+    except (TypeError, ValueError):
+        num = 0
+    return (num, str(ans))
+
+
+def _fmt_group(v: list) -> str:
+    """组贡献 → 答案串: 逐题行按题号排 '1.C 2.B'; 整段 list 串(num=-1)直接用."""
+    if len(v) == 1 and v[0][0] == -1:
+        return v[0][1]
+    return " ".join(f"{n}.{a}" for n, a in sorted(v))
+
+
+def _jsonl_answer_map(year: int) -> dict:
+    """从 gaokao jsonl 聚合该年答案: (pdf_qtype, qnum) → 答案串 (2025逐题/2024整段两形态统一)."""
     import json
     from collections import defaultdict
     if not GAOKAO_SUBQ.exists():
@@ -64,33 +85,10 @@ def _jsonl_answer_map(year: int) -> dict:
         r = json.loads(line)
         if str(r.get("year")) != str(year) or not r.get("answer"):
             continue
-        jqt = r.get("question_type")
-        if jqt == "reading_comprehension":
-            qn = _PASSAGE_QNUM.get(r.get("passage_label"))
-            key = ("阅读理解", qn) if qn else None
-        elif jqt in _QT_MAP:
-            key = _QT_MAP[jqt]
-        else:
-            key = None
-        if not key:
-            continue
-        ans = r["answer"]
-        if isinstance(ans, list):
-            # 整段答案键 (2024 形态): 保序拼, 整组只此一条, 用 num=-1 标识整段串
-            groups[key].append((-1, " ".join(str(x) for x in ans)))
-        else:
-            try:
-                num = int(r.get("question_number") or 0)
-            except (TypeError, ValueError):
-                num = 0
-            groups[key].append((num, str(ans)))
-
-    def _fmt(v: list) -> str:
-        if len(v) == 1 and v[0][0] == -1:  # 整段 list 串, 直接用
-            return v[0][1]
-        return " ".join(f"{n}.{a}" for n, a in sorted(v))
-
-    return {k: _fmt(v) for k, v in groups.items()}
+        key = _row_key(r.get("question_type"), r)
+        if key:
+            groups[key].append(_row_contrib(r))
+    return {k: _fmt_group(v) for k, v in groups.items()}
 
 
 def _enrich_answers(sections: list[dict], year: int) -> list[dict]:
