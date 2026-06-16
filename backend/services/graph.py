@@ -39,7 +39,9 @@ def neighbors(
     if relation:
         sql += " AND e.relation = ?"
         args.append(relation)
-    sql += " ORDER BY e.weight DESC NULLS LAST LIMIT ?"
+    # tiebreak by neighbor id (other) + relation — 等权重时仍确定 (D0 100% 可复现;
+    # 全 weight=1.0 的高 in-degree 节点 ORDER BY weight 零区分度, 无 tiebreak 则 LIMIT 截谁不定)
+    sql += " ORDER BY e.weight DESC NULLS LAST, other, e.relation LIMIT ?"
     args.append(limit)
     cur = con.execute(sql, args)
     cols = [d[0] for d in cur.description]

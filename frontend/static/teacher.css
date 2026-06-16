@@ -53,3 +53,8 @@ main.tab-body { padding: 18px 24px; }
 .ep-thin { font-size: 10px; color: #c0392b; font-weight: normal; margin-left: 6px; }
 .co-lab { flex: 1; color: #444; }
 .ep-bar .co-lab + .ep-n { width: 96px; }
+
+/* 备课整合一体视图 (lesson tab) */
+.lp-meta { color: #444; margin: 4px 0 10px; }
+.trend-banner { background: #f4f1ea; border-left: 3px solid #0a4d75; padding: 6px 10px;
+  font-size: 13px; color: #333; margin-bottom: 12px; }

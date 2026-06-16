@@ -42,7 +42,8 @@ def _check_sample_honesty(diag: dict, check) -> None:
     # 分布够格(核心竞争力可报) + 无伪造 trend_eligible (谄媚死防线)
     fake = [seg for seg, d in diag["by_segment"].items()
             if d["trend_eligible"] and len(d["adequate_years"]) < scope.MIN_TREND_YEARS]
-    check("辽宁分布样本够格(可报占比)", diag["distribution_reliable"], "distribution_reliable=False")
+    check("辽宁分布样本够格(可报占比)", diag["distribution_reliable"],
+          f"distribution_reliable={diag['distribution_reliable']}")  # 动态反映真值, 不写死 False (防绿门自欺)
     check("无伪造逐年趋势可信度(谄媚死防线)", not fake, f"{fake}")
 
 

@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import duckdb
 
+from backend.services import vocab
+
 
 def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
     """城市 → 教材版本 → 7 册 unit 列表 + 累计已学词数."""
@@ -187,27 +189,9 @@ def _title_core_tokens(title: str) -> set[str]:
 
 def unit_exam_alignment(con: duckdb.DuckDBPyConnection,
                           unit_id: str) -> dict:
-    """给一个 unit, 返回该 unit 引入词 ∩ 历年真题考过的词的统计."""
-    # words introduced in this unit
-    intro = {r[0].split(":", 1)[1] for r in con.execute("""
-        SELECT dst_id FROM edges WHERE src_id=? AND relation='introduces_word'
-    """, [unit_id]).fetchall()}
-    if not intro:
-        return {"unit_id": unit_id, "intro_total": 0,
-                "exam_overlap": 0, "examples": []}
-    # of these, how many tested in real exam? — via tests_word edge in reverse
-    overlap = []
-    for w in list(intro):
-        cnt = con.execute("""
-            SELECT COUNT(*) FROM edges WHERE relation='tests_word'
-              AND dst_id = ?
-        """, [f"word:{w}"]).fetchone()[0]
-        if cnt > 0:
-            overlap.append((w, cnt))
-    overlap.sort(key=lambda x: -x[1])
-    return {
-        "unit_id": unit_id,
-        "intro_total": len(intro),
-        "exam_overlap": len(overlap),
-        "examples": [{"word": w, "exam_freq": c} for w, c in overlap[:20]],
-    }
+    """给一个 unit, 返回该 unit 引入词 ∩ 历年真题考过的词的统计.
+
+    单一计算点 (Rule 1): 委托 services.vocab.unit_word_exam_alignment, 与 lesson_plan /
+    备课整合 同源, 不在此重写 JOIN。
+    """
+    return vocab.unit_word_exam_alignment(con, unit_id)

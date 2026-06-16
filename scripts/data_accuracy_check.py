@@ -259,6 +259,12 @@ def _check_23_trend_distribution(con):
     check_trend_distribution(con, check)
 
 
+def _check_24_lesson_plan(con):
+    """备课整合: 词∩真题单一计算点守恒 + 确定性 + 语法轴 FK (抽到 lib/d0_lesson_plan_check)."""
+    from scripts.lib.d0_lesson_plan_check import check_lesson_plan
+    check_lesson_plan(con, check)
+
+
 # ===== main 调度 (CC = 2) =====
 
 # 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
@@ -273,6 +279,7 @@ CHECKS = [
     _check_21_exam_provenance,
     _check_22_exam_point,
     _check_23_trend_distribution,
+    _check_24_lesson_plan,
 ]
 
 

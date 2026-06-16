@@ -198,3 +198,26 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep 'GROUP BY' backend/api/routes/heatmap.py | wc -l | tr -d ' '"]
     expect: {op: "==", value: "0"}
+
+  # ===== 备课整合 (lesson_plan 一体视图; 词∩真题单一计算点 + 浮窗收口) =====
+  - id: lesson-plan-vocab-single-source
+    claim: "备课整合词∩真题为单一计算点: recommend/lesson_plan 运行时与 services.vocab 字节一致 (无双算分叉, Rule1)"
+    type: shell
+    command: ["bash", "-c", "python3 -c \"import duckdb,json; from backend.services import recommend,vocab,lesson_plan as L; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); u='unit:waiyan/bixiu_1/U1'; f=lambda o:json.dumps(o,sort_keys=True,ensure_ascii=False,default=str); a=f(recommend.unit_exam_alignment(c,u)); b=f(vocab.unit_word_exam_alignment(c,u)); d=f(L.generate_lesson_plan(c,u)['alignment_summary']); print('OK' if a==b==d else 'DRIFT')\""]
+    expect: {op: regex, pattern: "OK"}
+  - id: graph-popup-related-via-service
+    claim: "讲课浮窗 1-hop related 走 services.graph.neighbors (Rule3 图遍历收口, _fetch_related 不再内联 edges↔nodes JOIN)"
+    type: shell
+    command: ["bash", "-c", "grep -q 'graph.neighbors' backend/api/routes/graph_popup.py && echo VIA_SERVICE || echo INLINE"]
+    expect: {op: regex, pattern: "VIA_SERVICE"}
+  - id: lesson-plan-grammar-axis
+    claim: "备课整合接入语法轴: generate_lesson_plan 含 grammar 字段且 grammar_occurrences→grammar_items 0 悬挂"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM grammar_occurrences g LEFT JOIN grammar_items gi ON gi.grammar_item_id=g.grammar_item_id WHERE gi.grammar_item_id IS NULL"
+    expect: {op: "==", value: 0}
+  - id: lesson-plan-grammar-province-scoped
+    claim: "备课语法轴真题溯源锚定辽宁卷 (§7; _grammar_exam_trace 带 province LIKE 辽宁%, 不混外省冒充辽宁备课锚)"
+    type: shell
+    command: ["bash", "-c", "grep -A12 'def _grammar_exam_trace' backend/services/lesson_plan.py | grep -q \"province LIKE '辽宁\" && echo SCOPED || echo LEAK"]
+    expect: {op: regex, pattern: "SCOPED"}

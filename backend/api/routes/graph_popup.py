@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 from backend.api.db import db_ro
+from backend.services import graph
 
 LIMIT_RELATED = 12
 LIMIT_QUESTIONS = 8
@@ -46,44 +47,41 @@ def _fetch_center(con, cid: str) -> dict | None:
 
 
 # 关系优先级 (讲课浮窗: 真考点/题型/年份/课标/教材 先于 tests_word 词噪声, 否则真考点被 LIMIT 截掉)
-_REL_PRIORITY = (
-    "CASE e.relation WHEN 'tests_exam_point' THEN 0 WHEN 'question_type' THEN 1 "
-    "WHEN 'in_year' THEN 2 WHEN 'tests_grammar' THEN 3 WHEN 'cefr_level' THEN 4 "
-    "WHEN 'tests_word' THEN 8 ELSE 5 END"
-)
+_REL_RANK = {"tests_exam_point": 0, "question_type": 1, "in_year": 2,
+             "tests_grammar": 3, "cefr_level": 4, "tests_word": 8}
+
+
+def _rank(relation: str) -> int:
+    return _REL_RANK.get(relation, 5)
 
 
 def _fetch_related(con, cid: str) -> list[dict]:
-    """非真题相关 (outgoing + incoming, 去重). 真题的真考点(tests_exam_point)优先于词噪声."""
+    """非真题相关 (outgoing + incoming, 去重). 真题的真考点(tests_exam_point)优先于词噪声.
+
+    图遍历单一入口 (Rule 3): edge↔node 1-hop 走 services.graph.neighbors, 浮窗专属的
+    "排除 question 节点 + 关系优先级 + 去重" 留在路由 (展示层关注点, 不污染 graph service)。
+    """
     out: list[dict] = []
     seen: set[str] = {cid}
-    # outgoing — 按关系优先级排 (真考点先出, 不被 38 条/题的 tests_word 淹没); pr 仅排序用
-    for tgt, ntype, label, rel, _pr in con.execute(
-        "SELECT DISTINCT e.dst_id, n.node_type, n.label, e.relation, " + _REL_PRIORITY + " AS pr "
-        "FROM edges e JOIN nodes n ON n.concept_id = e.dst_id "
-        "WHERE e.src_id = ? AND n.node_type <> 'question' "
-        "ORDER BY pr, n.label "
-        "LIMIT ?",
-        [cid, LIMIT_RELATED * 2],
-    ).fetchall():
-        if tgt in seen: continue
-        seen.add(tgt)
-        out.append({"id": tgt, "type": ntype, "label": label,
-                    "relation": rel, "direction": "out"})
-        if len(out) >= LIMIT_RELATED: return out
-    # incoming
-    for src, ntype, label, rel in con.execute(
-        "SELECT DISTINCT e.src_id, n.node_type, n.label, e.relation "
-        "FROM edges e JOIN nodes n ON n.concept_id = e.src_id "
-        "WHERE e.dst_id = ? AND n.node_type <> 'question' "
-        "LIMIT ?",
-        [cid, LIMIT_RELATED * 2],
-    ).fetchall():
-        if src in seen: continue
-        seen.add(src)
-        out.append({"id": src, "type": ntype, "label": label,
-                    "relation": rel, "direction": "in"})
-        if len(out) >= LIMIT_RELATED: return out
+
+    def _take(rows: list[dict], direction: str) -> bool:
+        for r in rows:
+            other = r["other"]
+            if other in seen or r["node_type"] in (None, "question"):
+                continue
+            seen.add(other)
+            out.append({"id": other, "type": r["node_type"], "label": r["label"],
+                        "relation": r["relation"], "direction": direction})
+            if len(out) >= LIMIT_RELATED:
+                return True
+        return False
+
+    # outgoing — 按关系优先级排 (真考点先出, 不被 38 条/题的 tests_word 淹没)
+    outs = graph.neighbors(con, cid, direction="out", limit=500)
+    outs.sort(key=lambda r: (_rank(r["relation"]), r["label"] or ""))
+    if _take(outs, "out"):
+        return out
+    _take(graph.neighbors(con, cid, direction="in", limit=500), "in")
     return out
 
 

@@ -120,21 +120,25 @@ const LOADERS = {
 };
 
 async function renderLesson(uid) {
-  const sub = await fetchJSON(`/api/graph/subgraph?node=${encodeURIComponent(uid)}&depth=1&max_nodes=80`);
-  const words = sub.nodes.filter(n => n.node_type === "word").map(n => n.label);
-  const themes = sub.nodes.filter(n => n.node_type === "theme").map(n => n.label);
-  // 4.2.F 深度交叉关联 — 加 unit→真题考过词 (现 API 已通)
-  const align = await fetchJSON(`/api/recommend/unit_exam_alignment?unit=${encodeURIComponent(uid)}`);
-  // 4路桥: 本单元主题 → 高考同主题真题 (备课锚: 教此主题, 高考这么考)
-  const lp = await fetchJSON(`/api/lesson_plan?unit=${encodeURIComponent(uid)}`).catch(() => ({}));
-  const rex = lp.related_exams || [];
+  // 备课整合: 单次调 /api/lesson_plan (服务端单一整合点 — 词/语法/主题考点/对齐/趋势诚实)。
+  // 不再前端各调 subgraph + unit_exam_alignment 自拼 (Rule 1: 整合在 service 算一次)。
+  const lp = await fetchJSON(`/api/lesson_plan?unit=${encodeURIComponent(uid)}`).catch(e => ({ error: String(e) }));
+  if (lp.error || !lp.unit_id) {
+    $("#lp-body").innerHTML = `<em>加载失败: ${lp.error || "无数据"}</em>`;
+    return;
+  }
+  const words = lp.words || [], grammar = lp.grammar || [], rex = lp.related_exams || [];
+  const al = lp.alignment_summary || {}, th = lp.trend_honesty || {};
+  const pr = lp.page_range || [];
+  const wChip = w => tagChip(`${w.word}${w.exam_freq_count ? " · " + w.exam_freq_count + "次" : ""}${w.exam_status === "HV_extra" ? " ⭐" : ""}`, "word");
+  const gChip = g => tagChip(`${g.label} · ${g.recent_exam_trace.length}真题`, "grammar");
   $("#lp-body").innerHTML = `
-    <h3>词汇 (${words.length})</h3>
-    <div>${words.map(w => tagChip(w, "word")).join("")}</div>
-    <h3>主题</h3>
-    <div>${themes.length ? themes.map(t => tagChip(t, "theme")).join("") : "<em>未匹配</em>"}</div>
-    <h3>真题对齐 — 本 unit 引入词中, 高考考过的 ${align.exam_overlap}/${align.intro_total}</h3>
-    <div>${(align.examples || []).map(e => tagChip(`${e.word} · ${e.exam_freq}次`, "year")).join("")}</div>
+    <p class="lp-meta"><strong>${lp.title || ""}</strong>${lp.theme ? " · 主题 " + lp.theme.replace("theme:", "") : " · 主题未匹配"} · p.${pr[0] ?? "-"}–${pr[1] ?? "-"}</p>
+    <div class="trend-banner">📊 命题趋势 (${th.province_scope || "辽宁卷"}): ${th.note || ""}${th.trend_reliable ? "" : " · <span style='color:#c1272d'>逐年斜率样本不足, 不画 slope</span>"}</div>
+    <h3>词汇 — 本单元引入 ${al.intro_total ?? words.length}, 高考考过 ${al.exam_overlap ?? "?"} (按高考频次降序)</h3>
+    <div>${words.length ? words.map(wChip).join("") : "<em>无</em>"}</div>
+    <h3>语法 (${grammar.length}) — 课标项 + 真题溯源 (教此语法, 高考这么考)</h3>
+    <div>${grammar.length ? grammar.map(gChip).join("") : "<em>本单元无 curated 语法点 (诚实跳过歧义)</em>"}</div>
     <h3>同主题高考真题 (${rex.length}) — 教此单元主题, 高考这么考 (4路追溯)</h3>
     <div>${rex.length ? rex.map(e => tagChip(`${e.year} ${e.question_type} · ${e.theme_point}`, "year")).join("") : "<em>无</em>"}</div>`;
 }
