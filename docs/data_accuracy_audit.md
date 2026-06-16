@@ -928,3 +928,14 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 - **heatmap 下沉**: API 内联 GROUP BY → `backend/services/heatmap/vocab.py` (Rule1)。
 - **接前端**: 趋势 era 分隔 + trend_reliable banner; 考点分布样本充足/不足标; 新"考点关联"tab; app.html era 分层。
 **验证**: D0 exit 0 (维度23全绿) / moth PASS 28 (+3: 共现底料165题/不落表/heatmap无内联agg) / stop_gate exit 0。新函数最高 CC=8; data_accuracy_check 396行<400。**materialize=none 决策由 moth `trend-distribution-not-materialized` 锁** (防快照表悄回归)。
+
+## 2026-06-16 / 教材基石完整性实证纠偏 (证伪陈旧"46%/外研选必4零单元")
+
+**触发**: 件3 完成后查"编写教程"地基 (§1.1 数据基石优先 gate)。旧 ops/skill 待办称"教材完整提取(外研选必4 零单元/覆盖46%)" — 按 Mio #4 (别 defeatist, 框架性悲观当场实证) 查真相源 (DB + PDF)。
+**实证 (DB units/sections/unit_vocab_intro + waiyan PDF)**:
+- units **77/77 全册抽取** (renjiao 7册 + waiyan 7册; **waiyan/xuanze_4 = 6 units, 非"零单元"**); 词表 14册全有 (198-377/册); section 课文 **67/77 单元有 = 87%** (非 46%)。
+- "46%" 实为**另一指标**: 教材词表覆盖课标3500词 46.3% (goal.md 越纲率), 是**真实数据特征** (教材本不覆盖全部课标词), **非提取缺口** — 旧待办把两者混淆成"地基46%不完整"误导。
+**真缺口 (精确, 可填)**: **10 个 waiyan 单元缺 section 课文** (bixiu_1 U1 / bixiu_2 U2,U5 / bixiu_3 U1,U2 / xuanze_1 U4 / xuanze_3 U4,U5 / xuanze_4 U3,U4)。
+**根因 (实证)**: `extraction/section.py` 的 `_scan_unit` 只扫每页**前 3 行**匹配 section 锚点; 这 10 单元的锚点 (Starting out/Understanding ideas/Using language/Developing ideas/Presenting ideas) **确在页内但不在前 3 行** (页首是练习正文)。PDF 全在 `data/textbooks/waiyan/`, 可补。
+**修法 (下一 tick)**: 外研版辨识度高的多词锚点整页扫首现, 单词锚点 (Project/Reading/Grammar...) 保持仅页首防误报; 重提取后须验 67 工作单元零回归 + D0。
+**结论**: 地基**远比陈旧说法完整** (87% section + 100% units/vocab), §1.1 gate 不应被"46%"误判为阻塞; 67 完整单元的教程可推进, 10 单元待 section 补全。ops/skill `数据现状` 行已同步纠偏 (防误导)。
