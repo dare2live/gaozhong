@@ -30,7 +30,7 @@
    - `scripts/data_accuracy_check.py` 失败 → BLOCK
 2. `scripts/data_accuracy_check.py` — 全数据集 100% 校验, 0 错才 exit 0:
    - 数据基石 (manifest sha + textbooks 14)
-   - 词集 (cefr 2986 + uvi 4056 + 3 级全)
+   - 词集 (cefr 3040 + uvi 4056 + 3 级全; 2986→3040 补 p182 漏抽页)
    - 语法 (106 + DAG + 引用完整)
    - 短语 (≥100)
    - 教案 (40 节 + 7 段全 + R2 ≥10 词重叠 0)

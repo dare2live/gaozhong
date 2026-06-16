@@ -130,7 +130,7 @@ async function renderLesson(uid) {
   const words = lp.words || [], grammar = lp.grammar || [], rex = lp.related_exams || [];
   const al = lp.alignment_summary || {}, th = lp.trend_honesty || {}, vp = lp.vocab_profile || {};
   const pr = lp.page_range || [];
-  const wChip = w => tagChip(`${w.word}${w.exam_freq_count ? " · " + w.exam_freq_count + "次" : ""}${w.exam_status === "HV_extra" ? " ⭐" : ""}`, "word");
+  const wChip = w => tagChip(`${w.word}${w.exam_freq_count ? " · " + w.exam_freq_count + "次" : ""}${w.syllabus_category === "真超纲·辽宁考过" ? " ⭐" : ""}`, "word");
   const gChip = g => tagChip(`${g.label} · ${g.recent_exam_trace.length}真题`, "grammar");
   $("#lp-body").innerHTML = `
     <p class="lp-meta"><strong>${lp.title || ""}</strong>${lp.theme ? " · 主题 " + lp.theme.replace("theme:", "") : " · 主题未匹配"} · p.${pr[0] ?? "-"}–${pr[1] ?? "-"}</p>

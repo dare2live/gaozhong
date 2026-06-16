@@ -49,19 +49,6 @@ def _safe_term(ev: str | None) -> str | None:
     except Exception: return None
 
 
-def _word_statuses(con: duckdb.DuckDBPyConnection, words: list[str]) -> dict[str, str]:
-    """批量取词的 exam_status (nodes.attrs) — 避 N 次单查."""
-    if not words:
-        return {}
-    keys = [f"word:{w}" for w in words]
-    ph = ",".join("?" * len(keys))
-    rows = con.execute(
-        f"SELECT concept_id, COALESCE(json_extract_string(attrs_json, 'exam_status'), 'unknown') "
-        f"FROM nodes WHERE concept_id IN ({ph})", keys,
-    ).fetchall()
-    return {r[0].split(":", 1)[1]: r[1] for r in rows}
-
-
 def _unit_words_with_trace(con: duckdb.DuckDBPyConnection, unit_id: str,
                             recent_n: int = 3, limit: int = 25) -> list[dict]:
     """单元引入词 (带真题溯源/状态/教学建议), 按真题考查频次降序取 top N.
@@ -69,33 +56,35 @@ def _unit_words_with_trace(con: duckdb.DuckDBPyConnection, unit_id: str,
     词源 + 频次走 services.vocab 单一计算点 (与 alignment_summary 同源, 不再内联 unit_vocab_intro
     异源 JOIN); 频次一次批量 GROUP BY (灭 N+1)。确定性 (D0): (-freq, word) 排序后截断, 不无序 LIMIT。
     """
+    from backend.services import vocab_classify
     words = sorted(set(vocab.unit_introduced_words(con, unit_id)))
     freqs = vocab.unit_word_frequencies(con, unit_id)
-    statuses = _word_statuses(con, words)
-    scored = sorted(((w, statuses.get(w, "unknown"), freqs.get(w, 0)) for w in words),
+    scored = sorted(((w, vocab_classify.category(w), freqs.get(w, 0)) for w in words),
                     key=lambda x: (-x[2], x[0]))   # 高考频次降序, 同频字母序 (确定性)
     out = []
-    for w, status, freq in scored[:limit]:
+    for w, cat, freq in scored[:limit]:
         out.append({
-            "word": w, "exam_status": status,
+            "word": w, "syllabus_category": cat,   # 走 vocab_classify (词形归并后, 非 stale node attrs)
             "recent_exam_trace": vocab.word_exam_trace(con, w, recent_n=recent_n),
             "exam_freq_count": freq,
             "derived_forms": _word_derived_forms(con, w)[:5],
-            "teaching_hint": _word_teaching_hint(status, freq),
+            "teaching_hint": _word_teaching_hint(cat, freq),
         })
     return out
 
 
-def _word_teaching_hint(status: str, freq: int) -> str:
-    if status == "HV_extra":
-        return "⭐ 超纲但高考考过, 必教 (从趋势可见仍在出现)"
-    if status == "core" and freq >= 3:
-        return "高频核心词, 必背 + 配题练"
-    if status == "core":
-        return "课标核心, 标准教学"
-    if status == "LV_extra":
+def _word_teaching_hint(cat: str, freq: int) -> str:
+    if cat == "真超纲·辽宁考过":
+        return "⭐ 超纲但辽宁高考考过, 必教"
+    if cat == "真超纲·仅外省考过":
+        return "超纲, 仅外省卷考过 (高值参考, 非辽宁确认)"
+    if cat == "真超纲·未考":
         return "超纲且历年未考, 可降权 / 选学"
-    return "常规教学"
+    if cat == "专名/碎片":
+        return "专名/缩写, 非核心词汇"
+    if freq >= 3:
+        return "课标内, 高频考词 必背 + 配题练"
+    return "课标内, 标准教学"
 
 
 def _unit_related_exams(con: duckdb.DuckDBPyConnection, unit_id: str,

@@ -53,7 +53,7 @@ def _check_2_vocab(con):
     n_cefr = con.execute("SELECT COUNT(*) FROM cefr_vocab").fetchone()[0]
     n_uvi = con.execute("SELECT COUNT(*) FROM unit_vocab_intro").fetchone()[0]
     lvls = {r[0] for r in con.execute("SELECT DISTINCT cefr_level FROM cefr_vocab").fetchall()}
-    check("cefr_vocab 2986", n_cefr == 2986, f"{n_cefr}")
+    check("cefr_vocab 3040", n_cefr == 3040, f"{n_cefr}")  # 2986→3040: 补 p182 漏抽页(pypdf失败, pdfplumber补54词)
     check("unit_vocab_intro > 4000", n_uvi > 4000, f"{n_uvi}")
     check("cefr 3 级全在", lvls == {"义教", "必修", "选必"})
 
