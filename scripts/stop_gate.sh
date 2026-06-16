@@ -17,7 +17,9 @@ to_int() {
   fi
 }
 
-changed=$(git status --porcelain 2>/dev/null | grep -cE '\.(py|sql|html|js|css)$' || echo 0)
+# yaml/yml 纳入: 架构/数据契约 (sources/import_policies/project_architecture/exam_paper_contracts...)
+# 走 config, 配置型架构漂移 (悬挂doc/未数据化importer) 也要触发架构契约门 (gate 4)
+changed=$(git status --porcelain 2>/dev/null | grep -cE '\.(py|sql|html|js|css|yaml|yml)$' || echo 0)
 changed=$(to_int "$changed")
 if [ "$changed" -eq 0 ]; then
   exit 0
@@ -104,6 +106,13 @@ if [ "$n_big_inline" -gt "$INLINE_BASELINE" ]; then
   ❌ 前端 inline 大块 $n_big_inline > baseline $INLINE_BASELINE — 抽 common.js / css 后再 stop"
 fi
 
+# 4. 架构契约审计 (gate_contracts.project_architecture_audit severity=BLOCK). 2026-06-16 缺口:
+#    契约声明为阻断门但 stop_gate 从未调它 → 硬编码PDF路径/悬挂doc引用等架构漂移长期静默躺着.
+if ! python3 scripts/tools/audit/project_architecture_audit.py --strict --output /tmp/arch_audit.json >/tmp/arch_audit.log 2>&1; then
+  fails="$fails
+  ❌ 架构契约审计 BLOCK — 看 /tmp/arch_audit.log (legacy importer未数据化/悬挂doc/缺失模块路径等)"
+fi
+
 if [ -n "$fails" ]; then
   cat >&2 <<EOF
 [stop-gate] 阻断 stop, 必须修这些再 stop:$fails
@@ -114,6 +123,7 @@ if [ -n "$fails" ]; then
   (2)  CC>10 函数 ≤ $HOT_BASELINE  (跑 python3 scripts/lib/complexity_check.py <files>)
   (2b) CC>15 单函数 ≤ $CC15_BASELINE  (Rule8 硬阈; 单函数跨15即超, 拆函数)
   (3)  前端 inline 大块 ≤ $INLINE_BASELINE  (抽到 common.js / common.css)
+  (4)  架构契约审计 0 BLOCK  (python3 scripts/tools/audit/project_architecture_audit.py --strict)
 
 只有当当前改动让基线**变更恶化** 时才阻断; 持平或改善 OK.
 临时绕过 (不推荐): echo > /tmp/skip_stop_gate (然后下次 stop 内自动重置)
