@@ -97,7 +97,7 @@
 > - **趋势诚实护栏(件1)** · **教师端考点分布可视化(件3)** · **项目地图CLI(件0)** · **Mio全局skill**。
 > - **方法硬教训**: 分类输入是**真相源**(语篇/答案)→可信; 输入是**代理**(设问句缺答案)→危险; dual-model一致只防随机不防系统偏差(坑16)。
 >
-> **剩余缺口(已记录, 递减回报; 非阻塞)**: 2024/2025答案(0覆盖, 可从 gaokao jsonl/PDF键填补但需passage正文匹配, fiddly) + 2024/2025/2022解析(本地无, 外部C级) — 任务#15。名词数/词形 taxonomy补全。趋势落表灭Rule1(内部hygiene)。
+> **剩余缺口(已记录, 递减回报; 非阻塞)**: ~~2024/2025答案~~ **已填(2026-06-16, 从 gaokao 收口 jsonl 真值源回填)** + 2024/2025/2022解析(本地无, 外部C级) — 任务#15。名词数/词形 taxonomy补全。~~趋势落表灭Rule1~~ **证伪为伪需求(materialize=none, service委托已满足Rule1)**。
 > **消费者spec三支柱架构闭合(2026-06-16, 全建在完整考点数据上)**: 备课=考点分布可视化 · 讲课=exam_point边使真题↔考点可追溯 · **分析学生=错题→真考点→薄弱环节**(weakness维度从word-token假象改exam_point真考点, critic#2修复, init_db Layer4j重算)。
 > **4路追溯打通(theme_aligns桥)**: 真题↔考点↔课标主题↔教材单元 — 老师从真题考点跳到讲同主题的教材单元(11桥边)。讲课浮窗真考点优先显示(非词噪声)。
 > **下一相位瓶颈 = 消费者验证(任务#14, 用户)**: 数据底座+三支柱架构已就位, 真老师30分钟试用是比继续自动建设更高杠杆的独立真相源校验。
@@ -112,11 +112,10 @@
 | 0 | **项目地图 CLI** `python3 -m scripts.tools.map [doctor\|modules\|gates\|drift\|stats] [--json] [--strict]` 只读聚合 4 套真相源 | ✅ |
 | 1 | **趋势分析诚实护栏** `backend/services/trend/scope.py`: province 锚定(§7) + 卷制分段(PIT) + 样本量守门(reliable=False→'样本不足'不冒充slope); 修 lesson_plan 硬编码假slope; moth+2断言 | ✅ |
 | 2 | **考点 canonical 维度**(拱心石): 188 辽宁题双模型标注落 exam_point nodes+edges(498条 dual_model_agree). **genre + theme L1(3) + theme L2(课标官方10主题群)** 已落; taxonomy v2 升官方层级(设问7技能/provenance分层, docs/exam_point_taxonomy_research). **分层揭示**: 做人与做事 4.9%→21.9%暴涨(立德树人)、记叙文↔说明文翻转、人与自然翻倍. **考点5维分布全出**: genre/theme L1/theme L2(官方10群=canonical边) + 设问类型(官方7技能)/语法考点(9类=聚合分布). 命题趋势: 做人与做事暴涨/推断上升/记叙文崛起. 待: 名词数词形taxonomy补全 + 2021+解析采集(任务#15) | ✅ 主体完成 |
-| 3 | 趋势/考点落表 + 接前端可视化. **考点分布已接前端**(教师端"考点分布"tab: era分层横条热力, genre/theme L1/theme L2 课标10群; /api/exam_point/distribution 单一计算点; HTTP实测三证). 待: 趋势结果落表灭 Rule1 三并行口径 | 🔵 部分 |
+| 3 | 趋势/考点分布/关联性 + 接前端. **多角色正反论证裁 materialize=none**("落表"是被任务卡字面锁死的伪需求, 三条腿已 service 委托满足 Rule1, 188辽宁行~10ms 物化只增 staleness §3.5). **关联性第三条腿**(`exam_point/cooccur.py` 同题跨轴共现: 记叙文⨯人与社会46/说明文⨯人与自我15...) + **D0维度23**(对 service 输出5数值断言, 对抗污染必FAIL) + era单点 + heatmap下沉 + **接前端**(趋势era分隔+样本诚实banner / 考点关联tab). moth+3锁 materialize=none. | ✅ (2026-06-16) |
 | ⚠ gate | **消费者验证**(最高杠杆, AI 做不了): 1 名辽宁英语老师真用 30 分钟 — Rule 10 people-not-agents, 需用户动员 | 待用户 |
 
-已知 fail(非回归, gate0 预期): 架构审计 block=2 — legacy 直写 exam_questions/硬编码 PDF 路径未登记 import_policies(M0 闭合独立任务)。
-顺带修: m0_gate_plan.load_gates() order 0/1-indexed off-by-one(死代码 bug, 无 live 影响)。
+~~已知 fail: 架构审计 block=2~~ **已修 (2026-06-16, block=0)**: import_recent_exams 改 registry/import-policy 驱动 + 清悬挂 doc 引用; **架构契约审计接入 stop_gate**(声明 BLOCK 却从没接线=空门) + yaml 纳入触发器。
 
 **真题实证分析(为教程铺路, 不建库)**: [docs/exam_topic_landscape.md](exam_topic_landscape.md)(话题/题材: 人与社会55%, 体裁强规律) + [docs/exam_scenario_patterns.md](exam_scenario_patterns.md)(场景/篇章/设问: 阅读A=应用文全细节/C篇主旨恒Q31/续写=第一人称困境截断)。
 **"预测高考"诚实定位** (用户提的目标): ✅可造结构高度贴近真实的模拟题(题型骨架+篇章+设问+语域对齐) / ❌不可预测具体内容——"AI押中高考"是营销话术违反D0; 正确定位="结构对齐+课标合规造题"非"押题"。选题可借鉴雅思真源(TIME/科学美国人/TED)话题方向但文本必降级到课标3500词。
@@ -127,6 +126,17 @@
 - **Phase 7 生成层回滚**: 删 enriched 讲义/合成题/生成练习(教材基石不完整不该有生成范文 §1.1); question_bank 仅真题; course_handouts 0。
 - **学情派生 + 去停用词 + god-module 拆分**: 弱点从写死改答题派生; autotag 去功能词; 4 个 >400 行治理 god-module 拆到 <400, run_all 可复现绿。
 - 三门全绿: data_accuracy_check / moth assert / stop_gate。
+
+### 2026-06-16 autonomous /loop 进展 (10 commits; 三门绿 D0/moth28/stop_gate)
+**1. 数据缺陷修复 + 流程门固化**: 用户报 2024/2025 辽宁阅读 raw_question 硬截2000+答案空 → 边界双向收口 + gaokao真值源回填(a9e671a)。改后审计连带堵 4 缺口: CC18回归拆8(b113c13) · **stop_gate 加 CC>15 单函数硬门**(d5c8b04, 计数门漏单函数尖刺) · import 改 registry/policy 驱动+清悬挂doc(54072a5) · **架构契约审计接入 stop_gate**(0b29f3b, 声明BLOCK却没接线=空门, block 2→0)。
+**2. 件3 核心竞争力完成**(b7250dc/4a06b9b/972f1d1): 4角色论证证伪"落表"伪需求→materialize=none; 关联性第三条腿(考点共现) + D0维度23 + 趋势era分隔 + 考点关联前端tab。三大件(趋势/分布/关联性)全落地。
+**3. 教材基石 100%**(9215933/2ad0899): 实证纠偏陈旧"外研选必4零单元/46%"(units实100%/词表100%); 补全10个waiyan单元课文section(根因: PDF锚点不在页首, section.py加pass-2零命中兜底整页扫多词锚点, 最小回归67工作单元字节不变), **sections 150→216 全有正文, 单元覆盖67→77/77**。§1.1 教程地基gate全达标。
+**沉淀**: 坑18-22(gaozhong-ops) + Mio #8升级(对抗同盟可质疑用户自己写的需求字面)。
+
+### 下一步计划 (2026-06-16 更新)
+- **[最高杠杆, 待用户]** 消费者验证(任务#14): 数据底座(真题分析三大件 + 教材地基100%)已就位, 真老师30分钟试用 = 比继续自动建设更高杠杆的独立校验。Rule10 people-not-agents 需用户动员。
+- **[可自动推进]** ① 语法点 per-unit 地基核查(§1.2 不偏离学校剩余轴: grammar_items/occurrences 覆盖) ② 备课整合(unit→词/语法/考点/关联 一体视图, 把三大件+地基接成教师备课闭环) ③ 件3前端浏览器实测(preview截图) ④ 任务#15 解析采集(低优先)。
+- **[gate]** 编写教程内容(讲义/范文)= 大相位, 需用户方向决策(地基已完整, §1.1 不再阻塞, 但内容生成是新阶段)。
 
 ---
 
