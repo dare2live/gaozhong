@@ -95,7 +95,9 @@ def extract_grammar_items(reader: PdfReader, source_tag: str,
         text = reader.pages[pi].extract_text() or ""
         for raw in text.split("\n"):
             line = raw.strip()
-            if _skip_line(line): continue
+            # _skip_line(字母占比>0.4)误杀含关系代词清单的合法 L4 项(限制性/非限制性定语从句);
+            # 豁免匹配 RE_L4 的行 (它们是真子项, 非例句) — 否则静默漏项 + D0 把 buggy 数封绿门(坑1)。
+            if _skip_line(line) and not RE_L4.match(line): continue
             row = _try_match(state, line, source_tag)
             if row: rows.append(row)
     return rows

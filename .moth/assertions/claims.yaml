@@ -160,6 +160,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM unit_vocab_intro v WHERE NOT EXISTS (SELECT 1 FROM units u WHERE u.version_key=v.version_key AND u.volume_key=v.volume_key AND u.unit_number=v.unit_number)"
     expect: {op: "==", value: 0}
+  - id: unit-vocab-no-cross-unit-dup
+    claim: "词无跨单元重复 (renjiao 331→0 + waiyan 96→0; 单一区段抽取, 字母总表/复习段不砸进某单元污染 §1.2)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM (SELECT version_key, volume_key, word FROM unit_vocab_intro WHERE unit_number>0 GROUP BY 1,2,3 HAVING COUNT(DISTINCT unit_number)>1)"
+    expect: {op: "==", value: 0}
   - id: textbook-sections-have-text
     claim: "216 sections 全有 raw_text 正文 (n_chars>50; 2026-06-16 补10 waiyan单元 150→216)"
     type: duckdb_sql

@@ -37,6 +37,11 @@ ENTRY_RE = re.compile(
     r"(?:\s+\d{1,3})?\s*$",       # optional trailing lesson# (discarded)
 )
 UNIT_HEADER_RE = re.compile(r"^\s*UNIT\s+(\d+)\s*(.*)$", re.IGNORECASE)
+# 段终哨兵: 字母序 'Vocabulary' 总表标题行 (独占一行)。
+# 根因(2026-06-17 修): _next_section_page 只看每页首行, 而 xuanze 总表起页(p119)首行是
+# 页码 '113', 'Vocabulary' 在第 2 行 → 段末漏判 → 总表全挂在 last 'UNIT 6' 头下 →
+# 96 个 (vol,word) 跨单元重复(字母表项砸进 unit6 污染)。遇此行即整段终止, 不依赖页号边界。
+_GLOSSARY_HEADING_RE = re.compile(r"^Vocabulary$")
 
 
 def _find_section_pages(reader: PdfReader, heading: str = "Words and expressions") -> list[int]:
@@ -155,6 +160,8 @@ def extract_vocab_intro(pdf_path: Path, version_key: str, volume_key: str) -> li
     for pi in range(s, e):
         for raw in _page_text(reader, pi).split("\n"):
             line = raw.rstrip()
+            if _GLOSSARY_HEADING_RE.match(line.strip()):
+                return out   # 字母序总表起始 → 段终 (其后是全册字母表, 会污染 last unit)
             # check UNIT N header first
             header_n = _parse_unit_header(line)
             if header_n is not None:

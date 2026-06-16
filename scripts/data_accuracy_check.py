@@ -53,9 +53,30 @@ def _check_2_vocab(con):
     n_cefr = con.execute("SELECT COUNT(*) FROM cefr_vocab").fetchone()[0]
     n_uvi = con.execute("SELECT COUNT(*) FROM unit_vocab_intro").fetchone()[0]
     lvls = {r[0] for r in con.execute("SELECT DISTINCT cefr_level FROM cefr_vocab").fetchall()}
-    check("cefr_vocab 3041", n_cefr == 3041, f"{n_cefr}")  # 2986→3040: 补 p182 漏抽页(pypdf失败, pdfplumber补54词)
-    check("unit_vocab_intro > 4000", n_uvi > 4000, f"{n_uvi}")
+    check("cefr_vocab 3052", n_cefr == 3052, f"{n_cefr}")  # 2986→3055→3052: 补 p182/183 漏抽页 + 截国家表 3 误纳
+    # 4253→3982: 单一区段重写后 renjiao(2132→1957)+waiyan(2121→2025) 剔除 331+96 跨单元重复
+    # /glossary 污染行 + renjiao 补回漏词。净降是去污结果(更准非更少), 下界防丢册回归。
+    check("unit_vocab_intro ≥ 3900", n_uvi >= 3900, f"{n_uvi}")
     check("cefr 3 级全在", lvls == {"义教", "必修", "选必"})
+    # 防回归(坑1, 强化版): 旧门 (MIN<20 AND MAX>50) 只抓"单单元塌缩+同册有兄弟>50"一种形态,
+    # 漏报整册齐塌 + 完全无感 331 跨单元重复(膨胀非塌缩)。换 2 个鲁棒断言:
+    # (a) 绝对地板: 任一单元 distinct word <20 = 抽取塌缩嫌疑(不依赖兄弟单元)。
+    floor = con.execute("""
+        WITH u AS (SELECT version_key, volume_key, unit_number, COUNT(DISTINCT word) c
+                   FROM unit_vocab_intro WHERE unit_number > 0 GROUP BY 1,2,3)
+        SELECT version_key, volume_key, unit_number, c FROM u WHERE c < 20 ORDER BY c
+    """).fetchall()
+    check("无单元词表塌缩 (绝对地板 ≥20词)", not floor,
+          "无塌缩" if not floor else f"塌缩: {[(r[0],r[1],r[2],r[3]) for r in floor[:5]]}")
+    # (b) 跨单元唯一性: 同版同册同词只能属 1 个单元(违反=字母总表/复习段被砸进某单元污染,
+    #     破坏 §1.2 词量≤已学单元)。renjiao(331→0)+waiyan(96→0) 均重写为单一区段抽取后锁死防回归。
+    xu_dup = con.execute("""
+        WITH u AS (SELECT version_key, volume_key, word, COUNT(DISTINCT unit_number) k
+                   FROM unit_vocab_intro WHERE unit_number>0 GROUP BY 1,2,3)
+        SELECT version_key, volume_key, word, k FROM u WHERE k>1 ORDER BY k DESC
+    """).fetchall()
+    check("词无跨单元重复 (单一区段抽取锁, 全版本)", not xu_dup,
+          "0 重复" if not xu_dup else f"{len(xu_dup)} 对: {[(r[0],r[1],r[2]) for r in xu_dup[:5]]}")
 
 
 def _check_3_grammar(con):
@@ -65,7 +86,7 @@ def _check_3_grammar(con):
         "SELECT COUNT(*) FROM grammar_items WHERE parent_id IS NOT NULL "
         "AND parent_id NOT IN (SELECT grammar_item_id FROM grammar_items)"
     ).fetchone()[0]
-    check("grammar_items 行 == 106", n_g == 106, f"{n_g}")
+    check("grammar_items 行 == 108", n_g == 108, f"{n_g}")  # 106→108: 补限制性/非限制性定语从句(原_skip_line误杀)
     check("grammar DAG 无环 (audit OK)", _audit_ok(con, "grammar_dag"))
     check("grammar parent_id 引用完整", n_orphan == 0, f"orphan={n_orphan}")
     n_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences").fetchone()[0]  # §1.2 语法per-unit

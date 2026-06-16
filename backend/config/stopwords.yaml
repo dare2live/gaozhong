@@ -23,7 +23,7 @@ english_stopwords:
   - all
   - any
   - some
-  - no
+  - 'no'
   - none
   - much
   - many
@@ -108,7 +108,7 @@ english_stopwords:
   - whichever
   # 介词
   - in
-  - on
+  - 'on'
   - at
   - to
   - of
@@ -119,7 +119,7 @@ english_stopwords:
   - up
   - down
   - out
-  - off
+  - 'off'
   - over
   - under
   - above
@@ -178,8 +178,8 @@ english_stopwords:
   - wherever
   # 常见副词 / 其它功能词
   - not
-  - no
-  - yes
+  - 'no'
+  - 'yes'
   - very
   - too
   - also

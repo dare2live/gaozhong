@@ -30,8 +30,8 @@
    - `scripts/data_accuracy_check.py` 失败 → BLOCK
 2. `scripts/data_accuracy_check.py` — 全数据集 100% 校验, 0 错才 exit 0:
    - 数据基石 (manifest sha + textbooks 14)
-   - 词集 (cefr 3041 + uvi 4056 + 3 级全; 2986→3040 补 p182 漏抽页)
-   - 语法 (106 + DAG + 引用完整)
+   - 词集 (cefr 3052 + uvi 3982 + 3级全 + 跨单元唯一性==0; 单一区段重写 renjiao/waiyan 去331+96污染)
+   - 语法 (108 + DAG + 引用完整)
    - 短语 (≥100)
    - 教案 (40 节 + 7 段全 + R2 ≥10 词重叠 0)
    - 知识图谱 (nodes ≥4000 + edges ≥30000 + 4 graph audit)

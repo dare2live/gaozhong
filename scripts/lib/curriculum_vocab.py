@@ -73,8 +73,19 @@ def _process_line(line: str, seen: set[str], source_tag: str) -> list[dict]:
     return rows
 
 
+# 国家表段起锚 (附录标题行 '主要国家名称及相关信息（供教学参考）'): 真词表到此为止。
+# index 183(p184) 顶部是 yes..zoo 真词, 底部转国家表; 表内纯 ASCII 行(ADJECTIVES/Korea/
+# Korean) 不含中文 → _skip_line 漏过 → 误纳。内容锚定截断 (PIT 安全, 不 hardcode 页/行)。
+# 必须锚"行首即标题": 词表首页脚注 '7. 主要国家名称…供教学参考。' 也含该词, 仅以 '7.' 起
+# (非行首标题), 不可误截 → 用 ^ 锚区分标题行 vs 句中引用。
+_COUNTRY_TABLE_RE = re.compile(r"^主要国家名称及相关信息")
+
+
 def extract_cefr_vocab(reader: PdfReader, source_tag: str,
-                         start_page: int = 129, end_page: int = 182) -> list[dict]:
+                         start_page: int = 129, end_page: int = 184) -> list[dict]:
+    # end_page 182→184 (2026-06-17 修): 原 range 停在 index 181, 切掉 index 182('w': why/word/work)
+    # + 183('y': yes/yourself) 两页词汇 → 漏 ~55 词(wisdom/with/will...)误判超纲。
+    # 184 含到 'y' 页止; index 183 国家表段经 _COUNTRY_TABLE_RE 内容截断 (不靠页号)。
     rows: list[dict] = []
     seen: set[str] = set()
     for pi in range(start_page - 1, end_page):
@@ -82,6 +93,8 @@ def extract_cefr_vocab(reader: PdfReader, source_tag: str,
         text = reader.pages[pi].extract_text() or ""
         for raw in text.split("\n"):
             line = raw.strip()
+            if _COUNTRY_TABLE_RE.search(line):
+                return rows   # 国家表起始 → 词表终点 (其后纯 ASCII 国名/形容词会误纳)
             if _skip_line(line): continue
             rows.extend(_process_line(line, seen, source_tag))
     return rows
