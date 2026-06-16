@@ -939,3 +939,12 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **根因 (实证)**: `extraction/section.py` 的 `_scan_unit` 只扫每页**前 3 行**匹配 section 锚点; 这 10 单元的锚点 (Starting out/Understanding ideas/Using language/Developing ideas/Presenting ideas) **确在页内但不在前 3 行** (页首是练习正文)。PDF 全在 `data/textbooks/waiyan/`, 可补。
 **修法 (下一 tick)**: 外研版辨识度高的多词锚点整页扫首现, 单词锚点 (Project/Reading/Grammar...) 保持仅页首防误报; 重提取后须验 67 工作单元零回归 + D0。
 **结论**: 地基**远比陈旧说法完整** (87% section + 100% units/vocab), §1.1 gate 不应被"46%"误判为阻塞; 67 完整单元的教程可推进, 10 单元待 section 补全。ops/skill `数据现状` 行已同步纠偏 (防误导)。
+**(更新 2026-06-16)**: 10 waiyan section 已补全 (150→216, 单元覆盖 67→77/77 100%, commit 2ad0899)。
+
+## 2026-06-16 / 语法 per-unit 地基缺口实证 (诚实标记, 不假填)
+
+**触发**: 教材 units/词表/section 地基达 100% 后, 查最后一轴 — 语法 per-unit (§1.2 不偏离学校: 语法≤已学单元 需每单元语法进度)。
+**实证**: `grammar_items` 106 项**来自课标 PDF** (官方语法清单, 真相源 ✓); 但 **`grammar_occurrences` = 0 行且无提取代码** — "哪个语法点在哪单元教"从未建。
+**为何不能 naive 填 (D0 返空>假推)**: 19 个真单元语法段 (排除 7 个卷尾"Grammar 语法"附录) 的语法**主题全是英文** (Modals (2) / -ing as attributive / -ed as adverbial / Subject-verb agreement / Review: tenses / Review: attributive clauses / Discovering Useful Structures...); **无一**能 string-match 中文课标 grammar_items。naive 全文匹配只命中卷尾附录的词性参考表 (名词/动词/助动词), 是**假阳性垃圾**, 不可落库。
+**honest 修法 (下一 tick, 需谨慎设计非仓促)**: curated **英文语法主题 → 课标项 YAML 映射** (Modals→情态动词 / attributive clauses→定语从句 等标准术语等价, 非估算; 数据化进 `backend/config/`) + 从 Grammar section 标题行提取每单元主题 + dual_model 或人工核验存 provenance。grammar_item_id 无清晰匹配则留 NULL (诚实, 不强配)。
+**结论 (修正"地基100%")**: units/词表/section 三轴 100%, 但**语法 per-unit 是真缺口** (grammar_occurrences=0)。§1.2 语法进度约束暂无法机器执行 — 教程生成涉及语法时需此映射, 标为下一地基任务 (非估算, 走真相源+curated映射)。
