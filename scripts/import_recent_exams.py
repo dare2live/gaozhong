@@ -19,22 +19,60 @@ sys.path.insert(0, str(ROOT))
 
 import duckdb
 
+from backend.services.contracts import load_import_policy
 from backend.services.data_sources.extract.pdf import (
     PdfUnreadableError,
     extract_text,
+    has_post_exam_contamination,
     parse_exam_sections,
 )
+from backend.services.data_sources.registry import load_registry
 
+# 真题导入数据化 (架构契约 direct_exam_questions_writer: exam imports 必须 registry/import-policy 驱动):
+#   - backend/config/sources.yaml         PDF 路径/sha256 真相源 (经 registry.load_registry 读, 不硬编码路径 §3.5)
+#   - backend/config/import_policies.yaml  污染/缺题干 block_if 安全门 (经 load_import_policy 读, 入库前施加)
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 # 答案真相源 (gaokao 收口 sub-question, 含 2024/2025 答案键); PDF 给全文, jsonl 给答案
 GAOKAO_SUBQ = ROOT / "data" / "structured" / "exam_subquestions" / "xgkii_2021_2025_subquestions.jsonl"
+LOCAL_PDF_FAMILY = "exam_truth_source_local_pdf"   # sources.yaml 里本地 PDF 真题源家族
+IMPORT_POLICY = "exam_truth_source_import"          # import_policies.yaml 里适用的策略名
 
-PDFS = [
-    (2024, "新课标 II 卷",
-     ROOT / "data/external/exam_sources/local_pdfs/2024_xgkii_english.pdf"),
-    (2025, "新课标 II 卷",
-     ROOT / "data/external/exam_sources/local_pdfs/2025_xgkii_english.pdf"),
-]
+
+def _local_pdf_sources() -> list[tuple]:
+    """从 sources.yaml registry 派生本地 PDF 真题源 (year, paper_type, pdf_path); 不硬编码路径 (§3.5).
+
+    legacy passage-level 源 (status=legacy_imported, 非 import_ready): 不主张完整 item-level D0 契约,
+    但路径/sha256 真相源走 registry, 与 fetcher/acquire 同一 sources.yaml 单点.
+    """
+    out = []
+    for s in load_registry().list_sources():
+        if s.family != LOCAL_PDF_FAMILY or s.year is None:
+            continue
+        pdf = next((a.local_path for a in s.attachments if a.kind == "pdf"), None)
+        if pdf is not None:
+            out.append((s.year, s.paper_type or "新课标 II 卷", pdf))
+    return sorted(out, key=lambda t: t[0])
+
+
+def _policy_block_if() -> list[str]:
+    """读 import_policies.yaml 适用策略的 block_if (污染/缺题干等硬阻断项), 入库前施加普适安全门."""
+    return load_import_policy(IMPORT_POLICY).get("block_if") or []
+
+
+def _policy_check(sections: list[dict], year: int, block_if: list[str]) -> bool:
+    """入库前按 import_policies block_if 施加普适安全门 (污染/缺题干); 命中示警返 False (§1.5 不静默)."""
+    ok = True
+    if "answer_section_contamination" in block_if:
+        bad = [s["question_id"] for s in sections if has_post_exam_contamination(s["raw_question"])]
+        if bad:
+            print(f"    ⚠ policy[{year}] answer_section_contamination: {bad}")
+            ok = False
+    if "missing_stem_preview" in block_if:
+        empty = [s["question_id"] for s in sections if len((s["raw_question"] or "").strip()) < 50]
+        if empty:
+            print(f"    ⚠ policy[{year}] missing_stem_preview: {empty}")
+            ok = False
+    return ok
 
 # jsonl question_type → (pdf qtype, pdf source_index/qnum); 阅读按 passage 映 1-4
 _QT_MAP = {
@@ -156,7 +194,8 @@ def import_pdfs(con) -> dict:
     total = 0
     by_year: dict[int, int] = {}
     verify_ok = True
-    for year, _paper, pdf_path in PDFS:
+    block_if = _policy_block_if()
+    for year, _paper, pdf_path in _local_pdf_sources():
         if not pdf_path.exists():
             print(f"  SKIP {year}: {pdf_path} not found")
             continue
@@ -167,6 +206,8 @@ def import_pdfs(con) -> dict:
             print(f"  SKIP {year}: {e}")
             continue
         qs = _enrich_answers(parse_exam_sections(text, year), year)
+        if not _policy_check(qs, year, block_if):
+            verify_ok = False
         n = import_to_db(qs, con)
         total += n
         by_year[year] = n

@@ -143,6 +143,11 @@ def _strip_post_exam_tail(raw: str) -> str:
     return raw[:cut].rstrip("_ \n") if cut >= 0 else raw
 
 
+def has_post_exam_contamination(text: str) -> bool:
+    """题干是否残留卷尾附录污染 (import_policies block_if=answer_section_contamination 的判定单点)."""
+    return any(m in text for m in _POST_EXAM_MARKERS)
+
+
 def _make_section(year: int, qtype: str, raw: str, qnum: int) -> dict:
     raw = _strip_post_exam_tail(raw)
     return {

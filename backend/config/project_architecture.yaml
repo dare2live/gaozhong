@@ -209,7 +209,6 @@ documentation_authority:
     - docs/architecture.md
     - docs/top_level_module_data_config_architecture_20260615.md
     - docs/data_accuracy_audit.md
-    - docs/M0_CLOSURE_CHECKPOINT_2026-06-12.md
   evidence_ledgers:
     - goal.md
     - analysis/project_state_ledger.md

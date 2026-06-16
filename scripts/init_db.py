@@ -136,6 +136,9 @@ def main() -> None:
     print("\n=== Layer 4g: 2024/2025 真题 PDF 导入 ===")
     # in-process 用现有写连接 (不再 subprocess 开第二写连接 → 避 DuckDB 单写者锁冲突,
     # 历来 Layer 4g subprocess 崩, local_pdf 行靠 out-of-band 手工补, 不可复现; 现入主链).
+    # 非静默 legacy 导入 (架构契约 init_db_legacy_importer_call): import_pdfs 由
+    # backend/config/import_policies.yaml (exam_truth_source_import.block_if 污染/缺题干门) +
+    # backend/config/sources.yaml (PDF 路径真相源) 驱动, 见 scripts/import_recent_exams.py.
     from scripts.import_recent_exams import import_pdfs
     print(f"  {import_pdfs(con)}")
 
