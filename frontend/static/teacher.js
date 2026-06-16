@@ -136,7 +136,7 @@ async function renderLesson(uid) {
     <p class="lp-meta"><strong>${lp.title || ""}</strong>${lp.theme ? " · 主题 " + lp.theme.replace("theme:", "") : " · 主题未匹配"} · p.${pr[0] ?? "-"}–${pr[1] ?? "-"}</p>
     <div class="trend-banner">📊 命题趋势 (${th.province_scope || "辽宁卷"}): ${th.note || ""}${th.trend_reliable ? "" : " · <span style='color:#c1272d'>逐年斜率样本不足, 不画 slope</span>"}</div>
     <h3>词汇 — 本单元引入 ${al.intro_total ?? words.length}, 高考考过 ${al.exam_overlap ?? "?"} (按高考频次降序)</h3>
-    <p class="vocab-profile">📚 词汇画像 (§不偏离学校): 课标内 <b>${vp.in_syllabus ?? "-"}</b> · 超纲必教(高考考过) <b style="color:#c1272d">${vp.over_must_teach ?? "-"}</b> · 超纲选学 <b>${vp.over_optional ?? "-"}</b> · <b>越纲率 ${vp.over_rate_pct ?? "-"}%</b></p>
+    <p class="vocab-profile">📚 词汇画像 (§不偏离学校 · 已词形归并+高考核对): 课标内 <b>${vp.in_syllabus ?? "-"}</b> · 真超纲<b style="color:#c1272d">辽宁考过 ${vp.over_ln_tested ?? "-"}</b>(必教) · 仅外省考过 ${vp.over_other_tested ?? "-"} · 未考 ${vp.over_untested ?? "-"}(选学)${vp.proper_noise ? " · 专名 "+vp.proper_noise : ""} · <b>越纲率 ${vp.over_rate_pct ?? "-"}%</b></p>
     <div>${words.length ? words.map(wChip).join("") : "<em>无</em>"}</div>
     <h3>语法 (${grammar.length}) — 课标项 + 真题溯源 (教此语法, 高考这么考)</h3>
     <div>${grammar.length ? grammar.map(gChip).join("") : "<em>本单元无 curated 语法点 (诚实跳过歧义)</em>"}</div>

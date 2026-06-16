@@ -238,3 +238,8 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -A8 'def _fetch_questions' backend/api/routes/graph_popup.py | grep -q 'INNER JOIN question_bank' && echo SCOPED || echo LEAK"]
     expect: {op: regex, pattern: "SCOPED"}
+  - id: vocab-classification-layered
+    claim: "超纲词分层 artifact 就位: ≥1000词分类, 含真超纲·辽宁考过层(词形归并+派生+高考核对+专名过滤, 非精确set差)"
+    type: shell
+    command: ["bash", "-c", "python3 -c \"import json; rows=[json.loads(l) for l in open('data/structured/vocab_classification.jsonl',encoding='utf-8') if l.strip()]; cats=set(r['category'] for r in rows); print('OK' if len(rows)>=1000 and '真超纲·辽宁考过' in cats and '课标屈折变形' in cats else 'BAD')\""]
+    expect: {op: regex, pattern: "OK"}

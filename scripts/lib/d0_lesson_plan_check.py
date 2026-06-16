@@ -90,8 +90,21 @@ def _c5_grammar_province(con, check) -> None:
           "全辽宁" if not leak else f"外省泄漏: {leak[:3]}")
 
 
+def _c6_vocab_profile(con, check) -> None:
+    """越纲率画像求和守恒 + 走 vocab_classify 分层 artifact (非精确 set 差, 已词形归并)."""
+    bad = []
+    for u in _SAMPLE_UNITS:
+        vp = lesson_plan.generate_lesson_plan(con, u)["vocab_profile"]
+        parts = (vp["in_syllabus"] + vp["over_ln_tested"] + vp["over_other_tested"]
+                 + vp["over_untested"] + vp["proper_noise"])
+        if parts != vp["total"]:
+            bad.append((u, parts, vp["total"]))
+    check("越纲率画像求和守恒 (各层 sum = total)", not bad,
+          "守恒" if not bad else f"不守恒: {bad[:3]}")
+
+
 def check_lesson_plan(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (24) 备课整合一体视图 (单一计算点 + 确定性) ===")
     for fn in (_c1_single_compute_point, _c2_deterministic, _c3_grammar_fk,
-               _c4_word_order, _c5_grammar_province):
+               _c4_word_order, _c5_grammar_province, _c6_vocab_profile):
         fn(con, check)
