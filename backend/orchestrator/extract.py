@@ -8,6 +8,7 @@ import duckdb
 from backend.orchestrator.load import _read_jsonl
 from backend.services.extraction import exam as exam_extract
 from backend.services.extraction import exam_province
+from backend.services.extraction import grammar_occurrence as grammar_occ_extract
 from backend.services.extraction import phrases as ph_extract
 from backend.services.extraction import section as section_extract
 from backend.services.extraction import section_flags
@@ -78,6 +79,11 @@ def run_sections(con: duckdb.DuckDBPyConnection) -> dict:
 
 def run_section_text(con: duckdb.DuckDBPyConnection) -> dict:
     return st_extract.extract_section_text(con)
+
+
+def run_grammar_occurrences(con: duckdb.DuckDBPyConnection) -> dict:
+    """语法点 per-unit (§1.2): Grammar section 主题 → 课标项 (依赖 grammar_items + sections)."""
+    return grammar_occ_extract.extract_grammar_occurrences(con)
 
 
 def run_phrases(con: duckdb.DuckDBPyConnection) -> dict:

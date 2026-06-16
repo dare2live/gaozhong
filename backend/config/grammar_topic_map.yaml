@@ -1,0 +1,47 @@
+# 教材单元语法主题 → 课标官方 grammar_item 映射 (§3.5 判断数据化, 非估算).
+#
+# 来源: 教材 Grammar-kind section 标题/正文首行陈述的语法主题 (真相源=教材自身),
+#       人教版"Grammar 语法"附录有中英双语标签, 外研版"Using language"英文主题。
+# 目标: grammar_items (106项, 全来自课标 PDF 4.普通高中英语课程标准2017版2020修订)。
+# 映射依据: 标准语法术语等价 (Modals=情态动词, attributive clause=定语从句...), 非估算/非主观。
+# 用法: grammar_occurrence 提取器对每段语法主题文本按 patterns 顺序首匹配 (specific 在前),
+#       命中→该 grammar_item_id 入 grammar_occurrences; 不命中→诚实跳过 (歧义交际指令不强配, D0 返空>假推)。
+# 有序: 列表顺序即匹配优先级 (具体 -ing/-ed/不定式 在 非谓语 umbrella 之前)。
+
+rules:
+  - patterns: ["basic sentence structure", "基本句型"]
+    grammar_item_id: "三/4"
+    note: 基本句型
+  - patterns: ["modal", "情态动词"]
+    grammar_item_id: "一/2/(5)"
+    note: 情态动词
+  - patterns: ["subject-verb agreement", "主谓一致"]
+    grammar_item_id: "三/8"
+    note: 主谓一致
+  - patterns: ["passive voice", "被动语态"]
+    grammar_item_id: "三/6"
+    note: 被动语态
+  - patterns: ["-ing as attributive", "-ing form", "-ing 形式", "ing 形式"]
+    grammar_item_id: "三/7/(2)"
+    note: 动词的-ing形式
+  - patterns: ["-ed as adverbial", "-ed as attributive", "-ed form", "-ed 形式", "ed 形式"]
+    grammar_item_id: "三/7/(3)"
+    note: 动词的-ed形式
+  - patterns: ["infinitive", "动词不定式"]
+    grammar_item_id: "三/7/(1)"
+    note: 动词不定式
+  - patterns: ["non-finite", "非谓语"]
+    grammar_item_id: "三/7"
+    note: 动词的非谓语形式 (umbrella)
+  - patterns: ["attributive clause", "relative clause", "定语从句"]
+    grammar_item_id: "三/10/(3)"
+    note: 定语从句
+  - patterns: ["adverbial clause", "状语从句"]
+    grammar_item_id: "三/10/(2)"
+    note: 状语从句
+  - patterns: ["noun clause", "名词性从句"]
+    grammar_item_id: "三/10/(1)"
+    note: 名词性从句 (取代表项宾语从句; 复习课覆盖主/宾/表/同位语从句)
+  - patterns: ["tense", "时态"]
+    grammar_item_id: "三/5"
+    note: 谓语动词的时态

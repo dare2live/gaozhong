@@ -160,6 +160,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM section_text WHERE n_chars <= 50"
     expect: {op: "==", value: 0}
+  - id: grammar-occurrences-derived
+    claim: "语法 per-unit 已建(§1.2): grammar_occurrences ≥15 从教材Grammar段真相源映射课标项(curated非估算, 不命中诚实跳过)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM grammar_occurrences o WHERE o.grammar_item_id IN (SELECT grammar_item_id FROM grammar_items)"
+    expect: {op: ">=", value: 15}
 
   # ===== D0 总门禁 (权威) =====
   - id: d0-accuracy-green

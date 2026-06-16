@@ -68,6 +68,10 @@ def _check_3_grammar(con):
     check("grammar_items 行 == 106", n_g == 106, f"{n_g}")
     check("grammar DAG 无环 (audit OK)", _audit_ok(con, "grammar_dag"))
     check("grammar parent_id 引用完整", n_orphan == 0, f"orphan={n_orphan}")
+    n_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences").fetchone()[0]  # §1.2 语法per-unit
+    bad_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences WHERE grammar_item_id NOT IN (SELECT grammar_item_id FROM grammar_items)").fetchone()[0]
+    check("grammar_occurrences 已填(§1.2 语法per-unit)", n_occ >= 15, f"{n_occ}")
+    check("grammar_occurrences FK 有效", bad_occ == 0, f"{bad_occ}")
 
 
 def _check_4_phrases(con):

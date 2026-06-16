@@ -85,6 +85,9 @@ def main() -> None:
     print("\n=== Layer 2: section flags ===")
     print(f"  {extract.run_section_flags(con)}")
 
+    print("\n=== Layer 2: grammar occurrences (§1.2 语法 per-unit) ===")
+    print(f"  {extract.run_grammar_occurrences(con)}")
+
     print(f"\n  file_manifest: {load.load_file_manifest(con)}")
 
     print("\n=== Layer 3: canonical (nodes) ===")
