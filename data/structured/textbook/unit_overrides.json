@@ -1,7 +1,14 @@
 {
   "_source": "PDF Scope and sequence p5-6 手动整理 (textbook extractor 兜底)",
-  "_apply_when": "extractor 失败 (method='empty') 或漏抓 unit",
+  "_apply_when": "有 override 条目即优先用 (最权威, 已人工核 PDF); 无条目才走 outline→regex",
   "overrides": {
+    "renjiao/bixiu_2": [
+      {"unit_number": 1, "title": "CULTURAL HERITAGE", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "WILDLIFE PROTECTION", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "THE INTERNET", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "HISTORY AND TRADITIONS", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "MUSIC", "page_start": 56, "page_end": 67}
+    ],
     "waiyan/xuanze_4": [
       {"unit_number": 1, "title": "The road not taken", "page_start": 8, "page_end": 19},
       {"unit_number": 2, "title": "Lessons in life", "page_start": 20, "page_end": 31},

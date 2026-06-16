@@ -115,7 +115,7 @@ def _from_regex(reader: PdfReader) -> list[dict]:
 
 
 def _from_override(version_key: str, volume_key: str) -> list[dict]:
-    """Manual fallback from unit_overrides.json — for PDFs where outline+regex both fail."""
+    """Manual override from unit_overrides.json — 有条目即优先 (已人工核 PDF, 最权威)."""
     spec_path = ROOT / "data" / "structured" / "textbook" / "unit_overrides.json"
     if not spec_path.exists():
         return []
@@ -133,11 +133,12 @@ def extract_units(pdf_path: Path, version_key: str, volume_key: str) -> dict:
     """Returns {volume meta + units[]}. 不抛, 失败 units=[]."""
     reader = PdfReader(pdf_path)
     n_pages = len(reader.pages)
-    units = _from_outline(reader)
+    # 显式手动覆盖优先 (已人工核 PDF, 最权威; 修 regex 漏抓如 renjiao/bixiu_2 漏 UNIT 5 MUSIC)
+    units = _from_override(version_key, volume_key)
+    if not units:
+        units = _from_outline(reader)
     if len(units) < 2:
         units = _from_regex(reader)
-    if len(units) < 2:   # final fallback: manual override
-        units = _from_override(version_key, volume_key)
     units.sort(key=lambda u: u["start_page"])
     # fill end_page if not preset
     for i, u in enumerate(units):

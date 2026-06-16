@@ -149,11 +149,17 @@ assertions:
 
   # ===== 教材基石完整性 (防"零单元"陈旧说法复发) =====
   - id: textbook-units-extracted
-    claim: "教材 77 单元全已抽 (含 waiyan/xuanze_4 6 单元; 反 lessons-L 旧'零单元'陈旧引用)"
+    claim: "教材 78 单元全已抽 (2026-06-16 补 renjiao/bixiu_2 UNIT5 MUSIC, regex 漏抓→override优先 77→78)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM units"
-    expect: {op: ">=", value: 77}
+    expect: {op: ">=", value: 78}
+  - id: unit-vocab-no-orphan
+    claim: "unit_vocab_intro 每词条必有 units PK 行 (Canonical First; 坑: bixiu_2 漏抽U5致9词悬挂, 已修)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM unit_vocab_intro v WHERE NOT EXISTS (SELECT 1 FROM units u WHERE u.version_key=v.version_key AND u.volume_key=v.volume_key AND u.unit_number=v.unit_number)"
+    expect: {op: "==", value: 0}
   - id: textbook-sections-have-text
     claim: "216 sections 全有 raw_text 正文 (n_chars>50; 2026-06-16 补10 waiyan单元 150→216)"
     type: duckdb_sql
