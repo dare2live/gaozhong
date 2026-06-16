@@ -678,9 +678,10 @@
           ${(trend.top_words || trend.rising_words || []).slice(0, 8)
             .map(w => `<div class="block">${GZ.conceptLink("word:" + (w.word || w.label || w), w.word || w.label || w)} ${w.recent_freq ? `(${w.recent_freq})` : ""}</div>`).join("") || "<div class='block'>无</div>"}
         </div>
-        <div class="course-card"><strong>📊 题型年趋势</strong>
-          ${Object.entries(trend.type_distribution_by_year || {}).slice(-3).map(
-            ([y, types]) => `<div class="block">${y}: ${Object.keys(types).slice(0, 3).join(" / ")}</div>`
+        <div class="course-card"><strong>📊 题型分布 (卷制 era 分层)</strong>
+          ${trend.trend_reliable === false ? `<div class="block" style="color:#c0392b;font-size:11px">⚠ 逐年样本不足, 不画斜率; 按卷制 era 看分布 (跨 2021 断点不混算)</div>` : ""}
+          ${Object.entries(trend.type_distribution_by_era || {}).map(
+            ([era, types]) => `<div class="block"><b>${era}</b>: ${Object.entries(types).sort((a,b)=>b[1]-a[1]).slice(0, 4).map(([t,n])=>`${t}(${n})`).join(" / ")}</div>`
           ).join("") || "<div class='block'>无</div>"}
         </div>
       </div>

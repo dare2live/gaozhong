@@ -112,9 +112,17 @@ async function loadTextbooks() {
 // === Trend (历年高考词频 + 题型分布) ===
 async function loadTrend() {
   const d = await fetchJSON("/api/trend/summary");
+  // 件3 样本诚实 banner: 逐年样本不足时明示不画斜率, 但分布可信 (不被前端吞掉诚实字段)
+  let html = "";
+  if (d.trend_reliable === false) {
+    html += `<div style="padding:8px 12px;margin-bottom:10px;background:#fff6e5;border-left:4px solid #c0392b;font-size:12px">
+      ⚠ <b>逐年趋势样本不足</b>(辽宁仅 ${(d.years_covered||[]).length} 年, 多年 &lt;10 题): 不拟合"逐年上升/下降"斜率。
+      ${d.distribution_reliable !== false ? "<b>卷制 era 内的考点/题型<u>分布占比</u>样本充足、可信</b> — 按下面卷制分层看, 不要把跨 2021 卷制断点的年份连成趋势线。" : ""}
+    </div>`;
+  }
   // top words
   const top = (d.top_words || []).slice(0, 20);
-  let html = `<h3 style="font-family:Georgia,serif;margin-top:0">Top 20 高频实义词 (年覆盖 / 总次)</h3>
+  html += `<h3 style="font-family:Georgia,serif;margin-top:0">Top 20 高频实义词 (年覆盖 / 总次)</h3>
     <div class="heat-grid" style="grid-template-columns: repeat(5, 1fr);font-size:11px">`;
   for (const w of top) {
     html += `<div style="padding:6px 8px;background:#f7f5ef;border-left:3px solid #0a4d75">
@@ -123,15 +131,35 @@ async function loadTrend() {
     </div>`;
   }
   html += `</div>`;
-  // type distribution by year
+  // 件3: 题型分布按卷制 era 分层 (PIT §3.1, 主视图; 不混算 2021 断点)
+  const byEra = d.type_distribution_by_era || {};
+  const eraNames = Object.keys(byEra);
+  if (eraNames.length) {
+    html += `<h3 style="font-family:Georgia,serif;margin-top:14px">卷制 era × 题型 分布 (PIT 分层, 非全历史平均)</h3>`;
+    for (const era of eraNames) {
+      const dist = byEra[era] || {};
+      const ets = Object.keys(dist).sort((a,b)=>(dist[b]-dist[a]));
+      const tot = Object.values(dist).reduce((a,b)=>a+b,0);
+      html += `<div style="margin:6px 0"><b style="color:#0a4d75">${era}</b> <span style="font-size:11px;color:#666">(${tot} 题)</span>
+        <div class="heat-grid" style="grid-template-columns:repeat(4,1fr);font-size:11px;margin-top:4px">${
+        ets.map(t=>`<div style="padding:4px 6px;background:#f7f5ef;border-left:3px solid #7aa6c2"><b>${t}</b><br><span style="font-size:10px;color:#666">${dist[t]} 题 · ${(100*dist[t]/tot).toFixed(0)}%</span></div>`).join("")
+      }</div></div>`;
+    }
+  }
+  // 逐年题量明细 (次视图; 2021 卷制断点插分隔, 不暗示跨断点连续)
   const yrs = d.years_covered || [];
   const typeDist = d.type_distribution_by_year || {};
   const allTypes = new Set();
   for (const y of yrs) for (const t of Object.keys(typeDist[y]||{})) allTypes.add(t);
   const types = [...allTypes].sort();
-  html += `<h3 style="font-family:Georgia,serif;margin-top:14px">年×题型 题量分布</h3>
+  html += `<h3 style="font-family:Georgia,serif;margin-top:14px">逐年题量明细 (样本量透明; 跨 2021 卷制断点不连趋势线)</h3>
     <table style="font-size:12px"><thead><tr><th>年份</th>${types.map(t=>`<th>${t}</th>`).join("")}<th>总</th></tr></thead><tbody>`;
+  let dividerDone = false;
   for (const y of yrs) {
+    if (!dividerDone && y >= 2021) {
+      html += `<tr><td colspan="${types.length+2}" style="background:#eee;font-size:10px;color:#a00;text-align:center">— 2021 卷制断点: 上=旧课标全国II · 下=新高考全国II (不可混算) —</td></tr>`;
+      dividerDone = true;
+    }
     const total = Object.values(typeDist[y]||{}).reduce((a,b)=>a+b,0);
     html += `<tr><td><b>${y}</b></td>${
       types.map(t => `<td style="text-align:center">${(typeDist[y]||{})[t] || ''}</td>`).join("")

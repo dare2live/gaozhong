@@ -49,3 +49,7 @@ main.tab-body { padding: 18px 24px; }
 .ep-track { flex: 1; background: #eee; height: 14px; margin: 0 8px; }
 .ep-fill { display: block; height: 14px; background: #0a4d75; }
 .ep-n { width: 80px; flex-shrink: 0; color: #777; text-align: right; }
+.ep-ok { font-size: 10px; color: #2a7a3a; font-weight: normal; margin-left: 6px; }
+.ep-thin { font-size: 10px; color: #c0392b; font-weight: normal; margin-left: 6px; }
+.co-lab { flex: 1; color: #444; }
+.ep-bar .co-lab + .ep-n { width: 96px; }

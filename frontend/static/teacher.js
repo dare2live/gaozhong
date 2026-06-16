@@ -22,19 +22,45 @@ const LOADERS = {
   exam_point: async () => {
     const d = await fetchJSON("/api/exam_point/distribution");
     const DIM = { genre: "体裁", theme_l2: "主题群 (课标官方10群)", theme_context: "主题 (3大类)" };
+    const suff = (d.sufficiency || {}).by_era || {};  // 件3 样本诚实标
+    const eraTag = (era) => {
+      const s = suff[era]; if (!s) return "";
+      return s.distribution_eligible
+        ? `<span class="ep-ok" title="同卷制 era 总题数达标, 占比可信">样本充足 ✓ (${s.n_total}题)</span>`
+        : `<span class="ep-thin" title="样本不足, 占比仅供参考">样本不足 ⚠ (${s.n_total}题)</span>`;
+    };
     const dimBlock = (dim) => d.eras.map(era => {
       const rows = (d.distribution[era] || {})[dim] || [];
       const bars = rows.map(r =>
         `<div class="ep-bar"><span class="ep-lab">${r.label}</span>` +
         `<span class="ep-track"><span class="ep-fill" style="width:${r.pct}%"></span></span>` +
         `<span class="ep-n">${r.n} · ${r.pct}%</span></div>`).join("");
-      return `<div class="ep-era"><h4>${era}</h4>${bars || "<i>无数据</i>"}</div>`;
+      return `<div class="ep-era"><h4>${era} ${eraTag(era)}</h4>${bars || "<i>无数据</i>"}</div>`;
     }).join("");
     $("#tab-exam_point").innerHTML = `
       <h2>考点分布 — ${d.province_scope}</h2>
       <p class="ep-note">${d.layered_by} · provenance: ${d.provenance}</p>
       ${["genre", "theme_l2", "theme_context"].map(dim =>
         `<h3>${DIM[dim] || dim}</h3><div class="ep-grid">${dimBlock(dim)}</div>`).join("")}`;
+  },
+  cooccur: async () => {
+    const d = await fetchJSON("/api/exam_point/cooccurrence");
+    const DIMN = { genre: "体裁", theme_l2: "主题群", theme_context: "主题" };
+    const eras = Object.keys(d.by_era).sort().reverse();  // 新高考II 在前
+    const block = (era) => {
+      const slot = d.by_era[era] || { pairs: [] };
+      const tag = slot.distribution_eligible
+        ? `<span class="ep-ok">样本充足 ✓ (${slot.era_total_questions}题)</span>`
+        : `<span class="ep-thin">样本不足 ⚠ 仅作参考 (${slot.era_total_questions}题)</span>`;
+      const rows = (slot.pairs || []).map(p =>
+        `<div class="ep-bar"><span class="co-lab">${DIMN[p.a_dim]||p.a_dim}:${p.a_label} ⨯ ${DIMN[p.b_dim]||p.b_dim}:${p.b_label}</span>` +
+        `<span class="ep-n">同卷 ${p.co_n} 题共现</span></div>`).join("");
+      return `<div class="ep-era"><h4>${era} ${tag}</h4>${rows || "<i>无 ≥2 题共现的跨轴考点对</i>"}</div>`;
+    };
+    $("#tab-cooccur").innerHTML = `
+      <h2>考点关联性 — 辽宁卷 (哪些考点常一起考)</h2>
+      <p class="ep-note">同题跨轴共现 (体裁⨯主题); co_n≥${d.min_co} 守门, ${d.layered_by}; 服务即时算不落表</p>
+      <div class="ep-grid">${eras.map(block).join("")}</div>`;
   },
   lesson: async () => {
     if (!$("#tab-lesson").innerHTML) {
