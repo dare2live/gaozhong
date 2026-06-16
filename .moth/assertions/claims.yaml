@@ -221,3 +221,15 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -A12 'def _grammar_exam_trace' backend/services/lesson_plan.py | grep -q \"province LIKE '辽宁\" && echo SCOPED || echo LEAK"]
     expect: {op: regex, pattern: "SCOPED"}
+  - id: exam-point-theme-l3-substrate
+    claim: "颗粒度对齐课标第三级: 辽宁真题挂 theme_l3 子主题边 ≥80 (dual_model opus+sonnet 一致, 诚实跳过分歧)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges e JOIN exam_questions q ON 'question:'||q.question_id=e.src_id WHERE e.relation='tests_exam_point' AND e.dst_id LIKE 'exam_point:theme_l3:%' AND q.province LIKE '辽宁%'"
+    expect: {op: ">=", value: 80}
+  - id: exam-point-theme-l3-bridged
+    claim: "theme_l3 节点全桥到教材 theme (4路追溯不断缝; 0 未桥)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM nodes n WHERE n.concept_id LIKE 'exam_point:theme_l3:%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id AND e.relation='theme_aligns')"
+    expect: {op: "==", value: 0}

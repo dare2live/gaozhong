@@ -30,3 +30,24 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     bad_wk = con.execute(
         "SELECT COUNT(*) FROM student_weakness WHERE concept_id NOT LIKE 'exam_point:%'").fetchone()[0]
     check("薄弱环节维度=exam_point真考点 (非word token)", bad_wk == 0, f"{bad_wk} 非考点")
+    _check_theme_l3(con, check)
+
+
+def _check_theme_l3(con: duckdb.DuckDBPyConnection, check) -> None:
+    """课标第三级 35 子主题 (颗粒度对齐官方最深层) — province 锚定 + 桥完整 (坑17 新维度入强校验)."""
+    n_l3 = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
+        "AND dst_id LIKE 'exam_point:theme_l3:%'").fetchone()[0]
+    check("theme_l3(课标第三级) 边 ≥ 80", n_l3 >= 80, f"{n_l3}")
+    # province 锚定: theme_l3 边全来自辽宁卷 (标注源即辽宁; §7 不混外省)
+    non_ln = con.execute(
+        "SELECT COUNT(*) FROM edges e JOIN exam_questions q ON 'question:'||q.question_id=e.src_id "
+        "WHERE e.relation='tests_exam_point' AND e.dst_id LIKE 'exam_point:theme_l3:%' "
+        "AND q.province NOT LIKE '辽宁%'").fetchone()[0]
+    check("theme_l3 边全辽宁卷 (§7)", non_ln == 0, f"{non_ln} 非辽宁")
+    # 每个 theme_l3 节点桥到教材 theme (4路追溯不断缝)
+    unbridged = con.execute(
+        "SELECT COUNT(*) FROM nodes n WHERE n.concept_id LIKE 'exam_point:theme_l3:%' "
+        "AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id AND e.relation='theme_aligns')"
+    ).fetchone()[0]
+    check("theme_l3 节点全桥到教材theme (4路追溯)", unbridged == 0, f"{unbridged} 未桥")

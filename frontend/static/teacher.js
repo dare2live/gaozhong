@@ -21,7 +21,7 @@ const LOADERS = {
   },
   exam_point: async () => {
     const d = await fetchJSON("/api/exam_point/distribution");
-    const DIM = { genre: "体裁", theme_l2: "主题群 (课标官方10群)", theme_context: "主题 (3大类)" };
+    const DIM = { genre: "体裁", theme_l2: "主题群 (课标官方10群)", theme_l3: "子主题 (课标第三级·最细)", theme_context: "主题 (3大类)" };
     const suff = (d.sufficiency || {}).by_era || {};  // 件3 样本诚实标
     const eraTag = (era) => {
       const s = suff[era]; if (!s) return "";
@@ -40,7 +40,7 @@ const LOADERS = {
     $("#tab-exam_point").innerHTML = `
       <h2>考点分布 — ${d.province_scope}</h2>
       <p class="ep-note">${d.layered_by} · provenance: ${d.provenance}</p>
-      ${["genre", "theme_l2", "theme_context"].map(dim =>
+      ${["genre", "theme_context", "theme_l2", "theme_l3"].map(dim =>
         `<h3>${DIM[dim] || dim}</h3><div class="ep-grid">${dimBlock(dim)}</div>`).join("")}`;
   },
   cooccur: async () => {

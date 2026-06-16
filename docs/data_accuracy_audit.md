@@ -960,3 +960,14 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 - 🟡 [整合前] "单元词∩真题"双算 (Rule1): `recommend.unit_exam_alignment` + `lesson_plan._unit_words_with_trace` 各遍历一遍 → 抽 `services/` 单一函数两边调 (否则备课整合成第三套)。
 - 🟢 [整合后] `question_tags(word)` vs `edges(tests_word)` 双算 (Rule1, blast-radius 最大, 独立排期); schema.sql `phrases` 重复定义(第二版死定义) + `course_handouts` CREATE 散落 service → 收口 schema.sql 单一定义点; `units.theme_context_id` 死列 + `courses.themes_aux` JSON编码N:M(轻度Rule3) + `teachers`/`course_sessions` 死schema(M5规划未实装)。
 **架构建议**: 备课整合**扩 lesson_plan.py** (fan-in=0 叶子, 已是迷你整合器, 4路桥已接), 不新建协调层(Occam); 接 trend/exam_point/course **只调函数不重写JOIN**; `trend.scope` fan-in=4 改前必 codegraph。
+
+## 2026-06-16 / 考点颗粒度对齐课标第三级 (theme_l3 35子主题)
+
+**触发**: 用户指出"颗粒度是否对齐官方文档第三级" — 审计发现考点 theme 轴只到第二级(10主题群),
+课标官方第三级(35子主题)未对齐(ceiling 缺口; 沉淀 mio "只向下校验 correctness 不向上对标 ceiling")。
+**方法 (延续 dual_model_agree, 坑16 诚实)**: 155 辽宁题(已有干净 theme_l2)经 dual-model(opus+sonnet)
+把语篇分类到该群下子主题; **只留两模型一致 88, 诚实跳过 67(NA, 不臆造)**。语篇=topic 真相源(坑12 可信类)。
+**落地**: `data/structured/exam_point/theme_l3_labels.jsonl`(155行/88 agreed) → loader 扩 theme_l3 维度
+(20 节点/88 边) + L3 桥(exam_point:theme_l3:子主题 → theme:L1/群/子主题, 20 桥, 4路追溯到最细)。
+**D0 (维度22 扩 _check_theme_l3)**: 边≥80 / 全辽宁卷(§7) / 全桥到教材theme。moth +2断言。
+**揭示(L2看不见的第三级迁移)**: 旧课标II 人际交往20%首位; 新高考II **环境污染治理 0→17.2% 暴增**并列首位。
