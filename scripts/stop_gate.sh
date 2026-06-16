@@ -64,15 +64,25 @@ if [ -f data/db/gaozhong.duckdb ] && [ -f scripts/data_accuracy_check.py ]; then
   fi
 fi
 
-# 2. complexity hot funcs (新增的, > old baseline)
-hot_now=$(python3 scripts/lib/complexity_check.py \
-  $(find backend scripts -name '*.py' -not -path '*/__pycache__/*' 2>/dev/null | tr '\n' ' ') 2>&1 \
-  | grep -c 'WARN' || echo 0)
+# 2. complexity gates — 单次扫描派生两道门 (CC>10 总数 + CC>15 单函数硬阈)
+cc_out=$(python3 scripts/lib/complexity_check.py \
+  $(find backend scripts -name '*.py' -not -path '*/__pycache__/*' 2>/dev/null | tr '\n' ' ') 2>&1)
+# 2a. CC>10 总数门 (减债 backlog 整体趋势)
+hot_now=$(printf '%s\n' "$cc_out" | grep -c 'WARN' || echo 0)
 hot_now=$(to_int "$hot_now")
 HOT_BASELINE=37  # 2026-06-15 god-module 拆分后 CC>10 函数 42->37; 减债 backlog task_90d55f25 继续降. 仅当 >37 才阻断回归
 if [ "$hot_now" -gt "$HOT_BASELINE" ]; then
   fails="$fails
   ❌ CC>10 函数 $hot_now > baseline $HOT_BASELINE — 修后再 stop (或 update baseline)"
+fi
+# 2b. CC>15 单函数硬阈门 (Rule8 反模式禁令). 2026-06-16 缺口: 仅靠 2a 总数门, 单函数 CC=18
+#     只要总数没破 37 就滑过 (commit a9e671a 实证); 此门按 CC>15 计数 baseline, 跨硬阈新增即阻断.
+cc15_now=$(printf '%s\n' "$cc_out" | grep -oE 'CC= *[0-9]+' | grep -oE '[0-9]+' | awk '$1>15{n++} END{print n+0}')
+cc15_now=$(to_int "$cc15_now")
+CC15_BASELINE=12  # 现存 CC>15 减债 backlog task_90d55f25; Rule8 硬阈(15)单函数只减不增, 新增即阻断
+if [ "$cc15_now" -gt "$CC15_BASELINE" ]; then
+  fails="$fails
+  ❌ CC>15 单函数 $cc15_now > baseline $CC15_BASELINE (Rule8 反模式禁令硬阈) — 拆该函数后再 stop (减债则降 baseline)"
 fi
 
 # 3. 前端 inline block 阈值
@@ -102,6 +112,7 @@ if [ -n "$fails" ]; then
   (1)  D0 audit 0 FAIL + 0 WARN  (任何 WARN 必须重归类 OK 或修)
   (1b) D0 data_accuracy_check.py 全通过  (词/语法/教案/图谱/关联 全 100%)
   (2)  CC>10 函数 ≤ $HOT_BASELINE  (跑 python3 scripts/lib/complexity_check.py <files>)
+  (2b) CC>15 单函数 ≤ $CC15_BASELINE  (Rule8 硬阈; 单函数跨15即超, 拆函数)
   (3)  前端 inline 大块 ≤ $INLINE_BASELINE  (抽到 common.js / common.css)
 
 只有当当前改动让基线**变更恶化** 时才阻断; 持平或改善 OK.
