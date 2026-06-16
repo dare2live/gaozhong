@@ -141,6 +141,28 @@ def _unit_grammar_with_trace(con: duckdb.DuckDBPyConnection, ver: str, vol: str,
     } for gid, label, cat, ex in rows]
 
 
+def _unit_vocab_profile(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict:
+    """单元词汇越纲画像 (§1.2 不偏离学校): 课标内 vs 超纲(必教/选学) + 越纲率.
+
+    standard/core=课标内; HV_extra=超纲但高考考过(必教); LV_extra=超纲且未考(可选学)。
+    越纲率=超纲/总, 让老师一眼看本单元多少词超出课标 3500 + 其中哪些高考真考过必须教。
+    """
+    words = sorted(set(vocab.unit_introduced_words(con, unit_id)))
+    st = _word_statuses(con, words)
+    from collections import Counter
+    c = Counter(st.get(w, "unknown") for w in words)
+    in_syllabus = c["core"] + c["standard"]
+    over = c["HV_extra"] + c["LV_extra"]
+    total = len(words)
+    return {
+        "total": total,
+        "in_syllabus": in_syllabus,          # 课标 3500 内
+        "over_must_teach": c["HV_extra"],     # 超纲但高考考过 — 必教
+        "over_optional": c["LV_extra"],       # 超纲且历年未考 — 可选学/降权
+        "over_rate_pct": round(100 * over / total, 1) if total else 0.0,
+    }
+
+
 def _trend_honesty(con: duckdb.DuckDBPyConnection) -> dict:
     """命题趋势可信度 live banner (件1 分析诚实) — 不写死 slope, 读 scope.diagnose 单一计算点."""
     d = scope.diagnose(con)
@@ -184,6 +206,7 @@ def generate_lesson_plan(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict:
         "unit_id": unit_id, "title": title,
         "theme": theme[0] if theme else None,
         "page_range": (unit[1], unit[2]) if unit else (None, None),
+        "vocab_profile": _unit_vocab_profile(con, unit_id),  # 越纲率画像 (§1.2 不偏离学校)
         "words": _unit_words_with_trace(con, unit_id),
         "grammar": _unit_grammar_with_trace(con, ver, vol, unit_n),  # 地基第四轴 + 真题溯源
         "phrases": [{"canonical": p[0], "type": p[1], "evidence": p[2][:100]}
