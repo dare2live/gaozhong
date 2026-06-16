@@ -917,3 +917,14 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **结果**: 18 行 local_pdf 截断2000=0 / 撞8000上限=0 / 阅读无答案=0。2025 阅读答案 A:CBA B:ADCB C:DDCB D:ABCA 逐题号匹配; 应用文/续写写作题无客观答案键, 留空诚实 (宁缺毋滥)。
 **防回归 (坑17)**: `scripts/lib/d0_local_pdf_check.py` (check_local_pdf_integrity, 经 _check_21 调用) 锁 3 维度 — 无硬截断(len=2000) / 客观题 answer 已填 / 题干无卷尾附录污染。
 **验证**: D0 exit 0 / moth PASS 25/0 / stop_gate exit 0。data_accuracy_check.py 抽 lib 后 389 行 (< 400, 不触 god-module)。
+
+## 2026-06-16 / 件3 趋势/考点分布/关联性 数值正确性纳入 D0 (维度23) + 关联性第三条腿
+
+**背景**: 多角色正反论证 (落表派/VIEW派/奥卡姆派/扩展派 + 总指挥综合) 裁决 **materialize=none** — 三条腿已经 service 委托满足 Rule1, 188 辽宁行 ~10ms, 落表只增 staleness (§3.5); "落表"是被任务卡字面锁死的伪需求。真墙 = D0 数值不可审计 + 样本诚实被前端吞 + 第三条腿(关联性)未建 + 趋势跨 2021 卷制断点混算。
+**落地**:
+- **第三条腿** `backend/services/exam_point/cooccur.py exam_point_cooccurrence`: 自连 tests_exam_point 边算同题跨轴共现, era 分层, co_n≥2 守门, 跨轴 only (排 theme L1⨯L2 嵌套), 可信度门; 服务即时算不落表。新高考24对/旧课标13对真命题关联 (记叙文⨯人与社会46, 说明文⨯人与自我15...)。
+- **D0 维度23** `scripts/lib/d0_trend_distribution_check.py` (经 `_check_23` 调用): 对 service 输出 5 断言 — 占比每(era,dim)和≈100 / 计数总和=辽宁考点边数(498) / era分类=scope单点两卷制 / 样本诚实(分布够格+无伪造逐年slope谄媚死防线) / 共现守门(co_n≥阈+跨轴)。**对抗验证: 污染pct→D0 精确 FAIL**。
+- **era 单点**: `trend/scope.py era_sql()` 收口卷制断点, `loader._ERA_SQL` 复用, 不各自硬编码 2021。
+- **heatmap 下沉**: API 内联 GROUP BY → `backend/services/heatmap/vocab.py` (Rule1)。
+- **接前端**: 趋势 era 分隔 + trend_reliable banner; 考点分布样本充足/不足标; 新"考点关联"tab; app.html era 分层。
+**验证**: D0 exit 0 (维度23全绿) / moth PASS 28 (+3: 共现底料165题/不落表/heatmap无内联agg) / stop_gate exit 0。新函数最高 CC=8; data_accuracy_check 396行<400。**materialize=none 决策由 moth `trend-distribution-not-materialized` 锁** (防快照表悄回归)。
