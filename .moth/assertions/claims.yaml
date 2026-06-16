@@ -155,7 +155,7 @@ assertions:
     query: "SELECT count(*) FROM units"
     expect: {op: ">=", value: 77}
   - id: textbook-sections-have-text
-    claim: "150 sections 全有 raw_text 正文 (n_chars>50)"
+    claim: "216 sections 全有 raw_text 正文 (n_chars>50; 2026-06-16 补10 waiyan单元 150→216)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM section_text WHERE n_chars <= 50"

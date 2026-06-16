@@ -62,10 +62,31 @@ KIND_MAP = {
 }
 
 
+# 辨识度高的多词 section 标题: 整页扫安全 (不会在正文误命中); 单词锚点 (Project/Grammar/Reading/
+# Writing/Listening/Speaking/Vocabulary/Workbook) 仅页首匹配, 防正文常用词误报。
+# 修复 (2026-06-16): 10 个 waiyan 单元页首是练习正文、section 标题在页中, 仅扫前3行漏 → pass-2 整页扫这些。
+_DISTINCTIVE = frozenset({
+    "Starting out", "Understanding ideas", "Using language", "Developing ideas",
+    "Presenting ideas", "Reflection", "Integrated skills", "Self-assessment",
+    "Reading and Thinking", "Reading and Writing", "Reading for Writing",
+    "Listening and Speaking", "Listening and Talking",
+    "Discovering Useful Structures", "Assessing Your Progress",
+    "Words in Use", "Video Time",
+})
+
+
 def _build_anchor_re(anchors: list[str]) -> re.Pattern:
     # match anchor at line start, allow extra title text after
     return re.compile(r"^\s*(" + "|".join(re.escape(a) for a in anchors)
                       + r")\b", re.IGNORECASE)
+
+
+def _build_distinctive_re(anchors: list[str]) -> re.Pattern | None:
+    """该版本 anchors ∩ _DISTINCTIVE 的整页匹配 regex (无锚定行首); 无则 None."""
+    distinctive = [a for a in anchors if a in _DISTINCTIVE]
+    if not distinctive:
+        return None
+    return re.compile(r"(" + "|".join(re.escape(a) for a in distinctive) + r")\b", re.IGNORECASE)
 
 
 def _page_head_lines(reader: PdfReader, pi: int, n: int = 3) -> list[str]:
@@ -76,23 +97,50 @@ def _page_head_lines(reader: PdfReader, pi: int, n: int = 3) -> list[str]:
     return [ln.strip() for ln in t.split("\n")[:n] if ln.strip()]
 
 
-def _scan_unit(reader: PdfReader, page_start: int, page_end: int,
-               anchor_re: re.Pattern) -> list[tuple[int, str, str]]:
-    """Return [(page, anchor_match, head_line), ...] within [start, end] (1-indexed)."""
-    out = []
-    seen_anchor_at_page: dict[str, int] = {}  # anchor → first page
-    for pi in range(page_start - 1, min(page_end, len(reader.pages))):
+def _page_full_text(reader: PdfReader, pi: int) -> str:
+    try:
+        return reader.pages[pi].extract_text() or ""
+    except Exception:
+        return ""
+
+
+def _scan_head(reader: PdfReader, pages: list[int], anchor_re: re.Pattern,
+               seen: dict[str, int], out: list) -> None:
+    """pass-1: 页首前3行匹配任意锚点 (原行为, 每页首个, 同 anchor 取首次页)."""
+    for pi in pages:
         for line in _page_head_lines(reader, pi, n=3):
             m = anchor_re.match(line)
-            if not m:
-                continue
-            anchor = m.group(1)
-            # 同 anchor 在 unit 内多次出现 (跨页 section) → 取第一次
-            if anchor in seen_anchor_at_page:
-                continue
-            seen_anchor_at_page[anchor] = pi + 1
-            out.append((pi + 1, anchor, line))
-            break
+            if m and m.group(1) not in seen:
+                seen[m.group(1)] = pi + 1
+                out.append((pi + 1, m.group(1), line))
+                break
+
+
+def _scan_distinctive(reader: PdfReader, pages: list[int], distinctive_re: re.Pattern,
+                      seen: dict[str, int], out: list) -> None:
+    """pass-2: 整页扫辨识度高的多词锚点 (兜底填 pass-1 漏的; 不在页首的 section 标题)."""
+    for pi in pages:
+        for line in _page_full_text(reader, pi).split("\n"):
+            m = distinctive_re.search(line)
+            if m and m.group(1) not in seen:
+                seen[m.group(1)] = pi + 1
+                out.append((pi + 1, m.group(1), line.strip()))
+
+
+def _scan_unit(reader: PdfReader, page_start: int, page_end: int,
+               anchor_re: re.Pattern, distinctive_re: re.Pattern | None = None
+               ) -> list[tuple[int, str, str]]:
+    """Return [(page, anchor, title), ...] within [start, end] (1-indexed).
+
+    pass-1 (页首) 不动 working 单元; pass-2 仅当 pass-1 整单元零命中时兜底整页扫多词锚点
+    (修 10 waiyan 单元页首是练习正文)。限"零命中"刻意收窄 blast-radius (narrow-enough-to-verify)。
+    """
+    out: list[tuple[int, str, str]] = []
+    seen: dict[str, int] = {}
+    pages = list(range(page_start - 1, min(page_end, len(reader.pages))))
+    _scan_head(reader, pages, anchor_re, seen, out)
+    if distinctive_re is not None and not out:
+        _scan_distinctive(reader, pages, distinctive_re, seen, out)
     out.sort(key=lambda r: r[0])
     return out
 
@@ -103,7 +151,7 @@ def extract_sections_for_unit(reader: PdfReader, version_key: str, volume_key: s
     if not anchors:
         return []
     anchor_re = _build_anchor_re(anchors)
-    hits = _scan_unit(reader, page_start, page_end, anchor_re)
+    hits = _scan_unit(reader, page_start, page_end, anchor_re, _build_distinctive_re(anchors))
     if not hits:
         return []
     rows = []
