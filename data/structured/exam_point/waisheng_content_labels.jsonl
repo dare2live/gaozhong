@@ -1,0 +1,150 @@
+{"qid": "gb/2012-2022_English_Cloze_Test/0", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/15", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/16", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/17", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/18", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/19", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/20", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/21", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/22", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/23", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/3", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/4", "paper": "未知 (GAOKAO-Bench 无明确卷型)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/1", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/4", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/5", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/6", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/7", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/8", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/9", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/10", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/11", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/12", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/13", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/14", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/24", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/25", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/26", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/27", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/36", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/37", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/环境保护", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/38", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/39", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/1", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/2", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/5", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/8", "paper": "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/2", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/3", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/5", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/7", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/10", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/13", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/16", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/19", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/0", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/1", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "新闻报道", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/2", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/3", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/4", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/28", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/29", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/30", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/31", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/32", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/33", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/34", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/35", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/40", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/41", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/42", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/43", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "新闻报道", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/48", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/49", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "新闻报道", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/50", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/51", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/60", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/61", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/62", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "新闻报道", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/63", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/72", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/73", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "新闻报道", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/74", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/75", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/84", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/85", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/86", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/87", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/96", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/97", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "议论文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/98", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/99", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/0", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/6", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/7", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/9", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/11", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/14", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/17", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/20", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/环境保护", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/23", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Cloze_Test/2", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Fill_in_Blanks/2", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Reading_Comp/8", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Reading_Comp/9", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与自然/环境保护", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Reading_Comp/10", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Reading_Comp/11", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Cloze_Test/1", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu24/2024_English_Fill_in_Blanks/1", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/4", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/环境保护", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/5", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/6", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu24/2024_English_Reading_Comp/7", "paper": "全国新课标 I 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/9", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/12", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/15", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/18", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2012-2022_English_Cloze_Test/21", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/56", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/57", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/58", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/59", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/68", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/69", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/70", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/71", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/80", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/81", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/82", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/83", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/92", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/93", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/94", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/95", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/104", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/105", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/106", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gb/2010-2022_English_Reading_Comp/107", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/13", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/16", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/19", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/22", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/科学与技术", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gb/2010-2022_English_Fill_in_Blanks/25", "paper": "全国新课标 III 卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Cloze_Test/0", "paper": "全国甲卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/做人与做事", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Fill_in_Blanks/0", "paper": "全国甲卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Reading_Comp/0", "paper": "全国甲卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Reading_Comp/1", "paper": "全国甲卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Reading_Comp/2", "paper": "全国甲卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Reading_Comp/3", "paper": "全国甲卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Cloze_Test/0", "paper": "全国甲卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自我/生活与学习", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Fill_in_Blanks/0", "paper": "全国甲卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/0", "paper": "全国甲卷 (非辽宁)", "genre": "应用文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/1", "paper": "全国甲卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与自然/自然生态", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/2", "paper": "全国甲卷 (非辽宁)", "genre": "NA", "genre_prov": "disagree", "theme_l2": "人与社会/社会服务与人际沟通", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu24/2024_English_Reading_Comp/3", "paper": "全国甲卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Cloze_Test/1", "paper": "全国乙卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Fill_in_Blanks/1", "paper": "全国乙卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "NA", "theme_l2_prov": "disagree"}
+{"qid": "gbu/2023_English_Reading_Comp/4", "paper": "全国乙卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Reading_Comp/5", "paper": "全国乙卷 (非辽宁)", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/文学、艺术与体育", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Reading_Comp/6", "paper": "全国乙卷 (非辽宁)", "genre": "说明文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
+{"qid": "gbu/2023_English_Reading_Comp/7", "paper": "全国乙卷 (非辽宁)", "genre": "议论文", "genre_prov": "dual_model_agree", "theme_l2": "人与社会/历史、社会与文化", "theme_l2_prov": "dual_model_agree"}
