@@ -114,6 +114,25 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services.exercise.predicted import generate_blueprint_practice_paper as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=g(c,total=10);b=p['composition_basis']['selection_basis'];print('OK' if 'blueprint_fixed' in b and p['paper_type']=='blueprint_structured_practice' else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
 
+  # ===== 词×真题考过状态 单一计算点 (#12/#13/#14: exam_vocab 唯一 tokenizer + exam_coverage 唯一 writer) =====
+  - id: exam-status-province-scoped
+    claim: "词 exam_status 辽宁口径 (§7, #13): 无 core/HV_extra 节点而辽宁命中(gaokao_hit_count_ln)=0 — 不混外省冒充辽宁考过"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM nodes WHERE node_type='word' AND json_extract_string(attrs_json,'exam_status') IN ('core','HV_extra') AND COALESCE(TRY_CAST(json_extract_string(attrs_json,'gaokao_hit_count_ln') AS BIGINT),0)=0"
+    expect: {op: "==", value: 0}
+  - id: exam-status-3source-consistent
+    claim: "3源一致 (#12): node HV_extra 数 == vocab_classification.jsonl『真超纲·辽宁考过』数 (单一计算点收敛, 三处不再各算矛盾)"
+    type: shell
+    command: ["python3", "-c", "import duckdb,json;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);nh=c.execute(\"SELECT count(*) FROM nodes WHERE node_type='word' AND json_extract_string(attrs_json,'exam_status')='HV_extra'\").fetchone()[0];jl=sum(1 for L in open('data/structured/vocab_classification.jsonl',encoding='utf-8') if L.strip() and json.loads(L).get('category')=='真超纲·辽宁考过');print('OK' if nh==jl else 'MISMATCH nh=%d jl=%d'%(nh,jl))"]
+    expect: {op: regex, pattern: "OK"}
+  - id: gaokao-hit-count-ln-retained
+    claim: "gaokao_hit_count_ln 在 word 节点留存>0 (#14: exam_coverage 单一 writer 一次写全, 不再被 extracurricular 整段 UPDATE 覆盖)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM nodes WHERE node_type='word' AND json_extract_string(attrs_json,'gaokao_hit_count_ln') IS NOT NULL"
+    expect: {op: ">", value: 0}
+
   # ===== 考点 canonical 维度 (件2 拱心石: 取代 word-token 冒充考点) =====
   - id: exam-point-edges-present
     claim: "考点 canonical 维度已落库: tests_exam_point 边 ≥300 (188辽宁题 genre/theme 双模型标注)"

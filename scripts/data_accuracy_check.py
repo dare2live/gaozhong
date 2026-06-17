@@ -286,6 +286,12 @@ def _check_24_lesson_plan(con):
     check_lesson_plan(con, check)
 
 
+def _check_25_exam_status(con):
+    """词×真题考过状态 单一计算点一致性: province一致 + 3源一致 + #14防覆盖 (抽到 lib)."""
+    from scripts.lib.d0_exam_status_check import check_exam_status
+    check_exam_status(con, check)
+
+
 # ===== main 调度 (CC = 2) =====
 
 # 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
@@ -301,6 +307,7 @@ CHECKS = [
     _check_22_exam_point,
     _check_23_trend_distribution,
     _check_24_lesson_plan,
+    _check_25_exam_status,
 ]
 
 

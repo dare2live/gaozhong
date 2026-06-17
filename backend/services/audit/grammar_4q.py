@@ -7,9 +7,9 @@
   - 被动语态 / 虚拟语气 / 倒装 / 强调 / 省略
   - 主谓一致 / 比较级 / 最高级 / 比较句
 
-写 grammar.attrs.exam_status (类似 vocab):
-  core      : 课标 ∩ 真题考过
-  standard  : 课标内但真题未印证 (近年)
+写 grammar.attrs.exam_status (类似 vocab, **辽宁卷口径** §7):
+  core      : 课标 ∩ 辽宁真题考过
+  standard  : 课标内但辽宁真题未印证 (近年)
 """
 from __future__ import annotations
 
@@ -51,8 +51,10 @@ TERM_TO_LABEL_KEYWORD = {
 
 
 def _terms_in_exam(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
-    """Count how many exam questions mention each term in raw_question+analysis."""
-    rows = con.execute("SELECT raw_question, analysis FROM exam_questions").fetchall()
+    """Count 辽宁真题 mentioning each grammar term (§7 辽宁口径, 不混外省冒充辽宁)."""
+    rows = con.execute(
+        "SELECT raw_question, analysis FROM exam_questions WHERE province LIKE '辽宁%'"
+    ).fetchall()
     cnt: dict[str, int] = {t: 0 for t in TERM_TO_LABEL_KEYWORD}
     for q, a in rows:
         blob = (q or "") + " " + (a or "")

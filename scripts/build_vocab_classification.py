@@ -16,11 +16,16 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 import duckdb
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from backend.services.exam_vocab import province_exam_token_bags, word_inflections  # noqa: E402
+
 DB = ROOT / "data" / "db" / "gaozhong.duckdb"
 OUT = ROOT / "data" / "structured" / "vocab_classification.jsonl"
 
@@ -40,21 +45,6 @@ _DERIV = [("ically", "ic"), ("ally", "al"), ("ment", ""), ("ness", ""), ("tion",
           ("ship", ""), ("hood", ""), ("al", "")]
 
 
-def _exam_vocab(con, lemm, liaoning: bool) -> set[str]:
-    op = "LIKE" if liaoning else "NOT LIKE"
-    v: set[str] = set()
-    for (raw,) in con.execute(
-            f"SELECT raw_question FROM exam_questions WHERE province {op} '辽宁%'").fetchall():
-        for t in re.findall(r"[A-Za-z]+", (raw or "").lower()):
-            if len(t) >= 2:
-                v.add(t); v.add(lemm.lemmatize(t, "v")); v.add(lemm.lemmatize(t, "n"))
-    return v
-
-
-def _inflect(w: str, lemm) -> set[str]:
-    return {w} | {lemm.lemmatize(w, p) for p in ("v", "n", "a", "r")}
-
-
 def _deriv_roots(w: str) -> set[str]:
     s = set()
     for suf, rep in _DERIV:
@@ -72,13 +62,13 @@ def _is_propnoise(w: str) -> bool:
 
 
 def _classify_word(w: str, cefr: set, ln_v: set, ws_v: set, lemm) -> str:
-    if any(l in cefr for l in _inflect(w, lemm)):
+    forms = word_inflections(w, lemm)   # 单一计算点: {w} ∪ lemmatize(v,n,a,r)
+    if any(l in cefr for l in forms):
         return "课标屈折变形"
     if any(r in cefr for r in _deriv_roots(w)):
         return "课标派生"
     if _is_propnoise(w):
         return "专名/碎片"
-    forms = _inflect(w, lemm) | {w}
     if forms & ln_v:
         return "真超纲·辽宁考过"
     return "真超纲·仅外省考过" if forms & ws_v else "真超纲·未考"
@@ -87,8 +77,7 @@ def _classify_word(w: str, cefr: set, ln_v: set, ws_v: set, lemm) -> str:
 def classify(con, lemm) -> dict[str, str]:
     cefr = {r[0].lower() for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     tb = {r[0].lower() for r in con.execute("SELECT DISTINCT word FROM unit_vocab_intro").fetchall()}
-    ln_v = _exam_vocab(con, lemm, True)
-    ws_v = _exam_vocab(con, lemm, False)
+    ln_v, ws_v = province_exam_token_bags(con, lemm)   # 单一 tokenizer (§7 辽宁/外省)
     return {w: _classify_word(w, cefr, ln_v, ws_v, lemm) for w in sorted(tb - cefr)}
 
 

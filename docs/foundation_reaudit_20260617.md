@@ -242,10 +242,16 @@ STRUCTURAL PROOF (code):
 - **waiyan xuanze unit6 污染 96 对(新发现)** — `vocab.py` 加 `_GLOSSARY_HEADING_RE` 哨兵: 遇字母序「Vocabulary」标题即终止段(根因: `_next_section_page` 只看页首行, xuanze 总表起页首行是页码 '113' → 段末漏判 → 字母表全挂 last UNIT 6 下)。xuanze_1 U6 63→33; bixiu 各册 0 变化(未误伤)。
 - **vocab_classification 重生成** — 1244→1277(抽取更全), 0 陈旧残留。
 
-### ⏳ 待修 (本批未含, 下一轮)
+### ✅ 已修 (第二批, 2026-06-17, exam-status 单一计算点)
+- **#12 + #13 + #14 一组根治** (Rule1 + §7 + 防覆盖): 新建 `backend/services/exam_vocab.py` 为唯一计算点
+  (province_exam_token_bags 唯一 tokenizer §7精确前缀 + word_exam_hits 唯一命中计数器 + lemmatize 屈折匹配)。
+  exam_coverage 改唯一 writer (辽宁口径 4象限 + is_real_over 单一超纲判定 + 一次写全 attrs 杜绝覆盖);
+  extracurricular 降 OBS-only; build_vocab_classification 改读单点; grammar_4q(**#13孪生** line56 也 province-blind)加 province 过滤。
+  验证: node HV_extra=170==jsonl 170 (3源一致); 0 个 core/HV_extra 而辽宁=0; gaokao_hit_count_ln 留存4329(原0); 热力图4象限非空。
+  锁: D0 check25(d0_exam_status_check.py) + 3 moth 断言。
+
+### ⏳ 待修 (下一轮 — section/EOL 截断族)
 - **#7 section_text 20000 硬截断** (28 行, n_chars 存真值, `n_chars<>LENGTH(raw_text)` 一句自检)
 - **#8 EOL raw_question 900 硬截断** (11 行) + 13 空白 (draft/review overlay, 较复杂)
-- **#9 section page_end 边界过宽** (8 section span>25 页, 根因在 textbook.py 末单元 end_page=n_pages 吞 workbook/glossary)
-- **#12 超纲"是否考过" 3 处各算** (Rule1 违反, build/exam_coverage/extracurricular 不同 tokenizer)
-- **#13 node.exam_status province-blind** (§7 违反, exam_coverage 未 province 过滤)
-- **#14 extracurricular province-aware 写入被 exam_coverage 覆盖**
+- **#9 section page_end 边界过宽** (8 section span>25 页, 根因 textbook.py 末单元 end_page=n_pages 吞 workbook/glossary)
+  注: #7/#9 同根(末单元吞 workbook → n_chars 冲73548 → 撞20000截断), 宜一批修。
