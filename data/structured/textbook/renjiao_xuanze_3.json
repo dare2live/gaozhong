@@ -3,42 +3,42 @@
   "volume_key": "xuanze_3",
   "n_pages": 130,
   "n_units": 5,
-  "method": "regex_min",
+  "method": "manual_override",
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 PEOPLE OF ACHIEVEMENT Love of beauty is taste. The creation of beauty is",
+      "title_en": "ART",
       "start_page": 8,
-      "method": "regex_min",
-      "end_page": 75
+      "end_page": 19,
+      "method": "manual_override"
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 HEALTHY LIFESTYLE Using Structures 1    A group of students are chatting",
-      "start_page": 76,
-      "method": "regex_min",
-      "end_page": 81
+      "title_en": "HEALTHY LIFESTYLE",
+      "start_page": 20,
+      "end_page": 31,
+      "method": "manual_override"
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 ENVIRONMENTAL PRO TECTION UNIT 3  ENVIRONMENTAL PRO TECTION 1 Match the w",
-      "start_page": 82,
-      "method": "regex_min",
-      "end_page": 89
+      "title_en": "ENVIRONMENTAL PROTECTION",
+      "start_page": 32,
+      "end_page": 43,
+      "method": "manual_override"
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 ADVERSITY AND COURA GE We are looking for cycling partners to join us for",
-      "start_page": 90,
-      "method": "regex_min",
-      "end_page": 95
+      "title_en": "ADVERSITY AND COURAGE",
+      "start_page": 44,
+      "end_page": 55,
+      "method": "manual_override"
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 POEMS UNIT 5  POEMS",
-      "start_page": 96,
-      "method": "regex_min",
-      "end_page": 130
+      "title_en": "POEMS",
+      "start_page": 56,
+      "end_page": 67,
+      "method": "manual_override"
     }
   ]
 }

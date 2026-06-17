@@ -292,6 +292,32 @@ def _check_25_exam_status(con):
     check_exam_status(con, check)
 
 
+def _check_26_textbook_sections(con):
+    """教材 section 边界 + section_text 完整性 (issue #9 单元边界过宽 / #7 raw_text 截断).
+
+    (a) 无 section span>25 (单元边界收口后): 末单元不吞 back-matter, renjiao 不误检到 workbook.
+    (b) section_text n_chars == LENGTH(raw_text) 全表: raw_text 不截断 (去 [:20000]), n_chars 是真值.
+    (c) section_text 无 back-matter 污染: 仅书末出现的锚点 (Communication bank/Appendices/参考答案/
+        English glossary) 不应进任何主文 section raw_text."""
+    print("\n=== (26) 教材 section 边界 + section_text 完整性 ===")
+    wide = con.execute(
+        "SELECT version_key, volume_key, unit_number, seq, (page_end-page_start) AS span "
+        "FROM sections WHERE (page_end-page_start) > 25 ORDER BY span DESC"
+    ).fetchall()
+    check("无 section span>25 (单元边界收口)", not wide,
+          "0" if not wide else f"{len(wide)} 过宽: {[(r[0],r[1],r[2],r[4]) for r in wide[:5]]}")
+    n_trunc = con.execute(
+        "SELECT COUNT(*) FROM section_text WHERE n_chars <> LENGTH(raw_text)"
+    ).fetchone()[0]
+    check("section_text n_chars==LENGTH(raw_text) 全表 (无截断)", n_trunc == 0, f"{n_trunc} 不一致")
+    n_pollute = con.execute(
+        "SELECT COUNT(*) FROM section_text "
+        "WHERE raw_text ILIKE '%Communication bank%' OR raw_text ILIKE '%Appendices%' "
+        "OR raw_text LIKE '%参考答案%' OR raw_text ILIKE '%English glossary%'"
+    ).fetchone()[0]
+    check("section_text 无 back-matter 污染", n_pollute == 0, f"{n_pollute} 含书末锚点")
+
+
 # ===== main 调度 (CC = 2) =====
 
 # 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
@@ -308,6 +334,7 @@ CHECKS = [
     _check_23_trend_distribution,
     _check_24_lesson_plan,
     _check_25_exam_status,
+    _check_26_textbook_sections,
 ]
 
 

@@ -186,10 +186,28 @@ assertions:
     query: "SELECT count(*) FROM (SELECT version_key, volume_key, word FROM unit_vocab_intro WHERE unit_number>0 GROUP BY 1,2,3 HAVING COUNT(DISTINCT unit_number)>1)"
     expect: {op: "==", value: 0}
   - id: textbook-sections-have-text
-    claim: "216 sections 全有 raw_text 正文 (n_chars>50; 2026-06-16 补10 waiyan单元 150→216)"
+    claim: "219 sections 全有 raw_text 正文 (n_chars>50; 2026-06-16 补10 waiyan单元; 2026-06-17 单元边界收口 221→219)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM section_text WHERE n_chars <= 50"
+    expect: {op: "==", value: 0}
+  - id: section-text-not-truncated
+    claim: "section_text raw_text 不截断 — n_chars==LENGTH(raw_text) 全表 (issue #7: 去 [:20000] 硬截断, n_chars 是真值)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM section_text WHERE n_chars <> LENGTH(raw_text)"
+    expect: {op: "==", value: 0}
+  - id: section-boundary-no-overwide
+    claim: "无 section span>25 (issue #9: waiyan 末单元收口到 Appendices 前 / renjiao UNIT头 override 防误检到 workbook)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM sections WHERE (page_end - page_start) > 25"
+    expect: {op: "==", value: 0}
+  - id: section-text-no-backmatter
+    claim: "section_text 无 back-matter 污染 — 书末专属锚点(Communication bank/Appendices/参考答案)不进主文 raw_text (issue #9 收口副产)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM section_text WHERE raw_text ILIKE '%Communication bank%' OR raw_text ILIKE '%Appendices%' OR raw_text LIKE '%参考答案%'"
     expect: {op: "==", value: 0}
   - id: grammar-occurrences-derived
     claim: "语法 per-unit 已建(§1.2): grammar_occurrences ≥15 从教材Grammar段真相源映射课标项(curated非估算, 不命中诚实跳过)"

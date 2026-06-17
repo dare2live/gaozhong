@@ -250,8 +250,17 @@ STRUCTURAL PROOF (code):
   验证: node HV_extra=170==jsonl 170 (3源一致); 0 个 core/HV_extra 而辽宁=0; gaokao_hit_count_ln 留存4329(原0); 热力图4象限非空。
   锁: D0 check25(d0_exam_status_check.py) + 3 moth 断言。
 
-### ⏳ 待修 (下一轮 — section/EOL 截断族)
-- **#7 section_text 20000 硬截断** (28 行, n_chars 存真值, `n_chars<>LENGTH(raw_text)` 一句自检)
+### ✅ 已修 (第三批, 2026-06-17, section 边界+截断)
+- **#7 + #9 一组根治** (两套机制): 8 个过宽 section + 28 截断 → 0。
+  - 机制A waiyan(末单元 U6 end_page=n_pages 吞书末): textbook.py 加 `_back_matter_page` 锚点
+    (Appendices/Communication bank/Vocabulary, 实测仅书末出现), 末单元 cap 到锚点前。U6 p68-139→p68-85。
+  - 机制B renjiao(单元头 mis-detect 致多过宽, 'WORKBOOK' per-unit 非书末): 走 unit_overrides.json
+    逐卷 PDF 核真实主文 UNIT 头(按内容非 running header — xuanze_3 页眉误标"PEOPLE OF ACHIEVEMENT"
+    实为 ART/POEMS 等), 6 卷 override。
+  - #7: section_text.py 去 `[:20000]`(坑18: 边界收口后才去, 避免暴露污染)。
+  - 验证: 过宽 section 8→0; n_chars<>LENGTH 28→0; 书末污染 0; 77/77 单元有 section(无丢);
+    section 216→219(去污+补回真主文段)。锁: D0 check26 + 3 moth 断言。
+
+### ⏳ 待修 (剩 EOL)
 - **#8 EOL raw_question 900 硬截断** (11 行) + 13 空白 (draft/review overlay, 较复杂)
-- **#9 section page_end 边界过宽** (8 section span>25 页, 根因 textbook.py 末单元 end_page=n_pages 吞 workbook/glossary)
-  注: #7/#9 同根(末单元吞 workbook → n_chars 冲73548 → 撞20000截断), 宜一批修。
+- (代码债, 非数据) textbook.py `_from_outline` CC=11 预存, 4 god-module 拆分 (task_90d55f25)

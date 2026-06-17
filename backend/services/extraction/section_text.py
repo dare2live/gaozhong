@@ -48,9 +48,11 @@ def extract_section_text(con: duckdb.DuckDBPyConnection) -> dict:
         text = "\n".join(chunks).strip()
         if not text:
             continue
+        # 不截断 (issue #7): DuckDB VARCHAR 无长度上限, n_chars 已存 len(text) 真值;
+        # 旧 text[:20000] 致 raw_text 被截 ≠ n_chars (D0 违反). 单元边界已收口 (issue #9) → 无 back-matter 污染需靠截断挡。
         con.execute(
             "INSERT INTO section_text VALUES (?, ?, ?, ?, ?, ?)",
-            [ver, vol, un, seq, text[:20000], len(text)],
+            [ver, vol, un, seq, text, len(text)],
         )
         inserted += 1
     return {"sections_scanned": len(rows), "rows_inserted": inserted}

@@ -3,42 +3,42 @@
   "volume_key": "bixiu_3",
   "n_pages": 130,
   "n_units": 5,
-  "method": "regex_min",
+  "method": "manual_override",
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 FESTIVALS AND CELEBRA TIONS Using Words and Expressions UNIT 1 FESTIVALS",
-      "start_page": 68,
-      "method": "regex_min",
-      "end_page": 73
+      "title_en": "FESTIVALS AND CELEBRATIONS",
+      "start_page": 8,
+      "end_page": 19,
+      "method": "manual_override"
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 MORALS AND VIRTUES Using Words and Expressions UNIT 2 MORALS AND VIRTUES",
-      "start_page": 74,
-      "method": "regex_min",
-      "end_page": 79
+      "title_en": "MORALS AND VIRTUES",
+      "start_page": 20,
+      "end_page": 31,
+      "method": "manual_override"
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 DIVERSE CULTURES SPORTS AND FITNESSUNIT 3 DIVERSE CULTURESUNIT 3 1 Comple",
-      "start_page": 80,
-      "method": "regex_min",
-      "end_page": 85
+      "title_en": "DIVERSE CULTURES",
+      "start_page": 32,
+      "end_page": 43,
+      "method": "manual_override"
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 SPA CE EXPLORATION SPACE EXPLORATIONUNIT 4 3 Complete the sentences with",
-      "start_page": 86,
-      "method": "regex_min",
-      "end_page": 91
+      "title_en": "SPACE EXPLORATION",
+      "start_page": 44,
+      "end_page": 55,
+      "method": "manual_override"
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 THE VAL UE OF MONEY THE VALUE OF MONEYUNIT 5 Using Words and Expressions",
-      "start_page": 92,
-      "method": "regex_min",
-      "end_page": 130
+      "title_en": "THE VALUE OF MONEY",
+      "start_page": 56,
+      "end_page": 67,
+      "method": "manual_override"
     }
   ]
 }

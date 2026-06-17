@@ -3,42 +3,42 @@
   "volume_key": "xuanze_2",
   "n_pages": 134,
   "n_units": 5,
-  "method": "regex_min",
+  "method": "manual_override",
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 PEOPLE OF ACHIEVEMENT To raise new questions, new possibilities, to regar",
+      "title_en": "SCIENCE AND SCIENTISTS",
       "start_page": 8,
-      "method": "regex_min",
-      "end_page": 29
+      "end_page": 19,
+      "method": "manual_override"
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 BRIDGING CULTURES 23 1    Brainstorm what the visiting students might nee",
-      "start_page": 30,
-      "method": "regex_min",
-      "end_page": 81
+      "title_en": "BRIDGING CULTURES",
+      "start_page": 20,
+      "end_page": 31,
+      "method": "manual_override"
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 FOOD AND CUL TURE 1 Match the noun phrases on the right with the adjectiv",
-      "start_page": 82,
-      "method": "regex_min",
-      "end_page": 89
+      "title_en": "FOOD AND CULTURE",
+      "start_page": 32,
+      "end_page": 43,
+      "method": "manual_override"
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 JOURNEY ACROS S A VAST LAND Using Structures 1    Complete the table with",
-      "start_page": 90,
-      "method": "regex_min",
-      "end_page": 95
+      "title_en": "JOURNEY ACROSS A VAST LAND",
+      "start_page": 44,
+      "end_page": 55,
+      "method": "manual_override"
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 FIRST AID UNIT 5  FIRST AID 3 The elderly man’s speech",
-      "start_page": 96,
-      "method": "regex_min",
-      "end_page": 134
+      "title_en": "FIRST AID",
+      "start_page": 56,
+      "end_page": 67,
+      "method": "manual_override"
     }
   ]
 }

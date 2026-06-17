@@ -32,6 +32,29 @@ OUT_DIR = ROOT / "data" / "structured" / "textbook"
 UNIT_RE = re.compile(r"^\s*(WELCOME UNIT|UNIT\s+(\d+)|Unit\s+(\d+))\s*(.*)$", re.IGNORECASE)
 UNIT_TITLE_CLEAN = re.compile(r"\s+\d+\s*$")  # trailing page number e.g. "UNIT 1 ART 9"
 
+# 书末 (back-matter) 锚点: 仅书末出现的整页标题 (实证 waiyan 5 卷 p1-67 主文 0 命中, 首现统一在 p86).
+# 用于末单元 end_page 收口 — 防末单元 end_page=n_pages 吞 Appendices/Communication bank/Vocabulary
+# glossary (issue #9 单元边界过宽). 仅 waiyan 末单元用; renjiao 末单元走 unit_overrides (start 也错, helper 修不了).
+BACK_MATTER_RE = re.compile(
+    r"^\s*(Appendices|Communication bank|Vocabulary)\b", re.IGNORECASE)
+
+
+def _back_matter_page(reader: PdfReader, after_start: int, n_pages: int) -> int:
+    """扫 after_start (1-indexed) 之后首个页首含书末锚点的页号. 找不到返回 n_pages+1.
+
+    after_start 之后扫 (不含末单元起始页本身), 防把单元起始页误当书末.
+    页首 = 前 3 行任一行以锚点开头 (与 _page_head_block 同口径)."""
+    for pi in range(after_start, n_pages):  # pi 0-indexed; after_start 是 1-indexed 起始页 → 从其下一页起
+        txt = ""
+        try:
+            txt = reader.pages[pi].extract_text() or ""
+        except Exception:
+            txt = ""
+        for line in txt.split("\n")[:3]:
+            if BACK_MATTER_RE.match(line):
+                return pi + 1
+    return n_pages + 1
+
 
 def _from_outline(reader: PdfReader) -> list[dict]:
     """Return [{unit_number, title_en, start_page, method='outline'}, ...]"""
@@ -142,8 +165,16 @@ def extract_units(pdf_path: Path, version_key: str, volume_key: str) -> dict:
     units.sort(key=lambda u: u["start_page"])
     # fill end_page if not preset
     for i, u in enumerate(units):
-        if "end_page" not in u:
-            u["end_page"] = units[i + 1]["start_page"] - 1 if i + 1 < len(units) else n_pages
+        if "end_page" in u:
+            continue
+        if i + 1 < len(units):
+            u["end_page"] = units[i + 1]["start_page"] - 1
+        elif version_key == "waiyan":
+            # 末单元: 收口到首个书末锚点页-1, 防吞 Appendices/Communication bank/Vocabulary (issue #9).
+            # renjiao 末单元不走此 (其 start 也错, 由 unit_overrides 统一修).
+            u["end_page"] = _back_matter_page(reader, u["start_page"], n_pages) - 1
+        else:
+            u["end_page"] = n_pages
     return {
         "version_key": version_key,
         "volume_key": volume_key,

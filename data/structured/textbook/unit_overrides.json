@@ -1,13 +1,57 @@
 {
-  "_source": "PDF Scope and sequence p5-6 手动整理 (textbook extractor 兜底)",
+  "_source": "PDF Scope and sequence + 逐卷正文 'In this unit, you will' opener 页核 (textbook extractor 兜底)",
   "_apply_when": "有 override 条目即优先用 (最权威, 已人工核 PDF); 无条目才走 outline→regex",
+  "_note_renjiao": "renjiao 正文每单元 12 页, U1 起 p8 (bixiu_1 含 WELCOME UNIT 10 页 p8-17 后 12 页/单元); p68+ 是 WORKBOOK 共享后记 (running header 仍写 'UNIT 1' 致 regex 误检). 修 issue #9 — regex_min 把 U2-U5 start 误检到 workbook 区, 致 U1/U2 吞跨区.",
   "overrides": {
+    "renjiao/bixiu_1": [
+      {"unit_number": 0, "title": "WELCOME UNIT", "page_start": 8, "page_end": 17},
+      {"unit_number": 1, "title": "TEENAGE LIFE", "page_start": 18, "page_end": 29},
+      {"unit_number": 2, "title": "TRAVELLING AROUND", "page_start": 30, "page_end": 41},
+      {"unit_number": 3, "title": "SPORTS AND FITNESS", "page_start": 42, "page_end": 53},
+      {"unit_number": 4, "title": "NATURAL DISASTERS", "page_start": 54, "page_end": 65},
+      {"unit_number": 5, "title": "LANGUAGES AROUND THE WORLD", "page_start": 66, "page_end": 77}
+    ],
     "renjiao/bixiu_2": [
       {"unit_number": 1, "title": "CULTURAL HERITAGE", "page_start": 8, "page_end": 19},
       {"unit_number": 2, "title": "WILDLIFE PROTECTION", "page_start": 20, "page_end": 31},
       {"unit_number": 3, "title": "THE INTERNET", "page_start": 32, "page_end": 43},
       {"unit_number": 4, "title": "HISTORY AND TRADITIONS", "page_start": 44, "page_end": 55},
       {"unit_number": 5, "title": "MUSIC", "page_start": 56, "page_end": 67}
+    ],
+    "renjiao/bixiu_3": [
+      {"unit_number": 1, "title": "FESTIVALS AND CELEBRATIONS", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "MORALS AND VIRTUES", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "DIVERSE CULTURES", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "SPACE EXPLORATION", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "THE VALUE OF MONEY", "page_start": 56, "page_end": 67}
+    ],
+    "renjiao/xuanze_1": [
+      {"unit_number": 1, "title": "PEOPLE OF ACHIEVEMENT", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "LOOKING INTO THE FUTURE", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "FASCINATING PARKS", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "BODY LANGUAGE", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "WORKING THE LAND", "page_start": 56, "page_end": 67}
+    ],
+    "renjiao/xuanze_2": [
+      {"unit_number": 1, "title": "SCIENCE AND SCIENTISTS", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "BRIDGING CULTURES", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "FOOD AND CULTURE", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "JOURNEY ACROSS A VAST LAND", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "FIRST AID", "page_start": 56, "page_end": 67}
+    ],
+    "renjiao/xuanze_3": [
+      {"unit_number": 1, "title": "ART", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "HEALTHY LIFESTYLE", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "ENVIRONMENTAL PROTECTION", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "ADVERSITY AND COURAGE", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "POEMS", "page_start": 56, "page_end": 67}
+    ],
+    "renjiao/xuanze_4": [
+      {"unit_number": 1, "title": "SCIENCE FICTION", "page_start": 8, "page_end": 19},
+      {"unit_number": 2, "title": "ICONIC ATTRACTIONS", "page_start": 20, "page_end": 31},
+      {"unit_number": 3, "title": "SEA EXPLORATION", "page_start": 32, "page_end": 43},
+      {"unit_number": 4, "title": "SHARING", "page_start": 44, "page_end": 55},
+      {"unit_number": 5, "title": "LAUNCHING YOUR CAREER", "page_start": 56, "page_end": 67}
     ],
     "waiyan/xuanze_4": [
       {"unit_number": 1, "title": "The road not taken", "page_start": 8, "page_end": 19},

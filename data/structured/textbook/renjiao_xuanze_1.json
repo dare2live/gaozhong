@@ -3,42 +3,42 @@
   "volume_key": "xuanze_1",
   "n_pages": 130,
   "n_units": 5,
-  "method": "regex_min",
+  "method": "manual_override",
   "units": [
     {
       "unit_number": 1,
-      "title_en": "UNIT 1 PEOPLE OF ACHIEVEMENT Try to become not a man of success, but try rather",
+      "title_en": "PEOPLE OF ACHIEVEMENT",
       "start_page": 8,
-      "method": "regex_min",
-      "end_page": 19
+      "end_page": 19,
+      "method": "manual_override"
     },
     {
       "unit_number": 2,
-      "title_en": "UNIT 2 LOOKING INTO THE FUTURE The best way to predict the future is to create i",
+      "title_en": "LOOKING INTO THE FUTURE",
       "start_page": 20,
-      "method": "regex_min",
-      "end_page": 31
+      "end_page": 31,
+      "method": "manual_override"
     },
     {
       "unit_number": 3,
-      "title_en": "UNIT 3 FASCINATING PARKS 3UNIT FASCINATING",
+      "title_en": "FASCINATING PARKS",
       "start_page": 32,
-      "method": "regex_min",
-      "end_page": 43
+      "end_page": 43,
+      "method": "manual_override"
     },
     {
       "unit_number": 4,
-      "title_en": "UNIT 4 BODY LANGUAGE What I hide by my language, my body utters.",
+      "title_en": "BODY LANGUAGE",
       "start_page": 44,
-      "method": "regex_min",
-      "end_page": 55
+      "end_page": 55,
+      "method": "manual_override"
     },
     {
       "unit_number": 5,
-      "title_en": "UNIT 5 WORKING THE LAND My lifelong pursuit is to keep all the people",
+      "title_en": "WORKING THE LAND",
       "start_page": 56,
-      "method": "regex_min",
-      "end_page": 130
+      "end_page": 67,
+      "method": "manual_override"
     }
   ]
 }
