@@ -37,8 +37,10 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
-def compact(text: str, limit: int = 900) -> str:
-    return re.sub(r"\s+", " ", text or "").strip()[:limit]
+def compact(text: str, limit: int | None = 900) -> str:
+    """空白归一 + (可选) 截断。limit=None 不截 (阅读/完形片段已被 marker 双向收口, 无需硬截)."""
+    s = re.sub(r"\s+", " ", text or "").strip()
+    return s if limit is None else s[:limit]
 
 
 def section_between(text: str, start: str, end: str | None) -> str:
@@ -137,4 +139,6 @@ def snippet_for_number(section: str, number: int, next_numbers: list[int], marke
         if next_pos >= 0:
             end = next_pos
             break
-    return compact(section[start:end])
+    # limit=None: 保留 marker→next-marker 全片段, 不在 900 处硬截 (#8: 阅读丢约一半词).
+    # 上/下边界皆 marker 收口 (start=本题marker, end=下题marker 或 section末), 不吃进下题/卷尾 (坑18)。
+    return compact(section[start:end], None)

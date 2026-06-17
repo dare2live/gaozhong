@@ -261,6 +261,13 @@ STRUCTURAL PROOF (code):
   - 验证: 过宽 section 8→0; n_chars<>LENGTH 28→0; 书末污染 0; 77/77 单元有 section(无丢);
     section 216→219(去污+补回真主文段)。锁: D0 check26 + 3 moth 断言。
 
-### ⏳ 待修 (剩 EOL)
-- **#8 EOL raw_question 900 硬截断** (11 行) + 13 空白 (draft/review overlay, 较复杂)
-- (代码债, 非数据) textbook.py `_from_outline` CC=11 预存, 4 god-module 拆分 (task_90d55f25)
+### ✅ 已修 (第四批, 2026-06-17, EOL 截断+空白)
+- **#8 EOL raw_question 900 硬截断(11行) + 空白(13行)**: `exam_eol_parse.compact` 加 limit=None,
+  `snippet_for_number` 用 None (片段已 marker 双向收口, 去多余 900 硬截; 坑18 不吃下题/卷尾);
+  `_writing_row` 同。空 snippet → 诚实 sentinel(防御性)。重生成 2021/2022 draft + 重建。
+  验证: len==900 11→0; 空 13→0(fresh 重生成 snippet 命中全部, 完形每空捕获篇章片段不重复);
+  阅读 AVG 361→637, 最长 2270(原截900); 0 卷尾污染; EOL 贡献 862 考点词; node HV 152→154(恢复词)。
+  锁: D0 21f(无900+非空) + moth eol-no-hard-truncation。
+
+### 全部 BLOCK/WARN 数据问题已清 (14 + 本轮新发现 4 = 18 项)
+剩纯**代码债**(非数据正确性): textbook.py `_from_outline` CC=11 预存 + 4 god-module 拆分 (task_90d55f25)。

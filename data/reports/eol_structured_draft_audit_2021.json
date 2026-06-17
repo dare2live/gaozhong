@@ -1,18 +1,11 @@
 {
-  "generated_at": "2026-06-12T01:27:40+00:00",
+  "generated_at": "2026-06-17T06:00:12+00:00",
   "year": 2021,
   "source_text": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/eol/2021_xgkii_english_eol.txt",
   "row_count": 67,
   "keyed_count": 47,
-  "missing_stem_count": 6,
-  "missing_stem_ids": [
-    "EOL-XGKII-2021-004",
-    "EOL-XGKII-2021-036",
-    "EOL-XGKII-2021-037",
-    "EOL-XGKII-2021-038",
-    "EOL-XGKII-2021-039",
-    "EOL-XGKII-2021-040"
-  ],
+  "missing_stem_count": 0,
+  "missing_stem_ids": [],
   "review_status_counts": {
     "draft_not_import_ready_unkeyed_listening": 20,
     "draft_not_import_ready_number_shift_minus_20": 45,

@@ -1,19 +1,11 @@
 {
-  "generated_at": "2026-06-12T01:27:40+00:00",
+  "generated_at": "2026-06-17T06:00:12+00:00",
   "year": 2022,
   "source_text": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/eol/2022_xgkii_english_eol.txt",
   "row_count": 46,
   "keyed_count": 42,
-  "missing_stem_count": 7,
-  "missing_stem_ids": [
-    "EOL-XGKII-2022-041",
-    "EOL-XGKII-2022-042",
-    "EOL-XGKII-2022-043",
-    "EOL-XGKII-2022-046",
-    "EOL-XGKII-2022-048",
-    "EOL-XGKII-2022-052",
-    "EOL-XGKII-2022-055"
-  ],
+  "missing_stem_count": 0,
+  "missing_stem_ids": [],
   "review_status_counts": {
     "draft_not_import_ready_written_paper_only": 45,
     "draft_not_import_ready_no_sample_answer_in_source": 1

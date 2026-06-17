@@ -149,6 +149,8 @@ def add_rows(
     meta = source_metadata(year)
     for observed, answer_number in zip(observed_list, answer_list):
         source_span = snippet_for_number(section, observed, observed_list, marker_style)
+        if not source_span:   # 完形/七选五子题共享篇章无独立题面 → 诚实 sentinel (非空, 无英文词污染)
+            source_span = f"{question_type}子题 #{observed}（共享篇章, 无独立题面）"
         row = {
             "id": f"EOL-XGKII-{year}-{observed:03d}",
             "year": year,
@@ -180,7 +182,7 @@ def _writing_row(
     reference_answer_number: int | None,
 ) -> dict[str, Any]:
     meta = source_metadata(year)
-    source_span = compact(stem, 900)
+    source_span = compact(stem, None)   # #8: 写作题面不截 (eol_import 已 cap 8000)
     return {
         "id": row_id,
         "year": year,

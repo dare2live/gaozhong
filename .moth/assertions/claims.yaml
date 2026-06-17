@@ -36,6 +36,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE source_repo LIKE 'eol_xgkii%'"
     expect: {op: "==", value: 110}
+  - id: eol-no-hard-truncation
+    claim: "EOL raw_question 无 900 硬截断 (#8: snippet 去 compact 900 限, 阅读篇章全保留; len==900=smoking gun)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE source_repo LIKE 'eol_xgkii%' AND LENGTH(raw_question)=900"
+    expect: {op: "==", value: 0}
   - id: local-pdf-reproducible
     claim: "2024/2025 真题 PDF 18 题入库 (M6: init_db Layer 4g 改 in-process import_pdfs(con) 后可复现; 防 subprocess 第二写连接锁冲突回归 → local_pdf=0)"
     type: duckdb_sql
