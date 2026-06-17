@@ -53,6 +53,21 @@ def _ln_retained(con) -> int:
         "AND json_extract_string(attrs_json,'gaokao_hit_count_ln') IS NOT NULL").fetchone()[0]
 
 
+def _status_no_edge(con) -> int:
+    """exam_status∈{core,HV_extra}(考过类) 而无 tests_word 边的词数.
+
+    考过判定收口到边 (Rule1 唯一真相) 后必=0: 旧版 token-bag 算 exam_status 与边各算,
+    347 个 core 词无边 (含停用词/屈折形不对称); 收口后 core 词必有边 by construction。
+    """
+    return con.execute("""
+        SELECT COUNT(*) FROM nodes n
+        WHERE n.node_type='word'
+          AND json_extract_string(n.attrs_json,'exam_status') IN ('core','HV_extra')
+          AND NOT EXISTS (SELECT 1 FROM edges e
+                          WHERE e.relation='tests_word' AND e.dst_id=n.concept_id)
+    """).fetchone()[0]
+
+
 def check_exam_status(con: duckdb.DuckDBPyConnection, check) -> None:
     """词×真题考过状态 3 不变量 D0 校验 (#12/#13/#14)."""
     print("\n=== (25) 词×真题考过状态 单一计算点一致性 (#12/#13/#14) ===")
@@ -66,3 +81,6 @@ def check_exam_status(con: duckdb.DuckDBPyConnection, check) -> None:
 
     retained = _ln_retained(con)
     check("gaokao_hit_count_ln 节点留存>0 (#14 防覆盖)", retained > 0, f"{retained} 节点")
+
+    no_edge = _status_no_edge(con)
+    check("考过类(core/HV) 必有 tests_word 边 (Rule1 唯一真相=边)", no_edge == 0, f"{no_edge} 无边")

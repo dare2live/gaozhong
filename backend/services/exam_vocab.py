@@ -1,15 +1,13 @@
-"""词 × 真题考过状态 — **唯一计算点** (Rule 1, 用户 2026-06-16 #12/#13/#14 整改).
+"""词 × 真题考过状态 — **唯一计算点** (Rule 1, 用户 2026-06-16 #12/#13/#14 整改; 2026-06-17 收口到边).
 
-同一事实「某词是否/在哪些真题里考过」此前在 3 处各算且矛盾:
-  - build_vocab_classification._exam_vocab (province-scoped + lemmatize, 最正确)
-  - audit/exam_coverage._tokenize_exam (province-blind, 无 lemmatize) → #13
-  - audit/extracurricular._exam_hits (province-aware, 无 lemmatize)
-此模块收敛为唯一 tokenizer + 唯一命中计数器, 三处消费者都改读它。
+「某词是否/在哪些真题里考过」的唯一真相 = **tests_word 边** (Rule 3 边一等公民):
+  - 边由 links_extra.build_tests_word 建 (lemmatize + 去停用词 + classifiable=cefr∪教材词)。
+  - 是唯一 tokenizer (build_tests_word 用此模块 _lemma_tokens); 唯一命中真相 (word_exam_hits_from_edges)。
+  - exam_status (audit/exam_coverage) + 超纲考过档 (build_vocab_classification) 都据边推
+    → 'core'/'辽宁考过' 词必有边 (core-无边=0 by construction, 杜绝 token-bag vs 边 Rule1 不一致)。
 
-§7 辽宁卷锚定: 用精确前缀 `province LIKE '辽宁%'` 区分辽宁/外省
-(不用 `%辽宁%` 子串 — '...辽宁当年自主命题' 含'辽宁'子串实为外省, 见坑7否定词子串)。
-
-**nltk WordNet 仅生成/审计期 import** (词形归并); API 运行时不经此路径。CC ≤ 10/函数。
+§7 辽宁卷锚定: 边 JOIN exam_questions 用精确前缀 `province LIKE '辽宁%'` 区分辽宁/外省
+(不用 `%辽宁%` 子串 — 见坑7否定词子串)。**nltk WordNet 仅生成/审计期 import** (词形归并)。
 """
 from __future__ import annotations
 
@@ -17,58 +15,47 @@ import re
 
 import duckdb
 
-_LIAONING_PREFIX = "辽宁%"   # §7 精确前缀, 非 %辽宁% 子串 (防否定词子串误命中)
+from backend.services.stopwords import load_stopwords
+
 _TOKEN = re.compile(r"[A-Za-z]+")
 _MIN_LEN = 2
 
 
 def _lemma_tokens(text: str, lemm) -> set[str]:
-    """题面/词 → lemmatize token 集 (token 原形 + v-lemma + n-lemma, len≥2)."""
+    """题面 → lemmatize 实词 token 集 (token 原形 + v/n-lemma, len≥2, **去停用词**).
+
+    build_tests_word 的唯一 tokenizer — 去停用词与历史 content_tokens 同口径, 否则
+    the/about/a 等功能词被当"考过"污染考点边 (坑5 停用词污染)。
+    """
+    stop = load_stopwords()
     out: set[str] = set()
     for t in _TOKEN.findall((text or "").lower()):
         if len(t) >= _MIN_LEN:
-            out.add(t)
-            out.add(lemm.lemmatize(t, "v"))
-            out.add(lemm.lemmatize(t, "n"))
+            for form in (t, lemm.lemmatize(t, "v"), lemm.lemmatize(t, "n")):
+                if form not in stop:
+                    out.add(form)
     return out
 
 
 def word_inflections(w: str, lemm) -> set[str]:
-    """词的屈折形 {w} ∪ lemmatize(w, p) for p in (v,n,a,r) — 匹配 battlefields↔battlefield."""
+    """词的屈折形 {w} ∪ lemmatize(w, p) for p in (v,n,a,r).
+
+    用于 build_vocab_classification 判'课标屈折变形'(w 的屈折形是否在 cefr) —
+    与"考过"判定无关 (考过走边)。"""
     return {w.lower()} | {lemm.lemmatize(w.lower(), p) for p in ("v", "n", "a", "r")}
 
 
-def province_exam_token_bags(con: duckdb.DuckDBPyConnection, lemm) -> tuple[set[str], set[str]]:
-    """返回 (ln_v, ws_v): 辽宁 / 外省真题 raw_question 的 lemmatize token 集 (§7 精确前缀).
+def word_exam_hits_from_edges(con: duckdb.DuckDBPyConnection) -> dict[str, dict[str, int]]:
+    """每词 {"ln": 辽宁命中题数, "all": 全部命中题数} — 从 tests_word 边 (唯一真相) 算.
 
-    唯一 tokenizer — build_vocab_classification 等都改调它, 不再各自 re.findall。
+    取代 token-bag 命中: 边是'考过'唯一真相 (Rule3), exam_status / 超纲考过档据此推 →
+    'core'/'辽宁考过' 词必有边。§7 用 province LIKE '辽宁%' 精确前缀。
     """
-    ln_v: set[str] = set()
-    ws_v: set[str] = set()
-    for raw, prov in con.execute(
-            "SELECT raw_question, province FROM exam_questions").fetchall():
-        bag = _lemma_tokens(raw, lemm)
-        (ln_v if (prov or "").startswith("辽宁") else ws_v).update(bag)
-    return ln_v, ws_v
-
-
-def word_exam_hits(con: duckdb.DuckDBPyConnection, words: set[str], lemm
-                   ) -> dict[str, dict[str, int]]:
-    """遍历 exam_questions 一次, 对每词返回 {"ln": 辽宁命中题数, "all": 全部命中题数}.
-
-    匹配 = 词的任一屈折形 ∈ 该题 lemmatize token 集 (battlefields↔battlefield)。
-    覆盖传入的全部 words (cefr+超纲); hit_count 与 tested 布尔双用 (ln>0 / all>0)。
-    单一命中计数器 — exam_coverage / extracurricular 都改读它, 不再各自 tokenize。
-    """
-    forms = {w: word_inflections(w, lemm) for w in words}
-    hits: dict[str, dict[str, int]] = {w: {"ln": 0, "all": 0} for w in words}
-    for raw, prov in con.execute(
-            "SELECT raw_question, province FROM exam_questions").fetchall():
-        bag = _lemma_tokens(raw, lemm)
-        is_ln = (prov or "").startswith("辽宁")
-        for w, fset in forms.items():
-            if fset & bag:
-                hits[w]["all"] += 1
-                if is_ln:
-                    hits[w]["ln"] += 1
-    return hits
+    rows = con.execute(
+        "SELECT SUBSTR(e.dst_id, 6) AS word, "
+        "       SUM(CASE WHEN q.province LIKE '辽宁%' THEN 1 ELSE 0 END) AS ln, "
+        "       COUNT(*) AS all_c "
+        "FROM edges e JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id, 10) "
+        "WHERE e.relation = 'tests_word' GROUP BY 1"
+    ).fetchall()
+    return {w: {"ln": int(ln), "all": int(a)} for w, ln, a in rows}

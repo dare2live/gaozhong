@@ -5,19 +5,20 @@
   C. 超纲 ∩ 辽宁考过      → HV_extra       (虽超纲但辽宁考过, 高价值扩展)
   D. 超纲 − 辽宁考过      → LV_extra       (装饰性扩展, 可降权)
 
-整改 (用户 2026-06-16):
-  #13 province-blind → 改 **辽宁口径** (只看 exam_vocab 算的辽宁命中, 不混 284 外省题)。
+整改 (用户 2026-06-16/17):
+  #13 province-blind → 改 **辽宁口径** (只看 tests_word 边的辽宁命中, 不混 284 外省题)。
   #14 整段 UPDATE 覆盖 → 本模块是 nodes.attrs_json 的 **唯一 writer**:
       一次写全 {cefr_level, exam_status, teaching_hint, gaokao_hit_count_ln,
       gaokao_hit_count_all, teaching_priority?, extracurricular?},
       extracurricular 不再写 nodes (杜绝双写覆盖)。
-  命中计数 → 唯一计算点 backend.services.exam_vocab.word_exam_hits。
+  考过判定 → **tests_word 边** (Rule3 唯一真相, exam_vocab.word_exam_hits_from_edges):
+      core 词必有边 (core-无边=0 by construction); 与 build_vocab_classification 同源 (3源一致)。
 """
 from __future__ import annotations
 
 import duckdb
 
-from backend.services.exam_vocab import word_exam_hits
+from backend.services.exam_vocab import word_exam_hits_from_edges
 from backend.services.vocab_classify import is_real_over
 
 from ._common import finding
@@ -91,17 +92,17 @@ def _write_all(con: duckdb.DuckDBPyConnection, bins: dict[str, set[str]],
     for status, words in bins.items():
         is_extra = status.endswith("_extra")
         for w in words:
-            rows.append((_attrs_for(w, status, is_extra, hits[w], cefr_lv), f"word:{w}"))
+            hit = hits.get(w, {"ln": 0, "all": 0})   # 无边词 (standard/LV) 命中 0
+            rows.append((_attrs_for(w, status, is_extra, hit, cefr_lv), f"word:{w}"))
     if rows:
         con.executemany("UPDATE nodes SET attrs_json=? WHERE concept_id=?", rows)
 
 
 def audit_vocab_4q_classification(con: duckdb.DuckDBPyConnection) -> list[dict]:
-    from nltk.stem import WordNetLemmatizer   # 审计期 import (词形归并, 单一 tokenizer)
     cefr_lv = _cefr_levels(con)
     cefr = set(cefr_lv)
     textbook = _load_textbook_words(con)
-    hits = word_exam_hits(con, cefr | textbook, WordNetLemmatizer())
+    hits = word_exam_hits_from_edges(con)   # 唯一真相=tests_word 边 (core 词必有边)
     ln_tested = {w for w, h in hits.items() if h["ln"] > 0}      # 辽宁命中 ≥1 题
     bins = _classify(cefr, textbook, ln_tested)
     _write_all(con, bins, hits, cefr_lv)

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import duckdb
 
-from backend.services.exam_vocab import word_exam_hits
+from backend.services.exam_vocab import word_exam_hits_from_edges
 from backend.services.vocab_classify import is_real_over
 
 from ._common import finding
@@ -42,10 +42,9 @@ def audit_extracurricular_in_exam(con: duckdb.DuckDBPyConnection) -> list[dict]:
     if not extra:
         return [finding("extracurricular_vs_exam", "OK", target="extracurricular set",
                         expected="N", actual="0", note="无超纲词 (extractor 未跑或全在课标内)")]
-    from nltk.stem import WordNetLemmatizer   # 审计期 import (单一 tokenizer)
-    hits = word_exam_hits(con, extra, WordNetLemmatizer())   # 唯一命中计数器 (辽宁/全部)
-    hv_ln = {w for w, h in hits.items() if h["ln"] > 0}      # 辽宁口径 HV
-    hv_all = {w for w, h in hits.items() if h["all"] > 0}    # 含外省命中
+    hits = word_exam_hits_from_edges(con)   # 唯一真相=tests_word 边 (辽宁/全部命中)
+    hv_ln = {w for w in extra if hits.get(w, {}).get("ln", 0) > 0}    # 辽宁口径 HV
+    hv_all = {w for w in extra if hits.get(w, {}).get("all", 0) > 0}  # 含外省命中
     lv = extra - hv_all
     return [
         finding("extracurricular_vs_exam", "OK",

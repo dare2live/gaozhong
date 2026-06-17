@@ -63,20 +63,30 @@ def _replace(con: duckdb.DuckDBPyConnection, relation: str, rows: list) -> int:
 
 
 def build_tests_word(con: duckdb.DuckDBPyConnection) -> int:
-    """question → word: 题面实词 (cefr ∩ token − 停用词) 即建 edge (评估考点).
+    """question → word: 题面实词 (cefr ∩ lemmatize token − 停用词) 即建 edge (评估考点).
 
-    2026-06-15: 去停用词污染 — 旧版把 the/it/to 等功能词也建边, 41% tests_word 是噪声,
-    稀释真实考点关联. 用共享 stopwords 过滤 (项目 §3.5 规则在 config/stopwords.yaml).
+    2026-06-15: 去停用词污染 — 旧版把 the/it/to 等功能词也建边, 41% tests_word 是噪声.
+    2026-06-17: 改用 exam_vocab._lemma_tokens (lemmatize + 去停用词) — 与 exam_status
+    单一计算点同口径, 否则 'absorbed'(题面) vs 'absorb'(cefr) 无 lemmatize 漏建边 →
+    exam_status='core' 却无 tests_word 边 (Rule1 不一致, 347→~0)。
     """
-    from backend.services.stopwords import content_tokens
-    cefr = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
+    from nltk.stem import WordNetLemmatizer
+
+    from backend.services.exam_vocab import _lemma_tokens
+    lemm = WordNetLemmatizer()
+    # 可分类词集 = cefr ∪ 教材词 (与 exam_coverage 分类集同口径)。
+    # 旧版只 & cefr → 教材课标派生/屈折词(assessment/announcement, 不在 cefr 但被
+    # is_real_over 折进 core) 漏建边 → exam_status='core' 却无 tests_word 边 (Rule1 不一致)。
+    classifiable = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
+    classifiable |= {r[0] for r in con.execute(
+        "SELECT DISTINCT word FROM unit_vocab_intro WHERE unit_number>0").fetchall()}
     rows: list[tuple] = []
     for qid, qtext in con.execute(
         "SELECT question_id, raw_question FROM exam_questions"
     ).fetchall():
         if not qtext:
             continue
-        toks = content_tokens({t.lower() for t in _TOKEN_RE.findall(qtext)}, cefr)
+        toks = _lemma_tokens(qtext, lemm) & classifiable   # _lemma_tokens 已去停用词
         for w in toks:
             rows.append((f"question:{qid}", f"word:{w}", 1.0, None))
     return _replace(con, "tests_word", rows)

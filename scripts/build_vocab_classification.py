@@ -24,7 +24,7 @@ import duckdb
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from backend.services.exam_vocab import province_exam_token_bags, word_inflections  # noqa: E402
+from backend.services.exam_vocab import word_exam_hits_from_edges, word_inflections  # noqa: E402
 
 DB = ROOT / "data" / "db" / "gaozhong.duckdb"
 OUT = ROOT / "data" / "structured" / "vocab_classification.jsonl"
@@ -61,24 +61,27 @@ def _is_propnoise(w: str) -> bool:
     return len(w) <= 4 and not re.search("[aeiou]", w)   # 无元音缩写
 
 
-def _classify_word(w: str, cefr: set, ln_v: set, ws_v: set, lemm) -> str:
-    forms = word_inflections(w, lemm)   # 单一计算点: {w} ∪ lemmatize(v,n,a,r)
+def _classify_word(w: str, cefr: set, ln_edged: set, all_edged: set, lemm) -> str:
+    forms = word_inflections(w, lemm)   # {w} ∪ lemmatize(v,n,a,r) — 仅判课标屈折变形
     if any(l in cefr for l in forms):
         return "课标屈折变形"
     if any(r in cefr for r in _deriv_roots(w)):
         return "课标派生"
     if _is_propnoise(w):
         return "专名/碎片"
-    if forms & ln_v:
+    # 考过判定走 tests_word 边 (唯一真相, 与 node exam_status 同源 → 3源一致 by construction)
+    if w in ln_edged:
         return "真超纲·辽宁考过"
-    return "真超纲·仅外省考过" if forms & ws_v else "真超纲·未考"
+    return "真超纲·仅外省考过" if w in all_edged else "真超纲·未考"
 
 
 def classify(con, lemm) -> dict[str, str]:
     cefr = {r[0].lower() for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     tb = {r[0].lower() for r in con.execute("SELECT DISTINCT word FROM unit_vocab_intro").fetchall()}
-    ln_v, ws_v = province_exam_token_bags(con, lemm)   # 单一 tokenizer (§7 辽宁/外省)
-    return {w: _classify_word(w, cefr, ln_v, ws_v, lemm) for w in sorted(tb - cefr)}
+    hits = word_exam_hits_from_edges(con)   # 唯一真相=tests_word 边 (§7 辽宁/外省)
+    ln_edged = {w for w, h in hits.items() if h["ln"] > 0}
+    all_edged = {w for w, h in hits.items() if h["all"] > 0}
+    return {w: _classify_word(w, cefr, ln_edged, all_edged, lemm) for w in sorted(tb - cefr)}
 
 
 def main() -> int:
