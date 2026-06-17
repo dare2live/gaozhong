@@ -56,6 +56,14 @@ def _back_matter_page(reader: PdfReader, after_start: int, n_pages: int) -> int:
     return n_pages + 1
 
 
+def _outline_unit_num(title: str) -> int | None:
+    """书签标题 → Unit 号 (Welcome=0); 非单元书签返回 None."""
+    m = re.search(r"Unit\s*(\d+)", title, re.I)
+    if m:
+        return int(m.group(1))
+    return 0 if re.search(r"Welcome", title, re.I) else None
+
+
 def _from_outline(reader: PdfReader) -> list[dict]:
     """Return [{unit_number, title_en, start_page, method='outline'}, ...]"""
     items: list[tuple[int, str, int]] = []  # (unit_number, title, start_page)
@@ -70,16 +78,9 @@ def _from_outline(reader: PdfReader) -> list[dict]:
                 walk(x)
             return
         title = (getattr(o, "title", None) or "").strip()
-        if not title:
+        unit_num = _outline_unit_num(title) if title else None
+        if unit_num is None:
             return
-        m = re.search(r"Unit\s*(\d+)", title, re.I)
-        if not m:
-            if re.search(r"Welcome", title, re.I):
-                unit_num = 0
-            else:
-                return
-        else:
-            unit_num = int(m.group(1))
         try:
             page = reader.get_destination_page_number(o) + 1
         except Exception:

@@ -237,16 +237,9 @@ def _check_21_exam_provenance(con):
     # 21e: local_pdf PDF 全文完整性 (抽到 lib, 避 god-module Rule 8)
     from scripts.lib.d0_local_pdf_check import check_local_pdf_integrity
     check_local_pdf_integrity(con, check)
-    # 21f: EOL 真题 raw_question 无 900 硬截断 + 阅读/完形非空 (#8; 子题 sentinel 除外)
-    n_900 = con.execute(
-        "SELECT COUNT(*) FROM exam_questions WHERE source_repo LIKE 'eol_xgkii%' "
-        "AND LENGTH(raw_question)=900").fetchone()[0]
-    check("EOL raw_question 无 900 硬截断 (#8)", n_900 == 0, f"{n_900} 行 len==900")
-    n_empty = con.execute(
-        "SELECT COUNT(*) FROM exam_questions WHERE source_repo LIKE 'eol_xgkii%' "
-        "AND (raw_question IS NULL OR (LENGTH(TRIM(raw_question))<10 AND raw_question NOT LIKE '%子题%'))"
-    ).fetchone()[0]
-    check("EOL raw_question 非空 (子题sentinel除外, #8)", n_empty == 0, f"{n_empty} 空")
+    # 21f: EOL 真题 raw_question 完整性 (#8, 抽到 lib 避 god-module Rule 8)
+    from scripts.lib.d0_eol_check import check_eol_integrity
+    check_eol_integrity(con, check)
 
 
 # ===== helpers (CC ≤ 4) =====
