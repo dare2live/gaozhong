@@ -37,6 +37,12 @@ from backend.services.data_sources.extract.gaokao_bench import (
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 OUT_DIR = ROOT / "data/external/gaokao_bench"
 
+# local_pdf 是这些年辽宁卷的**权威源**(更全: 含应用文/续写/语法填空分项); GAOKAO-Bench(-Updates)
+# 的同年辽宁记录是**同一份卷的重复采集**(强验证 wf_9d0ef21a B1: 2024 四篇阅读逐字相同), 让位 superseded。
+# 真相源 = scripts/import_recent_exams._local_pdf_sources() / sources.yaml(family=exam_truth_source_local_pdf);
+# 此处常量与之对账(local_pdf 仅 2024/2025; gbu 最高到 2024 → 实际仅 2024 有重复, 2025 为前瞻 guard)。
+LOCAL_PDF_LIAONING_YEARS = (2024, 2025)
+
 # 兼容 re-export (上述 import 已引入 classify_paper / infer_question_type / iter_examples /
 # LN_II_* / 路径常量); 下面只补 infer_province 这个仅 province 的 compat wrapper.
 __all__ = [
@@ -81,8 +87,12 @@ def mirror_to_jsonl(write_db_conn=None) -> dict:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     summary = {"files": set(), "examples": 0, "by_province": {}, "by_type": {}}
     db_rows = []
+    summary["superseded_by_local_pdf"] = 0
     for raw in iter_records():
         row = _to_db_row(raw)
+        if row["province"].startswith("辽宁") and row["year"] in LOCAL_PDF_LIAONING_YEARS:
+            summary["superseded_by_local_pdf"] += 1   # B1: 同卷 local_pdf 更全, gbu 让位
+            continue
         db_rows.append(row)
         summary["files"].add(row["source_file"])
         summary["examples"] += 1

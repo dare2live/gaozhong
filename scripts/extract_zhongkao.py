@@ -36,9 +36,12 @@ _OPT_RE = re.compile(r"^([A-E])[\.．]\s*(.+)$")
 
 
 def _add_opts(rec: dict, text: str) -> None:
-    """一行可能含多个选项 (A.x B.y) 或单个; 拆进 rec['options']."""
-    for mo in re.finditer(r"([A-E])[\.．]\s*([^A-E]+?)(?=\s+[A-E][\.．]|$)", text):
-        rec["options"][mo.group(1)] = mo.group(2).strip()
+    """一行可能含多个选项 (A.x B.y) 或单个; 拆进 rec['options'].
+    marker-based: 找各 'X.' 标记取到下一标记/行尾 — 修选项文本以 A-E 大写开头(Discovery/Braver)被吞 (强验证 Z1)。"""
+    markers = list(re.finditer(r"(?:^|\s)([A-E])[\.．]\s*", text))
+    for i, mo in enumerate(markers):
+        end = markers[i + 1].start() if i + 1 < len(markers) else len(text)
+        rec["options"][mo.group(1)] = text[mo.end():end].strip()
 
 
 def _parse_mcq(lines: list[str]) -> dict[int, dict]:
@@ -73,23 +76,36 @@ def _kaodian_map(paper: dict) -> dict[int, str]:
     return km
 
 
-def _record(n: int, year: int, paper: dict, mcq: dict, kmap: dict, akey: dict | None) -> dict:
-    rec = {"question_id": f"ZK-LN-{year}-{n:02d}", "year": year, "province": "辽宁",
-           "exam_type": "中考", "paper_type": paper["paper_type"], "question_type": _qtype(n),
-           "question_number": n, "source": paper["source"], "provenance": "B", "answer": None}
-    if n in mcq and mcq[n]["options"]:                    # 题面驱动(2025): 有 stem+options
-        rec["raw_question"], rec["options"] = mcq[n]["stem"], mcq[n]["options"]
-    elif paper.get("stem_walled"):                        # 答案key驱动(2024): 题干源门控
+def _set_stem(rec: dict, n: int, mcq: dict, paper: dict) -> None:
+    """题面(2025): stem+options (四选一仅A-D, 挡五选四bank渗入 强验证Z1); 门控(2024): 标 walled."""
+    if n in mcq and mcq[n]["options"]:
+        opts = mcq[n]["options"]
+        if 1 <= n <= 16:
+            opts = {k: v for k, v in opts.items() if k in "ABCD"}
+        rec["raw_question"], rec["options"] = mcq[n]["stem"], opts
+    elif paper.get("stem_walled"):
         rec["stem_status"] = "walled(各免费源门控,仅官方答案可得)"
-    if n in kmap:
-        rec["kaodian"] = kmap[n]                          # 逐空语法考点
-    if akey and str(n) in akey:                           # 官方答案 key (2024 全45题)
+
+
+def _set_answer(rec: dict, n: int, kmap: dict, akey: dict | None, paper: dict) -> None:
+    """答案: 官方key(2024全45) > 语篇填空考点label英文部分(2025 hint可得) > has_answers占位."""
+    if akey and str(n) in akey:
         rec["answer"] = akey[str(n)]
-    elif n in kmap:                                       # 2025: 语篇填空答案=考点label英文部分(hint可得)
+    elif n in kmap:
         em = re.match(r"^([a-zA-Z][a-zA-Z ]*)", kmap[n])
         rec["answer"] = em.group(1).strip() if em else None
     elif paper.get("has_answers"):
         rec["answer"] = "见答案源"
+
+
+def _record(n: int, year: int, paper: dict, mcq: dict, kmap: dict, akey: dict | None) -> dict:
+    rec = {"question_id": f"ZK-LN-{year}-{n:02d}", "year": year, "province": "辽宁",
+           "exam_type": "中考", "paper_type": paper["paper_type"], "question_type": _qtype(n),
+           "question_number": n, "source": paper["source"], "provenance": "B", "answer": None}
+    _set_stem(rec, n, mcq, paper)
+    if n in kmap:
+        rec["kaodian"] = kmap[n]                          # 逐空语法考点
+    _set_answer(rec, n, kmap, akey, paper)
     return rec
 
 

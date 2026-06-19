@@ -33,3 +33,10 @@ def check_local_pdf_integrity(con: duckdb.DuckDBPyConnection, check) -> None:
     check("local_pdf 题干无硬截断(len=2000)", trunc == 0, f"{trunc} 行")
     check("local_pdf 阅读/完形/语法 answer 已填", noans == 0, f"{noans} 行空答案")
     check("local_pdf 题干无卷尾附录污染", polluted == 0, f"{polluted} 行")
+    # B1 (强验证 wf_9d0ef21a): 2024/2025 辽宁卷 local_pdf 权威, GAOKAO-Bench 同卷重复已 supersede。
+    dup = con.execute(
+        "SELECT year, COUNT(*) FROM exam_questions WHERE year IN (2024, 2025) "
+        "AND province LIKE '辽宁%' AND source_repo <> 'local_pdf' GROUP BY year"
+    ).fetchall()
+    check("2024/2025 辽宁卷无 GAOKAO-Bench 重复(local_pdf 单一权威)", not dup,
+          f"{dup} (gbu 同卷未 supersede)" if dup else "0 重复")

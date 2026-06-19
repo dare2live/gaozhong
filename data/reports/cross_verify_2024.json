@@ -4,7 +4,7 @@
   "pdf_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/local_pdfs/2024_xgkii_english.pdf",
   "pdf_chars": 27475,
   "pdf_unique_words": 1141,
-  "structured_entries": 27,
+  "structured_entries": 21,
   "jsonl_entries": 6,
   "checks": [
     {
@@ -38,21 +38,6 @@
       ]
     },
     {
-      "qid": "gbu24/2024_English_Cloze_Test/2",
-      "type": "完形填空(七选五/语篇)",
-      "match": "pass",
-      "match_rate": 1.0,
-      "matched_words": 20,
-      "total_words": 20,
-      "sample_words": [
-        "Overtourism",
-        "Real",
-        "Help",
-        "Travel",
-        "promotes"
-      ]
-    },
-    {
       "qid": "gbu24/2024_English_Fill_in_Blanks/0",
       "type": "完形填空",
       "match": "warn",
@@ -80,21 +65,6 @@
         "demotivated",
         "other",
         "folks"
-      ]
-    },
-    {
-      "qid": "gbu24/2024_English_Fill_in_Blanks/2",
-      "type": "完形填空",
-      "match": "pass",
-      "match_rate": 1.0,
-      "matched_words": 20,
-      "total_words": 20,
-      "sample_words": [
-        "When",
-        "decided",
-        "house",
-        "Europe",
-        "years"
       ]
     },
     {
@@ -215,66 +185,6 @@
         "species",
         "Earth",
         "before"
-      ]
-    },
-    {
-      "qid": "gbu24/2024_English_Reading_Comp/8",
-      "type": "阅读理解",
-      "match": "pass",
-      "match_rate": 1.0,
-      "matched_words": 20,
-      "total_words": 20,
-      "sample_words": [
-        "Choice",
-        "Walks",
-        "Beginner",
-        "Experienced",
-        "Walkers"
-      ]
-    },
-    {
-      "qid": "gbu24/2024_English_Reading_Comp/9",
-      "type": "阅读理解",
-      "match": "pass",
-      "match_rate": 1.0,
-      "matched_words": 20,
-      "total_words": 20,
-      "sample_words": [
-        "ever",
-        "train",
-        "station",
-        "realize",
-        "forgot"
-      ]
-    },
-    {
-      "qid": "gbu24/2024_English_Reading_Comp/10",
-      "type": "阅读理解",
-      "match": "pass",
-      "match_rate": 1.0,
-      "matched_words": 20,
-      "total_words": 20,
-      "sample_words": [
-        "know",
-        "fresh",
-        "best",
-        "when",
-        "comes"
-      ]
-    },
-    {
-      "qid": "gbu24/2024_English_Reading_Comp/11",
-      "type": "阅读理解",
-      "match": "pass",
-      "match_rate": 1.0,
-      "matched_words": 20,
-      "total_words": 20,
-      "sample_words": [
-        "Given",
-        "astonishing",
-        "potential",
-        "transform",
-        "lives"
       ]
     },
     {
@@ -504,7 +414,7 @@
     }
   ],
   "summary": {
-    "pass": 21,
+    "pass": 15,
     "warn": 12,
     "fail": 0,
     "skip": 0

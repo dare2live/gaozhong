@@ -64,14 +64,11 @@
 
 | # | 切片 | 真错 | 根因 (我自核) | 状态 |
 |---|---|---|---|---|
-| B1 | gaokao-ln-provenance | 2024辽宁卷 local_pdf(9)+gbu24(6) **同卷双源重复入库** =15 应=9 | 内容级重复, exact-string去重漏(两源文本微差) | 待修(高) |
-| Z1 | zk2025-stems | OCR丢首位'1' (Q14/15/16→4/5/6) → Q4-7错位/丢; 选项以A-E大写开头被吞 | `_add_opts` 正则 `[^A-E]+?` bug + OCR题号碰撞 | 待修(中) |
-| L3a | curr-L3 | `ame`/`fu` 垃圾词条入三级 | AmE编辑标记/full截断残片当词 | 待修(高) |
-| L3b | curr-L3 | `app+application`/`ad+advertisement`/`AI→artificial+intelligence` 缩写展开**重复计数** | 词头括号展开 `app(=application)` 两者都抽 | 待修(中) |
-| L3c | curr-L3 | `color`(应colour)/AmE变体重复 + `fill`整行丢/`miss`大小写折叠误归二级 | 去栏交错/大小写折叠 | 待修(中) |
-| H1 | hujiao-vocab | 15条 zh_def 截断 (`人人；所有人`→`人人；`) | **文本层源头即截断**(CID腐蚀), 提取忠于损坏文本; 未识别尾随；标待OCR | 待修(低, 释义非词头) |
-| L2a | curr-L2 | `ice cream`/`ping-pong` 多词/连字词漏; `open`/`o'clock` 级别 | 分词按空格/slash拆, 多词条目丢 | 待评(策略) |
-| G1 | curr-grammar | 2条label字符截断 (`主语动词`应`主语+动词`) | 提取丢`+`字符 | 待修(低) |
+| B1 | gaokao-ln-provenance | 2024辽宁卷 local_pdf(9)+gbu24(6) **同卷双源重复入库** =15 应=9 | 内容级重复, exact-string去重漏(两源文本微差) | ✅修(656c→) exam.py LOCAL_PDF_LIAONING_YEARS supersede + D0断言"2024/2025辽宁无GAOKAO-Bench重复" + 重建2024辽宁=9 |
+| Z1 | zk2025-stems | OCR丢首位'1' (Q14/15/16→4/5/6) → Q4-7错位/丢; 选项以A-E大写开头被吞 | `_add_opts` 正则 `[^A-E]+?` bug + OCR题号碰撞 | ✅修 _add_opts marker-based重写 + 四选一仅A-D + OCR数字修正; Q1-16全4选项(修复11题); D0/junior绿。**五选四17-20待补(task#19)** |
+| L3a/b/c | curr-L3 | `ame`/`fu`垃圾 + `app+application`缩写展开重复 + AmE变体(color)重复 + fill丢/miss误归 | `_cross_validate` 的 `(ocr & real)` 把OCR读到的括号gloss当真词加 | 📋task#17(KG骨干, 谨慎手术, agent有误报) |
+| H1 | hujiao-vocab | 15条 zh_def 截断 (`人人；所有人`→`人人；`) | **文本层源头即截断**(CID腐蚀), 提取忠于损坏文本; 未识别尾随；标待OCR | 📋task#18(低, 释义非词头) |
+| L2a/G1 | curr-L2/grammar | `ice cream`/`ping-pong`多词漏 + 2条label字符截断 | 分词按空格拆 / _strip_plus剥inline+ | 📋task#20(低) |
 
 **误报 (对抗层裁掉, 不改数据)**: curr-grammar引号类型/疑问句子项(非硬错) · hujiao元统计项 · curr-L3 `if`(真词非碎片)/`amE`大小写。
 
