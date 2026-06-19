@@ -30,6 +30,12 @@ STATUS_HINT = {
     "LV_extra":  "教材超纲且辽宁高考不考, 可降权/选学",
 }
 
+# stage 维 (K12 分阶段平台, docs/k12_staged_platform_design.md): cefr_level→引入阶段。
+# tag-not-exclude: with/the 等义教词标"义务教育"(非高中新词), 留图里供按 stage 过滤, 不删。
+# 小学/初中 细分待初中课标(义务教育2022 二级/三级)抽取后 reconcile (S1/S4)。
+_STAGE = {"义教": "义务教育", "必修": "高中必修", "选必": "高中选修",
+          "校本扩展": "校本超纲", "课标变形": "课标变形"}
+
 
 def _load_textbook_words(con: duckdb.DuckDBPyConnection) -> set[str]:
     try:
@@ -75,6 +81,7 @@ def _attrs_for(word: str, status: str, is_extra: bool,
     else:
         cefr_field = "课标变形"   # 课标词的屈折/派生 (§1.2 实为课标内, 非超纲)
     parts.append(f'"cefr_level": "{cefr_field}"')
+    parts.append(f'"stage": "{_STAGE.get(cefr_field, cefr_field)}"')
     parts.append(f'"exam_status": "{status}"')
     parts.append(f'"teaching_hint": "{STATUS_HINT[status]}"')
     parts.append(f'"gaokao_hit_count_ln": {hit["ln"]}')

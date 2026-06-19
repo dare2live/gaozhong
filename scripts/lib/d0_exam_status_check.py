@@ -68,11 +68,33 @@ def _status_no_edge(con) -> int:
     """).fetchone()[0]
 
 
+def _stage_missing(con) -> int:
+    """有 exam_status 却无 stage 的 word 节点数 (K12 分阶段: 每分类词必带 stage)."""
+    return con.execute("""
+        SELECT COUNT(*) FROM nodes WHERE node_type='word'
+          AND json_extract_string(attrs_json,'exam_status') IS NOT NULL
+          AND json_extract_string(attrs_json,'stage') IS NULL
+    """).fetchone()[0]
+
+
+def _yiwu_stage_vs_cefr(con) -> tuple[int, int]:
+    """义务教育 stage 词数 vs cefr 义教级词数 (应相等, stage 派生自 cefr_level=义教)."""
+    n_stage = con.execute("SELECT COUNT(*) FROM nodes WHERE node_type='word' "
+        "AND json_extract_string(attrs_json,'stage')='义务教育'").fetchone()[0]
+    n_cefr = con.execute("SELECT COUNT(*) FROM cefr_vocab WHERE cefr_level='义教'").fetchone()[0]
+    return n_stage, n_cefr
+
+
 def check_exam_status(con: duckdb.DuckDBPyConnection, check) -> None:
-    """词×真题考过状态 3 不变量 D0 校验 (#12/#13/#14)."""
+    """词×真题考过状态 3 不变量 + stage 标注 D0 校验 (#12/#13/#14 + K12 分阶段)."""
     print("\n=== (25) 词×真题考过状态 单一计算点一致性 (#12/#13/#14) ===")
     viol = _province_violation(con)
     check("province一致性: core/HV_extra 必辽宁命中>0 (§7, #13)", viol == 0, f"{viol} 违反")
+
+    s_miss = _stage_missing(con)
+    check("每分类词带 stage (K12 分阶段, tag-not-exclude)", s_miss == 0, f"{s_miss} 缺 stage")
+    n_st, n_cf = _yiwu_stage_vs_cefr(con)
+    check("义务教育 stage 数==cefr 义教级 (stage 派生自 cefr_level)", n_st == n_cf, f"stage={n_st} cefr义教={n_cf}")
 
     node_hv = _node_hv_count(con)
     jsonl_ln = _jsonl_ln_tested_count()
