@@ -48,7 +48,10 @@ def _parse(line: str) -> tuple[str, str, str] | None:
     if "(cid:" in zh or "ud:" in zh:
         zh_clean = "待OCR"
     elif any("一" <= ch <= "鿿" for ch in zh):
-        zh_clean = zh[:40]
+        zh_clean = zh[:60]
+        # 强验证 H1: 释义以分隔符(；，、（)结尾 = 源文本层CID吃后半(人人；所有人→人人；); 诚实标不完整。
+        if zh_clean.rstrip().endswith(("；", "，", "、", "（", "(", ";", ",")):
+            zh_clean = zh_clean.rstrip() + "…(文本层截断待补全)"
     else:
         return None
     return (word, m.group(2), zh_clean)
