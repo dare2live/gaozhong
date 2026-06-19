@@ -3,7 +3,20 @@
   "source_url": "https://files.eduuu.com/ohr/2024/08/22/150855_66c6e407a4766.zip",
   "via": "zhongkao.com/e/20240822/66c6e4338504b.shtml",
   "sha_bytes": 189209,
-  "content": "2024辽宁中考英语真题答案(图)",
+  "content": "2024辽宁中考英语真题官方答案(图片版); 全45题答案+语篇填空语法考点+阅读与表达范例+作文范文",
   "acquired": "2026-06-17 browser(Chrome MCP)",
-  "verify": "§1.4 结构匹 book118 45题90分"
+  "verify": "§1.4 结构匹 book118 45题90分",
+  "answer_validation": "2026-06-19 paddleocr(answer_ocr.txt)×视觉裁决: 11.png(637x673)裁3块放大4x精读 1-40与PaddleOCR全一致(初次扫读误差纠正); 19.E确认17-20五选四",
+  "stem_acquisition_walled": {
+    "intent": "按2025方法(Scribd页图→OCR×视觉)获取完整题面",
+    "outcome": "失败 — 题面各免费源全门控",
+    "tried": [
+      "Scribd document/803419295 (精品解析原卷版): 学科网PDF水印再上传, 直连CDN images/N-hash仅缩略图(635x459起)/占位图(90x68), 正文被组卷网+学科网水印挡=空白预览页, 不可用",
+      "kaosheng.com/down/202410/26/684.html: Word原卷0.19M, 但下载需登录(门控)",
+      "中考网下载版zip: 解包仅含11.png答案图, 无题面",
+      "教习网51jiaoxi.com/doc-16795745.html(文字版原卷): 滑块验证码(按约束停)",
+      "学科网zxxk.com(源头): 付费"
+    ],
+    "decision": "不破验证码/不登录/不付费/不伪造题面(mio失败先承认+D0诚实). 题面标 stem_status=walled, 答案/考点用官方key. 用户如能提供2024题面doc(同2025), 可补全题面驱动结构化"
+  }
 }

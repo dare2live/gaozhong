@@ -61,41 +61,64 @@ def _parse_mcq(lines: list[str]) -> dict[int, dict]:
     return out
 
 
-def _record(n: int, year: int, paper: dict, mcq: dict, gp: list, has_key: bool) -> dict:
+def _kaodian_map(paper: dict) -> dict[int, str]:
+    """统一语篇填空(31-40)考点 — 坑19 跨年异构: 2024=section三 grammar_points dict / 2025=list."""
+    km: dict[int, str] = {}
+    for s in paper["sections"]:
+        gp = s.get("grammar_points")
+        if isinstance(gp, dict):                          # 2024: {"31":"and连词",...}
+            km.update({int(k): v for k, v in gp.items()})
+        elif isinstance(gp, list):                        # 2025: 逐空列表
+            km.update({31 + i: v for i, v in enumerate(gp)})
+    return km
+
+
+def _record(n: int, year: int, paper: dict, mcq: dict, kmap: dict, akey: dict | None) -> dict:
     rec = {"question_id": f"ZK-LN-{year}-{n:02d}", "year": year, "province": "辽宁",
            "exam_type": "中考", "paper_type": paper["paper_type"], "question_type": _qtype(n),
            "question_number": n, "source": paper["source"], "provenance": "B", "answer": None}
-    if n in mcq and mcq[n]["options"]:
+    if n in mcq and mcq[n]["options"]:                    # 题面驱动(2025): 有 stem+options
         rec["raw_question"], rec["options"] = mcq[n]["stem"], mcq[n]["options"]
-    if 31 <= n <= 40 and gp:
-        rec["kaodian"] = gp[n - 31]                       # 逐空语法考点
-        em = re.match(r"^([a-zA-Z][a-zA-Z ]*)", gp[n - 31])
-        rec["answer"] = em.group(1).strip() if em else None   # 英文答案部分 (hint 可得)
-    elif has_key:
+    elif paper.get("stem_walled"):                        # 答案key驱动(2024): 题干源门控
+        rec["stem_status"] = "walled(各免费源门控,仅官方答案可得)"
+    if n in kmap:
+        rec["kaodian"] = kmap[n]                          # 逐空语法考点
+    if akey and str(n) in akey:                           # 官方答案 key (2024 全45题)
+        rec["answer"] = akey[str(n)]
+    elif n in kmap:                                       # 2025: 语篇填空答案=考点label英文部分(hint可得)
+        em = re.match(r"^([a-zA-Z][a-zA-Z ]*)", kmap[n])
+        rec["answer"] = em.group(1).strip() if em else None
+    elif paper.get("has_answers"):
         rec["answer"] = "见答案源"
     return rec
+
+
+def _load_mcq(d: Path) -> dict[int, dict]:
+    """题面驱动: 读 exam_ocr.txt 题干 (2025); 无 OCR 则空 (2024 答案key驱动)."""
+    ocr = d / "exam_ocr.txt"
+    if not ocr.exists():
+        return {}
+    lines = ocr.read_text(encoding="utf-8").splitlines()
+    try:                                                  # 跳过注意事项: '第一部分' 之后才算题
+        start = next(i for i, l in enumerate(lines) if "第一部分" in l)
+        lines = lines[start:]
+    except StopIteration:
+        pass
+    return _parse_mcq(lines)
 
 
 def build(year: int) -> dict:
     d = ROOT / "data" / "junior_high" / "exams" / f"{year}_liaoning"
     paper = json.loads((d / "paper_structure.json").read_text(encoding="utf-8"))
-    ocr_lines = (d / "exam_ocr.txt").read_text(encoding="utf-8").splitlines()
-    # 跳过注意事项: 从 '第一部分' 之后才算题
-    try:
-        start = next(i for i, l in enumerate(ocr_lines) if "第一部分" in l)
-        ocr_lines = ocr_lines[start:]
-    except StopIteration:
-        pass
-    mcq = _parse_mcq(ocr_lines)
-    gp = next((s.get("grammar_points", []) for s in paper["sections"] if s["no"] == "三"), [])
-    has_key = paper.get("has_answers")
-    rows = [_record(n, year, paper, mcq, gp, has_key) for n in range(1, 46)]
-    out = d / "exam_questions.jsonl"
-    with out.open("w", encoding="utf-8") as fh:
+    mcq, kmap = _load_mcq(d), _kaodian_map(paper)
+    akey = paper.get("answer_key")                        # 答案key驱动: 官方答案 (2024)
+    rows = [_record(n, year, paper, mcq, kmap, akey) for n in range(1, 46)]
+    with (d / "exam_questions.jsonl").open("w", encoding="utf-8") as fh:
         for r in rows:
             fh.write(json.dumps(r, ensure_ascii=False) + "\n")
-    return {"year": year, "questions": len(rows),
+    return {"year": year, "mode": "答案key驱动" if akey else "题面驱动", "questions": len(rows),
             "有options(MCQ)": sum(1 for r in rows if r.get("options")),
+            "有答案": sum(1 for r in rows if r.get("answer")),
             "语篇填空带考点": sum(1 for r in rows if r.get("kaodian"))}
 
 

@@ -4,14 +4,19 @@
   "exam_type": "中考",
   "paper_type": "辽宁省统一(2024起,辽教发〔2021〕49号)",
   "total_written": 90,
-  "source": "中考网 zhongkao.com (files.eduuu.com答案图 11.png OCR)",
+  "source": "中考网 zhongkao.com (files.eduuu.com答案图 11.png)",
   "provenance": "B(民间聚合)",
-  "note": "答案+结构+语篇填空语法答案+作文范文; 题干stem待DOCX(walled)",
+  "has_answers": true,
+  "stem_walled": true,
+  "note": "官方答案key全45题+语篇填空语法考点+阅读与表达范例答案+作文范文; 题干stem各免费源全门控(Scribd学科网水印空白/kaosheng登录/中考网仅答案/教习网滑块/学科网付费),标unknown不伪造",
+  "answer_validation": "paddleocr(answer_ocr.txt)×视觉裁决: 11.png(637x673)裁3块放大4x精读, 1-40与PaddleOCR全一致(初次扫读误差已纠); 19.E确认17-20五选四",
   "sections": [
     {
       "no": "一",
-      "type": "选择题(含16-20五选四,删单选)",
-      "range": "1-20"
+      "type": "阅读理解(1-16四选一 + 17-20五选四/选句填空)",
+      "range": "1-20",
+      "score": 40,
+      "note": "19.E=五选四含E选项, 删单选(对接高考方向)"
     },
     {
       "no": "二",
@@ -46,13 +51,27 @@
     {
       "no": "五",
       "type": "书面表达(应用文,同高考)",
+      "range": "45-45",
       "score": 20
     }
   ],
+  "answer_key": {
+    "1": "C", "2": "A", "3": "B", "4": "B", "5": "D", "6": "D", "7": "A", "8": "C",
+    "9": "A", "10": "B", "11": "D", "12": "C", "13": "A", "14": "D", "15": "B", "16": "C",
+    "17": "D", "18": "A", "19": "E", "20": "C",
+    "21": "B", "22": "D", "23": "A", "24": "C", "25": "B", "26": "D", "27": "C", "28": "D", "29": "A", "30": "C",
+    "31": "and", "32": "are needed", "33": "hands", "34": "the", "35": "to reach",
+    "36": "had", "37": "more exciting", "38": "me", "39": "in", "40": "certainly",
+    "41": "It is the quality of being friendly.",
+    "42": "It helps us know about ourselves. It develops our problem-solving skills. It also gives us the chance to be thankful.",
+    "43": "She sat next to a new student at lunch.",
+    "44": "开放题(言之有理即可),示例见答案",
+    "45": "应用文范文(招募同学参加暑期航模设计活动),见答案"
+  },
   "reform_aligns_gaokao": [
     "删单选",
-    "增五选四(匹配)",
-    "语篇填空=高考语法填空",
+    "增五选四(匹配/选句填空)",
+    "语篇填空=高考语法填空(无选项,考时态/被动/比较级/冠词/不定式/介词/连词/词性变化)",
     "阅读与表达开放题",
     "书面表达应用文"
   ]

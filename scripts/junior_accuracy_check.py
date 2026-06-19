@@ -14,7 +14,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 S = ROOT / "data" / "junior_high" / "structured"
+EXAMS = ROOT / "data" / "junior_high" / "exams"
 FAIL = []
+
+
+def _qtype_expect(n: int) -> str:
+    """中考题型分段不变量 (与 extract_zhongkao._qtype 同口径; D0 单一真相)."""
+    if 1 <= n <= 16:
+        return "阅读理解(四选一)"
+    if 17 <= n <= 20:
+        return "阅读理解(五选四/选句填空)"
+    if 21 <= n <= 30:
+        return "完形填空"
+    if 31 <= n <= 40:
+        return "语篇填空(语法填空)"
+    if 41 <= n <= 44:
+        return "阅读与表达(开放问答)"
+    return "书面表达(应用文)"
 
 
 def check(name, ok, detail=""):
@@ -66,11 +82,50 @@ def _check_hujiao(hj) -> None:
     check("F5 沪教词量护栏 (800-1400)", 800 <= n_hj <= 1400, f"{n_hj}")
 
 
+def _zk_load(y: str) -> list | None:
+    f = EXAMS / f"{y}_liaoning" / "exam_questions.jsonl"
+    return [json.loads(l) for l in f.open(encoding="utf-8")] if f.exists() else None
+
+
+def _zk_struct_ok(r: list) -> bool:
+    """45题 + id唯一 + 题号1-45连续."""
+    nums = sorted(x["question_number"] for x in r)
+    return len(r) == 45 and len({x["question_id"] for x in r}) == 45 and nums == list(range(1, 46))
+
+
+def _zk_meta_ok(r: list) -> bool:
+    """每题 province=辽宁(§7) + 中考 + 题型分段口径一致."""
+    return all(x["province"] == "辽宁" and x["exam_type"] == "中考"
+               and x["question_type"] == _qtype_expect(x["question_number"]) for x in r)
+
+
+def _zk_kaodian_ok(r: list) -> bool:
+    """语篇填空(31-40)逐空带语法考点 (高考语法填空对齐核心数据)."""
+    return all(x.get("kaodian") for x in r if 31 <= x["question_number"] <= 40)
+
+
+def _check_zhongkao() -> None:
+    """F9 中考真题结构化 D0 (坑17 新数据入门). 2024答案key驱动→全45官方答案; 2025题面驱动→语篇填空考点."""
+    for y in ("2024", "2025"):
+        r = _zk_load(y)
+        if r is None:
+            check(f"F9 中考{y} exam_questions 存在", False, "缺文件")
+            continue
+        ok = _zk_struct_ok(r) and _zk_meta_ok(r) and _zk_kaodian_ok(r)
+        check(f"F9 中考{y}: 45题/id唯一/辽宁/题型分段/语篇填空考点全", ok, f"n={len(r)}")
+    r = _zk_load("2024")
+    if r:
+        mcq_ok = all(x["answer"] in ("A", "B", "C", "D", "E") for x in r if 1 <= x["question_number"] <= 30)
+        check("F9b 中考2024 官方答案全45 + MCQ(1-30)∈{A-E}", all(x.get("answer") for x in r) and mcq_ok,
+              "官方key驱动")
+
+
 def main() -> int:
     print("=== 初中子系统 D0 校验 (坑17 补门, 审计 F1-F8) ===")
     cur, hj = _words("curriculum_vocab.jsonl"), _words("hujiao_vocab.jsonl")
     _check_curriculum(cur)
     _check_hujiao(hj)
+    _check_zhongkao()
     check("F6 语法项目=71 (含5理解项)", len(_words("grammar_items.jsonl")) == 71,
           f"{len(_words('grammar_items.jsonl'))}")
     cur_words = {r["word"] for r in cur} | {r["word"] for r in hj}
