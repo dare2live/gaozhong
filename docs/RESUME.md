@@ -28,16 +28,17 @@
 - **设计深化**: junior_high_subsystem_design.md §10 加**双向贯通+跨阶段语义扩展5维**(词义扩展/搭配/语法deepens/语篇/思维品质/主题spiral + 回溯补救+受控渗透+评估轨迹)。删重复 k12_staged_platform_design.md。
 - ⚠️ power 案例: 当前 stage=高中必修(仅高中cefr口径); 用户举 power=初中力量 → 待 S1 初中三级加载后 S4 reconcile 重标。
 
-## 🚦 待用户拍板 (BLOCKER §9.4) — 副业教材/中考拉取阻塞于此
-**项目定位 = 服务沈阳本市 / 覆盖全辽宁?** 决定沪教牛津是否硬阻塞:
-- 研究证实**沈阳初中=沪教牛津版**(4源HIGH), 本地人教5+外研6册**是错版**(那是其它13市的)。
-- 服务沈阳→必先补沪教牛津7-9年级(当前0)=硬阻塞; 覆盖全辽宁→现有版本覆盖13市, 沪教是沈阳缺口。
-- 未拍板前: 不锚定教材主用版、不拉沪教牛津、不拉中考(防 gaokao 卷型坑)。
+### D. 定位已决「服务沈阳本市」+ 沪教牛津已获取 + Phase1 课标落地 (2026-06-17)
+- **定位拍板 = 服务沈阳本市** → 主用版锚定**沪教牛津(广深沈通用,上海教育出版社)**; 中考=沈阳省统一卷(2024起)。
+- **沪教牛津6册已下** `data/junior_high/textbooks/hujiao/{7a,7b,8a,8b,9a,9b}.pdf` (gitignore同高中, manifest track): 源 TapXWorld/ChinaTextbook(同高中渠道), §1.4 双源核验(版权页**辽宁批文[2018]3** + Oxford原作者 + 六三制7-9 ≠上海五四制 + 美英桥)。⚠️ 文本层 InDesign 乱码**待 OCR**(同高中坑)。⚠️ 别混同目录沪外教版。
+- **Phase1 课标抽取**: 义务课标2022 → curriculum_vocab.jsonl(1647: 小学502+初中1145, 三级1593/1600 CMap漏~7不凑) + grammar(66)。stage切分用集合交(不靠损坏星标)。S4桥接: 义务∩高中义教=1333(84%)。
+- **sherpa init**: `.sherpa/takeover.yaml` 定制为本仓3门+真相源(D0/stop/moth/map/junior), `sherpa takeover --repo .` 可用。
 
 ## 下一步 (优先级)
-1. **[需用户决策]** 定位拍板(沈阳/全辽宁) → 解锁教材/中考拉取。
-2. **初中 Phase1 (课标侧不阻塞, 可即开)**: 抽义务课标2022 词汇表(三级assert==1600含505带*)+语法(idx144-148) → stage真相源; S4与高中义教词对账(power重标)。parser已起 `scripts/lib/junior_high_curriculum.py`。
-3. 高中侧纯代码债: milestone_b_rebuild CC>10(工具脚本,低优先)。
+1. **沪教牛津 OCR + 结构化** (教材层): 重 OCR(文本层乱码) → 拆单元/词表/语篇, 像高中 textbook/section/vocab pipeline。落 junior 独立 DB(gaozhong_junior.duckdb, §6不ATTACH) + 独立D0门。
+2. **沈阳中考真题拉取**: 2024+省统一卷(对接高考方向, 可入review); ≤2023自主卷仅分布快照(PIT分段, 坑12)。源民间聚合(中考网)。
+3. **S4 power-reconcile 落地**: 初中三级 stage 回填高中 word 节点(power 等义教词细分 小学/初中); 16%边界带逐案。
+4. 高中侧纯代码债: milestone_b_rebuild CC>10(工具脚本,低优先)。
 
 ## 真相源/门 (live, 不引文档旧数字)
 - D0: `python3 scripts/data_accuracy_check.py` (exit0)

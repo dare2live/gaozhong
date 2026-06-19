@@ -1,0 +1,41 @@
+kind: takeover_checklist
+name: gaozhong
+# 新 session 第一条命令: sherpa takeover --repo .
+# 每节 = 一条只读命令 + 判定: fail_regex→FAIL / warn_regex→WARN /
+#   ok_requires_regex→必须匹配否则FAIL (探活节必配, 沉默≠成功)。
+# 命令非零退出/超时 = FAIL (fail-closed)。live 状态以脚本为准, 不引文档旧数字。
+sections:
+  - id: git-status
+    title: "脏 worktree (有未 commit = 上个 session 没收尾)"
+    command: ["git", "status", "--short"]
+    warn_regex: "."
+
+  - id: d0-accuracy
+    title: "D0 100% 准确率门 (任意数据+关联 100% 准, 0错才 exit0)"
+    command: ["python3", "scripts/data_accuracy_check.py"]
+    timeout_s: 180
+    ok_requires_regex: "D0 100% 准确率达成"
+    fail_regex: "FAIL|❌"
+
+  - id: stop-gate
+    title: "Stop 门 (audit FAIL/WARN + CC>15 + 架构契约 + 前端 inline)"
+    command: ["bash", "scripts/stop_gate.sh"]
+    timeout_s: 180
+
+  - id: moth-assert
+    title: "moth 弹仓 (声称-实况漂移; verdict=PASS 才健康)"
+    command: ["bash", "-c", "moth assert --repo . 2>&1 | tail -1"]
+    ok_requires_regex: "verdict=PASS"
+    fail_regex: "fail=[1-9]|error=[1-9]"
+
+  - id: map-doctor
+    title: "项目地图 live 状态 (模块/门/弹仓/DB 计数单一入口)"
+    command: ["python3", "-m", "scripts.tools.map", "doctor"]
+    timeout_s: 120
+
+  # 辽宁卷锚定(§7 辽宁188)已由 map-doctor 节报 "真题472(辽宁188)", 不另开节避嵌套引号坑。
+
+  - id: junior-subsystem
+    title: "初中子系统 (沪教牛津6册 + 义务课标抽取产物在位)"
+    command: ["bash", "-c", "ls data/junior_high/textbooks/hujiao/*.pdf 2>/dev/null | wc -l | tr -d ' '; ls data/junior_high/structured/curriculum_vocab.jsonl 2>/dev/null && echo VOCAB_OK"]
+    ok_requires_regex: "VOCAB_OK"
