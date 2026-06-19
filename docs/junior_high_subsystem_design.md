@@ -1,5 +1,10 @@
 # 初中 + 中考 子系统顶层设计 (architect-controller, 2026-06-17)
 
+> ⚠️ **架构决策以 `docs/k12_platform_master_design.md` (v2, 平台级最高设计) 为准** — 经对抗评审, master v2 修订了本文若干早期决策:
+> ① **物理布局 = 单库 `gaozhong.duckdb` + node_type/attrs.stage** (非本文 §3/§4 的 separate-DB `gaozhong_junior.duckdb`+VIEW; §6"不ATTACH"原是 gaozhong↔gaokao 跨项目约束, 非 junior↔senior 同项目);
+> ② **canonical 带 sense 节点** (义项才是 stage 最小单位, power 实证; word 仅 first_introduced_stage); ③ verdict 收敛 = **REVISE** (与本文 §11.3 一致, 地基 6 BLOCK 未修)。
+> 本文 §0-§10 的立意/stage 原语/五维深化/研究核验仍有效; §3/§4 物理布局段以 master v2 §4 覆盖。
+
 > 用户立项: 拉沈阳中考英语真题 + 初中教材 + 课标, 像高中项目一样标注 vocab/grammar/考点;
 > 核心洞察: "本项目里 with/the 之类明显不是高中词, 处理不便; **标注 stage 后就方便**"。
 > 愿景: 本项目 → **初中+高中 统一教学/学习平台**。本次搭框架 + 标注, **将来打通**(非本次合并)。
