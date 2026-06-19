@@ -43,9 +43,13 @@ def _parse(line: str) -> tuple[str, str, str] | None:
     if not (2 <= len(word) <= 25) or not re.match(r"^[a-z]", word):
         return None
     zh = m.group(3).strip()
-    has_cid = "(cid:" in zh or "ud:" in zh
-    zh_clean = zh[:40] if any("一" <= ch <= "鿿" for ch in zh) else ("待OCR" if has_cid else None)
-    if zh_clean is None:        # 既无中文又无CID = 噪声行, 滤
+    # F4 修: 任何 (cid: 出现即标待OCR (含 cid+中文混合 cheerful→(cid:2682)(cid:2754)的,
+    # 旧版 any(中文) 为真就保留泄漏 cid); 纯中文才取释义; 既无中文又无 cid = 噪声滤。
+    if "(cid:" in zh or "ud:" in zh:
+        zh_clean = "待OCR"
+    elif any("一" <= ch <= "鿿" for ch in zh):
+        zh_clean = zh[:40]
+    else:
         return None
     return (word, m.group(2), zh_clean)
 

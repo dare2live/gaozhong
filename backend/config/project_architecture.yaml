@@ -159,6 +159,16 @@ data_zones:
     owner_module: backend.services
     write_policy: Service code implements reusable mechanisms and reads config.
     truth_policy: Mechanism layer only; facts still come from source/config/data contracts.
+  junior_high_subsystem:
+    path: data/junior_high
+    owner_module: scripts.extract_junior_curriculum
+    write_policy: >
+      初中子系统 (沈阳沪教牛津 + 义务课标2022) — separate-build, 产物 structured/*.jsonl
+      未入主 DB (Phase3 单库集成, 见 docs/k12_platform_master_design.md §4)。提取器读 PDF 真相源。
+    truth_policy: >
+      stage 分阶段 K12 平台真相源 (小学/初中). 落库前必过 scripts/junior_accuracy_check.py
+      (坑17 双门; 审计 F1-F8 不变量). 当前 Phase2.6 地基修复中, 多项 RED 待修绿。
+    gate: scripts/junior_accuracy_check.py
 
 config_contracts:
   project_architecture:

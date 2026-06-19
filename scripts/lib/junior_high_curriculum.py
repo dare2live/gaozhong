@@ -141,12 +141,15 @@ _G_SKIP_PREFIX = ("附录", "说明", "义务教育", "■", "│")
 _PLUS_CHARS = ("＋", "+")
 
 
-def _strip_plus(label: str) -> tuple[str, bool]:
-    understand = any(p in label for p in _PLUS_CHARS)
+_HEAD_PLUS_RE = re.compile(r"^[+＋]\s*")
+
+
+def _strip_plus(label: str) -> str:
+    """清 label 里的 +/＋ (含 inline 如 '主语+动词'); 不据此判 understand (F6 防假阳性)."""
     clean = label
     for p in _PLUS_CHARS:
         clean = clean.replace(p, "")
-    return clean.strip().rstrip("：:"), understand
+    return clean.strip().rstrip("：:")
 
 
 def _grammar_skip(line: str) -> bool:
@@ -160,13 +163,18 @@ def _grammar_skip(line: str) -> bool:
 
 
 def _match_grammar(line: str, state: dict) -> dict | None:
-    """4 层 dispatch → grammar node, 维护 parent 路径. CC≤6."""
+    """4 层 dispatch → grammar node. F6 修: **仅行首** +/＋ = '仅理解'标记(剥后再匹配),
+    inline + (主语+动词) 不算 (防假阳性)。"""
+    s = line.strip()
+    understand = bool(_HEAD_PLUS_RE.match(s))   # 行首 + = 理解项
+    if understand:
+        s = _HEAD_PLUS_RE.sub("", s)
     for depth, regex in ((1, _G_L1), (2, _G_L2), (3, _G_L3)):
-        m = regex.match(line)
+        m = regex.match(s)
         if not m:
             continue
         num, raw_label = m.group(1), m.group(2)
-        label, understand = _strip_plus(raw_label)
+        label = _strip_plus(raw_label)
         parent = None
         for d in range(depth - 1, 0, -1):
             if state["path"].get(d):
