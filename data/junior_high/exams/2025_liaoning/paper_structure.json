@@ -1,0 +1,84 @@
+{
+  "year": 2025,
+  "province": "辽宁",
+  "exam_type": "中考",
+  "paper_type": "辽宁省统一(2024起)",
+  "title": "2025年辽宁省初中学业水平考试 英语试卷",
+  "total_questions": 45,
+  "total_written": 90,
+  "minutes": 90,
+  "source": "用户提供 Scribd(53039466) 8页真题图 → 下载+OCR(PaddleOCR)+视觉识别(Read)双源交叉核对",
+  "provenance": "B(民间聚合,用户提供); 结构匹2024+book118(45题/90分)",
+  "cross_check": "OCR(exam_ocr.txt)与视觉(8页Read)散文/题目高度一致; OCR弱点(标题图/地图图例/邮件框)经视觉补正",
+  "has_answers": false,
+  "note": "2025=题干完整(无答案key); 与2024(答案版)互补",
+  "sections": [
+    {
+      "no": "一",
+      "type": "阅读理解",
+      "range": "1-20",
+      "score": 40,
+      "第一节": {
+        "type": "四选一A-D篇",
+        "range": "1-16",
+        "passages": [
+          "A:Peace City公园指南",
+          "B:为养老院老人唱歌",
+          "C:walking barefoot",
+          "D:王新写《歌唱祖国》"
+        ]
+      },
+      "第二节": {
+        "type": "五选四选句填空",
+        "range": "17-20",
+        "passage": "Thinking Big"
+      }
+    },
+    {
+      "no": "二",
+      "type": "完形填空四选一",
+      "range": "21-30",
+      "score": 10,
+      "passage": "Jack生日野餐"
+    },
+    {
+      "no": "三",
+      "type": "语篇填空(无选项语法填空=高考语法填空)",
+      "range": "31-40",
+      "score": 10,
+      "passage": "Uncle Jason消防员",
+      "grammar_points": [
+        "of介词",
+        "a冠词",
+        "to save不定式",
+        "and连词",
+        "suddenly副词",
+        "returned过去时",
+        "hours名词复数",
+        "was sent被动",
+        "his物主代词",
+        "greater比较级"
+      ]
+    },
+    {
+      "no": "四",
+      "type": "阅读与表达开放问答",
+      "range": "41-44",
+      "score": 10,
+      "passage": "classroom seating四种座位"
+    },
+    {
+      "no": "五",
+      "type": "书面表达应用文邮件=高考应用文",
+      "range": "45",
+      "score": 20,
+      "prompt": "回信Eric谈午休 80-100词"
+    }
+  ],
+  "reform_aligns_gaokao": [
+    "五选四≈七选五",
+    "语篇填空=高考语法填空",
+    "书面表达应用文=高考应用文",
+    "开放题"
+  ]
+}
