@@ -42,7 +42,7 @@
 {"item_id": "三/一/3", "depth": 3, "label": "祈使句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 42, "source": "yiwu_2022_grammar"}
 {"item_id": "三/一/4", "depth": 3, "label": "感叹句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 43, "source": "yiwu_2022_grammar"}
 {"item_id": "三/二", "depth": 2, "label": "简单句的基本句型", "parent": "三", "level": "三级", "understand_only": false, "seq": 44, "source": "yiwu_2022_grammar"}
-{"item_id": "三/二/1", "depth": 3, "label": "主谓（主语动词，下同）（SV）", "parent": "三/二", "level": "三级", "understand_only": false, "seq": 45, "source": "yiwu_2022_grammar"}
+{"item_id": "三/二/1", "depth": 3, "label": "主谓（主语+动词，下同）（SV）", "parent": "三/二", "level": "三级", "understand_only": false, "seq": 45, "source": "yiwu_2022_grammar"}
 {"item_id": "三/二/2", "depth": 3, "label": "主（系）表（SP）", "parent": "三/二", "level": "三级", "understand_only": false, "seq": 46, "source": "yiwu_2022_grammar"}
 {"item_id": "三/二/3", "depth": 3, "label": "主谓宾（SVO）", "parent": "三/二", "level": "三级", "understand_only": false, "seq": 47, "source": "yiwu_2022_grammar"}
 {"item_id": "三/二/4", "depth": 3, "label": "主谓宾宾（SVOO）", "parent": "三/二", "level": "三级", "understand_only": false, "seq": 48, "source": "yiwu_2022_grammar"}

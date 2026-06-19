@@ -39,12 +39,13 @@ def _load_l2_vision() -> set[str]:
 
 
 def _split_slash(words: set[str]) -> set[str]:
-    """拆 slash 变体: a/an→{a,an}, actor/actress→{actor,actress} (课标 '/'='或')."""
+    """拆 slash 变体: a/an→{a,an}, actor/actress→{actor,actress} (课标 '/'='或').
+    强验证 G1/L2a: 保留内部 -/' (o'clock/ping-pong) — 原 isalpha() 误踢含连字/撇号的二级词。"""
     out: set[str] = set()
     for w in words:
         for part in w.split("/"):
-            p = part.strip("-'.")
-            if len(p) >= 1 and p.isalpha():
+            p = part.strip("-'. ")
+            if p and re.fullmatch(r"[A-Za-z][A-Za-z\-']*", p):
                 out.add(p)
     return out
 

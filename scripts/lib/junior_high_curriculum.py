@@ -169,11 +169,9 @@ _HEAD_PLUS_RE = re.compile(r"^[+＋]\s*")
 
 
 def _strip_plus(label: str) -> str:
-    """清 label 里的 +/＋ (含 inline 如 '主语+动词'); 不据此判 understand (F6 防假阳性)."""
-    clean = label
-    for p in _PLUS_CHARS:
-        clean = clean.replace(p, "")
-    return clean.strip().rstrip("：:")
+    """清行首残留 +/＋ (head '仅理解'标记已在 _match_grammar 剥); **保留 inline +** (主语+动词 是内容,
+    强验证G1: 原全剥致 '主语+动词'→'主语动词' 截断). 不据 inline 判 understand (F6 防假阳性, 由 head 正则管)."""
+    return _HEAD_PLUS_RE.sub("", label).strip().rstrip("：:")
 
 
 def _grammar_skip(line: str) -> bool:
