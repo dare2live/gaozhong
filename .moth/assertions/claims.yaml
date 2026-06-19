@@ -228,6 +228,11 @@ assertions:
     type: shell
     command: ["python3", "scripts/data_accuracy_check.py"]
     expect: {op: regex, pattern: "D0 100% 准确率达成"}
+  - id: gaozhong-self-contained
+    claim: "互不干扰独立项目: 运行时不读姊妹项目 gaokao 文件路径 (GAOKAO-Bench+真值基线已全镜像本地)"
+    type: shell
+    command: ["bash", "-c", "python3 -c \"import sys; sys.path.insert(0,'.'); from backend.services.data_sources.extract import gaokao_bench as g; from scripts.tools.audit import truth_baseline_common as t; ok=('Documents/M/gaokao' not in str(g.GAOKAO_DATA)) and ('Documents/M/gaokao' not in str(t.STRUCTURE_PATH)); print('SELF_CONTAINED' if ok else 'DIRTY')\""]
+    expect: {op: regex, pattern: "SELF_CONTAINED"}
 
   # ===== 件3 趋势/考点分布/关联性 (materialize=none, 服务即时算 + D0锁) =====
   - id: exam-point-cooccur-substrate

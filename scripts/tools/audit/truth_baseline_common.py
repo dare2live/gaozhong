@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parents[3]
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 REPORT_DIR = ROOT / "data" / "reports"
-STRUCTURE_PATH = Path("/Users/dp/Documents/M/gaokao/data/structured/english_xgkii_2021_2025.jsonl")
+# 2026-06-17: 镜像进本项目, 不读姊妹项目 gaokao (互不干扰独立项目)。原 gaokao 真值基线 jsonl 已 cp 进 data/external/。
+STRUCTURE_PATH = ROOT / "data" / "external" / "gaokao_xgkii_2021_2025_mirror.jsonl"
 VERIFIED_JSONL = ROOT / "data" / "gaokao_verified_xgkii_2023_2024.jsonl"
 
 TARGET_YEARS = [2021, 2022, 2023, 2024, 2025]

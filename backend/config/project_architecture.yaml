@@ -53,6 +53,10 @@ sibling_projects:
       - Do not ATTACH or read gaokao DuckDB as a gaozhong truth source.
       - Do not inherit gaokao verdicts, sample counts, or PDF lineage as gaozhong facts.
       - Do not let gaokao model/prediction gates justify gaozhong teaching outputs.
+      - Do not read any gaokao filesystem path at runtime. As of 2026-06-17 gaozhong is
+        fully self-contained -- GAOKAO-Bench base + truth-baseline jsonl mirrored into
+        data/external/; sibling gaokao is reference-only, never a live dependency.
+        Guarded by moth assertion gaozhong-self-contained.
   lifehack:
     path: /Users/dp/Documents/M/lifehack
     relationship: pattern_reference

@@ -1,9 +1,9 @@
 """通用 GAOKAO-Bench JSONL 提取工具 (extract 层, 单一职责: 读源 → raw record).
 
-来源 (3 个 repo, 与 backend/services/extraction/exam.py 路径常量保持一致):
-  - OpenLMLab/GAOKAO-Bench         base  : ~/Documents/M/gaokao/.../Data/{Objective,Subjective}_Questions/*English*.json
-  - OpenLMLab/GAOKAO-Bench-Updates 2023  : data/external/gaokao_bench_2023/*.json
-  - (Updates) 2024                 2024  : data/external/gaokao_bench_2024/*.json
+来源 (原 OpenLMLab/GAOKAO-Bench 公开数据集, **已全镜像进本项目** — 互不干扰独立项目, 不读姊妹项目 gaokao):
+  - GAOKAO-Bench         base  : data/external/GAOKAO-Bench/Data/{Objective,Subjective}_Questions/*English*.json (2026-06-17 cp 进)
+  - GAOKAO-Bench-Updates 2023  : data/external/gaokao_bench_2023/*.json
+  - (Updates) 2024       2024  : data/external/gaokao_bench_2024/*.json
 
 边界 (D0 + Rule 1 单一计算点):
   - 本模块**只做 extract**: 读 JSON → yield raw record. 不算 province/paper_type.
@@ -24,7 +24,10 @@ from typing import Iterable, Iterator
 
 # 路径常量 (与 exam.py 对齐, 单一真相): ROOT = 项目根 (.../gaozhong)
 ROOT = Path(__file__).resolve().parents[4]
-GAOKAO_DATA = Path.home() / "Documents/M/gaokao/data/external/GAOKAO-Bench/Data"
+# 2026-06-17: 镜像进本项目, 不再读姊妹项目 gaokao (互不干扰独立项目, 用户硬约束)。
+# 原始 GAOKAO-Bench English base 已 cp 进 data/external/GAOKAO-Bench/Data (6 个真实英语文件;
+# ENGLISH_SOURCES 列的另 2 个 gaokao 本就没有, iter 优雅 skip — 行为不变)。
+GAOKAO_DATA = ROOT / "data/external/GAOKAO-Bench/Data"
 UPDATES_DIR = ROOT / "data" / "external" / "gaokao_bench_2023"
 UPDATES_DIR_2024 = ROOT / "data" / "external" / "gaokao_bench_2024"
 

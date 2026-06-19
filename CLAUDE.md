@@ -140,13 +140,16 @@
 
 ---
 
-## 6. 与姊妹项目 gaokao 的边界
+## 6. 与姊妹项目 gaokao 的边界 — **完全自包含独立项目** (用户 2026-06-17 重申)
 
-- `~/Documents/M/gaokao/` 负责 **真题侧**: 题型分布 / 命题点 / 答题数据 / PIT 对齐.
-- `~/Documents/M/gaozhong/` (本项目) 负责 **教材侧**: 课文拆解 / 词表 / 语法点 / 趣味化.
-- 两边交汇点: **知识点 ↔ 真题考点 映射表** (STEP 3, 双向引用).
-- 不要在本项目重复抓真题 PDF.
-- **DuckDB 完全独立**, 不 ATTACH 不混用 (用户 2026-05-23 硬约束).
+- **gaozhong 是与 gaokao 互不干扰的独立项目**。当初引用 gaokao 仅为取它已采集的题库; 数据已全部
+  采集并镜像进本项目, 故**运行时不读任何 gaokao 文件路径**, gaokao 仅作 reference-only (工程纪律/文档借鉴)。
+  - 已镜像本地 (2026-06-17 切断跨项目读): GAOKAO-Bench English base → `data/external/GAOKAO-Bench/Data/`;
+    真值基线 jsonl → `data/external/gaokao_xgkii_2021_2025_mirror.jsonl`。`gaokao_bench.py`/`truth_baseline_common.py`
+    已重指向本地。守门: moth `gaozhong-self-contained` 断言 (路径常量不含 gaokao 项目路径)。
+- **DuckDB 完全独立**, 不 ATTACH 不混用 (用户 2026-05-23 硬约束) — 此约束是 **gaozhong↔gaokao 跨项目**,
+  **不是** 初中↔高中同项目内 (后者单库 `gaozhong.duckdb` + node_type/stage 区分, 见 docs/k12_platform_master_design.md §4)。
+- 分工: gaokao=真题研判侧 / gaozhong=教材+真题+学情完整 K12 平台 (已自带真题, 不依赖 gaokao 运行)。
 
 ## 7. 辽宁卷锚定 (用户 2026-05-23 再次强调)
 

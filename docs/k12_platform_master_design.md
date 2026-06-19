@@ -21,6 +21,8 @@
 
 > 严谨性 (评审B1): **应试目标系下**课标是 stage 的**第一性代理真相源** — stage 真正的轴是"学习者认知前驱依赖", 课标是其政策代理。`deepens/expands` 边其实在重建被课标遮蔽的前驱轴; 课标改版需重对账 (死亡条款)。**不另建认知模型** (奥卡姆), 但留 amend 钩子。
 
+> **完全自包含 (用户 2026-06-17)**: 三真相源 (含真题) **全部本地化**, gaozhong 是与姊妹项目 gaokao **互不干扰的独立项目** — 当初引用 gaokao 仅为取其已采题库, 现已镜像进 `data/external/` (GAOKAO-Bench base + 真值基线 jsonl), **运行时不读任何 gaokao 路径** (moth `gaozhong-self-contained` 守门)。"不 ATTACH" 是 gaozhong↔gaokao 跨项目约束 (§4), 非初中↔高中同项目内。
+
 **核心洞察 = stage 是统一维**: 平台是**一张图, 每个知识点带引入 stage**, 导出三能力 — **向下**(高阶知低阶, with/the=义务教育不当新词) · **向上**(低阶受控渗透高阶, 标 preview) · **跨阶段**(义/搭配/语法/思维螺旋深化, power 力量→power plant)。
 
 ---
