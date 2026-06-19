@@ -20,6 +20,6 @@
     "ocr_digit_drop": "exam_ocr.txt 页4 Q14/15/16 被 PaddleOCR 丢首位'1'读成 4/5/6 (与页2真Q4/5/6碰撞覆盖); 据页图真值改回 14/15/16",
     "parser_fix": "extract_zhongkao._add_opts marker-based 重写 (原 [^A-E]+? 吞掉Discovery/Braver等A-E大写开头选项) + 四选一(1-16)仅保留A-D(挡五选四bank渗入)",
     "result": "Q1-16 全4选项A-D正确 (修复11题: Q2/4/5/6/7/8/9/12/14/15/16)",
-    "remaining": "Q17-20 五选四共享sentence-bank 解析待补 (task #19)"
+    "wuxuansi_17_20": "task#19: _parse_wuxuansi 取共享A-E句库给17-20 + _parse_mcq遇'第二节'cur=None(防句库覆盖Q16真选项); Q16复原+Q17-20得5选项bank"
   }
 }

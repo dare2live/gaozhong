@@ -44,12 +44,18 @@ def _add_opts(rec: dict, text: str) -> None:
         rec["options"][mo.group(1)] = text[mo.end():end].strip()
 
 
+_BANK_RE = re.compile(r"^([A-E])[\.．]\s*(.+\.)\s*$")   # 五选四句库行: "A. 完整句子."
+
+
 def _parse_mcq(lines: list[str]) -> dict[int, dict]:
     """'N. stem'(阅读) 或 'N. A.opt'(完形无题干) + 后续 A-E 选项行 → {qnum:{stem,options}}."""
     out: dict[int, dict] = {}
     cur = None
     for raw in lines:
         ln = raw.strip()
+        if "第二节" in ln and "方框" in ln:   # 五选四段: cur=None 防句库选项污染 Q16 (强验证 Z1)
+            cur = None
+            continue
         m = re.match(r"^(\d{1,2})[\.．]\s*(.*)$", ln)
         if m and 1 <= int(m.group(1)) <= 45:
             cur = int(m.group(1))
@@ -62,6 +68,31 @@ def _parse_mcq(lines: list[str]) -> dict[int, dict]:
         elif cur is not None and _OPT_RE.match(ln):
             _add_opts(out[cur], ln)
     return out
+
+
+def _bank_from_segment(seg: list[str]) -> dict[str, str]:
+    """段内 5 个完整句 'X. ....' → 共享句库 (非短选项/passage碎句)."""
+    bank: dict[str, str] = {}
+    for l in seg:
+        m = _BANK_RE.match(l.strip())
+        if m and len(m.group(2)) > 8:
+            bank[m.group(1)] = m.group(2).strip()
+    return bank
+
+
+def _parse_wuxuansi(lines: list[str]) -> dict[int, dict]:
+    """五选四/选句填空(17-20): 共享 A-E 句库 → 每空同 options (强验证 Z1余, 题#19).
+    段在'第二节...方框'后到'完形/二、'前。"""
+    try:
+        start = next(i for i, l in enumerate(lines) if "第二节" in l and "方框" in l)
+    except StopIteration:
+        return {}
+    end = next((i for i in range(start, len(lines))
+                if "完形填空" in lines[i] or lines[i].strip().startswith("二、")), len(lines))
+    bank = _bank_from_segment(lines[start:end])
+    if len(bank) < 4:
+        return {}
+    return {n: {"stem": "选句填空(共享段落,见原卷第二节)", "options": dict(bank)} for n in range(17, 21)}
 
 
 def _kaodian_map(paper: dict) -> dict[int, str]:
@@ -120,7 +151,9 @@ def _load_mcq(d: Path) -> dict[int, dict]:
         lines = lines[start:]
     except StopIteration:
         pass
-    return _parse_mcq(lines)
+    mcq = _parse_mcq(lines)
+    mcq.update(_parse_wuxuansi(lines))     # 五选四(17-20)共享句库
+    return mcq
 
 
 def build(year: int) -> dict:
