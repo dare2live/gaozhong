@@ -70,21 +70,52 @@ def _parse_vocab_line(line: str) -> tuple[str, bool, list[str]] | None:
     word = m.group(1).lower().strip("/-'.")
     if not word or word in _NOISE or len(word) < 2:
         return None
+    return (word, starred, _extract_alts(paren_groups, word))
+
+
+def _extract_alts(paren_groups: list[str], word: str) -> list[str]:
+    """括号变体词 (child(pl. children)→children), 去标签 token + 主词自身."""
     alts = []
     for grp in paren_groups:
         for a in _ALT_WORD_RE.findall(grp):
             aw = a.lower()
             if aw not in _ALT_SKIP and aw != word:
                 alts.append(aw)
-    return (word, starred, alts)
+    return alts
+
+
+def _row(word, level, stage, source_tag, starred, is_alt=False) -> dict:
+    r = {"word": word, "level": level, "stage": stage, "source": source_tag, "starred": starred}
+    if is_alt:
+        r["is_alt"] = True
+    return r
+
+
+def _rows_from_line(line, level, stage, source_tag, include_alts, seen) -> list[dict]:
+    """一行 → 0/1 主词行 (+可选变体行); 维护 seen 去重. (抽出降 extract_vocab CC)."""
+    if not line or _is_chinese_line(line):
+        return []
+    parsed = _parse_vocab_line(line)
+    if not parsed:
+        return []
+    word, starred, alts = parsed
+    out: list[dict] = []
+    if word not in seen:
+        seen.add(word)
+        out.append(_row(word, level, stage, source_tag, starred))
+    if include_alts:
+        for aw in alts:
+            if aw not in seen:
+                seen.add(aw)
+                out.append(_row(aw, level, stage, source_tag, starred, is_alt=True))
+    return out
 
 
 def extract_vocab(level: str, stage: str, pages, source_tag: str,
                   include_alts: bool = False) -> list[dict]:
     """抽一个词汇表段 (二级或三级 a-z 主表) → [{word, level, stage, source, starred?}].
 
-    level/stage 由调用方传 (二级=小学; 三级表里逐词的 level/stage 在 emit 层按 starred 分裂).
-    返回行带 raw `starred` 供三级表分裂二级复列词. include_alts: 括号变体是否单独入 (去重).
+    level/stage 由调用方传 (二级=小学; 三级表逐词 level/stage 在 emit 层按集合交分裂).
     """
     rows: list[dict] = []
     seen: set[str] = set()
@@ -94,24 +125,8 @@ def extract_vocab(level: str, stage: str, pages, source_tag: str,
                 break
             for col in _crop_columns(pdf.pages[idx]):
                 for raw in col.split("\n"):
-                    line = raw.strip()
-                    if not line or _is_chinese_line(line):
-                        continue
-                    parsed = _parse_vocab_line(line)
-                    if not parsed:
-                        continue
-                    word, starred, alts = parsed
-                    if word not in seen:
-                        seen.add(word)
-                        rows.append({"word": word, "level": level, "stage": stage,
-                                     "source": source_tag, "starred": starred})
-                    if include_alts:
-                        for aw in alts:
-                            if aw not in seen:
-                                seen.add(aw)
-                                rows.append({"word": aw, "level": level, "stage": stage,
-                                             "source": source_tag, "starred": starred,
-                                             "is_alt": True})
+                    rows.extend(_rows_from_line(raw.strip(), level, stage,
+                                                source_tag, include_alts, seen))
     return rows
 
 
