@@ -1,0 +1,59 @@
+{
+  "year": 2024,
+  "province": "辽宁",
+  "exam_type": "中考",
+  "paper_type": "辽宁省统一(2024起,辽教发〔2021〕49号)",
+  "total_written": 90,
+  "source": "中考网 zhongkao.com (files.eduuu.com答案图 11.png OCR)",
+  "provenance": "B(民间聚合)",
+  "note": "答案+结构+语篇填空语法答案+作文范文; 题干stem待DOCX(walled)",
+  "sections": [
+    {
+      "no": "一",
+      "type": "选择题(含16-20五选四,删单选)",
+      "range": "1-20"
+    },
+    {
+      "no": "二",
+      "type": "完形填空",
+      "range": "21-30",
+      "score": 10
+    },
+    {
+      "no": "三",
+      "type": "语篇填空(无选项语法填空,同高考语法填空)",
+      "range": "31-40",
+      "score": 10,
+      "grammar_points": {
+        "31": "and连词",
+        "32": "are needed被动语态",
+        "33": "hands名词复数",
+        "34": "the冠词",
+        "35": "to reach不定式",
+        "36": "had一般过去时",
+        "37": "more exciting比较级",
+        "38": "me宾格",
+        "39": "in介词",
+        "40": "certainly副词"
+      }
+    },
+    {
+      "no": "四",
+      "type": "阅读与表达(开放题)",
+      "range": "41-44",
+      "score": 10
+    },
+    {
+      "no": "五",
+      "type": "书面表达(应用文,同高考)",
+      "score": 20
+    }
+  ],
+  "reform_aligns_gaokao": [
+    "删单选",
+    "增五选四(匹配)",
+    "语篇填空=高考语法填空",
+    "阅读与表达开放题",
+    "书面表达应用文"
+  ]
+}
