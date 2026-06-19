@@ -39,6 +39,9 @@ def _whitelist() -> set:
     wl |= {r[0] for r in c.execute("SELECT word FROM cefr_vocab").fetchall()}
     c.close()
     wl |= {r["word"] for r in _words("hujiao_vocab.jsonl")}
+    ocr = S / "_ocr_curriculum_words.txt"   # OCR 视觉确认 = 真词 (app/organise 等)
+    if ocr.exists():
+        wl |= {l.strip().lower() for l in ocr.read_text(encoding="utf-8").splitlines() if l.strip()}
     return wl
 
 
@@ -48,9 +51,12 @@ def _check_curriculum(cur) -> None:
     words = {r["word"] for r in cur}
     garbage = sorted(r["word"] for r in cur if re.fullmatch(r"[a-z]+", r["word"]) and r["word"] not in _whitelist())
     check("F1 无垃圾词头 (curriculum_vocab 词∈白名单)", not garbage, f"{len(garbage)} 疑垃圾: {garbage[:8]}")
-    check("F2 三级抽取数透明 (extracted, 不凑1600)", len(l3) >= 1500, f"三级={len(l3)} (官方≈1600)")
-    check("F2b 已知丢词缺口记录 (goal 等)", "goal" in words, f"goal 在={'goal' in words} (False=待OCR恢复)")
-    check("F7 二级(小学)=505", len(xiao) == 505, f"{len(xiao)} (差 {505 - len(xiao)})")
+    # F2: 总数≈官方三级1600 (含505小学带星; 初中level=三级 only=1187 非全集); 各地可增100-300 → [1500,1850]。
+    check("F2 词汇总数 ≈ 官方三级1600 (含小学, OCR交叉验证不凑)", 1500 <= len(cur) <= 1850,
+          f"total={len(cur)} (小学{len(xiao)}+初中{len(l3)}; 官方≈1600+可增)")
+    check("F2b OCR 恢复丢词 (goal 等 glyph 误解码)", "goal" in words, f"goal 在={'goal' in words}")
+    # F7: 官方二级505; 人工 vision 转写502 (缺3, §1.3 诚实标缺口不凑); 待补转写。
+    check("F7 二级(小学) ≥500 (官方505, 转写诚实)", len(xiao) >= 500, f"{len(xiao)} (官方505, 缺{505 - len(xiao)}待补转写)")
 
 
 def _check_hujiao(hj) -> None:

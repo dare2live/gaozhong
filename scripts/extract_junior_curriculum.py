@@ -49,28 +49,76 @@ def _split_slash(words: set[str]) -> set[str]:
     return out
 
 
+def _load_ocr_words() -> set[str]:
+    """OCR 课标词表页缓存 (PaddleOCR 视觉真值, 绕文本层 glyph 误解码; 持久于 structured/)."""
+    p = OUT / "_ocr_curriculum_words.txt"
+    return {l.strip().lower() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()} if p.exists() else set()
+
+
+def _dictionary() -> set[str]:
+    """英文真词词典 (严格: COCA∪cefr∪沪教, **不含 systemdict** — 它收 obscure 词放 glyph 垃圾 ai/gif)."""
+    import os
+    import duckdb
+    wl: set[str] = set()
+    p = "data/structured/english-wordlists/COCA_20000.txt"
+    if os.path.exists(p):
+        wl |= {l.split(",")[0].split("\t")[0].strip().lower()
+               for l in open(p, encoding="utf-8", errors="ignore") if l.strip()}
+    c = duckdb.connect(str(DB), read_only=True)
+    wl |= {r[0] for r in c.execute("SELECT word FROM cefr_vocab").fetchall()}
+    c.close()
+    hj = OUT / "hujiao_vocab.jsonl"
+    if hj.exists():
+        wl |= {json.loads(l)["word"] for l in hj.open(encoding="utf-8")}
+    return wl
+
+
+def _sysdict_long() -> set[str]:
+    """systemdict 长词(len≥4): 收真词(antelope)不收短 glyph 垃圾(ai/gif/fu)."""
+    import os
+    p = "/usr/share/dict/words"
+    if not os.path.exists(p):
+        return set()
+    return {l.strip().lower() for l in open(p, encoding="utf-8", errors="ignore") if len(l.strip()) >= 4}
+
+
+def _cross_validate(l3_text: set, l2: set, ocr: set) -> set:
+    """OCR 交叉验证 (审计 F1/F2/F2b, master §3): glyph 误解码垃圾(fuit/ai)在文本层, OCR 读正确印刷词。
+    干净 = (文本∩真词)[clean] ∪ (文本∩OCR)[互证如app] ∪ (OCR∩真词)[恢复 fruit/goal]; 滤 misspelling。"""
+    if not ocr:
+        return l3_text
+    real = _dictionary() | l2
+    keep = real | _sysdict_long()
+    return (l3_text & keep) | (l3_text & ocr) | (ocr & real)
+
+
+def _vocab_rows(l3_words: set, l2: set, ocr: bool) -> list[dict]:
+    """stage/level 切分: 小学/二级=∩二级, 初中/三级=其余 (集合交, 不靠损坏星标)."""
+    src = "义务教育英语课程标准2022 附录3" + (" (OCR交叉验证)" if ocr else "")
+    rows = []
+    for w in sorted(l3_words | l2):
+        in_l2 = w in l2
+        rows.append({"word": w, "level": "二级" if in_l2 else "三级",
+                     "stage": "小学" if in_l2 else "初中", "source": src})
+    return rows
+
+
+def _emit(name: str, rows: list[dict]) -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    with (OUT / name).open("w", encoding="utf-8") as fh:
+        for r in rows:
+            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+
+
 def build() -> dict:
     l2 = _split_slash(_load_l2_vision())
-    l3_rows = jh.extract_vocab("三级", "初中", jh.L3_AZ_PAGES, "yiwu_2022_L3")
-    l3_words = _split_slash({r["word"] for r in l3_rows})
-    # stage 切分: 小学=三级∩二级, 初中=三级−二级 (集合交, 不靠损坏星标)
-    vocab = []
-    for w in sorted(l3_words):
-        stage = "小学" if w in l2 else "初中"
-        vocab.append({"word": w, "level": "三级", "stage": stage,
-                      "source": "义务教育英语课程标准2022 附录3"})
-    # 二级里有但三级抽取漏的(CMap), 也补进小学 (二级是三级子集, 不该丢)
-    for w in sorted(l2 - l3_words):
-        vocab.append({"word": w, "level": "二级", "stage": "小学",
-                      "source": "义务教育英语课程标准2022 附录3 (二级人工转写补)"})
+    l3_text = _split_slash({r["word"] for r in jh.extract_vocab("三级", "初中", jh.L3_AZ_PAGES, "yiwu_2022_L3")})
+    ocr = _load_ocr_words()
+    l3_words = _cross_validate(l3_text, l2, ocr)
+    vocab = _vocab_rows(l3_words, l2, bool(ocr))
     grammar = jh.extract_grammar()
-    OUT.mkdir(parents=True, exist_ok=True)
-    with (OUT / "curriculum_vocab.jsonl").open("w", encoding="utf-8") as fh:
-        for r in vocab:
-            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
-    with (OUT / "grammar_items.jsonl").open("w", encoding="utf-8") as fh:
-        for r in grammar:
-            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+    _emit("curriculum_vocab.jsonl", vocab)
+    _emit("grammar_items.jsonl", grammar)
     n_xiao = sum(1 for r in vocab if r["stage"] == "小学")
     return {"vocab_total": len(vocab), "小学": n_xiao, "初中": len(vocab) - n_xiao,
             "l3_extracted": len(l3_words), "l2_vision": len(l2), "grammar": len(grammar)}

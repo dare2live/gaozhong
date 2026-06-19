@@ -6,10 +6,10 @@
 {"word": "abnormal", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "aboard", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "about", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "above", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "above", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "abroad", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "absence", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "absent", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "absent", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "absolutely", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "absorb", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "abstract", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -36,7 +36,7 @@
 {"word": "act", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "action", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "active", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "activity", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "activity", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "actor", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "actress", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "actually", "hs_stage": "高中必修", "refined_stage": "初中"}
@@ -151,7 +151,7 @@
 {"word": "applaud", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "apple", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "applicant", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "application", "hs_stage": "高中必修", "refined_stage": "高中必修"}
+{"word": "application", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "apply", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "appointment", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "appreciate", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -169,11 +169,11 @@
 {"word": "around", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "arrangement", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "arrest", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "arrive", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "arrive", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "arrow", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "art", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "article", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "artificial", "hs_stage": "高中选修", "refined_stage": "高中选修"}
+{"word": "artificial", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "artist", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "as", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "ashamed", "hs_stage": "高中选修", "refined_stage": "初中"}
@@ -262,9 +262,9 @@
 {"word": "bay", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "bc", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "be", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "am", "hs_stage": "义务教育", "refined_stage": "义务教育"}
-{"word": "are", "hs_stage": "义务教育", "refined_stage": "义务教育"}
-{"word": "is", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "am", "hs_stage": "义务教育", "refined_stage": "初中"}
+{"word": "are", "hs_stage": "义务教育", "refined_stage": "初中"}
+{"word": "is", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "beach", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "bean", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tofu", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -305,7 +305,7 @@
 {"word": "beyond", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "big", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "bike", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "bicycle", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "bicycle", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "bill", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "billion", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "biology", "hs_stage": "高中选修", "refined_stage": "初中"}
@@ -326,7 +326,7 @@
 {"word": "blind", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "block", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "blog", "hs_stage": "高中必修", "refined_stage": "高中必修"}
-{"word": "blood", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "blood", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "blouse", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "blow", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "blue", "hs_stage": "义务教育", "refined_stage": "小学"}
@@ -465,7 +465,7 @@
 {"word": "centimeter", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "central", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "centre", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "center", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "center", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "century", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "certain", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "certainly", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -504,7 +504,7 @@
 {"word": "chicken", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "chief", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "child", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "children", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "children", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "china", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "chinese", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "chocolate", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -567,7 +567,7 @@
 {"word": "collection", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "college", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "colour", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "color", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "color", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "column", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "combine", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "come", "hs_stage": "义务教育", "refined_stage": "小学"}
@@ -683,7 +683,7 @@
 {"word": "crash", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "crayon", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "crazy", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "cream", "hs_stage": "高中选修", "refined_stage": "高中选修"}
+{"word": "cream", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "create", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "creative", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "creature", "hs_stage": "高中选修", "refined_stage": "初中"}
@@ -790,7 +790,7 @@
 {"word": "devote", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "diagram", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "dialogue", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "dialog", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "dialog", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "diamond", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "diary", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "dictionary", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -891,7 +891,7 @@
 {"word": "dynasty", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "each", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "eager", "hs_stage": "高中必修", "refined_stage": "高中必修"}
-{"word": "eagle", "hs_stage": "高中选修", "refined_stage": "高中选修"}
+{"word": "eagle", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "ear", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "early", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "earn", "hs_stage": "高中必修", "refined_stage": "高中必修"}
@@ -914,7 +914,7 @@
 {"word": "egg", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "eight", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "eighteen", "hs_stage": "义务教育", "refined_stage": "义务教育"}
-{"word": "eighth", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "eighth", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "eighty", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "either", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "elder", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -998,7 +998,7 @@
 {"word": "evidence", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "exactly", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "exam", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "examination", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "examination", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "examine", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "example", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "excellent", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1048,7 +1048,7 @@
 {"word": "failure", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "fair", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "faith", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "fall", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "fall", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "false", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "familiar", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "family", "hs_stage": "义务教育", "refined_stage": "小学"}
@@ -1064,12 +1064,12 @@
 {"word": "fast", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "fat", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "father", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "dad", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "dad", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "fault", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "favour", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "favor", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "favourite", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "favorite", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "favorite", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "fear", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "feature", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "february", "hs_stage": "义务教育", "refined_stage": "义务教育"}
@@ -1089,7 +1089,7 @@
 {"word": "fiction", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "field", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "fifteen", "hs_stage": "义务教育", "refined_stage": "义务教育"}
-{"word": "fifth", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "fifth", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "fifty", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "fight", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "figure", "hs_stage": "高中必修", "refined_stage": "高中必修"}
@@ -1125,7 +1125,7 @@
 {"word": "flour", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "flow", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "flower", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "flu", "hs_stage": "高中选修", "refined_stage": "高中选修"}
+{"word": "flu", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "fluent", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "fly", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "focus", "hs_stage": "高中必修", "refined_stage": "初中"}
@@ -1136,7 +1136,7 @@
 {"word": "fond", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "food", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "foot", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "feet", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "feet", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "football", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "for", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "force", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1174,7 +1174,7 @@
 {"word": "friction", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "friday", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "fridge", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "refrigerator", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "refrigerator", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "friend", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "friendly", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "friendship", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1187,7 +1187,7 @@
 {"word": "fruit", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "fry", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "fuel", "hs_stage": "高中选修", "refined_stage": "初中"}
-{"word": "full", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "full", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "fun", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "function", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "fund", "hs_stage": "高中必修", "refined_stage": "高中必修"}
@@ -1232,13 +1232,13 @@
 {"word": "glove", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "glue", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "go", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "goal", "hs_stage": "高中必修", "refined_stage": "高中必修"}
+{"word": "goal", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "goat", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "gold", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "golf", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "good", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "goodbye", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "bye", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "bye", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "goods", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "government", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grab", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -1252,9 +1252,9 @@
 {"word": "grand", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "granddaughter", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grandfather", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "grandpa", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "grandpa", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grandmother", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "grandma", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "grandma", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grandparent", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grandson", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grape", "hs_stage": "义务教育", "refined_stage": "小学"}
@@ -1267,7 +1267,7 @@
 {"word": "green", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "greenhouse", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "greet", "hs_stage": "高中选修", "refined_stage": "初中"}
-{"word": "grey", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "grey", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "grocery", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "ground", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "group", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1312,7 +1312,7 @@
 {"word": "hatch", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "hate", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "have", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "has", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "has", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "he", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "head", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "headache", "hs_stage": "义务教育", "refined_stage": "义务教育"}
@@ -1358,7 +1358,7 @@
 {"word": "honest", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "honey", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "honour", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "honor", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "honor", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "hope", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "horrible", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "horse", "hs_stage": "义务教育", "refined_stage": "小学"}
@@ -1521,7 +1521,7 @@
 {"word": "kill", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "kilo", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "kilometre", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "kilometer", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "kilometer", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "kind", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "kindergarten", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "king", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1536,7 +1536,7 @@
 {"word": "know", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "knowledge", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "lab", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "laboratory", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "laboratory", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "label", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "labour", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "labor", "hs_stage": "义务教育", "refined_stage": "义务教育"}
@@ -1669,7 +1669,7 @@
 {"word": "match", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "material", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "maths", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "mathematics", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "mathematics", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "matter", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "mature", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "maximum", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -1687,7 +1687,7 @@
 {"word": "medical", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "medicine", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "medium", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "media", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "media", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "meet", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "meeting", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "member", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1705,7 +1705,7 @@
 {"word": "metal", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "method", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "metre", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "meter", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "meter", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "microscope", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "middle", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "midnight", "hs_stage": "高中必修", "refined_stage": "初中"}
@@ -1756,7 +1756,7 @@
 {"word": "most", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "mostly", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "mother", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "mum", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "mum", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "motion", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "motivate", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "motive", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -1764,7 +1764,7 @@
 {"word": "mount", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "mountain", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "mouse", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "mice", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "mice", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "mouth", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "move", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "movement", "hs_stage": "高中必修", "refined_stage": "高中必修"}
@@ -1805,7 +1805,7 @@
 {"word": "negative", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "negotiate", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "neighbour", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "neighbor", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "neighbor", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "neighbourhood", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "neighborhood", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "neither", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -1970,17 +1970,17 @@
 {"word": "pattern", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "pay", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "pe", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "physical", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "physical", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "peace", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "peak", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "pear", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "pen", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "pencil", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "people", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "pepper", "hs_stage": "高中选修", "refined_stage": "高中选修"}
+{"word": "pepper", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "per", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "perceive", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "percent", "hs_stage": "高中必修", "refined_stage": "高中必修"}
+{"word": "percent", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "percentage", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "perfect", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "performance", "hs_stage": "高中必修", "refined_stage": "高中必修"}
@@ -1999,7 +1999,7 @@
 {"word": "phenomenon", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "philosophy", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "photo", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "photograph", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "photograph", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "photographer", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "phrase", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "physician", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -2011,7 +2011,7 @@
 {"word": "pie", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "piece", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "pig", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "pill", "hs_stage": "高中选修", "refined_stage": "高中选修"}
+{"word": "pill", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "pilot", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "pink", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "pioneer", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -2096,7 +2096,7 @@
 {"word": "presentation", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "preserve", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "president", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "press", "hs_stage": "高中必修", "refined_stage": "高中必修"}
+{"word": "press", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "pressure", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "pretend", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "pretty", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -2215,7 +2215,7 @@
 {"word": "recipe", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "recite", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "recognise", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "recognize", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "recognize", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "recognition", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "recommend", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "record", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -2526,7 +2526,7 @@
 {"word": "some", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "somebody", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "somehow", "hs_stage": "高中必修", "refined_stage": "高中必修"}
-{"word": "someone", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "someone", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "something", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "sometimes", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "somewhat", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -2711,7 +2711,7 @@
 {"word": "teenager", "hs_stage": "高中必修", "refined_stage": "初中"}
 {"word": "telephone", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "telescope", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "television", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "television", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tv", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "tell", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "temperature", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -2720,7 +2720,7 @@
 {"word": "ten", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tend", "hs_stage": "高中必修", "refined_stage": "高中必修"}
 {"word": "tendency", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "tennis", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "tennis", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tension", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "tenth", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "term", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -2793,7 +2793,7 @@
 {"word": "too", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "tool", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tooth", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "teeth", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "teeth", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "toothache", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "top", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "topic", "hs_stage": "高中必修", "refined_stage": "初中"}
@@ -2803,7 +2803,7 @@
 {"word": "tour", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tourist", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tournament", "hs_stage": "高中选修", "refined_stage": "高中选修"}
-{"word": "toward", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "toward", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "towel", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "tower", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "town", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -2836,7 +2836,7 @@
 {"word": "trust", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "truth", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "try", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "t-shirt", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "t-shirt", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "tube", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "tuesday", "hs_stage": "义务教育", "refined_stage": "义务教育"}
 {"word": "tune", "hs_stage": "高中选修", "refined_stage": "高中选修"}
@@ -2867,7 +2867,7 @@
 {"word": "university", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "unless", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "until", "hs_stage": "义务教育", "refined_stage": "初中"}
-{"word": "till", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "till", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "unusual", "hs_stage": "高中选修", "refined_stage": "初中"}
 {"word": "up", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "update", "hs_stage": "高中必修", "refined_stage": "高中必修"}
@@ -3009,7 +3009,7 @@
 {"word": "without", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "witness", "hs_stage": "高中选修", "refined_stage": "高中选修"}
 {"word": "woman", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "women", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "women", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "wonder", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "wonderful", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "wood", "hs_stage": "义务教育", "refined_stage": "初中"}
@@ -3033,7 +3033,7 @@
 {"word": "write", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "writer", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "wrong", "hs_stage": "义务教育", "refined_stage": "小学"}
-{"word": "x-ray", "hs_stage": "义务教育", "refined_stage": "义务教育"}
+{"word": "x-ray", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "yard", "hs_stage": "义务教育", "refined_stage": "初中"}
 {"word": "year", "hs_stage": "义务教育", "refined_stage": "小学"}
 {"word": "yellow", "hs_stage": "义务教育", "refined_stage": "小学"}
