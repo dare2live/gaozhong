@@ -1,6 +1,7 @@
 # RESUME — 断点续传 (新 session 先读这个)
 
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
+> 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
 ## 最近 session (2026-06-17): 高中地基重审根治 + 初中子系统立项
 
