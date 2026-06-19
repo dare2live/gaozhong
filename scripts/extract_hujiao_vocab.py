@@ -31,6 +31,10 @@ def _col_lines(page) -> list[str]:
 
 
 def _parse(line: str) -> tuple[str, str, str] | None:
+    """word + pos 来自可读文本层; 释义含中文则取, CID 乱码则标 '待OCR'.
+
+    CID 只污染中文释义, 英文 word 本身可读 → stage 词表不靠 OCR; 释义后置 OCR 补。
+    """
     line = line.replace("上海教育出版社", "").strip()
     m = _ENTRY.match(line)
     if not m:
@@ -39,9 +43,11 @@ def _parse(line: str) -> tuple[str, str, str] | None:
     if not (2 <= len(word) <= 25) or not re.match(r"^[a-z]", word):
         return None
     zh = m.group(3).strip()
-    if not any("一" <= ch <= "鿿" for ch in zh):   # 释义须含中文, 滤噪
+    has_cid = "(cid:" in zh or "ud:" in zh
+    zh_clean = zh[:40] if any("一" <= ch <= "鿿" for ch in zh) else ("待OCR" if has_cid else None)
+    if zh_clean is None:        # 既无中文又无CID = 噪声行, 滤
         return None
-    return (word, m.group(2), zh[:40])
+    return (word, m.group(2), zh_clean)
 
 
 def _vocab_pages(pdf) -> list[int]:
@@ -67,18 +73,34 @@ def extract_volume(vol: str) -> list[dict]:
     return rows
 
 
+def _dedup_first(per_raw: dict) -> dict[str, dict]:
+    """6册按年级序首现去重: 首现卷=grade; 后卷干净释义回填 CID 待OCR 词."""
+    seen: dict[str, dict] = {}
+    for vol in _GRADE:                        # 7a→9b 保序
+        rows = extract_volume(vol)
+        per_raw[vol] = len(rows)
+        for row in rows:
+            w = row["word"]
+            if w not in seen:
+                seen[w] = row
+            elif seen[w]["zh_def"] == "待OCR" and row["zh_def"] != "待OCR":
+                seen[w]["zh_def"] = row["zh_def"]
+    return seen
+
+
 def build() -> dict:
+    """6册抽取 + 首现去重 (per-grade=首引年级; 9b累积总表只补新词)."""
     OUT.mkdir(parents=True, exist_ok=True)
-    all_rows, per = [], {}
-    for vol in _GRADE:
-        r = extract_volume(vol)
-        per[vol] = len(r)
-        all_rows.extend(r)
+    per_raw: dict = {}
+    rows = list(_dedup_first(per_raw).values())
     with (OUT / "hujiao_vocab.jsonl").open("w", encoding="utf-8") as fh:
-        for r in all_rows:
+        for r in rows:
             fh.write(json.dumps(r, ensure_ascii=False) + "\n")
-    distinct = len({r["word"] for r in all_rows})
-    return {"rows": len(all_rows), "distinct_word": distinct, "per_grade": per}
+    per_first = {g: sum(1 for r in rows if r["grade"] == g) for g in set(_GRADE.values())}
+    need_ocr = sum(1 for r in rows if r["zh_def"] == "待OCR")
+    return {"distinct_word": len(rows), "释义待OCR": need_ocr,
+            "per_grade首现": {k: per_first.get(k, 0) for k in ["七上","七下","八上","八下","九上","九下"]},
+            "per_vol_raw": per_raw}
 
 
 def cross_check() -> None:
