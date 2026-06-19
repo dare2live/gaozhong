@@ -66,7 +66,7 @@
 |---|---|---|---|---|
 | B1 | gaokao-ln-provenance | 2024辽宁卷 local_pdf(9)+gbu24(6) **同卷双源重复入库** =15 应=9 | 内容级重复, exact-string去重漏(两源文本微差) | ✅修(656c→) exam.py LOCAL_PDF_LIAONING_YEARS supersede + D0断言"2024/2025辽宁无GAOKAO-Bench重复" + 重建2024辽宁=9 |
 | Z1 | zk2025-stems | OCR丢首位'1' (Q14/15/16→4/5/6) → Q4-7错位/丢; 选项以A-E大写开头被吞 | `_add_opts` 正则 `[^A-E]+?` bug + OCR题号碰撞 | ✅修 _add_opts marker-based重写 + 四选一仅A-D + OCR数字修正; Q1-16全4选项(修复11题); D0/junior绿。**五选四17-20待补(task#19)** |
-| L3a/b/c | curr-L3 | `ame`/`fu`垃圾 + `app+application`缩写展开重复 + AmE变体(color)重复 + fill丢/miss误归 | `_cross_validate` 的 `(ocr & real)` 把OCR读到的括号gloss当真词加 | 📋task#17(KG骨干, 谨慎手术, agent有误报) |
+| L3a/b/c | curr-L3 | `ame`/`fu`垃圾 + `app+application`缩写展开重复 + AmE变体(color)重复 | `_cross_validate` 的 `(ocr & real)` 把OCR读到的括号gloss当真词加 | ✅修(官方口径核对附录: 词头才是词条, `(=application)`/`(AmE color)`是注释) extract_paren_words 减单词变体/展开(跳多词防误删physical) + _GARBAGE去ame/fu; 1689→1660趋1600; F2c断言锁; stage_refined重生成F8绿 |
 | H1 | hujiao-vocab | 15条 zh_def 截断 (`人人；所有人`→`人人；`) | **文本层源头即截断**(CID腐蚀), 提取忠于损坏文本; 未识别尾随；标待OCR | 📋task#18(低, 释义非词头) |
 | L2a/G1 | curr-L2/grammar | `ice cream`/`ping-pong`多词漏 + 2条label字符截断 | 分词按空格拆 / _strip_plus剥inline+ | 📋task#20(低) |
 

@@ -82,14 +82,20 @@ def _sysdict_long() -> set[str]:
     return {l.strip().lower() for l in open(p, encoding="utf-8", errors="ignore") if len(l.strip()) >= 4}
 
 
-def _cross_validate(l3_text: set, l2: set, ocr: set) -> set:
+# 文本层错切残片/编辑标记 (官方口径非词条, 强验证 L3a): ame/bre=AmE/BrE 标记, fu=full 截断残片.
+_GARBAGE = {"ame", "bre", "fu"}
+
+
+def _cross_validate(l3_text: set, l2: set, ocr: set, paren: set) -> set:
     """OCR 交叉验证 (审计 F1/F2/F2b, master §3): glyph 误解码垃圾(fuit/ai)在文本层, OCR 读正确印刷词。
-    干净 = (文本∩真词)[clean] ∪ (文本∩OCR)[互证如app] ∪ (OCR∩真词)[恢复 fruit/goal]; 滤 misspelling。"""
+    干净 = (文本∩真词)[clean] ∪ (文本∩OCR)[互证如app] ∪ (OCR∩真词−括号词)[恢复 fruit/goal]; 滤 misspelling。
+    官方口径 (强验证 L3b/c): 括号内 gloss/变体(application/color/theater) 只经 OCR 混入,
+    从恢复项减掉(词头在 l3_text 不动, 如 education); −_GARBAGE 去文本层错切残片(ame/fu)。"""
     if not ocr:
-        return l3_text
+        return l3_text - _GARBAGE
     real = _dictionary() | l2
     keep = real | _sysdict_long()
-    return (l3_text & keep) | (l3_text & ocr) | (ocr & real)
+    return ((l3_text & keep) | (l3_text & ocr) | ((ocr & real) - paren)) - _GARBAGE
 
 
 def _vocab_rows(l3_words: set, l2: set, ocr: bool) -> list[dict]:
@@ -114,7 +120,8 @@ def build() -> dict:
     l2 = _split_slash(_load_l2_vision())
     l3_text = _split_slash({r["word"] for r in jh.extract_vocab("三级", "初中", jh.L3_AZ_PAGES, "yiwu_2022_L3")})
     ocr = _load_ocr_words()
-    l3_words = _cross_validate(l3_text, l2, ocr)
+    paren = _split_slash(jh.extract_paren_words())   # 括号内 gloss/变体 (官方口径非独立词条)
+    l3_words = _cross_validate(l3_text, l2, ocr, paren)
     vocab = _vocab_rows(l3_words, l2, bool(ocr))
     grammar = jh.extract_grammar()
     _emit("curriculum_vocab.jsonl", vocab)

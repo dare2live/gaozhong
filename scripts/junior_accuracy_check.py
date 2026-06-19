@@ -71,6 +71,15 @@ def _check_curriculum(cur) -> None:
     check("F2 词汇总数 ≈ 官方三级1600 (含小学, OCR交叉验证不凑)", 1500 <= len(cur) <= 1850,
           f"total={len(cur)} (小学{len(xiao)}+初中{len(l3)}; 官方≈1600+可增)")
     check("F2b OCR 恢复丢词 (goal 等 glyph 误解码)", "goal" in words, f"goal 在={'goal' in words}")
+    # F2c (强验证 L3a/b/c): 括号gloss/变体/残片非官方词条 (官方口径: 词头才是词条) → 不应入库;
+    # 但其词头(app/colour/physical)必留。sample 锁防 _cross_validate 回归。
+    _gloss = {"ame", "fu", "bre", "application", "color", "theater", "meter", "favorite",
+              "advertisement", "center", "program", "toward"}
+    _heads = {"app", "colour", "theatre", "physical", "education", "metre", "favourite", "towards"}
+    in_gloss = sorted(_gloss & words)
+    miss_head = sorted(_heads - words)
+    check("F2c 无括号gloss/变体/残片越界 (官方口径只词头)", not in_gloss and not miss_head,
+          f"残留gloss={in_gloss} 误删词头={miss_head}")
     # F7: 官方二级505; 人工 vision 转写502 (缺3, §1.3 诚实标缺口不凑); 待补转写。
     check("F7 二级(小学) ≥500 (官方505, 转写诚实)", len(xiao) >= 500, f"{len(xiao)} (官方505, 缺{505 - len(xiao)}待补转写)")
 

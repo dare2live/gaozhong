@@ -111,6 +111,30 @@ def _rows_from_line(line, level, stage, source_tag, include_alts, seen) -> list[
     return out
 
 
+# 单词变体/展开: '(AmE color)' / '(=application)' / '(BrE X)' — 词头才是词条, 这些是注释。
+# **只匹配单词** (跳过 '(=physical education)' 多词展开 — 其分量 physical/education 可能本身是词头, 不删)。
+_PAREN_VARIANT_RE = re.compile(r"^(?:AmE|BrE|=)\s*([A-Za-z][A-Za-z\-']+)\s*$")
+
+
+def extract_paren_words(pages=L3_AZ_PAGES) -> set[str]:
+    """括号内**单词**变体/展开词集 (官方口径: '(=application)'/'(AmE color)' 是注释非独立词条).
+
+    全页 extract_text (括号行内, 两栏合并不破配对)。供 _cross_validate 从 OCR 恢复项减掉
+    (这些词只经 OCR 混入, 不在文本层词头)。多词展开不收(防误删 physical/education 等真词头)。
+    """
+    words: set[str] = set()
+    with pdfplumber.open(PDF_PATH) as pdf:
+        for idx in pages:
+            if idx >= len(pdf.pages):
+                break
+            text = pdf.pages[idx].extract_text() or ""
+            for grp in re.findall(r"\(([^)]*)\)", text):
+                m = _PAREN_VARIANT_RE.match(grp.strip())
+                if m:
+                    words.add(m.group(1).lower().strip("-'"))
+    return words
+
+
 def extract_vocab(level: str, stage: str, pages, source_tag: str,
                   include_alts: bool = False) -> list[dict]:
     """抽一个词汇表段 (二级或三级 a-z 主表) → [{word, level, stage, source, starred?}].
