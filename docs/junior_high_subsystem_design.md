@@ -196,3 +196,34 @@ stage 原语真相源(义务课标三级 + 高中义教/必修/选必)已 HIGH �
 > 边类型 (Rule3 edges 一等公民): `expands_sense` / `collocates_into` / `deepens` / `spirals`, 全带
 > provenance(mined/dual_model/human) + 语料证据(n_occur), C级未验证不上教学面 (同 D0)。
 > 详独立设计稿曾在 k12_staged_platform_design.md (已并入本节, 删重)。
+
+---
+
+## 11. 顶层重新梳理 (architect-controller, 2026-06-17 审计驱动)
+
+> 触发: 对抗审计(ad5f54bd)揭示**初中地基不达 D0** — curriculum_vocab 注垃圾词(F1:fuit/gif/ginl)+丢真词
+> (F2:goal没了, 真实1589非1600); 沪教欠收25-30%(F3:`*`超纲词静默丢); 释义30%退化(F4:19%cid未标+8%截断);
+> **5道门0覆盖**(F5坑17); 提取器复刻 vocab_renjiao(F6 Rule1)。Phase2.5 的 stage_refined **建在脏地基上**。
+
+### 11.1 控制层重新判断 (5问)
+| 问 | 审计后答案 |
+|---|---|
+| **substrate** | 真相源(课标/沪教 PDF)本身是好的; **脏在提取层**(OCR断片/digit-glyph误解码/`*`-drop/`[:40]`截断), 不是真相源脏 → 修提取器非补数据。 |
+| **boundary** | junior 提取应收口到 `backend/services/data_sources/extract/` 薄壳(Rule1); F6: hujiao 提取器在 scripts/ 重写了 vocab_renjiao 双栏逻辑 + 用了已废弃"≥8条=词表页"启发 → 抽共享 `textbook_vocab` 核心。 |
+| **falsification** | junior **0 门**(F5/坑17) = 没有证伪机制 → 脏数据静默通过。必补 D0+moth 双门(审计给8条清单) + stop_gate 触发器认 `data/junior_high/**`(否则坑21假阴性)。 |
+| **attention(承重)** | **stage 数据是 A/B/C 全部的地基** — A 回填节点/B 挖语义边/C 中考对齐都消费 stage_refined。地基脏则三者全染 → 地基修复是不可绕的前置(§1.1 数据基石优先)。 |
+
+### 11.2 路线重排 (审计驱动: 地基优先, A/B/C 让位)
+**Phase 2.6 (NEW, 阻断 A/B) — 初中地基修复 + 补门**:
+1. 修提取器(单一计算点, 不手 patch 数据): F1 加词典/片段门去垃圾词 + F2 修 idx115/134 OCR坏格&诚实标 1589 + F3 `^\*?` 召回超纲词存 `supra_curriculum` + F4 任何 `(cid:` 即标待OCR&去`[:40]`截断 + F7 二级补 505 + F8 语法补5理解项(66→71)。
+2. 收口 F6: 抽 `backend/services/data_sources/extract/textbook_vocab.py` 共享核心, hujiao/renjiao 都调。
+3. 补门(F5, 坑17 两道门): junior 独立 D0 校验(8条: 无垃圾词头/三级数透明/二级505/无cid释义/沪教词量护栏/语法71/stage无orphan/契约登记) + moth 断言 + stop_gate 触发器 + project_architecture.yaml 登记。
+4. **gate**: 修复后 junior_accuracy_check exit0 + 对抗验证(注1垃圾词→门必FAIL)才算地基达标。
+
+**然后 A/B/C (清洁地基上, 三者并进)**:
+- **A. Phase3 集成**: 修复后 stage_refined 回填高中 word 节点 stage(power 等细分) + junior 独立 DB(gaozhong_junior.duckdb §6) + stage-aware VIEW 层。
+- **B. 语义扩展边**: 298候选(去 F1/F2 假候选后)→ 跨stage语料(教材+真题)共现/义项分析 → expands_sense/collocates_into 边(provenance, design§10)。**B 依赖 A 的 DB + 干净 stage**。
+- **C. 沈阳中考**: 2024+省统一卷拉取(独立性最高, 可与 2.6 并行) → 中考考点 + 中考×高考评估轨迹。
+
+### 11.3 Verdict: REVISE
+**A/B/C 推进前必先 Phase 2.6 地基修复** — 否则 over-fit 脏数据(垃圾词进 stage、`*`超纲词丢失扭曲覆盖率分析、cid释义喂教程)。C(中考)独立性最高可与 2.6 并行起步。**地基优先是 §1.1 不可协商的依赖序, 非程度问题**(mio 核心视角#3)。
