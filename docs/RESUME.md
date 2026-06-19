@@ -34,11 +34,22 @@
 - **Phase1 课标抽取**: 义务课标2022 → curriculum_vocab.jsonl(1647: 小学502+初中1145, 三级1593/1600 CMap漏~7不凑) + grammar(66)。stage切分用集合交(不靠损坏星标)。S4桥接: 义务∩高中义教=1333(84%)。
 - **sherpa init**: `.sherpa/takeover.yaml` 定制为本仓3门+真相源(D0/stop/moth/map/junior), `sherpa takeover --repo .` 可用。
 
-## 下一步 (优先级)
-1. **沪教牛津 OCR + 结构化** (教材层): 重 OCR(文本层乱码) → 拆单元/词表/语篇, 像高中 textbook/section/vocab pipeline。落 junior 独立 DB(gaozhong_junior.duckdb, §6不ATTACH) + 独立D0门。
-2. **沈阳中考真题拉取**: 2024+省统一卷(对接高考方向, 可入review); ≤2023自主卷仅分布快照(PIT分段, 坑12)。源民间聚合(中考网)。
-3. **S4 power-reconcile 落地**: 初中三级 stage 回填高中 word 节点(power 等义教词细分 小学/初中); 16%边界带逐案。
-4. 高中侧纯代码债: milestone_b_rebuild CC>10(工具脚本,低优先)。
+### E. Phase 2.5 — OCR 全局持久化 + 沪教词表 + S4 双向 stage reconcile (2026-06-17)
+- **OCR 工具链全局持久**: PaddleOCR 官方装 `~/.venvs/ocr` (paddle3.3.1+paddleocr3.7.0), 全局入口 `ocr-python`/`paddleocr` (PATH 已含, **跨项目可用**), 模型缓存 `~/.paddlex`。docs/junior_high_ocr_setup.md。
+- **纠正"文本层乱码"**: 沪教文本层**大体可读**(7a 122/138页), agent 的"全乱码"错(它用pymupdf)。**CID 只污染中文释义, 英文 word 可读** → stage 词表文本层全抽, OCR 仅补释义。交叉验证: 可读页文本层抽词 **171/171=100% 被OCR确证**。
+- **沪教6册词表 926 distinct** (extract_hujiao_vocab.py): 首现去重 per-grade(七上159...九下127); 9b 29页累积总表回填 CID 卷释义 → **仅26释义待OCR**。∩课标三级=648(70%)。
+- **S4 stage reconcile** (junior_stage_reconcile.py): 初中源(课标二级=小学/课标三级∪沪教=初中)细分高中 4329词 → **1763(40%)更精细**(义务教育1580→小学499+初中1264); **298 语义扩展候选**(power✓: 初中力量→高中power plant, design§10 边种子)。emit stage_refined.jsonl。
+
+## 当前真相源 (live, 不引旧数字)
+- 高中主门 (exit0/PASS): `data_accuracy_check.py` + `stop_gate.sh` + `moth assert` + `map doctor`
+- 初中产物: `data/junior_high/structured/{curriculum_vocab,grammar_items,hujiao_vocab,stage_refined}.jsonl` (**尚无独立 D0 门** — 审计待补)
+- 接手对账: `sherpa takeover --repo .`
+
+## 下一步 = A/B/C (待 architect 重新梳理后推进, 2026-06-17 用户指示)
+- **A. Phase3 集成**: stage_refined 回填高中节点 + junior 独立 DB(gaozhong_junior.duckdb §6) + 独立 D0 门。
+- **B. 语义扩展边挖掘**: 298 候选 → 跨stage语料共现/义项分析 → expands_sense/collocates_into 边(provenance, design§10)。
+- **C. 沈阳中考真题**: 2024+省统一卷(对接高考方向) → 中考考点 + 中考×高考评估轨迹。
+- 横切: 初中子系统补独立 D0 门(现0覆盖, 坑17); 26释义OCR补全; 课标三级CMap漏~7+小学9补。
 
 ## 真相源/门 (live, 不引文档旧数字)
 - D0: `python3 scripts/data_accuracy_check.py` (exit0)
