@@ -19,7 +19,7 @@ to_int() {
 
 # yaml/yml 纳入: 架构/数据契约 (sources/import_policies/project_architecture/exam_paper_contracts...)
 # 走 config, 配置型架构漂移 (悬挂doc/未数据化importer) 也要触发架构契约门 (gate 4)
-changed=$(git status --porcelain 2>/dev/null | grep -cE '\.(py|sql|html|js|css|yaml|yml)$' || echo 0)
+changed=$(git status --porcelain 2>/dev/null | grep -cE '\.(py|sql|html|js|css|yaml|yml|jsonl)$' || echo 0)
 changed=$(to_int "$changed")
 if [ "$changed" -eq 0 ]; then
   exit 0
@@ -63,6 +63,14 @@ if [ -f data/db/gaozhong.duckdb ] && [ -f scripts/data_accuracy_check.py ]; then
   elif [ "$d0_rc" -ne 0 ]; then
     fails="$fails
   ❌ D0 违反: scripts/data_accuracy_check.py 失败 — 看 /tmp/d0_check.log"
+  fi
+fi
+
+# 1c. 初中子系统 D0 (坑17/坑21: 声明的门接进执行点; 初中产物 8 不变量, Phase2.6 已全绿)
+if [ -f scripts/junior_accuracy_check.py ] && [ -f data/junior_high/structured/curriculum_vocab.jsonl ]; then
+  if ! python3 scripts/junior_accuracy_check.py > /tmp/junior_check.log 2>&1; then
+    fails="$fails
+  ❌ 初中 D0 违反: scripts/junior_accuracy_check.py 失败 — 看 /tmp/junior_check.log"
   fi
 fi
 

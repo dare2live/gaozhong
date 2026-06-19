@@ -46,11 +46,20 @@
 - 初中产物: `data/junior_high/structured/{curriculum_vocab,grammar_items,hujiao_vocab,stage_refined}.jsonl` (**尚无独立 D0 门** — 审计待补)
 - 接手对账: `sherpa takeover --repo .`
 
-## 下一步 = A/B/C (待 architect 重新梳理后推进, 2026-06-17 用户指示)
-- **A. Phase3 集成**: stage_refined 回填高中节点 + junior 独立 DB(gaozhong_junior.duckdb §6) + 独立 D0 门。
-- **B. 语义扩展边挖掘**: 298 候选 → 跨stage语料共现/义项分析 → expands_sense/collocates_into 边(provenance, design§10)。
-- **C. 沈阳中考真题**: 2024+省统一卷(对接高考方向) → 中考考点 + 中考×高考评估轨迹。
-- 横切: 初中子系统补独立 D0 门(现0覆盖, 坑17); 26释义OCR补全; 课标三级CMap漏~7+小学9补。
+### F. gaozhong 完全独立 + 主架构 v2 + Phase2.6 初中地基修复 (2026-06-17)
+- **gaozhong↔gaokao 完全独立**: 切断 2 处运行时跨项目读(gaokao_bench/truth_baseline → 本地镜像);
+  init_db 自包含复现 472/188; moth gaozhong-self-contained 守门。"不ATTACH"=跨项目非初中↔高中。
+- **主架构 v2** (`docs/k12_platform_master_design.md`): 第一性原理 + 3视角对抗评审定稿(REVISE);
+  sense级stage(power自反驳word单标签) + 单库node_type(弃双库三态) + 补学习者/语篇/思维节点 + tutorial契约。
+- **Phase2.6 初中地基修复 — 初中 D0 全绿**: 建 junior_accuracy_check(8不变量, 坑17) + 接 stop_gate
+  阻断路径(坑21, 对抗验证污染→exit2)。OCR 交叉验证(master§3)洗净课标: F1垃圾51→0 + goal恢复(glyph误解码)
+  + F4沪教cid 176→0 + F6语法66→71 + 契约注册。词典门已证不净, OCR=视觉真值。
+
+## 下一步 (Phase2.6 完成, 地基达标解锁 A/B/C)
+- **A. Phase3 集成 (单库)**: stage_refined 回填高中 word 节点 stage + word_sense 节点(义项级) + 跨阶段 edges。
+- **C. 沈阳中考真题** (可并行): 2024+省统一卷 → 中考考点 + 中考×高考**静态交叉点**(N=2 非趋势)。
+- **B. 语义扩展边** (依赖 A+C): 298候选→跨stage语料 NLP pipeline → expands_sense/collocates_into。
+- 余: F7 二级补转写3词(502→505, 低优先); F3 沪教*超纲词召回(926→~1200, 门现800-1400放行)。
 
 ## 真相源/门 (live, 不引文档旧数字)
 - D0: `python3 scripts/data_accuracy_check.py` (exit0)
