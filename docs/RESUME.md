@@ -3,6 +3,23 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
+## 最近 session (2026-06-20): K12 入库 inc1-6 全完成 + 前端4页 + 强验证修复
+
+**A. 强验证 (独立重推导)**: 8切片并行从第一手源重推导→比对→对抗确认 (`docs/data_validation_design.md`); 抓6区真错全修 (高考2024辽宁双源去重/2025中考parser/课标三级清洗按官方口径/沪教截断/五选四/grammar label); ocr_image 可复用裁决模块。**关键**: 三门测自洽不测源保真度, 强验证补盲区。
+
+**B. 数据可视化+前端**: understand+design 工作流(3提案收敛=教师驾驶舱) → 4页落地 (app.html SPA 扩展, 全 vanilla JS + ECharts 单算点不重算):
+- 🎯 备课驾驶舱: 考点分布(era分层)/命题迁移/趋势(reliable护栏灰显)/词汇热力
+- 📖 讲课调取: 概念浮窗4路追溯(复用graph_popup) + 考点关联力导图
+- 🔗 K12衔接: stage阶梯 + 10维语法蓝图59对 + 中考题型
+- 👥 分析学生: 多租户(teacher_id隔离) + 班级学情热力 + demo banner
+
+**C. K12 入库 inc1-6 全完成** (`docs/junior_db_integration_design.md`, architect 设计+approve): 单库三判别维(node_type/stage/exam_type) + 两大域(共享知识图谱/多租户学情):
+- inc1 中考90题入库 (schema模块化7域文件 + exam_questions_all物理表 + **高考视图隔离零回归** + 修cross_verify回归)
+- inc2 初中112词+71grammar:jr节点 + stage节点 + at_stage边防孤儿
+- inc3 stage回填(3095高中词at_stage) + **10维蓝图59 deepens边**(中考∩高考)
+- inc4 K12 API (services/k12.py单算点) / inc5 K12前端页 / inc6 多租户(2老师隔离+析生页)
+- 全程三门绿; 每增量独立commit; 9个commit (656c448→9e658d2 已push)
+
 ## 最近 session (2026-06-19): 中考 2024+2025 结构化 + N=2 语篇填空"10维语法蓝图"发现
 
 **C 阶段中考真题按高考标准做完** (2024+2025 两年, junior D0 F9 守门, 对抗验证)。

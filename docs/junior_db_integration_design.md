@@ -107,9 +107,13 @@ L6 前端                        K12衔接页 (stage进度 + 10维语法蓝图�
 > **inc1 实现细化 (比原设计更优)**: 原设计"消费者各加 exam_type 过滤"= 25+ 处编辑高回归。实际改用**视图隔离**: 物理表 `exam_questions_all`(中考+高考), `exam_questions` 改为 `WHERE exam_type='高考'` 视图 → 现有 25+ 高考消费者**零改动**仍只见高考; 只重定向 8 个写操作到 `_all`。抓到并修真回归(cross_verify 原按 year 纳入中考 fail=45 → 视图后 PASS)。**单一计算点延伸**: 过滤逻辑收口到视图定义一处, 消费者不各自重复 `WHERE exam_type`。
 | **inc2** | 初中 word/grammar 节点入库 | junior.vocab/grammar loader + 节点 stage 标 + D0①③ | inc1 |
 | **inc3** | stage 回填 + 跨阶段边 | junior.stage loader + word.attrs.stage + deepens/expands 边(10维蓝图) | inc2 |
-| **inc4** | API 层(域A) | /api/stage/distribution + /api/k12/blueprint + /api/zhongkao/* | inc1-3 |
-| **inc5** | K12衔接前端页 | stage进度 + 10维语法蓝图矩阵(中考∩高考) | inc4 |
-| **inc6** | 域B 多租户学情加固 | 所有 /api/students/* 加 `teacher_id` 作用域 + 隔离断言 + class_weakness 聚合 + 析生页 | 独立(可并行); 数据待真实学生答题 |
+| **inc4** ✅ | API 层(域A) (d93bc3b) | services/k12.py 单算点 + routes/k12.py: /api/k12/{stage_distribution,blueprint} + /api/zhongkao/distribution | 完成 |
+| **inc5** ✅ | K12衔接前端页 (69624c9) | frontend/k12.js: stage阶梯 + 10维语法蓝图59对 + 中考题型; 浏览器实测 | 完成 |
+| **inc6** ✅ | 域B 多租户学情加固 (9e658d2) | 2老师seed隔离 + routes/students_tenant.py(teacher_id作用域+class_weakness) + 析生页(demo banner); 数据待真实学生答题 | 完成 |
+
+> **✅ 设计文档 inc1-6 全部完成 (2026-06-20)**: 单库三判别维(node_type/stage/exam_type) + 两大域(共享知识图谱/多租户学情) 全落地。
+> 中考90题入库(视图隔离零回归) → 初中112词+71语法节点 → stage维materialize(3278 at_stage边)+10维蓝图(59 deepens边) → 3个K12 API → K12衔接前端页 → 多租户(teacher_id隔离+析生页)。
+> 全程三门绿(D0 exit0 + moth PASS54/0 + stop_gate exit0); 每增量独立commit+回滚。前端新增3页(考点驾驶舱/讲课调取/K12衔接)+析生页, 全 vanilla JS + ECharts, 单算点不重算。
 
 每增量: codegraph/complexity 先(§0.5) → 改 → init_db 重建 → 三门绿 → commit。inc1-5=域A(知识图谱, 数据已验证可即做); inc6=域B(多租户, 结构就绪但数据 demo, 价值待真实使用)。
 
