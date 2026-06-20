@@ -131,6 +131,10 @@ def main() -> None:
     print(f"  {junior_stage_backfill.load(con)}")   # inc3: 高中词 stage 回填
     print(f"  {junior_blueprint.load(con)}")          # inc3: 10维 deepens 边
 
+    print("\n=== Layer 3y: 考试词典 (Canonical 词本体; 课标∪教材真超纲, 真题作旗) ===")
+    from backend.services.exam_dictionary import build_exam_dictionary
+    print(f"  {build_exam_dictionary(con)}")
+
     print("\n=== Layer 4: question_bank 装载 (真题 + 合成题 + 自动打标) ===")
     qb = extract.run_question_bank(con)
     print(f"  {qb}")

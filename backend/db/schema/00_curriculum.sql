@@ -3,6 +3,24 @@
 
 -- ====== 课标层 (master, 跨版本/跨地市共享) ======
 
+-- 考试词典 (Canonical First; word_sense/关联 的词本体地基; docs/kg_layer_design §2).
+-- "一本最小也最准的考试词典" = 课标∪教材真超纲 出现过的词本身, 每词溯回真相源 (provenance).
+-- 最小: 只 课标(cefr_vocab)+教材真超纲(is_real_over 单算点), 无 CET/GRE 注水; 真题作 in_exam 旗 (辽宁命中).
+-- 最准: 每词 in_curriculum/in_textbook/in_exam 三源标记 + stage + gloss(教材生词表真相源) 全可溯。
+CREATE TABLE IF NOT EXISTS exam_vocabulary (
+    word              VARCHAR PRIMARY KEY,
+    in_curriculum     BOOLEAN NOT NULL,      -- 在高中课标(cefr_vocab)
+    curriculum_level  VARCHAR,               -- 义教 | 必修 | 选必 (课标级别)
+    in_textbook       BOOLEAN NOT NULL,      -- 在教材生词表(unit_vocab_intro)
+    in_exam           BOOLEAN NOT NULL,      -- 辽宁中高考命中 ≥1 题
+    gaokao_hit_ln     INTEGER NOT NULL DEFAULT 0,
+    stage             VARCHAR,               -- refined_stage 细分阶 (小学/初中/高中必修/选修...)
+    gloss             VARCHAR,               -- 中文释义 (教材生词表→中考表→COCA兜底; 缺则 NULL 诚实标)
+    gloss_source      VARCHAR,               -- 释义来源 provenance: 教材(waiyan/renjiao)|中考词汇表|hujiao|COCA|NULL
+    source_flags      VARCHAR                -- 逗号拼 provenance: curriculum,textbook,exam
+);
+CREATE INDEX IF NOT EXISTS idx_exam_vocab_stage ON exam_vocabulary(stage);
+
 CREATE TABLE IF NOT EXISTS cefr_vocab (
     word           VARCHAR PRIMARY KEY,
     cefr_level     VARCHAR NOT NULL,   -- 义教 | 必修 | 选必

@@ -146,6 +146,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
     expect: {op: ">=", value: 300}
+  - id: exam-dictionary-canonical
+    claim: "考试词典(Canonical词本体): exam_vocabulary ~4186词=课标∪教材真超纲(最小无注水), ≥98%有释义(教材→中考表→COCA交叉引用), 每释义gloss_source可溯; photosynthesis等真题阅读生词不入(最准)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute('SELECT COUNT(*) FROM exam_vocabulary').fetchone()[0];cov=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE gloss IS NOT NULL').fetchone()[0];nosrc=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE NOT (in_curriculum OR in_textbook)').fetchone()[0];ph=c.execute(\"SELECT COUNT(*) FROM exam_vocabulary WHERE word='photosynthesis'\").fetchone()[0];c.close();print('OK' if 3500<=n<=5000 and nosrc==0 and ph==0 and cov*100>=n*98 else f'FAIL {n} {cov} {nosrc} {ph}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: glossary-cross-stage-senses
     claim: "释义词典(word_sense地基): word_glosses 跨阶段候选≥300词(初中∩高中有释义); 释义来自教材生词表+中考词汇表(课标无释义), power初中能量义+高中电力新义"
     type: shell

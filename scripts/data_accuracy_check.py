@@ -286,6 +286,7 @@ _LIB_CHECKS = [
     ("d0_cognitive_skill_check", "check_cognitive_skill"),
     ("d0_stage_check", "check_stage"),
     ("d0_glossary_check", "check_glossary"),
+    ("d0_exam_dict_check", "check_exam_dict"),
 ]
 
 
