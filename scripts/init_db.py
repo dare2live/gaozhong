@@ -113,6 +113,13 @@ def main() -> None:
     print(f"  edges.derive_from: {extract.run_derive_edges(con)}")
     print(f"  TOTAL edges: {con.execute('SELECT COUNT(*) FROM edges').fetchone()[0]}")
 
+    print("\n=== Layer 3x: 初中节点 (域A; word/grammar, stage 标注; inc2; 在全部高中word节点建完后跑计数才准) ===")
+    from backend.services.data_sources.extract.junior import (
+        vocab as junior_vocab, grammar as junior_grammar, stage_link as junior_stage_link)
+    print(f"  {junior_vocab.load(con)}")
+    print(f"  {junior_grammar.load(con)}")
+    print(f"  {junior_stage_link.load(con)}")
+
     print("\n=== Layer 4: question_bank 装载 (真题 + 合成题 + 自动打标) ===")
     qb = extract.run_question_bank(con)
     print(f"  {qb}")

@@ -310,3 +310,15 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE question_id LIKE 'ZK-%'"
     expect: {op: "==", value: 0}
+  - id: junior-grammar-namespaced
+    claim: "初中语法节点 grammar:jr: 命名空间(71项)不碰高中 grammar; inc2 单库 node_type/stage"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%'"
+    expect: {op: "==", value: 71}
+  - id: junior-nodes-no-orphan
+    claim: "初中独有 word(~112)+grammar(71) 节点经 at_stage 边连 stage 节点, 非孤儿(orphan门绿)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM nodes n WHERE (n.concept_id LIKE 'grammar:jr:%' OR (n.node_type='word' AND n.attrs_json LIKE '%junior_curriculum%')) AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)"
+    expect: {op: "==", value: 0}

@@ -24,3 +24,14 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
     zk_view = con.execute("SELECT COUNT(*) FROM zhongkao_questions").fetchone()[0]
     check("视图隔离 (高考视图 exam_questions 无中考 + zhongkao_questions=90)",
           leak == 0 and zk_view == 90, f"高考视图含中考={leak} 中考视图={zk_view}")
+    # inc2: 初中节点 (单库 node_type/stage 判别)
+    n_jrw = con.execute(
+        "SELECT COUNT(*) FROM nodes WHERE node_type='word' AND attrs_json LIKE '%junior_curriculum%'").fetchone()[0]
+    check("初中独有 word 节点入库 (~112, stage 小学/初中)", 100 <= n_jrw <= 140, f"{n_jrw}")
+    n_jrg = con.execute("SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%'").fetchone()[0]
+    bad_g = con.execute(
+        "SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%' AND attrs_json NOT LIKE '%初中%'").fetchone()[0]
+    check("初中 grammar 节点=71 (grammar:jr: 命名空间不碰高中, 全 stage=初中)",
+          n_jrg == 71 and bad_g == 0, f"{n_jrg} 节点, {bad_g} 无初中标")
+    n_at = con.execute("SELECT COUNT(*) FROM edges WHERE relation='at_stage'").fetchone()[0]
+    check("at_stage 边连初中节点 (防孤儿 + stage 维 materialize, ≥180)", n_at >= 180, f"{n_at}")

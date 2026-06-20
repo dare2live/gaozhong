@@ -36,6 +36,12 @@ ALLOWED_RELATIONS = {
     "derive_from": "word ↔ word (同 stem)",
     "tests_exam_point": "question → exam_point (件2: 考点 canonical 维度, genre/theme/设问/语法)",
     "theme_aligns": "exam_point(theme) → theme (考点主题↔教材主题, 同课标主题群; 4路追溯桥)",
+    # K12 stage 维 (设计§2; inc2 at_stage 防孤儿+materialize stage; inc3 跨阶段边):
+    "at_stage": "word|grammar → stage (该知识点引入阶段, stage 维 materialize)",
+    "deepens": "低阶 grammar/syntax → 高阶 (跨阶段深化, 如 中考语篇填空10维 → 高考语法填空)",
+    "expands_sense": "低阶 word_sense → 高阶 word_sense (跨阶段词义扩展, power 力量→power plant)",
+    "collocates_into": "word → 高阶搭配 (跨阶段)",
+    "spirals": "同主题跨阶段螺旋深化",
 }
 
 # 哪些节点类型可以"孤儿" (e.g. cefr_level 是标签节点, 终点, 没 outgoing 是正常)
@@ -51,6 +57,7 @@ ORPHAN_RATIO_TOLERATED = {
     "qtype": (1.0, 1.0),
     "cefr_level": (1.0, 1.0),
     "subject": (1.0, 1.0),
+    "stage": (1.0, 1.0),      # stage 标签节点 (at_stage 的 dst, 终点)
 }
 
 
