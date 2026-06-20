@@ -102,7 +102,9 @@ L6 前端                        K12衔接页 (stage进度 + 10维语法蓝图�
 
 | # | 增量 | 产出 | 依赖 |
 |---|---|---|---|
-| **inc1** | 中考 exam_questions 入库 | +exam_type列 + junior.exam loader + Layer + D0②④ + 中考可查/可出考点分布 | 无(最小最值) |
+| **inc1** ✅ | 中考 exam_questions 入库 (35d751c) | schema模块化(7域文件) + exam_questions_all物理表 + **高考视图 exam_questions 隔离**(25+消费者零改动零回归) + zhongkao_questions视图 + junior.exam loader + D0 _check_27 + moth×2 | 完成 |
+
+> **inc1 实现细化 (比原设计更优)**: 原设计"消费者各加 exam_type 过滤"= 25+ 处编辑高回归。实际改用**视图隔离**: 物理表 `exam_questions_all`(中考+高考), `exam_questions` 改为 `WHERE exam_type='高考'` 视图 → 现有 25+ 高考消费者**零改动**仍只见高考; 只重定向 8 个写操作到 `_all`。抓到并修真回归(cross_verify 原按 year 纳入中考 fail=45 → 视图后 PASS)。**单一计算点延伸**: 过滤逻辑收口到视图定义一处, 消费者不各自重复 `WHERE exam_type`。
 | **inc2** | 初中 word/grammar 节点入库 | junior.vocab/grammar loader + 节点 stage 标 + D0①③ | inc1 |
 | **inc3** | stage 回填 + 跨阶段边 | junior.stage loader + word.attrs.stage + deepens/expands 边(10维蓝图) | inc2 |
 | **inc4** | API 层(域A) | /api/stage/distribution + /api/k12/blueprint + /api/zhongkao/* | inc1-3 |
