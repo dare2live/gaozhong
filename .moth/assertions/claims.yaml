@@ -334,6 +334,17 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation='at_stage'"
     expect: {op: ">=", value: 2000}
+  - id: source-versions-registered
+    claim: "KG层横切地基: source_versions 注册表已灌真实版本(≥9: 卷制3+中考1+教材2+课标2+课程1), PIT/血缘锚点 (docs/kg_layer_design §3)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM source_versions"
+    expect: {op: ">=", value: 9}
+  - id: pit-effective-version-resolves
+    claim: "effective_version 单一PIT计算点: 2021高考→新高考II / 2018→旧课标II / 2024中考→沈阳统一, 已知年解析到唯一版本"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.lineage import effective_version as ev;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);ok=(ev(c,'exam_paper',2021,'liaoning_gaokao')=='exam_paper:liaoning_gaokao:xingaokao_guoii' and ev(c,'exam_paper',2018,'liaoning_gaokao')=='exam_paper:liaoning_gaokao:xinkebiao_guoii' and ev(c,'exam_paper',2024,'shenyang_zhongkao')=='exam_paper:shenyang_zhongkao:tongyi' and ev(c,'curriculum',2016,'gaozhong') is None);c.close();print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
   - id: multitenant-classes-owned
     claim: "inc6 域B 多租户: demo 班级全有 teacher_id 归属(老师拥有班级链, 隔离前提; 0个无主班)"
     type: duckdb_sql

@@ -37,6 +37,10 @@ def main() -> None:
     con = duckdb.connect(str(DB_PATH))
     _load_schema(con)
 
+    print("\n=== Layer 0: 真相源版本注册表 (PIT/血缘横切地基, docs/kg_layer_design.md §3) ===")
+    from backend.services.lineage import load_versions
+    print(f"  {load_versions(con)}")
+
     print("=== Layer 2: main tables + textbooks ===")
     for k, v in load.load_main_tables(con).items():
         print(f"  {k}: {v}")

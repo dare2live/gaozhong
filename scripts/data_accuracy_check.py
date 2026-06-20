@@ -272,61 +272,25 @@ def _bad_grammar_chain(gid: str, by_id: dict) -> bool:
     return False
 
 
-def _check_22_exam_point(con):
-    """考点 canonical + 4路桥 + 薄弱环节 D0 校验 (抽到 lib/d0_exam_point_check, 避 god-module)."""
-    from scripts.lib.d0_exam_point_check import check_exam_point
-    check_exam_point(con, check)
+# 检查 22-29 全是 "委托到 lib 的 check_X(con, check)" 统一形 → 数据驱动 dispatch (避 god-module + 样板).
+# (序号, 模块, 函数): 22考点/23趋势分布/24备课/25考过状态/26教材section/27中考/28多租户/29版本注册表.
+_LIB_CHECKS = [
+    ("d0_exam_point_check", "check_exam_point"),
+    ("d0_trend_distribution_check", "check_trend_distribution"),
+    ("d0_lesson_plan_check", "check_lesson_plan"),
+    ("d0_exam_status_check", "check_exam_status"),
+    ("d0_textbook_sections_check", "check_textbook_sections"),
+    ("d0_zhongkao_check", "check_zhongkao"),
+    ("d0_tenant_check", "check_tenant_isolation"),
+    ("d0_versions_check", "check_versions"),
+]
 
 
-def _check_23_trend_distribution(con):
-    """件3: 趋势/考点分布/关联性 数值正确性 (抽到 lib/d0_trend_distribution_check)."""
-    from scripts.lib.d0_trend_distribution_check import check_trend_distribution
-    check_trend_distribution(con, check)
-
-
-def _check_24_lesson_plan(con):
-    """备课整合: 词∩真题单一计算点守恒 + 确定性 + 语法轴 FK (抽到 lib/d0_lesson_plan_check)."""
-    from scripts.lib.d0_lesson_plan_check import check_lesson_plan
-    check_lesson_plan(con, check)
-
-
-def _check_25_exam_status(con):
-    """词×真题考过状态 单一计算点一致性: province一致 + 3源一致 + #14防覆盖 (抽到 lib)."""
-    from scripts.lib.d0_exam_status_check import check_exam_status
-    check_exam_status(con, check)
-
-
-def _check_26_textbook_sections(con):
-    """教材 section 边界(#9 无 span>25)+ section_text 完整性(#7 无 [:20000] 截断 + 无 back-matter 污染)."""
-    print("\n=== (26) 教材 section 边界 + section_text 完整性 ===")
-    wide = con.execute(
-        "SELECT version_key, volume_key, unit_number, seq, (page_end-page_start) AS span "
-        "FROM sections WHERE (page_end-page_start) > 25 ORDER BY span DESC"
-    ).fetchall()
-    check("无 section span>25 (单元边界收口)", not wide,
-          "0" if not wide else f"{len(wide)} 过宽: {[(r[0],r[1],r[2],r[4]) for r in wide[:5]]}")
-    n_trunc = con.execute(
-        "SELECT COUNT(*) FROM section_text WHERE n_chars <> LENGTH(raw_text)"
-    ).fetchone()[0]
-    check("section_text n_chars==LENGTH(raw_text) 全表 (无截断)", n_trunc == 0, f"{n_trunc} 不一致")
-    n_pollute = con.execute(
-        "SELECT COUNT(*) FROM section_text "
-        "WHERE raw_text ILIKE '%Communication bank%' OR raw_text ILIKE '%Appendices%' "
-        "OR raw_text LIKE '%参考答案%' OR raw_text ILIKE '%English glossary%'"
-    ).fetchone()[0]
-    check("section_text 无 back-matter 污染", n_pollute == 0, f"{n_pollute} 含书末锚点")
-
-
-def _check_27_zhongkao(con):
-    """中考真题入库 (K12 inc1, 坑17): 90题 + 不混口径 + 视图隔离. 抽到 lib 避 god-module."""
-    from scripts.lib.d0_zhongkao_check import check_zhongkao
-    check_zhongkao(con, check)
-
-
-def _check_28_tenant(con):
-    """域B 多租户隔离 (审计 BLOCK 修, 坑21): 真调路由跨租户访问必拒. 抽到 lib 避 god-module."""
-    from scripts.lib.d0_tenant_check import check_tenant_isolation
-    check_tenant_isolation(con, check)
+def _run_lib_checks(con):
+    """跑全部 lib 委托检查 (22-29); 每条 lib 自带 print 表头 + check() 断言."""
+    import importlib
+    for mod, fn in _LIB_CHECKS:
+        getattr(importlib.import_module(f"scripts.lib.{mod}"), fn)(con, check)
 
 
 # ===== main 调度 (CC=2). Phase7 回滚移除 _check_5/19/20 (断言已删生成内容) =====
@@ -338,13 +302,7 @@ CHECKS = [
     _check_15_xref, _check_16_placement, _check_17_cross_version,
     _check_18_followup,
     _check_21_exam_provenance,
-    _check_22_exam_point,
-    _check_23_trend_distribution,
-    _check_24_lesson_plan,
-    _check_25_exam_status,
-    _check_26_textbook_sections,
-    _check_27_zhongkao,
-    _check_28_tenant,
+    _run_lib_checks,             # 22-29: 数据驱动委托 lib (_LIB_CHECKS)
 ]
 
 

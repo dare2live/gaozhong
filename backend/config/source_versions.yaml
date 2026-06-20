@@ -1,0 +1,23 @@
+# 真相源版本注册表种子 (PIT §3.1; 灌入 source_versions 表; docs/kg_layer_design.md §3.1)
+#
+# 每条 = 一个真相源版本 + 生效年区间. 判断数据化 (改区间改 yaml 不动代码).
+# 锚点 (effective_version 调用方按 kind 选, 必修a): exam_paper 按真题年(exam_year);
+#   textbook/curriculum/course 按考生入学年(enroll_year/cohort) — 真题年 ≠ 考生用的教材年.
+# 不变量 (D0 门锁): 每 (kind, variant) 内 — 区间不重叠 + 相邻行 to+1==下一行 from (无空洞, 末行 to=null).
+# 只落已真实存在(已入仓)的版本, 不预填空版本; 换版时 append 新行不删旧行.
+versions:
+  # ===== 卷制 exam_paper (按真题年; 收编 scope.py 2021 断点) =====
+  # —— 高考辽宁卷流 ——
+  - {version_id: "exam_paper:liaoning_gaokao:zizhu",          kind: exam_paper, variant: liaoning_gaokao, label: "辽宁自主命题",       effective_from_year: 2010, effective_to_year: 2014, notes: "2010-2014 辽宁自主命题期; GAOKAO-Bench 数据非辽宁卷诚实降级(坑3)"}
+  - {version_id: "exam_paper:liaoning_gaokao:xinkebiao_guoii", kind: exam_paper, variant: liaoning_gaokao, label: "旧课标全国II卷",     effective_from_year: 2015, effective_to_year: 2020, notes: "2015-2020 辽宁用旧课标全国II卷 (scope.py ERA_OLD)"}
+  - {version_id: "exam_paper:liaoning_gaokao:xingaokao_guoii", kind: exam_paper, variant: liaoning_gaokao, label: "新高考全国II卷",     effective_from_year: 2021, effective_to_year: null, notes: "2021+ 辽宁正式启用新高考全国II卷 (scope.py ERA_NEW; §7 锚点)"}
+  # —— 中考沈阳卷流 ——
+  - {version_id: "exam_paper:shenyang_zhongkao:tongyi",        kind: exam_paper, variant: shenyang_zhongkao, label: "沈阳中考英语(省统一)", effective_from_year: 2024, effective_to_year: null, notes: "沈阳中考 2024起入仓; exam_type=中考"}
+  # ===== 高中教材 textbook (按入学年; 仅2019新版入仓, CLAUDE §4) =====
+  - {version_id: "textbook:waiyan:2019",  kind: textbook, variant: waiyan,  label: "外研社版高中英语(2019新版)", effective_from_year: 2019, effective_to_year: null, notes: "辽宁10市用(含沈阳/大连/鞍山); 实施2017课标; data/textbooks/waiyan/"}
+  - {version_id: "textbook:renjiao:2019", kind: textbook, variant: renjiao, label: "人教版高中英语(2019新版)",   effective_from_year: 2019, effective_to_year: null, notes: "辽宁4市用(锦州/铁岭/朝阳/葫芦岛); data/textbooks/renjiao/"}
+  # ===== 课标 curriculum (按入学年; 分学段并发) =====
+  - {version_id: "curriculum:gaozhong:2017rev2020", kind: curriculum, variant: gaozhong, label: "普通高中英语课程标准(2017年版2020年修订)", effective_from_year: 2019, effective_to_year: null, notes: "高中脊柱; data/curriculum/national/...2017年版2020年修订"}
+  - {version_id: "curriculum:yiwu:2022",            kind: curriculum, variant: yiwu,     label: "义务教育英语课程标准(2022年版)",          effective_from_year: 2022, effective_to_year: null, notes: "初中脊柱; 三级目标"}
+  # ===== 课程 course (按学期/入学年) =====
+  - {version_id: "course:fenceng:v1", kind: course, variant: null, label: "40节分层课程 v1", effective_from_year: 2026, effective_to_year: null, notes: "第五阶段40节(4层×10); course_templates.yaml 人编骨架"}
