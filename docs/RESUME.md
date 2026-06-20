@@ -3,6 +3,15 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
+## 最近 session (2026-06-20 续): 全面审计 (13-agent workflow) + 20 真问题整改 19/20 闭环
+
+**全面审计** (架构师/moth/sherpa + 13-agent workflow 7 维度): 验证-验证器, 抓 20 真问题 (三绿门盲区, 坑1/坑21 复发), 6 假警报正确排除。**整改 6 commit 全程三门绿** (932dddc→acc885f):
+- **P0 多租户 BLOCK (5项, 用户硬约束)**: inc6 只 scope 1/7 端点, live curl 实证 t-li 可读 t-wang 学生全档案/弱点/列表 = 越权。修: `_tenant.py` 归属判定单一执行点 (owns_student/owns_class 经 classes 链) + 全 7 端点强制 teacher_id + IDOR 防护 (import_csv 拒跨租户接管) + D0 `_check_28` **行为级门** (真调路由跨租户必拒, 非仅结构) + moth 行为断言。教训 L-ZE/坑24 (隔离声明≠全端点隔离)。
+- **P1 HIGH (5项)**: ① 答案保真门 (中考MCQ按题型∈{A-D}/{A-E}, 2024 answer-key全非空) ② 高考计数正向锁 466/182 (B1去重后非陈旧472/188) + 改全部陈旧文档 + moth 17→60 ③ deepens 衔接补全 (label精确漏12时态/非谓语/定从 → grammar_stage_aliases.yaml 数据化, 59→71 全初中语法无衔接孤儿) ④ 中考90题空心诚实标记 (zhongkao_questions.content_status 派生列 + 前端banner: 2024全walled/2025答案待补) ⑤ beike命题迁移做差下沉 exam_point_shift service (Rule1)。
+- **P2 MEDIUM (6项)**: sherpa fail_regex 假阳性收紧 (坑21坏门) / phrases 双定义删死代码 / class_weakness agg下沉service / stage未分阶1234词披露 (校本超纲1094+课标变形140, 防静默截断) / JSONL↔DB答案对账moth / beike .catch。
+- **待定 1/20**: ECharts CDN 加 SRI/vendoring (需下载决策, 不臆造哈希)。
+- 前端全部浏览器实测 (2 诚实banner + 命题迁移 + 0 console error + 截图存证); fresh schema in-memory 加载验证 init_db 可复现。
+
 ## 最近 session (2026-06-20): K12 入库 inc1-6 全完成 + 前端4页 + 强验证修复
 
 **A. 强验证 (独立重推导)**: 8切片并行从第一手源重推导→比对→对抗确认 (`docs/data_validation_design.md`); 抓6区真错全修 (高考2024辽宁双源去重/2025中考parser/课标三级清洗按官方口径/沪教截断/五选四/grammar label); ocr_image 可复用裁决模块。**关键**: 三门测自洽不测源保真度, 强验证补盲区。
