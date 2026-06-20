@@ -340,6 +340,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM classes WHERE teacher_id IS NULL"
     expect: {op: "==", value: 0}
+  - id: echarts-vendored-no-cdn
+    claim: "ECharts 本地 vendoring 无 CDN 供应链风险 (审计MEDIUM): app.html 不引 cdnjs + 本地文件存在"
+    type: shell
+    command: ["bash", "-c", "test -f frontend/static/vendor/echarts.min.js && ! grep -q 'cdnjs.cloudflare.com' frontend/app.html && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: zhongkao-jsonl-db-answer-consistent
     claim: "中考答案 JSONL源↔DB 一致 (loader 无漂移; 55题答案逐一对账, 审计MEDIUM 跨年异构兼容)"
     type: shell
