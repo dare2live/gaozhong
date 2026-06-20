@@ -340,6 +340,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM classes WHERE teacher_id IS NULL"
     expect: {op: "==", value: 0}
+  - id: zhongkao-content-status-honest
+    claim: "中考空心诚实标记: content_status 显式标题面/答案完整性, 无'complete'冒充空心 (2024全walled/2025答案待补, 审计HIGH#8)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM zhongkao_questions WHERE content_status IS NULL OR (content_status='complete' AND (raw_question LIKE 'walled%' OR answer IS NULL OR TRIM(answer)=''))"
+    expect: {op: "==", value: 0}
   - id: gaokao-count-baseline
     claim: "高考真题计数基线 466 (B1双源去重后, 非陈旧472); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
     type: duckdb_sql

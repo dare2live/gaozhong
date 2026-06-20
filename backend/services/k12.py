@@ -36,14 +36,22 @@ def blueprint(con: duckdb.DuckDBPyConnection) -> dict:
 
 
 def zhongkao_distribution(con: duckdb.DuckDBPyConnection) -> dict:
-    """中考题型分布 + 语篇填空逐空考点 (从 zhongkao_questions 视图, exam_type=中考)."""
+    """中考题型分布 + 语篇填空逐空考点 + 内容完整性 (从 zhongkao_questions 视图, exam_type=中考).
+
+    content_status 单算点暴露 (审计HIGH#8 空心诚实): 前端据此显示「题面门控/答案待补」, 不当完整渲染。
+    """
     by_type = con.execute(
         "SELECT question_type, COUNT(*) FROM zhongkao_questions GROUP BY 1 ORDER BY 2 DESC").fetchall()
     kaodian = con.execute(
         "SELECT year, question_id, analysis FROM zhongkao_questions "
         "WHERE analysis IS NOT NULL AND question_type LIKE '语篇填空%' ORDER BY question_id").fetchall()
+    status = dict(con.execute(
+        "SELECT content_status, COUNT(*) FROM zhongkao_questions GROUP BY 1").fetchall())
     return {
         "exam_type": "中考", "province": "辽宁", "paper": "辽宁省统一(2024起)", "years": [2024, 2025],
         "by_question_type": [{"type": t, "n": n} for t, n in by_type],
         "语篇填空考点": [{"year": y, "qid": q, "考点": a} for y, q, a in kaodian],
+        "content_status": status,
+        "data_honesty": ("题型骨架完整, 但题面/答案部分门控 — "
+                         "2024 题面免费源全门控(仅官方答案可得), 2025 部分小题答案待补; 见 content_status"),
     }

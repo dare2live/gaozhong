@@ -32,9 +32,19 @@ CREATE VIEW IF NOT EXISTS exam_questions AS
            answer, analysis, source_file, source_index, source_repo
     FROM exam_questions_all WHERE exam_type = '高考';
 
--- 中考视图 (含 exam_type, 给中考/K12 衔接消费者)
-CREATE VIEW IF NOT EXISTS zhongkao_questions AS
-    SELECT * FROM exam_questions_all WHERE exam_type = '中考';
+-- 中考视图 (含 exam_type, 给中考/K12 衔接消费者) + 派生 content_status (审计HIGH#8 空心诚实标记)
+-- 单一计算点: 题面/答案完整性从 raw_question+answer 派生一次, 前端/分析统一消费, 不在各处重判。
+-- CREATE OR REPLACE: 视图随 schema 更新 (加列后无需全量重建即生效)。
+CREATE OR REPLACE VIEW zhongkao_questions AS
+    SELECT *,
+        CASE
+            WHEN raw_question LIKE 'walled%' OR raw_question IS NULL OR TRIM(raw_question) = ''
+                THEN 'stem_walled'      -- 题面门控/缺 (2024 免费源全门控, 仅官方答案可得; 诚实不伪造题面)
+            WHEN answer IS NULL OR TRIM(answer) = ''
+                THEN 'answer_pending'   -- 有题面缺答案 (2025 部分小题答案待补)
+            ELSE 'complete'             -- 题面+答案俱全
+        END AS content_status
+    FROM exam_questions_all WHERE exam_type = '中考';
 
 -- ====== 审计 (cross-check 结果落表) ======
 

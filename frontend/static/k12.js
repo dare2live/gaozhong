@@ -16,7 +16,7 @@
 <p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空 10 维语法 = 高考语法填空考点全集 (最高优先级地基)</p>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" style="height:300px;"></div></section>
-  <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" style="height:300px;"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" style="height:300px;"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:#9a6a00;"></p></section>
 </div>
 <section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>B 10维语法蓝图 <small>中考语篇填空 ∩ 高考语法填空 (deepens 衔接边)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
   <p class="muted" style="font-size:11px;margin:0 0 8px;">N=2 省统一卷实证(非趋势) · 初中学牢 → 高中深化 · 点对查关联</p>
@@ -51,6 +51,13 @@
       yAxis: { type: "category", data: rows.map(r => r.type), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 10 } },
       series: [{ type: "bar", data: rows.map(r => r.n), barWidth: "60%", itemStyle: { color: "#c1272d", borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", fontSize: 11 } }],
     });
+    // 内容完整性诚实 banner (审计HIGH#8: 不把空心当完整; content_status 来自 service 单算点)
+    const cs = d.content_status || {};
+    const walled = cs.stem_walled || 0, pending = cs.answer_pending || 0, complete = cs.complete || 0;
+    const el = G.$("#k12-zk-honesty");
+    if (el) el.innerHTML = (walled || pending)
+      ? `⚠ 内容完整性: 题面门控 ${walled} · 答案待补 ${pending} · 完整 ${complete}（题型骨架完整, 题面/答案部分待补）`
+      : "";
   }
 
   function renderBlueprint(d) {

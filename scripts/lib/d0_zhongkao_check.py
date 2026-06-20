@@ -66,3 +66,21 @@ def _check_answer_fidelity(con, check) -> None:
         "SELECT COUNT(*) FROM exam_questions_all WHERE exam_type='中考' AND year=2024 "
         "AND answer IS NOT NULL AND TRIM(answer) <> ''").fetchone()[0]
     check("中考 2024 全 45 题答案非空 (answer-key-driven, 答案=唯一交付不能丢)", n_2024 == 45, f"{n_2024}/45")
+    _check_content_status(con, check)
+
+
+def _check_content_status(con, check) -> None:
+    """空心诚实标记 (审计 HIGH#8): zhongkao_questions.content_status 显式标题面/答案完整性, 无静默空心.
+
+    前端/分析据此显示「题面门控/答案待补」徽章, 不把空心记录当完整渲染。
+    """
+    n_null = con.execute(
+        "SELECT COUNT(*) FROM zhongkao_questions WHERE content_status IS NULL").fetchone()[0]
+    check("中考全题有 content_status (无静默空心; 派生于 raw_question+answer)", n_null == 0, f"{n_null} 题无状态")
+    mismark = con.execute(
+        "SELECT COUNT(*) FROM zhongkao_questions WHERE content_status='complete' "
+        "AND (raw_question LIKE 'walled%' OR answer IS NULL OR TRIM(answer)='')").fetchone()[0]
+    check("content_status='complete' 必真完整 (无空心冒充完整)", mismark == 0, f"{mismark} 误标")
+    n_walled = con.execute(
+        "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2024 AND content_status='stem_walled'").fetchone()[0]
+    check("中考 2024 全 45 题题面诚实标 walled (免费源门控, 不伪造题面)", n_walled == 45, f"{n_walled}/45")
