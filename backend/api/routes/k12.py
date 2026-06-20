@@ -1,0 +1,42 @@
+"""K12 衔接 + 中考 API (inc4 薄壳; 计算在 backend/services/k12.py 单一计算点).
+
+/api/k12/stage_distribution — 各 stage 知识点数 (at_stage 边)
+/api/k12/blueprint          — 10维语法蓝图 (deepens 边; 中考∩高考)
+/api/zhongkao/distribution  — 中考题型 + 语篇填空考点 (zhongkao_questions 视图)
+"""
+from __future__ import annotations
+
+from backend.api.db import db_ro
+from backend.services import k12
+
+
+def api_stage_distribution(qs: dict) -> dict:
+    con = db_ro()
+    try:
+        return {"scope": "辽宁/沈阳 K12 (小学→初中→高中)", "layered_by": "stage 维 (at_stage 边)",
+                "by_stage": k12.stage_distribution(con)}
+    finally:
+        con.close()
+
+
+def api_blueprint(qs: dict) -> dict:
+    con = db_ro()
+    try:
+        return k12.blueprint(con)
+    finally:
+        con.close()
+
+
+def api_zhongkao_distribution(qs: dict) -> dict:
+    con = db_ro()
+    try:
+        return k12.zhongkao_distribution(con)
+    finally:
+        con.close()
+
+
+ROUTES = {
+    "/api/k12/stage_distribution": api_stage_distribution,
+    "/api/k12/blueprint": api_blueprint,
+    "/api/zhongkao/distribution": api_zhongkao_distribution,
+}
