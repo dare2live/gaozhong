@@ -21,8 +21,10 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     check("考点边两端有效 (无悬挂)", bad_ep == 0, f"{bad_ep} 悬挂")
     bad_prov = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
-        "AND json_extract_string(evidence_json,'$.provenance') <> 'dual_model_agree'").fetchone()[0]
-    check("考点边 provenance 全 dual_model_agree", bad_prov == 0, f"{bad_prov} 非一致")
+        "AND json_extract_string(evidence_json,'$.provenance') NOT IN ('dual_model_agree','explicit_label')"
+    ).fetchone()[0]
+    check("考点边 provenance ∈ {dual_model_agree, explicit_label} (无弱provenance; cognitive_skill=教研显式标签)",
+          bad_prov == 0, f"{bad_prov} 弱provenance")
     bad_ta = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='theme_aligns' AND ("
         "e.src_id NOT LIKE 'exam_point:theme%' OR e.dst_id NOT LIKE 'theme:%')").fetchone()[0]

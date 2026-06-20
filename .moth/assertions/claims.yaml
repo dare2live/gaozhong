@@ -146,11 +146,16 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
     expect: {op: ">=", value: 300}
-  - id: exam-point-dual-model-only
-    claim: "考点边只入 dual_model_agree (歧义 needs_review 不入 canonical; provenance 诚实, 不冒充人工核验)"
+  - id: cognitive-skill-goldmine
+    claim: "设问类型金矿(KG-A1): cognitive_skill 30子题边 explicit_label, 推断50%(对账教研解析真相源, 驳inference错估15% 坑16); 全带stamp血缘"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();allp=[p for pts in d['by_era'].values() for p in pts];tot=sum(p['n'] for p in allp);td=sum(p['n'] for p in allp if p['label']=='推断');print('OK' if tot==30 and abs(100*td/tot-50)<=5 else f'FAIL {tot} {td}')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: exam-point-trusted-provenance
+    claim: "考点边 provenance ∈ {dual_model_agree(genre/theme双模型一致), explicit_label(cognitive_skill教研解析显式标签)} — 无弱provenance, 不冒充人工核验; explicit_label 强于双模型 (A1金矿)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') <> 'dual_model_agree'"
+    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') NOT IN ('dual_model_agree', 'explicit_label')"
     expect: {op: "==", value: 0}
   - id: exam-point-no-orphan-edge
     claim: "考点边 src 必为真实 question 节点 (无悬挂; Rule 3 edges 一等公民)"
