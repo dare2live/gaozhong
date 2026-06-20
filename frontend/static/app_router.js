@@ -8,11 +8,12 @@
   // -- 注册表 (M2)
   const TABS = {};
   function register(name, mount) { TABS[name] = mount; }
+  window.GZ.registerTab = register;   // 暴露给独立视图模块 (beike.js 等), 不在本god-file堆新tab
 
   // -- router
   function route() {
-    const hash = (location.hash || "#/teaching").slice(2);  // strip "#/"
-    const name = (hash.split("/")[0] || "teaching").toLowerCase();
+    const hash = (location.hash || "#/beike").slice(2);  // strip "#/" (备课驾驶舱=默认落地页)
+    const name = (hash.split("/")[0] || "beike").toLowerCase();
     $$(".tabnav a").forEach(a => a.classList.toggle("active", a.dataset.tab === name));
     const mount = TABS[name];
     if (mount) {
@@ -24,7 +25,7 @@
     }
   }
   window.addEventListener("hashchange", route);
-  window.addEventListener("DOMContentLoaded", () => { if (!location.hash) location.hash = "#/teaching"; route(); });
+  window.addEventListener("DOMContentLoaded", () => { if (!location.hash) location.hash = "#/beike"; route(); });
 
   // ===================================================================
   // A. 工作台

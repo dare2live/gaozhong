@@ -5,13 +5,16 @@
 <title>沈阳/辽宁高中英语教学系统</title>
 <link rel="stylesheet" href="/static/style.css">
 <link rel="stylesheet" href="/static/app.css">
+<link rel="stylesheet" href="/static/beike.css">
 </head>
+<!-- ECharts: 仅渲染层(图表), 数据仍 service 单一计算点; 方案B 唯一前端viz库 (CDN 允许列表) -->
 <body>
 
 <div class="app-shell">
   <aside class="sidebar">
     <h1 class="brand">沈阳/辽宁<br><small>高中英语教学系统</small></h1>
     <nav class="tabnav">
+      <a href="#/beike"     data-tab="beike"><span class="ic">🎯</span> 考点驾驶舱</a>
       <a href="#/workbench" data-tab="workbench"><span class="ic">▣</span> 工作台</a>
       <a href="#/teaching"  data-tab="teaching"><span class="ic">★</span> 教学</a>
       <a href="#/qbank"     data-tab="qbank"><span class="ic">▤</span> 题库 + 组卷</a>
@@ -30,8 +33,10 @@
   </main>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
 <script src="/static/common.js"></script>
 <script src="/static/graph_popup.js"></script>
 <script src="/static/app_router.js"></script>
+<script src="/static/beike.js"></script>
 </body>
 </html>
