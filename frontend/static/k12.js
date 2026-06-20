@@ -15,7 +15,7 @@
 <h2 style="margin:0 0 2px;">🔗 K12 衔接 · 初中 → 高中</h2>
 <p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空 10 维语法 = 高考语法填空考点全集 (最高优先级地基)</p>
 <div class="bk-grid">
-  <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" style="height:300px;"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" style="height:300px;"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" style="height:300px;"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:#9a6a00;"></p></section>
 </div>
 <section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>B 10维语法蓝图 <small>中考语篇填空 ∩ 高考语法填空 (deepens 衔接边)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
@@ -27,6 +27,13 @@
     const stages = Object.keys(d.by_stage || {});
     const words = stages.map(s => (d.by_stage[s].word || 0));
     const grams = stages.map(s => (d.by_stage[s].grammar || 0));
+    // 覆盖度诚实披露 (审计MEDIUM: 未分阶词不静默丢; coverage 来自 service)
+    const cov = d.coverage;
+    const covEl = G.$("#k12-stage-cov");
+    if (covEl && cov) {
+      const r = cov.unstaged_by_reason || {};
+      covEl.innerHTML = `词分阶覆盖 ${cov.staged}/${cov.total_words} · 未分阶 ${cov.unstaged}（校本超纲 ${r["校本超纲"] || 0} + 课标变形 ${r["课标变形"] || 0}, 无标准阶段）`;
+    }
     chS = chS || echarts.init(G.$("#k12-stage"));
     chS.setOption({
       legend: { data: ["词", "语法"], bottom: 0, textStyle: { fontSize: 11 } },

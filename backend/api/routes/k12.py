@@ -14,7 +14,8 @@ def api_stage_distribution(qs: dict) -> dict:
     con = db_ro()
     try:
         return {"scope": "辽宁/沈阳 K12 (小学→初中→高中)", "layered_by": "stage 维 (at_stage 边)",
-                "by_stage": k12.stage_distribution(con)}
+                "by_stage": k12.stage_distribution(con),
+                "coverage": k12.stage_unstaged_disclosure(con)}  # 未分阶词披露 (审计MEDIUM 防静默截断)
     finally:
         con.close()
 

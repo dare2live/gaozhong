@@ -8,6 +8,7 @@ from __future__ import annotations
 from backend.api.db import db_ro
 from backend.api.routes import _tenant
 from backend.api.routes.students import _ep_dimension
+from backend.services import weakness as weakness_svc
 
 
 def api_students_teachers(qs: dict) -> dict:
@@ -36,25 +37,16 @@ def api_students_class_weakness(qs: dict) -> dict:
     try:
         if not _tenant.owns_class(con, tid, cid):
             return _tenant.DENIED
-        rows = con.execute(
-            "SELECT w.concept_id, COALESCE(n.label, w.concept_id) AS label, "
-            "       AVG(w.weakness_score) AS avg_score, COUNT(DISTINCT w.student_id) AS n_stu, "
-            "       SUM(w.sample_n) AS total_n "
-            "FROM student_weakness w "
-            "JOIN students s ON s.student_id = w.student_id AND s.class_id = ? "
-            "LEFT JOIN nodes n ON n.concept_id = w.concept_id "
-            "GROUP BY w.concept_id, label ORDER BY avg_score DESC LIMIT 30", [cid]
-        ).fetchall()
-        n_stu = con.execute("SELECT COUNT(*) FROM students WHERE class_id = ?", [cid]).fetchone()[0]
+        agg = weakness_svc.class_weakness(con, cid)   # 聚合下沉 service (Rule1, 路由不重写 agg)
         return {
-            "class_id": cid, "n_students": n_stu,
+            "class_id": cid, "n_students": agg["n_students"],
             "data_status": "示例数据 · 待真实答题量 (weakness 派生结构就绪, 现 demo seed)",
             "weakness": [
                 {"concept_id": r[0], "label": r[1], "avg_score": round(r[2], 3),
                  "n_weak_students": r[3], "total_sample": r[4], "dimension": _ep_dimension(r[0])}
-                for r in rows
+                for r in agg["rows"]
             ],
-            "count": len(rows),
+            "count": len(agg["rows"]),
         }
     finally:
         con.close()

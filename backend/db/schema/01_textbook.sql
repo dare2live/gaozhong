@@ -83,19 +83,8 @@ CREATE TABLE IF NOT EXISTS unit_vocab_intro (
 );
 CREATE INDEX IF NOT EXISTS idx_unit_vocab_word ON unit_vocab_intro(word);
 
--- 短语 / 句型 / 功能表达 (STEP 2 P5 输出)
-CREATE TABLE IF NOT EXISTS phrases (
-    phrase_id        BIGINT PRIMARY KEY,
-    version_key      VARCHAR NOT NULL,
-    volume_key       VARCHAR NOT NULL,
-    unit_number      INTEGER NOT NULL,
-    canonical        VARCHAR NOT NULL,
-    phrase_type      VARCHAR,           -- 动词短语 | 搭配 | 习语 | 功能表达
-    evidence_sentence VARCHAR,
-    theme_context_id VARCHAR,
-    oo_syllabus_words_json VARCHAR,     -- 表外词 JSON 数组
-    extraction_status VARCHAR           -- keep | keep_extension | flag_for_human
-);
+-- (phrases 表与索引/序列在上方 line 57 已定义; 此处原有重复 CREATE TABLE IF NOT EXISTS phrases
+--  是死定义—IF NOT EXISTS 使其永不生效, loader 用的是上方 8 列版, 审计MEDIUM 删除以正本清源。)
 
 -- 语法点出现位置 (mapping 到 grammar_items)
 CREATE TABLE IF NOT EXISTS grammar_occurrences (

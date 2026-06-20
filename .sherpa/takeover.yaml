@@ -15,7 +15,9 @@ sections:
     command: ["python3", "scripts/data_accuracy_check.py"]
     timeout_s: 180
     ok_requires_regex: "D0 100% 准确率达成"
-    fail_regex: "FAIL|❌"
+    # fail_regex 不能含裸 "FAIL": D0 通过时输出 "✅ 0 FAIL / 0 WARN"(check7) 会假阳性 (审计MEDIUM, 坑21).
+    # 真失败必带 ❌ (check()失败符 + "❌ D0 100% 未达" 摘要); 通过时 0 个 ❌, 故精准。
+    fail_regex: "❌|D0 100% 未达"
 
   - id: stop-gate
     title: "Stop 门 (audit FAIL/WARN + CC>15 + 架构契约 + 前端 inline)"

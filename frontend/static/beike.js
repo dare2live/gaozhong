@@ -124,7 +124,11 @@
     G.$("#content").innerHTML = shell();
     if (!window.echarts) { G.$("#bk-dist").innerHTML = '<p class="muted">ECharts 载入中…</p>'; await new Promise(r => setTimeout(r, 300)); }
     const [dist, qt, heat] = await Promise.all([
-      fetchJSON("/api/exam_point/distribution"),
+      // distribution 失败也给安全空壳 (eras+空 era 字典 + shift), 否则 renderDist/renderShift 崩整 tab
+      fetchJSON("/api/exam_point/distribution").catch(() => ({
+        eras: [ERA_NEW, ERA_OLD], distribution: { [ERA_NEW]: {}, [ERA_OLD]: {} },
+        shift: { by_dimension: {} },
+      })),
       fetchJSON("/api/trend/question_type_trend").catch(() => []),
       fetchJSON("/api/heatmap/vocab").catch(() => ({ letters: [], cells: {} })),
     ]);

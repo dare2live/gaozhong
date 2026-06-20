@@ -22,6 +22,25 @@ def stage_distribution(con: duckdb.DuckDBPyConnection) -> dict:
     return {s: out[s] for s in _STAGE_ORDER if s in out}
 
 
+def stage_unstaged_disclosure(con: duckdb.DuckDBPyConnection) -> dict:
+    """未分阶 word 披露 (审计MEDIUM 防静默截断): stage 分布只覆盖有 at_stage 边的词;
+    校本超纲(LV/HV_extra)+课标变形(词形变体) 无标准阶段 — 显式告知, 不当'全词覆盖'。"""
+    total = con.execute("SELECT COUNT(*) FROM nodes WHERE node_type='word'").fetchone()[0]
+    # 只数 word 节点的 at_stage (at_stage 也连 grammar→stage; 混算会让 staged 虚高, unstaged≠by_reason 求和)
+    staged = con.execute(
+        "SELECT COUNT(DISTINCT e.src_id) FROM edges e JOIN nodes n ON n.concept_id = e.src_id "
+        "WHERE e.relation='at_stage' AND n.node_type='word'").fetchone()[0]
+    by_reason = dict(con.execute(
+        "SELECT CASE WHEN json_extract_string(attrs_json,'stage')='课标变形' THEN '课标变形' "
+        "            ELSE '校本超纲' END AS reason, COUNT(*) "
+        "FROM nodes n WHERE n.node_type='word' "
+        "AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.relation='at_stage' AND e.src_id=n.concept_id) "
+        "GROUP BY 1").fetchall())
+    return {"total_words": total, "staged": staged, "unstaged": total - staged,
+            "unstaged_by_reason": by_reason,
+            "note": "stage 分布覆盖有标准阶段的词; 校本超纲/课标变形词无标准阶段, 不计入(诚实非静默)"}
+
+
 def blueprint(con: duckdb.DuckDBPyConnection) -> dict:
     """10维语法蓝图: 初中 grammar → 高中 deepens 边 (中考语篇填空∩高考语法填空衔接)."""
     rows = con.execute(

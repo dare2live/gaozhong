@@ -91,3 +91,21 @@ def _weakness_score(accuracy: float, n: int) -> float:
     """
     confidence = math.sqrt(min(n, 10) / 10)
     return (1 - accuracy) * confidence
+
+
+def class_weakness(con: duckdb.DuckDBPyConnection, class_id: str, limit: int = 30) -> dict:
+    """班级 × 真考点弱点聚合 (域B 学情热力; 派生事实单算点 — 路由不重写 AVG/COUNT agg, Rule1/审计MEDIUM).
+
+    返回 {rows: [(concept_id, label, avg_score, n_weak_students, total_sample)], n_students}.
+    """
+    rows = con.execute(
+        "SELECT w.concept_id, COALESCE(n.label, w.concept_id) AS label, "
+        "       AVG(w.weakness_score) AS avg_score, COUNT(DISTINCT w.student_id) AS n_stu, "
+        "       SUM(w.sample_n) AS total_n "
+        "FROM student_weakness w "
+        "JOIN students s ON s.student_id = w.student_id AND s.class_id = ? "
+        "LEFT JOIN nodes n ON n.concept_id = w.concept_id "
+        "GROUP BY w.concept_id, label ORDER BY avg_score DESC LIMIT ?", [class_id, limit]
+    ).fetchall()
+    n_stu = con.execute("SELECT COUNT(*) FROM students WHERE class_id = ?", [class_id]).fetchone()[0]
+    return {"rows": rows, "n_students": n_stu}
