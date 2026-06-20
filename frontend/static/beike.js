@@ -1,4 +1,4 @@
-/* 备课工作流「考点驾驶舱」— A考点分布 / B命题迁移 / C命题趋势 / E词汇热力 (第七阶段 viz 7.1).
+/* 备课工作流「考点驾驶舱」— A考点分布 / B命题迁移 / C命题趋势 / D设问类型 / E词汇热力 (第七阶段 viz 7.1).
  *
  * 铁律1 单一计算点: 全部 fetch /api/* service 产物, 前端**只渲染**; 迁移(B)的 era 间做差也在
  *   service 算 (exam_point_shift, 审计HIGH#18 修; 前端只渲染 shift.by_dimension)。绝不在前端聚合/做差。
@@ -30,6 +30,7 @@
   <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" style="height:300px;"></div></section>
   <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
   <section class="bk-card"><div class="bk-h"><span>C 命题趋势 · 题型逐年</span><span id="bk-relbadge"></span></div><div id="bk-trend" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" style="height:300px;"></div></section>
 </div>`;
   }
@@ -95,6 +96,29 @@
       : `辽宁 post-2021 仅 5 年(2023=6 / 2025=9 题 &lt;10)→ <code>reliable=false</code>, 灰显占比快照<b>不画斜率</b>(坑12 谄媚死防线); 看上方 <b>A 分布</b>(可用)定重点。`;
   }
 
+  function renderCognitiveSkill(cs) {
+    // 设问类型「怎么想」金矿 (单一计算点: service 已算 by_era 分布, 前端只渲染)。
+    const eras = Object.keys((cs && cs.by_era) || {});
+    const era = eras.includes(ERA_NEW) ? ERA_NEW : eras[0];
+    const rows = (((cs || {}).by_era || {})[era] || []).slice().reverse();
+    if (!rows.length) { G.$("#bk-cog").innerHTML = '<p class="muted">暂无设问类型数据</p>'; return; }
+    charts.cog = charts.cog || echarts.init(G.$("#bk-cog"));
+    charts.cog.setOption({
+      grid: { left: 4, right: 62, top: 8, bottom: 8, containLabel: true },
+      xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct)) * 1.18, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+      yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
+      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n}` },
+      series: [{
+        type: "bar", barWidth: "58%",
+        data: rows.map(r => ({ value: r.pct, itemStyle: { color: r.label === "推断" ? C.up : C.blue, borderRadius: [0, 4, 4, 0] } })),
+        label: { show: true, position: "right", formatter: p => `${p.value}% · n=${rows[p.dataIndex].n}`, fontSize: 11, color: "#888" },
+      }],
+    });
+    const td = rows.find(r => r.label === "推断");
+    G.$("#bk-cognote").innerHTML = `真相源=教研解析<b>显式标签</b>(强于双模型)。<b style="color:${C.up}">推断 ${td ? td.pct : "?"}%</b> 是阅读最高频思维——`
+      + `当年只看设问句让模型猜, 错估成 <b>15%</b>(坑16: 双模型0分歧却一起错)。"怎么想"维度的价值: 设问表面像细节, 实则考推断。`;
+  }
+
   function renderHeat(heat) {
     const sts = ["core", "standard", "HV_extra", "LV_extra"];
     const data = [];
@@ -123,7 +147,7 @@
   registerTab("beike", async () => {
     G.$("#content").innerHTML = shell();
     if (!window.echarts) { G.$("#bk-dist").innerHTML = '<p class="muted">ECharts 载入中…</p>'; await new Promise(r => setTimeout(r, 300)); }
-    const [dist, qt, heat] = await Promise.all([
+    const [dist, qt, heat, cog] = await Promise.all([
       // distribution 失败也给安全空壳 (eras+空 era 字典 + shift), 否则 renderDist/renderShift 崩整 tab
       fetchJSON("/api/exam_point/distribution").catch(() => ({
         eras: [ERA_NEW, ERA_OLD], distribution: { [ERA_NEW]: {}, [ERA_OLD]: {} },
@@ -131,10 +155,11 @@
       })),
       fetchJSON("/api/trend/question_type_trend").catch(() => []),
       fetchJSON("/api/heatmap/vocab").catch(() => ({ letters: [], cells: {} })),
+      fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),
     ]);
     state.dist = dist;
     wire();
-    if (window.echarts) { renderDist(); renderTrend(qt); renderHeat(heat); }
+    if (window.echarts) { renderDist(); renderTrend(qt); renderHeat(heat); renderCognitiveSkill(cog); }
     renderShift();
     window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize()));
   });
