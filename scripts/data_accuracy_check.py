@@ -321,6 +321,12 @@ def _check_26_textbook_sections(con):
     check("section_text 无 back-matter 污染", n_pollute == 0, f"{n_pollute} 含书末锚点")
 
 
+def _check_27_zhongkao(con):
+    """中考真题入库 (K12 inc1, 坑17): 90题 + 不混口径 + 视图隔离. 抽到 lib 避 god-module."""
+    from scripts.lib.d0_zhongkao_check import check_zhongkao
+    check_zhongkao(con, check)
+
+
 # ===== main 调度 (CC = 2) =====
 
 # 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
@@ -338,6 +344,7 @@ CHECKS = [
     _check_24_lesson_plan,
     _check_25_exam_status,
     _check_26_textbook_sections,
+    _check_27_zhongkao,
 ]
 
 

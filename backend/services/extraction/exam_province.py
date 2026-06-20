@@ -36,7 +36,7 @@ def refine_province(con: duckdb.DuckDBPyConnection) -> dict:
         if _is_trusted_ln(repo or ""):
             if (prov, paper) != (LABEL_XGKII_LN, PAPER_XGKII):
                 con.execute(
-                    "UPDATE exam_questions SET province=?, paper_type=? WHERE question_id=?",
+                    "UPDATE exam_questions_all SET province=?, paper_type=? WHERE question_id=?",
                     [LABEL_XGKII_LN, PAPER_XGKII, qid],
                 )
                 updated += 1

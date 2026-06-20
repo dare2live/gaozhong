@@ -80,12 +80,14 @@ def import_eol_exams(con: duckdb.DuckDBPyConnection) -> dict:
             continue
         # 删旧: GAOKAO-Bench 占位 + 本 EOL 源 (idempotent 重入)
         con.execute(
-            "DELETE FROM exam_questions WHERE year = ? "
+            "DELETE FROM exam_questions_all WHERE year = ? "
             "AND (source_repo = 'OpenLMLab/GAOKAO-Bench' OR source_repo = ?)",
             [year, f"eol_xgkii_english_{year}"],
         )
         con.executemany(
-            "INSERT INTO exam_questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO exam_questions_all (question_id, year, province, paper_type, question_type, "
+            "raw_question, answer, analysis, source_file, source_index, source_repo) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",   # exam_type 默认'高考'
             [(r["question_id"], r["year"], r["province"], r["paper_type"],
               r["question_type"], r["raw_question"], r["answer"], r["analysis"],
               r["source_file"], r["source_index"], r["source_repo"]) for r in rows],

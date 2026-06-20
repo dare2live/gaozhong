@@ -297,3 +297,16 @@ assertions:
     type: shell
     command: ["bash", "-c", "python3 -c \"import json; rows=[json.loads(l) for l in open('data/structured/vocab_classification.jsonl',encoding='utf-8') if l.strip()]; cats=set(r['category'] for r in rows); print('OK' if len(rows)>=1000 and '真超纲·辽宁考过' in cats and '课标屈折变形' in cats else 'BAD')\""]
     expect: {op: regex, pattern: "OK"}
+  # ===== K12 inc1: 中考入单库 + 视图隔离 (exam_type 判别维) =====
+  - id: zhongkao-in-single-db
+    claim: "中考真题入单库 exam_questions_all (exam_type=中考 90题=2024×45+2025×45; 单库非双库, K12设计§4)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考'"
+    expect: {op: "==", value: 90}
+  - id: gaokao-view-excludes-zhongkao
+    claim: "高考视图 exam_questions 隔离不含中考 (视图过滤 exam_type=高考; 25+消费者零回归)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE question_id LIKE 'ZK-%'"
+    expect: {op: "==", value: 0}

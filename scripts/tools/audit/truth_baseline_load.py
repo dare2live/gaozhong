@@ -181,7 +181,9 @@ def import_truth_rows(con, rows: list[dict[str, Any]]) -> list[str]:
     if to_insert:
         con.executemany(
             """
-            INSERT INTO exam_questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO exam_questions_all (question_id, year, province, paper_type, question_type,
+              raw_question, answer, analysis, source_file, source_index, source_repo)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             to_insert
         )

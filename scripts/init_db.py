@@ -22,14 +22,20 @@ from backend.orchestrator import extract, load  # noqa: E402
 from backend.services import audit, canonical, links, links_extra  # noqa: E402
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
-SCHEMA_PATH = ROOT / "backend" / "db" / "schema.sql"
+SCHEMA_DIR = ROOT / "backend" / "db" / "schema"   # 模块化: 按域拆 NN_*.sql, 按序加载 (2026-06-20)
+
+
+def _load_schema(con) -> None:
+    """按序加载模块化 schema (00_curriculum → 06_course 域分模块)."""
+    for sql_file in sorted(SCHEMA_DIR.glob("*.sql")):
+        con.execute(sql_file.read_text(encoding="utf-8"))
 
 
 def main() -> None:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     if DB_PATH.exists(): DB_PATH.unlink()
     con = duckdb.connect(str(DB_PATH))
-    con.execute(SCHEMA_PATH.read_text(encoding="utf-8"))
+    _load_schema(con)
 
     print("=== Layer 2: main tables + textbooks ===")
     for k, v in load.load_main_tables(con).items():
@@ -89,6 +95,10 @@ def main() -> None:
     print(f"  {extract.run_grammar_occurrences(con)}")
 
     print(f"\n  file_manifest: {load.load_file_manifest(con)}")
+
+    print("\n=== Layer 2x: 初中/中考子系统 (单库, exam_type/stage 判别; K12设计) ===")
+    from backend.services.data_sources.extract.junior import exam as junior_exam
+    print(f"  {junior_exam.load(con)}")
 
     print("\n=== Layer 3: canonical (nodes) ===")
     for k, v in canonical.build_all(con).items():

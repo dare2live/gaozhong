@@ -100,9 +100,11 @@ def mirror_to_jsonl(write_db_conn=None) -> dict:
         summary["by_type"][row["question_type"]] = summary["by_type"].get(row["question_type"], 0) + 1
     summary["files"] = len(summary["files"])
     if write_db_conn is not None and db_rows:
-        write_db_conn.execute("DELETE FROM exam_questions")
+        write_db_conn.execute("DELETE FROM exam_questions_all WHERE exam_type='高考'")
         write_db_conn.executemany(
-            "INSERT OR REPLACE INTO exam_questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO exam_questions_all (question_id, year, province, paper_type, "
+            "question_type, raw_question, answer, analysis, source_file, source_index, source_repo) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",   # exam_type 默认'高考'
             [(r["question_id"], r["year"], r["province"], r["paper_type"],
               r["question_type"], r["raw_question"], r["answer"], r["analysis"],
               r["source_file"], r["source_index"], r["source_repo"]) for r in db_rows],

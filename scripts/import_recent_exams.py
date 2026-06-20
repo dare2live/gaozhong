@@ -151,7 +151,9 @@ def import_to_db(questions: list[dict], con) -> int:
         if q["question_id"] in existing:
             continue
         con.execute(
-            "INSERT INTO exam_questions VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO exam_questions_all (question_id, year, province, paper_type, question_type, "
+            "raw_question, answer, analysis, source_file, source_index, source_repo) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?)",   # exam_type 默认'高考'
             [q["question_id"], q["year"], q["province"], q["paper_type"],
              q["question_type"], q["raw_question"], q["answer"], q["analysis"],
              q["source_file"], q["source_index"], q["source_repo"]],
