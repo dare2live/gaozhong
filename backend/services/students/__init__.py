@@ -12,13 +12,23 @@ from datetime import datetime, timezone
 
 import duckdb
 
-DEMO_CLASS_ID = "sy-no2-2024-g3-1"
+# 多租户 demo (inc6): 2 老师各拥自己班级 — 演示 teacher_id 隔离 (老师A不可见老师B学生)。
+DEMO_TEACHERS = [
+    ("t-li",   "李老师", "沈阳市第二中学", "沈阳"),
+    ("t-wang", "王老师", "沈阳市第二中学", "沈阳"),
+]
+DEMO_CLASS_A = "sy-no2-2024-g3-1"   # → 李老师
+DEMO_CLASS_B = "sy-no2-2024-g3-2"   # → 王老师
+DEMO_CLASSES = [
+    (DEMO_CLASS_A, "t-li",   "沈阳市第二中学", "高三", "高三 1 班 (demo)"),
+    (DEMO_CLASS_B, "t-wang", "沈阳市第二中学", "高三", "高三 2 班 (demo)"),
+]
 DEMO_STUDENTS = [
-    ("sy-2024-001", "张明",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_ID),
-    ("sy-2024-002", "李华",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_ID),
-    ("sy-2024-003", "王芳",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_ID),
-    ("sy-2024-004", "刘洋",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_ID),
-    ("sy-2024-005", "陈静",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_ID),
+    ("sy-2024-001", "张明",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_A),
+    ("sy-2024-002", "李华",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_A),
+    ("sy-2024-003", "王芳",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_A),
+    ("sy-2024-004", "刘洋",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_B),
+    ("sy-2024-005", "陈静",  "沈阳市第二中学", "沈阳", "高三", DEMO_CLASS_B),
 ]
 
 # 每生基础正确率 (确定性梯度): 弱点从「答错的题」自然稀疏浮现, 不人为定向 concept.
@@ -34,10 +44,11 @@ def seed_demo(con: duckdb.DuckDBPyConnection) -> dict:
     con.execute("DELETE FROM student_answers WHERE source = 'demo'")
     con.execute("DELETE FROM students")
     con.execute("DELETE FROM classes")
-    con.execute(
-        "INSERT INTO classes VALUES (?, ?, ?, ?, ?, ?)",
-        [DEMO_CLASS_ID, None, "沈阳市第二中学", "高三", "高三 1 班 (demo)", now],
-    )
+    con.execute("DELETE FROM teachers")
+    for tid, name, school, city in DEMO_TEACHERS:        # inc6: 多租户老师
+        con.execute("INSERT INTO teachers VALUES (?, ?, ?, ?, ?)", [tid, name, school, city, now])
+    for cid, tid, school, grade, cname in DEMO_CLASSES:   # 班级归属老师 (teacher_id)
+        con.execute("INSERT INTO classes VALUES (?, ?, ?, ?, ?, ?)", [cid, tid, school, grade, cname, now])
     for sid, name, school, city, grade, cid in DEMO_STUDENTS:
         con.execute(
             "INSERT INTO students "
@@ -48,7 +59,7 @@ def seed_demo(con: duckdb.DuckDBPyConnection) -> dict:
     n_answers = _seed_demo_answers(con, [s[0] for s in DEMO_STUDENTS], now)
     wk = weakness.recompute_all(con)
     return {
-        "classes": 1, "students": len(DEMO_STUDENTS),
+        "teachers": len(DEMO_TEACHERS), "classes": len(DEMO_CLASSES), "students": len(DEMO_STUDENTS),
         "demo_answers": n_answers, "weakness_rows": wk.get("weakness_rows", 0),
     }
 

@@ -334,3 +334,9 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation='at_stage'"
     expect: {op: ">=", value: 2000}
+  - id: multitenant-classes-owned
+    claim: "inc6 域B 多租户: demo 班级全有 teacher_id 归属(老师拥有班级链, 隔离前提; 0个无主班)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM classes WHERE teacher_id IS NULL"
+    expect: {op: "==", value: 0}

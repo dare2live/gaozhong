@@ -61,16 +61,21 @@ def api_students_get(qs: dict) -> dict:
 
 
 def api_students_classes(qs: dict) -> dict:
+    """班级列表; ?teacher_id= 作用域 (域B 隔离: 老师只见自己班级)."""
+    tid = (qs.get("teacher_id", [None]) or [None])[0]
+    where, params = ("WHERE c.teacher_id = ?", [tid]) if tid else ("", [])
     con = db_ro()
     try:
         rows = con.execute(
-            "SELECT c.class_id, c.school, c.grade, c.name, "
+            "SELECT c.class_id, c.school, c.grade, c.name, c.teacher_id, "
             "(SELECT COUNT(*) FROM students s WHERE s.class_id = c.class_id) AS n "
-            "FROM classes c ORDER BY c.school, c.grade, c.class_id"
+            f"FROM classes c {where} ORDER BY c.school, c.grade, c.class_id", params
         ).fetchall()
         return {
+            "scoped_by_teacher": tid,
             "classes": [
-                {"class_id": r[0], "school": r[1], "grade": r[2], "name": r[3], "n_students": r[4]}
+                {"class_id": r[0], "school": r[1], "grade": r[2], "name": r[3],
+                 "teacher_id": r[4], "n_students": r[5]}
                 for r in rows
             ],
             "count": len(rows),
