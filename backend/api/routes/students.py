@@ -1,45 +1,61 @@
-"""/api/students/* — 5.6 学生档案 (P1).
+"""/api/students/* — 5.6 学生档案 (P1, 域B 多租户).
 
-endpoints:
-  /api/students/list                列表 (可 ?class_id=, ?city=, ?grade= 过滤)
-  /api/students/get?id=             单生详情 + 班级 + 弱点
-  /api/students/classes             班级列表
-  /api/students/weakness?id=        学生弱点 (按 exam_point 真考点; 2026-06-16 改, 返 label/dimension)
-  /api/students/recommend?id=       弱点 → 推送对应课节
+全 per-student 端点按 teacher_id 隔离 (老师只见自己班级链下学生);
+归属判定单一执行点在 [[_tenant]] (审计 BLOCK 修 2026-06-20: 原先 6/7 端点裸读 = 越权)。
+
+endpoints (均需 ?teacher_id=):
+  /api/students/list                列表 (该老师班级链下; 可再 ?class_id=/city/grade/school 过滤)
+  /api/students/get?id=             单生详情 (owns 校验, 非自己学生 → forbidden)
+  /api/students/classes             班级列表 (该老师)
+  /api/students/weakness?id=        学生弱点 (owns 校验; 按 exam_point 真考点)
+  /api/students/recommend?id=       弱点 → 推送课节 (owns 校验)
+  /api/students/import_csv          导入 (实现下沉 [[students_csv]], 租户绑定 + IDOR 防护)
 """
 from __future__ import annotations
 
 from backend.api.db import db_ro, db_write
+from backend.api.routes import _tenant
+from backend.api.routes.students_csv import do_csv_import
 from backend.services import weakness as weakness_svc
 
 
 def api_students_list(qs: dict) -> dict:
-    filters: list[str] = []
-    args: list = []
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
+    filters = ["c.teacher_id = ?"]
+    args: list = [tid]
     for k in ("class_id", "city", "grade", "school"):
         v = qs.get(k, [None])[0]
         if v:
-            filters.append(f"{k} = ?")
+            filters.append(f"s.{k} = ?")
             args.append(v)
-    where = " WHERE " + " AND ".join(filters) if filters else ""
+    where = " WHERE " + " AND ".join(filters)
     con = db_ro()
     try:
         rows = con.execute(
-            f"SELECT student_id, name, school, city, grade, class_id, enroll_year "
-            f"FROM students{where} ORDER BY student_id LIMIT 500",
+            "SELECT s.student_id, s.name, s.school, s.city, s.grade, s.class_id, s.enroll_year "
+            "FROM students s JOIN classes c ON c.class_id = s.class_id"
+            f"{where} ORDER BY s.student_id LIMIT 500",
             args,
         ).fetchall()
-        return {"students": [_student_dict(r) for r in rows], "count": len(rows)}
+        return {"scoped_by_teacher": tid,
+                "students": [_student_dict(r) for r in rows], "count": len(rows)}
     finally:
         con.close()
 
 
 def api_students_get(qs: dict) -> dict:
     sid = qs.get("id", [None])[0]
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
     if not sid:
         return {"error": "missing ?id"}
     con = db_ro()
     try:
+        if not _tenant.owns_student(con, tid, sid):
+            return _tenant.DENIED
         r = con.execute(
             "SELECT student_id, name, school, city, grade, class_id, enroll_year "
             "FROM students WHERE student_id = ?",
@@ -61,15 +77,17 @@ def api_students_get(qs: dict) -> dict:
 
 
 def api_students_classes(qs: dict) -> dict:
-    """班级列表; ?teacher_id= 作用域 (域B 隔离: 老师只见自己班级)."""
-    tid = (qs.get("teacher_id", [None]) or [None])[0]
-    where, params = ("WHERE c.teacher_id = ?", [tid]) if tid else ("", [])
+    """班级列表 (域B 隔离: 老师只见自己班级; ?teacher_id= 必填)."""
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
     con = db_ro()
     try:
         rows = con.execute(
             "SELECT c.class_id, c.school, c.grade, c.name, c.teacher_id, "
             "(SELECT COUNT(*) FROM students s WHERE s.class_id = c.class_id) AS n "
-            f"FROM classes c {where} ORDER BY c.school, c.grade, c.class_id", params
+            "FROM classes c WHERE c.teacher_id = ? "
+            "ORDER BY c.school, c.grade, c.class_id", [tid]
         ).fetchall()
         return {
             "scoped_by_teacher": tid,
@@ -86,10 +104,15 @@ def api_students_classes(qs: dict) -> dict:
 
 def api_students_weakness(qs: dict) -> dict:
     sid = qs.get("id", [None])[0]
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
     if not sid:
         return {"error": "missing ?id"}
     con = db_ro()
     try:
+        if not _tenant.owns_student(con, tid, sid):
+            return _tenant.DENIED
         # join nodes 取可读 label (薄弱环节=exam_point真考点, 非裸 concept_id); 维度=concept_id 中段
         rows = con.execute(
             "SELECT w.concept_id, COALESCE(n.label, w.concept_id) AS label, "
@@ -119,12 +142,17 @@ def _ep_dimension(concept_id: str) -> str:
 
 
 def api_students_recommend(qs: dict) -> dict:
-    """弱点 → 推荐 课节 (concept_id 在哪节出现 → 推该节)."""
+    """弱点 → 推荐 课节 (concept_id 在哪节出现 → 推该节; owns 校验)."""
     sid = qs.get("id", [None])[0]
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
     if not sid:
         return {"error": "missing ?id"}
     con = db_ro()
     try:
+        if not _tenant.owns_student(con, tid, sid):
+            return _tenant.DENIED
         rows = con.execute(
             "SELECT DISTINCT c.course_id, c.layer, c.title, sw.concept_id, sw.weakness_score "
             "FROM student_weakness sw "
@@ -152,70 +180,28 @@ def _student_dict(r: tuple) -> dict:
 
 
 def api_students_weakness_recompute(qs: dict) -> dict:
-    """重算弱点 — 从 student_answers 真实数据算 (4.7.E)."""
+    """重算单生弱点 — 从 student_answers 真实数据算 (4.7.E); 必 owns 校验, 不开全局重算 API."""
     sid = qs.get("id", [None])[0]
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
+    if not sid:
+        return {"error": "missing ?id (按生重算; 全局重算属维护操作 init_db, 不经此 API)"}
     with db_write() as con:
-        if sid:
-            return weakness_svc.recompute_one(con, sid)
-        return weakness_svc.recompute_all(con)
+        if not _tenant.owns_student(con, tid, sid):
+            return _tenant.DENIED
+        return weakness_svc.recompute_one(con, sid)
 
 
 def api_students_import_csv(qs: dict, body: bytes | None = None) -> dict:
-    """POST csv 导入学生 (4.7.D). csv 列: student_id,name,school,city,grade,class_id.
-
-    behaviour:
-      - 同 student_id 已存在 → UPDATE
-      - 新 class_id → 同时建 classes 行 (school + grade 取首批学生)
-    """
+    """POST csv 导入学生 (4.7.D; 租户绑定 + IDOR 防护下沉 [[students_csv]])."""
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
     if not body:
         return {"error": "POST 需要 csv body (Content-Type: text/csv)"}
     text = body.decode("utf-8", errors="replace") if isinstance(body, bytes) else body
-    return _do_csv_import(text)
-
-
-def _do_csv_import(csv_text: str) -> dict:
-    import csv
-    import io
-    from datetime import datetime, timezone
-
-    now = datetime.now(timezone.utc).isoformat()
-    reader = csv.DictReader(io.StringIO(csv_text))
-    required = {"student_id", "name", "school", "grade"}
-    seen_classes: dict[str, tuple] = {}
-    n_students = 0
-    with db_write() as con:
-        for row in reader:
-            if not required.issubset(row.keys()):
-                return {"error": f"csv 缺列, 必填: {sorted(required)}"}
-            cid = (row.get("class_id") or "").strip()
-            if cid and cid not in seen_classes:
-                seen_classes[cid] = (row["school"], row["grade"])
-            con.execute(
-                "INSERT OR REPLACE INTO students "
-                "(student_id, name, school, city, grade, class_id, enroll_year, created_at, source) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [row["student_id"], row["name"], row["school"],
-                 row.get("city", ""), row["grade"], cid,
-                 _to_int(row.get("enroll_year")), now, "csv_import"],
-            )
-            n_students += 1
-        # 自动建班级 (如不存在)
-        n_classes = 0
-        for cid, (school, grade) in seen_classes.items():
-            con.execute(
-                "INSERT OR REPLACE INTO classes (class_id, school, grade, name, created_at) "
-                "VALUES (?, ?, ?, ?, ?)",
-                [cid, school, grade, f"{school} {grade} {cid}", now],
-            )
-            n_classes += 1
-    return {"students_imported": n_students, "classes_touched": n_classes}
-
-
-def _to_int(v) -> int | None:
-    try:
-        return int(v) if v else None
-    except (TypeError, ValueError):
-        return None
+    return do_csv_import(text, tid)
 
 
 ROUTES = {

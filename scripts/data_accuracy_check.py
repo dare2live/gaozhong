@@ -296,12 +296,7 @@ def _check_25_exam_status(con):
 
 
 def _check_26_textbook_sections(con):
-    """教材 section 边界 + section_text 完整性 (issue #9 单元边界过宽 / #7 raw_text 截断).
-
-    (a) 无 section span>25 (单元边界收口后): 末单元不吞 back-matter, renjiao 不误检到 workbook.
-    (b) section_text n_chars == LENGTH(raw_text) 全表: raw_text 不截断 (去 [:20000]), n_chars 是真值.
-    (c) section_text 无 back-matter 污染: 仅书末出现的锚点 (Communication bank/Appendices/参考答案/
-        English glossary) 不应进任何主文 section raw_text."""
+    """教材 section 边界(#9 无 span>25)+ section_text 完整性(#7 无 [:20000] 截断 + 无 back-matter 污染)."""
     print("\n=== (26) 教材 section 边界 + section_text 完整性 ===")
     wide = con.execute(
         "SELECT version_key, volume_key, unit_number, seq, (page_end-page_start) AS span "
@@ -327,10 +322,13 @@ def _check_27_zhongkao(con):
     check_zhongkao(con, check)
 
 
-# ===== main 调度 (CC = 2) =====
+def _check_28_tenant(con):
+    """域B 多租户隔离 (审计 BLOCK 修, 坑21): 真调路由跨租户访问必拒. 抽到 lib 避 god-module."""
+    from scripts.lib.d0_tenant_check import check_tenant_isolation
+    check_tenant_isolation(con, check)
 
-# 2026-06-15 Phase 7 生成层回滚: 移除 _check_5(讲义) / _check_19(听力写作) /
-# _check_20(enriched 超纲) — 这些断言生成内容存在, 内容已删故不再校验.
+
+# ===== main 调度 (CC=2). Phase7 回滚移除 _check_5/19/20 (断言已删生成内容) =====
 CHECKS = [
     _check_1_manifest, _check_2_vocab, _check_3_grammar, _check_4_phrases,
     _check_6_graph, _check_7_audit_summary, _check_8_course_audits,
@@ -345,6 +343,7 @@ CHECKS = [
     _check_25_exam_status,
     _check_26_textbook_sections,
     _check_27_zhongkao,
+    _check_28_tenant,
 ]
 
 

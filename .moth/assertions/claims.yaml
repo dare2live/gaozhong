@@ -340,3 +340,8 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM classes WHERE teacher_id IS NULL"
     expect: {op: "==", value: 0}
+  - id: multitenant-isolation-enforced
+    claim: "审计BLOCK修: 跨租户读学生被路由拒(老师A取老师B学生→forbidden); 行为级非仅结构(坑21契约接执行点)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.api.routes import students as st;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=c.execute(\"SELECT a.teacher_id,b.sid FROM (SELECT DISTINCT teacher_id FROM classes WHERE teacher_id IS NOT NULL) a,(SELECT s.student_id sid,cl.teacher_id o FROM students s JOIN classes cl ON cl.class_id=s.class_id) b WHERE a.teacher_id<>b.o LIMIT 1\").fetchone();c.close();r=st.api_students_get({'id':[p[1]],'teacher_id':[p[0]]});print('OK' if 'forbidden' in str(r.get('error','')) else 'LEAK')"]
+    expect: {op: regex, pattern: "OK"}

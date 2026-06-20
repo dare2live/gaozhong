@@ -1,11 +1,12 @@
 """域B 多租户路由 (inc6; 与 students.py 分模块, teacher_id 隔离的端点单列).
 
-/api/students/teachers       — 老师列表 (多租户入口)
-/api/students/class_weakness — 班级 × 真考点弱点聚合 (单算点下沉 weakness service)
+/api/students/teachers       — 老师列表 (多租户入口; 无 per-student 数据, 不作用域)
+/api/students/class_weakness — 班级 × 真考点弱点聚合 (需 ?teacher_id=, owns_class 校验; 单算点下沉 weakness service)
 """
 from __future__ import annotations
 
 from backend.api.db import db_ro
+from backend.api.routes import _tenant
 from backend.api.routes.students import _ep_dimension
 
 
@@ -26,10 +27,15 @@ def api_students_teachers(qs: dict) -> dict:
 def api_students_class_weakness(qs: dict) -> dict:
     """班级学情热力 (域B; class × exam_point 聚合弱点; ?class_id= 必填, 单算点下沉 weakness)."""
     cid = (qs.get("class_id", [None]) or [None])[0]
+    tid = _tenant.get_teacher(qs)
+    if not tid:
+        return _tenant.MISSING
     if not cid:
         return {"error": "missing ?class_id"}
     con = db_ro()
     try:
+        if not _tenant.owns_class(con, tid, cid):
+            return _tenant.DENIED
         rows = con.execute(
             "SELECT w.concept_id, COALESCE(n.label, w.concept_id) AS label, "
             "       AVG(w.weakness_score) AS avg_score, COUNT(DISTINCT w.student_id) AS n_stu, "
