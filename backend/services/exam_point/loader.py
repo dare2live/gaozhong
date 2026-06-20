@@ -185,3 +185,26 @@ def exam_point_distribution(con: duckdb.DuckDBPyConnection,
         for dim in by_era[era]:
             by_era[era][dim].sort(key=lambda r: -r["n"])
     return by_era
+
+
+def exam_point_shift(con: duckdb.DuckDBPyConnection, top: int = 6) -> dict:
+    """命题迁移 — 新旧 era 占比做差 (审计HIGH#18; 派生事实在 service 算一次, 前端不重算 Rule1).
+
+    返回 {dimension: [{label, then_pct, now_pct, delta}]} 按 |delta| 降序 top N。
+    era 同 distribution 分层 (NEW=最新卷制在前); <2 era 无可迁移返 {}。
+    """
+    by_era = exam_point_distribution(con)
+    eras = sorted(by_era, reverse=True)
+    if len(eras) < 2:
+        return {"eras": eras, "by_dimension": {}}
+    new_era, old_era = eras[0], eras[1]
+    dims = {d for era in by_era.values() for d in era}
+    out: dict[str, list] = {}
+    for dim in dims:
+        old_map = {x["label"]: x["pct"] for x in by_era.get(old_era, {}).get(dim, [])}
+        rows = [{"label": x["label"], "then_pct": old_map.get(x["label"], 0.0),
+                 "now_pct": x["pct"], "delta": round(x["pct"] - old_map.get(x["label"], 0.0), 1)}
+                for x in by_era.get(new_era, {}).get(dim, [])]
+        rows.sort(key=lambda r: -abs(r["delta"]))
+        out[dim] = rows[:top]
+    return {"eras": [new_era, old_era], "by_dimension": out}

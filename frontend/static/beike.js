@@ -1,7 +1,7 @@
 /* 备课工作流「考点驾驶舱」— A考点分布 / B命题迁移 / C命题趋势 / E词汇热力 (第七阶段 viz 7.1).
  *
- * 铁律1 单一计算点: 全部 fetch /api/* service 产物, 前端**只渲染**; 迁移(B)是对两 era 已算 pct
- *   的展示层做差, 非重写 JOIN/agg。绝不在前端聚合 edges/exam_questions。
+ * 铁律1 单一计算点: 全部 fetch /api/* service 产物, 前端**只渲染**; 迁移(B)的 era 间做差也在
+ *   service 算 (exam_point_shift, 审计HIGH#18 修; 前端只渲染 shift.by_dimension)。绝不在前端聚合/做差。
  * 分层非平均: 按卷制 era 分段看, 不混历史均值。
  * 样本量诚实: 趋势读 service 的 reliable 旗, 不可信→灰显虚线 + "样本不足" banner, 不画实斜率。
  * 词频≠考点: 词汇热力标题写"词频热力"(坑12 澄清)。
@@ -28,7 +28,7 @@
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" style="height:300px;"></div></section>
-  <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">展示层做差 · era 内对齐</span></div><div id="bk-shift"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
   <section class="bk-card"><div class="bk-h"><span>C 命题趋势 · 题型逐年</span><span id="bk-relbadge"></span></div><div id="bk-trend" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" style="height:300px;"></div></section>
 </div>`;
@@ -67,17 +67,13 @@
   }
 
   function renderShift() {
-    const nw = state.dist.distribution[ERA_NEW][state.dim] || [];
-    const od = state.dist.distribution[ERA_OLD][state.dim] || [];
-    const oldMap = Object.fromEntries(od.map(x => [x.label, x.pct]));
-    const rows = nw.map(x => ({ label: x.label, now: x.pct, then: oldMap[x.label] ?? 0 }))
-      .map(r => ({ ...r, d: Math.round((r.now - r.then) * 10) / 10 }))
-      .sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 6);
+    // 命题迁移在 service 算一次 (Rule1); 前端只渲染 state.dist.shift.by_dimension[dim]
+    const rows = ((state.dist.shift || {}).by_dimension || {})[state.dim] || [];
     G.$("#bk-shift").innerHTML = rows.map(r => {
-      const up = r.d >= 0, col = up ? C.up : C.down, bg = up ? C.upBg : C.downBg;
+      const up = r.delta >= 0, col = up ? C.up : C.down, bg = up ? C.upBg : C.downBg;
       return `<div class="bk-shift-row"><span class="bk-shift-k">${r.label}</span>
-        <span class="bk-shift-v">${r.then}% → <b>${r.now}%</b></span>
-        <span class="bk-delta" style="color:${col};background:${bg};">${up ? "↑" : "↓"} ${Math.abs(r.d)}pt</span></div>`;
+        <span class="bk-shift-v">${r.then_pct}% → <b>${r.now_pct}%</b></span>
+        <span class="bk-delta" style="color:${col};background:${bg};">${up ? "↑" : "↓"} ${Math.abs(r.delta)}pt</span></div>`;
     }).join("");
   }
 

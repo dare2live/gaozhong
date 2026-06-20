@@ -7,7 +7,8 @@
 from __future__ import annotations
 
 from backend.api.db import db_ro
-from backend.services.exam_point import exam_point_cooccurrence, exam_point_distribution
+from backend.services.exam_point import (exam_point_cooccurrence, exam_point_distribution,
+                                          exam_point_shift)
 from backend.services.trend import scope
 
 
@@ -34,6 +35,7 @@ def api_exam_point_distribution(qs: dict) -> dict:
             "eras": eras,
             "dimensions": dims,
             "distribution": by_era,
+            "shift": exam_point_shift(con),   # 命题迁移单算点 (前端不重算, Rule1; 审计HIGH#18)
             "sufficiency": _era_sufficiency(con),
         }
     finally:
