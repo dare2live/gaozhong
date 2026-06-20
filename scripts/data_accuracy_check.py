@@ -284,6 +284,7 @@ _LIB_CHECKS = [
     ("d0_tenant_check", "check_tenant_isolation"),
     ("d0_versions_check", "check_versions"),
     ("d0_cognitive_skill_check", "check_cognitive_skill"),
+    ("d0_stage_check", "check_stage"),
 ]
 
 

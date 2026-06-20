@@ -146,6 +146,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
     expect: {op: ">=", value: 300}
+  - id: cross-stage-at-stage-refined
+    claim: "跨年级分阶: at_stage 边精确匹配 refined_stage (3095词0错指; 细分阶非粗义务教育). verify-the-verifier: 红队'DB粗分阶'误读, 边早已细, 真消费只读边"
+    type: shell
+    command: ["python3", "-c", "import duckdb,json;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);rs={json.loads(l)['word']:json.loads(l)['refined_stage'] for l in open('data/junior_high/structured/stage_refined.jsonl') if l.strip()};real={w:s for w,s in rs.items() if s in {'小学','初中','义务教育','高中必修','高中选修'}};bad=sum(1 for w,s in real.items() if ('stage:'+s) not in {r[0] for r in c.execute(\"SELECT dst_id FROM edges WHERE relation='at_stage' AND src_id=?\",['word:'+w]).fetchall()});c.close();print('OK' if bad==0 and len(real)>=3000 else f'FAIL {bad}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: cognitive-skill-goldmine
     claim: "设问类型金矿(KG-A1): cognitive_skill 30子题边 explicit_label, 推断50%(对账教研解析真相源, 驳inference错估15% 坑16); 全带stamp血缘"
     type: shell

@@ -103,7 +103,9 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 ### TrackB 初中地基 (解 master REVISE)
 - **B0** 现状盘点(已有 curriculum_vocab 505/1600 + grammar_items + stage_refined.jsonl **4329行**).
 - **B1** 解 6 BLOCK(垃圾词 fuit/gif 清理 / 丢真词补 / cid 释义修).
-- **B2/B3** **分阶细化入库**: `refined_stage`(真字段: 小学499/初中1304/义务教育126/高中必修304/选修862/校本超纲1094/课标变形140) 回填 DB(现存粗分阶). 门锁 `refined_stage` 字段对账(非"1803"拍脑袋数; 1803=499小学+1304初中 从义务教育细拆). word_sense.stage 走细分阶.
+- **B2/B3** **分阶细化** — ⚠ **verify-the-verifier 修正 (2026-06-20)**: 红队"DB粗分阶红线"是**误读**。实测 `at_stage` **边**早已是细分阶(`stage_backfill` 读 refined_stage; 3095词 0错指/0缺边, 精确匹配), 真跨年级消费(`k12.stage_distribution`)**只读 at_stage 边**(铁律1), 已细已对。粗的只是 `node attrs.stage`, 且**几乎无消费方**(仅 课标变形 披露读它)。更关键: refined=初中 的词 attrs 有标"高中必修"= **word 多义项跨阶段**(master A1 word_sense), **非错标 — 回填 attrs=refined 会抹掉合法高中义项, 是错的方向**。
+  - 已做: D0 `_check`(at_stage 精确匹配 refined_stage, 0错指, 坑1 测 correctness 非仅计数) + moth `cross-stage-at-stage-refined` 锁死 + 对抗验证非假绿。
+  - 真问题 = word_sense(master A1, attrs.stage 单值消灭跨阶段义项), 大改, 独立增量; 非 refined_stage 回填.
 - **B4** 中考解墙补答案 → complete 后才挂边(中考已在 exam_questions_all 带 exam_type=中考).
 
 ### 门 (每新维度 D0 AND moth 双门, 坑17; 锁辽宁覆盖率+provenance 非只计边数, 坑1)

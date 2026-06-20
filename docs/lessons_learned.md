@@ -482,3 +482,11 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 **根因 / 坑**: ① 坑1 (绿门假绿) 在多租户复发 — 门只断言"班级有 teacher_id"(结构), **零断言"跨租户读被拒"(行为)**; 结构对≠隔离生效。② 坑21 (契约没接执行点) — 设计声明 BLOCK 级隔离, 但执行点 (路由) 只接了 1/7, 没有任何门测"全端点都接了"。③ "做了一个端点" 的完成假象: 改 classes 加 `?teacher_id=` 后误以为隔离做完, 没枚举全部 per-student 端点逐一验证。
 
 **修复 / 防复发**: ① 归属判定收口**单一执行点** `_tenant.py` (owns_student/owns_class 经 classes 链), 全 7 端点共用, 漏一个=越权所以不让各自实现。② D0 `_check_28` **行为级门**: 真调路由跨租户访问断言被拒 (非仅结构) — 删任一端点 owns 校验则 FAIL。③ moth `multitenant-isolation-enforced` 行为断言。④ 通用规则: **任何"隔离/权限/作用域"声明, 门必须行为级枚举全部受保护端点逐一验证 access-denied, 不能只测结构 (有 teacher_id 列) 或抽测一个端点**。隔离是 all-or-nothing — 漏一个端点 = 隔离失效。
+
+## L-2026-06-20-ZF · verify-the-verifier: 红队"DB粗分阶红线"是误读 — 差点做错向回填 (KG-B轨)
+
+**现象**: 三轮 KG 设计 workflow 的红队给 B轨 FAIL "在初中错分阶上建跨年级边=固化错误", 引"1803词分阶与DB不一致"。开建前按改前审计铁律盘 blast radius, 实测推翻红队前提: `at_stage` **边**早已是细分阶 (`stage_backfill.py` 读 `refined_stage` 建边; 3095 真阶段词 **0错指/0缺边** 精确匹配), 真跨年级消费 `k12.stage_distribution` **只读 at_stage 边**(铁律1), 已细已对。粗的只是 `node attrs.stage`(义务教育1580), 且**几乎无消费方**(仅课标变形披露读)。
+
+**根因 / 坑**: ① 红队/上游 understand-workflow 把 "attrs.stage 粗" 误当 "边粗" → 红线判断建在没核实的派生层快照上 (坑2 陈旧快照 + 真相源应是 DB 实测非中间结论)。② 更深: refined=初中 的词 attrs 标"高中必修"= **word 多义项跨阶段**(master A1 word_sense), **非错标** — 盲目"回填 attrs=refined_stage"会用一个义项覆盖另一个合法义项, 是**错的方向**。差点执行一个既不必要又有害的回填。
+
+**修复 / 防复发**: ① **不回填** (诚实: 真问题是 word_sense 大改, 不是回填)。② 给已细的 at_stage 上 D0 `_check`(精确匹配 refined_stage, 0错指, 坑1 测 correctness 非仅计数) + moth `cross-stage-at-stage-refined` + 对抗验证(污染一边→FAIL→还原回绿)。③ 通用规则: **红队/上游 agent 的"红线"也是 evidence 不是 verdict (architect-controller rule7 verify-the-verifier) — 破坏性动作(回填/删/重构)前必用 DB 实测核实红线前提, 尤其当红线引的数字/状态来自派生层快照而非一手实测**。本次 blast-radius 审计 (改前) 直接拦下错误动作, 印证铁律11 改前审计的价值。
