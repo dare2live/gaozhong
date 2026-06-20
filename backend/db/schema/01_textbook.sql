@@ -83,6 +83,20 @@ CREATE TABLE IF NOT EXISTS unit_vocab_intro (
 );
 CREATE INDEX IF NOT EXISTS idx_unit_vocab_word ON unit_vocab_intro(word);
 
+-- 统一逐阶段释义词典 (word_sense 地基; docs/kg_layer_design §2 词汇维).
+-- 真相源 = 教材生词表(高中 unit_vocab_intro / 初中沪教 hujiao) + 中考词汇表(补基础词) + OALD8(兜底).
+-- 课标 word list 只有词无释义, 故释义全来自教材/词表. word_sense 从同词跨阶段 gloss 比对长出.
+-- 一词一阶段一源可一行(renjiao/waiyan 同高中不同源 → 两行); 多义在 gloss 内分号并列, 由 word_sense 拆。
+CREATE TABLE IF NOT EXISTS word_glosses (
+    word     VARCHAR NOT NULL,
+    stage    VARCHAR NOT NULL,        -- 初中 | 高中必修 | 高中选修
+    pos      VARCHAR,
+    gloss    VARCHAR NOT NULL,        -- 中文释义 (原文, 多义分号并列)
+    source   VARCHAR NOT NULL,        -- waiyan | renjiao | hujiao | 中考词汇表 | OALD8
+    PRIMARY KEY (word, stage, source)
+);
+CREATE INDEX IF NOT EXISTS idx_word_glosses_word ON word_glosses(word);
+
 -- (phrases 表与索引/序列在上方 line 57 已定义; 此处原有重复 CREATE TABLE IF NOT EXISTS phrases
 --  是死定义—IF NOT EXISTS 使其永不生效, loader 用的是上方 8 列版, 审计MEDIUM 删除以正本清源。)
 

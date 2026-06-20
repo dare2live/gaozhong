@@ -146,6 +146,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
     expect: {op: ">=", value: 300}
+  - id: glossary-cross-stage-senses
+    claim: "释义词典(word_sense地基): word_glosses 跨阶段候选≥300词(初中∩高中有释义); 释义来自教材生词表+中考词汇表(课标无释义), power初中能量义+高中电力新义"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);x=c.execute(\"SELECT COUNT(*) FROM (SELECT word FROM word_glosses WHERE stage='初中' INTERSECT SELECT word FROM word_glosses WHERE stage LIKE '高中%')\").fetchone()[0];hs=' '.join(r[0] for r in c.execute(\"SELECT gloss FROM word_glosses WHERE word='power' AND stage LIKE '高中%'\").fetchall());c.close();print('OK' if x>=300 and '电力' in hs else f'FAIL {x}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: cross-stage-at-stage-refined
     claim: "跨年级分阶: at_stage 边精确匹配 refined_stage (3095词0错指; 细分阶非粗义务教育). verify-the-verifier: 红队'DB粗分阶'误读, 边早已细, 真消费只读边"
     type: shell

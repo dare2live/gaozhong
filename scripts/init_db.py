@@ -77,6 +77,10 @@ def main() -> None:
     print("\n=== Layer 2: vocab (waiyan + renjiao) ===")
     print(f"  {extract.run_vocab(con)}")
 
+    print("\n=== Layer 2: 统一逐阶段释义词典 (word_sense 地基; 教材生词表+中考词汇表) ===")
+    from backend.services.glossary import build_glossary
+    print(f"  {build_glossary(con)}")
+
     print("\n=== Layer 2: fix titles (scope) ===")
     print(f"  {extract.run_fix_titles(con)}")
 
