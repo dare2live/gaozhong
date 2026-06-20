@@ -322,3 +322,15 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM nodes n WHERE (n.concept_id LIKE 'grammar:jr:%' OR (n.node_type='word' AND n.attrs_json LIKE '%junior_curriculum%')) AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)"
     expect: {op: "==", value: 0}
+  - id: k12-deepens-blueprint
+    claim: "inc3 跨阶段 deepens 边: 初中grammar→高中同label (10维语法蓝图 中考∩高考衔接, ≥50)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges WHERE relation='deepens'"
+    expect: {op: ">=", value: 50}
+  - id: k12-stage-materialized
+    claim: "inc3 stage 维 materialize: at_stage 边覆盖初中+高中词到5阶段节点(小学/初中/义务教育/高中必修/选修)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM edges WHERE relation='at_stage'"
+    expect: {op: ">=", value: 2000}

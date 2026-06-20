@@ -115,10 +115,13 @@ def main() -> None:
 
     print("\n=== Layer 3x: 初中节点 (域A; word/grammar, stage 标注; inc2; 在全部高中word节点建完后跑计数才准) ===")
     from backend.services.data_sources.extract.junior import (
-        vocab as junior_vocab, grammar as junior_grammar, stage_link as junior_stage_link)
+        vocab as junior_vocab, grammar as junior_grammar, stage_link as junior_stage_link,
+        stage_backfill as junior_stage_backfill, blueprint as junior_blueprint)
     print(f"  {junior_vocab.load(con)}")
     print(f"  {junior_grammar.load(con)}")
     print(f"  {junior_stage_link.load(con)}")
+    print(f"  {junior_stage_backfill.load(con)}")   # inc3: 高中词 stage 回填
+    print(f"  {junior_blueprint.load(con)}")          # inc3: 10维 deepens 边
 
     print("\n=== Layer 4: question_bank 装载 (真题 + 合成题 + 自动打标) ===")
     qb = extract.run_question_bank(con)

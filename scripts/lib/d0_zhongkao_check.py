@@ -34,4 +34,7 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
     check("初中 grammar 节点=71 (grammar:jr: 命名空间不碰高中, 全 stage=初中)",
           n_jrg == 71 and bad_g == 0, f"{n_jrg} 节点, {bad_g} 无初中标")
     n_at = con.execute("SELECT COUNT(*) FROM edges WHERE relation='at_stage'").fetchone()[0]
-    check("at_stage 边连初中节点 (防孤儿 + stage 维 materialize, ≥180)", n_at >= 180, f"{n_at}")
+    check("stage 维 materialize: at_stage 边覆盖初中+高中词 (inc2+inc3, ≥2000)", n_at >= 2000, f"{n_at}")
+    # inc3: 跨阶段 deepens 边 (10维语法蓝图 K12衔接)
+    n_dp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='deepens'").fetchone()[0]
+    check("跨阶段 deepens 边 (初中grammar→高中同label, 10维蓝图, ≥50)", n_dp >= 50, f"{n_dp}")
