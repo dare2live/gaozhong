@@ -24,6 +24,7 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
     zk_view = con.execute("SELECT COUNT(*) FROM zhongkao_questions").fetchone()[0]
     check("视图隔离 (高考视图 exam_questions 无中考 + zhongkao_questions=90)",
           leak == 0 and zk_view == 90, f"高考视图含中考={leak} 中考视图={zk_view}")
+    _check_answer_fidelity(con, check)
     # inc2: 初中节点 (单库 node_type/stage 判别)
     n_jrw = con.execute(
         "SELECT COUNT(*) FROM nodes WHERE node_type='word' AND attrs_json LIKE '%junior_curriculum%'").fetchone()[0]
@@ -35,6 +36,33 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
           n_jrg == 71 and bad_g == 0, f"{n_jrg} 节点, {bad_g} 无初中标")
     n_at = con.execute("SELECT COUNT(*) FROM edges WHERE relation='at_stage'").fetchone()[0]
     check("stage 维 materialize: at_stage 边覆盖初中+高中词 (inc2+inc3, ≥2000)", n_at >= 2000, f"{n_at}")
-    # inc3: 跨阶段 deepens 边 (10维语法蓝图 K12衔接)
-    n_dp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='deepens'").fetchone()[0]
-    check("跨阶段 deepens 边 (初中grammar→高中同label, 10维蓝图, ≥50)", n_dp >= 50, f"{n_dp}")
+    # inc3: 跨阶段 deepens 边 (10维语法蓝图 K12衔接); 审计HIGH#7: 全71初中语法点都有衔接边(精确59+别名12), 无衔接孤儿
+    n_jr_g = con.execute("SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%'").fetchone()[0]
+    n_linked = con.execute(
+        "SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='deepens' AND src_id LIKE 'grammar:jr:%'").fetchone()[0]
+    check("全部初中语法点有跨阶段 deepens 衔接边 (无衔接孤儿; 别名补12时态/非谓语/定从)",
+          n_jr_g == n_linked and n_jr_g == 71, f"{n_linked}/{n_jr_g} 衔接")
+
+
+def _check_answer_fidelity(con, check) -> None:
+    """答案保真 (审计 HIGH): 2024 题面 walled, 答案是核心交付; 损坏(list-repr/小写/越界)须门抓.
+
+    按题型作用域 — 只对 MCQ(选项字母答案)断言; 语法填空/开放问答/书面表达是自由词不约束 (坑16 防套错 schema)。
+    """
+    bad_ad = con.execute(
+        "SELECT question_id, answer FROM exam_questions_all WHERE exam_type='中考' "
+        "AND question_type IN ('完形填空', '阅读理解(四选一)') "
+        "AND answer IS NOT NULL AND TRIM(answer) <> '' AND TRIM(answer) NOT IN ('A','B','C','D')"
+    ).fetchall()
+    check("中考 MCQ(四选一/完形) 答案 ∈ {A-D} (保真; 防小写/list-repr/越界E污染)",
+          not bad_ad, f"{bad_ad[:5]}")
+    bad_e = con.execute(
+        "SELECT question_id, answer FROM exam_questions_all WHERE exam_type='中考' "
+        "AND question_type LIKE '阅读理解(五选四%' "
+        "AND answer IS NOT NULL AND TRIM(answer) <> '' AND TRIM(answer) NOT IN ('A','B','C','D','E')"
+    ).fetchall()
+    check("中考 五选四 答案 ∈ {A-E} (保真)", not bad_e, f"{bad_e[:5]}")
+    n_2024 = con.execute(
+        "SELECT COUNT(*) FROM exam_questions_all WHERE exam_type='中考' AND year=2024 "
+        "AND answer IS NOT NULL AND TRIM(answer) <> ''").fetchone()[0]
+    check("中考 2024 全 45 题答案非空 (answer-key-driven, 答案=唯一交付不能丢)", n_2024 == 45, f"{n_2024}/45")

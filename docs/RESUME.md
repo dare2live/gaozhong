@@ -74,7 +74,7 @@
 
 ### F. gaozhong 完全独立 + 主架构 v2 + Phase2.6 初中地基修复 (2026-06-17)
 - **gaozhong↔gaokao 完全独立**: 切断 2 处运行时跨项目读(gaokao_bench/truth_baseline → 本地镜像);
-  init_db 自包含复现 472/188; moth gaozhong-self-contained 守门。"不ATTACH"=跨项目非初中↔高中。
+  init_db 自包含复现 466/182 (B1双源去重后, 原472/188 含6个2024辽宁重复); moth gaozhong-self-contained 守门。"不ATTACH"=跨项目非初中↔高中。
 - **主架构 v2** (`docs/k12_platform_master_design.md`): 第一性原理 + 3视角对抗评审定稿(REVISE);
   sense级stage(power自反驳word单标签) + 单库node_type(弃双库三态) + 补学习者/语篇/思维节点 + tutorial契约。
 - **Phase2.6 初中地基修复 — 初中 D0 全绿**: 建 junior_accuracy_check(8不变量, 坑17) + 接 stop_gate

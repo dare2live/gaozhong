@@ -212,20 +212,17 @@ def _check_18_followup(con):
 
 def _check_21_exam_provenance(con):
     print("\n=== (21) 真题卷型 provenance 诚实性 (L-N/L-P/L-R, category-aware) ===")
-    # 21a: 非新课标II卷 (新课标I/III/全国甲/全国乙) 的行不得标辽宁 (辽宁只用新课标II)
+    # 21a-21d: 非新课标II卷不冒充辽宁 / 2010-14自主命题期不标辽宁 / 辽宁paper_type必II卷 / L-P smoking gun
     bad_nonln = con.execute(
         "SELECT COUNT(*) FROM exam_questions WHERE province LIKE '辽宁%' "
         "AND paper_type IN ('新课标 I 卷','新课标 III 卷','全国甲卷','全国乙卷')"
     ).fetchone()[0]
-    # 21b: 2010-2014 辽宁自主命题期, gb 数据非辽宁卷, 不得标辽宁
     bad_pre2015 = con.execute(
         "SELECT COUNT(*) FROM exam_questions WHERE year <= 2014 AND province LIKE '辽宁%'"
     ).fetchone()[0]
-    # 21c: 辽宁卷的 paper_type 必为新课标II卷 (辽宁 2015 起只用新课标II)
     bad_ln_paper = con.execute(
         "SELECT COUNT(*) FROM exam_questions WHERE province LIKE '辽宁%' AND paper_type <> '新课标 II 卷'"
     ).fetchone()[0]
-    # 21d: L-P smoking gun — 2021 全国甲卷 "Landscape Photographer" 行不得标辽宁
     smoking = con.execute(
         "SELECT COUNT(*) FROM exam_questions "
         "WHERE raw_question LIKE '%Landscape%Photographer%' AND province LIKE '辽宁%'"
@@ -234,12 +231,16 @@ def _check_21_exam_provenance(con):
     check("2010-2014 自主命题期不冒充辽宁", bad_pre2015 == 0, f"{bad_pre2015} 行")
     check("辽宁卷 paper_type 必为新课标II卷", bad_ln_paper == 0, f"{bad_ln_paper} 行")
     check("L-P smoking gun 行已诚实标注", smoking == 0, f"{smoking} 行仍标辽宁")
-    # 21e: local_pdf PDF 全文完整性 (抽到 lib, 避 god-module Rule 8)
+    # 21e/21f: local_pdf 全文 + EOL raw_question 完整性 (抽到 lib 避 god-module Rule 8)
     from scripts.lib.d0_local_pdf_check import check_local_pdf_integrity
-    check_local_pdf_integrity(con, check)
-    # 21f: EOL 真题 raw_question 完整性 (#8, 抽到 lib 避 god-module Rule 8)
     from scripts.lib.d0_eol_check import check_eol_integrity
+    check_local_pdf_integrity(con, check)
     check_eol_integrity(con, check)
+    # 21g: 高考计数正向锁 (审计: 防漂移; B1去重后基线=466/182 非陈旧472/188; 增减须显式改基线)
+    n_gk, n_ln = con.execute(
+        "SELECT COUNT(*), COUNT(*) FILTER (WHERE province LIKE '辽宁%') FROM exam_questions").fetchone()
+    check("高考真题计数基线 466 (B1 去重后; 改动须显式更新基线防漂移)", n_gk == 466, f"{n_gk}")
+    check("高考辽宁卷计数基线 182 (新课标II §7)", n_ln == 182, f"{n_ln}")
 
 
 # ===== helpers (CC ≤ 4) =====

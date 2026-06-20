@@ -141,7 +141,7 @@ assertions:
 
   # ===== 考点 canonical 维度 (件2 拱心石: 取代 word-token 冒充考点) =====
   - id: exam-point-edges-present
-    claim: "考点 canonical 维度已落库: tests_exam_point 边 ≥300 (188辽宁题 genre/theme 双模型标注)"
+    claim: "考点 canonical 维度已落库: tests_exam_point 边 ≥300 (dual_model标注批次188 labels, B1去重后落177辽宁题节点 genre/theme)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
@@ -323,11 +323,11 @@ assertions:
     query: "SELECT count(*) FROM nodes n WHERE (n.concept_id LIKE 'grammar:jr:%' OR (n.node_type='word' AND n.attrs_json LIKE '%junior_curriculum%')) AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)"
     expect: {op: "==", value: 0}
   - id: k12-deepens-blueprint
-    claim: "inc3 跨阶段 deepens 边: 初中grammar→高中同label (10维语法蓝图 中考∩高考衔接, ≥50)"
+    claim: "inc3 跨阶段 deepens: 全71初中语法点都有衔接边(精确59+别名12, 审计HIGH#7补时态/非谓语/定从); 无衔接孤儿"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM edges WHERE relation='deepens'"
-    expect: {op: ">=", value: 50}
+    query: "SELECT count(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.relation='deepens' AND e.src_id=nodes.concept_id)"
+    expect: {op: "==", value: 0}
   - id: k12-stage-materialized
     claim: "inc3 stage 维 materialize: at_stage 边覆盖初中+高中词到5阶段节点(小学/初中/义务教育/高中必修/选修)"
     type: duckdb_sql
@@ -339,6 +339,24 @@ assertions:
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM classes WHERE teacher_id IS NULL"
+    expect: {op: "==", value: 0}
+  - id: gaokao-count-baseline
+    claim: "高考真题计数基线 466 (B1双源去重后, 非陈旧472); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions"
+    expect: {op: "==", value: 466}
+  - id: gaokao-liaoning-baseline
+    claim: "高考辽宁卷计数基线 182 (新课标II §7, B1去重后非陈旧188); 防漂移 (审计 HIGH#3)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE province LIKE '辽宁%'"
+    expect: {op: "==", value: 182}
+  - id: zhongkao-answer-fidelity
+    claim: "中考MCQ答案保真: 四选一/完形∈{A-D} 五选四∈{A-E} (2024 answer-key-driven 答案=核心交付; 防小写/越界污染, 审计 HIGH#1)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
   - id: multitenant-isolation-enforced
     claim: "审计BLOCK修: 跨租户读学生被路由拒(老师A取老师B学生→forbidden); 行为级非仅结构(坑21契约接执行点)"

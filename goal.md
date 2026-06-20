@@ -87,7 +87,7 @@
 - 三入口薄壳化委托: `extraction/exam.py`(105 行)→ `gaokao_bench.iter_records`+`exam_paper.classify_paper`; `import_recent_exams.py`→`extract/pdf`; `cross_verify_pdf.py`→`extract/pdf`(单一计算点 Rule 1)。
 - crawl4ai 0.8.9 作通用工具, `chrome_channel="chrome"` 驱动本机 Chrome 149 (实测 example.com 200; 删 531M bundled chromium); 强反爬官方站升级走 Chrome MCP(jyt.ln.gov.cn 实证)。
 - 修 2 个 init_db 全量重建 bug: (1) `load.py` 用 `git ls-files -z` 防中文名八进制引号炸 file_manifest; (2) Layer 4g PDF 导入从 subprocess 改 in-process `import_pdfs(con)` 防 DuckDB 单写者锁冲突。
-- **init_db 可复现** exam_questions=472 / 辽宁=188 / eol=110 / local_pdf=18; 三门全绿(data_accuracy_check exit0 · moth PASS 17/0 · stop_gate exit0); 详 lessons L-Z/ZA/ZB。
+- **init_db 可复现** exam_questions=466 / 辽宁=182 / eol=110 / local_pdf=18 (B1双源去重后; 原472/188含6个2024辽宁重复, D0/moth 计数基线锁); 三门全绿(data_accuracy_check exit0 · moth PASS 58/0 · stop_gate exit0); 详 lessons L-Z/ZA/ZB。
 
 ### M7 真题分析层 — verified-complete 状态 (2026-06-16 整固)
 > **真题分析层已 thorough 且经真相源验证**(含一次自我纠错)。24 commits。
@@ -111,8 +111,8 @@
 |---|---|---|
 | 0 | **项目地图 CLI** `python3 -m scripts.tools.map [doctor\|modules\|gates\|drift\|stats] [--json] [--strict]` 只读聚合 4 套真相源 | ✅ |
 | 1 | **趋势分析诚实护栏** `backend/services/trend/scope.py`: province 锚定(§7) + 卷制分段(PIT) + 样本量守门(reliable=False→'样本不足'不冒充slope); 修 lesson_plan 硬编码假slope; moth+2断言 | ✅ |
-| 2 | **考点 canonical 维度**(拱心石): 188 辽宁题双模型标注落 exam_point nodes+edges(498条 dual_model_agree). **genre + theme L1(3) + theme L2(课标官方10主题群)** 已落; taxonomy v2 升官方层级(设问7技能/provenance分层, docs/exam_point_taxonomy_research). **分层揭示**: 做人与做事 4.9%→21.9%暴涨(立德树人)、记叙文↔说明文翻转、人与自然翻倍. **考点5维分布全出**: genre/theme L1/theme L2(官方10群=canonical边) + 设问类型(官方7技能)/语法考点(9类=聚合分布). 命题趋势: 做人与做事暴涨/推断上升/记叙文崛起. 待: 名词数词形taxonomy补全 + 2021+解析采集(任务#15) | ✅ 主体完成 |
-| 3 | 趋势/考点分布/关联性 + 接前端. **多角色正反论证裁 materialize=none**("落表"是被任务卡字面锁死的伪需求, 三条腿已 service 委托满足 Rule1, 188辽宁行~10ms 物化只增 staleness §3.5). **关联性第三条腿**(`exam_point/cooccur.py` 同题跨轴共现: 记叙文⨯人与社会46/说明文⨯人与自我15...) + **D0维度23**(对 service 输出5数值断言, 对抗污染必FAIL) + era单点 + heatmap下沉 + **接前端**(趋势era分隔+样本诚实banner / 考点关联tab). moth+3锁 materialize=none. | ✅ (2026-06-16) |
+| 2 | **考点 canonical 维度**(拱心石): dual_model标注批次188 labels(B1去重后落177辽宁题节点)入 exam_point nodes+edges(498条 dual_model_agree). **genre + theme L1(3) + theme L2(课标官方10主题群)** 已落; taxonomy v2 升官方层级(设问7技能/provenance分层, docs/exam_point_taxonomy_research). **分层揭示**: 做人与做事 4.9%→21.9%暴涨(立德树人)、记叙文↔说明文翻转、人与自然翻倍. **考点5维分布全出**: genre/theme L1/theme L2(官方10群=canonical边) + 设问类型(官方7技能)/语法考点(9类=聚合分布). 命题趋势: 做人与做事暴涨/推断上升/记叙文崛起. 待: 名词数词形taxonomy补全 + 2021+解析采集(任务#15) | ✅ 主体完成 |
+| 3 | 趋势/考点分布/关联性 + 接前端. **多角色正反论证裁 materialize=none**("落表"是被任务卡字面锁死的伪需求, 三条腿已 service 委托满足 Rule1, 182辽宁行~10ms 物化只增 staleness §3.5). **关联性第三条腿**(`exam_point/cooccur.py` 同题跨轴共现: 记叙文⨯人与社会46/说明文⨯人与自我15...) + **D0维度23**(对 service 输出5数值断言, 对抗污染必FAIL) + era单点 + heatmap下沉 + **接前端**(趋势era分隔+样本诚实banner / 考点关联tab). moth+3锁 materialize=none. | ✅ (2026-06-16) |
 | ⚠ gate | **消费者验证**(最高杠杆, AI 做不了): 1 名辽宁英语老师真用 30 分钟 — Rule 10 people-not-agents, 需用户动员 | 待用户 |
 
 ~~已知 fail: 架构审计 block=2~~ **已修 (2026-06-16, block=0)**: import_recent_exams 改 registry/import-policy 驱动 + 清悬挂 doc 引用; **架构契约审计接入 stop_gate**(声明 BLOCK 却从没接线=空门) + yaml 纳入触发器。
@@ -126,7 +126,7 @@
 待审: predicted.py "预测试卷"按不可信 slope 加权, 与押题红线张力(已 flag 独立 review)。
 
 ### 2026-06-15 数据诚实性整改 (9 commits, 详 lessons L-R..W + data_accuracy_audit; live 状态看 `moth assert`)
-- **真题 provenance 闭环**: 假"辽宁新课标II卷"诚实降级 + check_21 防回归; **EOL 2021/2022 真题入库**(替换 GAOKAO 占位)。exam_questions 376→**472**(含 EOL 110 + 本地 PDF 18), 辽宁卷 **188**(M6 可复现)。
+- **真题 provenance 闭环**: 假"辽宁新课标II卷"诚实降级 + check_21 防回归; **EOL 2021/2022 真题入库**(替换 GAOKAO 占位)。exam_questions 376→**466**(含 EOL 110 + 本地 PDF 18), 辽宁卷 **182**(B1双源去重后; 原472/188含6个2024辽宁重复)。
 - **Phase 7 生成层回滚**: 删 enriched 讲义/合成题/生成练习(教材基石不完整不该有生成范文 §1.1); question_bank 仅真题; course_handouts 0。
 - **学情派生 + 去停用词 + god-module 拆分**: 弱点从写死改答题派生; autotag 去功能词; 4 个 >400 行治理 god-module 拆到 <400, run_all 可复现绿。
 - 三门全绿: data_accuracy_check / moth assert / stop_gate。
@@ -907,7 +907,7 @@ exam_alignment_checker.py --json
 
 #### 里程碑当前状态（2026-06-15 对照更新，11 commits 数据诚实性整改）
 
-- ✅ **M0 真值基座闭环（已收口）**：原待收口项"2021/2022 新高考II卷完整入库 + 污染剔除"**已完成** —— EOL 中国教育在线真题走 M0 review gate 入 `exam_questions`(2021 共 65 + 2022 共 45)，替换 GAOKAO 混合卷占位；全部 gaokao 英语题拉齐(376→**472**, 2010-2025)，**category-aware 诚实卷型标注**(辽宁卷 188 真新课标II / 非辽宁 284 诚实标注 I/III/甲/乙)；GAOKAO 全国甲卷"Landscape Photographer"污染已删。provenance 由 `moth assert`(non-II-not-faking-liaoning / liaoning-is-xgkii / pre2015-not-liaoning / eol-truth-imported) + check_21 守。
+- ✅ **M0 真值基座闭环（已收口）**：原待收口项"2021/2022 新高考II卷完整入库 + 污染剔除"**已完成** —— EOL 中国教育在线真题走 M0 review gate 入 `exam_questions`(2021 共 65 + 2022 共 45)，替换 GAOKAO 混合卷占位；全部 gaokao 英语题拉齐(376→**466**, 2010-2025; B1双源去重后, 原472含6个2024辽宁重复)，**category-aware 诚实卷型标注**(辽宁卷 182 真新课标II / 非辽宁 284 诚实标注 I/III/甲/乙)；GAOKAO 全国甲卷"Landscape Photographer"污染已删。provenance 由 `moth assert`(non-II-not-faking-liaoning / liaoning-is-xgkii / pre2015-not-liaoning / eol-truth-imported) + check_21 守。
 - ✅ **M1 图谱与趋势闭环（清洗后重建）**：真题清洗后 `trend_analysis`(288题, 2015-2025)/`exam_patterns` 在干净数据重建(旧版训练在污染数据上已弃)；知识图谱去停用词(tests_word 28430→16540, 功能词不再稀释考点)。
 - ⚠️ **M2 内容与题库闭环（已被 foundation-first 决策取代，需重定义）**：原目标"≥700 题 + 40 节讲义结构化上线"**已回滚** —— 用户 2026-06-15 决策：教材基石不完整前不要生成范文(§1.1)，删 enriched 讲义/合成题/生成练习；`question_bank` 改为**仅真题**(无合成)。课程结构骨架(40 + course_materials)保留。**M2 重定义**：教材基石(实测已抽全 77 单元)+ 干净真题为前置，教学内容重建是后续方向决策，不再以"700题/讲义上线"为门槛。
 - ✅ **M3 审计与交付闭环**：`data_accuracy_check`/`moth assert`(15 条)/`stop_gate` 三门全绿；4 个治理 god-module 拆 <400 行后 `run_all` 可复现 44 OK(解决陈旧快照)。M3.2 原引用的 `teacher_feedback_round1`/`user_test_round1` 等阶段性快照文档已删(易腐烂误导)，交付状态以 `moth assert` + DB 实测为准。
