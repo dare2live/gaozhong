@@ -8,9 +8,9 @@
 **全面审计** (架构师/moth/sherpa + 13-agent workflow 7 维度): 验证-验证器, 抓 20 真问题 (三绿门盲区, 坑1/坑21 复发), 6 假警报正确排除。**整改 6 commit 全程三门绿** (932dddc→acc885f):
 - **P0 多租户 BLOCK (5项, 用户硬约束)**: inc6 只 scope 1/7 端点, live curl 实证 t-li 可读 t-wang 学生全档案/弱点/列表 = 越权。修: `_tenant.py` 归属判定单一执行点 (owns_student/owns_class 经 classes 链) + 全 7 端点强制 teacher_id + IDOR 防护 (import_csv 拒跨租户接管) + D0 `_check_28` **行为级门** (真调路由跨租户必拒, 非仅结构) + moth 行为断言。教训 L-ZE/坑24 (隔离声明≠全端点隔离)。
 - **P1 HIGH (5项)**: ① 答案保真门 (中考MCQ按题型∈{A-D}/{A-E}, 2024 answer-key全非空) ② 高考计数正向锁 466/182 (B1去重后非陈旧472/188) + 改全部陈旧文档 + moth 17→60 ③ deepens 衔接补全 (label精确漏12时态/非谓语/定从 → grammar_stage_aliases.yaml 数据化, 59→71 全初中语法无衔接孤儿) ④ 中考90题空心诚实标记 (zhongkao_questions.content_status 派生列 + 前端banner: 2024全walled/2025答案待补) ⑤ beike命题迁移做差下沉 exam_point_shift service (Rule1)。
-- **P2 MEDIUM (6项)**: sherpa fail_regex 假阳性收紧 (坑21坏门) / phrases 双定义删死代码 / class_weakness agg下沉service / stage未分阶1234词披露 (校本超纲1094+课标变形140, 防静默截断) / JSONL↔DB答案对账moth / beike .catch。
-- **待定 1/20**: ECharts CDN 加 SRI/vendoring (需下载决策, 不臆造哈希)。
-- 前端全部浏览器实测 (2 诚实banner + 命题迁移 + 0 console error + 截图存证); fresh schema in-memory 加载验证 init_db 可复现。
+- **P2 MEDIUM (7项)**: sherpa fail_regex 假阳性收紧 (坑21坏门) / phrases 双定义删死代码 / class_weakness agg下沉service / stage未分阶1234词披露 (校本超纲1094+课标变形140, 防静默截断) / JSONL↔DB答案对账moth / beike .catch / **ECharts 本地 vendoring** (用户选; 下载 5.5.0 到 frontend/static/vendor/ 去 cdnjs CDN 供应链风险, moth锁无CDN)。
+- **20/20 全闭环** (7 commit: 932dddc→2459a0f); moth 17→61。
+- 前端全部浏览器实测 (2 诚实banner + 命题迁移 + 本地echarts v5.5.0 + 0 console error + 截图存证); fresh schema in-memory 加载验证 init_db 可复现。
 
 ## 最近 session (2026-06-20): K12 入库 inc1-6 全完成 + 前端4页 + 强验证修复
 
