@@ -30,9 +30,22 @@ def _is_coca_gloss_line(ln: str) -> bool:
     return bool(_COCA_POS.match(ln)) or any("一" <= c <= "鿿" for c in ln)
 
 
+_COCA_POS_SEG = r"(?=(?:^|\s)(?:n|adj|adv|vt|vi|v|abbr|art|prep|pron|num|conj|int|aux)\.\s)"
+
+
+def _strip_coca_pn(gloss: str) -> str:
+    """剥 COCA 释义尾部专名段(人名/地名音译, 如'n. (Bad)人名；(罗)巴德'/'n. （英）多（人名）')。
+    按 POS 段切, 丢含'人名'/'地名'的段(专名总在真义项之后); 全删则保留原文(防过删)。
+    """
+    parts = re.split(_COCA_POS_SEG, gloss)
+    kept = [p for p in parts if not re.search(r"[人地]名", p)]
+    out = re.sub(r"[\s；;,，]+$", "", "".join(kept)).strip()
+    return out if out and any("一" <= c <= "鿿" for c in out) else gloss
+
+
 def _flush_coca(out: dict, cur: str | None, buf: list) -> None:
     if cur and buf:
-        out.setdefault(cur, " ".join(buf))
+        out.setdefault(cur, _strip_coca_pn(" ".join(buf)))
 
 
 def _coca_glosses() -> dict[str, str]:

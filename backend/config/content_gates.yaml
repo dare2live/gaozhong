@@ -31,6 +31,30 @@ gates:
     op: eq
     expect: 0
 
+  - id: coca_no_proper_noun
+    domain: glossary
+    source: "COCA_with_translation.txt (专名行不入考试词典)"
+    desc: "COCA源释义无专名(人名/地名音译)尾段; exam_dictionary._strip_coca_pn 段级去专名(84→0)"
+    query: "SELECT COUNT(*) FROM exam_vocabulary WHERE gloss_source='COCA' AND (gloss LIKE '%人名%' OR gloss LIKE '%地名%')"
+    op: eq
+    expect: 0
+
+  - id: cefr_level_from_stars
+    domain: vocab
+    source: "课标PDF附录2星标(* 必修 / ** 选必 / 义教无星)"
+    desc: "cefr_level 必由 raw_suffix 星数现算(防带括注行 ** 脱token致父词+alt全标义教, 44行错已修)"
+    query: "SELECT COUNT(*) FROM cefr_vocab WHERE cefr_level <> CASE WHEN raw_suffix LIKE '%***%' THEN '选修' WHEN raw_suffix LIKE '%**%' THEN '选必' WHEN raw_suffix LIKE '%*%' THEN '必修' ELSE '义教' END"
+    op: eq
+    expect: 0
+
+  - id: grammar_no_truncation
+    domain: grammar
+    source: "课标PDF附录3语法项 (label==PDF原文, 无折行截断)"
+    desc: "grammar_items label 括号配平(折行续写已合并; seq91/92/100/101 截断已补全)"
+    query: "SELECT COUNT(*) FROM grammar_items WHERE (LENGTH(label)-LENGTH(REPLACE(label,'（',''))) <> (LENGTH(label)-LENGTH(REPLACE(label,'）','')))"
+    op: eq
+    expect: 0
+
   - id: weakness_recommend_bridge
     domain: student
     source: "图谱主题桥 (theme_aligns→theme_of_unit)"

@@ -71,6 +71,46 @@ def _try_match_at(state: dict, line: str, source_tag: str, depth: int, regex, nu
     return _emit_node(state, depth, num, m.group(2), m.group(3) or "", parent, source_tag)
 
 
+def _is_marker(line: str) -> bool:
+    return any(r.match(line) for r in (RE_L1, RE_L2, RE_L3, RE_L4))
+
+
+def _is_continuation(prev: str, nxt: str) -> bool:
+    """nxt 是 prev(marker行)的折行续写(非新marker/非纯英文例句)? 用于合并截断 label。
+
+    判据: nxt 非marker + 含中文 + ASCII占比≤0.6(非例句) + prev不完整(括号未配平 OR 无终止符）。*）。
+    """
+    if not nxt or _is_marker(nxt):
+        return False
+    if not any("一" <= c <= "鿿" for c in nxt):
+        return False
+    if sum(c.isascii() and c.isalpha() for c in nxt) / max(1, len(nxt.replace(" ", ""))) > 0.6:
+        return False
+    op = prev.count("（") + prev.count("(")
+    cp = prev.count("）") + prev.count(")")
+    return op > cp or not re.search(r"[）)。\*]\s*$", prev)
+
+
+def _merge_continuations(lines: list[str]) -> list[str]:
+    """合并 marker 行的折行续写(课标语法项 label 跨行被截 → seq91/92/100/101)。
+    字符级拼接(PDF 换行无空格); 必须在 _skip_line 过滤前做(续行含关系代词清单会被误杀)。
+    """
+    out, i, n = [], 0, len(lines)
+    while i < n:
+        line = lines[i]
+        if _is_marker(line):
+            j = i + 1
+            while j < n and _is_continuation(line, lines[j]):
+                line += lines[j]
+                j += 1
+            out.append(line)
+            i = j
+        else:
+            out.append(line)
+            i += 1
+    return out
+
+
 def _try_match(state: dict, line: str, source_tag: str) -> dict | None:
     # M2 dispatch: 4 层 regex 表驱动, CC=5
     for depth, regex, num_fmt in (
@@ -93,8 +133,7 @@ def extract_grammar_items(reader: PdfReader, source_tag: str,
     for pi in range(start_page - 1, end_page):
         if pi >= len(reader.pages): break
         text = reader.pages[pi].extract_text() or ""
-        for raw in text.split("\n"):
-            line = raw.strip()
+        for line in _merge_continuations([raw.strip() for raw in text.split("\n")]):  # 先合并折行续写
             # _skip_line(字母占比>0.4)误杀含关系代词清单的合法 L4 项(限制性/非限制性定语从句);
             # 豁免匹配 RE_L4 的行 (它们是真子项, 非例句) — 否则静默漏项 + D0 把 buggy 数封绿门(坑1)。
             if _skip_line(line) and not RE_L4.match(line): continue

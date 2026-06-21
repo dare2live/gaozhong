@@ -50,12 +50,17 @@ def _extract_alt_words(paren_groups: list[str]) -> list[str]:
 
 def _process_line(line: str, seen: set[str], source_tag: str) -> list[dict]:
     rows = []
+    # 全行捕星(item级 */**/*** 在词尾, 但带括注的行如 'analyse (analyze)**' 去括号后 ** 会脱成独立
+    # token 被 MAIN_RE 丢 → 父词+alt 都误标义教, 44行错)。先从全行抓星, 再去括号去星, 全行星优先。
+    star_m = re.search(r"\*{1,3}", line)
+    line_suffix = star_m.group(0) if star_m else ""
     paren = re.findall(r"\(([^)]*)\)", line)
-    main_part = re.sub(r"\([^)]*\)", "", line).strip()
+    main_part = re.sub(r"\*{1,3}", "", re.sub(r"\([^)]*\)", "", line)).strip()
     for tok in main_part.split():
         parsed = _parse_main_token(tok)
         if not parsed: continue
-        word, suffix = parsed
+        word, tok_suffix = parsed
+        suffix = line_suffix or tok_suffix              # 全行星(真item级) 优先, 兜底 token 星
         if word and word not in seen:
             seen.add(word)
             rows.append({
