@@ -310,6 +310,12 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -A12 'def _grammar_exam_trace' backend/services/lesson_plan.py | grep -q \"province LIKE '辽宁\" && echo SCOPED || echo LEAK"]
     expect: {op: regex, pattern: "SCOPED"}
+  - id: in-curriculum-truth-not-hardcoded
+    claim: "unit_vocab_intro.in_curriculum = 词∈cefr_vocab 真值现算(run_vocab), 非硬编码True; 教材约47%越纲(教材本超课标), 全True=系统性谎报越纲违§1.2选材硬约束(theme_l3同模式假源列已修)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM unit_vocab_intro u WHERE u.in_curriculum <> EXISTS(SELECT 1 FROM cefr_vocab c WHERE LOWER(c.word)=LOWER(u.word))"
+    expect: {op: "==", value: 0}
   - id: no-theme-l3-fabricated
     claim: "防回归: 课标主题语境官方仅 L1(3)+L2(10)可枚举(亲验PDF表2), 无'第三级子主题'。曾有35个杜撰theme_l3(extract _reader不读PDF直接塞 + dual_model贴标签)经真值核验已废(2026-06-21); 锁住'无'防extract重建静默塞回 — theme_l3边 + theme_contexts.level3 + theme depth2叶节点 三处皆0"
     type: duckdb_sql

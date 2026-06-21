@@ -1,19 +1,19 @@
 {
-  "run_id": "36f7ccf98310f763",
+  "run_id": "93772c32c8ac5817",
   "manifest": {
     "db": {
       "path": "/Users/dp/Documents/M/gaozhong/data/db/gaozhong.duckdb",
       "exists": true,
-      "size": 46411776,
-      "mtime_ns": 1781077201061657780,
-      "signature": "2276147e65219b1930730e13f2e86e685857f50d"
+      "size": 47460352,
+      "mtime_ns": 1782030824662410410,
+      "signature": "c63d900b382f279757d267a0d0e65143042acf9a"
     },
     "structured": {
-      "path": "/Users/dp/Documents/M/gaokao/data/structured/english_xgkii_2021_2025.jsonl",
+      "path": "/Users/dp/Documents/M/gaozhong/data/external/gaokao_xgkii_2021_2025_mirror.jsonl",
       "exists": true,
       "size": 116787,
-      "mtime_ns": 1779719087655565711,
-      "signature": "7c4fab098bf8320c6a7e864e4a9de348b888caf9"
+      "mtime_ns": 1781851586368162293,
+      "signature": "3bccf29e34243663263dd8f0d1278d1241b1f6f5"
     },
     "verified_jsonl": {
       "path": "/Users/dp/Documents/M/gaozhong/data/gaokao_verified_xgkii_2023_2024.jsonl",
@@ -37,6 +37,19 @@
       "question_type": "阅读理解",
       "question_bank_mapped": false,
       "signature": "0cabf0d213919b3b94d643c9aaa721cfdf8ef2fe",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "status": "in_truth_source_only",
+      "source": "GAOKAO-Bench",
+      "question_id": null,
+      "source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_source_file": "2010-2022_English_Reading_Comp.json",
+      "truth_row": "EN-XGKII-2021-002",
+      "question_type": "阅读理解",
+      "question_bank_mapped": false,
+      "signature": "a7b8b499789c2c50b576f3a4448f50df6d347fd8",
       "note": "DB 中缺失，当前可判定为未入库缺口"
     },
     {
@@ -124,19 +137,6 @@
       "question_id": null,
       "source_file": "2010-2022_English_Reading_Comp.json",
       "truth_source_file": "2010-2022_English_Reading_Comp.json",
-      "truth_row": "EN-XGKII-2021-009",
-      "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "b43535d6bf4555e35e97071861f53c68ec2e67ef",
-      "note": "DB 中缺失，当前可判定为未入库缺口"
-    },
-    {
-      "year": 2021,
-      "status": "in_truth_source_only",
-      "source": "GAOKAO-Bench",
-      "question_id": null,
-      "source_file": "2010-2022_English_Reading_Comp.json",
-      "truth_source_file": "2010-2022_English_Reading_Comp.json",
       "truth_row": "EN-XGKII-2021-010",
       "question_type": "阅读理解",
       "question_bank_mapped": false,
@@ -206,6 +206,58 @@
       "question_type": "阅读理解",
       "question_bank_mapped": false,
       "signature": "57867c33fbb29e40263ce80ef8a72a33e2d9c494",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "status": "in_truth_source_only",
+      "source": "GAOKAO-Bench",
+      "question_id": null,
+      "source_file": "2010-2022_English_Fill_in_Blanks.json",
+      "truth_source_file": "2010-2022_English_Fill_in_Blanks.json",
+      "truth_row": "EN-XGKII-2021-016",
+      "question_type": "完形填空",
+      "question_bank_mapped": false,
+      "signature": "19a7e278da32d0c650283a905efad855292a1483",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "status": "in_truth_source_only",
+      "source": "GAOKAO-Bench",
+      "question_id": null,
+      "source_file": "2012-2022_English_Cloze_Test.json",
+      "truth_source_file": "2012-2022_English_Cloze_Test.json",
+      "truth_row": "EN-XGKII-2021-017",
+      "question_type": "完形填空(七选五/语篇)",
+      "question_bank_mapped": false,
+      "signature": "59b2f94c6a0f00a2cdda0e5745ecbe9cf6c9a41d",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "status": "in_truth_source_only",
+      "source": "GAOKAO-Bench",
+      "question_id": null,
+      "source_file": "2012-2022_English_Language_Error_Correction.json",
+      "truth_source_file": "2012-2022_English_Language_Error_Correction.json",
+      "truth_row": "EN-XGKII-2021-018",
+      "question_type": "短文改错",
+      "question_bank_mapped": false,
+      "signature": "32968a77fb0ee7448bed148529f713882b6b56ce",
+      "note": "DB 中缺失，当前可判定为未入库缺口"
+    },
+    {
+      "year": 2021,
+      "status": "in_truth_source_only",
+      "source": "GAOKAO-Bench",
+      "question_id": null,
+      "source_file": "2014-2022_English_Language_Cloze_Passage.json",
+      "truth_source_file": "2014-2022_English_Language_Cloze_Passage.json",
+      "truth_row": "EN-XGKII-2021-019",
+      "question_type": "语法填空",
+      "question_bank_mapped": false,
+      "signature": "0871c6c1a02953debcfe6a88607e10196198a014",
       "note": "DB 中缺失，当前可判定为未入库缺口"
     },
     {
@@ -653,27 +705,27 @@
   ],
   "summary_by_year": {
     "2021": {
-      "db_count": 16,
+      "db_count": 65,
       "truth_count": 19,
-      "matched": 5,
-      "db_only": 11,
-      "truth_only": 14,
+      "matched": 1,
+      "db_only": 64,
+      "truth_only": 18,
       "target_min": 55,
       "gap_to_target": 36,
-      "db_have_question_bank": 16,
-      "db_question_bank_total": 16,
-      "coverage": 26.32
+      "db_have_question_bank": 65,
+      "db_question_bank_total": 65,
+      "coverage": 5.26
     },
     "2022": {
-      "db_count": 16,
+      "db_count": 45,
       "truth_count": 0,
       "matched": 0,
-      "db_only": 16,
+      "db_only": 45,
       "truth_only": 0,
       "target_min": 55,
       "gap_to_target": 55,
-      "db_have_question_bank": 16,
-      "db_question_bank_total": 16,
+      "db_have_question_bank": 45,
+      "db_question_bank_total": 45,
       "coverage": 0.0
     }
   }

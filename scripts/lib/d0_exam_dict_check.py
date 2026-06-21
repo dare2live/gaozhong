@@ -53,3 +53,8 @@ def check_exam_dict(con: duckdb.DuckDBPyConnection, check) -> None:
     unexpected = glossless - _known_unglossable()
     check("无 UNEXPECTED 无释义词 (每缺口必登记 unglossable 白名单, 非静默缺口)",
           not unexpected, f"{len(unexpected)} 未登记: {sorted(unexpected)[:8]}")
+    # 内容门: unit_vocab_intro.in_curriculum 必=词∈cefr_vocab 真值 (非硬编码True谎报越纲; 违§1.2)
+    bad_ic = con.execute(
+        "SELECT COUNT(*) FROM unit_vocab_intro u WHERE u.in_curriculum <> "
+        "EXISTS(SELECT 1 FROM cefr_vocab c WHERE LOWER(c.word)=LOWER(u.word))").fetchone()[0]
+    check("in_curriculum==词∈cefr_vocab 真值 (非硬编码; 教材约47%越纲, 防§1.2选材踩雷)", bad_ic == 0, f"{bad_ic} 假源")

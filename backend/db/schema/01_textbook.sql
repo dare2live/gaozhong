@@ -69,7 +69,8 @@ CREATE INDEX IF NOT EXISTS idx_phrases_canonical ON phrases(canonical);
 CREATE SEQUENCE IF NOT EXISTS phrase_id_seq START 1;
 
 -- 教材词条引入位置 (mapping 到 cefr_vocab)
--- in_curriculum 是 load 时占位; 实际真值由 links/build_introduces_word 算 (LEFT JOIN cefr_vocab)
+-- in_curriculum 真值 = 词∈cefr_vocab, 由 run_vocab 现算入库 (单一真相源, 非硬编码)。
+--   D0 锁 d0_exam_dict_check 断言 in_curriculum==(word∈cefr_vocab); 教材本就约47%越纲, 故非全True。
 CREATE TABLE IF NOT EXISTS unit_vocab_intro (
     version_key    VARCHAR NOT NULL,
     volume_key     VARCHAR NOT NULL,

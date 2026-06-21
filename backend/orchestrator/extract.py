@@ -44,6 +44,10 @@ def run_textbook_units(con: duckdb.DuckDBPyConnection) -> dict:
 def run_vocab(con: duckdb.DuckDBPyConnection) -> dict:
     vs = vocab_extract.run_all()
     vsr = vocab_rj_extract.run_all()
+    # in_curriculum 真值 = 词∈课标 cefr_vocab (单一真相源现算, 非硬编码True)。
+    # 实测教材生词约47%越纲(教材本就超课标), 硬编码True=系统性谎报, 违§1.2选材硬约束 + D0。
+    # cefr_vocab 在 load_main_tables 先于本函数加载 (init_db Layer2 顺序保证)。
+    cefr = {r[0].lower() for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     total = 0
     for jl in [ROOT/"data/structured/textbook/vocab_intro_all.jsonl",
                 ROOT/"data/structured/textbook/vocab_intro_renjiao.jsonl"]:
@@ -52,7 +56,8 @@ def run_vocab(con: duckdb.DuckDBPyConnection) -> dict:
         con.executemany(
             "INSERT OR REPLACE INTO unit_vocab_intro VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [(r["version_key"], r["volume_key"], r["unit_number"], r["word"],
-              True, r.get("pos"), r.get("zh_def"), r.get("raw_marker")) for r in rows],
+              r["word"].lower() in cefr, r.get("pos"), r.get("zh_def"), r.get("raw_marker"))
+             for r in rows],
         )
         total += len(rows)
     return {"waiyan_rows": vs["rows"], "renjiao_rows": vsr["rows"], "loaded": total}
