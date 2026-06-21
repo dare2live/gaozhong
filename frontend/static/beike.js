@@ -29,7 +29,7 @@
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" style="height:300px;"></div></section>
   <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
-  <section class="bk-card"><div class="bk-h"><span>C 命题趋势 · 题型逐年</span><span id="bk-relbadge"></span></div><div id="bk-trend" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" style="height:300px;"></div></section>
 </div>`;
@@ -78,22 +78,35 @@
     }).join("");
   }
 
-  function renderTrend(qt) {
-    const list = (Array.isArray(qt) ? qt : []).filter(x => x.avg_share >= 0.03).slice(0, 8);
-    const anyReliable = list.some(x => x.reliable);
-    G.$("#bk-relbadge").innerHTML = anyReliable
-      ? `<span class="bk-suff ok">趋势可信</span>`
-      : `<span class="bk-suff warn">⚠ 趋势样本不足</span>`;
+  function renderTrend(p) {
+    // 题型×年份 presence 热力(结构真值, 粒度无关; 取代混粒度slope坑12)。蓝=骨架/红=退场/绿=登场。
+    const items = (p && p.by_question_type) || [];
+    const SIG = { skeleton: { c: C.blue, t: "骨架·两era皆在" }, retired: { c: "#c1272d", t: "退场" }, introduced: { c: "#1d9e75", t: "登场" } };
+    const ord = { skeleton: 0, retired: 1, introduced: 2 };
+    const list = items.slice().sort((a, b) => ord[a.signal] - ord[b.signal]);
+    const all = items.flatMap(x => [...(x.old_years || []), ...(x.new_years || [])]);
+    if (!all.length) { G.$("#bk-trend").innerHTML = "<p class='muted'>无题型数据</p>"; return; }
+    const years = []; for (let y = Math.min(...all); y <= Math.max(...all); y++) years.push(y);
+    const qts = list.map(x => x.question_type);
+    const data = [];
+    list.forEach((x, qi) => {
+      const pres = new Set([...(x.old_years || []), ...(x.new_years || [])]);
+      years.forEach((y, yi) => { if (pres.has(y)) data.push({ value: [yi, qi, 1], itemStyle: { color: SIG[x.signal].c } }); });
+    });
+    G.$("#bk-relbadge").innerHTML = `<span class="bk-suff ok">结构真值·题型presence(粒度无关)</span>`;
     charts.trend = charts.trend || echarts.init(G.$("#bk-trend"));
     charts.trend.setOption({
-      grid: { left: 4, right: 12, top: 12, bottom: 8, containLabel: true },
-      xAxis: { type: "category", data: list.map(x => x.question_type), axisLabel: { interval: 0, fontSize: 10, rotate: 20 } },
-      yAxis: { type: "value", axisLabel: { formatter: v => Math.round(v * 100) + "%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
-      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>占比 ${(p[0].value * 100).toFixed(1)}% · ${list[p[0].dataIndex].trend}` },
-      series: [{ type: "bar", data: list.map(x => x.avg_share), barWidth: "52%", itemStyle: { color: anyReliable ? C.blue : C.grey, borderRadius: [4, 4, 0, 0] } }],
-    });
-    G.$("#bk-trendnote").innerHTML = anyReliable ? "题型逐年走向可信。"
-      : `辽宁 post-2021 仅 5 年(2023=6 / 2025=9 题 &lt;10)→ <code>reliable=false</code>, 灰显占比快照<b>不画斜率</b>(坑12 谄媚死防线); 看上方 <b>A 分布</b>(可用)定重点。`;
+      grid: { left: 4, right: 12, top: 10, bottom: 22, containLabel: true },
+      xAxis: { type: "category", data: years, splitArea: { show: true }, axisLabel: { fontSize: 10 } },
+      yAxis: { type: "category", data: qts, axisLabel: { fontSize: 10 } },
+      tooltip: { formatter: c => `${qts[c.value[1]]} · ${years[c.value[0]]}<br/>${SIG[list[c.value[1]].signal].t}` },
+      series: [{ type: "heatmap", data, itemStyle: { borderColor: "#fff", borderWidth: 1 }, label: { show: false } }],
+    }, true);
+    const ret = items.filter(x => x.signal === "retired").map(x => x.question_type);
+    const intro = items.filter(x => x.signal === "introduced").map(x => x.question_type);
+    G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型 presence · 真题原卷 · 粒度无关): `
+      + `蓝=骨架两era皆在(<b>万变不离其宗</b>) · 红=退场(${ret.join("、") || "无"}) · 绿=登场(${intro.join("、") || "无"})。`
+      + `命题主体换轮(自主→新课标→新高考)骨架不断; 退场/登场 = 2017课标核心素养驱动。`;
   }
 
   function renderCognitiveSkill(cs) {
@@ -155,7 +168,7 @@
         eras: [ERA_NEW, ERA_OLD], distribution: { [ERA_NEW]: {}, [ERA_OLD]: {} },
         shift: { by_dimension: {} },
       })),
-      fetchJSON("/api/trend/question_type_trend").catch(() => []),
+      fetchJSON("/api/trend/question_type_presence").catch(() => ({ by_question_type: [] })),
       fetchJSON("/api/heatmap/vocab").catch(() => ({ letters: [], cells: {} })),
       fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),
     ]);

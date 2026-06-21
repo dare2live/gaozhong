@@ -32,6 +32,15 @@ def api_trend_question_type(_qs: dict) -> list[dict]:
     finally: con.close()
 
 
+def api_trend_question_type_presence(_qs: dict) -> dict:
+    """题型×卷制era presence (命题趋势真值层, structural_truth, 粒度无关; 取代混粒度 slope)."""
+    con = db_ro()
+    try:
+        return tsvc.question_type_era_presence(con)
+    finally:
+        con.close()
+
+
 def api_trend_vocab_growth(_qs: dict) -> dict:
     from backend.services.trend import vocab_year_growth
     con = db_ro()
@@ -52,6 +61,7 @@ ROUTES = {
     "/api/trend/summary": api_trend_summary,
     "/api/trend/top_words": api_trend_top_words,
     "/api/trend/question_type_trend": api_trend_question_type,
+    "/api/trend/question_type_presence": api_trend_question_type_presence,  # 题型era presence真值层(粒度无关)
     "/api/trend/vocab_growth": api_trend_vocab_growth,
     "/api/trend/rising_words": api_trend_rising_words,
 }
