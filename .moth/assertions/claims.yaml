@@ -322,6 +322,17 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT COUNT(*) FROM (SELECT DISTINCT c.course_id FROM nodes ep JOIN edges ta ON ta.src_id=ep.concept_id AND ta.relation='theme_aligns' JOIN edges tu ON tu.dst_id=ta.dst_id AND tu.relation='theme_of_unit' JOIN course_materials cm ON cm.ref_id=tu.src_id JOIN courses c ON c.course_id=cm.course_id WHERE ep.concept_id LIKE 'exam_point:theme_l2:%')"
     expect: {op: ">=", value: 1}
+  - id: waiyan-titles-match-pdf
+    claim: "教材单元标题内容门(值==第一手源): units.title_en 主题部分==外研版PDF Scope页现抽主题; 旧提取只取首行致13个标题短语中途截断(Knowing me,/Faster, higher,/A glimpse of the/Space and...), 已补全并锁死(复用builder同一_scope_themes, 防截断/串行回归)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.extraction.unit_title_fix import verify_titles_vs_pdf;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);m=verify_titles_vs_pdf(c);c.close();print('OK' if not m else f'MISMATCH {len(m)}: {m[:3]}')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: glosses-have-chinese
+    claim: "释义内容门: word_glosses + exam_vocabulary 义项必含中文字符, 无OCR碎片('（'/纯POS'modal'过非空门); _clean_zh_def 去前导语法括号(（especially BrE）/（pl.-oes）)恢复中文(81条→0), 无中文跳过不入"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT (SELECT count(*) FROM word_glosses WHERE gloss IS NOT NULL AND TRIM(gloss)<>'' AND NOT regexp_matches(gloss,'[一-鿿]')) + (SELECT count(*) FROM exam_vocabulary WHERE gloss IS NOT NULL AND TRIM(gloss)<>'' AND NOT regexp_matches(gloss,'[一-鿿]'))"
+    expect: {op: "==", value: 0}
   - id: in-curriculum-truth-not-hardcoded
     claim: "unit_vocab_intro.in_curriculum = 词∈cefr_vocab 真值现算(run_vocab), 非硬编码True; 教材约47%越纲(教材本超课标), 全True=系统性谎报越纲违§1.2选材硬约束(theme_l3同模式假源列已修)"
     type: duckdb_sql

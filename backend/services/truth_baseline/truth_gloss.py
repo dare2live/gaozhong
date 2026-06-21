@@ -16,6 +16,13 @@ def _pua_count(con, table: str) -> int:
         [_PUA]).fetchone()[0]
 
 
+def _no_cjk_count(con, table: str) -> int:
+    """义项无中文字符 = 垃圾(OCR碎片如'（'/纯POS'modal'); 过'非空'门但无信息量."""
+    return con.execute(
+        f"SELECT COUNT(*) FROM {table} WHERE gloss IS NOT NULL AND TRIM(gloss)<>'' "
+        "AND NOT regexp_matches(gloss, '[一-鿿]')").fetchone()[0]
+
+
 class GlossaryTruthChecker(TruthChecker):
     domain = "glossary"
 
@@ -27,6 +34,11 @@ class GlossaryTruthChecker(TruthChecker):
                 out.append(Deviation("glossary", tbl, "pollution", "BLOCK",
                                      f"{tbl} 有 {n} 条 gloss 含 PUA 音标污染(教材OCR邻条bleed); "
                                      "应经 glossary._clean_zh_def 清洗"))
+            g = _no_cjk_count(con, tbl)
+            if g:
+                out.append(Deviation("glossary", tbl, "pollution", "BLOCK",
+                                     f"{tbl} 有 {g} 条 gloss 无中文字符(OCR碎片'（'/纯POS); "
+                                     "_clean_zh_def 应去前导语法括号恢复中文, 无中文则跳过不入"))
         return out
 
     def self_test(self) -> bool:
@@ -34,10 +46,10 @@ class GlossaryTruthChecker(TruthChecker):
         c = duckdb.connect(":memory:")
         c.execute("CREATE TABLE word_glosses(gloss VARCHAR)")
         c.execute("CREATE TABLE exam_vocabulary(gloss VARCHAR)")
-        c.execute("INSERT INTO word_glosses VALUES (?)", ["值得" + chr(0xF022) + "污染"])   # 注入PUA
+        c.execute("INSERT INTO word_glosses VALUES (?), ('（')", ["值得" + chr(0xF022) + "污染"])  # 注入PUA + 无中文碎片
         polluted = [d for d in self.check(c) if d.kind == "pollution"]
         c.execute("DELETE FROM word_glosses")
         c.execute("INSERT INTO word_glosses VALUES ('值得尊敬的')")
         clean = [d for d in self.check(c) if d.kind == "pollution"]
         c.close()
-        return bool(polluted) and not clean
+        return len(polluted) >= 2 and not clean

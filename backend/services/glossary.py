@@ -31,21 +31,35 @@ _POS_KEEP = {"vi", "vt", "v", "n", "adj", "adv", "prep", "conj", "pron",
              "num", "art", "vb", "aux", "a", "int", "modal"}
 
 
-def _clean_zh_def(zh: str) -> str:
-    """清教材生词表 zh_def 的 OCR 污染 (renjiao 5%: PUA音标/邻条bleed/英文例句/章节头).
+def _has_cjk(s: str) -> bool:
+    return any("一" <= c <= "鿿" for c in s)
 
-    保守: 截在首个 PUA 或首个非 POS 英文词 (邻条 headword/例句起点); **清空则保留原文**
-    (防过删合法条如 'consist of 由…组成'/'& modal v. 胆敢')。小验证: 保守应用后残留 PUA=0。
+
+def _clean_zh_def(zh: str) -> str:
+    """清教材生词表 zh_def 的 OCR 污染 → 干净中文释义 (renjiao: PUA音标/前导语法括号/邻条bleed).
+
+    关键(2026-06-21修): 旧版在首个非POS英文词就截断, renjiao 前导语法括号(（especially BrE）/
+    （pl. -oes）/& vt.（quit,quit）)里的英文会导致**把后面的中文全丢**(81条只剩'（'碎片)。
+    新: 去音标/.../ + 去无中文的语法括号 + 去前导POS-amp 标记, 再扫掉尾部邻条英文。
+    无中文 → 返空(由 build_glossary 跳过, 不入垃圾义项)。
     """
-    s = re.sub("[" + chr(0xE000) + "-" + chr(0xF8FF) + "]", "", zh)         # 移除 PUA 音标乱码(全私用区; 移除非截断, 保前置PUA后的真释义如 e-mail)
+    s = re.sub("[" + chr(0xE000) + "-" + chr(0xF8FF) + "]", "", zh)         # 去 PUA 音标乱码
+    base = re.sub(r"\s{2,}", " ", s).strip()                                # PUA-free fallback 基(防token-scan清空时回退引入PUA)
+    s = re.sub(r"[（(][^（()）]*[）)]",                                       # 先去无中文语法括号(消(struck/stricken)内斜杠, 防音标正则误吃)
+               lambda m: m.group() if _has_cjk(m.group()) else "", s)
+    s = re.sub(r"/[^/]*/", "", s)                                           # 再去音标 /.../
+    s = re.sub(r"^[\s&]*(?:v[it]?|n|adj|adv|aux|modal|prep|conj|pron|num|art)\.?"
+               r"(?:\s*&\s*(?:v[it]?|n|adj|adv)\.?)?\s*", "", s, flags=re.I)  # 去前导 POS-amp 标记
     out = []
     for m in re.finditer(r"[A-Za-z]+\.?|[^A-Za-z]+", s):
         tok = m.group()
         if re.fullmatch(r"[A-Za-z]+\.?", tok) and tok.strip(". ").lower() not in _POS_KEEP:
             break                                          # 非 POS 英文词 = 邻条/例句 → 停
         out.append(tok)
-    cleaned = re.sub(r"[\s；;,，&/]+$", "", "".join(out)).strip()
-    return cleaned if cleaned else zh.strip()              # 保守: 过删则保留原文
+    cleaned = re.sub(r"^[\s；;,，&/）)]+", "",
+                     re.sub(r"[\s；;,，&/]+$", "", "".join(out))).strip()
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)              # 折叠多空格
+    return cleaned if cleaned and _has_cjk(cleaned) else (base if _has_cjk(base) else "")
 
 
 def _parse_zhongkao() -> list[tuple]:
@@ -64,15 +78,27 @@ def _parse_zhongkao() -> list[tuple]:
     return out
 
 
+def _dedup_longest(rows: list[tuple]) -> list[tuple]:
+    """同 PK (word,stage,source) 一词多 unit → 取最长 gloss (信息最全)."""
+    best: dict[tuple, tuple] = {}
+    for w, st, pos, gloss, src in rows:
+        k = (w, st, src)
+        if k not in best or len(gloss) > len(best[k][3]):
+            best[k] = (w, st, pos, gloss, src)
+    return list(best.values())
+
+
 def build_glossary(con: duckdb.DuckDBPyConnection) -> dict:
     """组装 word_glosses (单一计算点); INSERT OR IGNORE 幂等, 多源各一行."""
     con.execute("DELETE FROM word_glosses")
     rows: list[tuple] = []
-    # 高中: 教材生词表 (源=version_key, 阶段由册定)
+    # 高中: 教材生词表 (源=version_key, 阶段由册定); 清OCR污染, 清后无中文则跳过(防垃圾'（'碎片入库)
     for vk, vol, w, pos, zh in con.execute(
         "SELECT version_key, volume_key, word, pos, zh_def FROM unit_vocab_intro "
         "WHERE zh_def IS NOT NULL AND zh_def <> ''").fetchall():
-        rows.append((w.lower(), _volume_stage(vol), pos, _clean_zh_def(zh), vk))   # 清OCR污染(保守)
+        g = _clean_zh_def(zh)
+        if g:
+            rows.append((w.lower(), _volume_stage(vol), pos, g, vk))
     # 初中: 沪教生词表 (待OCR 跳过)
     for ln in _HUJIAO.read_text(encoding="utf-8").splitlines():
         if not ln.strip():
@@ -80,18 +106,14 @@ def build_glossary(con: duckdb.DuckDBPyConnection) -> dict:
         r = json.loads(ln)
         if r.get("zh_def") and r["zh_def"] != "待OCR":
             rows.append((r["word"].lower(), "初中", r.get("pos"), r["zh_def"], "hujiao"))
-    # 初中: 中考词汇表 (补基础词; 同清 OCR 污染)
+    # 初中: 中考词汇表 (补基础词; 同清 OCR 污染, 无中文跳过)
     for w, pos, gloss in _parse_zhongkao():
-        rows.append((w, "初中", pos, _clean_zh_def(gloss), "中考词汇表"))
-    # dedup on PK (word,stage,source): 同源同阶段一词多 unit → 取最长 gloss (信息最全)
-    best: dict[tuple, tuple] = {}
-    for w, st, pos, gloss, src in rows:
-        k = (w, st, src)
-        if k not in best or len(gloss) > len(best[k][3]):
-            best[k] = (w, st, pos, gloss, src)
+        g = _clean_zh_def(gloss)
+        if g:
+            rows.append((w, "初中", pos, g, "中考词汇表"))
     con.executemany(
         "INSERT OR IGNORE INTO word_glosses (word, stage, pos, gloss, source) VALUES (?, ?, ?, ?, ?)",
-        list(best.values()))
+        _dedup_longest(rows))
     n = con.execute("SELECT COUNT(*) FROM word_glosses").fetchone()[0]
     by_stage = dict(con.execute("SELECT stage, COUNT(*) FROM word_glosses GROUP BY stage").fetchall())
     cross = con.execute(

@@ -50,7 +50,11 @@ PAGE_TAG_RE = re.compile(r"^\s+P(\d+)\s*$")
 
 
 def _scan_scope_page(lines: list[str]) -> list[tuple[int, str]]:
-    """Walk lines, after each 'Pnn' tag take next non-empty as theme."""
+    """Walk lines; after each 'Pnn' tag collect title lines until delimiter.
+
+    Scope 表标题常换行 2 行 (e.g. 'Knowing me,'+'knowing you'), 后跟 'Video:' 列。
+    旧版只取首行 → 13 个 waiyan 标题被截。改: 收集到 'Video:'/下一 Pnn/空行 为止再 join。
+    """
     out: list[tuple[int, str]] = []
     i, n = 0, len(lines)
     while i < n:
@@ -58,12 +62,21 @@ def _scan_scope_page(lines: list[str]) -> list[tuple[int, str]]:
         if not m:
             i += 1
             continue
-        j = i + 1
-        while j < n and not lines[j].strip():
+        j, parts = i + 1, []
+        while j < n:
+            s = lines[j].strip()
+            if not s:
+                if parts:            # 标题后第一个空行 = 结束
+                    break
+                j += 1               # 标题前的前导空行: 跳过
+                continue
+            if s.startswith("Video:") or PAGE_TAG_RE.match(lines[j]):
+                break                # 下一列(Video)/下一单元(Pnn) = 结束
+            parts.append(s)
             j += 1
-        if j < n:
-            out.append((int(m.group(1)), lines[j].strip()))
-        i = j + 1
+        if parts:
+            out.append((int(m.group(1)), " ".join(parts)))
+        i = j
     return out
 
 
@@ -101,6 +114,32 @@ def _map_unit_to_theme(pdf_path: Path, units: list[tuple]) -> dict[int, str]:
             if theme and len(theme) <= 60:
                 out[un] = theme
     return out
+
+
+def verify_titles_vs_pdf(con: duckdb.DuckDBPyConnection) -> list[tuple]:
+    """内容门(值==第一手源): DB units.title_en 主题部分 == PDF Scope 现抽主题。
+    复用 builder 同一 _map_unit_to_theme 提取逻辑(单一计算点); 返回不匹配 [(ver,vol,un,db,pdf)]。
+    只核有 Scope 真值的单元(外研版); 防标题截断/串行回归 (本次补全13个waiyan截断后锁死)。
+    """
+    mism = []
+    for ver, vol, ulist in con.execute(
+            "SELECT version_key, volume_key, LIST({unit_number: unit_number, page_start: page_start}) "
+            "FROM units GROUP BY version_key, volume_key").fetchall():
+        units = [(u["unit_number"], u["page_start"]) for u in ulist if u["page_start"]]
+        pdf_path = TEXTBOOK_DIR / ver / f"{vol}.pdf"
+        if not pdf_path.exists() or not units:
+            continue
+        theme_map = _map_unit_to_theme(pdf_path, units)
+        for un, _pg in units:
+            pdf_theme = theme_map.get(un)
+            if not pdf_theme:
+                continue                         # 无 Scope 真值(人教/缺页) → 不核
+            db = con.execute("SELECT title_en FROM units WHERE version_key=? AND volume_key=? "
+                             "AND unit_number=?", [ver, vol, un]).fetchone()
+            db_theme = (db[0] or "").replace(f"UNIT {un} ", "").strip() if db else ""
+            if db_theme != pdf_theme:
+                mism.append((ver, vol, un, db_theme, pdf_theme))
+    return mism
 
 
 def fix_titles(con: duckdb.DuckDBPyConnection) -> dict:
