@@ -39,6 +39,7 @@ ALLOWED_RELATIONS = {
     # K12 stage 维 (设计§2; inc2 at_stage 防孤儿+materialize stage; inc3 跨阶段边):
     "at_stage": "word|grammar → stage (该知识点引入阶段, stage 维 materialize)",
     "deepens": "低阶 grammar/syntax → 高阶 (跨阶段深化, 如 中考语篇填空10维 → 高考语法填空)",
+    "has_sense": "word → word_sense (词→义项节点, master A1 义项才是带stage最小单位)",
     "expands_sense": "低阶 word_sense → 高阶 word_sense (跨阶段词义扩展, power 力量→power plant)",
     "collocates_into": "word → 高阶搭配 (跨阶段)",
     "spirals": "同主题跨阶段螺旋深化",

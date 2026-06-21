@@ -135,6 +135,10 @@ def main() -> None:
     from backend.services.exam_dictionary import build_exam_dictionary
     print(f"  {build_exam_dictionary(con)}")
 
+    print("\n=== Layer 3z: word_sense 本体 (master A1; 跨阶段多义, 双模型判断+对抗验证) ===")
+    from backend.services.word_sense import build_word_senses
+    print(f"  {build_word_senses(con)}")
+
     print("\n=== Layer 4: question_bank 装载 (真题 + 合成题 + 自动打标) ===")
     qb = extract.run_question_bank(con)
     print(f"  {qb}")

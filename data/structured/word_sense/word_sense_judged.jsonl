@@ -1,0 +1,404 @@
+{"word": "accident", "jr_senses": ["（交通）事故", "意外"], "hs_senses": ["意外事件，偶然因素", "事故", "车祸", "失事"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "accuse", "jr_senses": ["控告", "控诉"], "hs_senses": ["控告", "控诉", "谴责"], "new_senses": ["谴责"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "adult", "jr_senses": ["成年动物"], "hs_senses": ["成人，成年人", "成年的", "成熟的"], "new_senses": ["成年的", "成熟的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "adventure", "jr_senses": ["冒险"], "hs_senses": ["冒险", "奇遇", "历险（经历）"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "advertisement", "jr_senses": ["广告"], "hs_senses": ["广告", "启事"], "new_senses": ["启事"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "airline", "jr_senses": ["航空公司", "航空系统", "航线"], "hs_senses": ["航空公司"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "amazing", "jr_senses": ["令人惊讶的", "惊叹的", "震惊的"], "hs_senses": ["惊人的，了不起的", "令人惊奇的", "令人惊喜的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "amount", "jr_senses": ["数量", "数额"], "hs_senses": ["数量，数额", "金额"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "announcement", "jr_senses": ["公告"], "hs_senses": ["通告", "公告"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "anyhow", "jr_senses": ["不管怎样"], "hs_senses": ["（结束交谈或转换话题时）不过", "反正"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "arrow", "jr_senses": ["箭", "箭头"], "hs_senses": ["箭", "箭头"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "ashamed", "jr_senses": ["惭愧", "羞愧"], "hs_senses": ["羞愧", "惭愧", "感到不好意思的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "assistant", "jr_senses": ["助手，助理"], "hs_senses": ["助手，助理"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "astronaut", "jr_senses": ["宇航员"], "hs_senses": ["宇航员", "太空人"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "astronomer", "jr_senses": ["天文学家"], "hs_senses": ["天文学家"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "atmosphere", "jr_senses": ["大气层"], "hs_senses": ["气氛，氛围，环境", "（地球的）大气（层）"], "new_senses": ["气氛，氛围，环境"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "attack", "jr_senses": ["袭击", "攻击"], "hs_senses": ["攻击", "抨击", "侵袭，侵蚀"], "new_senses": ["抨击", "侵袭，侵蚀"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "attract", "jr_senses": ["吸引", "使喜爱", "引起"], "hs_senses": ["吸引", "引起……的注意（或兴趣）", "喜爱"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "band", "jr_senses": ["乐队", "波段", "一伙，一帮", "带（状物）"], "hs_senses": ["乐队", "带子"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "base", "jr_senses": ["根据地", "基地", "（棒球）垒"], "hs_senses": ["以……为据点", "以……为基础", "底部", "根据"], "new_senses": ["以……为基础", "底部"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "bath", "jr_senses": ["洗澡", "浴室", "澡盆"], "hs_senses": ["洗澡", "浴缸", "浴盆", "给……洗澡"], "new_senses": ["给……洗澡"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "beauty", "jr_senses": ["美", "美丽"], "hs_senses": ["美，美丽", "美人", "美好的东西"], "new_senses": ["美人", "美好的东西"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "bee", "jr_senses": ["蜜蜂"], "hs_senses": ["蜜蜂"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "beer", "jr_senses": ["啤酒"], "hs_senses": ["（一杯）啤酒"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "beg", "jr_senses": ["请求", "乞求", "乞讨"], "hs_senses": ["恳求", "祈求", "哀求"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "behaviour", "jr_senses": ["（动植物的）行为"], "hs_senses": ["行为", "举止"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "besides", "jr_senses": ["除……以外（还有）", "还有，此外"], "hs_senses": ["除……之外（还）", "而且", "此外"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "best-seller", "jr_senses": ["畅销书"], "hs_senses": ["畅销书", "畅销产品"], "new_senses": ["畅销产品"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "billion", "jr_senses": ["十亿"], "hs_senses": ["十亿"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "biology", "jr_senses": ["生物（学）"], "hs_senses": ["生理", "生物学"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "blank", "jr_senses": ["空格，空白（处）", "空的", "茫然无表情的"], "hs_senses": ["空白的", "无图画（或韵律、装饰）的", "没表情的", "空白；空格", "无表情的，木然的"], "new_senses": ["无图画（或韵律、装饰）的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "boom", "jr_senses": ["繁荣", "轰鸣", "激增"], "hs_senses": ["迅速发展；繁荣"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "boot", "jr_senses": ["长筒靴；靴"], "hs_senses": ["靴子"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "breathe", "jr_senses": ["呼吸"], "hs_senses": ["呼吸"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "broadcast", "jr_senses": ["广播"], "hs_senses": ["播送；广播；传播", "广播节目；电视节目"], "new_senses": ["广播节目；电视节目"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "broom", "jr_senses": ["扫帚"], "hs_senses": ["扫把；扫帚", "金雀花"], "new_senses": ["金雀花"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "bury", "jr_senses": ["埋；葬"], "hs_senses": ["埋葬；安葬", "将……埋在下面"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "bush", "jr_senses": ["灌木"], "hs_senses": ["灌木"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "butter", "jr_senses": ["黄油，奶油"], "hs_senses": ["黄油；奶油", "涂黄油于", "黄油，牛油"], "new_senses": ["涂黄油于"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "butterfly", "jr_senses": ["蝴蝶"], "hs_senses": ["蝴蝶"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "button", "jr_senses": ["纽扣", "（电铃等的）按钮", "扣（纽扣）"], "hs_senses": ["按钮；纽扣"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "cabbage", "jr_senses": ["卷心菜，洋白菜"], "hs_senses": ["甘蓝；卷心菜；洋白菜"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "cage", "jr_senses": ["笼；鸟笼"], "hs_senses": ["笼子", "关在笼子里"], "new_senses": ["关在笼子里"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "camel", "jr_senses": ["骆驼"], "hs_senses": ["骆驼"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "cancer", "jr_senses": ["癌，癌症", "弊端，社会恶习"], "hs_senses": ["癌症", "癌；癌症", "毒瘤"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "captain", "jr_senses": ["首领", "（海军）上校", "船长，舰长", "队长"], "hs_senses": ["船长", "（运动队）队长", "船长", "机长"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "ceiling", "jr_senses": ["天花板，顶棚"], "hs_senses": ["天花板", "上限"], "new_senses": ["上限"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "chain", "jr_senses": ["链子"], "hs_senses": ["连锁店，连锁集团", "一连串（人或事）", "链子；链条"], "new_senses": ["连锁店，连锁集团", "一连串（人或事）"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "challenge", "jr_senses": ["向（某人）挑战", "挑战(性)"], "hs_senses": ["挑战", "挑战；艰巨任务", "怀疑；向……挑战"], "new_senses": ["怀疑"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "channel", "jr_senses": ["频道", "通道", "水渠"], "hs_senses": ["海峡", "航道", "频道"], "new_senses": ["海峡"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "character", "jr_senses": ["文字", "符号"], "hs_senses": ["文字", "符号", "角色", "品质", "特点", "（书、剧本、电影等中的）角色"], "new_senses": ["角色", "品质", "特点"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "chart", "jr_senses": ["图表", "航海图"], "hs_senses": ["记录，跟踪（变化或进展）", "图表", "记录；制订计划"], "new_senses": ["记录，跟踪（变化或进展）"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "cheese", "jr_senses": ["奶酪"], "hs_senses": ["干酪；奶酪"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "china", "jr_senses": ["中国"], "hs_senses": ["瓷；瓷器"], "new_senses": ["瓷；瓷器"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "church", "jr_senses": ["教堂", "教会"], "hs_senses": ["教堂", "（基督教的）教堂；礼拜堂"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "cloth", "jr_senses": ["布"], "hs_senses": ["布", "（一块）布；织物；布料"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "code", "jr_senses": ["密码", "符号", "准则"], "hs_senses": ["代码；密码", "编码；把……译成密码"], "new_senses": ["编码；把……译成密码"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "comfort", "jr_senses": ["安慰；慰问"], "hs_senses": ["安慰，慰藉", "安慰；令人感到安慰的人或事物；舒服；安逸", "抚慰"], "new_senses": ["令人感到安慰的人或事物", "舒服；安逸"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "competition", "jr_senses": ["比赛", "竞赛"], "hs_senses": ["比赛", "竞赛"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "complain", "jr_senses": ["抱怨", "投诉"], "hs_senses": ["抱怨", "不满", "发牢骚"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "comrade", "jr_senses": ["同志"], "hs_senses": ["同志", "朋友"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "concern", "jr_senses": ["担心", "忧虑"], "hs_senses": ["涉及", "让……担忧", "忧虑", "担心"], "new_senses": ["涉及"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "conduct", "jr_senses": ["实施", "执行"], "hs_senses": ["行为", "举止", "管理方法", "组织", "安排", "带领", "传导（热、电）"], "new_senses": ["行为，举止", "传导（热、电）"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "conductor", "jr_senses": ["指导者", "（车上的）售票员", "列车员", "乐队指挥"], "hs_senses": ["（乐队、合唱团等的）指挥", "（公共汽车的）售票员"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "confident", "jr_senses": ["自信的"], "hs_senses": ["有信心的", "自信的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "congratulate", "jr_senses": ["祝贺"], "hs_senses": ["向（某人）道贺", "（因某事）为自己感到自豪"], "new_senses": ["（因某事）为自己感到自豪"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "congratulation", "jr_senses": ["祝贺", "庆贺"], "hs_senses": ["祝贺", "恭喜"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "cotton", "jr_senses": ["棉花", "棉花的"], "hs_senses": ["棉布", "棉纱", "棉花"], "new_senses": ["棉布"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "crash", "jr_senses": ["碰撞", "撞击"], "hs_senses": ["碰撞", "撞击", "撞车", "暴跌"], "new_senses": ["暴跌"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "cream", "jr_senses": ["奶油", "乳脂"], "hs_senses": ["奶油", "乳脂", "护肤霜", "奶油色的", "淡黄色的"], "new_senses": ["护肤霜", "奶油色的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "creature", "jr_senses": ["生物", "动物"], "hs_senses": ["生物", "动物"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "crop", "jr_senses": ["庄稼", "收成"], "hs_senses": ["庄稼", "作物", "一季的收成"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "crowd", "jr_senses": ["人群", "拥挤", "群聚"], "hs_senses": ["人群", "一群人", "民众", "挤满", "使……拥挤"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "cruel", "jr_senses": ["残忍的", "残酷的"], "hs_senses": ["残忍的", "残酷的", "冷酷的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "cupboard", "jr_senses": ["碗柜", "橱柜"], "hs_senses": ["橱柜", "壁橱", "衣柜"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "curtain", "jr_senses": ["窗帘"], "hs_senses": ["（舞台上的）幕，帷幕", "窗帘"], "new_senses": ["（舞台上的）幕，帷幕"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "cycle", "jr_senses": ["循环"], "hs_senses": ["自行车", "摩托车", "循环", "骑自行车"], "new_senses": ["自行车", "骑自行车"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "damage", "jr_senses": ["毁坏", "破坏"], "hs_senses": ["损害", "破坏", "损坏", "损失"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "dare", "jr_senses": ["敢", "敢于"], "hs_senses": ["胆敢", "敢于"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "death", "jr_senses": ["死"], "hs_senses": ["死", "死亡"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "decorate", "jr_senses": ["装饰", "修饰"], "hs_senses": ["装饰", "装潢", "布置", "美化"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "deer", "jr_senses": ["鹿"], "hs_senses": ["鹿"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "delight", "jr_senses": ["快乐", "乐事"], "hs_senses": ["使人高兴的事"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "demand", "jr_senses": ["要求"], "hs_senses": ["要求", "需求", "强烈要求", "需要", "查问"], "new_senses": ["需求", "查问"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "description", "jr_senses": ["说明", "形容", "描述", "描写"], "hs_senses": ["描写（文字）", "形容", "描述", "描写"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "desert", "jr_senses": ["沙漠", "荒漠", "舍弃", "遗弃"], "hs_senses": ["沙漠", "荒漠"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "deserve", "jr_senses": ["应得", "应受"], "hs_senses": ["值得", "应得", "应受"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "destroy", "jr_senses": ["摧毁", "毁灭", "破坏", "毁坏"], "hs_senses": ["破坏", "毁掉", "摧毁", "毁灭"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "detective", "jr_senses": ["侦探"], "hs_senses": ["侦探", "警探", "私家侦探"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "diagram", "jr_senses": ["图表", "图样"], "hs_senses": ["图解", "示意图", "简图", "图表"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "diet", "jr_senses": ["规定饮食"], "hs_senses": ["规定饮食", "日常饮食", "节食"], "new_senses": ["日常饮食", "节食"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "digital", "jr_senses": ["数字的", "数码的"], "hs_senses": ["数字的", "数码的", "数字显示的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "dinosaur", "jr_senses": ["恐龙"], "hs_senses": ["恐龙"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "directory", "jr_senses": ["姓名地址录"], "hs_senses": ["名录", "电话号码簿", "（计算机文件或程序的）目录"], "new_senses": ["（计算机文件或程序的）目录"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "dirt", "jr_senses": ["污物", "脏物"], "hs_senses": ["灰尘", "尘土"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "disabled", "jr_senses": ["丧失能力的"], "hs_senses": ["有残疾的", "丧失能力的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "disappear", "jr_senses": ["消失", "消散"], "hs_senses": ["消失", "不见", "灭绝", "消亡"], "new_senses": ["灭绝"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "disease", "jr_senses": ["疾病", "病"], "hs_senses": ["疾病", "病"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "display", "jr_senses": ["陈列", "展览", "显露", "表现", "展览品"], "hs_senses": ["展览", "陈列", "展览品", "显示"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "distance", "jr_senses": ["距离", "间距"], "hs_senses": ["使与……保持距离", "距离"], "new_senses": ["使与……保持距离"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "disturb", "jr_senses": ["扰乱", "打扰"], "hs_senses": ["干扰", "扰乱", "打扰", "搅乱", "使烦恼"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "dive", "jr_senses": ["下潜", "跳水"], "hs_senses": ["潜水", "跳水", "俯冲"], "new_senses": ["俯冲"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "download", "jr_senses": ["下载"], "hs_senses": ["下载", "已下载的数据资料"], "new_senses": ["已下载的数据资料"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "downstairs", "jr_senses": ["在楼下", "到楼下"], "hs_senses": ["顺楼梯而下", "在楼下", "往楼下"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "downtown", "jr_senses": ["城市的商业区", "中心区", "闹市区", "商业区的", "闹市区的"], "hs_senses": ["在城镇中心区的", "在市中心", "往市中心"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "dozen", "jr_senses": ["十二个", "几十", "许多"], "hs_senses": ["一打", "许多", "十二个"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "drag", "jr_senses": ["拖", "拽"], "hs_senses": ["拖", "拉", "拽", "缓慢而费力地移动"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "dragon", "jr_senses": ["龙"], "hs_senses": ["龙"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "drawer", "jr_senses": ["抽屉"], "hs_senses": ["抽屉"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "drought", "jr_senses": ["干旱"], "hs_senses": ["旱灾", "干旱", "久旱"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "dusk", "jr_senses": ["黄昏"], "hs_senses": ["黄昏", "傍晚"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "dust", "jr_senses": ["灰尘", "尘土"], "hs_senses": ["沙土", "尘土", "灰尘", "擦灰"], "new_senses": ["擦灰"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "duty", "jr_senses": ["责任", "义务"], "hs_senses": ["责任", "义务", "职责", "值班"], "new_senses": ["值班"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "dynasty", "jr_senses": ["王朝", "朝代"], "hs_senses": ["王朝", "朝代"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "edge", "jr_senses": ["边缘"], "hs_senses": ["边", "边缘", "边线", "刀刃", "（使）徐徐移动", "给……加边"], "new_senses": ["刀刃", "（使）徐徐移动", "给……加边"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "electricity", "jr_senses": ["电", "电流"], "hs_senses": ["电", "电能"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "elevator", "jr_senses": ["电梯", "升降梯"], "hs_senses": ["电梯", "升降机"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "embarrassed", "jr_senses": ["窘迫的"], "hs_senses": ["难堪的", "尴尬的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "energy", "jr_senses": ["能量", "能源"], "hs_senses": ["力量", "活力", "能源", "能量", "精力"], "new_senses": ["力量，活力", "精力"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "entrance", "jr_senses": ["入口", "入场", "进入的权利", "入学许可"], "hs_senses": ["大门（口）", "入口（处）", "进入"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "entry", "jr_senses": ["进入"], "hs_senses": ["加入", "进入", "参与"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "envelope", "jr_senses": ["信封"], "hs_senses": ["信封", "塑料封套"], "new_senses": ["塑料封套"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "envy", "jr_senses": ["忌妒", "羡慕"], "hs_senses": ["羡慕", "妒忌"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "equal", "jr_senses": ["平等的", "等于", "使等于"], "hs_senses": ["同等的人", "相等物", "相同的", "同样的"], "new_senses": ["同等的人；相等物"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "equip", "jr_senses": ["提供设备", "装备", "配备"], "hs_senses": ["使有知识和技能", "使能够胜任"], "new_senses": ["使有知识和技能，使能够胜任"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "equipment", "jr_senses": ["装备", "设备"], "hs_senses": ["设备", "装备", "用具"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "error", "jr_senses": ["错误", "差错"], "hs_senses": ["错误", "差错", "谬误"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "escape", "jr_senses": ["逃跑", "逃脱"], "hs_senses": ["逃走", "逃脱", "避开", "逃跑", "解脱"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "essay", "jr_senses": ["散文", "文章", "随笔"], "hs_senses": ["文章", "短文", "论说文"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "eve", "jr_senses": ["前夕"], "hs_senses": ["前夕", "前一天"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "event", "jr_senses": ["公开活动", "事件", "大事"], "hs_senses": ["活动（指演出、体育比赛）", "比赛项目", "大事", "公开活动"], "new_senses": ["比赛项目"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "examine", "jr_senses": ["检查", "诊察"], "hs_senses": ["检查", "审查", "测验"], "new_senses": ["测验"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "exchange", "jr_senses": ["交流", "互访"], "hs_senses": ["交流（信息、想法等）"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "exhibition", "jr_senses": ["展览", "展览会"], "hs_senses": ["展出", "展览", "（技能、感情或行为的）表演"], "new_senses": ["（技能、感情或行为的）表演"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "exist", "jr_senses": ["存在"], "hs_senses": ["存在", "实际上有", "生存"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "experiment", "jr_senses": ["实验", "试验"], "hs_senses": ["（科学）实验"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "expert", "jr_senses": ["专家", "能手"], "hs_senses": ["专家", "行家", "熟练的", "内行的", "专家的"], "new_senses": ["熟练的；内行的；专家的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "expression", "jr_senses": ["表情", "神色"], "hs_senses": ["表情", "神色"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fame", "jr_senses": ["名声", "名望", "名誉"], "hs_senses": ["名声", "名誉"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "favour", "jr_senses": ["恩惠", "好意", "帮助"], "hs_senses": ["较喜欢", "选择", "有利于", "帮助", "恩惠", "赞同"], "new_senses": ["较喜欢；选择；有利于", "赞同"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "feather", "jr_senses": ["羽毛"], "hs_senses": ["羽毛"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fee", "jr_senses": ["费用"], "hs_senses": ["专业服务费", "报酬", "工作酬金", "服务费"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "fellow", "jr_senses": ["同类的", "同伴的"], "hs_senses": ["男人", "家伙", "同类的", "同事的", "同伴的", "同情况的", "同事", "同辈", "同类"], "new_senses": ["男人；家伙"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "fence", "jr_senses": ["栅栏", "篱笆", "围栏"], "hs_senses": ["栅栏", "围栏", "篱笆"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fetch", "jr_senses": ["（去）取（物）来", "（去）带（人）来"], "hs_senses": ["（去）拿来", "（去）请来"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "file", "jr_senses": ["档案"], "hs_senses": ["文件", "文件夹", "档案"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "fine", "jr_senses": ["晴朗的", "美好的", "(身体)健康的"], "hs_senses": ["对……处以罚款"], "new_senses": ["对……处以罚款"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "fireplace", "jr_senses": ["壁炉"], "hs_senses": ["壁炉"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "flat", "jr_senses": ["公寓"], "hs_senses": ["一套住房，公寓套房", "平坦的", "扁平的", "单元房"], "new_senses": ["平坦的", "扁平的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "flight", "jr_senses": ["航班", "飞行"], "hs_senses": ["空中航行", "航班", "航程", "班机"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "flood", "jr_senses": ["洪水", "水灾", "淹没", "使泛滥"], "hs_senses": ["洪水", "水灾", "大量", "淹没", "大量涌入", "使灌满水"], "new_senses": ["大量", "大量涌入"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "focus", "jr_senses": ["集中（注意力、精力）", "焦点", "中心点"], "hs_senses": ["集中（精力、注意力等）", "（使）调节焦距", "中心", "重点", "焦点"], "new_senses": ["（使）调节焦距"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "fog", "jr_senses": ["雾"], "hs_senses": ["雾"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fond", "jr_senses": ["喜爱的", "爱好的"], "hs_senses": ["喜爱"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "footprint", "jr_senses": ["脚印", "足迹"], "hs_senses": ["足迹", "（某物所占的）空间量", "面积"], "new_senses": ["（某物所占的）空间量；面积"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "forever", "jr_senses": ["永远", "永恒的"], "hs_senses": ["永远", "长久地"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "found", "jr_senses": ["成立", "建立"], "hs_senses": ["创建", "建立", "把……建立在", "创立"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "foundation", "jr_senses": ["基础", "基本原理", "根据", "基金会", "建立", "创办"], "hs_senses": ["基金会", "创建", "基础", "地基"], "new_senses": ["地基"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "fountain", "jr_senses": ["喷泉"], "hs_senses": ["喷泉", "人工喷泉", "喷水池"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fox", "jr_senses": ["狐狸"], "hs_senses": ["狐狸", "狡猾的人"], "new_senses": ["狡猾的人"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "freeze", "jr_senses": ["结冰"], "hs_senses": ["结冰", "（使）冻住", "突然停止", "呆住"], "new_senses": ["突然停止；呆住"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "frightened", "jr_senses": ["惊吓的"], "hs_senses": ["受惊的", "害怕的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "frog", "jr_senses": ["蛙", "青蛙"], "hs_senses": ["蛙", "青蛙"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fry", "jr_senses": ["用油煎", "用油炸"], "hs_senses": ["油煎的食物", "油炸", "油炒", "油煎"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "fuel", "jr_senses": ["燃料"], "hs_senses": ["燃料", "刺激性言行"], "new_senses": ["刺激性言行"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "fur", "jr_senses": ["（动物的）毛皮", "皮子"], "hs_senses": ["毛（皮）", "毛皮衣服"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "further", "jr_senses": ["较远", "更远"], "hs_senses": ["更远", "进一步", "更多的", "附加的"], "new_senses": ["进一步", "更多的；附加的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "gas", "jr_senses": ["气体"], "hs_senses": ["汽油", "气体", "燃气"], "new_senses": ["汽油"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "generation", "jr_senses": ["代", "一代"], "hs_senses": ["一代（人）"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "generous", "jr_senses": ["慷慨大方的"], "hs_senses": ["慷慨的", "大方的", "丰富的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "gentle", "jr_senses": ["平缓的"], "hs_senses": ["轻柔的", "温和的", "温柔的", "文静的"], "new_senses": ["轻柔的；温和的；温柔的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "geometry", "jr_senses": ["几何学"], "hs_senses": ["几何学", "几何图形"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "goal", "jr_senses": ["（足球）球门", "目标"], "hs_senses": ["球门"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "goat", "jr_senses": ["山羊"], "hs_senses": ["山羊"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "golf", "jr_senses": ["高尔夫球"], "hs_senses": ["高尔夫球运动"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "gradually", "jr_senses": ["逐渐地"], "hs_senses": ["逐渐地，逐步地"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "graduate", "jr_senses": ["毕业"], "hs_senses": ["毕业；获得学位", "毕业生"], "new_senses": ["毕业生"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "grain", "jr_senses": ["谷粒"], "hs_senses": ["谷物，粮食", "谷粒", "颗粒"], "new_senses": ["谷物，粮食", "颗粒"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "gram", "jr_senses": ["克（重量单位）"], "hs_senses": ["克"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "grand", "jr_senses": ["宏伟的"], "hs_senses": ["宏伟的，壮丽的", "宏大的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "grateful", "jr_senses": ["感激的，感谢的"], "hs_senses": ["感激的；表示感谢的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "greet", "jr_senses": ["问候", "向…致敬"], "hs_senses": ["问候", "迎接", "招呼"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "gym", "jr_senses": ["体育馆", "健身房"], "hs_senses": ["体育馆", "健身房"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "ham", "jr_senses": ["火腿"], "hs_senses": ["火腿"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "handwriting", "jr_senses": ["书法"], "hs_senses": ["书法", "书写", "笔迹"], "new_senses": ["笔迹"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "harm", "jr_senses": ["伤害", "损伤"], "hs_senses": ["伤害，损害"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "harvest", "jr_senses": ["收割", "收获（物）"], "hs_senses": ["收获季节", "收获", "收成", "收割（庄稼）", "捕猎（动物、鱼）"], "new_senses": ["捕猎（动物、鱼）"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "headline", "jr_senses": ["大字标题"], "hs_senses": ["媒体报道的热门话题"], "new_senses": ["媒体报道的热门话题"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "highway", "jr_senses": ["公路", "主要交通道路"], "hs_senses": ["公路"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "horrible", "jr_senses": ["令人恐惧；恐怖的"], "hs_senses": ["糟糕的", "令人震惊的；恐怖的；极坏的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "host", "jr_senses": ["主人"], "hs_senses": ["东道主，主人", "主办；主持", "节目主持人"], "new_senses": ["主办；主持", "节目主持人"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "hug", "jr_senses": ["拥抱"], "hs_senses": ["拥抱", "抱紧"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "humour", "jr_senses": ["幽默"], "hs_senses": ["幽默感"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "idiom", "jr_senses": ["习语", "惯用语", "成语"], "hs_senses": ["习语", "成语"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "immediately", "jr_senses": ["立即"], "hs_senses": ["立刻", "即刻，马上"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "improve", "jr_senses": ["改进；改善", "更新"], "hs_senses": ["改善，改进"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "inch", "jr_senses": ["英寸"], "hs_senses": ["英寸（长度单位，等于2.54厘米）"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "indeed", "jr_senses": ["确实；实在"], "hs_senses": ["当然，确实（用于强调）", "其实；实际上；当然；确实"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "ink", "jr_senses": ["墨水，油墨"], "hs_senses": ["墨水；墨汁；油墨"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "insect", "jr_senses": ["昆虫"], "hs_senses": ["昆虫"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "inside", "jr_senses": ["向里面", "在…里面"], "hs_senses": ["在（建筑物、房间）内"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "insist", "jr_senses": ["坚持；坚决认为"], "hs_senses": ["坚称，坚决认为", "坚持；坚决要求"], "new_senses": ["坚决要求"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "iron", "jr_senses": ["（用熨斗）熨；烫平"], "hs_senses": ["铁；铁器；铸铁", "熨斗", "（用熨斗）熨；烫平"], "new_senses": ["铁；铁器；铸铁", "熨斗"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "jam", "jr_senses": ["果酱", "阻塞"], "hs_senses": ["果酱", "堵塞"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "journalist", "jr_senses": ["记者", "新闻工作者"], "hs_senses": ["新闻记者", "新闻工作者"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "joy", "jr_senses": ["愉快", "喜悦", "欢乐", "高兴", "乐趣"], "hs_senses": ["高兴", "喜悦", "欢欣", "愉快"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "judge", "jr_senses": ["裁判", "审判员", "法官", "判断", "断定"], "hs_senses": ["认为", "判断", "评价", "评判", "法官", "审判员", "裁判员"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "jungle", "jr_senses": ["丛林", "密林"], "hs_senses": ["（热带）丛林", "密林"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "junior", "jr_senses": ["初级的", "年少的"], "hs_senses": ["低年级的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "kangaroo", "jr_senses": ["大袋鼠"], "hs_senses": ["袋鼠"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "kingdom", "jr_senses": ["王国"], "hs_senses": ["王国", "领域"], "new_senses": ["领域"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "ladder", "jr_senses": ["梯子"], "hs_senses": ["梯子", "阶梯"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "lamp", "jr_senses": ["灯", "油灯", "光源"], "hs_senses": ["灯", "台灯"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "lap", "jr_senses": ["（人坐时）膝部", "（跑道的）一圈"], "hs_senses": ["（坐着时的）大腿部", "（跑道等的）一圈"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "lately", "jr_senses": ["最近", "不久前"], "hs_senses": ["最近", "不久前", "近来"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "league", "jr_senses": ["联盟", "社团"], "hs_senses": ["里格（旧时长度单位）", "等级", "水平", "联合会", "联赛"], "new_senses": ["里格（旧时长度单位）", "联赛"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "leather", "jr_senses": ["皮革"], "hs_senses": ["皮革", "皮衣", "皮外套"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "lecture", "jr_senses": ["讲座", "演讲"], "hs_senses": ["（尤指大学里的）讲座"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "librarian", "jr_senses": ["图书管理员", "（西方的）图书馆馆长"], "hs_senses": ["图书管理员", "图书馆馆长"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "license", "jr_senses": ["执照", "许可证"], "hs_senses": ["批准", "许可", "许可证", "执照"], "new_senses": ["批准；许可"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "lip", "jr_senses": ["嘴唇"], "hs_senses": ["（嘴）唇"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "living", "jr_senses": ["活着的", "生计"], "hs_senses": ["活的", "活着的", "居住的", "在用的", "生活", "生计"], "new_senses": ["居住的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "mail", "jr_senses": ["邮政", "邮递", "邮寄"], "hs_senses": ["邮件", "信件", "邮政", "邮寄", "发电邮给"], "new_senses": ["邮件；信件", "发电邮给"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "major", "jr_senses": ["主要的"], "hs_senses": ["重要的", "主要的", "大的", "主修课程", "主修学生", "主修", "专门研究"], "new_senses": ["主修课程", "主修学生", "主修；专门研究"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "march", "jr_senses": ["3月"], "hs_senses": ["行进", "前进", "示威游行"], "new_senses": ["行进；前进", "示威游行"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "means", "jr_senses": ["方法", "手段", "财产"], "hs_senses": ["方式", "方法", "途径"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "memory", "jr_senses": ["记忆力", "记性", "回忆", "记忆"], "hs_senses": ["记忆力", "回忆", "记忆"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "merry", "jr_senses": ["高兴的", "愉快的"], "hs_senses": ["愉快的", "高兴的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "metal", "jr_senses": ["金属", "金属制成的"], "hs_senses": ["金属"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "midnight", "jr_senses": ["午夜", "子夜"], "hs_senses": ["子夜", "午夜"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "might", "jr_senses": ["可能", "也许", "或许"], "hs_senses": ["力量", "威力"], "new_senses": ["力量", "威力"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "mild", "jr_senses": ["温和", "暖和的", "凉爽的"], "hs_senses": ["不浓烈的", "淡的", "温和的", "和善的", "轻微的"], "new_senses": ["不浓烈的；淡的", "轻微的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "million", "jr_senses": ["百万", "百万个(人或物)"], "hs_senses": ["一百万", "许多,无数"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "mirror", "jr_senses": ["镜子"], "hs_senses": ["镜子"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "mist", "jr_senses": ["雾"], "hs_senses": ["薄雾", "水汽"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "moment", "jr_senses": ["片刻,瞬间"], "hs_senses": ["片刻;瞬间", "某一时刻"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "monitor", "jr_senses": ["(班级内的)班长;纠察生", "监视器"], "hs_senses": ["监视,监测", "监视器;监测仪", "监控"], "new_senses": ["监视，监测，监控"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "monument", "jr_senses": ["纪念碑,纪念物"], "hs_senses": ["纪念碑(或馆、堂、像等)", "历史遗迹"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "motor", "jr_senses": ["发动机,马达"], "hs_senses": ["发动机;马达", "有引擎的;机动车的"], "new_senses": ["有引擎的；机动车的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "movement", "jr_senses": ["运动,活动"], "hs_senses": ["运动,动作", "活动"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "multiply", "jr_senses": ["乘;使相乘"], "hs_senses": ["(使)大大增加"], "new_senses": ["(使)大大增加"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "murder", "jr_senses": ["谋杀"], "hs_senses": ["谋杀;凶杀;毁坏"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "nail", "jr_senses": ["钉,钉子"], "hs_senses": ["指甲;趾甲;钉子", "(用钉子)钉牢;固定"], "new_senses": ["指甲；趾甲", "(用钉子)钉牢；固定"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "narrow", "jr_senses": ["狭窄的"], "hs_senses": ["狭窄的,不宽的", "(使)变窄"], "new_senses": ["(使)变窄"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "nation", "jr_senses": ["民族,国家"], "hs_senses": ["国家"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "nearby", "jr_senses": ["附近的"], "hs_senses": ["附近的;邻近的", "在附近"], "new_senses": ["在附近"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "neat", "jr_senses": ["整洁的", "灵巧的"], "hs_senses": ["极好的", "整洁的;整齐的", "令人愉快的"], "new_senses": ["极好的;令人愉快的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "necktie", "jr_senses": ["领带,领花"], "hs_senses": ["领带"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "needle", "jr_senses": ["针"], "hs_senses": ["缝衣针", "注射针", "指针"], "new_senses": ["指针"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "nest", "jr_senses": ["巢;窝"], "hs_senses": ["巢穴;鸟窝", "秘密窝点"], "new_senses": ["秘密窝点"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "net", "jr_senses": ["网"], "hs_senses": ["网(Internet)", "净得的;纯的", "球网"], "new_senses": ["净得的;纯的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "network", "jr_senses": ["网络,网状系统"], "hs_senses": ["(互联)网络;网状系统", "人际网", "将……连接成网络;联播", "建立工作关系"], "new_senses": ["人际关系网", "建立工作关系"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "niece", "jr_senses": ["侄女,甥女"], "hs_senses": ["侄女;外甥女"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "normal", "jr_senses": ["正常的(状态)"], "hs_senses": ["正常的,平常的", "典型的;一般的;精神正常的", "常态;通常标准;一般水平"], "new_senses": ["精神正常的", "常态;通常标准"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "novel", "jr_senses": ["(长篇)小说"], "hs_senses": ["(长篇)小说"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "nowhere", "jr_senses": ["无处", "任何地方都不"], "hs_senses": ["什么地方都不,无处", "哪里都不"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "obey", "jr_senses": ["服从;遵守", "顺从,听从"], "hs_senses": ["服从;遵守"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "ocean", "jr_senses": ["海洋"], "hs_senses": ["海洋,大海"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "official", "jr_senses": ["官员"], "hs_senses": ["官员,高级职员", "官方的;正式的;公务的", "要员"], "new_senses": ["官方的;正式的;公务的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "onion", "jr_senses": ["洋葱;洋葱头"], "hs_senses": ["洋葱(头)", "葱头"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "onto", "jr_senses": ["向;朝", "到…的上面"], "hs_senses": ["到……上,向……上", "(朝)向"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "opera", "jr_senses": ["歌剧"], "hs_senses": ["歌剧"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "opinion", "jr_senses": ["意见；想法", "看法，见解"], "hs_senses": ["意见；想法；看法"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "ordinary", "jr_senses": ["普通的；平凡的", "普通的，平常的"], "hs_senses": ["普通的；平凡的", "普通的，平常的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "organization", "jr_senses": ["组织"], "hs_senses": ["组织，团体"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "oxygen", "jr_senses": ["氧气"], "hs_senses": ["氧气", "氧"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "pack", "jr_senses": ["包，捆", "(猎犬、野兽的)一群", "(为运输或储存而)打包"], "hs_senses": ["收拾(行李)", "包装", "(商品的)纸包；纸袋；大包", "小盒，小包"], "new_senses": ["收拾(行李)", "(商品的)纸包;纸袋;大包"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "pan", "jr_senses": ["平底锅"], "hs_senses": ["平底锅", "烤盘"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "paragraph", "jr_senses": ["段落"], "hs_senses": ["段；段落"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "parking", "jr_senses": ["停车"], "hs_senses": ["停车位", "停车"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "path", "jr_senses": ["小道，小径"], "hs_senses": ["小路；道路", "路线", "小径，小道"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "pattern", "jr_senses": ["模式；形式"], "hs_senses": ["模式", "图案", "模范"], "new_senses": ["图案", "模范"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "pepper", "jr_senses": ["胡椒粉"], "hs_senses": ["胡椒粉", "甜椒；灯笼椒"], "new_senses": ["甜椒;灯笼椒"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "performance", "jr_senses": ["演出，表演"], "hs_senses": ["表演；演技", "表现"], "new_senses": ["表现"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "permit", "jr_senses": ["许可，允许", "执照；许可证"], "hs_senses": ["允许，准许，许可", "使有可能"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "petrol", "jr_senses": ["汽油"], "hs_senses": ["汽油"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "phrase", "jr_senses": ["短语；习惯用语"], "hs_senses": ["成语，习语", "警句", "短语；词组"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "piano", "jr_senses": ["钢琴"], "hs_senses": ["钢琴"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "pile", "jr_senses": ["堆"], "hs_senses": ["堆放，摞起"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "pill", "jr_senses": ["药丸，药片"], "hs_senses": ["药丸，药片"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "plastic", "jr_senses": ["塑料的"], "hs_senses": ["塑料", "塑料制的；塑料的"], "new_senses": ["塑料"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "plate", "jr_senses": ["板；片；牌", "盘子；盆子"], "hs_senses": ["盘子；碟子"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "pleasant", "jr_senses": ["友好的；和善的", "令人愉快的，舒适的"], "hs_senses": ["令人愉快的", "令人愉快的；友好的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "pleased", "jr_senses": ["高兴；满意", "高兴的"], "hs_senses": ["高兴的；满意的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "plus", "jr_senses": ["加，加上"], "hs_senses": ["而且；此外", "加号；优势", "加；另加", "(用于数字后面表示)多，余"], "new_senses": ["而且;此外", "加号;优势"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "politics", "jr_senses": ["政治"], "hs_senses": ["政治", "政治观点"], "new_senses": ["政治观点"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "pond", "jr_senses": ["池塘"], "hs_senses": ["池塘；水池"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "pork", "jr_senses": ["猪肉"], "hs_senses": ["猪肉"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "port", "jr_senses": ["港口，码头"], "hs_senses": ["港口(城市)", "港，港口"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "potential", "jr_senses": ["潜在的，可能的"], "hs_senses": ["可能的；潜在的", "潜力；可能性"], "new_senses": ["潜力;可能性"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "pour", "jr_senses": ["倾泻", "不断流出"], "hs_senses": ["灌", "注", "倒", "倒出", "倾泻", "斟（饮料）"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "power", "jr_senses": ["能", "能量"], "hs_senses": ["力量", "电力供应", "能量", "控制力"], "new_senses": ["力量", "电力供应", "控制力"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "practical", "jr_senses": ["有用的"], "hs_senses": ["切实可行的", "实际的", "实践的"], "new_senses": ["切实可行的", "实践的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "prefer", "jr_senses": ["宁愿（选择）", "更喜欢"], "hs_senses": ["较喜欢", "更喜欢"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "press", "jr_senses": ["压", "按", "新闻界", "出版社"], "hs_senses": ["按", "压", "敦促"], "new_senses": ["敦促"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "pressure", "jr_senses": ["压力"], "hs_senses": ["压力", "要求"], "new_senses": ["要求"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "pretend", "jr_senses": ["假装", "佯装"], "hs_senses": ["假装", "装扮", "装作"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "prevent", "jr_senses": ["防止", "预防"], "hs_senses": ["阻挡", "防止", "阻止", "阻碍", "阻挠"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "prince", "jr_senses": ["王子"], "hs_senses": ["王子", "王孙", "亲王"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "professor", "jr_senses": ["教授"], "hs_senses": ["教授"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "province", "jr_senses": ["省"], "hs_senses": ["省"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "purse", "jr_senses": ["钱包"], "hs_senses": ["钱包", "皮夹子（尤指女用）"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "pyramid", "jr_senses": ["（古埃及）金字塔"], "hs_senses": ["金字塔", "棱锥体"], "new_senses": ["棱锥体"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "quantity", "jr_senses": ["数量"], "hs_senses": ["数量", "数额"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "quit", "jr_senses": ["离任", "离校", "戒掉"], "hs_senses": ["离开（工作岗位、学校等）", "离任", "停止", "戒掉"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "rat", "jr_senses": ["老鼠"], "hs_senses": ["大老鼠"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "rather", "jr_senses": ["相当", "宁可"], "hs_senses": ["相当", "颇", "有点儿"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "recycle", "jr_senses": ["回收利用", "回收", "再循环"], "hs_senses": ["再利用", "回收利用"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "reduce", "jr_senses": ["减少", "缩小"], "hs_senses": ["减少", "降低"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "regard", "jr_senses": ["把…看作"], "hs_senses": ["认为", "看作", "尊重", "关注", "把……视为", "看待"], "new_senses": ["尊重"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "regulation", "jr_senses": ["规则", "规章"], "hs_senses": ["章程", "规章制度"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "relay", "jr_senses": ["接力", "接替人", "中转", "接替", "补充", "转运"], "hs_senses": ["转发", "转播", "接力赛", "接班的人", "转达"], "new_senses": ["转发；转播；转达"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "remind", "jr_senses": ["提醒", "使想起"], "hs_senses": ["提醒", "使想起"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "rent", "jr_senses": ["租金"], "hs_senses": ["租用", "出租", "租金为", "租金", "租借"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "respect", "jr_senses": ["慎重对待", "尊重"], "hs_senses": ["尊敬", "敬重", "尊重"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "respond", "jr_senses": [], "hs_senses": ["回答", "回复", "做出反应", "回应"], "new_senses": ["做出反应；回应"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "responsibility", "jr_senses": ["责任"], "hs_senses": ["责任", "义务"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "riddle", "jr_senses": ["谜（语）"], "hs_senses": ["谜", "谜语", "神秘事件"], "new_senses": ["神秘事件"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "rocket", "jr_senses": ["火箭"], "hs_senses": ["火箭", "火箭弹"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "rough", "jr_senses": ["粗糙的", "粗略的"], "hs_senses": ["汹涌的", "粗糙的", "粗略的", "简单的"], "new_senses": ["汹涌的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "rubber", "jr_senses": ["橡胶", "合成橡胶"], "hs_senses": ["橡胶", "合成橡胶", "橡皮", "黑板擦"], "new_senses": ["橡皮", "黑板擦"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "rude", "jr_senses": ["无理的", "粗鲁的"], "hs_senses": ["粗鲁的", "无礼的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "sail", "jr_senses": ["驾驶帆船航行", "航行", "开航"], "hs_senses": ["（船）航行", "（人）乘船航行"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "salesman", "jr_senses": ["男售货员"], "hs_senses": ["售货员", "推销员"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "saleswoman", "jr_senses": ["女售货员"], "hs_senses": ["女售货员", "女推销员", "女销售员"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "satellite", "jr_senses": ["卫星"], "hs_senses": ["人造卫星", "卫星"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "satisfaction", "jr_senses": ["满意"], "hs_senses": ["满足", "满意", "欣慰"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "scene", "jr_senses": ["（戏剧或歌剧的）场"], "hs_senses": ["（戏剧或歌剧的）场", "现场", "场面", "场景"], "new_senses": ["现场"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "scenery", "jr_senses": ["风景", "景色", "风光"], "hs_senses": ["风景", "景色"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "schedule", "jr_senses": ["日程安排"], "hs_senses": ["计划表", "进度表", "日程表", "工作计划", "日程安排", "安排", "预定"], "new_senses": ["预定"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "scientific", "jr_senses": ["科学的"], "hs_senses": ["科学（上）的", "关于科学的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "servant", "jr_senses": ["仆人", "佣人"], "hs_senses": ["仆人", "用人"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "severe", "jr_senses": ["极为恶劣", "十分严重的"], "hs_senses": ["极为恶劣的", "十分严重的", "严厉的"], "new_senses": ["严厉的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "sharp", "jr_senses": ["锋利的", "尖的"], "hs_senses": ["（增长、下跌等）急剧的", "锋利的", "明显的", "敏锐的", "聪明的"], "new_senses": ["（增长、下跌等）急剧的", "敏锐的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "sharpen", "jr_senses": ["（使）变锐利", "削尖"], "hs_senses": ["使提高", "使改进"], "new_senses": ["使提高；使改进"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "sheet", "jr_senses": ["成幅的薄片", "薄板"], "hs_senses": ["（冰或水等的）一大片", "一张（纸）", "床单", "被单"], "new_senses": ["床单；被单", "一张（纸）"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "shoot", "jr_senses": ["（朝某个方向）", "射击", "射中", "发射"], "hs_senses": ["射出（光线等）", "放射", "射杀", "射伤", "发射"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "shore", "jr_senses": ["滨", "岸"], "hs_senses": ["岸", "滨"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "shot", "jr_senses": ["射击", "开枪", "开炮", "射击声", "子弹"], "hs_senses": ["投球", "射球", "击球"], "new_senses": ["投球；射球；击球"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "skateboard", "jr_senses": ["冰鞋", "滑板"], "hs_senses": ["滑板", "滑滑板"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "ski", "jr_senses": ["滑雪板", "滑雪"], "hs_senses": ["滑雪的", "滑雪"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "soap", "jr_senses": ["肥皂"], "hs_senses": ["肥皂"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "software", "jr_senses": ["软件"], "hs_senses": ["软件", "（计算机）软件"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "soil", "jr_senses": ["土壤", "土地"], "hs_senses": ["泥土", "土壤", "国土", "领土"], "new_senses": ["国土；领土"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "soldier", "jr_senses": ["士兵", "战士"], "hs_senses": ["士兵", "军人"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "solution", "jr_senses": ["解决办法"], "hs_senses": ["解决", "解决方法", "答案"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "sour", "jr_senses": ["酸的", "馊的"], "hs_senses": ["酸（味）的", "有酸味的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "spit", "jr_senses": ["吐唾沫", "吐痰"], "hs_senses": ["吐口水", "吐唾沫"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "splendid", "jr_senses": ["灿烂的", "辉煌的", "极好的"], "hs_senses": ["壮丽的", "雄伟的", "极佳的", "非常好的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "spot", "jr_senses": ["斑点", "污点", "场所", "地点", "沾上污渍，弄脏"], "hs_senses": ["地点", "处所", "看见；注意到；发现", "斑点", "污迹"], "new_senses": ["看见；注意到；发现"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "stage", "jr_senses": ["段", "步", "步骤"], "hs_senses": ["时期；阶段", "舞台"], "new_senses": ["舞台"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "stare", "jr_senses": ["盯着看", "凝视", "注视"], "hs_senses": ["盯着看", "凝视"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "steam", "jr_senses": ["蒸汽动力", "蒸汽"], "hs_senses": ["蒸汽；水蒸气", "蒸汽动力", "蒸发；散发蒸汽；冒水汽"], "new_senses": ["蒸发；散发蒸汽；冒水汽"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "steep", "jr_senses": ["险峻的", "陡峭的"], "hs_senses": ["陡的", "陡峭的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "stress", "jr_senses": ["精神压力", "紧张"], "hs_senses": ["重音，重读", "压力；紧张", "强调；重读；使焦虑不安", "焦虑不安"], "new_senses": ["重音，重读", "强调"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "suit", "jr_senses": ["适合", "一套（衣服）"], "hs_senses": ["适合；满足……需要；相配；合身", "西服；套装"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "sunrise", "jr_senses": ["黎明，拂晓"], "hs_senses": ["日出", "黎明；拂晓"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "super", "jr_senses": ["顶好的", "超级的"], "hs_senses": ["极好的，了不起的", "顶好的；超级的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "supply", "jr_senses": ["供给", "供应"], "hs_senses": ["供应（量）；补给；补给品", "供应；供给"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "surf", "jr_senses": ["冲浪"], "hs_senses": ["浏览", "冲浪"], "new_senses": ["浏览"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "swing", "jr_senses": ["挥舞，摆动", "秋千"], "hs_senses": ["（使）摆动；摇摆；转弯；（使）突然转向"], "new_senses": ["转弯；（使）突然转向"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "symbol", "jr_senses": ["符号"], "hs_senses": ["符号", "象征"], "new_senses": ["象征"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "tailor", "jr_senses": ["裁缝"], "hs_senses": ["（男装）裁缝", "专门制作；定做"], "new_senses": ["专门制作；定做"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "tale", "jr_senses": ["故事", "传说"], "hs_senses": ["故事；叙述"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "teamwork", "jr_senses": ["合作，协同工作"], "hs_senses": ["合作，协作"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "teapot", "jr_senses": ["茶壶"], "hs_senses": ["茶壶"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "tear", "jr_senses": ["眼泪", "扯破，撕开"], "hs_senses": ["眼泪；泪水"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "teenager", "jr_senses": ["青少年", "十几岁的少年"], "hs_senses": ["青少年，十几岁的孩子"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "tent", "jr_senses": ["帐篷"], "hs_senses": ["帐篷"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "thus", "jr_senses": ["这样", "因而"], "hs_senses": ["因此，从而", "如此；因此"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "tick", "jr_senses": ["标记号；打钩", "作记号", "记号，符号", "滴答声"], "hs_senses": ["给（试卷、问题等）打钩号", "（钟表）发出嘀嗒声", "钩号"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "title", "jr_senses": ["标题", "题目"], "hs_senses": ["（书、诗歌等的）名称；标题", "职称；头衔"], "new_senses": ["职称；头衔"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "tomb", "jr_senses": ["坟墓"], "hs_senses": ["坟墓"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "tongue", "jr_senses": ["舌，舌头"], "hs_senses": ["舌头", "语言"], "new_senses": ["语言"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "toothpaste", "jr_senses": ["牙膏"], "hs_senses": ["牙膏"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "topic", "jr_senses": ["话题"], "hs_senses": ["话题，论题", "标题"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "tough", "jr_senses": ["坚硬的", "结实的", "棘手的，难解的"], "hs_senses": ["艰难的", "严厉的"], "new_senses": ["严厉的"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "towel", "jr_senses": ["毛巾"], "hs_senses": ["毛巾", "抹布"], "new_senses": ["抹布"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "track", "jr_senses": ["轨道", "田径"], "hs_senses": ["跑道", "足迹", "铁路轨道", "追踪；跟踪", "田径"], "new_senses": ["足迹", "追踪；跟踪"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "tradition", "jr_senses": ["传统", "风俗"], "hs_senses": ["传统", "传统的信仰或风俗"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "trap", "jr_senses": ["陷阱", "使陷入困境"], "hs_senses": ["夹子", "陷阱", "使落入险境", "使陷入圈套", "险境"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "trick", "jr_senses": ["计谋"], "hs_senses": ["诀窍", "计谋", "把戏"], "new_senses": ["诀窍", "把戏"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "turkey", "jr_senses": ["火鸡"], "hs_senses": ["火鸡", "火鸡肉", "（电影或戏剧的）失败之作"], "new_senses": ["（电影或戏剧的）失败之作"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "twin", "jr_senses": ["双胞胎之一"], "hs_senses": ["双胞胎的", "孪生之一", "双胞胎之一"], "new_senses": ["双胞胎的（形容词）"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "type", "jr_senses": ["打字", "种类", "类型"], "hs_senses": ["类型", "种类", "打字"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "typical", "jr_senses": ["典型的", "有代表性的"], "hs_senses": ["典型的", "有代表性的", "平常的"], "new_senses": ["平常的"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "uniform", "jr_senses": ["校服"], "hs_senses": ["校服", "制服", "一致的；统一的"], "new_senses": ["一致的；统一的（形容词）"], "is_cross_stage_multi": true, "polluted": true}
+{"word": "universe", "jr_senses": ["宇宙"], "hs_senses": ["宇宙", "天地万物"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "unusual", "jr_senses": ["与众不同的", "不平常的", "异常的"], "hs_senses": ["异常的", "不平常的", "特别的", "不寻常的"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "valley", "jr_senses": ["山谷", "溪谷"], "hs_senses": ["谷", "山谷", "溪谷"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "victim", "jr_senses": ["受害者", "牺牲品"], "hs_senses": ["受害者", "患者"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "view", "jr_senses": ["看", "观看"], "hs_senses": ["（一次）观看", "视野", "景色", "看法"], "new_senses": ["视野", "景色", "看法"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "volunteer", "jr_senses": ["志愿者", "自愿做某事"], "hs_senses": ["志愿者", "义务工作者"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "voyage", "jr_senses": ["航行"], "hs_senses": ["航海", "航行"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "warning", "jr_senses": ["警告", "警示", "警报"], "hs_senses": ["警告", "警示", "告诫", "先兆"], "new_senses": ["先兆"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "washroom", "jr_senses": ["盥洗室"], "hs_senses": ["洗手间", "厕所"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "wave", "jr_senses": ["海浪", "波浪", "波涛", "（热、光、声等的）波", "挥手", "挥动", "波动"], "hs_senses": ["挥手", "招手", "海浪", "波浪"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "wheat", "jr_senses": ["小麦"], "hs_senses": ["小麦", "小麦籽"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "wherever", "jr_senses": ["无论在哪里"], "hs_senses": ["在任何地方", "在所有……的情况下", "（用于问句）究竟在（到）哪里"], "new_senses": ["究竟在（到）哪里"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "wine", "jr_senses": ["酒"], "hs_senses": ["葡萄酒", "果酒"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "wire", "jr_senses": ["电线"], "hs_senses": ["金属丝", "电线", "接通电源", "将……连接到"], "new_senses": ["接通电源；连接（动词）"], "is_cross_stage_multi": true, "polluted": false}
+{"word": "wool", "jr_senses": ["羊毛", "羊绒"], "hs_senses": ["毛", "毛线", "毛料", "毛织物"], "new_senses": [], "is_cross_stage_multi": false, "polluted": true}
+{"word": "workplace", "jr_senses": ["工作场所", "车间"], "hs_senses": ["工作场所"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
+{"word": "youth", "jr_senses": ["青春", "青年"], "hs_senses": ["青年时期", "青春"], "new_senses": [], "is_cross_stage_multi": false, "polluted": false}
