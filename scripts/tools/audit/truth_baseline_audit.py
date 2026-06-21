@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """M0 真值基座核验脚本：对齐 exam_questions 与公开真值源（2021-2025）.
+⚠️ DEPRECATED (2026-06-20): 一次性软匹配脚本, 已被模块化 backend/services/truth_baseline/ + CLI scripts/tools/truth_check 取代(验内容匹配第一手源+self-test+接D0门). 保留仅因 truth_baseline_common 含 moth 用的路径常量. 勿在新代码引用.
 
 公开 API + CLI 入口. 装载簇 / 报告簇 / 共享底层工具已抽到 sibling 模块
 (truth_baseline_load / truth_baseline_report / truth_baseline_common),

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """M0 真值基座核验：发现归类 + 状态判定 + JSON/Markdown 报告输出.
+⚠️ DEPRECATED (2026-06-20): 一次性软匹配脚本, 已被模块化 backend/services/truth_baseline/ + CLI scripts/tools/truth_check 取代(验内容匹配第一手源+self-test+接D0门). 保留仅因 truth_baseline_common 含 moth 用的路径常量. 勿在新代码引用.
 
 从对账结果 (summary + audit_rows) 派生 findings / 总状态, 并落 JSON / MD 报告.
 仅依赖 truth_baseline_common, 不反向 import audit 主模块.

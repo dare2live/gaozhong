@@ -246,11 +246,12 @@ gate_contracts:
     verifies:
       - Source registry, source states, EOL rules, decision contracts, and paper contracts agree.
   m0_truth_baseline:
-    script: scripts/tools/audit/truth_baseline_audit.py
-    command: python3 scripts/tools/audit/truth_baseline_audit.py --strict
+    script: scripts/tools/truth_check/__main__.py  # 模块化系统 CLI; 校验器 backend/services/truth_baseline/ (每域一checker+CHECKERS)
+    command: python3 -m scripts.tools.truth_check --strict
     severity: BLOCK
     verifies:
-      - M0 final DB/source/question-bank truth baseline is reconciled before release claims.
+      - 真值锚: 库内容匹配第一手源(辽宁II卷逐年≥2源/释义无PUA污染), 非计数自洽棘轮; 真实执行在 D0 _check_truth_anchors.
+      - 取代 scripts/tools/audit/truth_baseline_* (731行一次性软匹配, 已弃用).
 
 legacy_policy_lints:
   direct_exam_questions_writer:

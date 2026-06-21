@@ -168,9 +168,9 @@ gates:
 
   - order: 16
     name: truth_baseline_strict
-    command: python3 scripts/tools/audit/truth_baseline_audit.py --strict
-    purpose: Final M0 reconciliation gate across DB rows, truth rows, pollution candidates, and question_bank mappings.
-    expected_current_status: fail while M0 is open
+    command: python3 -m scripts.tools.truth_check --strict
+    purpose: 真值锚校验(内容匹配第一手源,非计数自洽; 模块化 backend/services/truth_baseline). 真实执行在 D0 _check_truth_anchors(stop_gate阻断); 取代旧 tools/audit/truth_baseline_audit 一次性软匹配脚本.
+    expected_current_status: pass (真题逐年≥2源核验 + 释义净)
     failure_action: Treat failure findings as the controller board for the next M0 repair slice.
     writes_artifacts: true
     writes_db: false

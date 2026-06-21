@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """M0 真值基座核验：数据装载簇 (DB / 结构化 JSONL / verified JSONL) + 缺口入库.
+⚠️ DEPRECATED (2026-06-20): 一次性软匹配脚本, 已被模块化 backend/services/truth_baseline/ + CLI scripts/tools/truth_check 取代(验内容匹配第一手源+self-test+接D0门). 保留仅因 truth_baseline_common 含 moth 用的路径常量. 勿在新代码引用.
 
 读真相源 (exam_questions DB + 两份 JSONL), 产出标准化 records;
 import_truth_rows 把 truth_only 缺口补回 exam_questions.
