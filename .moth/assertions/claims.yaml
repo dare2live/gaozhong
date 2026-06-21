@@ -310,6 +310,12 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -A12 'def _grammar_exam_trace' backend/services/lesson_plan.py | grep -q \"province LIKE '辽宁\" && echo SCOPED || echo LEAK"]
     expect: {op: regex, pattern: "SCOPED"}
+  - id: dict-gloss-no-llm-overwrite
+    claim: "交付级考试词典义项无 LLM 覆盖: gloss_source 全真值源(教材version_key/中考词汇表/hujiao/COCA/variant), 无 cleaned_judged(双模型consolidate零血缘不可复核, 违红线义项来自真值源非LLM, theme_l3同模式已废2026-06-21)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM exam_vocabulary WHERE gloss_source IN ('cleaned_judged')"
+    expect: {op: "==", value: 0}
   - id: weakness-recommend-bridge-not-broken
     claim: "学情闭环非假血缘: 弱点考点(exam_point:theme_l2)→主题桥(theme_aligns→theme_of_unit→单元→course_materials)→course 可达≥1; 旧路由 cm.ref_id=sw.concept_id 直配 by-construction永远0命中(考点前缀≠词/单元), schema迁移断链已修(recommend.courses_for_student_weakness 走桥)"
     type: duckdb_sql

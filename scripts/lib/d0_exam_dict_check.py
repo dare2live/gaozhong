@@ -53,6 +53,11 @@ def check_exam_dict(con: duckdb.DuckDBPyConnection, check) -> None:
     unexpected = glossless - _known_unglossable()
     check("无 UNEXPECTED 无释义词 (每缺口必登记 unglossable 白名单, 非静默缺口)",
           not unexpected, f"{len(unexpected)} 未登记: {sorted(unexpected)[:8]}")
+    # 真值源门: 交付级词典义项 gloss_source 全来自真值源(教材/中考/COCA/variant), 无 LLM consolidate 覆盖
+    # (cleaned_judged = 双模型 consolidate 零血缘不可复核, 违红线"义项来自真值源非LLM"; 已废)
+    llm_gloss = con.execute(
+        "SELECT COUNT(*) FROM exam_vocabulary WHERE gloss_source IN ('cleaned_judged')").fetchone()[0]
+    check("词典义项无 LLM 覆盖 (gloss_source 全真值源, 非cleaned_judged consolidate)", llm_gloss == 0, f"{llm_gloss} LLM源")
     # 内容门: unit_vocab_intro.in_curriculum 必=词∈cefr_vocab 真值 (非硬编码True谎报越纲; 违§1.2)
     bad_ic = con.execute(
         "SELECT COUNT(*) FROM unit_vocab_intro u WHERE u.in_curriculum <> "

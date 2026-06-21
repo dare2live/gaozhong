@@ -2,7 +2,10 @@
 
 真相源 = data/structured/word_sense/word_sense_judged.jsonl (404 跨阶段候选, 双模型锚定释义
 判断 + 对抗验证防过度检测, 坑16)。142 确认跨阶段真多义 → word_sense 节点 + has_sense + expands_sense。
-顺手把清洗后释义回写 exam_vocabulary (修 OCR 污染), provenance=cleaned_judged。
+word_sense 节点/边带 provenance=dual_model_adversarial (LLM 推断层, 诚实标)。
+⚠ 2026-06-21: 不再回写 exam_vocabulary.gloss(原 cleaned_judged): LLM consolidate 零血缘不可复核
+(违用户红线"义项来自真值源非LLM"); 交付级词典义项保留确定性清洗的 word_glosses 真值源 (OCR 由
+_clean_zh_def 确定性清洗, GlossaryTruthChecker 已锁0PUA, LLM 覆盖冗余)。
 """
 from __future__ import annotations
 
@@ -39,15 +42,11 @@ def _edge(con, src: str, dst: str, rel: str, ev: dict) -> int:
 def build_word_senses(con: duckdb.DuckDBPyConnection) -> dict:
     """142 确认跨阶段多义 → word_sense 节点+has_sense+expands_sense; 清洗释义回写词典."""
     rows = [json.loads(l) for l in _JUDGED.read_text(encoding="utf-8").splitlines() if l.strip()]
-    n_node = n_has = n_exp = n_clean = 0
+    n_node = n_has = n_exp = 0
     for w in rows:
-        word, clean = w["word"], "；".join(w.get("hs_senses") or w.get("jr_senses") or [])
-        # 清洗后释义回写 exam_vocabulary (修 OCR 污染, 仅原有释义且被污染的词)
-        if clean and w.get("polluted") and con.execute(
-                "SELECT 1 FROM exam_vocabulary WHERE word=? AND gloss IS NOT NULL", [word]).fetchone():
-            con.execute("UPDATE exam_vocabulary SET gloss=?, gloss_source='cleaned_judged' WHERE word=?",
-                        [clean, word])
-            n_clean += 1
+        word = w["word"]
+        # 不回写 exam_vocabulary.gloss: 交付级词典义项保留 word_glosses 真值源(确定性清洗),
+        # 不用 LLM consolidate 覆盖(零血缘不可复核, 违红线; OCR 已由 _clean_zh_def 确定性处理)。
         if not w.get("is_cross_stage_multi"):
             continue
         wnode = f"word:{word}"
@@ -62,5 +61,4 @@ def build_word_senses(con: duckdb.DuckDBPyConnection) -> dict:
                        {"provenance": "dual_model_adversarial", "new_senses": w["new_senses"],
                         "derived_by": "word_sense_judge@workflow",
                         "source_artifact": "word_sense_judged.jsonl"})
-    return {"word_sense 节点": n_node, "has_sense 边": n_has, "expands_sense 边": n_exp,
-            "清洗释义回写词典": n_clean}
+    return {"word_sense 节点": n_node, "has_sense 边": n_has, "expands_sense 边": n_exp}
