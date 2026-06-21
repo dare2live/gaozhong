@@ -27,6 +27,27 @@ def _volume_stage(volume_key: str) -> str:
     return "高中选修" if volume_key.startswith("xuanze") else "高中必修"
 
 
+_POS_KEEP = {"vi", "vt", "v", "n", "adj", "adv", "prep", "conj", "pron",
+             "num", "art", "vb", "aux", "a", "int", "modal"}
+
+
+def _clean_zh_def(zh: str) -> str:
+    """清教材生词表 zh_def 的 OCR 污染 (renjiao 5%: PUA音标/邻条bleed/英文例句/章节头).
+
+    保守: 截在首个 PUA 或首个非 POS 英文词 (邻条 headword/例句起点); **清空则保留原文**
+    (防过删合法条如 'consist of 由…组成'/'& modal v. 胆敢')。小验证: 保守应用后残留 PUA=0。
+    """
+    s = re.sub("[" + chr(0xE000) + "-" + chr(0xF8FF) + "]", "", zh)         # 移除 PUA 音标乱码(全私用区; 移除非截断, 保前置PUA后的真释义如 e-mail)
+    out = []
+    for m in re.finditer(r"[A-Za-z]+\.?|[^A-Za-z]+", s):
+        tok = m.group()
+        if re.fullmatch(r"[A-Za-z]+\.?", tok) and tok.strip(". ").lower() not in _POS_KEEP:
+            break                                          # 非 POS 英文词 = 邻条/例句 → 停
+        out.append(tok)
+    cleaned = re.sub(r"[\s；;,，&/]+$", "", "".join(out)).strip()
+    return cleaned if cleaned else zh.strip()              # 保守: 过删则保留原文
+
+
 def _parse_zhongkao() -> list[tuple]:
     """中考词汇表 → (word, pos, gloss); 补初中基础词释义 (生词表只列生词缺基础词)."""
     out = []
@@ -51,7 +72,7 @@ def build_glossary(con: duckdb.DuckDBPyConnection) -> dict:
     for vk, vol, w, pos, zh in con.execute(
         "SELECT version_key, volume_key, word, pos, zh_def FROM unit_vocab_intro "
         "WHERE zh_def IS NOT NULL AND zh_def <> ''").fetchall():
-        rows.append((w.lower(), _volume_stage(vol), pos, zh, vk))
+        rows.append((w.lower(), _volume_stage(vol), pos, _clean_zh_def(zh), vk))   # 清OCR污染(保守)
     # 初中: 沪教生词表 (待OCR 跳过)
     for ln in _HUJIAO.read_text(encoding="utf-8").splitlines():
         if not ln.strip():
@@ -59,9 +80,9 @@ def build_glossary(con: duckdb.DuckDBPyConnection) -> dict:
         r = json.loads(ln)
         if r.get("zh_def") and r["zh_def"] != "待OCR":
             rows.append((r["word"].lower(), "初中", r.get("pos"), r["zh_def"], "hujiao"))
-    # 初中: 中考词汇表 (补基础词)
+    # 初中: 中考词汇表 (补基础词; 同清 OCR 污染)
     for w, pos, gloss in _parse_zhongkao():
-        rows.append((w, "初中", pos, gloss, "中考词汇表"))
+        rows.append((w, "初中", pos, _clean_zh_def(gloss), "中考词汇表"))
     # dedup on PK (word,stage,source): 同源同阶段一词多 unit → 取最长 gloss (信息最全)
     best: dict[tuple, tuple] = {}
     for w, st, pos, gloss, src in rows:

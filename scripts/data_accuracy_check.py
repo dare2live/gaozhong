@@ -300,6 +300,12 @@ def _run_lib_checks(con):
         getattr(importlib.import_module(f"scripts.lib.{mod}"), fn)(con, check)
 
 
+def _check_truth_anchors(con):
+    """真值锚校验 (验内容匹配第一手源, 非计数自洽; 根治自洽棘轮). 单算点在 truth_baseline 模块."""
+    from backend.services.truth_baseline import run_truth_checks
+    run_truth_checks(con, check)
+
+
 # ===== main 调度 (CC=2). Phase7 回滚移除 _check_5/19/20 (断言已删生成内容) =====
 CHECKS = [
     _check_1_manifest, _check_2_vocab, _check_3_grammar, _check_4_phrases,
@@ -310,6 +316,7 @@ CHECKS = [
     _check_18_followup,
     _check_21_exam_provenance,
     _run_lib_checks,             # 22-29: 数据驱动委托 lib (_LIB_CHECKS)
+    _check_truth_anchors,        # 真值锚: 验内容匹配第一手源(非自洽棘轮)
 ]
 
 
