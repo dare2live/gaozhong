@@ -5,6 +5,28 @@
 
 ---
 
+## L-2026-06-21-ZG · 自洽门 ≠ 真值门 (绿门验"计数==快照"不验"内容==第一手源", 内容偏离长期假绿)
+
+**现象**: D0/moth/stop_gate 三门 live 全绿报"100%准", 但穷尽内容核验(对课标/教材PDF逐字)揪出一批内容偏离
+长期躺库内: ① 杜撰课标"第三级"theme_l3(35子主题PDF里没有, 131边); ② in_curriculum 列100%硬编码True(真实越纲47%);
+③ cefr 44行级别错(带括注行 ** 脱token); ④ 13 waiyan标题截断 / 81垃圾义项(`（`碎片过非空门); ⑤ COCA 84专名噪声;
+⑥ grammar 4条折行截断; ⑦ renjiao 漏249词(短语+双栏reflow头前词被丢)。每条数据"看着真", 门也绿。
+
+**根因**: 旧门验的是**自洽**(COUNT==N / 无悬挂端点 / gloss非空), 不是**真值**(值==第一手源)。"自洽"维度上它们
+全对(in_curriculum全True内部自洽, theme_l3边节点配套), 错在"内容 vs PDF"这个**此前零门覆盖**的维度。**同一根因
+(占位/LLM/派生值贴真值源标签)被实例化很多次** — 一个检测器一次捞同类, 故"每次检查发现新问题"实为同张网捞同种鱼。
+
+**自动化兜底 (已上线)**:
+1. **真值校验体系** `backend/services/truth_baseline/` (CHECKERS + truth_anchors.yaml + self_test对抗自测) 接D0 — 验内容匹配第一手源指纹。
+2. **内容门数据驱动框架** `backend/config/content_gates.yaml` + `ContentGateChecker` — 加内容门=加一行YAML(query==第一手源), 单引擎接D0+CLI。
+3. **每条内容偏离三件套** (坑1): 改单一计算点提取 + 改已落库(重建) + 加内容门; 对抗注入必FAIL自愈回绿。
+4. **标准文档** `docs/truth_anchor_protocol.md`; taxonomy必锚第一手源最深可枚举层(不发明子分类追ceiling)。
+
+**元教训**: 任何"X通过/100%准"先问**它验的是自洽还是真值** — 计数门/结构门给"完整"假信号; 内容门(值==第一手源)
+才证内容对。框架自身也会犯绿门假绿(本 session ContentGateChecker 路径错→跑0门报0偏离, 对抗注入才暴露)→ **门必须对抗自测**。
+
+---
+
 ## L-2026-05-23-A · vocab extractor 把"lesson#" 误当 "Unit#"
 
 **现象**: `extract_vocab_intro` 抽 1842 行, 但 unit_number 出现 7, 14, 21, 24, 44, 52, 69 等远大于实际 Unit 上限 (外研每册 6 Unit). 导致 build_introduces_word 时大量 src=unit:waiyan/bixiu_1/U24 — 这种 unit 节点不存在, graph_edge_validity FAIL.

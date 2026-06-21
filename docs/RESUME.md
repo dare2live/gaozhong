@@ -3,6 +3,66 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
+## 最近 session (2026-06-21 最新): 真值校验体系 + 内容门框架 + 5大交付数据钉PDF + no-hardcode
+
+> 主题: 根治"为啥每次检查都发现新问题" = 旧三门只验**自洽**(计数==快照)不验**真值**(内容==第一手源),
+> 自洽棘轮把内容偏离锁成绿。本 session 建真值校验体系 + 内容门框架, 把"只计数验过"的盲区逐一对第一手源核完。
+> **全程三门绿, 全推 origin/main。** 起点接 KG 层(上一 session)。
+
+**① 真值校验体系 (根因根治, 模块化)**:
+- `backend/services/truth_baseline/` (CHECKERS dispatch + TruthChecker ABC + self_test 对抗自测) + `truth_anchors.yaml`
+  (锚=第一手源指纹, lifecycle active/no_anchor, ≥2源才立锚) + `truth_check` CLI + 接 D0 门 `_check_truth_anchors`。
+- 标准文档 `docs/truth_anchor_protocol.md` (方案→标准→验证→持续完善)。释义PUA清洗(保守 _clean_zh_def) + GlossaryTruthChecker。
+
+**② 颠覆性发现: 杜撰课标"第三级"theme_l3 已废** (34c55d9): 亲验课标PDF表2 — 官方主题语境**仅L1(3)+L2(10)可枚举**,
+  "第三级"是32条段落式内容要求(非词条)。库内35个theme_l3=杜撰(extract `_reader`不读PDF直接塞 + dual_model贴标签) +
+  131条边/35节点。删源重建(6-agent workflow穷尽血缘) + truth_anchors theme域 + ThemeTruthChecker + D0/moth 防回归锁。
+  教训: **真相源双用途 — 向下校验对错 AND 向上对标天花板; taxonomy 必锚第一手源最深可枚举层, 不发明子分类追ceiling**。
+
+**③ 内容门数据驱动框架 (回应用户3次"模块化可扩展可复用")**: `backend/config/content_gates.yaml` + `ContentGateChecker`
+  单引擎。**加内容门 = 加一行YAML(query+op+expect+源)**, 自动接D0+CLI(单一真相, 不再D0 AND moth各写一遍)。
+  ⚠ 对抗救场: 框架初版`_GATES`路径错→`load_gates()`返空→引擎跑0门却报"0偏离"=**框架自己犯绿门假绿**, 对抗注入才暴露 → self_test加"注册表非空"锁。
+
+**④ 5大教学交付数据钉PDF (穷尽内容核验sweep → 逐项修+内容门)**:
+| 偏离 | 修 (单一计算点) | 内容门 |
+|---|---|---|
+| in_curriculum 假源列(硬编码True谎报越纲47%) | run_vocab 从cefr现算 | content_gates |
+| cleaned_judged LLM覆盖交付级词典 | word_sense 去覆盖, 退回真值源 | content_gates |
+| 13 waiyan标题截断 / 81垃圾义项(`（`碎片) | _scan_scope_page续行join / _clean_zh_def去前导语法括号 | verify_titles_vs_pdf / GlossaryTruthChecker |
+| COCA 84专名噪声 / cefr 44级别错 / grammar 4截断 | _strip_coca_pn / 全行捕星 / _merge_continuations | content_gates 3条 |
+| **renjiao 1957→2206**(召回88.5%→99.7%) | _PHRASE_HEAD_RE短语词条 + 双栏reflow头前词派生回填 | renjiao_phrase_present |
+  途中内容门**当场抓住3个自引入回归**(PUA fallback/框架空路径/污染门假阳性) — 对抗验证不能省。
+
+**⑤ no-hardcode (用户指令)**: renjiao首单元号硬编码`1`→派生回填; **22个D0计数基线**(cefr3052/grammar108/高考466/182/中考90…)
+  收进 `backend/config/d0_baselines.yaml` + `B('key')`读取。改基线=改一行yaml。
+
+**坑15流程修**: junior_accuracy_check 锁容错(DRY抽共享 `scripts/lib/db_lock.py`, init_db重建时不假失败)。
+
+---
+
+## ⏭️ 优化后的计划 (2026-06-21, 接手先看这个)
+
+> 大局: "数据100%准"地基这一 session 从"计数自洽"升到"内容钉第一手源"。**核心竞争力地基与时间跨度的结构性矛盾**
+> 已识别(能跨11年的genre/theme全是LLM推断, 唯一真值锚cognitive_skill单年n=15) → 核心竞争力对外口径建议
+> 从"逐年趋势"改"**分卷制分布迁移 + 命题模式识别 + 教材对齐**"(样本量逼出的诚实结论)。
+
+**A. 真值诚实标注 (防"又一个theme_l3")**: genre/theme_context/theme_l2 481边=dual_model推断, 无第一手源 →
+   前端/分析层标 `LLM辅助分类·非考纲官方`(不做命中率未知的"交叉验仪式"=过度工程)。
+
+**B. 内容核验下一层 (sweep已列, 有限可枚举, 非黑箱)**: phrases表 / KG边语义 / qbank停用词残留 / weakness派生(真实答题0条) /
+   course audits内容 / **raw_question题干**(只核了answer列, 坑18题干可能bleed卷尾) / 2015-2020+2023-2025答案逐题核 /
+   其余6册unit_vocab逐册 / renjiao残留污染(（-起首短语/表头噪声)。每项: 对第一手源核 → 内容门(加content_gates一行)。
+
+**C. no-hardcode 续**: extractor 页范围/正则 + 其余阈值(orphan_ratio/CC baseline)增量迁配置。
+
+**D. 交付收口冲刺 (delivery_readiness_assessment.md, 仍是最高杠杆)**: 统一前端入口 + 金矿(词典/word_sense)接前端 +
+   学情空态引导 + Docker+最小鉴权 + **1名辽宁老师30分钟真试用**(唯一独立真相源, 别让"还能建更多"无限延迟它)。
+
+**E. 真实答题入口 (战略, 压后)**: 全平台0条真实学生作答(student_answers全md5合成) → 学情/弱点/热力/推荐全demo空壳(已诚实标)。
+   要真交付学情需 答题卡OCR / 在线作答 / 成绩单导入。
+
+---
+
 ## 最近 session (2026-06-20 最新): KG 层大建 (设计→P0→词典→word_sense→关联性) + 交付就绪度评估
 
 > ⚠️ **下一步 = 收口冲刺 (operational sprint), 不是继续建 KG 维度**。详 `docs/delivery_readiness_assessment.md`。

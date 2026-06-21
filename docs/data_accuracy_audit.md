@@ -3,7 +3,15 @@
 > 用户 2026-05-24 硬约束: **任意数据 + 关联性, 准确率必须 100%.**
 > 此文件每条 trace: 数据点 → 准确率 → ground truth → 修复路径
 
-最后更新: 2026-06-11
+最后更新: 2026-06-21
+
+> 🆕 **2026-06-21 D0 机制升级: 自洽门 → 内容门 (L-2026-06-21-ZG)**。旧门验"计数==快照/结构无悬挂"
+> (自洽), 内容偏离(杜撰theme_l3/in_curriculum硬编码/cefr级别/标题截断…)长期假绿。新增两层**内容门**(值==第一手源):
+> - **真值校验体系** `backend/services/truth_baseline/` (CHECKERS + `truth_anchors.yaml` 第一手源指纹锚 + self_test) 接 D0 `_check_truth_anchors`。标准: `docs/truth_anchor_protocol.md`。
+> - **内容门数据驱动框架** `backend/config/content_gates.yaml` + `ContentGateChecker` 单引擎(加内容门=加一行YAML: query==第一手源, 接 D0+CLI)。
+> - **计数基线配置化** `backend/config/d0_baselines.yaml` + `B('key')` (22基线去硬编码, §3.5)。
+> 现行内容门覆盖: theme(L1/L2官方,无杜撰L3) · glossary(无PUA/无垃圾义项) · in_curriculum(==cefr) · cefr级别(==星数) ·
+> grammar(无截断) · COCA(无专名) · 标题(==PDF Scope) · renjiao短语召回 · 词典无LLM覆盖 · 学情闭环非0命中。
 
 ## 一、推荐 / 对照算法 (精度敏感, 必须 100%)
 
