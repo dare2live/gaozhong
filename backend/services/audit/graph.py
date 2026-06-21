@@ -41,6 +41,7 @@ ALLOWED_RELATIONS = {
     "deepens": "低阶 grammar/syntax → 高阶 (跨阶段深化, 如 中考语篇填空10维 → 高考语法填空)",
     "has_sense": "word → word_sense (词→义项节点, master A1 义项才是带stage最小单位)",
     "expands_sense": "低阶 word_sense → 高阶 word_sense (跨阶段词义扩展, power 力量→power plant)",
+    "characterizes_theme": "word → theme (主题特征词; 辽宁真题区分度 co/total≥阈, 启发式非权威)",
     "collocates_into": "word → 高阶搭配 (跨阶段)",
     "spirals": "同主题跨阶段螺旋深化",
 }

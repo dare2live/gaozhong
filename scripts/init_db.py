@@ -194,6 +194,8 @@ def main() -> None:
     print(f"  设问类型金矿(KG-A1, 子题级explicit_label+血缘): {load_cognitive_skill(con)}")
     from backend.services.exam_point import materialize_cooccurrence
     print(f"  考点共现关联性入图(co_occurs, 跨维era分层): {materialize_cooccurrence(con)}")
+    from backend.services.theme_vocab import build_theme_vocabulary
+    print(f"  主题特征词汇关联性(characterizes_theme, 辽宁区分度): {build_theme_vocabulary(con)}")
 
     print("\n=== Layer 4j: 学情薄弱环节重算 (4i 考点边就绪后, 错题→真考点→薄弱; 取代Layer4e的token派生) ===")
     from backend.services import weakness

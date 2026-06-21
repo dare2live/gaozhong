@@ -289,6 +289,7 @@ _LIB_CHECKS = [
     ("d0_exam_dict_check", "check_exam_dict"),
     ("d0_word_sense_check", "check_word_sense"),
     ("d0_cooccur_check", "check_cooccur"),
+    ("d0_theme_vocab_check", "check_theme_vocab"),
 ]
 
 
