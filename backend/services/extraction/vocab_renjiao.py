@@ -37,6 +37,10 @@ _TOTAL_LIST_MIN_INLINE = 10  # 一页 ≥10 行末 (N) = 字母序总表 (per-un
 _UNIT_HEAD_RE = re.compile(r"^\s*Unit\s+(\d+)\s*$")
 # 词条头: 小写起首词/短语 + /ipa/ + 行内余文 (pos/释义可能续行)
 _ENTRY_HEAD_RE = re.compile(r"^\s*([a-z][a-z'\- ]*?)\s+/[^/]+/\s*(.*)$")
+# 短语词条头: 小写英文≥2词 + 起首中文(无/ipa/, 无POS) — 如 'clean up 打扫'。
+# 旧版无此识别→短语被当续行吸进前词(231条丢失 + zh_def污染)。护栏: 英文≥2词+起首中文,
+# 区别于释义续行(起首中文)和例句(常含大写/过长); dry实证216候选0假阳性(无大写无过长)。
+_PHRASE_HEAD_RE = re.compile(r"^\s*([a-z][a-z'’.\-]*(?:\s+[a-z][a-z'’.\-]+)+)\s+([一-鿿].*)$")
 _POS_TOKEN_RE = re.compile(
     r"\b(?:n|vt|vi|adj|adv|prep|conj|pron|num|art|aux|modal|abbr|int)\.")
 # 段内非词条噪声行 (running header / 注释 / 页码)
@@ -93,9 +97,17 @@ def _is_entry_continuation(line: str) -> bool:
     return _ENTRY_HEAD_RE.match(line) is None
 
 
-def _finalize(word: str, rest_lines: list[str]) -> dict | None:
-    """块行 → 词条 dict; 无 pos (专有名词/纯中文转写) 返回 None (不当词表)."""
+def _has_cjk(s: str) -> bool:
+    return any("一" <= c <= "鿿" for c in s)
+
+
+def _finalize(word: str, rest_lines: list[str], is_phrase: bool = False) -> dict | None:
+    """块行 → 词条 dict; 无 pos (专有名词/纯中文转写) 返回 None (不当词表).
+    短语词条(is_phrase): 无POS, zh_def=块内中文(有中文才保留, 防纯专名)。"""
     block = " ".join(s.strip() for s in rest_lines if s.strip())
+    if is_phrase:
+        zh = re.sub(r"\s*\(\d+\)\s*$", "", block).strip()
+        return {"word": word, "pos": "", "zh_def": zh} if _has_cjk(zh) else None
     pos_m = _POS_TOKEN_RE.search(block)
     if not pos_m:
         return None
@@ -106,20 +118,38 @@ def _finalize(word: str, rest_lines: list[str]) -> dict | None:
     return {"word": word, "pos": pos, "zh_def": zh}
 
 
+def _start_pending(line: str) -> tuple[str, list[str], bool] | None:
+    """行是否词条头 → (word, [rest], is_phrase); 否则 None.
+    词条头(有ipa) 与 短语头(无ipa, 英文≥2词+起首中文) 二选一; 短语在续行判定前优先识别。"""
+    eh = _ENTRY_HEAD_RE.match(line)
+    if eh:
+        return eh.group(1).strip().lower(), [eh.group(2)], False
+    ph = _PHRASE_HEAD_RE.match(line)
+    if ph:
+        return ph.group(1).strip().lower(), [ph.group(2)], True
+    return None
+
+
+def _backfill_first_unit(raw: list[tuple]) -> list[tuple[int, dict]]:
+    """首个 unit 头前的 (None, entry) 回填到**首个真实 unit**(双栏reflow把首单元词排到头前)。
+    派生首单元号(不硬编码 '1'); 无任何 unit 头(degenerate)兜底 1。"""
+    first_unit = next((u for u, _ in raw if u is not None), 1)
+    return [(u if u is not None else first_unit, e) for u, e in raw]
+
+
 def _parse_section(pages: list[list[str]]) -> list[tuple[int, dict]]:
-    """段内逐行块解析 → [(unit_number, entry_dict), ...]; 'Unit N' 头锚当前单元."""
-    out: list[tuple[int, dict]] = []
+    """段内逐行块解析 → [(unit_number, entry_dict), ...]; 'Unit N' 头锚当前单元(头前词条回填首单元)."""
+    raw: list[tuple] = []
     current_unit: int | None = None
-    pend_word: str | None = None
-    pend_rest: list[str] = []
+    pend: tuple[str, list[str], bool] | None = None
 
     def flush():
-        nonlocal pend_word, pend_rest
-        if pend_word is not None and current_unit is not None:
-            entry = _finalize(pend_word, pend_rest)
+        nonlocal pend
+        if pend:
+            entry = _finalize(pend[0], pend[1], pend[2])
             if entry:
-                out.append((current_unit, entry))
-        pend_word, pend_rest = None, []
+                raw.append((current_unit, entry))
+        pend = None
 
     for lines in pages:
         for line in lines:
@@ -128,16 +158,15 @@ def _parse_section(pages: list[list[str]]) -> list[tuple[int, dict]]:
                 flush()
                 current_unit = int(uh.group(1))
                 continue
-            eh = _ENTRY_HEAD_RE.match(line)
-            if eh:
+            started = _start_pending(line)
+            if started:
                 flush()
-                pend_word = eh.group(1).strip().lower()
-                pend_rest = [eh.group(2)]
+                pend = started
                 continue
-            if pend_word is not None and _is_entry_continuation(line):
-                pend_rest.append(line)
+            if pend is not None and _is_entry_continuation(line):
+                pend[1].append(line)
     flush()
-    return out
+    return _backfill_first_unit(raw)
 
 
 def extract_renjiao_vocab(pdf_path: Path, volume_key: str) -> list[dict]:

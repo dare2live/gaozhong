@@ -55,6 +55,18 @@ gates:
     op: eq
     expect: 0
 
+  - id: renjiao_phrase_present
+    domain: vocab
+    source: "data/textbooks/renjiao/*.pdf 各单元生词段(无IPA短语词条)"
+    desc: "人教短语词条召回(clean up/look forward to等无IPA短语, 旧版被当续行吸进前词丢失231条; _PHRASE_HEAD_RE识别)"
+    query: "SELECT COUNT(*) FROM unit_vocab_intro WHERE version_key='renjiao' AND word IN ('clean up','look forward to','focus on','be responsible for','at last','credit card')"
+    op: ge
+    expect: 6
+
+  # 注: zh_def 短语污染门暂不加 — 残留污染(（-起首短语如'senior high school'/缩写/表头噪声 吸进前词zh_def)
+  #     与合法英文(语法注'also forwards'/'pl. stadia')无法用单一正则干净区分(106混合命中)。
+  #     主短语召回已由 renjiao_phrase_present 锁; 残留污染留后续 parsing 精化(（-起首短语头 + 表头过滤)。
+
   - id: weakness_recommend_bridge
     domain: student
     source: "图谱主题桥 (theme_aligns→theme_of_unit)"
