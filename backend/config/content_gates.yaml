@@ -1,0 +1,40 @@
+# 内容门注册表 (值==第一手源, 非计数自洽; 判断数据化 §3.5).
+#
+# 根治"绿门验计数/结构不验内容"(自洽棘轮): 旧门只断言 COUNT==N / 无悬挂端点, 内容偏离躺库内仍绿。
+# 本表每条 = 一个**内容门**: 一句 SQL 现算"DB 内容 vs 第一手源/真值规则"的偏离数, 期望 0(或阈)。
+#
+# **可扩展**: 加内容门 = 加一行(query+op+expect+source), **不写代码**。ContentGateChecker 单引擎统跑。
+# **可复用/工具化**: 同一注册表被 D0 门(run_truth_checks 经 CHECKERS)+ CLI(scripts/tools/truth_check)+
+#   moth(可镜像) 共用 = 单一真相, 不再"D0 AND moth 各写一遍"(坑17 重复)。
+# **PDF 抽取类内容门**(需读第一手 PDF 现抽对比, 如标题==PDF)走专用 TruthChecker(unit_title_fix 等),
+#   不在本 SQL 注册表; 本表只收**纯 SQL 可表达**的内容门。
+#
+# op: eq(==) / ge(>=) / le(<=)。query 必须 SELECT 出单个数值。
+
+gates:
+  - id: in_curriculum_truth
+    domain: vocab
+    source: "cefr_vocab (课标PDF词表)"
+    desc: "unit_vocab_intro.in_curriculum==词∈cefr_vocab 真值(非硬编码True谎报越纲, 违§1.2)"
+    query: "SELECT COUNT(*) FROM unit_vocab_intro u WHERE u.in_curriculum <> EXISTS(SELECT 1 FROM cefr_vocab c WHERE LOWER(c.word)=LOWER(u.word))"
+    op: eq
+    expect: 0
+
+  # 注: glosses_have_chinese 由 GlossaryTruthChecker 拥有(与PUA同checker); no_theme_l3 由 ThemeTruthChecker
+  #     拥有 — 单一 owner 不重复。本注册表只收**无专用checker的纯SQL内容门**。
+
+  - id: dict_no_llm_overwrite
+    domain: glossary
+    source: "真值源(教材/中考/COCA/variant), 非LLM"
+    desc: "交付级词典义项 gloss_source 无 cleaned_judged(双模型consolidate零血缘不可复核, 违红线义项来自真值源)"
+    query: "SELECT COUNT(*) FROM exam_vocabulary WHERE gloss_source IN ('cleaned_judged')"
+    op: eq
+    expect: 0
+
+  - id: weakness_recommend_bridge
+    domain: student
+    source: "图谱主题桥 (theme_aligns→theme_of_unit)"
+    desc: "学情闭环非by-construction-0: 弱点考点经主题桥可达course≥1(旧 cm.ref_id=concept_id 直配永远0命中已修)"
+    query: "SELECT COUNT(*) FROM (SELECT DISTINCT c.course_id FROM nodes ep JOIN edges ta ON ta.src_id=ep.concept_id AND ta.relation='theme_aligns' JOIN edges tu ON tu.dst_id=ta.dst_id AND tu.relation='theme_of_unit' JOIN course_materials cm ON cm.ref_id=tu.src_id JOIN courses c ON c.course_id=cm.course_id WHERE ep.concept_id LIKE 'exam_point:theme_l2:%')"
+    op: ge
+    expect: 1
