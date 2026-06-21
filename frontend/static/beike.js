@@ -115,8 +115,10 @@
       }],
     });
     const td = rows.find(r => r.label === "推断");
+    const ntot = (cs && cs.n_total) || rows.reduce((a, r) => a + r.n, 0);
     G.$("#bk-cognote").innerHTML = `真相源=教研解析<b>显式标签</b>(强于双模型)。<b style="color:${C.up}">推断 ${td ? td.pct : "?"}%</b> 是阅读最高频思维——`
-      + `当年只看设问句让模型猜, 错估成 <b>15%</b>(坑16: 双模型0分歧却一起错)。"怎么想"维度的价值: 设问表面像细节, 实则考推断。`;
+      + `当年只看设问句让模型猜, 错估成 <b>15%</b>(坑16)。"怎么想"维度: 设问表面像细节, 实则考推断。`
+      + `<br><small class="muted">⚠ 现仅 2023 真辽宁II卷 n=${ntot}(小样本); 2021源经真值锚验证为全国甲卷已剔(§7), 待补真2021/2022/2024设问标注。</small>`;
   }
 
   function renderHeat(heat) {

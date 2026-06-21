@@ -45,18 +45,42 @@ def _ensure_node(con, cid: str, ntype: str, label: str, attrs: dict) -> int:
     return 1
 
 
+def _truth_valid_years(rows: list[dict]) -> set[int]:
+    """入库即对真值锚交叉 (truth_anchor_protocol): 该年子题内容须含辽宁新高考II卷锚 markers,
+    否则=源被误标(如 subquestions/mirror 2021 实为全国甲卷 Take a view), 剔除不入辽宁 cognitive_skill。
+    """
+    from collections import defaultdict
+
+    from backend.services.truth_baseline import load_anchors
+    anchors = load_anchors().get("exam", {}).get("anchors", {})
+    by_year: dict[int, str] = defaultdict(str)
+    for r in rows:
+        by_year[int(r["year"])] += " " + (r.get("stem") or "") + " " + str(r.get("analysis") or "")
+    valid = set()
+    for y, txt in by_year.items():
+        a = anchors.get(f"{y}:辽宁:gaokao")
+        if a and a.get("lifecycle") == "active" and all(m.lower() in txt.lower() for m in a["markers"]):
+            valid.add(y)
+    return valid
+
+
 def load_cognitive_skill(con: duckdb.DuckDBPyConnection) -> dict:
-    """子题级设问类型入图: 子题node + exam_point:cognitive_skill节点 + tests_exam_point边(explicit_label+血缘)."""
-    n_sub = n_pt = n_edge = skipped = 0
-    for line in _SUBQ.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        r = json.loads(line)
+    """子题级设问类型入图: 子题node + exam_point:cognitive_skill节点 + tests_exam_point边(explicit_label+血缘).
+
+    入库即对真值锚交叉: 源年内容不匹配辽宁II卷真值锚 → 剔除(防 mirror 2021甲卷误标混入辽宁, §7)。
+    """
+    rows = [json.loads(ln) for ln in _SUBQ.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    valid_years = _truth_valid_years(rows)
+    n_sub = n_pt = n_edge = skipped = skip_mislabel = 0
+    for r in rows:
         skill = _skill_of(r.get("analysis"))
         if not skill:                                  # 非阅读理解技能(完形/其他) 诚实不强标
             skipped += 1
             continue
         qid, year = r["id"], int(r["year"])
+        if year not in valid_years:                    # 真值锚未过 = 源误标(甲卷冒辽宁), 剔除
+            skip_mislabel += 1
+            continue
         qnode = f"question:{qid}"                       # node_type=question 满足 tests_exam_point src 约束
         n_sub += _ensure_node(con, qnode, "question", qid, {
             "year": year, "province": r.get("province", "辽宁"), "exam_type": "高考",
@@ -76,8 +100,8 @@ def load_cognitive_skill(con: duckdb.DuckDBPyConnection) -> dict:
              json.dumps({"dimension": DIMENSION, "provenance": "explicit_label", "lineage": lineage},
                         ensure_ascii=False)])
         n_edge += 1
-    return {"子题node": n_sub, "cognitive_skill节点": n_pt,
-            "tests_exam_point边": n_edge, "skipped(非阅读技能)": skipped}
+    return {"子题node": n_sub, "cognitive_skill节点": n_pt, "tests_exam_point边": n_edge,
+            "skipped(非阅读技能)": skipped, "skipped(真值锚未过=源误标甲卷)": skip_mislabel}
 
 
 def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:

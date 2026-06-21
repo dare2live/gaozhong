@@ -177,9 +177,9 @@ assertions:
     command: ["python3", "-c", "import duckdb,json;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);rs={json.loads(l)['word']:json.loads(l)['refined_stage'] for l in open('data/junior_high/structured/stage_refined.jsonl') if l.strip()};real={w:s for w,s in rs.items() if s in {'小学','初中','义务教育','高中必修','高中选修'}};bad=sum(1 for w,s in real.items() if ('stage:'+s) not in {r[0] for r in c.execute(\"SELECT dst_id FROM edges WHERE relation='at_stage' AND src_id=?\",['word:'+w]).fetchall()});c.close();print('OK' if bad==0 and len(real)>=3000 else f'FAIL {bad}')"]
     expect: {op: regex, pattern: "OK"}
   - id: cognitive-skill-goldmine
-    claim: "设问类型金矿(KG-A1): cognitive_skill 30子题边 explicit_label, 推断50%(对账教研解析真相源, 驳inference错估15% 坑16); 全带stamp血缘"
+    claim: "设问类型金矿(KG-A1): cognitive_skill 15边纯2023真辽宁II卷(真值锚交叉剔2021甲卷源误标§7), 推断为最高频(坑16设问表面像细节实考推断, n=15小样本); 全explicit_label+血缘"
     type: shell
-    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();allp=[p for pts in d['by_era'].values() for p in pts];tot=sum(p['n'] for p in allp);td=sum(p['n'] for p in allp if p['label']=='推断');print('OK' if tot==30 and abs(100*td/tot-50)<=5 else f'FAIL {tot} {td}')"]
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();allp=[p for pts in d['by_era'].values() for p in pts];tot=sum(p['n'] for p in allp);top=max(allp,key=lambda p:p['n'])['label'] if allp else '?';print('OK' if tot==15 and top=='推断' else f'FAIL {tot} {top}')"]
     expect: {op: regex, pattern: "OK"}
   - id: exam-point-trusted-provenance
     claim: "考点边 provenance ∈ {dual_model_agree(genre/theme双模型一致), explicit_label(cognitive_skill教研解析显式标签)} — 无弱provenance, 不冒充人工核验; explicit_label 强于双模型 (A1金矿)"
