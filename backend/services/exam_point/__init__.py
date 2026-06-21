@@ -4,5 +4,5 @@
 """
 from .loader import (load_exam_points, exam_point_distribution, exam_point_shift,
                      bridge_exam_point_themes)
-from .cooccur import exam_point_cooccurrence
+from .cooccur import exam_point_cooccurrence, materialize_cooccurrence
 from .cognitive_skill import load_cognitive_skill, cognitive_skill_distribution

@@ -9,6 +9,8 @@
 """
 from __future__ import annotations
 
+import json
+
 import duckdb
 
 from backend.services.trend import scope
@@ -54,3 +56,32 @@ def exam_point_cooccurrence(con: duckdb.DuckDBPyConnection, min_co: int = 2) -> 
         slot["era_total_questions"] = seg.get("total", 0)
     return {"province_scope": "辽宁卷", "min_co": min_co,
             "layered_by": "卷制 era (PIT §3.1)", "by_era": by_era}
+
+
+def materialize_cooccurrence(con: duckdb.DuckDBPyConnection, min_co: int = 3) -> dict:
+    """co_occurs 关联性入图 (调 exam_point_cooccurrence 单算 + 持久化, 关联性成 KG 一等公民).
+
+    单一计算点 (Rule1): 共现仍只在 exam_point_cooccurrence 算一次, 本函数只持久化其输出。
+    一边/对 (跨 era 合一行, era 拆分进 evidence.by_era 守 PIT §3.1); 只落 distribution_eligible era +
+    min_co≥3 (防一次性同现伪关联, 谄媚死防线)。UNIQUE(src,dst,relation) 故同对跨 era 聚到一行。
+    """
+    con.execute("DELETE FROM edges WHERE relation = 'co_occurs'")
+    data = exam_point_cooccurrence(con, min_co=min_co)
+    pairs: dict[tuple, dict] = {}
+    for era_v, slot in data["by_era"].items():
+        if not slot.get("distribution_eligible"):
+            continue
+        for p in slot["pairs"]:
+            a = f"exam_point:{p['a_dim']}:{p['a_label']}"
+            b = f"exam_point:{p['b_dim']}:{p['b_label']}"
+            key = (a, b) if a < b else (b, a)
+            ev = pairs.setdefault(key, {"by_era": {}, "a_dim": p["a_dim"], "b_dim": p["b_dim"]})
+            ev["by_era"][era_v] = p["co_n"]
+    for (a, b), ev in pairs.items():
+        total = sum(ev["by_era"].values())
+        con.execute(
+            "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?, ?, ?, ?, ?)",
+            [a, b, "co_occurs", float(total),
+             json.dumps({"by_era": ev["by_era"], "total_co_n": total, "provenance": "cooccur_derived",
+                         "a_dim": ev["a_dim"], "b_dim": ev["b_dim"]}, ensure_ascii=False)])
+    return {"co_occurs 边": len(pairs), "min_co": min_co}

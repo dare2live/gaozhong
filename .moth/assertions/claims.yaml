@@ -151,6 +151,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute('SELECT COUNT(*) FROM exam_vocabulary').fetchone()[0];cov=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE gloss IS NOT NULL').fetchone()[0];nosrc=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE NOT (in_curriculum OR in_textbook)').fetchone()[0];ph=c.execute(\"SELECT COUNT(*) FROM exam_vocabulary WHERE word='photosynthesis'\").fetchone()[0];c.close();print('OK' if 3500<=n<=5000 and nosrc==0 and ph==0 and cov*100>=n*98 else f'FAIL {n} {cov} {nosrc} {ph}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: cooccur-materialized
+    claim: "考点共现关联性入图(件3第三腿): co_occurs 46边跨维(genre×theme)+era分层(PIT); 记叙文×人与社会等辽宁命题模式成图一等公民; 单算点service+持久化"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='co_occurs'\").fetchone()[0];s=c.execute(\"SELECT COUNT(*) FROM edges e JOIN nodes a ON a.concept_id=e.src_id JOIN nodes b ON b.concept_id=e.dst_id WHERE e.relation='co_occurs' AND ((a.label='记叙文' AND b.label='人与社会') OR (a.label='人与社会' AND b.label='记叙文'))\").fetchone()[0];c.close();print('OK' if n>=20 and s==1 else f'FAIL {n} {s}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: word-sense-cross-stage
     claim: "word_sense本体(master A1): 142确认跨阶段多义词→284节点+142 expands_sense边(初中→高中); 双模型判断+对抗验证(坑16过度检测305→142); ceiling天花板→上限新义"
     type: shell

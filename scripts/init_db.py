@@ -192,6 +192,8 @@ def main() -> None:
     print(f"  {load_exam_points(con)}")
     print(f"  桥接考点主题↔教材主题(4路追溯): {bridge_exam_point_themes(con)}")
     print(f"  设问类型金矿(KG-A1, 子题级explicit_label+血缘): {load_cognitive_skill(con)}")
+    from backend.services.exam_point import materialize_cooccurrence
+    print(f"  考点共现关联性入图(co_occurs, 跨维era分层): {materialize_cooccurrence(con)}")
 
     print("\n=== Layer 4j: 学情薄弱环节重算 (4i 考点边就绪后, 错题→真考点→薄弱; 取代Layer4e的token派生) ===")
     from backend.services import weakness
