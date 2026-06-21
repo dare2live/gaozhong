@@ -7,12 +7,14 @@ from __future__ import annotations
 
 import duckdb
 
+from scripts.lib.d0_baselines import B
+
 
 def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     """考点边/4路桥/薄弱环节 5 项 D0 校验 (新数据落地必入强校验)."""
     print("\n=== (22) 考点 canonical 维度 + 4路追溯 ===")
     n_ep = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point'").fetchone()[0]
-    check("tests_exam_point 边 ≥ 300", n_ep >= 300, f"{n_ep}")
+    check("tests_exam_point 边 ≥ 300", n_ep >= B('exam_point_min'), f"{n_ep}")
     bad_ep = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='tests_exam_point' AND ("
         "NOT EXISTS (SELECT 1 FROM nodes n WHERE n.concept_id=e.src_id AND n.node_type='question') "

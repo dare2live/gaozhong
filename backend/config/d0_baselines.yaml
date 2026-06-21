@@ -1,0 +1,35 @@
+# D0 计数基线注册表 (判断值数据化 §3.5; 用户 2026-06-21 "不要硬编码, 全局用配置文件管理").
+#
+# 散在 scripts/data_accuracy_check.py + scripts/lib/d0_*.py 的硬编码计数基线(== 锚 / >= 地板)集中此处。
+# 改基线 = 改本文件一行 (不动代码); 每条带 op(eq/ge/le, 双值 range 用 min/max) + 真相源注。
+# 读: scripts/lib/d0_baselines.py B('key') / RANGE('key')。
+#
+# eq=回归锚(精确, 数据改进须显式更新基线防静默漂移); ge=召回地板(防丢册/塌缩); range=区间。
+
+baselines:
+  # 教材/课标地基 (data_accuracy_check.py)
+  textbooks:            {value: 14,   op: eq, note: "8版×册 教材PDF全下"}
+  manifest_min:         {value: 14,   op: ge, note: "manifest 行下界"}
+  cefr_vocab:           {value: 3052, op: eq, note: "课标附录2词表(补p182/183漏页+截国家表3误纳); 级别由星数现算见content_gates cefr_level_from_stars"}
+  unit_vocab_min:       {value: 3900, op: ge, note: "教材生词表下界(renjiao召回1957→2206后总~4231); 防丢册回归"}
+  grammar_items:        {value: 108,  op: eq, note: "课标附录3语法项(补限制性/非限制性定从, 续行合并见content_gates grammar_no_truncation)"}
+  grammar_occ_min:      {value: 15,   op: ge, note: "grammar_occurrences §1.2 语法per-unit 下界"}
+  # 图谱规模 (data_accuracy_check.py)
+  nodes_min:            {value: 4000, op: ge, note: "nodes 下界"}
+  edges_min:            {value: 20000, op: ge, note: "edges 下界"}
+  audit_ok_min:         {value: 40,   op: ge, note: "audit OK 项下界"}
+  # 真题计数锚 (data_accuracy_check.py + d0_zhongkao_check.py)
+  gaokao_total:         {value: 466,  op: eq, note: "高考真题 B1去重后基线(改动须显式更新防漂移)"}
+  gaokao_liaoning:      {value: 182,  op: eq, note: "辽宁卷 新课标II §7"}
+  zhongkao_total:       {value: 90,   op: eq, note: "中考 2024×45+2025×45"}
+  zhongkao_per_year:    {value: 45,   op: eq, note: "中考每年45题"}
+  # KG 维度 (d0_*.py)
+  exam_dict_min:        {value: 3500, op: ge, note: "考试词典规模下界(课标∪教材真超纲)"}
+  exam_dict_max:        {value: 5000, op: le, note: "考试词典规模上界(防CET/GRE注水)"}
+  cognitive_skill:      {value: 15,   op: eq, note: "设问类型边(2023真辽宁II卷, 真值锚剔2021甲卷)"}
+  cooccur_min:          {value: 15,   op: ge, note: "考点共现边下界(删杜撰theme_l3共现27后实测19)"}
+  exam_point_min:       {value: 300,  op: ge, note: "tests_exam_point 边下界"}
+  word_glosses_min:     {value: 5000, op: ge, note: "释义词典规模下界(教材+中考)"}
+  word_sense_cross_min: {value: 300,  op: ge, note: "跨阶段word_sense候选下界"}
+  theme_vocab_min:      {value: 30,   op: ge, note: "characterizes_theme 主题特征词边下界"}
+  junior_grammar:       {value: 71,   op: eq, note: "初中语法点(grammar:jr)"}

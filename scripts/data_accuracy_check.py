@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 import duckdb
 
 from scripts.lib.db_lock import DbLocked, connect_readonly_with_retry  # 坑15 锁容错共享单点
+from scripts.lib.d0_baselines import B  # 计数基线配置化(§3.5 no-hardcode); backend/config/d0_baselines.yaml
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 
@@ -45,8 +46,8 @@ def _check_1_manifest(con):
     n_mani = con.execute("SELECT COUNT(*) FROM file_manifest").fetchone()[0]
     n_tb = con.execute("SELECT COUNT(*) FROM textbooks").fetchone()[0]
     n_no_sha = con.execute("SELECT COUNT(*) FROM textbooks WHERE pdf_sha256 IS NULL OR pdf_sha256=''").fetchone()[0]
-    check("manifest 行 ≥ 14", n_mani >= 14, f"{n_mani}")
-    check("textbooks == 14", n_tb == 14, f"{n_tb}")
+    check("manifest 行 ≥ 14", n_mani >= B('manifest_min'), f"{n_mani}")
+    check("textbooks == 14", n_tb == B('textbooks'), f"{n_tb}")
     check("每教材 PDF sha 锁", n_no_sha == 0, "textbooks.pdf_sha256 全非空")
 
 
@@ -55,10 +56,10 @@ def _check_2_vocab(con):
     n_cefr = con.execute("SELECT COUNT(*) FROM cefr_vocab").fetchone()[0]
     n_uvi = con.execute("SELECT COUNT(*) FROM unit_vocab_intro").fetchone()[0]
     lvls = {r[0] for r in con.execute("SELECT DISTINCT cefr_level FROM cefr_vocab").fetchall()}
-    check("cefr_vocab 3052", n_cefr == 3052, f"{n_cefr}")  # 2986→3055→3052: 补 p182/183 漏抽页 + 截国家表 3 误纳
+    check("cefr_vocab 3052", n_cefr == B('cefr_vocab'), f"{n_cefr}")  # 2986→3055→3052: 补 p182/183 漏抽页 + 截国家表 3 误纳
     # 4253→3982: 单一区段重写后 renjiao(2132→1957)+waiyan(2121→2025) 剔除 331+96 跨单元重复
     # /glossary 污染行 + renjiao 补回漏词。净降是去污结果(更准非更少), 下界防丢册回归。
-    check("unit_vocab_intro ≥ 3900", n_uvi >= 3900, f"{n_uvi}")
+    check("unit_vocab_intro ≥ 3900", n_uvi >= B('unit_vocab_min'), f"{n_uvi}")
     check("cefr 3 级全在", lvls == {"义教", "必修", "选必"})
     # 防回归(坑1, 强化版): 旧门 (MIN<20 AND MAX>50) 只抓"单单元塌缩+同册有兄弟>50"一种形态,
     # 漏报整册齐塌 + 完全无感 331 跨单元重复(膨胀非塌缩)。换 2 个鲁棒断言:
@@ -88,12 +89,12 @@ def _check_3_grammar(con):
         "SELECT COUNT(*) FROM grammar_items WHERE parent_id IS NOT NULL "
         "AND parent_id NOT IN (SELECT grammar_item_id FROM grammar_items)"
     ).fetchone()[0]
-    check("grammar_items 行 == 108", n_g == 108, f"{n_g}")  # 106→108: 补限制性/非限制性定语从句(原_skip_line误杀)
+    check("grammar_items 行 == 108", n_g == B('grammar_items'), f"{n_g}")  # 106→108: 补限制性/非限制性定语从句(原_skip_line误杀)
     check("grammar DAG 无环 (audit OK)", _audit_ok(con, "grammar_dag"))
     check("grammar parent_id 引用完整", n_orphan == 0, f"orphan={n_orphan}")
     n_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences").fetchone()[0]  # §1.2 语法per-unit
     bad_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences WHERE grammar_item_id NOT IN (SELECT grammar_item_id FROM grammar_items)").fetchone()[0]
-    check("grammar_occurrences 已填(§1.2 语法per-unit)", n_occ >= 15, f"{n_occ}")
+    check("grammar_occurrences 已填(§1.2 语法per-unit)", n_occ >= B('grammar_occ_min'), f"{n_occ}")
     check("grammar_occurrences FK 有效", bad_occ == 0, f"{bad_occ}")
 
 
@@ -107,9 +108,9 @@ def _check_6_graph(con):
     print("\n=== (6) 知识图谱 ===")
     n_n = con.execute("SELECT COUNT(*) FROM nodes").fetchone()[0]
     n_e = con.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
-    check("nodes ≥ 4000", n_n >= 4000, f"{n_n}")
+    check("nodes ≥ 4000", n_n >= B('nodes_min'), f"{n_n}")
     # 2026-06-15 去停用词污染后 tests_word 边减少 (41% 是 the/it 噪声边); 阈值从 30000 降到 20000 反映清洗后真实图谱
-    check("edges ≥ 20000", n_e >= 20000, f"{n_e}")
+    check("edges ≥ 20000", n_e >= B('edges_min'), f"{n_e}")
     for k in ("graph_edge_validity", "graph_orphans", "graph_grammar_dag", "graph_relation_dict"):
         check(f"{k} OK", _audit_ok(con, k))
 
@@ -121,7 +122,7 @@ def _check_7_audit_summary(con):
     oks = con.execute("SELECT COUNT(*) FROM audit_findings WHERE severity='OK'").fetchone()[0]
     check("0 FAIL", fails == 0, f"{fails}")
     check("0 WARN", warns == 0, f"{warns}")
-    check("OK ≥ 40", oks >= 40, f"{oks}")
+    check("OK ≥ 40", oks >= B('audit_ok_min'), f"{oks}")
 
 
 def _check_8_course_audits(con):
@@ -241,8 +242,8 @@ def _check_21_exam_provenance(con):
     # 21g: 高考计数正向锁 (审计: 防漂移; B1去重后基线=466/182 非陈旧472/188; 增减须显式改基线)
     n_gk, n_ln = con.execute(
         "SELECT COUNT(*), COUNT(*) FILTER (WHERE province LIKE '辽宁%') FROM exam_questions").fetchone()
-    check("高考真题计数基线 466 (B1 去重后; 改动须显式更新基线防漂移)", n_gk == 466, f"{n_gk}")
-    check("高考辽宁卷计数基线 182 (新课标II §7)", n_ln == 182, f"{n_ln}")
+    check("高考真题计数基线 466 (B1 去重后; 改动须显式更新基线防漂移)", n_gk == B('gaokao_total'), f"{n_gk}")
+    check("高考辽宁卷计数基线 182 (新课标II §7)", n_ln == B('gaokao_liaoning'), f"{n_ln}")
 
 
 # ===== helpers (CC ≤ 4) =====

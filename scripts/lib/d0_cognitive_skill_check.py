@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import duckdb
 
+from scripts.lib.d0_baselines import B
+
 _DIM = "json_extract_string(evidence_json,'$.dimension')='cognitive_skill'"
 
 
@@ -15,7 +17,7 @@ def check_cognitive_skill(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (30) 设问类型 cognitive_skill 金矿 (2023真辽宁II卷, 真值锚剔2021甲卷, 坑16/§7) ===")
     n_edge = con.execute(
         f"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND {_DIM}").fetchone()[0]
-    check("cognitive_skill 边 == 15 (2023真辽宁II卷; 真值锚交叉剔2021甲卷源误标)", n_edge == 15, f"{n_edge}")
+    check("cognitive_skill 边 == 15 (2023真辽宁II卷; 真值锚交叉剔2021甲卷源误标)", n_edge == B('cognitive_skill'), f"{n_edge}")
 
     # §7: 全 2023, 无误标年混入 (2021甲卷已被真值锚交叉剔除)
     bad_year = con.execute(

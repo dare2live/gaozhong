@@ -7,11 +7,13 @@ from __future__ import annotations
 
 import duckdb
 
+from scripts.lib.d0_baselines import B
+
 
 def check_theme_vocab(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (36) 主题特征词汇关联性 characterizes_theme (词汇↔主题) ===")
     n = con.execute("SELECT COUNT(*) FROM edges WHERE relation='characterizes_theme'").fetchone()[0]
-    check("characterizes_theme 边 ≥30 (主题特征词入图)", n >= 30, f"{n}")
+    check("characterizes_theme 边 ≥30 (主题特征词入图)", n >= B('theme_vocab_min'), f"{n}")
     bad = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='characterizes_theme' AND ("
         "NOT EXISTS (SELECT 1 FROM nodes WHERE concept_id=e.src_id AND node_type='word') "

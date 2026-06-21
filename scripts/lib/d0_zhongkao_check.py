@@ -7,15 +7,17 @@ from __future__ import annotations
 
 import duckdb
 
+from scripts.lib.d0_baselines import B
+
 
 def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
     """中考真题 DB 入库 4 项 D0 校验 (exam_type 判别维 + 视图隔离)."""
     print("\n=== (27) 中考真题入库 (exam_type 判别 + 视图隔离, K12 inc1) ===")
     n_zk = con.execute("SELECT COUNT(*) FROM exam_questions_all WHERE exam_type='中考'").fetchone()[0]
-    check("中考真题 90 题入库 (2024×45 + 2025×45)", n_zk == 90, f"{n_zk}")
+    check("中考真题 90 题入库 (2024×45 + 2025×45)", n_zk == B('zhongkao_total'), f"{n_zk}")
     by_y = dict(con.execute(
         "SELECT year, COUNT(*) FROM exam_questions_all WHERE exam_type='中考' GROUP BY year").fetchall())
-    check("中考 2024/2025 各 45 题", by_y.get(2024) == 45 and by_y.get(2025) == 45, f"{by_y}")
+    check("中考 2024/2025 各 45 题", by_y.get(2024) == B('zhongkao_per_year') and by_y.get(2025) == B('zhongkao_per_year'), f"{by_y}")
     bad = con.execute(
         "SELECT COUNT(*) FROM exam_questions_all WHERE exam_type='中考' "
         "AND (province NOT LIKE '辽宁%' OR paper_type NOT LIKE '辽宁省统一%')").fetchone()[0]
@@ -33,7 +35,7 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
     bad_g = con.execute(
         "SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%' AND attrs_json NOT LIKE '%初中%'").fetchone()[0]
     check("初中 grammar 节点=71 (grammar:jr: 命名空间不碰高中, 全 stage=初中)",
-          n_jrg == 71 and bad_g == 0, f"{n_jrg} 节点, {bad_g} 无初中标")
+          n_jrg == B('junior_grammar') and bad_g == 0, f"{n_jrg} 节点, {bad_g} 无初中标")
     n_at = con.execute("SELECT COUNT(*) FROM edges WHERE relation='at_stage'").fetchone()[0]
     check("stage 维 materialize: at_stage 边覆盖初中+高中词 (inc2+inc3, ≥2000)", n_at >= 2000, f"{n_at}")
     # inc3: 跨阶段 deepens 边 (10维语法蓝图 K12衔接); 审计HIGH#7: 全71初中语法点都有衔接边(精确59+别名12), 无衔接孤儿

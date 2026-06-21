@@ -8,6 +8,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import duckdb
+
+from scripts.lib.d0_baselines import B
 import yaml
 
 _VARIANTS = Path(__file__).resolve().parents[2] / "backend" / "config" / "word_variants.yaml"
@@ -24,7 +26,7 @@ def _known_unglossable() -> set[str]:
 def check_exam_dict(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (33) 考试词典 (Canonical 词本体; 课标∪教材真超纲) ===")
     n = con.execute("SELECT COUNT(*) FROM exam_vocabulary").fetchone()[0]
-    check("考试词典规模 3500–5000 (最小: 课标∪教材真超纲, 无CET/GRE注水)", 3500 <= n <= 5000, f"{n}")
+    check("考试词典规模 3500–5000 (最小: 课标∪教材真超纲, 无CET/GRE注水)", B('exam_dict_min') <= n <= B('exam_dict_max'), f"{n}")
     # 每词至少一真相源 (不凭空造词)
     no_src = con.execute(
         "SELECT COUNT(*) FROM exam_vocabulary WHERE NOT (in_curriculum OR in_textbook)").fetchone()[0]
