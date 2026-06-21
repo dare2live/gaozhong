@@ -13,6 +13,10 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+import sys
+sys.path.insert(0, str(ROOT))
+from scripts.lib.db_lock import DbLocked, connect_readonly_with_retry  # 坑15 锁容错共享单点
+
 S = ROOT / "data" / "junior_high" / "structured"
 EXAMS = ROOT / "data" / "junior_high" / "exams"
 FAIL = []
@@ -50,8 +54,7 @@ def _whitelist() -> set:
         if os.path.exists(p):
             wl |= {l.split(",")[0].split("\t")[0].strip().lower()
                    for l in open(p, encoding="utf-8", errors="ignore") if l.strip()}
-    import duckdb
-    c = duckdb.connect(str(ROOT / "data/db/gaozhong.duckdb"), read_only=True)
+    c = connect_readonly_with_retry(ROOT / "data/db/gaozhong.duckdb")  # 锁容错(坑15): init_db重建中重试/延后
     wl |= {r[0] for r in c.execute("SELECT word FROM cefr_vocab").fetchall()}
     c.close()
     wl |= {r["word"] for r in _words("hujiao_vocab.jsonl")}
@@ -131,6 +134,14 @@ def _check_zhongkao() -> None:
 
 def main() -> int:
     print("=== 初中子系统 D0 校验 (坑17 补门, 审计 F1-F8) ===")
+    try:
+        return _run_checks()
+    except DbLocked as e:
+        print(f"⏸ 初中 D0 校验延后: DB 被写连接占用 (疑 init_db 重建中), 非数据错误。重建完成后下次自动校验。{e}")
+        return 3  # 延后 (stop_gate 视为非阻断, 坑15; 区别 1=真失败)
+
+
+def _run_checks() -> int:
     cur, hj = _words("curriculum_vocab.jsonl"), _words("hujiao_vocab.jsonl")
     _check_curriculum(cur)
     _check_hujiao(hj)

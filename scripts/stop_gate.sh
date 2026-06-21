@@ -67,8 +67,13 @@ if [ -f data/db/gaozhong.duckdb ] && [ -f scripts/data_accuracy_check.py ]; then
 fi
 
 # 1c. 初中子系统 D0 (坑17/坑21: 声明的门接进执行点; 初中产物 8 不变量, Phase2.6 已全绿)
+#     exit 3 = DB 被写连接占用(init_db 重建中) → 延后, 非阻断 (坑15 锁容错共享单点 db_lock)
 if [ -f scripts/junior_accuracy_check.py ] && [ -f data/junior_high/structured/curriculum_vocab.jsonl ]; then
-  if ! python3 scripts/junior_accuracy_check.py > /tmp/junior_check.log 2>&1; then
+  python3 scripts/junior_accuracy_check.py > /tmp/junior_check.log 2>&1
+  jr_rc=$?
+  if [ "$jr_rc" -eq 3 ]; then
+    echo "[stop-gate] ⏸ 初中 D0 校验延后: DB 正被 init_db 重建占用 (非数据错误)" >&2
+  elif [ "$jr_rc" -ne 0 ]; then
     fails="$fails
   ❌ 初中 D0 违反: scripts/junior_accuracy_check.py 失败 — 看 /tmp/junior_check.log"
   fi
