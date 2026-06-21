@@ -41,12 +41,13 @@ def extract_grammar_items(reader: PdfReader) -> list[dict]:
 
 
 def extract_theme_contexts(_reader: PdfReader) -> list[dict]:
-    """主题语境: 三大语境 + 10 主题群 + 35 子主题 (硬编码自 theme_contexts_hardcoded.json).
-    数据源: 课标 §四(一) p22-46, 出表方便人工维护 / 后续 PDF 实抽对比.
+    """主题语境: 三大语境(L1) + 10 主题群(L2) (硬编码 structure 自 theme_contexts_hardcoded.json).
+    数据源: 课标 §四(一) 表2 p22-23. 官方仅 L1+L2 可枚举 (亲验 PDF: "第三级"是32条段落式内容要求,
+    只挂 L1、一句含多概念, 非子主题词条)。曾有 35 个 level3"子主题"= 杜撰, 经真值核验已废 (2026-06-21)。
     """
     spec_path = OUT_DIR / "theme_contexts_hardcoded.json"
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
-    structure, level3 = spec["structure"], spec["level3"]
+    structure = spec["structure"]
     rows: list[dict] = []
     for lvl1, groups in structure.items():
         rows.append({"theme_context_id": lvl1, "level1": lvl1, "level2": None,
@@ -55,10 +56,6 @@ def extract_theme_contexts(_reader: PdfReader) -> list[dict]:
             rows.append({"theme_context_id": f"{lvl1}/{g}", "level1": lvl1,
                           "level2": g, "level3": None,
                           "source": f"{SOURCE_TAG} (json hardcoded)"})
-            for sub in level3.get(f"{lvl1}/{g}", []):
-                rows.append({"theme_context_id": f"{lvl1}/{g}/{sub}",
-                              "level1": lvl1, "level2": g, "level3": sub,
-                              "source": f"{SOURCE_TAG} (json hardcoded)"})
     return rows
 
 

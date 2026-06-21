@@ -11,7 +11,7 @@ import duckdb
 def check_cooccur(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (35) 考点共现关联性 co_occurs (件3第三条腿入图) ===")
     n = con.execute("SELECT COUNT(*) FROM edges WHERE relation='co_occurs'").fetchone()[0]
-    check("co_occurs 边 ≥20 (辽宁跨维考点共现入图)", n >= 20, f"{n}")
+    check("co_occurs 边 ≥15 (辽宁跨维考点共现入图; 删杜撰theme_l3共现27条后实测19)", n >= 15, f"{n}")
     # 两端都是 exam_point
     bad_end = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='co_occurs' AND ("

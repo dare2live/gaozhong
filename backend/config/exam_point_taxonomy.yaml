@@ -10,16 +10,17 @@
 #   convention          — 教辅通用名/民间约定 (映射到官方, 不单独入 canonical)
 #
 # 标注落 nodes(node_type=exam_point) + edges(tests_exam_point), evidence_json 带 provenance+confidence。
-# 真相源: theme_contexts.jsonl(48, 课标L1/L2逐字) + grammar_items.jsonl(106) + 上述官方文件。
+# 真相源: theme_contexts.jsonl(13行, 课标L1/L2逐字, 清杜撰L3后) + grammar_items.jsonl(106) + 上述官方文件。
 
 version: 2
 status: draft  # 细化标注落库前为 draft
 
 dimensions:
 
-  # 维度 1: 主题语境 (课标官方三级: 3大主题 → 10主题群(L2) → 35子主题(L3); canonical 用到 L2)
+  # 维度 1: 主题语境 (课标官方仅两级可枚举: 3大主题语境(L1) → 10主题群(L2); canonical 用到 L2)
+  #   注: 课标"第三级"是32条段落式"内容要求"(只挂L1、一句含多概念), 非子主题词条; 曾杜撰35个L3已废(2026-06-21)。
   theme_context:
-    desc: 课标官方主题语境层级 (本表 L1+L2 与课标逐字一致, 见 theme_contexts.jsonl)
+    desc: 课标官方主题语境层级 (本表 L1+L2 与课标表2逐字一致; 无可枚举L3, 见 theme_contexts.jsonl)
     provenance: official_curriculum
     curriculum_ref: "普通高中英语课程标准(2017年版2020修订) §主题语境"
     applies_to: [阅读理解, 完形填空, "完形填空(七选五/语篇)", 语法填空, 读后续写]

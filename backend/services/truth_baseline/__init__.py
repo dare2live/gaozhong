@@ -8,8 +8,9 @@ from __future__ import annotations
 from .base import Deviation, TruthChecker, load_anchors
 from .truth_exam import ExamTruthChecker
 from .truth_gloss import GlossaryTruthChecker
+from .truth_theme import ThemeTruthChecker
 
-CHECKERS: list[TruthChecker] = [ExamTruthChecker(), GlossaryTruthChecker()]
+CHECKERS: list[TruthChecker] = [ExamTruthChecker(), GlossaryTruthChecker(), ThemeTruthChecker()]
 
 __all__ = ["CHECKERS", "Deviation", "TruthChecker", "load_anchors", "collect_deviations", "run_truth_checks"]
 

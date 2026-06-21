@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parents[3]
 _EP_DIR = ROOT / "data" / "structured" / "exam_point"
 LABELS_PATH = _EP_DIR / "genre_theme_labels.jsonl"
 THEME_L2_PATH = _EP_DIR / "theme_l2_labels.jsonl"
-THEME_L3_PATH = _EP_DIR / "theme_l3_labels.jsonl"  # 课标第三级 35 子主题 (dual_model opus+sonnet 一致)
+# 注: 课标主题语境官方仅 L1(3大主题)+ L2(10主题群) 可枚举 (亲验 PDF 表2)。
+# 曾有 theme_l3(35"子主题")= 杜撰 taxonomy + dual_model 贴标签, 经真值核验已废 (2026-06-21)。
 
 # 标注字段 dimension → exam_point node 维度名 (与 taxonomy node_id_pattern 对齐)
 # theme=L1(3大主题, 粗) 与 theme_l2=课标官方10主题群(细) 并存 (Rule 6 可扩展; L2 含 L1)
@@ -95,17 +96,7 @@ def load_exam_points(con: duckdb.DuckDBPyConnection) -> dict:
         nm, em, sk = _add_point_edge(con, qnode, "theme_l2",
                                      row.get("theme_l2"), row.get("prov"), row.get("evidence"))
         nodes_made += nm; edges_made += em; skipped += sk
-    # 课标第三级 35 子主题 (颗粒度对齐官方最深可执行层; 只 dual_model_agree 非 NA)
-    l3_rows = _read_jsonl(THEME_L3_PATH)
-    for row in l3_rows:
-        qnode = f"question:{row['question_id']}"
-        if not _node_exists(con, qnode):
-            continue
-        nm, em, sk = _add_point_edge(con, qnode, "theme_l3",
-                                     row.get("theme_l3"), row.get("prov"), row.get("evidence"))
-        nodes_made += nm; edges_made += em; skipped += sk
     return {"labels": len(_read_jsonl(LABELS_PATH)), "theme_l2_labels": len(l2_rows),
-            "theme_l3_labels": len(l3_rows),
             "nodes_made": nodes_made, "edges_made": edges_made, "skipped_needs_review": skipped}
 
 
@@ -119,6 +110,7 @@ def bridge_exam_point_themes(con: duckdb.DuckDBPyConnection) -> dict:
     真题 → exam_point:theme_l2:历史社会文化 → (theme_aligns) → theme:人与社会/历史社会文化
     → (theme_of_unit) → 教材单元。让老师从"这题考某主题"跳到"哪个教材单元也讲该主题"。
     匹配: L1 exam_point:theme_context:{X} → theme:{X}; L2 exam_point:theme_l2:{X} → theme:%/{X}(2级路径)。
+    (官方仅 L1/L2 两级; 杜撰 L3 桥已废, 见 load_exam_points 注。)
     """
     made = 0
     # L1: theme_context → theme:{label}
@@ -133,13 +125,6 @@ def bridge_exam_point_themes(con: duckdb.DuckDBPyConnection) -> dict:
         "JOIN nodes t ON t.node_type='theme' AND t.concept_id LIKE 'theme:%/' || ep.label "
         "  AND length(t.concept_id) - length(replace(t.concept_id, '/', '')) = 1 "
         "WHERE ep.concept_id LIKE 'exam_point:theme_l2:%'").fetchall():
-        made += _bridge_edge(con, ep, tgt)
-    # L3: theme_l3 子主题 → theme:{L1}/{群}/{子主题} (3 级路径: 恰 2 个斜杠) — 颗粒度对齐课标第三级
-    for ep, tgt in con.execute(
-        "SELECT ep.concept_id, t.concept_id FROM nodes ep "
-        "JOIN nodes t ON t.node_type='theme' AND t.concept_id LIKE 'theme:%/%/' || ep.label "
-        "  AND length(t.concept_id) - length(replace(t.concept_id, '/', '')) = 2 "
-        "WHERE ep.concept_id LIKE 'exam_point:theme_l3:%'").fetchall():
         made += _bridge_edge(con, ep, tgt)
     return {"theme_aligns_edges": made}
 

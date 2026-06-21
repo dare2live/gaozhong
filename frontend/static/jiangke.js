@@ -12,8 +12,8 @@
   const { fetchJSON, conceptLink, registerTab } = G;
 
   const ERA = "2021+_新高考II";
-  const CATS = [{ name: "体裁", c: "#c1272d" }, { name: "主题语境", c: "#0a4d75" }, { name: "主题群", c: "#1d9e75" }, { name: "子主题", c: "#ba7517" }];
-  const DIMCAT = { genre: 0, theme_context: 1, theme_l2: 2, theme_l3: 3 };
+  const CATS = [{ name: "体裁", c: "#c1272d" }, { name: "主题语境", c: "#0a4d75" }, { name: "主题群", c: "#1d9e75" }];
+  const DIMCAT = { genre: 0, theme_context: 1, theme_l2: 2 };
   // 高 gaokao 命中考点词 (teaching_hint 双印证), 当堂快查示例
   const QUICK = [["word:time", "time"], ["word:people", "people"], ["word:make", "make"], ["word:work", "work"], ["word:important", "important"], ["word:environment", "environment"], ["word:experience", "experience"]];
   let chart = null;

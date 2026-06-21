@@ -157,9 +157,9 @@ assertions:
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='characterizes_theme'\").fetchone()[0];s=c.execute(\"SELECT COUNT(*) FROM edges e JOIN nodes n ON n.concept_id=e.dst_id WHERE e.relation='characterizes_theme' AND e.src_id='word:plastic' AND n.label='环境保护'\").fetchone()[0];c.close();print('OK' if n>=30 and s==1 else f'FAIL {n} {s}')"]
     expect: {op: regex, pattern: "OK"}
   - id: cooccur-materialized
-    claim: "考点共现关联性入图(件3第三腿): co_occurs 46边跨维(genre×theme)+era分层(PIT); 记叙文×人与社会等辽宁命题模式成图一等公民; 单算点service+持久化"
+    claim: "考点共现关联性入图(件3第三腿): co_occurs 19边跨维(genre×theme_l2/context)+era分层(PIT); 记叙文×人与社会等辽宁命题模式成图一等公民; 单算点service+持久化 (删杜撰theme_l3共现27条后, 原46)"
     type: shell
-    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='co_occurs'\").fetchone()[0];s=c.execute(\"SELECT COUNT(*) FROM edges e JOIN nodes a ON a.concept_id=e.src_id JOIN nodes b ON b.concept_id=e.dst_id WHERE e.relation='co_occurs' AND ((a.label='记叙文' AND b.label='人与社会') OR (a.label='人与社会' AND b.label='记叙文'))\").fetchone()[0];c.close();print('OK' if n>=20 and s==1 else f'FAIL {n} {s}')"]
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='co_occurs'\").fetchone()[0];s=c.execute(\"SELECT COUNT(*) FROM edges e JOIN nodes a ON a.concept_id=e.src_id JOIN nodes b ON b.concept_id=e.dst_id WHERE e.relation='co_occurs' AND ((a.label='记叙文' AND b.label='人与社会') OR (a.label='人与社会' AND b.label='记叙文'))\").fetchone()[0];c.close();print('OK' if n>=15 and s==1 else f'FAIL {n} {s}')"]
     expect: {op: regex, pattern: "OK"}
   - id: word-sense-cross-stage
     claim: "word_sense本体(master A1): 142确认跨阶段多义词→284节点+142 expands_sense边(初中→高中); 双模型判断+对抗验证(坑16过度检测305→142); ceiling天花板→上限新义"
@@ -310,17 +310,11 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -A12 'def _grammar_exam_trace' backend/services/lesson_plan.py | grep -q \"province LIKE '辽宁\" && echo SCOPED || echo LEAK"]
     expect: {op: regex, pattern: "SCOPED"}
-  - id: exam-point-theme-l3-substrate
-    claim: "颗粒度对齐课标第三级: 辽宁真题挂 theme_l3 子主题边 ≥80 (dual_model opus+sonnet 一致, 诚实跳过分歧)"
+  - id: no-theme-l3-fabricated
+    claim: "防回归: 课标主题语境官方仅 L1(3)+L2(10)可枚举(亲验PDF表2), 无'第三级子主题'。曾有35个杜撰theme_l3(extract _reader不读PDF直接塞 + dual_model贴标签)经真值核验已废(2026-06-21); 锁住'无'防extract重建静默塞回 — theme_l3边 + theme_contexts.level3 + theme depth2叶节点 三处皆0"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM edges e JOIN exam_questions q ON 'question:'||q.question_id=e.src_id WHERE e.relation='tests_exam_point' AND e.dst_id LIKE 'exam_point:theme_l3:%' AND q.province LIKE '辽宁%'"
-    expect: {op: ">=", value: 80}
-  - id: exam-point-theme-l3-bridged
-    claim: "theme_l3 节点全桥到教材 theme (4路追溯不断缝; 0 未桥)"
-    type: duckdb_sql
-    database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM nodes n WHERE n.concept_id LIKE 'exam_point:theme_l3:%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id AND e.relation='theme_aligns')"
+    query: "SELECT (SELECT count(*) FROM edges WHERE dst_id LIKE 'exam_point:theme_l3:%' OR src_id LIKE 'exam_point:theme_l3:%') + (SELECT count(*) FROM theme_contexts WHERE level3 IS NOT NULL AND TRIM(level3)<>'') + (SELECT count(*) FROM nodes WHERE node_type='theme' AND length(concept_id)-length(replace(concept_id,'/',''))>=2)"
     expect: {op: "==", value: 0}
   - id: graph-popup-questions-liaoning-only
     claim: "讲课浮窗真题 facet 只来自 qbank(157辽宁, §7); _fetch_questions INNER JOIN question_bank 不漏外省空行"

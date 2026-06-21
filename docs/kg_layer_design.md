@@ -52,7 +52,7 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 |---|---|---|---|---|
 | 单词 | node_type=word + 富 attrs(stage/cefr/exam_status) | 课标3500+中考1600 / exam_coverage 单writer | mature | 复用 |
 | 题材 genre | exam_point dim=genre (6类) | dual_model_agree | mature | 复用 |
-| 主题 theme | exam_point dim=theme_context/theme_l2/theme_l3 | 课标官方3范畴/10群/35子主题 | mature(L3补缺口20→35, 辽宁46%→提) | 复用 |
+| 主题 theme | exam_point dim=theme_context/theme_l2 | 课标官方3大主题语境/10主题群 (亲验PDF表2: 无可枚举第三级; 杜撰theme_l3已废2026-06-21) | mature(锁L1/L2官方层) | 复用 |
 | 题型 qtype | node_type=qtype + question_type 边(结构性: 阅读/完形/语法填空/续写/应用文/听力) | 卷型结构 | mature | 复用不动 |
 | **设问类型 cognitive_skill** | exam_point dim=cognitive_skill, **passage级聚合**(先不建子题node) | **真题教研解析显式标签(explicit_label, 高于dual_model)**; 实测 **38 题有 analysis** | **absent→金矿首建** | 复用 |
 | **语法考点 grammar_point** | exam_point dim=grammar_point + 新 `tests_grammar_point` 边 → grammar课标节点 `aligns_to` | 辽宁语法填空真题 + grammar_point_distribution.json(dual_model_avg分歧0.04); **旧弱 tests_grammar(84%非辽宁旧MCQ)降级 legacy_mcq_keyword 不进辽宁分布** | absent(节点全/边弱) | 复用grammar节点+新边 |

@@ -47,3 +47,23 @@ exam:
       lifecycle: active
       provenance: "≥2源(DB local_pdf + web: Shrewsbury/Detrinidad在2025全国II卷)"
       markers: ["Shrewsbury", "Detrinidad"]
+
+theme:
+  provenance_note: |
+    课标主题语境(2017版2020修订)§四(一)表2 (亲验 PDF 物理页22-23): 官方仅 L1(3大主题语境)+
+    L2(10主题群)可枚举。所谓"第三级"在课标里是 32 条段落式"主题语境内容要求"(只挂 L1、一句含多
+    概念、官方未归到主题群), 非子主题词条 → 不可枚举成 taxonomy 节点。
+    ⚠️ 2026-06-21 真值核验: 库内曾有 35 个 theme_l3"子主题"(生活习惯/学习方法/文化遗产/科技发展…),
+    PDF 表2 里一个都没有 = 杜撰(extract_curriculum _reader 故意不读PDF 直接塞 hardcoded标签 +
+    dual_model_l3 往杜撰标尺贴标签, 43% NA)。131 条边/35行/35节点已废。教训: taxonomy 颗粒度必须
+    锚第一手源最深"可枚举"层, 不发明子主题(坑1假源标签 + 坑16双模型系统性同错)。
+  anchors:
+    "official_l1_l2":
+      lifecycle: active                                  # 强制: 官方L2全在, 误删→BLOCK
+      provenance: "亲验PDF表2 p22-23 + extract structure逐字 (3 L1 + 10 L2)"
+      markers: ["生活与学习", "做人与做事", "社会服务与人际沟通", "文学、艺术与体育",
+                "历史、社会与文化", "科学与技术", "自然生态", "环境保护", "灾害防范", "宇宙探索"]
+    "no_enumerable_l3":
+      lifecycle: no_anchor                               # 课标无可枚举第三级 → UNKNOWN不冒充(用户立法3)
+      provenance: "课标'第三级'=32条段落式内容要求, 非词条 → 无可锚的子主题taxonomy"
+      note: "禁任何 exam_point:theme_l3 节点/边 + theme depth2叶节点 + theme_contexts.level3; 锁见 ThemeTruthChecker + d0_exam_point_check._check_no_theme_l3 + moth no-theme-l3-fabricated"

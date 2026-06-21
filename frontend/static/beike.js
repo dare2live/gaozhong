@@ -14,7 +14,7 @@
 
   const ERA_NEW = "2021+_新高考II";
   const ERA_OLD = "2015-2020_旧课标II";
-  const DIM_LABEL = { genre: "体裁", theme_context: "主题语境", theme_l2: "主题群·课标10群", theme_l3: "子主题" };
+  const DIM_LABEL = { genre: "体裁", theme_context: "主题语境", theme_l2: "主题群·课标10群" };
   const C = { blue: "#185FA5", blueL: "#85B7EB", up: "#993C1D", upBg: "#FAECE7", down: "#185FA5", downBg: "#E6F1FB", grey: "#B4B2A9" };
   const STATUS = { core: ["核心", "#185FA5"], standard: ["标准", "#1D9E75"], HV_extra: ["高频超纲", "#BA7517"], LV_extra: ["低频超纲", "#B4B2A9"] };
 
