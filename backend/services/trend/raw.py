@@ -81,6 +81,34 @@ def type_freq_by_year(con: duckdb.DuckDBPyConnection) -> dict[int, Counter]:
     return out
 
 
+def question_type_era_presence(con: duckdb.DuckDBPyConnection) -> dict:
+    """题型 × 卷制era presence — **命题趋势真值层**(provenance=structural_truth, 真题原卷题型).
+
+    用户 2026-06-21: 结构层真值足以撑命题趋势("万变不离其宗"+可感知迁移)。presence **粒度无关**
+    (不受 2021/22 子题级 vs 余年 passage 级 count 抖动影响, 区别 type_distribution 占比) → 跨命题主体
+    可信。signal: skeleton(两era皆在=骨架) / retired(退场) / introduced(登场)。复用 scope.segment 单点。
+    实测: 阅读/完形/七选五/语法填空=骨架; 短文改错退场(末2020); 续写/应用文/听力登场=2017课标核心素养驱动。
+    """
+    rows = con.execute(
+        f"SELECT year, question_type FROM exam_questions "
+        f"WHERE {scope.LIAONING_PREDICATE} AND year IS NOT NULL AND question_type IS NOT NULL"
+    ).fetchall()
+    era_qt: dict = defaultdict(lambda: defaultdict(set))
+    for yr, qt in rows:
+        era_qt[scope.segment(int(yr))][qt].add(int(yr))
+    eras = [scope.ERA_OLD, scope.ERA_NEW]
+    out = []
+    for qt in sorted({qt for e in era_qt.values() for qt in e}):
+        old = sorted(era_qt[eras[0]].get(qt, set()))
+        new = sorted(era_qt[eras[1]].get(qt, set()))
+        signal = "retired" if old and not new else ("introduced" if new and not old else "skeleton")
+        out.append({"question_type": qt, "old_years": old, "new_years": new, "signal": signal,
+                    "first_year": min(old + new), "last_year": max(old + new)})
+    return {"province_scope": "辽宁卷", "provenance": "structural_truth", "eras": eras,
+            "by_question_type": out,
+            "note": "presence粒度无关; 题型骨架连续(万变不离其宗)+退场/登场迁移=命题趋势真值层; 登场年受提取gap影响(听力/写作部分年未抽)"}
+
+
 def trend_summary(con: duckdb.DuckDBPyConnection) -> dict:
     """件1: 全部趋势锚定辽宁卷 (§7); 附样本量诊断, 薄样本年不冒充趋势."""
     top = top_high_freq_words(con, top_n=30)

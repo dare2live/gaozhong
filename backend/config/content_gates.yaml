@@ -67,6 +67,14 @@ gates:
   #     与合法英文(语法注'also forwards'/'pl. stadia')无法用单一正则干净区分(106混合命中)。
   #     主短语召回已由 renjiao_phrase_present 锁; 残留污染留后续 parsing 精化(（-起首短语头 + 表头过滤)。
 
+  - id: question_type_era_structural_truth
+    domain: exam
+    source: "真题原卷题型 (exam_questions.question_type, structural_truth)"
+    desc: "命题趋势真值层(题型presence): 短文改错仅旧课标era(2021退场)/续写仅新高考era(2024登场)/阅读两era皆在(骨架)。锁结构事实防漂移"
+    query: "SELECT (CASE WHEN EXISTS(SELECT 1 FROM exam_questions WHERE province LIKE '辽宁%' AND question_type='短文改错' AND year>=2021) THEN 1 ELSE 0 END) + (CASE WHEN EXISTS(SELECT 1 FROM exam_questions WHERE province LIKE '辽宁%' AND question_type='续写' AND year<2021) THEN 1 ELSE 0 END) + (CASE WHEN NOT EXISTS(SELECT 1 FROM exam_questions WHERE province LIKE '辽宁%' AND question_type='阅读理解' AND year<2021) THEN 1 ELSE 0 END) + (CASE WHEN NOT EXISTS(SELECT 1 FROM exam_questions WHERE province LIKE '辽宁%' AND question_type='阅读理解' AND year>=2021) THEN 1 ELSE 0 END)"
+    op: eq
+    expect: 0
+
   - id: weakness_recommend_bridge
     domain: student
     source: "图谱主题桥 (theme_aligns→theme_of_unit)"
