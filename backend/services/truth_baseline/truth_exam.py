@@ -43,14 +43,23 @@ class ExamTruthChecker(TruthChecker):
         return out
 
     def self_test(self) -> bool:
-        """注入: 2021辽宁缺markers→必抓content_mismatch; 含markers→不误报."""
+        """对抗自测 (marker-agnostic, 读 active 锚自身 markers, 不硬编码):
+        缺 markers 的库内容→必抓 content_mismatch; 含 markers→不误报。证明非装饰门(坑21)。
+        """
         import duckdb
+        active = [(k, a) for k, a in load_anchors().get("exam", {}).get("anchors", {}).items()
+                  if a.get("lifecycle") == "active"]
+        if not active:
+            return True                                   # 无 active 锚 → vacuous pass
+        key, a = active[0]
         c = duckdb.connect(":memory:")
         c.execute("CREATE TABLE exam_questions_all(year INTEGER, province VARCHAR, raw_question VARCHAR)")
-        c.execute("INSERT INTO exam_questions_all VALUES (2021,'辽宁','Zafirakou Harrogate tiger cub no anchors here')")
-        polluted = [d for d in self.check(c) if d.anchor_key.startswith("2021") and d.kind == "content_mismatch"]
+        c.execute("INSERT INTO exam_questions_all VALUES (?, ?, ?)",
+                  [a["year"], a["province"], "no anchor markers present here xyz"])
+        polluted = [d for d in self.check(c) if d.anchor_key == key and d.kind == "content_mismatch"]
         c.execute("DELETE FROM exam_questions_all")
-        c.execute("INSERT INTO exam_questions_all VALUES (2021,'辽宁','... Take a view ... rhino ... City Wall ...')")
-        clean = [d for d in self.check(c) if d.anchor_key.startswith("2021") and d.kind == "content_mismatch"]
+        c.execute("INSERT INTO exam_questions_all VALUES (?, ?, ?)",
+                  [a["year"], a["province"], " ".join(a["markers"])])
+        clean = [d for d in self.check(c) if d.anchor_key == key and d.kind == "content_mismatch"]
         c.close()
         return bool(polluted) and not clean
