@@ -57,6 +57,29 @@ def top_exam_words(con: duckdb.DuckDBPyConnection, limit: int = 30) -> list[dict
     return [{"word": r[0], "exam_freq": r[1], "attrs": r[2]} for r in rows]
 
 
+def courses_for_student_weakness(con: duckdb.DuckDBPyConnection, student_id: str) -> list[dict]:
+    """学生弱点考点 → 推荐教该考点的课节 (单一计算点; 图谱桥 Rule3, 路由不自写 JOIN)。
+
+    弱点是**考点级** exam_point:theme_l2:X, 课材是**单元级** → 必走主题桥:
+      student_weakness → theme_aligns → theme → theme_of_unit → 教材单元 → course_materials → course。
+    旧 route 的 `cm.ref_id=sw.concept_id` 直配 by-construction 永远0命中(考点前缀≠词/单元前缀)。
+    仅 theme 维度弱点可经此桥落到单元; genre/设问类维度无单元映射 → 诚实返空(非假装推荐)。
+    命中数还取决于 course_materials 对该主题单元的覆盖(现 demo 12 单元, 稀疏属正常诚实降级)。
+    """
+    rows = con.execute(
+        "SELECT DISTINCT c.course_id, c.layer, c.title, sw.concept_id, sw.weakness_score "
+        "FROM student_weakness sw "
+        "JOIN edges ta ON ta.src_id = sw.concept_id AND ta.relation = 'theme_aligns' "
+        "JOIN edges tu ON tu.dst_id = ta.dst_id AND tu.relation = 'theme_of_unit' "
+        "JOIN course_materials cm ON cm.ref_id = tu.src_id "
+        "JOIN courses c ON c.course_id = cm.course_id "
+        "WHERE sw.student_id = ? "
+        "ORDER BY sw.weakness_score DESC LIMIT 20",
+        [student_id]).fetchall()
+    return [{"course_id": r[0], "layer": r[1], "title": r[2],
+             "weak_concept": r[3], "score": r[4]} for r in rows]
+
+
 _TITLE_STOPWORDS = {
     # 编号/连接
     "unit", "a", "an", "the", "of", "in", "on", "at", "to", "for", "with",

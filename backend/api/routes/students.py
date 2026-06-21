@@ -16,7 +16,7 @@ from __future__ import annotations
 from backend.api.db import db_ro, db_write
 from backend.api.routes import _tenant
 from backend.api.routes.students_csv import do_csv_import
-from backend.services import weakness as weakness_svc
+from backend.services import recommend, weakness as weakness_svc
 
 
 def api_students_list(qs: dict) -> dict:
@@ -142,7 +142,11 @@ def _ep_dimension(concept_id: str) -> str:
 
 
 def api_students_recommend(qs: dict) -> dict:
-    """弱点 → 推荐 课节 (concept_id 在哪节出现 → 推该节; owns 校验)."""
+    """弱点考点 → 推荐教该考点的课节 (单算点下沉 recommend service, 路由不重写 JOIN; owns 校验).
+
+    考点级弱点经主题桥落到教材单元课材 (recommend.courses_for_student_weakness); 旧路由
+    `cm.ref_id=sw.concept_id` 直配 by-construction 永远0命中(考点前缀≠词/单元前缀, schema迁移遗留断链)。
+    """
     sid = qs.get("id", [None])[0]
     tid = _tenant.get_teacher(qs)
     if not tid:
@@ -153,23 +157,8 @@ def api_students_recommend(qs: dict) -> dict:
     try:
         if not _tenant.owns_student(con, tid, sid):
             return _tenant.DENIED
-        rows = con.execute(
-            "SELECT DISTINCT c.course_id, c.layer, c.title, sw.concept_id, sw.weakness_score "
-            "FROM student_weakness sw "
-            "JOIN course_materials cm ON cm.ref_id = sw.concept_id "
-            "JOIN courses c ON c.course_id = cm.course_id "
-            "WHERE sw.student_id = ? "
-            "ORDER BY sw.weakness_score DESC LIMIT 20",
-            [sid],
-        ).fetchall()
-        return {
-            "recommendations": [
-                {"course_id": r[0], "layer": r[1], "title": r[2],
-                 "weak_concept": r[3], "score": r[4]}
-                for r in rows
-            ],
-            "count": len(rows),
-        }
+        recs = recommend.courses_for_student_weakness(con, sid)
+        return {"recommendations": recs, "count": len(recs)}
     finally:
         con.close()
 

@@ -34,8 +34,10 @@
   }
 
   async function loadWeakness() {
-    if (!state.cls) return;
-    const d = await fetchJSON(`/api/students/class_weakness?class_id=${encodeURIComponent(state.cls)}`).catch(() => ({ weakness: [] }));
+    if (!state.cls || !state.teacher) return;
+    // teacher_id 必传: 路由 owns_class 多租户校验 (缺则 MISSING → 热力图空白死链, 已修)
+    const d = await fetchJSON(`/api/students/class_weakness?class_id=${encodeURIComponent(state.cls)}&teacher_id=${encodeURIComponent(state.teacher)}`).catch(() => ({ weakness: [] }));
+    if (d.error) { G.$("#xs-banner").innerHTML = `<span style="color:#c1272d">学情加载失败: ${d.error}</span>`; return; }
     G.$("#xs-banner").innerHTML = d.data_status
       ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FCEBEB;border:1px solid #F09595;border-radius:6px;margin-bottom:12px;font-size:12px;color:#791F1F;"><b style="font-weight:500;">⚗ ${d.data_status}</b></div>` : "";
     const rows = (d.weakness || []).slice(0, 12).reverse();

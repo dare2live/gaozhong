@@ -310,6 +310,12 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -A12 'def _grammar_exam_trace' backend/services/lesson_plan.py | grep -q \"province LIKE '辽宁\" && echo SCOPED || echo LEAK"]
     expect: {op: regex, pattern: "SCOPED"}
+  - id: weakness-recommend-bridge-not-broken
+    claim: "学情闭环非假血缘: 弱点考点(exam_point:theme_l2)→主题桥(theme_aligns→theme_of_unit→单元→course_materials)→course 可达≥1; 旧路由 cm.ref_id=sw.concept_id 直配 by-construction永远0命中(考点前缀≠词/单元), schema迁移断链已修(recommend.courses_for_student_weakness 走桥)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM (SELECT DISTINCT c.course_id FROM nodes ep JOIN edges ta ON ta.src_id=ep.concept_id AND ta.relation='theme_aligns' JOIN edges tu ON tu.dst_id=ta.dst_id AND tu.relation='theme_of_unit' JOIN course_materials cm ON cm.ref_id=tu.src_id JOIN courses c ON c.course_id=cm.course_id WHERE ep.concept_id LIKE 'exam_point:theme_l2:%')"
+    expect: {op: ">=", value: 1}
   - id: in-curriculum-truth-not-hardcoded
     claim: "unit_vocab_intro.in_curriculum = 词∈cefr_vocab 真值现算(run_vocab), 非硬编码True; 教材约47%越纲(教材本超课标), 全True=系统性谎报越纲违§1.2选材硬约束(theme_l3同模式假源列已修)"
     type: duckdb_sql
