@@ -3,6 +3,24 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
+## 最近 session (2026-06-20 最新): KG 层大建 (设计→P0→词典→word_sense→关联性) + 交付就绪度评估
+
+> ⚠️ **下一步 = 收口冲刺 (operational sprint), 不是继续建 KG 维度**。详 `docs/delivery_readiness_assessment.md`。
+
+**KG 层从设计到落地** (11 commit, 全推 origin/main, 全程三门绿; `docs/kg_layer_design.md` 设计定稿):
+- **设计** (cf5a421): 3 轮 workflow → amend master design。用户 2 决策: 两腿并行 + 消费产物。
+- **P0 横切地基** (13c0d0b): `source_versions` PIT 注册表(键=kind,variant) + `effective_version` 单一PIT点 + **`stamp` 写边即带血缘**(不回填) + 数据驱动 dispatch (D0 407→358)。
+- **A1 设问类型金矿** (1529b4f + 前端 82b5e7a): cognitive_skill 子题级"怎么想", **推断50%** 对账教研解析(驳 inference 错估15%, 坑16); 上备课驾驶舱 D 区。
+- **B轨 verify-the-verifier** (1d5d2de): 红队"DB粗分阶红线"误读 — at_stage 边早已细(3095词0错指), 否决错误回填, 锁 correctness 门。
+- **考试词典** (3198cb7+b0763f1): `exam_vocabulary` **4186词99%释义**, 课标∪教材真超纲(最小无注水), 三源溯源, 释义=教材生词表→中考词汇表→COCA兜底交叉引用。
+- **word_sense 本体** (bb09878, master A1): 404候选→21-agent workflow(锚定释义判断+对抗验证过度检测305→142)→ **142真多义** word_sense节点+has_sense+expands_sense (ceiling→上限/china→瓷器)。修词典OCR污染142词。
+- **关联性** (50fa9c5+c9d8cd3): co_occurs 考点共现(记叙文×人与社会46) + characterizes_theme 主题特征词(plastic→环境49)。
+- D0 28→36项, moth 61→70。
+
+**交付就绪度评估** (8-agent workflow): 距交付**一个收口冲刺**。4 项门 2 绿(数据/三门)2 缺(**Docker完全无 + 真老师试用从未发生**)。最高杠杆=动员1名辽宁老师30分钟试用(Rule10, 也是范围裁决器)。收口路径: 用户拍板形态+范围 → 统一前端入口 → **金矿(词典/word_sense)接前端** → 学情空态引导 → Docker+最小鉴权 → 真老师试用 → 按反馈再建。**别让"还能建更多KG维度"无限延迟真老师校验。**
+
+---
+
 ## 最近 session (2026-06-20 续): 全面审计 (13-agent workflow) + 20 真问题整改 19/20 闭环
 
 **全面审计** (架构师/moth/sherpa + 13-agent workflow 7 维度): 验证-验证器, 抓 20 真问题 (三绿门盲区, 坑1/坑21 复发), 6 假警报正确排除。**整改 6 commit 全程三门绿** (932dddc→acc885f):

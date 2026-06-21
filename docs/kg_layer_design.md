@@ -1,6 +1,23 @@
 # KG 层设计 — 知识图谱分析维度扩展层 (master design amend)
 
-> 状态: 设计定稿待开建 (2026-06-20). 经 3 轮 workflow (理解现状 → 维度建模 3角度+评审+红队 → 时间演化/血缘机制 2角度+红队) + 控制器综合 + 事实校正.
+> 状态: 设计定稿 + **已落地大半** (2026-06-20). 经 3 轮 workflow + 控制器综合 + 事实校正.
+>
+> ## 🏗️ 建设状态 (2026-06-20)
+> | 件 | 状态 |
+> |---|---|
+> | P0 横切地基 (source_versions PIT + stamp 血缘 + effective_version) | ✅ 13c0d0b |
+> | A1 设问类型 cognitive_skill (金矿, 推断50%) + 前端 | ✅ 1529b4f/82b5e7a |
+> | 考试词典 exam_vocabulary (4186词99%释义三源) + 释义词典 word_glosses | ✅ b0763f1/3198cb7 |
+> | word_sense 本体 (142跨阶段多义, master A1) | ✅ bb09878 |
+> | 关联性: co_occurs 考点共现 + characterizes_theme 主题特征词 | ✅ 50fa9c5/c9d8cd3 |
+> | B轨 跨年级分阶 (at_stage 边已细, verify-the-verifier) | ✅ 1d5d2de |
+> | **⚠ 矿口缺口**: 考试词典/word_sense **有API无前端** (teacher 页未接) | ❌ 收口冲刺第3步 |
+> | A2 语法考点 / A3 句型 / A4 表达 | ⏸ 真相源未成熟·候选池, 需标注 workflow, **真老师校验前别预建** |
+> | A5 命题方式 exam_method 第二轴 | ⏸ docs 沉淀 (用户选), 真相源最弱 |
+> | A6 立体透视 stereo_query (stage×dim×era) | ⏸ 待 word_sense.stage 跨年级 + 真老师校验后再建 |
+>
+> **下一步不是继续建本设计的剩余件, 而是收口冲刺**: 详 `docs/delivery_readiness_assessment.md`。
+>
 > 关系: 本文 amend `docs/k12_platform_master_design.md` 的 §2(Canonical)/§6(分析层)/§7(建设DAG), 新增 KG 维度扩展层 + 横切时间/血缘机制. master 已立的法(三真相源/stage统一原语/word_sense带stage/八铁律)全继承不改.
 
 ---
