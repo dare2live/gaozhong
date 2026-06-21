@@ -1,0 +1,40 @@
+# 真值锚注册表 (truth_anchors) — 模块化真值校验系统的"标准即数据"层.
+#
+# 根治: 三门一直验"自洽"(计数==快照)不验"真值"(内容匹配第一手源) → 自洽棘轮 → 污染长期绿门.
+# 本表每条 = 一个真值锚: 第一手源 + 内容指纹(markers, 钉死) + lifecycle + provenance.
+# 门验"库内容 ∩ 真值锚 markers", 不是"计数==182". 标准文档: docs/truth_anchor_protocol.md.
+#
+# lifecycle: active(强制, 内容不匹配→BLOCK) / no_anchor(无第一手源→UNKNOWN, 不冒充已验证, 用户立法3).
+# 冲突仲裁: 第一手胜 (verified_mirror/官方PDF > 库内自标 > 派生快照).
+# 加新锚: 改本 yaml(judgment 数据化 §3.5); 加新比对方式: backend/services/truth_baseline 注册一个 checker.
+exam:
+  provenance_note: "真题真值锚 = data/external/gaokao_xgkii_2021_2025_mirror.jsonl (辽宁新高考II卷已验证真值; cognitive_skill 已用它=对的)"
+  anchors:
+    "2021:辽宁:gaokao":
+      year: 2021
+      province: 辽宁
+      lifecycle: active
+      provenance: verified_mirror
+      markers: ["Take a view", "rhino", "City Wall"]   # mirror 2021 真值篇章; eol=Zafirakou/Harrogate 不含→省份污染(红线①)
+    "2023:辽宁:gaokao":
+      year: 2023
+      province: 辽宁
+      lifecycle: active
+      provenance: verified_mirror
+      markers: ["Urban Sprouts", "Artist Point"]
+    "2024:辽宁:gaokao":
+      year: 2024
+      province: 辽宁
+      lifecycle: active
+      provenance: verified_mirror
+      markers: ["Trost", "Neighbors"]
+    "2022:辽宁:gaokao":
+      year: 2022
+      province: 辽宁
+      lifecycle: no_anchor          # mirror 无 2022 数据 → 无第一手锚, eol 2022 不冒充已验证(标 UNKNOWN 待补锚)
+      provenance: none
+    "2025:辽宁:gaokao":
+      year: 2025
+      province: 辽宁
+      lifecycle: no_anchor          # mirror 无 2025
+      provenance: none
