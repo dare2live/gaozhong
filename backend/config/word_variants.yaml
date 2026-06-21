@@ -1,0 +1,51 @@
+# 词形变体 → 规范形 映射 (释义交叉引用的判断数据化, CLAUDE.md §3.5).
+#
+# 用途: exam_dictionary._best_gloss 兜底末环。课标词表用**英式拼写 / 列屈折形 / 缩写**做词条,
+#   但教材生词表 / 中考表 / COCA 只 gloss **规范形** → 变体词条无释义。经**确定性变体规则**
+#   继承规范形释义 (用户原话: "在没释义的资料里应该理解成什么释义" = 跨资料找同源词)。
+#
+# 真值诚实红线: 释义仍来自库内**真实 glossed 词**(教材/中考/COCA), 变体规则只做"拼写/屈折等价"
+#   映射, **NOT LLM 生成义项** (守用户红线: 义项来自真值源, 非模型臆造)。
+#   **语义不等价的映射禁止**(如 a.m≠am[be动词], 见 unglossable), 宁标 unknown 不继承错义。
+#
+# category: inflection(屈折形→词根) / spelling_variant(英↔美拼写) / article(冠词变体)
+#
+# 加新变体 = 改本 yaml (数据化, 不改代码)。新真题/课标带新英式拼写或屈折形, 在此登记即可继承。
+
+# ── 可继承: 规范形在库有真实释义, 拼写/屈折等价 ───────────────────────────────
+variants:
+  # 不规则屈折 → 词根 (复数/动词变位; 释义即词根义)
+  are:          {canonical: be,           category: inflection}
+  has:          {canonical: have,         category: inflection}
+  children:     {canonical: child,        category: inflection}
+  feet:         {canonical: foot,         category: inflection}
+  men:          {canonical: man,          category: inflection}
+  mice:         {canonical: mouse,        category: inflection}
+  teeth:        {canonical: tooth,        category: inflection}
+  women:        {canonical: woman,        category: inflection}
+  # 英↔美 / 旧拼写变体 (课标多用英式; 教材/COCA gloss 美式)
+  colour:       {canonical: color,        category: spelling_variant}
+  grey:         {canonical: gray,         category: spelling_variant}
+  fibre:        {canonical: fiber,        category: spelling_variant}
+  metre:        {canonical: meter,        category: spelling_variant}
+  gramme:       {canonical: gram,         category: spelling_variant}
+  neighbour:    {canonical: neighbor,     category: spelling_variant}
+  organisation: {canonical: organization, category: spelling_variant}
+  realise:      {canonical: realize,      category: spelling_variant}
+  theatre:      {canonical: theater,      category: spelling_variant}
+  kilometer:    {canonical: kilometre,    category: spelling_variant}
+  maths:        {canonical: math,         category: spelling_variant}
+  email:        {canonical: e-mail,       category: spelling_variant}
+  # 冠词变体
+  an:           {canonical: a,            category: article}
+
+# ── 不可继承: 我方真值源(教材/中考/COCA)无释义 → 诚实标 unknown (非静默缺口, D0 白名单) ──
+#   不手编义项 (守红线); 缩写/专名/复合, 待真值源补全才填。
+unglossable:
+  a.m:          {category: abbreviation, reason: "缩写(ante meridiem 上午); am=be动词/调幅, 语义不等价禁继承"}
+  p.m:          {category: abbreviation, reason: "缩写(post meridiem 下午); 同 a.m, 不靠 dotless 形继承"}
+  bc:           {category: abbreviation, reason: "缩写(BC 公元前); 我方真值源无中文 gloss"}
+  pe:           {category: abbreviation, reason: "缩写(PE 体育); 我方真值源无中文 gloss"}
+  confucius:    {category: proper_noun, reason: "专名(孔子); 教材/中考/COCA 均无中文 gloss"}
+  confucianism: {category: proper_noun, reason: "专名(儒家/儒学); 同 confucius"}
+  policewoman:  {category: compound,    reason: "复合(police+woman); 直接源无, 不组合臆造义项"}

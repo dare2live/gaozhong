@@ -7,7 +7,7 @@
 > |---|---|
 > | P0 横切地基 (source_versions PIT + stamp 血缘 + effective_version) | ✅ 13c0d0b |
 > | A1 设问类型 cognitive_skill (金矿, 推断50%) + 前端 | ✅ 1529b4f/82b5e7a |
-> | 考试词典 exam_vocabulary (4186词99%释义三源) + 释义词典 word_glosses | ✅ b0763f1/3198cb7 |
+> | 考试词典 exam_vocabulary (4186词99.8%释义: 教材→中考→COCA→变体规范形继承; 7词无释义全登记unglossable白名单) + 释义词典 word_glosses | ✅ b0763f1/3198cb7/+变体 |
 > | word_sense 本体 (142跨阶段多义, master A1) | ✅ bb09878 |
 > | 关联性: co_occurs 考点共现 + characterizes_theme 主题特征词 | ✅ 50fa9c5/c9d8cd3 |
 > | B轨 跨年级分阶 (at_stage 边已细, verify-the-verifier) | ✅ 1d5d2de |

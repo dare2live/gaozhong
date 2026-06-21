@@ -5,7 +5,20 @@
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import duckdb
+import yaml
+
+_VARIANTS = Path(__file__).resolve().parents[2] / "backend" / "config" / "word_variants.yaml"
+
+
+def _known_unglossable() -> set[str]:
+    """word_variants.yaml 登记的"我方真值源无释义"白名单 (缩写/专名/复合)."""
+    if not _VARIANTS.exists():
+        return set()
+    cfg = yaml.safe_load(_VARIANTS.read_text(encoding="utf-8")) or {}
+    return set(cfg.get("unglossable") or {})
 
 
 def check_exam_dict(con: duckdb.DuckDBPyConnection, check) -> None:
@@ -34,3 +47,9 @@ def check_exam_dict(con: duckdb.DuckDBPyConnection, check) -> None:
     bad_exam = con.execute(
         "SELECT COUNT(*) FROM exam_vocabulary WHERE in_exam <> (gaokao_hit_ln > 0)").fetchone()[0]
     check("in_exam 旗 == 辽宁命中>0 (真题口径一致, §7)", bad_exam == 0, f"{bad_exam}")
+    # 破自洽棘轮: 每个无释义词必登记 word_variants.unglossable (缩写/专名/复合); 否则=未处理静默缺口
+    glossless = {r[0] for r in con.execute(
+        "SELECT word FROM exam_vocabulary WHERE gloss IS NULL").fetchall()}
+    unexpected = glossless - _known_unglossable()
+    check("无 UNEXPECTED 无释义词 (每缺口必登记 unglossable 白名单, 非静默缺口)",
+          not unexpected, f"{len(unexpected)} 未登记: {sorted(unexpected)[:8]}")

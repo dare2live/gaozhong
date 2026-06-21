@@ -147,9 +147,9 @@ assertions:
     query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point'"
     expect: {op: ">=", value: 300}
   - id: exam-dictionary-canonical
-    claim: "考试词典(Canonical词本体): exam_vocabulary ~4186词=课标∪教材真超纲(最小无注水), ≥98%有释义(教材→中考表→COCA交叉引用), 每释义gloss_source可溯; photosynthesis等真题阅读生词不入(最准)"
+    claim: "考试词典(Canonical词本体): exam_vocabulary ~4186词=课标∪教材真超纲(最小无注水), ≥99%有释义(教材→中考表→COCA→变体规范形继承), gloss_source可溯; 每无释义词必登记word_variants.unglossable(缩写/专名, 破自洽棘轮); photosynthesis真题生词不入(最准)"
     type: shell
-    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute('SELECT COUNT(*) FROM exam_vocabulary').fetchone()[0];cov=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE gloss IS NOT NULL').fetchone()[0];nosrc=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE NOT (in_curriculum OR in_textbook)').fetchone()[0];ph=c.execute(\"SELECT COUNT(*) FROM exam_vocabulary WHERE word='photosynthesis'\").fetchone()[0];c.close();print('OK' if 3500<=n<=5000 and nosrc==0 and ph==0 and cov*100>=n*98 else f'FAIL {n} {cov} {nosrc} {ph}')"]
+    command: ["python3", "-c", "import duckdb,yaml;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute('SELECT COUNT(*) FROM exam_vocabulary').fetchone()[0];cov=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE gloss IS NOT NULL').fetchone()[0];nosrc=c.execute('SELECT COUNT(*) FROM exam_vocabulary WHERE NOT (in_curriculum OR in_textbook)').fetchone()[0];ph=c.execute(\"SELECT COUNT(*) FROM exam_vocabulary WHERE word='photosynthesis'\").fetchone()[0];gl=set(r[0] for r in c.execute('SELECT word FROM exam_vocabulary WHERE gloss IS NULL').fetchall());c.close();ung=set((yaml.safe_load(open('backend/config/word_variants.yaml',encoding='utf-8')).get('unglossable') or {}));print('OK' if 3500<=n<=5000 and nosrc==0 and ph==0 and cov*100>=n*99 and gl<=ung else f'FAIL {n} {cov} {nosrc} {ph} {gl-ung}')"]
     expect: {op: regex, pattern: "OK"}
   - id: theme-vocab-distinctive
     claim: "主题特征词汇(词汇↔主题关联): characterizes_theme 49边辽宁区分度(artist→文艺/plastic→环境, 功能词get/make已滤坑5); provenance=启发式诚实标"
