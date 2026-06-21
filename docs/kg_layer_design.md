@@ -13,7 +13,7 @@
 > | B轨 跨年级分阶 (at_stage 边已细, verify-the-verifier) | ✅ 1d5d2de |
 > | **⚠ 矿口缺口**: 考试词典/word_sense **有API无前端** (teacher 页未接) | ❌ 收口冲刺第3步 |
 > | A2 语法考点 / A3 句型 / A4 表达 | ⏸ 真相源未成熟·候选池, 需标注 workflow, **真老师校验前别预建** |
-> | A5 命题方式 exam_method 第二轴 | ⏸ docs 沉淀 (用户选), 真相源最弱 |
+> | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地(explicit_label最强, 2023辽宁15子题; 原"exam_method待建"系误判, 见§6纠偏) |
 > | A6 立体透视 stereo_query (stage×dim×era) | ⏸ 待 word_sense.stage 跨年级 + 真老师校验后再建 |
 >
 > **下一步不是继续建本设计的剩余件, 而是收口冲刺**: 详 `docs/delivery_readiness_assessment.md`。
@@ -130,10 +130,24 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 
 ---
 
-## 6. 唯一待业主拍板的战略选择
+## 6. "怎么考"第二轴 — 已落地 = cognitive_skill (2026-06-21 勘测纠偏, 原"exam_method待拍板"作废)
 
-**命题方式"怎么考"第二轴 (exam_method)** 是 master 零立法的 unclaimed land + 真相源最弱(自归纳, 双模型可能像坑16一起错):
-- **(a) v1 正式建 exam_method 节点上分析面**: 立刻补全核心竞争力第二轴("命题方式升温/转变"), 但 facet 边界模糊需冻≤8 + 严格 quarantine.
-- **(b) 先 docs 沉淀 taxonomy, 暂不入图**: 等真题归纳样本更足再建, 更稳但第二轴短期缺位.
+> ⚠️ **2026-06-21 重大纠偏 (3-agent 勘测 + DB实测)**: 原设计把"怎么考"第二轴当成 unclaimed land(待建
+> exam_method node_type, "真相源最弱/evidence.cue 586边")。**全错**:
+> - **第二轴早已落地 = `cognitive_skill` 维度**(设问类型: 推断/理解具体信息/理解主旨/理解词汇), `exam_point:cognitive_skill:*`
+>   节点 + tests_exam_point 边, 单一计算点 `exam_point/cognitive_skill.py`。框成"exam_method=0行"只因节点叫 cognitive_skill。
+>   **不要再建平行 exam_method node_type**(改造优先: 认定 cognitive_skill = 第二轴)。
+> - **真相源最强非最弱**: provenance=**explicit_label**(教研解析显式题型前导标签 ^([一-鿿]+题) → 《中国高考评价体系》
+>   7理解性技能, _SKILL_MAP), 强于双模型。坑16红线: 禁用设问句 dual_model inference 补第二轴。
+> - **evidence.cue(481条, 非586) 是"考什么/题材"(genre/theme passage描述), NOT"怎么考"** — 与第二轴正交, 别动它。
+>
+> **覆盖天花板(诚实, 数据gap非结构gap)**: cognitive_skill 现 **仅2023辽宁15子题**(单年)。因:
+> - 2024/2025 辽宁子题 analysis **0 个前导显式题型**(教研解析未标) → 无真值源, **不可硬标(=theme_l3杜撰)**;
+> - 2021 = 全国甲卷已真值锚剔除; 2015-2020 真值源在 GAOKAO-Bench analysis(passage级, 需拆子题+省份过滤新课标II+补2015-20真值锚≥2源)。
+> 故第二轴可做"新高考重推断/高阶思维"方向锚, **单年不可做逐年/跨era设问演变结论**(样本量诚实, scope门)。
+>
+> **扩量路径(v3, 待评估, 风险=坑3省份污染+坑16)**: GAOKAO-Bench 2015-2020 新课标全国II reading 子题前导题型
+> → 走同一 cognitive_skill loader(前导锚, 禁正文全文扫) + province过滤 + 2015-20真值锚 → 跨era设问演变。
+> 现用既有数据(非外部采集); 但需 careful 省份/锚/拆子题, 业主决定是否做这个大活。
 
-其余建模决策(子题=passage级可逆升级 / provenance底层细分+前端3档 / 句型表达诚实候选池)控制器已定, 不占决策位.
+其余建模决策(子题=passage级可逆升级 / provenance底层细分+前端3档 / 句型表达诚实候选池)控制器已定, 不占决策位。

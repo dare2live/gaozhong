@@ -14,8 +14,14 @@
 
 ## 1. 你的盲点 (5 角色收敛, 全部 grounded 实测)
 
-1. **图谱缺整条第二轴**: 现只有"考什么"(word/grammar/theme/exam_point), **零"怎么考"**(命题方式/设问类型/解题路径)。`tests_exam_point` 的 dimension 只有 genre/theme_context/theme_l2 三个(theme_l3 系杜撰已废2026-06-21), **0 个命题方式 dimension**。你 vision 的核心动词("看命题方式""看解题变化")**没有数据载体**。
-2. **但命题方式原料已存在、却没进图** (最大 actionable): `tests_exam_point.evidence_json.cue`(586 边带自然语言命题理由, 如"第一人称叙述个人日常经历") + `docs/exam_scenario_patterns.md`(已按 qid 拆出设问类型/篇章结构/场景母题, 但白纸黑字"**本文不建库、不建表**")。真相源有, 只是没结构化成节点/边。
+> ⚠️ **2026-06-21 勘测纠偏 (盲点1/2 部分作废)**: ① 第二轴**非"零"** — `cognitive_skill`(设问类型, provenance=
+> explicit_label) 就是"怎么考"第二轴, 已落地(`exam_point/cognitive_skill.py`, 2023辽宁15子题)。② `evidence.cue`
+> (实测481条非586)**不是命题方式原料** — DB实测全是"考什么/题材"(genre/theme passage描述), 与第二轴正交。真正的
+> "怎么考"真值源 = 子题级**前导显式题型**(教研解析, cognitive_skill.py 已用 ^([一-鿿]+题) 锚)。详 kg_layer_design §6 + exam_trend_design。
+> 第二轴的真问题是**覆盖**(仅2023单年, 2024/25辽宁子题0前导题型→不可硬标=防theme_l3), 非"缺整条轴"。
+
+1. ~~**图谱缺整条第二轴**~~ → **第二轴=cognitive_skill 已落地**(见上纠偏); 真缺口=覆盖(单年)+学情未接此维。`tests_exam_point` dimension: genre/theme_context/theme_l2(LLM) + **cognitive_skill(设问类型, explicit_label真值)**。
+2. ~~命题方式原料=cue 586~~ → **cue 是"考什么"非"怎么考"**(纠偏); 怎么考真值源=子题前导题型(已结构化进 cognitive_skill, 非"没进图")。`exam_scenario_patterns.md` 仍是有价值的命题模式 docs 资产(结构对齐≠押题)。
 3. **provenance 异质渲染成等权连线 = 自信地撒谎**: 16 种边证据强度差 3 个数量级 — tests_word(确定性 16947) vs tests_exam_point(100% dual_model_agree, 0 human, 586) vs tests_grammar(辽宁仅 16.2% = 52/321)。点一个节点看 5 条连线, 分不清哪条铁、哪条模型猜、哪条外省噪声。**交互越流畅, 谎越有说服力**。必须 provenance + 样本量徽章(D0 诚实门落到 UI)。
 4. **你的旗舰 demo 节点"过去完成时"恰是全图最弱节点**: grammar 辽宁 tests = 52/321, 新高考(2021+)仅 **1 条**; 且**辽宁新高考无独立单选语法题**(语法融入语篇填空/读后续写考)。点"过去完成时"→真题 = 近空, 或拿外省/2010-2013 单选题(辽宁已取消的题型)冒充。第一印象由最弱节点决定 = 产品级风险。
 5. **学生闭环是 demo 假象 + 维度错位**: 760 条 demo 答题(88% 正确率合成)只析出 2 条弱点, 且是"环保/新闻报道" = **主题/体裁, 不是命题方式/解题方法**。老师无法对"该生环保主题弱"采取教学行动(主题不可重教)。弱点该落在**命题方式/技能**(推断弱/词义猜测弱)才可行动 — 这条腿建在不可行动维度上(且依赖盲点 1 的第二轴)。

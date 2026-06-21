@@ -54,4 +54,10 @@
 ## 下一步 (v2, 按需)
 
 题型升格loader维 + 粒度归一structural-share + beike C面板改造 + 卷改结构config + 旧口径收口 → 完整"命题趋势驾驶舱"。
-exam_method"怎么考"第二轴(586条evidence.cue原料未结构化)= 更大方向分叉, 待用户拍板。
+
+**"怎么考"第二轴 — 2026-06-21 勘测纠偏(Stream B, 3-agent)**: 第二轴**早已落地 = cognitive_skill**(设问类型,
+provenance=explicit_label 最强, `exam_point/cognitive_skill.py`), **不是待建的 exam_method**("exam_method=0行"
+只因节点叫 cognitive_skill; 原设计"真相源最弱/cue 586边"系误判 — cue 481条是"考什么/题材"genre/theme, 与第二轴正交)。
+覆盖天花板: **仅2023辽宁15子题**(2024/25辽宁子题 analysis 0前导题型→无真值源不可硬标=防theme_l3; 2021甲卷已剔)。
+单年→作"新高考重推断"方向锚, 不做跨era设问演变。前端 beike D面板(设问类型·怎么想)已渲染。
+扩量路径v3(待评估, 风险坑3/坑16): GAOKAO-Bench 2015-20新课标II reading子题前导题型(同loader+省份过滤+补真值锚)→ 跨era设问演变。详 kg_layer_design §6。
