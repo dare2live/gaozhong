@@ -24,7 +24,16 @@
     `cognitive_skill_era_shift_truth`(交叉相乘锁推断新>旧, 对抗验证非假绿) + moth 跨era改写 + d0_baselines 3基线。
   - 验证: init_db 全量重建 100边复现; 三门全绿(D0 exit0 / moth PASS 74-0-0 / stop_gate exit0); preview D面板渲染正确0 error。
 
-**待补**: 2022/2024/2025 真辽宁设问标注(现 analysis 无前导题型, 诚实空); v2 题型升格loader维 + structural-share占比(需粒度归一)。
+**v3后续 (同session, 勘测workflow驱动)**: 5路并行验真相源 + 架构师裁决 → 选最高价值增量, 改造优先落地:
+- **#1 设问技能×题材/主题 交叉 view** (048d996): 复用跨era cognitive_skill(explicit_label真值)×genre/theme(passage级)
+  → **应用文100%找信息(0推断)/文学艺术100%找信息 vs 说明文42%推断** = 老师"哪类语篇考哪种思维"分流决策。
+  `cognitive_skill_by_content(con,by)` 单一计算点; **最小验证抓到关键对齐**(passage_label裸qid vs genre边'question:'前缀,
+  字面join 0/85→规范化后74/85)。异质provenance诚实分层(技能=真值/题材=模型推断, 非真值交叉); era锁2015-20(2021+桥缺失);
+  粒度=子题数+thin格<10护栏。D0项31 + moth + 前端F区(100%堆叠条+genre/主题切换)。**诚实不建**: 干扰项(辽宁仅1篇)/跨era交叉/信息位置。
+- **#3 raw_question 页中水印清洗** (bae72b7, 坑18续): local_pdf 2024-25 锦宏/学科网 mock-PDF 每页页脚(公众号/客服/页码)
+  mid-passage注入污染15行(4下游)。`extract/pdf.py::_strip_watermark` 按行剥(正文0丢失, 仅删水印微信号'jh') + D0 + moth; rebuild自动清。
+
+**待补**: 2022/2024/2025 真辽宁设问标注(现 analysis 无前导题型, 诚实空); v2 题型升格loader维 + structural-share占比(需粒度归一); cog×genre 跨era版需先给2023子题node补passage_label桥。
 
 ---
 
