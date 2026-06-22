@@ -61,3 +61,39 @@ def check_cognitive_skill(con: duckdb.DuckDBPyConnection, check) -> None:
         "json_extract_string(evidence_json,'$.lineage.version_ids.exam_paper') IS NULL "
         f"OR {_SRC_YEAR} IS NULL)").fetchone()[0]
     check("cognitive_skill 边全带血缘 (version_ids.exam_paper + source_year)", bad_lin == 0, f"{bad_lin} 缺血缘")
+
+
+_OFFICIAL_SKILLS = {"推断", "理解具体信息", "理解主旨要义", "理解词汇", "理解结构", "理解观点", "理解意图"}
+
+
+def check_cognitive_cross(con: duckdb.DuckDBPyConnection, check) -> None:
+    """设问技能×题材/主题 交叉 view D0 (2015-20截面; 异质provenance分层 + join对齐防回归 + 计数单位)."""
+    print("\n=== (31) 设问技能×题材交叉 view (2015-20截面, 技能=真值/题材=模型推断 异质分层) ===")
+    from backend.services.exam_point import cognitive_skill_by_content
+    g, t = cognitive_skill_by_content(con, "genre"), cognitive_skill_by_content(con, "theme_l2")
+
+    # join 对齐防回归: passage_label 前缀对齐断了 → n_matched 静默掉 0 (违 D0); 锁命中数
+    check("技能×题材 join 命中 == 74 ('question:'||passage_label 对齐, 防前缀回归静默漏行)",
+          g["n_matched"] == B('cog_cross_genre'), f"{g['n_matched']}")
+    check("技能×主题群 join 命中 == 75 (11miss=有theme无genre真缺口)",
+          t["n_matched"] == B('cog_cross_theme_l2'), f"{t['n_matched']}")
+
+    # era 锁死 (2021+ 桥缺失, 不可跨era泄漏)
+    check("交叉 view era 锁 2015-2020 (2021+桥缺失不出迁移, 坑3)", g["era"] == "2015-2020_旧课标II", g["era"])
+
+    # 异质 provenance 诚实分层: 技能侧真值 / 题材侧模型推断 — 防把模型推断冒充真值交叉 (坑16)
+    ok_prov = "explicit_label" in g["skill_provenance"] and "dual_model_agree" in g["content_provenance"]
+    check("异质provenance分层标注 (技能=explicit_label真值 / 题材=dual_model_agree模型推断, 非真值交叉)",
+          ok_prov, f"skill={g['skill_provenance'][:20]} content={g['content_provenance'][:20]}")
+
+    # 计数单位诚实: 0<n_matched<=n_subq_total (子题数, 无 fan-out 膨胀超总数, 坑12)
+    check("计数单位=子题数, 0<命中<=总数(无膨胀, 坑12)", 0 < g["n_matched"] <= g["n_subq_total"],
+          f"{g['n_matched']}/{g['n_subq_total']}")
+
+    # 每格内部自洽 + 无臆造技能泄漏 (skill ∈ 官方7理解性技能)
+    bad = [(c, s["label"]) for d in (g, t) for c, cell in d["by_content"].items()
+           for s in cell["skills"] if s["label"] not in _OFFICIAL_SKILLS]
+    check("交叉格技能 ∈ 官方7理解性技能 (无臆造类目泄漏)", not bad, f"越界={bad[:3]}")
+    bad_sum = [c for d in (g, t) for c, cell in d["by_content"].items()
+               if sum(s["n"] for s in cell["skills"]) != cell["total"]]
+    check("每题材格 total == 各技能 n 之和 (内部自洽)", not bad_sum, f"不自洽={bad_sum[:3]}")

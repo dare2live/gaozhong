@@ -181,6 +181,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();tot=d['n_total'];g=lambda k:next((p['pct'] for e,pts in d['by_era'].items() if e.startswith(k) for p in pts if p['label']=='推断'),0);print('OK' if tot==100 and g('2021')>g('2015-2020')>0 else f'FAIL tot={tot} old={g(\"2015-2020\")} new={g(\"2021\")}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: cognitive-skill-by-content-cross
+    claim: "设问技能×题材交叉(2015-20截面): join命中74(genre)/'question:'||passage_label对齐, era锁2015-20(2021+桥缺失不出迁移), 异质provenance分层(技能=explicit_label真值/题材=dual_model_agree模型推断非真值交叉); 结构真值=应用文100%理解具体信息(0推断)/说明文最考推断"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_by_content as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c,'genre');c.close();yw=d['by_content'].get('应用文',{}).get('skills',[]);top=yw[0]['label'] if yw else '?';ok=d['n_matched']==74 and d['era']=='2015-2020_旧课标II' and 'dual_model_agree' in d['content_provenance'] and top=='理解具体信息' and len(yw)==1;print('OK' if ok else f'FAIL match={d[\"n_matched\"]} era={d[\"era\"]} 应用文top={top}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: exam-point-trusted-provenance
     claim: "考点边 provenance ∈ {dual_model_agree(genre/theme双模型一致), explicit_label(cognitive_skill教研解析显式标签)} — 无弱provenance, 不冒充人工核验; explicit_label 强于双模型 (A1金矿)"
     type: duckdb_sql

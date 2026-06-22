@@ -29,6 +29,8 @@ baselines:
   cognitive_skill:      {value: 100,  op: eq, note: "设问类型边跨era(2015-20旧课标II 85 + 2023新高考II 15; 真值锚剔2021甲卷)"}
   cognitive_skill_legacy: {value: 85, op: eq, note: "2015-20旧课标全国II reading子题(6年全覆盖, exam_questions refine省份门, 坑3; 模糊3变体诚实skip)"}
   cognitive_skill_new:    {value: 15, op: eq, note: "2021+新高考全国II(subq jsonl真值锚门, 现仅2023)"}
+  cog_cross_genre:        {value: 74, op: eq, note: "技能×题材交叉join命中(2015-20; 'question:'||passage_label对齐, 防前缀回归静默漏行)"}
+  cog_cross_theme_l2:     {value: 75, op: eq, note: "技能×主题群交叉join命中(2015-20; 11miss=有theme无genre真缺口非bug)"}
   cooccur_min:          {value: 15,   op: ge, note: "考点共现边下界(删杜撰theme_l3共现27后实测19)"}
   exam_point_min:       {value: 300,  op: ge, note: "tests_exam_point 边下界"}
   word_glosses_min:     {value: 5000, op: ge, note: "释义词典规模下界(教材+中考)"}

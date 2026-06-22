@@ -18,8 +18,12 @@
   const C = { blue: "#185FA5", blueL: "#85B7EB", up: "#993C1D", upBg: "#FAECE7", down: "#185FA5", downBg: "#E6F1FB", grey: "#B4B2A9" };
   const STATUS = { core: ["核心", "#185FA5"], standard: ["标准", "#1D9E75"], HV_extra: ["高频超纲", "#BA7517"], LV_extra: ["低频超纲", "#B4B2A9"] };
 
-  let state = { era: ERA_NEW, dim: "theme_l2", dist: null };
+  let state = { era: ERA_NEW, dim: "theme_l2", dist: null, cross: "genre" };
   const charts = {};
+  const crossCache = {};
+  // 设问技能堆叠色 (推断=强调红, 与 D 区一致); 固定堆叠顺序让"推断"锚左边便于跨题材比
+  const SKILL_COLOR = { "推断": "#993C1D", "理解具体信息": "#185FA5", "理解主旨要义": "#85B7EB", "理解词汇": "#B4B2A9" };
+  const CROSS_LBL = { genre: "体裁", theme_l2: "主题群" };
 
   function shell() {
     return `
@@ -31,6 +35,7 @@
   <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
   <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" style="height:300px;"></div></section>
 </div>`;
   }
@@ -146,6 +151,43 @@
       + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II ⚠仅2023 n=${nNew}(&lt;30 方向性非精确)。2021源=全国甲卷已剔(§7), 待补2022/2024/2025真辽宁设问标注。</small>`;
   }
 
+  async function loadCross(by) {
+    if (!crossCache[by]) crossCache[by] = await fetchJSON("/api/exam_point/cognitive_by_content?by=" + by).catch(() => ({ by_content: {} }));
+    return crossCache[by];
+  }
+
+  function renderCrossToggle() {
+    const pill = k => `<button class="bk-pill ${state.cross === k ? "on" : ""}" data-cross="${k}">${CROSS_LBL[k]}</button>`;
+    G.$("#bk-crosstoggle").innerHTML = `${pill("genre")}${pill("theme_l2")}`;
+    G.$$("#bk-crosstoggle [data-cross]").forEach(b => b.onclick = async () => {
+      state.cross = b.dataset.cross; renderCrossToggle();
+      renderCogCross(await loadCross(state.cross));
+    });
+  }
+
+  function renderCogCross(d) {
+    // 设问技能 × 题材/主题 交叉 (单一计算点: service 已算; 前端只渲染 100%-堆叠条, 应用文全一色=纯找信息一眼可见)。
+    const bc = (d && d.by_content) || {};
+    const cats = Object.keys(bc);
+    if (!cats.length) { G.$("#bk-cross").innerHTML = '<p class="muted">暂无交叉数据</p>'; return; }
+    const ordered = cats.slice().sort((a, b) => bc[a].total - bc[b].total); // 横向条 y 轴自下而上 → 大类在上
+    const skills = ["推断", "理解具体信息", "理解主旨要义", "理解词汇"];
+    const pctOf = (cat, sk) => { const s = (bc[cat].skills || []).find(x => x.label === sk); return s ? s.pct : 0; };
+    charts.cross = charts.cross || echarts.init(G.$("#bk-cross"));
+    charts.cross.setOption({
+      grid: { left: 4, right: 8, top: 22, bottom: 6, containLabel: true },
+      legend: { top: 0, textStyle: { fontSize: 10 }, itemWidth: 11, itemHeight: 8 },
+      xAxis: { type: "value", max: 100, axisLabel: { formatter: "{value}%" }, splitLine: { show: false } },
+      yAxis: { type: "category", data: ordered.map(c => `${c}${bc[c].thin ? " ⚠" : ""} · n${bc[c].total}`), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 11 } },
+      tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, formatter: ps => ps[0].name + "<br/>" + ps.filter(p => p.value > 0).map(p => `${p.marker}${p.seriesName}: ${p.value}%`).join("<br/>") },
+      series: skills.map(sk => ({ name: sk, type: "bar", stack: "t", barWidth: "62%", data: ordered.map(c => pctOf(c, sk)), itemStyle: { color: SKILL_COLOR[sk] } })),
+    });
+    const cov = d.n_matched && d.n_subq_total ? `${d.n_matched}/${d.n_subq_total}` : "?";
+    G.$("#bk-crosslbl").textContent = `${CROSS_LBL[state.cross]}·2015–20截面`;
+    G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
+      + `<br><small class="muted">⚠ 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格⚠仅参考。</small>`;
+  }
+
   function renderHeat(heat) {
     const sts = ["core", "standard", "HV_extra", "LV_extra"];
     const data = [];
@@ -186,7 +228,11 @@
     ]);
     state.dist = dist;
     wire();
-    if (window.echarts) { renderDist(); renderTrend(qt); renderHeat(heat); renderCognitiveSkill(cog); }
+    const cross = await loadCross(state.cross);
+    if (window.echarts) {
+      renderDist(); renderTrend(qt); renderHeat(heat); renderCognitiveSkill(cog);
+      renderCrossToggle(); renderCogCross(cross);
+    }
     renderShift();
     window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize()));
   });

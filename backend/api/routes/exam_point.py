@@ -7,8 +7,9 @@
 from __future__ import annotations
 
 from backend.api.db import db_ro
-from backend.services.exam_point import (cognitive_skill_distribution, exam_point_cooccurrence,
-                                          exam_point_distribution, exam_point_shift)
+from backend.services.exam_point import (cognitive_skill_by_content, cognitive_skill_distribution,
+                                          exam_point_cooccurrence, exam_point_distribution,
+                                          exam_point_shift)
 from backend.services.trend import scope
 
 
@@ -64,8 +65,21 @@ def api_exam_point_cognitive_skill(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_cognitive_by_content(qs: dict) -> dict:
+    """设问技能×题材/主题 交叉 (2015-20截面; 老师"哪类语篇考哪种思维"分流). ?by=genre|theme_l2|theme_context."""
+    by = (qs.get("by", ["genre"])[0] or "genre")
+    con = db_ro()
+    try:
+        return cognitive_skill_by_content(con, by=by)
+    except ValueError as e:
+        return {"error": str(e)}
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/exam_point/distribution": api_exam_point_distribution,
     "/api/exam_point/cooccurrence": api_exam_point_cooccurrence,
     "/api/exam_point/cognitive_skill": api_exam_point_cognitive_skill,
+    "/api/exam_point/cognitive_by_content": api_exam_point_cognitive_by_content,  # 技能×题材交叉(2015-20)
 }

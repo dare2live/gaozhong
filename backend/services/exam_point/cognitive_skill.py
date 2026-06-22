@@ -182,3 +182,57 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
             "official_ref": "教育部考试中心《中国高考评价体系》7理解性技能",
             "n_total": len(rows), "by_era": out, "reliability": reliability,
             "eras_ordered": sorted(by_era.keys())}
+
+
+_CROSS_DIMS = {"genre", "theme_l2", "theme_context"}
+# join 键: cog 子题 node attrs.passage_label 存裸 qid(gb/...), passage级 genre/theme 边 src 带 'question:' 前缀 → 补前缀对齐
+_CROSS_SQL = """
+WITH cog AS (
+  SELECT ns.label AS skill, 'question:'||json_extract_string(nq.attrs_json,'$.passage_label') AS pid
+  FROM edges e
+  JOIN nodes nq ON nq.concept_id = e.src_id
+  JOIN nodes ns ON ns.concept_id = e.dst_id
+  WHERE e.relation='tests_exam_point' AND json_extract_string(e.evidence_json,'$.dimension')='cognitive_skill'
+    AND CAST(json_extract_string(e.evidence_json,'$.lineage.source_year') AS INT) BETWEEN 2015 AND 2020),
+content AS (
+  SELECT ge.src_id AS pid, nc.label AS content
+  FROM edges ge JOIN nodes nc ON nc.concept_id = ge.dst_id
+  WHERE ge.relation='tests_exam_point' AND json_extract_string(ge.evidence_json,'$.dimension') = ?)
+SELECT c.content, cog.skill, COUNT(*) AS n
+FROM cog JOIN content c ON c.pid = cog.pid
+GROUP BY c.content, cog.skill"""
+
+
+def cognitive_skill_by_content(con: duckdb.DuckDBPyConnection, by: str = "genre") -> dict:
+    """设问技能 × 题材/主题 交叉 (2015-20旧课标II单era截面) — 老师"哪类语篇考哪种思维"分流决策.
+
+    单一计算点(Rule1, 派生只算一次; API/前端不重写JOIN)。真相源**异质分层诚实标**:
+    - 设问技能侧 = explicit_label(教研显式标签, 真值); 题材/主题侧 = dual_model_agree(模型推断, **非真值交叉**)。
+    粒度 = 子题数(同语篇多子题共享 passage 级题材 → fan-out, 标"同语篇重复计入", 坑12)。
+    era 锁 2015-20: 2021+ 子题 node(EN-XGKII)无 passage_label 回指 → 跨era桥缺失, **不出迁移结论**(坑3)。
+    每 content 格 total < scope.MIN_YEAR_SAMPLE(10) → 标 thin(只进池化不单独下结论, 坑12护栏)。
+    """
+    if by not in _CROSS_DIMS:
+        raise ValueError(f"by 必须 ∈ {_CROSS_DIMS}, 收到 {by!r}")
+    n_total = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
+        "AND json_extract_string(evidence_json,'$.dimension')='cognitive_skill' "
+        "AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) BETWEEN 2015 AND 2020").fetchone()[0]
+    by_content: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for content, skill, n in con.execute(_CROSS_SQL, [by]).fetchall():
+        by_content[content][skill] += n
+    out = {}
+    for content, d in by_content.items():
+        tot = sum(d.values())
+        out[content] = {
+            "total": tot, "thin": tot < scope.MIN_YEAR_SAMPLE,
+            "skills": sorted([{"label": k, "n": v, "pct": round(100 * v / tot, 1)} for k, v in d.items()],
+                             key=lambda x: -x["n"])}
+    n_matched = sum(c["total"] for c in out.values())
+    return {"facet": f"cognitive_skill_by_{by}", "by_dimension": by, "era": "2015-2020_旧课标II",
+            "province_scope": "辽宁卷",
+            "skill_provenance": "explicit_label (教研显式标签, 真值)",
+            "content_provenance": "dual_model_agree (模型推断, 非真值交叉)",
+            "note": "粒度=子题数(同语篇多子题共享题材, 重复计入); era锁2015-20(2021+桥缺失不出迁移); thin格(<10子题)只进池化不单独下结论",
+            "n_subq_total": n_total, "n_matched": n_matched, "thin_threshold": scope.MIN_YEAR_SAMPLE,
+            "by_content": dict(sorted(out.items(), key=lambda kv: -kv[1]["total"]))}
