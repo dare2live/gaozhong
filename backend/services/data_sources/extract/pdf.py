@@ -17,6 +17,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from backend.services.trend import scope   # G3: province标签单点
+
 
 class PdfUnreadableError(Exception):
     """PDF 非有效格式 (HTML 伪装/损坏下载) — 不静默吞 (§1.5), 由调用方转 skip."""
@@ -170,7 +172,7 @@ def _make_section(year: int, qtype: str, raw: str, qnum: int) -> dict:
     return {
         "question_id": f"pdf/{year}/xgkii/{qtype}/{qnum}",
         "year": year,
-        "province": "辽宁 (新课标 II 卷, 2021+)",
+        "province": scope.LIAONING_XGKII_2021,   # G3: 收口 scope 单点
         "paper_type": "新课标 II 卷",
         "question_type": qtype,
         # 不再硬截 2000 (D0 缺陷: 截断丢后段小题题干); 与 exam.py 一致用 8000 上限保护超长

@@ -123,6 +123,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "from scripts.tools.alignment.exam_alignment_checker import GAOKAO_STRUCTURE as G; print(0 if (len(G)==6 and sum(v['score'] for v in G.values())==150) else 1)"]
     expect: {op: "==", value: "0"}
+  - id: liaoning-label-single-point
+    claim: "辽宁卷 province 标签收口 scope 单点 (G3); 5消费者(exam_paper/exam_province/eol_import/pdf/truth_baseline_load)全解析到同一 scope.LIAONING_XGKII_2021 (坑3/坑7 防散落漂移)"
+    type: shell
+    command: ["python3", "-c", "from backend.services.trend import scope; from backend.services.data_sources.clean.exam_paper import LN_II_2021; from backend.services.extraction.exam_province import LABEL_XGKII_LN; from backend.services.imports.eol_import import PROVINCE; print(0 if (LN_II_2021==LABEL_XGKII_LN==PROVINCE==scope.LIAONING_XGKII_2021=='辽宁 (新课标 II 卷, 2021+)') else 1)"]
+    expect: {op: "==", value: "0"}
 
   # ===== 分析诚实 (件1: D0 从"数据诚实"扩展到"分析诚实") =====
   - id: trend-province-scoped

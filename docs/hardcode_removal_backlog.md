@@ -16,7 +16,7 @@
 ## 归并簇 (先建/扩 config 单点, 再让副本读 — 否则改读取点重复劳动)
 - ~~**G1 年份权重**~~ ✅ done (见上)。
 - ~~**G2 卷制 era 边界**~~ ✅ done (见上)。
-- **G3 卷型省份标签** `辽宁 (新课标 II 卷, 2021+)` ×4模块(exam_province/eol_import/pdf/extract) → exam_paper.py 的 LN_II_* 设唯一来源, 其余 import。
+- ~~**G3 卷型省份标签**~~ ✅ done (R1; **REVISE backlog**: codegraph 实测 exam_paper fan-in=2 再+4=6 违铁律7 → canonical home 改 **scope** 非 exam_paper; scope 是设计的 PIT/province 常量 leaf hub, 已 fan-in 10, 常量不改行为高 fan-in 是本职)。scope 加 `LIAONING_XGKII_2021/_2015_2020`; 5消费者(exam_paper/exam_province/eol_import/pdf/truth_baseline_load)全 import scope。行为等价: label 字节不变 + 全局无残留字面(cognitive_skill:54 是注释非字面)。moth `liaoning-label-single-point` import-equality 锁。
 - ~~**G4 _SKILL_MAP**~~ ✅ done: 9条题型→官方7技能映射收口 `exam_point_taxonomy.yaml question_intent.analysis_label_aliases`; cognitive_skill.py `_load_skill_map()` 读 yaml (lru_cache)。坑16 验证: loaded==原字面 + target⊆官方7 + 读-only复算85边技能分布与DB逐项一致 + 3模糊题型skip保留。新锁: d0 check (yaml target⊆官方7独立字面量) + moth `skill-map-yaml-single-point` 断言。
 - **G5 stage/category→颜色映射** 前端散 3 份**且已漂移**(STAGE_C: k12.js/dict.js/beike.js, dict有"高中"键 k12无) → design-system.css 加 `--color-stage-*` 令牌 + 共享 `category-config.js`。**已漂移=真bug, 优先**。
 - ~~**G6 卷面结构**~~ ✅ done: exam_alignment_checker.py `GAOKAO_STRUCTURE` → `_load_gaokao_structure()` 读 question_types.yaml (仅 score>0 计分题型, 排除已废单选); **weight 是派生量 score/总分, 现算不存** (单一计算点)。行为等价: 6题型 key集+逐值全一致。moth `gaokao-structure-yaml-single-point` 锁 (总分150/6题型)。

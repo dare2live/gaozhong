@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import duckdb
 
-LABEL_XGKII_LN = "辽宁 (新课标 II 卷, 2021+)"
+from backend.services.trend import scope
+
+LABEL_XGKII_LN = scope.LIAONING_XGKII_2021   # G3: province标签收口 scope 单点 (坑3/坑7 一致性)
 PAPER_XGKII = "新课标 II 卷"
 
 # 可信源前缀: 这些源已逐题/全文核验为辽宁新课标II卷

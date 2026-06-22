@@ -20,11 +20,13 @@ from pathlib import Path
 
 import duckdb
 
+from backend.services.trend import scope
+
 ROOT = Path(__file__).resolve().parents[3]
 EOL_DIR = ROOT / "data" / "external" / "exam_sources" / "eol"
 YEARS = (2021, 2022)
 
-PROVINCE = "辽宁 (新课标 II 卷, 2021+)"
+PROVINCE = scope.LIAONING_XGKII_2021   # G3: province标签收口 scope 单点
 PAPER_TYPE = "新课标 II 卷"
 
 # EOL question_type → 项目 exam_questions 题型 taxonomy

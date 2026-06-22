@@ -21,6 +21,7 @@ from scripts.tools.audit.truth_baseline_common import (
     _token_set,
     signature,
 )
+from backend.services.trend import scope   # G3: province标签单点
 
 
 def load_db_records(con) -> list[dict[str, Any]]:
@@ -168,7 +169,7 @@ def import_truth_rows(con, rows: list[dict[str, Any]]) -> list[str]:
         to_insert.append((
             qid,
             int(row["year"]),
-            row.get("province") or "辽宁 (新课标 II 卷, 2021+)",
+            row.get("province") or scope.LIAONING_XGKII_2021,   # G3: 收口 scope 单点
             row.get("paper_type") or "新课标 II 卷",
             row.get("question_type") or "阅读理解",
             row.get("raw_question") or "",

@@ -14,10 +14,10 @@ _norm_cat / _JUAN_MAP / LN_II_* 常量, 与之**字节级等价**, 仅做模块�
 """
 from __future__ import annotations
 
-from backend.services.trend import scope   # 卷制边界年单点 (G2: 不再硬编码 2015/2021)
+from backend.services.trend import scope   # 卷制边界年 + province标签 单点 (G2 边界年; G3 标签)
 
-LN_II_2015_2020 = "辽宁 (新课标 II 卷, 2015-2020)"
-LN_II_2021 = "辽宁 (新课标 II 卷, 2021+)"
+LN_II_2015_2020 = scope.LIAONING_XGKII_2015_2020   # G3: 收口 scope 单点 (非硬编码第二份)
+LN_II_2021 = scope.LIAONING_XGKII_2021
 
 
 def _norm_cat(category: str | None) -> str:

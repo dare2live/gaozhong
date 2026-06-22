@@ -30,6 +30,12 @@ ERA_BOUNDARY_YEAR = 2021
 LIAONING_NATIONAL_PAPER_SINCE = 2015
 ERA_NEW = "2021+_新高考II"
 ERA_OLD = "2015-2020_旧课标II"
+# 辽宁卷 province 入库标签单点 (G3: 5处散落字面收口到此常量 hub; 坑3/坑7 province 一致性铁律 —
+# 全项目用同一字符串, 防 "辽宁(新课标II卷)" vs "辽宁 (新课标 II 卷, 2021+)" 漂移导致精确匹配/统计错)。
+# 与 ERA_NEW/OLD(segment 短键) 不同: 这是 exam_questions.province 字段的**完整标签**(省份+卷型+era)。
+# 选 scope 作 home 而非 exam_paper: exam_paper fan-in=2 再+4=6 违铁律7; scope 本就是常量 leaf hub。
+LIAONING_XGKII_2021 = "辽宁 (新课标 II 卷, 2021+)"          # 2021+ 新高考全国II
+LIAONING_XGKII_2015_2020 = "辽宁 (新课标 II 卷, 2015-2020)"  # 2015-2020 旧课标全国II
 
 
 def liaoning_clause(province_scoped: bool = True) -> str:
