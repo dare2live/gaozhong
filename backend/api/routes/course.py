@@ -121,7 +121,7 @@ def api_course_quiz(qs: dict) -> dict:
             "FROM question_bank qb "
             "JOIN question_tags qt ON qt.qb_id = qb.qb_id "
             f"WHERE qt.tag_id IN ({','.join('?' * len(tags))}) "
-            "ORDER BY qb.qb_id LIMIT 10",
+            f"ORDER BY qb.qb_id LIMIT {int(loader.get_threshold('course.homework_questions', 10))}",
             tags,
         ).fetchall() if tags else []
         questions = [

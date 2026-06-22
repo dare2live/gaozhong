@@ -16,7 +16,7 @@
     return `<div class="empty-guide">
       <span class="eg-tag">示例数据</span>
       <div class="eg-title">接入真实学情 · 三步</div>
-      <div class="eg-why">当前 790 条作答为示例合成 (D0 诚实: 不在零真实作答上渲染伪造置信度)。导入真实数据后, 弱点 / 热力 / 分层推荐自动派生。</div>
+      <div class="eg-why">当前作答为示例合成 (D0 诚实: 不在零真实作答上渲染伪造置信度)。导入真实数据后, 弱点 / 热力 / 分层推荐自动派生。</div>
       <div class="eg-steps">
         ${step(1, "建班 · 导入名单", '上传学生名单 CSV (姓名 + 学号), 系统建班建档 · 多租户隔离。<a href="#/students">学生档案 →</a>')}
         ${step(2, "上传答题卡", '扫描录入 OCR 识别作答 → 自动判分入 student_answers。<a href="#/scan">扫描录入 →</a>')}

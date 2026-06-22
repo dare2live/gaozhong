@@ -44,8 +44,11 @@
     const eraPill = (id, label) => `<button class="bk-pill ${state.era === id ? "on" : ""}" data-era="${id}">${label}</button>`;
     const dimOpt = Object.keys(DIM_LABEL).map(k => `<option value="${k}" ${state.dim === k ? "selected" : ""}>${DIM_LABEL[k]}</option>`).join("");
     const eras = state.dist ? state.dist.eras : [ERA_NEW, ERA_OLD];
-    const n = eras.includes(state.era) && state.dist ? (state.dist.distribution[state.era].genre || []).reduce((a, x) => a + x.n, 0) : 0;
-    const ok = n >= 30;
+    // 样本充足性读 service 透传的 sufficiency.distribution_eligible (scope.MIN_DISTRIBUTION_SAMPLE 已 service 算), 前端不重判30 (Rule1)
+    const suff = (state.dist && state.dist.sufficiency && state.dist.sufficiency[state.era]) || {};
+    const n = suff.n_total != null ? suff.n_total
+      : (eras.includes(state.era) && state.dist ? (state.dist.distribution[state.era].genre || []).reduce((a, x) => a + x.n, 0) : 0);
+    const ok = suff.distribution_eligible != null ? suff.distribution_eligible : n >= 30;
     return `
 <span class="bk-flabel">卷制</span>${eraPill(ERA_NEW, "2021+ 新高考II")}${eraPill(ERA_OLD, "2015–2020")}
 <span class="bk-lock">辽宁卷·锁定</span>

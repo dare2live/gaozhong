@@ -13,6 +13,7 @@ import json
 import duckdb
 
 from backend.api.db import DB_PATH, db_ro
+from backend.services.course.loader import get_threshold
 from backend.services.placement import generator, loader, scorer, followup
 
 
@@ -77,7 +78,9 @@ def api_placement_followup(qs: dict, body: bytes | None = None) -> dict:
     all_qids = [int(x) for x in (data.get("all_qids") or [])]
     if not wrong_qids:
         return {"questions": [], "n_questions": 0, "note": "no wrong answers, no followup needed"}
-    n = min(max(int(data.get("n", 5)), 3), 5)
+    lo = int(get_threshold("placement.followup_min", 3))      # 追问题数 clamp 读 thresholds.yaml (no-hardcode)
+    hi = int(get_threshold("placement.followup_max", 5))
+    n = min(max(int(data.get("n", hi)), lo), hi)
     con = db_ro()
     try:
         return followup.pick_followup_questions(con, wrong_qids, all_qids, n)

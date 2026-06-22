@@ -26,7 +26,7 @@
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">考试词典 · 金矿</h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary 4186 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · service 单算点</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · service 单算点</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid #d8d6cd;border-radius:6px;font-size:14px;">
   <select id="dict-stage" style="padding:7px;border:1px solid #d8d6cd;border-radius:6px;">
@@ -68,6 +68,8 @@
     if (stage) qs.push("stage=" + encodeURIComponent(stage));
     if (exam) qs.push("source=exam");
     const data = await fetchJSON("/api/exam_dictionary?" + qs.join("&")).catch(() => ({ rows: [] }));
+    const tot = G.$("#dict-total");                       // 词典总词数 = service 返回 total, 非写死(no-hardcode)
+    if (tot && data.total != null) tot.textContent = Number(data.total).toLocaleString();
     render(Array.isArray(data) ? data : (data.rows || data.words || []));
   }
 
