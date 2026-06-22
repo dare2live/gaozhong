@@ -1,0 +1,19 @@
+# 命题近年加权 — 操作型单点真相源 (去硬编码 backlog G1)
+#
+# 宪法铁律 P1 §1.2 (backend/services/constitution.py:33-35 散文条款):
+#   "2025(权重5)>2024(4)>2023(3)>2022(2)>2021(1.5)>旧(0.5). 趋势/频次/模板全部加权."
+# 近年真题权重递增: 趋势/频次/模板分析全部按此加权 (近年命题信号 > 历史存量)。
+#
+# 每年6月滚动 (PRINCIPLE_5 持续学习): 新真题入库 → 新年份加最高权重, 旧年份顺延降权。
+#   例 2026 真题入库后: 2026→5, 2025→4, 2024→3, 2023→2, 2022→1.5, 其余→default。
+# 改权重改此文件, 不动代码 (5 个消费者 import 读取: constitution.check_compliance /
+#   trend_engine / milestone_b_rebuild / exam_pattern_extractor; model_capability_audit
+#   保留独立字面量做 yaml↔宪法对账, 见该文件注释)。
+weights:
+  2025: 5
+  2024: 4
+  2023: 3
+  2022: 2
+  2021: 1.5
+# 未列年份 (2021 前旧课标自主命题期) 兜底权重
+default: 0.5

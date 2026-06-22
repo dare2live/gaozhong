@@ -5,7 +5,29 @@
 """
 from __future__ import annotations
 
+from functools import lru_cache
+from pathlib import Path
+
 import duckdb
+import yaml
+
+_YW_PATH = Path(__file__).resolve().parents[1] / "config" / "year_weights.yaml"
+
+
+@lru_cache(maxsize=1)
+def _yw_raw() -> dict:
+    return yaml.safe_load(_YW_PATH.read_text(encoding="utf-8")) or {}
+
+
+def year_weights() -> dict[int, float]:
+    """命题近年加权 (铁律 P1 §1.2) — 单点真相源 backend/config/year_weights.yaml。
+    改权重改 yaml 不动代码; 每年6月滚动 (PRINCIPLE_5)。返回新 dict, 调用方可安全改。"""
+    return {int(y): float(w) for y, w in (_yw_raw().get("weights") or {}).items()}
+
+
+def year_weight_default() -> float:
+    """未列年份 (2021前旧课标期) 兜底权重 (yaml default, 默认 0.5)。"""
+    return float(_yw_raw().get("default", 0.5))
 
 PRINCIPLES = [
     ("PRINCIPLE_1", "principle", "真题是唯一真理源",
@@ -136,8 +158,8 @@ def load_all(con: duckdb.DuckDBPyConnection) -> list[dict]:
 def check_compliance() -> dict:
     """内容生成前调用 — 返回当前有效约束 (铁律+年份权重)."""
     return {
-        "year_weights": {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5},
-        "year_weights_old": 0.5,
+        "year_weights": year_weights(),          # 单点真相源 year_weights.yaml (G1 去硬编码)
+        "year_weights_old": year_weight_default(),
         "trend_priority": True,
         "recent_template_years": [2023, 2024, 2025],
         "audit_required": True,

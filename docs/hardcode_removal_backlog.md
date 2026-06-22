@@ -9,11 +9,13 @@
 - **前端派生计数写死** (本批): dict.js 4186→fetch 返回 total · xisheng.js 790→去数字 · workbench/teaching 40节→stats.courses(513eb70)。
 - **beike n>=30 重算** (本批): 改读 service 透传 `sufficiency.distribution_eligible` (Rule1, teacher.js 已是正解)。
 - **P0 孤儿config接线** (本批, config键已存在却没读): course.py homework LIMIT→`get_threshold('course.homework_questions')` · placement.py followup clamp→`get_threshold('placement.followup_min/max')`。
-- 三门全绿 (D0/moth79/stop_gate)。
+- **G2 卷制era边界收口** (31f36c5): scope.py 加 `LIAONING_NATIONAL_PAPER_SINCE=2015`; exam_paper.py + cognitive_skill.py ×3 不再旁路硬编码 2015/2021。**verify-the-verifier**: d0_cognitive_skill_check 的 2015/2020/2021 故意保留独立字面量 (坑1, 加注释锁意图)。
+- **G1 年份权重数据化** (本批): 5 副本 `{2025:5..2021:1.5}` → `backend/config/year_weights.yaml` 单点; constitution.py 加 `year_weights()/year_weight_default()` reader; trend_engine/exam_pattern_extractor/milestone_b_rebuild import 读取。**verify-the-verifier**: model_capability_audit `CONSTITUTION_WEIGHTS` 保留独立宪法镜像字面量做 yaml↔宪法对账 (坑1); 该孤儿对账门接进 **moth `year-weights-matches-constitution` 断言** (坑21 装饰门→门2强制)。对抗验证: 污染 yaml 2025→99 门必 FAIL, 自愈回绿。
+- 三门全绿 (D0/moth80/stop_gate)。
 
 ## 归并簇 (先建/扩 config 单点, 再让副本读 — 否则改读取点重复劳动)
-- **G1 年份权重** `{2025:5,...,2021:1.5}` 散 5 份(constitution.py:139 / trend_engine.py:61 / milestone_b_rebuild.py:30 / model_capability_audit.py:23 / exam_pattern_extractor.py:27) → **新建 `year_weights.yaml`**(每年6月滚动, 最该数据化)。
-- **G2 卷制 era 边界** 2021断点/2015-2020区间/2015辽宁采用年: scope.py 是单点但被旁路 — exam_paper.py:64-65 · cognitive_skill.py BETWEEN 2015 AND 2020 ×3 → 改 `import scope` 复用; scope 加 `LIAONING_NATIONAL_PAPER_SINCE=2015`。
+- ~~**G1 年份权重**~~ ✅ done (见上)。
+- ~~**G2 卷制 era 边界**~~ ✅ done (见上)。
 - **G3 卷型省份标签** `辽宁 (新课标 II 卷, 2021+)` ×4模块(exam_province/eol_import/pdf/extract) → exam_paper.py 的 LN_II_* 设唯一来源, 其余 import。
 - **G4 _SKILL_MAP** (cognitive_skill.py:27-37) ↔ 已有 exam_point_taxonomy.yaml `question_intent.aliases` → 补 yaml 缺的变体 + 读 yaml 删 .py 第二份 (坑16: 改后对真值交叉验证)。
 - **G5 stage/category→颜色映射** 前端散 3 份**且已漂移**(STAGE_C: k12.js/dict.js/beike.js, dict有"高中"键 k12无) → design-system.css 加 `--color-stage-*` 令牌 + 共享 `category-config.js`。**已漂移=真bug, 优先**。

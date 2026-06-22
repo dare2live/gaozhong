@@ -108,6 +108,11 @@ assertions:
     type: shell
     command: ["grep", "-c", "english_stopwords", "backend/config/stopwords.yaml"]
     expect: {op: ">=", value: 1}
+  - id: year-weights-matches-constitution
+    claim: "year_weights.yaml 操作型权重 == 宪法铁律P1字面 {2025:5..2021:1.5} (G1 去硬编码: 5副本收口单点; verify-the-verifier 坑1+接孤儿门进门2 坑21)"
+    type: shell
+    command: ["python3", "-c", "from scripts.tools.audit.model_capability_audit import _check_weight_compliance as c; print(len(c()['mismatches']))"]
+    expect: {op: "==", value: "0"}
 
   # ===== 分析诚实 (件1: D0 从"数据诚实"扩展到"分析诚实") =====
   - id: trend-province-scoped
