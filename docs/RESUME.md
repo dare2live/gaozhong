@@ -33,7 +33,12 @@
 - **#3 raw_question 页中水印清洗** (bae72b7, 坑18续): local_pdf 2024-25 锦宏/学科网 mock-PDF 每页页脚(公众号/客服/页码)
   mid-passage注入污染15行(4下游)。`extract/pdf.py::_strip_watermark` 按行剥(正文0丢失, 仅删水印微信号'jh') + D0 + moth; rebuild自动清。
 
-**待补**: 2022/2024/2025 真辽宁设问标注(现 analysis 无前导题型, 诚实空); v2 题型升格loader维 + structural-share占比(需粒度归一); cog×genre 跨era版需先给2023子题node补passage_label桥。
+**v2 题型presence提取完整性掩码** (51778ed, 坑12诚实修正, backlog#2): v1 把听力/续写"提取年"误当"登场年"(artifact)。
+v2 加卷改结构真相源 `backend/config/exam_structure_eras.yaml`(canonical题型+extraction_gap掩码 by era, §3.5数据化),
+signal 改由**卷面结构**(非数据presence)定: 短改=真退场/听力=skeleton+缺源(≠登场2021)/续写应用文=真登场+缺源(登场年不可信)。
+`raw.py::_era_structure`单点+`_qt_signal`; D0项23 + moth + C面板缺源格淡色虚线。
+
+**待办 backlog(按顺序)**: cog×genre 跨era版(给2023子题node补passage_label桥) → 2022/24/25真辽宁设问标注 → structural-share占比 → 旧口径收口。
 
 ---
 

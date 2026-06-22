@@ -49,11 +49,22 @@
 - **骨架(两era皆在, 万变不离其宗)**: 阅读理解 / 完形填空 / 七选五 / 语法填空。
 - **退场**: 短文改错(末2020)。 **登场**: 听力(2021) / 续写·应用文(2024) = 2017课标核心素养驱动。
 - 内容门 `question_type_era_structural_truth`(content_gates.yaml): 锁短文改错仅旧era/续写仅新era/阅读两era皆在。
-- ⚠ 登场年受提取gap影响(听力/写作部分年未抽); structural-share(占比)留v2(需粒度归一)。
+- ⚠ v1 缺陷(已v2修): 登场年受提取gap影响(听力/写作部分年未抽) — v1 signal 由**数据presence**定, 误把"提取年"当"登场年"。
 
-## 下一步 (v2, 按需)
+## ✅ v2 已落地 (2026-06-22) — 题型 presence 提取完整性掩码 (坑12 诚实修正)
 
-题型升格loader维 + 粒度归一structural-share + beike C面板改造 + 卷改结构config + 旧口径收口 → 完整"命题趋势驾驶舱"。
+signal 改由**卷面结构真相源**(非数据 presence)定 → 区分真退场/真登场 vs 缺源(extraction_gap):
+- **数据化真相源**: 新建 `backend/config/exam_structure_eras.yaml`(各 era canonical 题型 + extraction_gap 掩码;
+  ≥2源=教育部新高考改革+历年真题卷结构, 结构性真值)。`raw.py::_era_structure`(lru_cache单点)+`_qt_signal`(config驱动)。
+- **诚实修正**: 短文改错=**真退场**(新高考取消) · 听力=**skeleton+缺源**(两卷制常驻本项目未抽全, **≠v1误标登场2021**) ·
+  续写/应用文=**真登场+缺源**(新高考新增但登场年=提取artifact不可信) · 书面表达=真退场(旧课标作文改制, config-only诚实暴露)。
+- 门: D0 `_check_qtype_structure`(项23: 听力≠登场/短改真退场/续写应用文真登场缺源/无unregistered) + moth
+  `question-type-structure-mask`。前端 C面板: 缺源格淡色虚线+⚠标 + note 区分真退场/真登场/缺源。
+- **deferred(子backlog)**: structural-share占比(需 source_repo→粒度collapse, 裁决辅助形态)。
+
+## 下一步 backlog (按顺序)
+
+cog×genre 跨era版(需给2023子题node补passage_label桥) → 2022/24/25 真辽宁设问标注 → structural-share占比 → 旧口径收口。
 
 **"怎么考"第二轴 — 2026-06-21 勘测纠偏(Stream B, 3-agent)**: 第二轴**早已落地 = cognitive_skill**(设问类型,
 provenance=explicit_label 最强, `exam_point/cognitive_skill.py`), **不是待建的 exam_method**("exam_method=0行"
