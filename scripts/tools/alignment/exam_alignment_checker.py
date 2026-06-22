@@ -14,18 +14,25 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
 import duckdb
+import yaml
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
+_QT_PATH = ROOT / "backend" / "config" / "question_types.yaml"
 
-# 高考真实结构 (新课标 II 卷, 2021+)
-GAOKAO_STRUCTURE = {
-    "听力": {"score": 30, "questions": 20, "weight": 0.20},
-    "阅读理解": {"score": 50, "questions": 15, "weight": 0.333},
-    "完形填空": {"score": 15, "questions": 15, "weight": 0.10},
-    "语法填空": {"score": 15, "questions": 10, "weight": 0.10},
-    "应用文": {"score": 15, "questions": 1, "weight": 0.10},
-    "续写": {"score": 25, "questions": 1, "weight": 0.167},
-}
+
+def _load_gaokao_structure() -> dict:
+    """高考真实结构 (新课标II卷 2021+) — 单点真相源 question_types.yaml (G6 去硬编码)。
+    仅计分题型 (gaokao_score>0, 排除已废单选); weight 是派生量 score/总分, 现算不存 (单一计算点)。"""
+    types = (yaml.safe_load(_QT_PATH.read_text(encoding="utf-8")) or {})["types"]
+    scored = {k: v for k, v in types.items() if (v.get("gaokao_score") or 0) > 0}
+    total = sum(v["gaokao_score"] for v in scored.values())
+    return {k: {"score": v["gaokao_score"], "questions": v["gaokao_questions"],
+                "weight": round(v["gaokao_score"] / total, 3)}
+            for k, v in scored.items()}
+
+
+# 高考真实结构 (新课标 II 卷, 2021+) — 派生自 question_types.yaml 单点 (非硬编码第二份)
+GAOKAO_STRUCTURE = _load_gaokao_structure()
 
 GAOKAO_LISTENING_STRUCTURE = {
     "短对话": {"n_dialogs": 5, "q_per": 1, "total_q": 5},

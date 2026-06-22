@@ -118,6 +118,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "from backend.services.exam_point.cognitive_skill import _load_skill_map as f; m=f(); off={'推断','理解具体信息','理解主旨要义','理解词汇','理解观点态度','理解目的','理解文章结构类型'}; print(0 if (len(m)>=9 and set(m.values())<=off) else 1)"]
     expect: {op: "==", value: "0"}
+  - id: gaokao-structure-yaml-single-point
+    claim: "高考卷面结构收口 question_types.yaml 单点 (G6); 6计分题型总分150, weight派生score/总分现算 (exam_alignment_checker GAOKAO_STRUCTURE 不再硬编码)"
+    type: shell
+    command: ["python3", "-c", "from scripts.tools.alignment.exam_alignment_checker import GAOKAO_STRUCTURE as G; print(0 if (len(G)==6 and sum(v['score'] for v in G.values())==150) else 1)"]
+    expect: {op: "==", value: "0"}
 
   # ===== 分析诚实 (件1: D0 从"数据诚实"扩展到"分析诚实") =====
   - id: trend-province-scoped

@@ -19,7 +19,7 @@
 - **G3 卷型省份标签** `辽宁 (新课标 II 卷, 2021+)` ×4模块(exam_province/eol_import/pdf/extract) → exam_paper.py 的 LN_II_* 设唯一来源, 其余 import。
 - ~~**G4 _SKILL_MAP**~~ ✅ done: 9条题型→官方7技能映射收口 `exam_point_taxonomy.yaml question_intent.analysis_label_aliases`; cognitive_skill.py `_load_skill_map()` 读 yaml (lru_cache)。坑16 验证: loaded==原字面 + target⊆官方7 + 读-only复算85边技能分布与DB逐项一致 + 3模糊题型skip保留。新锁: d0 check (yaml target⊆官方7独立字面量) + moth `skill-map-yaml-single-point` 断言。
 - **G5 stage/category→颜色映射** 前端散 3 份**且已漂移**(STAGE_C: k12.js/dict.js/beike.js, dict有"高中"键 k12无) → design-system.css 加 `--color-stage-*` 令牌 + 共享 `category-config.js`。**已漂移=真bug, 优先**。
-- **G6 卷面结构** exam_alignment_checker.py:21-28 `GAOKAO_STRUCTURE` ↔ 已有 question_types.yaml(分值重复) → 读 yaml 删字面。
+- ~~**G6 卷面结构**~~ ✅ done: exam_alignment_checker.py `GAOKAO_STRUCTURE` → `_load_gaokao_structure()` 读 question_types.yaml (仅 score>0 计分题型, 排除已废单选); **weight 是派生量 score/总分, 现算不存** (单一计算点)。行为等价: 6题型 key集+逐值全一致。moth `gaokao-structure-yaml-single-point` 锁 (总分150/6题型)。
 
 ## P2/P3/P4 (批量入 config)
 - **P2 后端阈值**: scope.py 30/10/5 → thresholds.yaml `trend:` · slope±50(model.py + predicted.py 两份)→ `trend.vocab_slope_significant` · alignment评分阈值 · PDF抽取页范围(curriculum_vocab/grammar/junior 等)→ sources.yaml 各PDF条目加 `extract_pages` · build_manifest URL→读 sources.yaml。
