@@ -63,6 +63,14 @@ gates:
     op: ge
     expect: 6
 
+  - id: renjiao_variant_words_present
+    domain: vocab
+    source: "data/textbooks/renjiao/*.pdf (英美变体拼写头词 'organise (NAmE -ize) /IPA/')"
+    desc: "人教变体拼写头词召回(A4: organise/recognise等英美变体词, 原_ENTRY_HEAD_RE不识词与IPA间(NAmE -ize)→失配吸进前词丢失; 修后≥5个独立入表)"
+    query: "SELECT COUNT(*) FROM unit_vocab_intro WHERE version_key='renjiao' AND word IN ('organise','recognise','civilisation','criticise','analyse')"
+    op: ge
+    expect: 5
+
   # 注: zh_def 短语污染门暂不加 — 残留污染(（-起首短语如'senior high school'/缩写/表头噪声 吸进前词zh_def)
   #     与合法英文(语法注'also forwards'/'pl. stadia')无法用单一正则干净区分(106混合命中)。
   #     主短语召回已由 renjiao_phrase_present 锁; 残留污染留后续 parsing 精化(（-起首短语头 + 表头过滤)。

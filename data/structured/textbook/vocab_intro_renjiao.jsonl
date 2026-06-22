@@ -14,7 +14,7 @@
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "anxious", "pos": "adj", "zh_def": "焦虑的；不安的", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "annoyed", "pos": "adj", "zh_def": "恼怒的；生气的", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "annoy", "pos": "vt", "zh_def": "使恼怒；打扰", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "frightened", "pos": "adj", "zh_def": "惊吓的；害怕的 p.m. /pi:em/ abbr.（源自拉丁语）下午；午后 a.m. /eIem/ abbr. （源自拉丁语）上午；午前；午夜至正午", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "frightened", "pos": "adj", "zh_def": "惊吓的；害怕的", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "senior", "pos": "adj", "zh_def": "级别（或地位）高的 n. 较年长的人 senior high school （美国）高中", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "at last", "pos": "", "zh_def": "终于；最终", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "outgoing", "pos": "adj", "zh_def": "爱交际的；外向的", "raw_marker": ""}
@@ -35,7 +35,8 @@
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "look forward to", "pos": "", "zh_def": "盼望；期待", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "take notes", "pos": "", "zh_def": "记笔记", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "flash", "pos": "n", "zh_def": "光；信号 vi. 闪耀；闪光；发出信号 vt. 使闪耀；发出（信号）", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "flash card", "pos": "", "zh_def": "教学卡片；识字卡 organise (NAmE -ize) /O:gnaIz/ vt. 组织；筹备；安排；组建 vi. 组建；成立 organisation (NAmE -ization) /O:gnaIzeIn/ n. 组织；团体；机构", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "flash card", "pos": "", "zh_def": "教学卡片；识字卡", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "organise", "pos": "vt", "zh_def": "组织；筹备；安排；组建 vi. 组建；成立 organisation (NAmE -ization) /O:gnaIzeIn/ n. 组织；团体；机构", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "goal", "pos": "n", "zh_def": "目标；球门；射门", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "strategy", "pos": "n", "zh_def": "策略；策划", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 1, "word": "partner", "pos": "n", "zh_def": "同伴；配偶；合伙人", "raw_marker": ""}
@@ -114,7 +115,8 @@
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "emperor", "pos": "n", "zh_def": "皇帝", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "site", "pos": "n", "zh_def": "地点；位置；现场", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "take control of", "pos": "", "zh_def": "控制；接管", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "official", "pos": "adj", "zh_def": "官方的；正式的；公务的 n. 官员；要员 recognise (NAmE -ize) /rekgnaIz/ vt. 辨别出；承认；认可", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "official", "pos": "adj", "zh_def": "官方的；正式的；公务的 n. 官员；要员", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "recognise", "pos": "vt", "zh_def": "辨别出；承认；认可", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "type", "pos": "n", "zh_def": "类型；种类 vi. & vt. 打字", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "flight", "pos": "n", "zh_def": "空中航行；航班；航程", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "accommodation", "pos": "n", "zh_def": "住处；停留处；膳宿", "raw_marker": ""}
@@ -128,7 +130,8 @@
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "brochure", "pos": "n", "zh_def": "资料（或广告）手册", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "package", "pos": "n", "zh_def": "包裹；包装盒 vt. 将……包装好", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "package tour", "pos": "", "zh_def": "包价旅游", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "contact", "pos": "vt", "zh_def": "联络；联系 n. 联系；接触 civilisation (NAmE -ization) /sIvlaIzeIn/ n. 文明；文明世界", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "contact", "pos": "vt", "zh_def": "联络；联系 n. 联系；接触", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "civilisation", "pos": "n", "zh_def": "文明；文明世界", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "make up", "pos": "", "zh_def": "构成；形成", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "soldier", "pos": "n", "zh_def": "士兵；军人", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "bixiu_1", "unit_number": 2, "word": "transport", "pos": "n", "zh_def": "（especially BrE） （NAmE usually transportation）交通运输系统 /trnspO:t/ vt. 运输；运送", "raw_marker": ""}
@@ -1018,7 +1021,8 @@
 {"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "boil", "pos": "vt", "zh_def": "& vi.（ 使）沸腾；煮开；烧开 n. 沸腾；沸点", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "liquid", "pos": "n", "zh_def": "液体 adj. 液体的；液态的", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "obtain", "pos": "vt", "zh_def": "（ 尤指经努力）获得；赢得 vi.（ 规章、习俗等）存在；流行", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "defeat", "pos": "n", "zh_def": "失败；挫败 vt. 击败；战胜 sions in Each Unit 和习惯用语 标词；专有名词在每单元词表后面单独列出。 analyse (NAmE -ze) /nlaz/ vt. 分析", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "defeat", "pos": "n", "zh_def": "失败；挫败 vt. 击败；战胜 sions in Each Unit 和习惯用语 标词；专有名词在每单元词表后面单独列出。", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "analyse", "pos": "vt", "zh_def": "分析", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "apparently", "pos": "adv", "zh_def": "显而易见；看来； 显然", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "substance", "pos": "n", "zh_def": "物质；物品；事实根据", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_1", "unit_number": 1, "word": "insist", "pos": "vi", "zh_def": "& vt. 坚持；坚决要求", "raw_marker": ""}
@@ -1680,7 +1684,8 @@
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "bride", "pos": "n", "zh_def": "新娘", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "permanent", "pos": "adj", "zh_def": "永久的；永恒的；长久的", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "memorial", "pos": "n", "zh_def": "纪念碑（或像等）；纪念物；纪念品 adj. 纪念的；悼念的", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "humble", "pos": "adj", "zh_def": "谦逊的；虚心的；卑微的 criticise (NAmE -ize) /krtsaz/ vi. & vt. 批评；指责；评价", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "humble", "pos": "adj", "zh_def": "谦逊的；虚心的；卑微的", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "criticise", "pos": "vi", "zh_def": "& vt. 批评；指责；评价", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "criticism", "pos": "n", "zh_def": "批评；指责；评论", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "representative", "pos": "adj", "zh_def": "典型的；有代表性的 n. 代表", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 1, "word": "ink", "pos": "n", "zh_def": "墨水；墨汁；油墨", "raw_marker": ""}
@@ -1814,7 +1819,8 @@
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "wage", "pos": "n", "zh_def": "工资", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "bitter", "pos": "adj", "zh_def": "严寒的；激烈而不愉快的；味苦的", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "expedition", "pos": "n", "zh_def": "探险；远征；探险队", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "endurance", "pos": "n", "zh_def": "忍耐力；耐久力 vigour (NAmE vigor) /v(r)/ n. 精力；力量；活力", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "endurance", "pos": "n", "zh_def": "忍耐力；耐久力", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "vigour", "pos": "n", "zh_def": "精力；力量；活力", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "turn sb down", "pos": "", "zh_def": "拒绝（某人）", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "qualified", "pos": "adj", "zh_def": "符合资格；具备……的知识（或技能、学历等）", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_3", "unit_number": 4, "word": "enthusiastic", "pos": "adj", "zh_def": "热情的；热心的", "raw_marker": ""}
@@ -1954,7 +1960,8 @@
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "fare", "pos": "n", "zh_def": "车费；船费；飞机票价", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "weekly", "pos": "adj", "zh_def": "每周的 n. 周刊 on a … basis 根据；以……的方式（基准）", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "calculate", "pos": "vt", "zh_def": "计算；核算；预测", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "chairwoman", "pos": "n", "zh_def": "女主席；女董事长；女委员长 gramme (NAmE gram) /grm/ n. 克（重量单位）", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "chairwoman", "pos": "n", "zh_def": "女主席；女董事长；女委员长", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "gramme", "pos": "n", "zh_def": "克（重量单位）", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "flour", "pos": "n", "zh_def": "面粉；（谷物磨成的）粉", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "venue", "pos": "n", "zh_def": "活动场地（如音乐厅、会场等） sions in Each Unit 和习惯用语 标词；专有名词在每单元词表后面单独列出。", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 1, "word": "salesman", "pos": "n", "zh_def": "售货员；推销员", "raw_marker": ""}
@@ -2185,7 +2192,8 @@
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "council", "pos": "n", "zh_def": "委员会；市政服务机构", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "canal", "pos": "n", "zh_def": "运河；灌溉渠 attend to关怀；照料；处理", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "supervise", "pos": "vt", "zh_def": "& vi. 主管；指导；监督", "raw_marker": ""}
-{"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "handwriting", "pos": "n", "zh_def": "书法；书写；笔迹 disk (disc) /dsk/ n. 磁盘；盘", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "handwriting", "pos": "n", "zh_def": "书法；书写；笔迹", "raw_marker": ""}
+{"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "disk", "pos": "n", "zh_def": "磁盘；盘", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "parking", "pos": "n", "zh_def": "停车位；停车", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "camel", "pos": "n", "zh_def": "骆驼", "raw_marker": ""}
 {"version_key": "renjiao", "volume_key": "xuanze_4", "unit_number": 5, "word": "fry", "pos": "n", "zh_def": "油煎的食物 vt. & vi. 油炸；油炒；油煎", "raw_marker": ""}

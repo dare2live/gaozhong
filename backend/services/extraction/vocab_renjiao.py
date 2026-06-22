@@ -35,8 +35,11 @@ _INLINE_UNIT_RE = re.compile(r"\(\d+\)\s*$")
 _TOTAL_LIST_MIN_INLINE = 10  # 一页 ≥10 行末 (N) = 字母序总表 (per-unit 段恒 0)
 
 _UNIT_HEAD_RE = re.compile(r"^\s*Unit\s+(\d+)\s*$")
-# 词条头: 小写起首词/短语 + /ipa/ + 行内余文 (pos/释义可能续行)
-_ENTRY_HEAD_RE = re.compile(r"^\s*([a-z][a-z'\- ]*?)\s+/[^/]+/\s*(.*)$")
+# 词条头: 小写起首词/短语 + (可选英美变体标注) + /ipa/ + 行内余文 (pos/释义可能续行)。
+# A4 修(坑22同型): (a) 头词类含 '.' 收 p.m./a.m. 缩写; (b) 词与 /IPA/ 间允许可选 '(NAmE -ize)'/'(BrE ...)'
+# 变体标注 — 原版无此 → 'organise (NAmE -ize) /IPA/' 失配漏识为续行, organise 等 12 个变体拼写词被吸进
+# 前词 gloss + 自身丢失。/IPA/ 仍强约束防误命中。
+_ENTRY_HEAD_RE = re.compile(r"^\s*([a-z][a-z'.\- ]*?)\s+(?:\([^)]{1,25}\)\s+)?/[^/]+/\s*(.*)$")
 # 短语词条头: 小写英文≥2词 + 起首中文(无/ipa/, 无POS) — 如 'clean up 打扫'。
 # 旧版无此识别→短语被当续行吸进前词(231条丢失 + zh_def污染)。护栏: 英文≥2词+起首中文,
 # 区别于释义续行(起首中文)和例句(常含大写/过长); dry实证216候选0假阳性(无大写无过长)。
