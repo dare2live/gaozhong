@@ -12,6 +12,7 @@ from typing import Iterable
 
 import duckdb
 
+from backend.services import canonical   # publisher/version 短名映射单点
 
 def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     counts: dict[str, int] = {}
@@ -98,24 +99,18 @@ def build_city_uses(con: duckdb.DuckDBPyConnection) -> int:
 
 def build_allowed_in_ln(con: duckdb.DuckDBPyConnection) -> int:
     """publisher → subject:英语 (恒定 8 条, 现在只有 subject=英语 一类)."""
-    # 8 个 publisher 抽 short — 复用 canonical 里的映射
-    pub_short_map = {
-        "外语教学与研究出版社": "外研版",
-        "人民教育出版社": "人教版",
-        "北京师范大学出版社": "北师大版",
-        "译林出版社": "译林版",
-    }
+    # publisher 全名→短名: 真复用 canonical 单点 (穷尽扫描: 原 copy-paste 副本 → 收口)
     rows = []
     for (full,) in con.execute("SELECT DISTINCT publisher FROM liaoning_allowed_publishers").fetchall():
-        short = pub_short_map.get(full, full.split("/")[0].split("、")[0])
+        short = canonical.pub_to_short(full)
         rows.append((f"publisher:{short}", "subject:英语", 1.0,
                      json.dumps({"full": full}, ensure_ascii=False)))
     return _replace_relation(con, "allowed_in_ln", rows)
 
 
 def build_volume_publisher(con: duckdb.DuckDBPyConnection) -> int:
-    """volume → publisher (短名). version_key → publisher_short 简单映射."""
-    ver_to_short = {"waiyan": "外研版", "renjiao": "人教版"}
+    """volume → publisher (短名). version_key → publisher_short 简单映射 (canonical 单点)."""
+    ver_to_short = canonical.VERSION_KEY_TO_SHORT
     rows = []
     for ver, vol in con.execute("SELECT version_key, volume_key FROM textbooks").fetchall():
         short = ver_to_short.get(ver, ver)

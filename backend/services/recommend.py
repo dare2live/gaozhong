@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import duckdb
 
-from backend.services import vocab
+from backend.services import canonical, vocab
 
 
 def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
@@ -17,7 +17,7 @@ def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
     if not row:
         return {"error": f"city not found: {city}"}
     pub = row[0]
-    ver_map = {"外研版": "waiyan", "人教版": "renjiao"}
+    ver_map = {v: k for k, v in canonical.VERSION_KEY_TO_SHORT.items()}   # 短名→version_key (canonical 单点反查)
     ver = ver_map.get(pub, pub)
     units = con.execute("""
         SELECT volume_key, unit_number, title_en, page_start, page_end

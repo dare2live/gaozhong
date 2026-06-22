@@ -5,7 +5,7 @@ import duckdb
 
 from ._common import finding
 
-# 短名 → 出版社全名 substring (与 services/canonical.PUB_SHORT_MAP 同源)
+# 短名 → 出版社全名 substring (反向独立审计基线, verify-the-verifier; 正向单点见 services/canonical.PUBLISHER_SHORT_MAP)
 SHORT_TO_FULL = {
     "外研版": "外语教学与研究出版社",
     "人教版": "人民教育出版社",

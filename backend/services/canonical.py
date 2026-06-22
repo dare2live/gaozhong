@@ -17,6 +17,22 @@ import duckdb
 
 CEFR_LEVEL_VALUES = ("义教", "必修", "选必", "选修")
 
+# 出版社全名 → 短名 单点 (穷尽扫描: canonical/links 各自硬编码同 4 条副本 → 收口此处).
+# audit/publisher.py SHORT_TO_FULL 是反向独立审计基线(verify-the-verifier), 不收口.
+PUBLISHER_SHORT_MAP = {
+    "外语教学与研究出版社": "外研版",
+    "人民教育出版社": "人教版",
+    "北京师范大学出版社": "北师大版",
+    "译林出版社": "译林版",
+}
+# version_key → 出版社短名 单点 (links build_volume_publisher 正向 / recommend 城市查 units 反向 共用)
+VERSION_KEY_TO_SHORT = {"waiyan": "外研版", "renjiao": "人教版"}
+
+
+def pub_to_short(full: str) -> str:
+    """出版社全名 → 短名 (单点; 未命中 fallback 取首段, 与原 canonical/links 同口径)."""
+    return PUBLISHER_SHORT_MAP.get(full, full.split("/")[0].split("、")[0])
+
 
 def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     """Replace-all build (MVP 不做增量). 返回各 node_type 的行数."""
@@ -59,16 +75,10 @@ def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     _bulk_insert(con, rows)
     counts["theme"] = len(rows)
 
-    # 5) publisher (allowed in Liaoning) — short label normalize
-    pub_short_map = {
-        "外语教学与研究出版社": "外研版",
-        "人民教育出版社": "人教版",
-        "北京师范大学出版社": "北师大版",
-        "译林出版社": "译林版",
-    }
+    # 5) publisher (allowed in Liaoning) — short label normalize (PUBLISHER_SHORT_MAP 单点)
     rows = []
     for (pub,) in con.execute("SELECT DISTINCT publisher FROM liaoning_allowed_publishers").fetchall():
-        short = pub_short_map.get(pub, pub.split("/")[0].split("、")[0])
+        short = pub_to_short(pub)
         rows.append((f"publisher:{short}", "publisher", short, json.dumps({"full": pub}, ensure_ascii=False)))
     _bulk_insert(con, rows)
     counts["publisher"] = len(rows)
