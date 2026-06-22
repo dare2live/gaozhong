@@ -8,7 +8,7 @@
 
 | 档 | 维度 | 可做 / 不可做 |
 |---|---|---|
-| **真值·权威** | 题型/卷面结构(真题原卷) · 课标演变(课标PDF/source_versions) · 设问类型cognitive_skill(教研解析,**仅2023**) | 断言骨架连续+迁移; 设问只作"新高考重推断"方向锚, 不做逐年演变 |
+| **真值·权威** | 题型/卷面结构(真题原卷) · 课标演变(课标PDF/source_versions) · 设问类型cognitive_skill(教研解析,**跨era: 旧课标II 85 + 新高考II 15**) | 断言骨架连续+迁移 + **跨era设问演变(推断28→47%)**; 新era n=15方向性, 不做辽宁逐年微观斜率 |
 | **LLM·方向性**(必标prov) | genre/theme_l2 分布迁移 + co_occurs | 方向性观察, 不包装成精确趋势 |
 | **不做** | 微观考点/词频逐年slope; 题型跨年绝对count比(2021/22子题级粒度坑) | scope.py trend_reliable 门已编码 |
 
@@ -61,14 +61,14 @@ provenance=explicit_label 最强, `exam_point/cognitive_skill.py`), **不是待�
 
 ## ✅ v3 已落地 (2026-06-22) — 跨era 设问演变 (核心竞争力信号)
 
-**改造优先**(零新表/新service): `cognitive_skill.py` 加 `_legacy_reading_rows` 第二真值源 + `_emit_subq` 抽公共入图, `load_cognitive_skill` 双源拼接。**82 边跨两卷制era**:
-- **2015-20 旧课标全国II**: 67 子题, 真值门 = exam_questions **refine 后 province**(辽宁新课标II, 坑3 provenance-aware 单点真值 — 区别 subq jsonl 潜在误标, 故不另设 anchor)。题型两格式抽(`_FA` `21．A细节理解题` / `_FB` `【21题详解】题型`)。
+**改造优先**(零新表/新service): `cognitive_skill.py` 加 `_legacy_reading_rows` 第二真值源 + `_emit_subq` 抽公共入图, `load_cognitive_skill` 双源拼接。**100 边跨两卷制era**:
+- **2015-20 旧课标全国II**: 85 子题(六年全覆盖), 真值门 = exam_questions **refine 后 province**(辽宁新课标II, 坑3 provenance-aware 单点真值 — 区别 subq jsonl 潜在误标, 故不另设 anchor)。题型两格式抽(`_FA` `21．A细节理解题` / `_FB` `【21题详解】题型`)。
 - **2021+ 新高考全国II**: 15 子题(仅2023), subq jsonl + 真值锚门(2021甲卷已剔§7)。
 - **变体题型**: 只映射**明确同义**(词义推测=词义猜测→理解词汇; 标题概括/大意→理解主旨); 模糊的(细节推理/写作意图/代词指代 共3子题)**诚实不映射 skip**(防 theme_l3 式臆造)。
 
-**命题哲学迁移真值**(教研显式标签拼出, 万变不离其宗): **推断 28.4% → 46.7%**(细节 53.7%→40.0% 下行)= 新高考重高阶推断。
-- **诚实护栏**: 旧era 67子题(六年, ≥`scope.MIN_DISTRIBUTION_SAMPLE`=30 分布可靠); 新era仅2023 n=15(<30 **方向性非精确**, `cognitive_skill_distribution` 加 `reliability` 每-era标记, 复用 scope 阈值不 hardcode)。
-- **门**: D0 `d0_cognitive_skill_check`(边==82/legacy==67/new==15/源年⊆{15-20,23}/迁移真值/explicit_label/血缘) + content gate `cognitive_skill_era_shift_truth`(交叉相乘锁推断新>旧) + moth `cognitive-skill-goldmine`(改写跨era)。前端 beike D面板 = 双era分组条形 + reliability诚实标注。
+**命题哲学迁移真值**(教研显式标签拼出, 万变不离其宗): **推断 28.2% → 46.7%**(细节 54.1%→40.0% 下行)= 新高考重高阶推断。
+- **诚实护栏**: 旧era 85子题(六年, ≥`scope.MIN_DISTRIBUTION_SAMPLE`=30 分布可靠); 新era仅2023 n=15(<30 **方向性非精确**, `cognitive_skill_distribution` 加 `reliability` 每-era标记, 复用 scope 阈值不 hardcode)。
+- **门**: D0 `d0_cognitive_skill_check`(边==100/legacy==85/new==15/源年⊆{15-20,23}/迁移真值/explicit_label/血缘) + content gate `cognitive_skill_era_shift_truth`(交叉相乘锁推断新>旧) + moth `cognitive-skill-goldmine`(改写跨era)。前端 beike D面板 = 双era分组条形 + reliability诚实标注。
 - **待补**: 2022/2024/2025 真辽宁设问标注(现 analysis 无前导题型, 诚实空)。
 
 ## 历史: 单年→方向锚 (v3 前)

@@ -12,17 +12,17 @@
   **粒度无关**避2021/22子题坑)。骨架(阅读/完形/七选五/语法填空两era皆在) + 退场(短文改错末2020) + 登场(听力2021/续写2024)。
   内容门 question_type_era_structural_truth + 前端 beike C面板(题型×year presence热力)。
 
-**v3 (跨era设问演变, c048e5f) = 本 session 主交付**: 第二轴 `cognitive_skill` 从单年(2023 15子题)扩到**跨两卷制era 82边**,
-  解锁核心竞争力"命题哲学迁移"真值: **推断 28.4%(旧课标全国II 2015-20) → 46.7%(新高考全国II 2021+)**, 细节 53.7%→40% 下行
+**v3 (跨era设问演变, c048e5f) = 本 session 主交付**: 第二轴 `cognitive_skill` 从单年(2023 15子题)扩到**跨两卷制era 100边**,
+  解锁核心竞争力"命题哲学迁移"真值: **推断 28.2%(旧课标全国II 2015-20) → 46.7%(新高考全国II 2021+)**, 细节 54.1%→40% 下行
   = 新高考重高阶推断。
   - **改造优先零新表**: `cognitive_skill.py` 加 `_legacy_reading_rows` 第二真值源(2015-20 reading 子题前导题型, 两格式
     `_FA`/`_FB`); 抽 `_emit_subq` 公共入图(load CC↓)。真值门 = exam_questions **refine后 province**(辽宁新课标II,
     坑3 provenance-aware 单点真值 — 区别 subq jsonl 误标风险故不另设anchor)。变体题型只映射明确同义, 模糊3子题诚实skip 防臆造。
   - **诚实护栏**: `cognitive_skill_distribution` 加 reliability 每-era标记(复用 scope.MIN_DISTRIBUTION_SAMPLE 不hardcode):
-    旧era 67≥30分布可靠 / 新era仅2023 n=15<30 **方向性非精确**。前端 D面板双era分组条形 + caveat。
-  - **门**: D0 `d0_cognitive_skill_check` 重写(82/67/15/源年集/迁移真值/explicit_label/血缘) + content gate
+    旧era 85≥30分布可靠 / 新era仅2023 n=15<30 **方向性非精确**。前端 D面板双era分组条形 + caveat。
+  - **门**: D0 `d0_cognitive_skill_check` 重写(100/85/15/源年集/迁移真值/explicit_label/血缘) + content gate
     `cognitive_skill_era_shift_truth`(交叉相乘锁推断新>旧, 对抗验证非假绿) + moth 跨era改写 + d0_baselines 3基线。
-  - 验证: init_db 全量重建 82边复现; 三门全绿(D0 exit0 / moth PASS 74-0-0 / stop_gate exit0); preview D面板渲染正确0 error。
+  - 验证: init_db 全量重建 100边复现; 三门全绿(D0 exit0 / moth PASS 74-0-0 / stop_gate exit0); preview D面板渲染正确0 error。
 
 **待补**: 2022/2024/2025 真辽宁设问标注(现 analysis 无前导题型, 诚实空); v2 题型升格loader维 + structural-share占比(需粒度归一)。
 
@@ -71,7 +71,7 @@
 > 已识别(能跨11年的genre/theme全是LLM推断) → 核心竞争力对外口径 = "**分卷制分布迁移 + 命题模式识别 + 教材对齐**"
 > (样本量逼出的诚实结论, 非逐年微观趋势)。
 > ⚠ **2026-06-22 更新**: "唯一真值锚cognitive_skill单年n=15" 已**部分突破** — v3 用 exam_questions refine省份门 把 cognitive_skill
-> 扩到跨era 82边(旧课标II 67 + 新高考II 15), **推断28→47%迁移**已是带门真值结论(structural_truth级)。新era仍n=15方向性,
+> 扩到跨era 100边(旧课标II 85 + 新高考II 15), **推断28→47%迁移**已是带门真值结论(structural_truth级)。新era仍n=15方向性,
 > 但"考查方式跨era演变"不再是纯LLM/单年 — 这是核心竞争力第一个真值跨era信号。
 
 **A. 真值诚实标注 (防"又一个theme_l3")**: genre/theme_context/theme_l2 481边=dual_model推断, 无第一手源 →
