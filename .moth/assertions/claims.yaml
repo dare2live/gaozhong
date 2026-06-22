@@ -128,6 +128,16 @@ assertions:
     type: shell
     command: ["python3", "-c", "from backend.services.trend import scope; from backend.services.data_sources.clean.exam_paper import LN_II_2021; from backend.services.extraction.exam_province import LABEL_XGKII_LN; from backend.services.imports.eol_import import PROVINCE; print(0 if (LN_II_2021==LABEL_XGKII_LN==PROVINCE==scope.LIAONING_XGKII_2021=='辽宁 (新课标 II 卷, 2021+)') else 1)"]
     expect: {op: "==", value: "0"}
+  - id: paper-type-single-point
+    claim: "exam_questions.paper_type canonical值 '新课标 II 卷' 收口 scope.PAPER_XGKII 单点 (穷尽扫描: ≥5 writer 各自硬编码 → 收口); D0门字面独立保留(verify-the-verifier)"
+    type: shell
+    command: ["python3", "-c", "from backend.services.trend import scope; from backend.services.imports.eol_import import PAPER_TYPE; from backend.services.extraction.exam_province import PAPER_XGKII; print(0 if (PAPER_TYPE==PAPER_XGKII==scope.PAPER_XGKII=='新课标 II 卷') else 1)"]
+    expect: {op: "==", value: "0"}
+  - id: publisher-version-map-single-point
+    claim: "出版社/版本短名映射收口 canonical 单点 (穷尽扫描: canonical/links pub_short_map 字节级副本 + links/recommend version 双向 → 收口); links/recommend import canonical 共用"
+    type: shell
+    command: ["python3", "-c", "import inspect; from backend.services import canonical, links, recommend; ok=(canonical.pub_to_short('外语教学与研究出版社')=='外研版' and canonical.VERSION_KEY_TO_SHORT.get('renjiao')=='人教版' and 'canonical.pub_to_short' in inspect.getsource(links.build_allowed_in_ln) and 'canonical.VERSION_KEY_TO_SHORT' in inspect.getsource(recommend)); print(0 if ok else 1)"]
+    expect: {op: "==", value: "0"}
   - id: vocab-slope-single-point
     claim: "词汇量slope显著阈收口 scope.VOCAB_SLOPE_SIGNIFICANT 单点 (P2); model._slope_interp + predicted 难度判定共读, 不再各自硬编码50 (防两处漂移)"
     type: shell

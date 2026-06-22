@@ -27,6 +27,7 @@ from backend.services.data_sources.extract.pdf import (
     parse_exam_sections,
 )
 from backend.services.data_sources.registry import load_registry
+from backend.services.trend import scope   # paper_type canonical 值单点
 
 # 真题导入数据化 (架构契约 direct_exam_questions_writer: exam imports 必须 registry/import-policy 驱动):
 #   - backend/config/sources.yaml         PDF 路径/sha256 真相源 (经 registry.load_registry 读, 不硬编码路径 §3.5)
@@ -50,7 +51,7 @@ def _local_pdf_sources() -> list[tuple]:
             continue
         pdf = next((a.local_path for a in s.attachments if a.kind == "pdf"), None)
         if pdf is not None:
-            out.append((s.year, s.paper_type or "新课标 II 卷", pdf))
+            out.append((s.year, s.paper_type or scope.PAPER_XGKII, pdf))
     return sorted(out, key=lambda t: t[0])
 
 

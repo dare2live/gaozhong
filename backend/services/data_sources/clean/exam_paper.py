@@ -64,8 +64,8 @@ def classify_paper(year: int | None, category: str | None,
         return _JUAN_MAP[tok]
     if tok == "II":
         if year >= scope.LIAONING_NATIONAL_PAPER_SINCE:
-            return (LN_II_2021 if year >= scope.ERA_BOUNDARY_YEAR else LN_II_2015_2020), "新课标 II 卷"
-        return "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "新课标 II 卷"
+            return (LN_II_2021 if year >= scope.ERA_BOUNDARY_YEAR else LN_II_2015_2020), scope.PAPER_XGKII
+        return "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", scope.PAPER_XGKII
     if "解析版" in (category or ""):
         return "未知 (解析版, 待核验卷型)", "未知"
     return "未知 (GAOKAO-Bench 无明确卷型)", "未知"

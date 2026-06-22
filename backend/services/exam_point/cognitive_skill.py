@@ -231,7 +231,7 @@ def cognitive_skill_by_content(con: duckdb.DuckDBPyConnection, by: str = "genre"
             "skills": sorted([{"label": k, "n": v, "pct": round(100 * v / tot, 1)} for k, v in d.items()],
                              key=lambda x: -x["n"])}
     n_matched = sum(c["total"] for c in out.values())
-    return {"facet": f"cognitive_skill_by_{by}", "by_dimension": by, "era": "2015-2020_旧课标II",
+    return {"facet": f"cognitive_skill_by_{by}", "by_dimension": by, "era": scope.ERA_OLD,
             "province_scope": "辽宁卷",
             "skill_provenance": "explicit_label (教研显式标签, 真值)",
             "content_provenance": "dual_model_agree (模型推断, 非真值交叉)",

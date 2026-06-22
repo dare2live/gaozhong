@@ -173,7 +173,7 @@ def _make_section(year: int, qtype: str, raw: str, qnum: int) -> dict:
         "question_id": f"pdf/{year}/xgkii/{qtype}/{qnum}",
         "year": year,
         "province": scope.LIAONING_XGKII_2021,   # G3: 收口 scope 单点
-        "paper_type": "新课标 II 卷",
+        "paper_type": scope.PAPER_XGKII,
         "question_type": qtype,
         # 不再硬截 2000 (D0 缺陷: 截断丢后段小题题干); 与 exam.py 一致用 8000 上限保护超长
         "raw_question": raw[:8000],

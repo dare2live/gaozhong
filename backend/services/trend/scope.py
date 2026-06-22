@@ -39,6 +39,9 @@ ERA_OLD = "2015-2020_旧课标II"
 # 选 scope 作 home 而非 exam_paper: exam_paper fan-in=2 再+4=6 违铁律7; scope 本就是常量 leaf hub。
 LIAONING_XGKII_2021 = "辽宁 (新课标 II 卷, 2021+)"          # 2021+ 新高考全国II
 LIAONING_XGKII_2015_2020 = "辽宁 (新课标 II 卷, 2015-2020)"  # 2015-2020 旧课标全国II
+# exam_questions.paper_type 入库 canonical 值单点 (穷尽扫描发现 ≥5 writer 各自硬编码同串)。
+# 必持 DB 实际字面 "新课标 II 卷"(带空格) — D0 门 data_accuracy_check.py 锁此值, 改即打爆 (验证器侧独立, 不 import 此常量)。
+PAPER_XGKII = "新课标 II 卷"
 
 
 def liaoning_clause(province_scoped: bool = True) -> str:
