@@ -23,7 +23,7 @@
   const crossCache = {};
   // 设问技能堆叠色 (推断=强调红, 与 D 区一致); 固定堆叠顺序让"推断"锚左边便于跨题材比
   const SKILL_COLOR = { "推断": "#993C1D", "理解具体信息": "#185FA5", "理解主旨要义": "#85B7EB", "理解词汇": "#B4B2A9" };
-  const CROSS_LBL = { genre: "体裁", theme_l2: "主题群" };
+  const CROSS_LBL = { genre: "体裁", theme_l2: "主题群", theme_context: "课标主题语境" };
 
   function shell() {
     return `
@@ -162,7 +162,7 @@
 
   function renderCrossToggle() {
     const pill = k => `<button class="bk-pill ${state.cross === k ? "on" : ""}" data-cross="${k}">${CROSS_LBL[k]}</button>`;
-    G.$("#bk-crosstoggle").innerHTML = `${pill("genre")}${pill("theme_l2")}`;
+    G.$("#bk-crosstoggle").innerHTML = `${pill("genre")}${pill("theme_l2")}${pill("theme_context")}`;
     G.$$("#bk-crosstoggle [data-cross]").forEach(b => b.onclick = async () => {
       state.cross = b.dataset.cross; renderCrossToggle();
       renderCogCross(await loadCross(state.cross));
