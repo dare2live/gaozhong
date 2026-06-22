@@ -56,7 +56,7 @@ def _legacy_reading_rows(con: duckdb.DuckDBPyConnection) -> list[dict]:
     out = []
     for qid, year, an in con.execute(
         "SELECT question_id, year, analysis FROM exam_questions "
-        "WHERE question_type='阅读理解' AND province LIKE '辽宁%' AND year BETWEEN 2015 AND 2020 "
+        f"WHERE question_type='阅读理解' AND province LIKE '辽宁%' AND year BETWEEN {scope.LIAONING_NATIONAL_PAPER_SINCE} AND {scope.ERA_BOUNDARY_YEAR - 1} "
         "AND analysis IS NOT NULL").fetchall():
         seen: dict[int, str] = {}
         for num, _ans, qt in _FA.findall(an):
@@ -186,14 +186,14 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
 
 _CROSS_DIMS = {"genre", "theme_l2", "theme_context"}
 # join 键: cog 子题 node attrs.passage_label 存裸 qid(gb/...), passage级 genre/theme 边 src 带 'question:' 前缀 → 补前缀对齐
-_CROSS_SQL = """
+_CROSS_SQL = f"""
 WITH cog AS (
   SELECT ns.label AS skill, 'question:'||json_extract_string(nq.attrs_json,'$.passage_label') AS pid
   FROM edges e
   JOIN nodes nq ON nq.concept_id = e.src_id
   JOIN nodes ns ON ns.concept_id = e.dst_id
   WHERE e.relation='tests_exam_point' AND json_extract_string(e.evidence_json,'$.dimension')='cognitive_skill'
-    AND CAST(json_extract_string(e.evidence_json,'$.lineage.source_year') AS INT) BETWEEN 2015 AND 2020),
+    AND CAST(json_extract_string(e.evidence_json,'$.lineage.source_year') AS INT) BETWEEN {scope.LIAONING_NATIONAL_PAPER_SINCE} AND {scope.ERA_BOUNDARY_YEAR - 1}),
 content AS (
   SELECT ge.src_id AS pid, nc.label AS content
   FROM edges ge JOIN nodes nc ON nc.concept_id = ge.dst_id
@@ -217,7 +217,7 @@ def cognitive_skill_by_content(con: duckdb.DuckDBPyConnection, by: str = "genre"
     n_total = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
         "AND json_extract_string(evidence_json,'$.dimension')='cognitive_skill' "
-        "AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) BETWEEN 2015 AND 2020").fetchone()[0]
+        f"AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) BETWEEN {scope.LIAONING_NATIONAL_PAPER_SINCE} AND {scope.ERA_BOUNDARY_YEAR - 1}").fetchone()[0]
     by_content: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     for content, skill, n in con.execute(_CROSS_SQL, [by]).fetchall():
         by_content[content][skill] += n

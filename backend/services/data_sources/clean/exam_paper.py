@@ -14,6 +14,8 @@ _norm_cat / _JUAN_MAP / LN_II_* 常量, 与之**字节级等价**, 仅做模块�
 """
 from __future__ import annotations
 
+from backend.services.trend import scope   # 卷制边界年单点 (G2: 不再硬编码 2015/2021)
+
 LN_II_2015_2020 = "辽宁 (新课标 II 卷, 2015-2020)"
 LN_II_2021 = "辽宁 (新课标 II 卷, 2021+)"
 
@@ -61,8 +63,8 @@ def classify_paper(year: int | None, category: str | None,
     if tok in _JUAN_MAP:
         return _JUAN_MAP[tok]
     if tok == "II":
-        if year >= 2015:
-            return (LN_II_2021 if year >= 2021 else LN_II_2015_2020), "新课标 II 卷"
+        if year >= scope.LIAONING_NATIONAL_PAPER_SINCE:
+            return (LN_II_2021 if year >= scope.ERA_BOUNDARY_YEAR else LN_II_2015_2020), "新课标 II 卷"
         return "全国新课标 II 卷 (2010-2014, 非辽宁; 辽宁当年自主命题)", "新课标 II 卷"
     if "解析版" in (category or ""):
         return "未知 (解析版, 待核验卷型)", "未知"

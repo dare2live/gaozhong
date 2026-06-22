@@ -22,10 +22,12 @@ def check_cognitive_skill(con: duckdb.DuckDBPyConnection, check) -> None:
         f"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND {_DIM}").fetchone()[0]
     check("cognitive_skill 边 == 100 (跨era: 旧课标II 85 + 新高考II 15)", n_edge == B('cognitive_skill'), f"{n_edge}")
 
+    # 此处 2015/2020/2021 是**独立验证断言**(verify-the-verifier, 坑1): 故意 NOT 从 scope.py 取,
+    # 否则流水线边界常量漂移时验证器随之移动 → 绿门假绿。验证器须独立钉死预期年段才能抓住漂移。
     n_legacy = con.execute(
         f"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND {_DIM} "
         f"AND CAST({_SRC_YEAR} AS INT) BETWEEN 2015 AND 2020").fetchone()[0]
-    check("2015-20 旧课标全国II reading子题 == 67 (refine省份门, 坑3)", n_legacy == B('cognitive_skill_legacy'), f"{n_legacy}")
+    check("2015-20 旧课标全国II reading子题 == 85 (refine省份门, 坑3)", n_legacy == B('cognitive_skill_legacy'), f"{n_legacy}")
     n_new = con.execute(
         f"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND {_DIM} "
         f"AND CAST({_SRC_YEAR} AS INT) >= 2021").fetchone()[0]

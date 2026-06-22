@@ -23,8 +23,11 @@ MIN_DISTRIBUTION_SAMPLE = 30  # 同卷制 era 总题数 ≥ 此 → 考点分布
 MIN_YEAR_SAMPLE = 10          # 一年真题 < 此, 该年趋势点不可靠
 MIN_TREND_YEARS = 5           # 一段内达标年 < 此, 不输出可信逐年 slope
 # 卷制断点单点 (PIT §3.1): 2021 起辽宁用新高考全国 II 卷, 此前旧课标全国 II。
-# segment()/era_sql() 都用这三个常量, 下游 (loader._ERA_SQL / cooccur) 复用 era_sql() 不再各自硬编码 2021。
+# segment()/era_sql() 都用这三个常量, 下游 (loader._ERA_SQL / cooccur / exam_paper / cognitive_skill) 复用,
+# 不再各自硬编码 2021/2015 (G2 收口: 辽宁卷史边界全从这里取)。
 ERA_BOUNDARY_YEAR = 2021
+# 辽宁采用国家卷起始年 (2010-2014 自主命题无国家卷; 2015 起新课标全国 II = 辽宁卷判别的省份生效边界, CLAUDE §1.4)
+LIAONING_NATIONAL_PAPER_SINCE = 2015
 ERA_NEW = "2021+_新高考II"
 ERA_OLD = "2015-2020_旧课标II"
 
