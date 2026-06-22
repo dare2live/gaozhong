@@ -3,7 +3,32 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
-## 最近 session (2026-06-21 最新): 真值校验体系 + 内容门框架 + 5大交付数据钉PDF + no-hardcode
+## 最近 session (2026-06-22 最新): 命题趋势驾驶舱 v1→v3 — "怎么考"第二轴跨era演变 (核心竞争力)
+
+> 主题: 用户纠偏"课标/真题命题趋势是可感知的真值, 万变不离其宗, 你的作用是总结分析" → 顶层设计 `docs/exam_trend_design.md`
+> (改造优先非新建)。三轮递进, **全程三门绿 + commit**(起点接上一 session 真值体系)。
+
+**v1 (题型presence)**: `trend/raw.py::question_type_era_presence` — 题型×卷制era presence矩阵(provenance=structural_truth,
+  **粒度无关**避2021/22子题坑)。骨架(阅读/完形/七选五/语法填空两era皆在) + 退场(短文改错末2020) + 登场(听力2021/续写2024)。
+  内容门 question_type_era_structural_truth + 前端 beike C面板(题型×year presence热力)。
+
+**v3 (跨era设问演变, c048e5f) = 本 session 主交付**: 第二轴 `cognitive_skill` 从单年(2023 15子题)扩到**跨两卷制era 82边**,
+  解锁核心竞争力"命题哲学迁移"真值: **推断 28.4%(旧课标全国II 2015-20) → 46.7%(新高考全国II 2021+)**, 细节 53.7%→40% 下行
+  = 新高考重高阶推断。
+  - **改造优先零新表**: `cognitive_skill.py` 加 `_legacy_reading_rows` 第二真值源(2015-20 reading 子题前导题型, 两格式
+    `_FA`/`_FB`); 抽 `_emit_subq` 公共入图(load CC↓)。真值门 = exam_questions **refine后 province**(辽宁新课标II,
+    坑3 provenance-aware 单点真值 — 区别 subq jsonl 误标风险故不另设anchor)。变体题型只映射明确同义, 模糊3子题诚实skip 防臆造。
+  - **诚实护栏**: `cognitive_skill_distribution` 加 reliability 每-era标记(复用 scope.MIN_DISTRIBUTION_SAMPLE 不hardcode):
+    旧era 67≥30分布可靠 / 新era仅2023 n=15<30 **方向性非精确**。前端 D面板双era分组条形 + caveat。
+  - **门**: D0 `d0_cognitive_skill_check` 重写(82/67/15/源年集/迁移真值/explicit_label/血缘) + content gate
+    `cognitive_skill_era_shift_truth`(交叉相乘锁推断新>旧, 对抗验证非假绿) + moth 跨era改写 + d0_baselines 3基线。
+  - 验证: init_db 全量重建 82边复现; 三门全绿(D0 exit0 / moth PASS 74-0-0 / stop_gate exit0); preview D面板渲染正确0 error。
+
+**待补**: 2022/2024/2025 真辽宁设问标注(现 analysis 无前导题型, 诚实空); v2 题型升格loader维 + structural-share占比(需粒度归一)。
+
+---
+
+## 最近 session (2026-06-21): 真值校验体系 + 内容门框架 + 5大交付数据钉PDF + no-hardcode
 
 > 主题: 根治"为啥每次检查都发现新问题" = 旧三门只验**自洽**(计数==快照)不验**真值**(内容==第一手源),
 > 自洽棘轮把内容偏离锁成绿。本 session 建真值校验体系 + 内容门框架, 把"只计数验过"的盲区逐一对第一手源核完。
@@ -43,8 +68,11 @@
 ## ⏭️ 优化后的计划 (2026-06-21, 接手先看这个)
 
 > 大局: "数据100%准"地基这一 session 从"计数自洽"升到"内容钉第一手源"。**核心竞争力地基与时间跨度的结构性矛盾**
-> 已识别(能跨11年的genre/theme全是LLM推断, 唯一真值锚cognitive_skill单年n=15) → 核心竞争力对外口径建议
-> 从"逐年趋势"改"**分卷制分布迁移 + 命题模式识别 + 教材对齐**"(样本量逼出的诚实结论)。
+> 已识别(能跨11年的genre/theme全是LLM推断) → 核心竞争力对外口径 = "**分卷制分布迁移 + 命题模式识别 + 教材对齐**"
+> (样本量逼出的诚实结论, 非逐年微观趋势)。
+> ⚠ **2026-06-22 更新**: "唯一真值锚cognitive_skill单年n=15" 已**部分突破** — v3 用 exam_questions refine省份门 把 cognitive_skill
+> 扩到跨era 82边(旧课标II 67 + 新高考II 15), **推断28→47%迁移**已是带门真值结论(structural_truth级)。新era仍n=15方向性,
+> 但"考查方式跨era演变"不再是纯LLM/单年 — 这是核心竞争力第一个真值跨era信号。
 
 **A. 真值诚实标注 (防"又一个theme_l3")**: genre/theme_context/theme_l2 481边=dual_model推断, 无第一手源 →
    前端/分析层标 `LLM辅助分类·非考纲官方`(不做命中率未知的"交叉验仪式"=过度工程)。
