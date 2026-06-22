@@ -84,34 +84,38 @@
   }
 
   function renderTrend(p) {
-    // 题型×年份 presence 热力(结构真值, 粒度无关; 取代混粒度slope坑12)。蓝=骨架/红=退场/绿=登场。
+    // 题型×年份 presence 热力(结构真值, 粒度无关; v2: signal 由卷面结构config定, extraction_gap 淡色虚线诚实标)。
     const items = (p && p.by_question_type) || [];
-    const SIG = { skeleton: { c: C.blue, t: "骨架·两era皆在" }, retired: { c: "#c1272d", t: "退场" }, introduced: { c: "#1d9e75", t: "登场" } };
-    const ord = { skeleton: 0, retired: 1, introduced: 2 };
-    const list = items.slice().sort((a, b) => ord[a.signal] - ord[b.signal]);
+    const SIG = { skeleton: { c: C.blue, t: "骨架·两卷制常驻" }, retired: { c: "#c1272d", t: "真退场·卷面取消" }, introduced: { c: "#1d9e75", t: "真登场·卷面新增" }, unregistered: { c: C.grey, t: "未登记结构" } };
+    const ord = { skeleton: 0, retired: 1, introduced: 2, unregistered: 3 };
+    const list = items.slice().sort((a, b) => (ord[a.signal] ?? 9) - (ord[b.signal] ?? 9));
     const all = items.flatMap(x => [...(x.old_years || []), ...(x.new_years || [])]);
     if (!all.length) { G.$("#bk-trend").innerHTML = "<p class='muted'>无题型数据</p>"; return; }
     const years = []; for (let y = Math.min(...all); y <= Math.max(...all); y++) years.push(y);
-    const qts = list.map(x => x.question_type);
+    const qts = list.map(x => x.question_type + (x.extraction_gap ? " ⚠" : ""));
     const data = [];
     list.forEach((x, qi) => {
       const pres = new Set([...(x.old_years || []), ...(x.new_years || [])]);
-      years.forEach((y, yi) => { if (pres.has(y)) data.push({ value: [yi, qi, 1], itemStyle: { color: SIG[x.signal].c } }); });
+      const sig = SIG[x.signal] || SIG.unregistered, gap = x.extraction_gap;
+      years.forEach((y, yi) => {
+        if (pres.has(y)) data.push({ value: [yi, qi, 1], itemStyle: { color: sig.c, opacity: gap ? 0.32 : 1, borderColor: gap ? "#888" : "#fff", borderWidth: 1, borderType: gap ? "dashed" : "solid" } });
+      });
     });
-    G.$("#bk-relbadge").innerHTML = `<span class="bk-suff ok">结构真值·题型presence(粒度无关)</span>`;
+    G.$("#bk-relbadge").innerHTML = `<span class="bk-suff ok">结构真值·卷面config掩码</span>`;
     charts.trend = charts.trend || echarts.init(G.$("#bk-trend"));
     charts.trend.setOption({
       grid: { left: 4, right: 12, top: 10, bottom: 22, containLabel: true },
       xAxis: { type: "category", data: years, splitArea: { show: true }, axisLabel: { fontSize: 10 } },
       yAxis: { type: "category", data: qts, axisLabel: { fontSize: 10 } },
-      tooltip: { formatter: c => `${qts[c.value[1]]} · ${years[c.value[0]]}<br/>${SIG[list[c.value[1]].signal].t}` },
-      series: [{ type: "heatmap", data, itemStyle: { borderColor: "#fff", borderWidth: 1 }, label: { show: false } }],
+      tooltip: { formatter: c => { const x = list[c.value[1]]; return `${x.question_type} · ${years[c.value[0]]}<br/>${(SIG[x.signal] || SIG.unregistered).t}${x.extraction_gap ? "<br/><b>⚠ 提取不全·该年仅样本非首末考年</b>" : ""}`; } },
+      series: [{ type: "heatmap", data, label: { show: false } }],
     }, true);
     const ret = items.filter(x => x.signal === "retired").map(x => x.question_type);
     const intro = items.filter(x => x.signal === "introduced").map(x => x.question_type);
-    G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型 presence · 真题原卷 · 粒度无关): `
-      + `蓝=骨架两era皆在(<b>万变不离其宗</b>) · 红=退场(${ret.join("、") || "无"}) · 绿=登场(${intro.join("、") || "无"})。`
-      + `命题主体换轮(自主→新课标→新高考)骨架不断; 退场/登场 = 2017课标核心素养驱动。`;
+    const gaps = items.filter(x => x.extraction_gap).map(x => x.question_type);
+    G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型 presence · signal 由<b>卷面结构</b>定非数据, 粒度无关): `
+      + `蓝=骨架两卷制常驻(<b>万变不离其宗</b>) · 红=<b>真退场</b>(${ret.join("、") || "无"}: 新高考取消) · 绿=<b>真登场</b>(${intro.join("、") || "无"}: 新高考新增)。`
+      + `<br><small class="muted">⚠ 淡色虚线格=提取不全(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>presence年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信)。</small>`;
   }
 
   function renderCognitiveSkill(cs) {

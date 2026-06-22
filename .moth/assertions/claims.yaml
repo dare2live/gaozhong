@@ -192,6 +192,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_by_content as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c,'genre');c.close();yw=d['by_content'].get('应用文',{}).get('skills',[]);top=yw[0]['label'] if yw else '?';ok=d['n_matched']==74 and d['era']=='2015-2020_旧课标II' and 'dual_model_agree' in d['content_provenance'] and top=='理解具体信息' and len(yw)==1;print('OK' if ok else f'FAIL match={d[\"n_matched\"]} era={d[\"era\"]} 应用文top={top}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: question-type-structure-mask
+    claim: "题型presence v2 提取完整性掩码(坑12): signal由卷面结构真相源(exam_structure_eras.yaml)定非数据presence — 听力=skeleton+extraction_gap(两卷制常驻本项目未抽全, ≠v1误标登场2021); 短文改错=retired(新高考真取消); 续写/应用文=introduced+gap(新高考真新增但登场年缺源)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.trend.raw import question_type_era_presence as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d={x['question_type']:x for x in f(c)['by_question_type']};c.close();ok=d['听力']['signal']=='skeleton' and d['听力']['extraction_gap'] and d['短文改错']['signal']=='retired' and not d['短文改错']['extraction_gap'] and d['续写']['signal']=='introduced' and d['续写']['extraction_gap'];print('OK' if ok else f'FAIL 听力={d[\"听力\"][\"signal\"]}/{d[\"听力\"][\"extraction_gap\"]} 短改={d[\"短文改错\"][\"signal\"]}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: exam-point-trusted-provenance
     claim: "考点边 provenance ∈ {dual_model_agree(genre/theme双模型一致), explicit_label(cognitive_skill教研解析显式标签)} — 无弱provenance, 不冒充人工核验; explicit_label 强于双模型 (A1金矿)"
     type: duckdb_sql
