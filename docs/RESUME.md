@@ -40,6 +40,17 @@ signal 改由**卷面结构**(非数据presence)定: 短改=真退场/听力=ske
 
 **待办 backlog(按顺序)**: cog×genre 跨era版(给2023子题node补passage_label桥) → 2022/24/25真辽宁设问标注 → structural-share占比 → 旧口径收口。
 
+### 三路并行推进 (2026-06-22, 6-agent勘测workflow + verify-the-verifier 驱动)
+> 用户"都推进": 防御性内容核验 + 交付收口 + 采集可行性 三路并行验后 inline 执行。**全程 verify-the-verifier**(agent输出=证据非定论)。
+
+- **采集 (C1) — 诚实天花板**: 2024 cog "可本地采"是**坑3陷阱**(gaokao_bench_2024="Harvard"=全国I卷, 非辽宁II"Carlow"; smoking-gun救场, 我原判断对); 2022/25 教研解析确无前导题型。新era cognitive_skill 数据封顶2023, 扩量需外部辽宁II卷教研解析采集(授权)。
+- **防御核验 A1 (2e5b44d)**: phrases.sentence_pattern 32%污染(进lesson_plan老师可见) — regex .*+DOTALL跨段 + such as/形式主语/so that误命中。修: 去DOTALL+负向断言+evidence=匹配span+'强调句'据实改'It is…that句型'(229→65, 0误命中); D0 `d0_phrases_check`(项32, **phrases此前零D0=坑17盲区补**) + moth。
+- **防御核验 A4 (20fccdb)**: renjiao变体拼写词丢失(organise等12词) — 纠agent误诊("加列裁剪"已有), 真因=**变体标注'(NAmE -ize)'夹词与IPA间** `_ENTRY_HEAD_RE`失配。修: 允许可选变体标注(2206→2214 +8词, 0回归); content gate `renjiao_variant_words_present`。**诚实残留**: gloss bleed 194→187(短语'X high school'+页眉吸入未修, 需per-unit dry-compare careful, 精确flag).
+- **交付收口 B1 (f29ccec)**: exam_vocabulary金矿(4186词)有API无前端→ 新建 `frontend/static/dict.js` 考试词典tab(前缀检索+阶段过滤+provenance徽章[教材/中考/COCA]+辽宁高考命中真值), app.html加📕入口。preview验4186词可检索(organise可见).
+- **未验**: A2(KG边语义)/A3(答案逐题)agent ECONNRESET挂未出结论, 不算clean, 待补。
+
+全程三门绿(D0 exit0 / moth PASS 78 / stop_gate exit0), 全推 origin/main。
+
 ---
 
 ## 最近 session (2026-06-21): 真值校验体系 + 内容门框架 + 5大交付数据钉PDF + no-hardcode
