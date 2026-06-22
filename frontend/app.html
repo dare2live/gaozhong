@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/static/style.css">
 <link rel="stylesheet" href="/static/app.css">
 <link rel="stylesheet" href="/static/beike.css">
+<link rel="stylesheet" href="/static/design-system.css">
 </head>
 <!-- ECharts: 仅渲染层(图表), 数据仍 service 单一计算点; 方案B 唯一前端viz库 (CDN 允许列表) -->
 <body>
@@ -15,18 +16,18 @@
   <aside class="sidebar">
     <h1 class="brand">沈阳/辽宁<br><small>高中英语教学系统</small></h1>
     <nav class="tabnav">
-      <a href="#/beike"     data-tab="beike"><span class="ic">🎯</span> 考点驾驶舱</a>
-      <a href="#/jiangke"   data-tab="jiangke"><span class="ic">📖</span> 讲课调取</a>
-      <a href="#/dict"      data-tab="dict"><span class="ic">📕</span> 考试词典</a>
-      <a href="#/k12"       data-tab="k12"><span class="ic">🔗</span> K12衔接</a>
-      <a href="#/xisheng"   data-tab="xisheng"><span class="ic">👥</span> 分析学生</a>
-      <a href="#/workbench" data-tab="workbench"><span class="ic">▣</span> 工作台</a>
-      <a href="#/teaching"  data-tab="teaching"><span class="ic">★</span> 教学</a>
-      <a href="#/qbank"     data-tab="qbank"><span class="ic">▤</span> 题库 + 组卷</a>
-      <a href="#/data"      data-tab="data"><span class="ic">▦</span> 数据管理</a>
-      <a href="#/students"  data-tab="students"><span class="ic">◍</span> 学生档案</a>
-      <a href="#/graph"     data-tab="graph"><span class="ic">◈</span> 知识图谱</a>
-      <a href="#/scan"      data-tab="scan"><span class="ic">⌬</span> 扫描 OCR</a>
+      <a href="#/beike"     data-tab="beike"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M13.5 11.5 12 14"/></svg> 考点驾驶舱</a>
+      <a href="#/jiangke"   data-tab="jiangke"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 5a17 17 0 0 1 9 2 17 17 0 0 1 9-2v13a17 17 0 0 0-9 2 17 17 0 0 0-9-2z"/><path d="M12 7v15"/></svg> 讲课调取</a>
+      <a href="#/dict"      data-tab="dict"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 4v16H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9 4v16"/></svg> 考试词典</a>
+      <a href="#/k12"       data-tab="k12"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 7H6.5a3 3 0 0 0 0 6H9"/><path d="M15 7h2.5a3 3 0 0 1 0 6H15"/><path d="M8.5 10h7"/></svg> K12衔接</a>
+      <a href="#/xisheng"   data-tab="xisheng"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-4"/><path d="M13 16V8"/><path d="M18 16v-6"/></svg> 分析学生</a>
+      <a href="#/workbench" data-tab="workbench"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg> 工作台</a>
+      <a href="#/teaching"  data-tab="teaching"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 4h18"/><path d="M4 4v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4"/><path d="M12 15v4"/><path d="M9 19h6"/></svg> 教学</a>
+      <a href="#/qbank"     data-tab="qbank"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 10h6"/><path d="M9 14h6"/><path d="M9 17.5h4"/></svg> 题库 + 组卷</a>
+      <a href="#/data"      data-tab="data"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><ellipse cx="12" cy="5.5" rx="7.5" ry="2.5"/><path d="M4.5 5.5v6c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5v-6"/><path d="M4.5 11.5v6c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5v-6"/></svg> 数据管理</a>
+      <a href="#/students"  data-tab="students"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c0-1.7 1.3-2.5 3-2.5s3 .8 3 2.5"/><path d="M15 10h3.5"/><path d="M15 13.5h3.5"/></svg> 学生档案</a>
+      <a href="#/graph"     data-tab="graph"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.3 10.9 15.7 7.1"/><path d="M8.3 13.1l7.4 3.8"/></svg> 知识图谱</a>
+      <a href="#/scan"      data-tab="scan"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 8V6a2 2 0 0 1 2-2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2-2v-2"/><path d="M5 12h14"/></svg> 扫描 OCR</a>
     </nav>
     <div class="sidebar-foot">
       <small>0 FAIL / <a href="#/data">audit</a></small>

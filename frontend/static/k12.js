@@ -12,7 +12,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">🔗 K12 衔接 · 初中 → 高中</h2>
+<h2 style="margin:0 0 2px;">K12 衔接 · 初中 → 高中</h2>
 <p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空 10 维语法 = 高考语法填空考点全集 (最高优先级地基)</p>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" style="height:300px;"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
@@ -63,7 +63,7 @@
     const walled = cs.stem_walled || 0, pending = cs.answer_pending || 0, complete = cs.complete || 0;
     const el = G.$("#k12-zk-honesty");
     if (el) el.innerHTML = (walled || pending)
-      ? `⚠ 内容完整性: 题面门控 ${walled} · 答案待补 ${pending} · 完整 ${complete}（题型骨架完整, 题面/答案部分待补）`
+      ? `注 内容完整性: 题面门控 ${walled} · 答案待补 ${pending} · 完整 ${complete}（题型骨架完整, 题面/答案部分待补）`
       : "";
   }
 

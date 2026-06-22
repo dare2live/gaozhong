@@ -11,7 +11,7 @@ async function loadStats() {
   const as = s.audit_by_severity || {};
   $("#stats-body").innerHTML = `
     <table>
-      <tr><th>课标词汇表</th><td><b>${s.cefr_vocab}</b> 词 (义教 ${v["义教"]||0} / 必修★ ${v["必修"]||0} / 选必★★ ${v["选必"]||0})</td></tr>
+      <tr><th>课标词汇表</th><td><b>${s.cefr_vocab}</b> 词 (义教 ${v["义教"]||0} / 必修${v["必修"]||0} / 选必${v["选必"]||0})</td></tr>
       <tr><th>课标语法项目</th><td>${s.grammar_items} 行 (层级 depth 1-4)</td></tr>
       <tr><th>主题语境</th><td>${s.theme_contexts} (3 大语境 + 10 主题群)</td></tr>
       <tr><th>辽宁允许版本 (英语)</th><td>${s.liaoning_allowed_publishers} 个出版社</td></tr>
@@ -116,7 +116,7 @@ async function loadTrend() {
   let html = "";
   if (d.trend_reliable === false) {
     html += `<div style="padding:8px 12px;margin-bottom:10px;background:#fff6e5;border-left:4px solid #c0392b;font-size:12px">
-      ⚠ <b>逐年趋势样本不足</b>(辽宁仅 ${(d.years_covered||[]).length} 年, 多年 &lt;10 题): 不拟合"逐年上升/下降"斜率。
+      注 <b>逐年趋势样本不足</b>(辽宁仅 ${(d.years_covered||[]).length} 年, 多年 &lt;10 题): 不拟合"逐年上升/下降"斜率。
       ${d.distribution_reliable !== false ? "<b>卷制 era 内的考点/题型<u>分布占比</u>样本充足、可信</b> — 按下面卷制分层看, 不要把跨 2021 卷制断点的年份连成趋势线。" : ""}
     </div>`;
   }

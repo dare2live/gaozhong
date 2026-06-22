@@ -27,7 +27,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">🎯 备课 · 考点驾驶舱</h2>
+<h2 style="margin:0 0 2px;">备课 · 考点驾驶舱</h2>
 <p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算</p>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
@@ -48,7 +48,7 @@
     const ok = n >= 30;
     return `
 <span class="bk-flabel">卷制</span>${eraPill(ERA_NEW, "2021+ 新高考II")}${eraPill(ERA_OLD, "2015–2020")}
-<span class="bk-lock">🔒 辽宁卷·锁定</span>
+<span class="bk-lock">辽宁卷·锁定</span>
 <span class="bk-flabel" style="margin-left:8px;">维度</span><select id="bk-dim">${dimOpt}</select>
 <span class="bk-suff ${ok ? "ok" : "warn"}">${ok ? "分布可用 · " + n + "题" : "样本不足 · " + n + "题"}</span>`;
   }
@@ -92,7 +92,7 @@
     const all = items.flatMap(x => [...(x.old_years || []), ...(x.new_years || [])]);
     if (!all.length) { G.$("#bk-trend").innerHTML = "<p class='muted'>无题型数据</p>"; return; }
     const years = []; for (let y = Math.min(...all); y <= Math.max(...all); y++) years.push(y);
-    const qts = list.map(x => x.question_type + (x.extraction_gap ? " ⚠" : ""));
+    const qts = list.map(x => x.question_type + (x.extraction_gap ? " 注" : ""));
     const data = [];
     list.forEach((x, qi) => {
       const pres = new Set([...(x.old_years || []), ...(x.new_years || [])]);
@@ -107,7 +107,7 @@
       grid: { left: 4, right: 12, top: 10, bottom: 22, containLabel: true },
       xAxis: { type: "category", data: years, splitArea: { show: true }, axisLabel: { fontSize: 10 } },
       yAxis: { type: "category", data: qts, axisLabel: { fontSize: 10 } },
-      tooltip: { formatter: c => { const x = list[c.value[1]]; return `${x.question_type} · ${years[c.value[0]]}<br/>${(SIG[x.signal] || SIG.unregistered).t}${x.extraction_gap ? "<br/><b>⚠ 提取不全·该年仅样本非首末考年</b>" : ""}`; } },
+      tooltip: { formatter: c => { const x = list[c.value[1]]; return `${x.question_type} · ${years[c.value[0]]}<br/>${(SIG[x.signal] || SIG.unregistered).t}${x.extraction_gap ? "<br/><b>注 提取不全·该年仅样本非首末考年</b>" : ""}`; } },
       series: [{ type: "heatmap", data, label: { show: false } }],
     }, true);
     const ret = items.filter(x => x.signal === "retired").map(x => x.question_type);
@@ -115,7 +115,7 @@
     const gaps = items.filter(x => x.extraction_gap).map(x => x.question_type);
     G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型 presence · signal 由<b>卷面结构</b>定非数据, 粒度无关): `
       + `蓝=骨架两卷制常驻(<b>万变不离其宗</b>) · 红=<b>真退场</b>(${ret.join("、") || "无"}: 新高考取消) · 绿=<b>真登场</b>(${intro.join("、") || "无"}: 新高考新增)。`
-      + `<br><small class="muted">⚠ 淡色虚线格=提取不全(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>presence年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信)。</small>`;
+      + `<br><small class="muted">注 淡色虚线格=提取不全(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>presence年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信)。</small>`;
   }
 
   function renderCognitiveSkill(cs) {
@@ -143,7 +143,7 @@
       series: [
         { name: "旧课标II 15–20", type: "bar", barGap: "10%", data: cats.map(s => pctOf(oldRows, s)),
           itemStyle: { color: C.grey, borderRadius: [0, 3, 3, 0] }, label: lbl },
-        { name: "新高考II 21+ ⚠n小", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
+        { name: "新高考II 21+ 注n小", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
           itemStyle: { color: s === "推断" ? C.up : C.blue, borderRadius: [0, 3, 3, 0] } })), label: lbl },
       ],
     });
@@ -152,7 +152,7 @@
     const nNew = (rel[ERA_NEW] || {}).n || newRows.reduce((a, r) => a + r.n, 0);
     const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
     G.$("#bk-cognote").innerHTML = `真相源=教研解析<b>显式标签</b>(强于双模型)。命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断, 万变不离其宗的考查方式演变。`
-      + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II ⚠仅2023 n=${nNew}(&lt;30 方向性非精确)。2021源=全国甲卷已剔(§7), 待补2022/2024/2025真辽宁设问标注。</small>`;
+      + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II 注仅2023 n=${nNew}(&lt;30 方向性非精确)。2021源=全国甲卷已剔(§7), 待补2022/2024/2025真辽宁设问标注。</small>`;
   }
 
   async function loadCross(by) {
@@ -182,14 +182,14 @@
       grid: { left: 4, right: 8, top: 22, bottom: 6, containLabel: true },
       legend: { top: 0, textStyle: { fontSize: 10 }, itemWidth: 11, itemHeight: 8 },
       xAxis: { type: "value", max: 100, axisLabel: { formatter: "{value}%" }, splitLine: { show: false } },
-      yAxis: { type: "category", data: ordered.map(c => `${c}${bc[c].thin ? " ⚠" : ""} · n${bc[c].total}`), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 11 } },
+      yAxis: { type: "category", data: ordered.map(c => `${c}${bc[c].thin ? " 注" : ""} · n${bc[c].total}`), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 11 } },
       tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, formatter: ps => ps[0].name + "<br/>" + ps.filter(p => p.value > 0).map(p => `${p.marker}${p.seriesName}: ${p.value}%`).join("<br/>") },
       series: skills.map(sk => ({ name: sk, type: "bar", stack: "t", barWidth: "62%", data: ordered.map(c => pctOf(c, sk)), itemStyle: { color: SKILL_COLOR[sk] } })),
     });
     const cov = d.n_matched && d.n_subq_total ? `${d.n_matched}/${d.n_subq_total}` : "?";
     G.$("#bk-crosslbl").textContent = `${CROSS_LBL[state.cross]}·2015–20截面`;
     G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
-      + `<br><small class="muted">⚠ 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格⚠仅参考。</small>`;
+      + `<br><small class="muted">注 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格注仅参考。</small>`;
   }
 
   function renderHeat(heat) {

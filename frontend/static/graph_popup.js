@@ -68,7 +68,7 @@
     </h3>`;
 
     h += `<div class="gz-section">
-      <div class="gz-sec-title">📚 关联拓展 (${related.length})</div>`;
+      <div class="gz-sec-title">关联拓展 (${related.length})</div>`;
     if (related.length === 0) {
       h += `<p style="color:#888">无直接关联</p>`;
     } else {
@@ -84,7 +84,7 @@
     h += `</div>`;
 
     h += `<div class="gz-section">
-      <div class="gz-sec-title">📝 真题命中 (${questions.length})</div>`;
+      <div class="gz-sec-title">真题命中 (${questions.length})</div>`;
     if (questions.length === 0) {
       h += `<p style="color:#888">无真题直接命中</p>`;
     } else {

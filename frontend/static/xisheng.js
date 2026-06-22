@@ -12,7 +12,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">👥 分析学生 · 班级学情</h2>
+<h2 style="margin:0 0 2px;">分析学生 · 班级学情</h2>
 <p class="muted" style="margin:0 0 12px;font-size:13px;">多租户: 老师只见自己班级学生 (teacher_id 隔离) · 错题 → 真考点弱点聚合</p>
 <div class="bk-filter"><span class="bk-flabel">老师</span><span id="xs-teachers"></span>
   <span class="bk-flabel" style="margin-left:8px;">班级</span><span id="xs-classes"></span></div>
@@ -39,7 +39,7 @@
     const d = await fetchJSON(`/api/students/class_weakness?class_id=${encodeURIComponent(state.cls)}&teacher_id=${encodeURIComponent(state.teacher)}`).catch(() => ({ weakness: [] }));
     if (d.error) { G.$("#xs-banner").innerHTML = `<span style="color:#c1272d">学情加载失败: ${d.error}</span>`; return; }
     G.$("#xs-banner").innerHTML = d.data_status
-      ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FCEBEB;border:1px solid #F09595;border-radius:6px;margin-bottom:12px;font-size:12px;color:#791F1F;"><b style="font-weight:500;">⚗ ${d.data_status}</b></div>` : "";
+      ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FCEBEB;border:1px solid #F09595;border-radius:6px;margin-bottom:12px;font-size:12px;color:#791F1F;"><b style="font-weight:500;">${d.data_status}</b></div>` : "";
     const rows = (d.weakness || []).slice(0, 12).reverse();
     if (!window.echarts || !rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted">无弱点数据</p>'; return; }
     chart = chart || echarts.init(G.$("#xs-heat"));

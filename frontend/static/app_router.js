@@ -58,32 +58,32 @@
       <h2>A. 工作台 · 今日概览</h2>
       <div class="course-grid">
         <div class="course-card ${sevColor}">
-          <strong>📊 数据健康</strong>
+          <strong>数据健康</strong>
           <div class="block"><strong>${fail} FAIL · ${warn} WARN</strong> (共 ${findings.length} audit)</div>
           <div class="block"><a href="#/data">→ D 数据管理</a> 查详</div>
         </div>
         <div class="course-card G_FINAL">
-          <strong>📚 40 节课程</strong>
+          <strong>40 节课程</strong>
           <div class="block">G1:${cs.by_layer?.G1 ?? 0} · G2:${cs.by_layer?.G2 ?? 0} · G3:${cs.by_layer?.G3 ?? 0} · G_FINAL:${cs.by_layer?.G_FINAL ?? 0}</div>
           <div class="block">materials: ${cs.total_materials ?? 0} 行 · <a href="#/teaching">→ B 教学</a></div>
         </div>
         <div class="course-card">
-          <strong>🎓 学生 + 班级</strong>
+          <strong>学生 + 班级</strong>
           <div class="block">${totalStudents} 学生 / ${classes.count || 0} 班</div>
           <div class="block"><a href="#/students">→ E 学生档案</a></div>
         </div>
         <div class="course-card">
-          <strong>📝 题库</strong>
+          <strong>题库</strong>
           <div class="block">${stats.question_bank ?? "-"} 题 / ${stats.question_tags ?? "-"} 标签</div>
           <div class="block"><a href="#/qbank">→ C 题库 + 组卷</a></div>
         </div>
         <div class="course-card">
-          <strong>🌐 知识图谱</strong>
+          <strong>知识图谱</strong>
           <div class="block">${stats.nodes ?? "-"} nodes · ${stats.edges ?? "-"} edges</div>
           <div class="block"><a href="#/graph">→ F 图谱 + 趋势</a></div>
         </div>
         <div class="course-card">
-          <strong>📂 教材资源</strong>
+          <strong>教材资源</strong>
           <div class="block">${stats.textbooks ?? "-"} 教材 · ${stats.cefr_vocab ?? "-"} 课标词</div>
           <div class="block">${stats.exam_questions ?? "-"} 真题 · ${stats.theme_contexts ?? "-"} 主题</div>
         </div>
@@ -98,7 +98,7 @@
   });
 
   // ===================================================================
-  // B. 教学 ⭐ — 40 节按 layer 分组 + 点击查讲义
+  // B. 教学 — 40 节按 layer 分组 + 点击查讲义
   // ===================================================================
   register("teaching", async () => {
     CONTENT.innerHTML = `<h2>B. 教学 — 40 节分层课程</h2><p>载入中...</p>`;
@@ -130,7 +130,7 @@
     html += `<div id="handout-modal" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="modal-body">
         <span class="close-btn" onclick="document.getElementById('handout-modal').classList.remove('open')">✕</span>
-        <button class="print-btn" onclick="window.print()">🖨️ 打印 / PDF</button>
+        <button class="print-btn" onclick="window.print()">打印 / PDF</button>
         <div id="handout-md">载入中 ...</div>
       </div>
     </div>`;
@@ -139,15 +139,15 @@
 
   // -- 讲义分段元数据 (Phase 7.1)
   const SEG_META = [
-    { key: "header",    icon: "📖", label: "" },
-    { key: "hook",      icon: "🎯", label: "开场 hook", match: "hook" },
-    { key: "review",    icon: "🔄", label: "上节复习",  match: "复习" },
-    { key: "core",      icon: "🔑", label: "核心教学",  match: "核心" },
-    { key: "relations", icon: "🔗", label: "关联拓展",  match: "关联" },
-    { key: "exam",      icon: "📝", label: "真题溯源",  match: "真题" },
-    { key: "practice",  icon: "💡", label: "场景练习",  match: "场景" },
-    { key: "homework",  icon: "📋", label: "课后作业",  match: "作业" },
-    { key: "summary",   icon: "📌", label: "总结收束",  match: "总结" },
+    { key: "header",    icon: "", label: "" },
+    { key: "hook",      icon: "", label: "开场 hook", match: "hook" },
+    { key: "review",    icon: "", label: "上节复习",  match: "复习" },
+    { key: "core",      icon: "", label: "核心教学",  match: "核心" },
+    { key: "relations", icon: "", label: "关联拓展",  match: "关联" },
+    { key: "exam",      icon: "", label: "真题溯源",  match: "真题" },
+    { key: "practice",  icon: "", label: "场景练习",  match: "场景" },
+    { key: "homework",  icon: "", label: "课后作业",  match: "作业" },
+    { key: "summary",   icon: "", label: "总结收束",  match: "总结" },
   ];
 
   function _classifySegment(text) {
@@ -180,7 +180,7 @@
   function _renderPrinciples() {
     return `<div style="text-align:right">
       <span class="principles-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
-        ℹ️ 生成规则 (R2/R5/D0)
+        ℹ生成规则 (R2/R5/D0)
       </span>
       <div class="principles-body">
         <dl>
@@ -199,14 +199,14 @@
     const modal = $("#handout-modal");
     const md = $("#handout-md");
     modal.classList.add("open");
-    md.innerHTML = '<p style="color:#888;line-height:1.7">📋 讲义生成层已下线（2026-06-15 回滚）。<br>' +
+    md.innerHTML = '<p style="color:#888;line-height:1.7"> 讲义生成层已下线（2026-06-15 回滚）。<br>' +
       '依据不完整教材生成的范文不可信，待教材基石完善后重建。<br>下方课后测验基于已核验真题，仍可用。</p>' +
       _renderQuizButton(cid);
   };
 
   function _renderQuizButton(cid) {
     return `<div style="text-align:center;margin:1.5rem 0">
-      <button class="gz-quiz-btn" onclick="window._startQuiz(${cid})">📝 课后测验</button>
+      <button class="gz-quiz-btn" onclick="window._startQuiz(${cid})">课后测验</button>
     </div><div id="quiz-area"></div>`;
   }
 
@@ -289,10 +289,10 @@
       fb.style.display = "block";
       if (given === expected) {
         correct++;
-        fb.innerHTML = `<span style="color:#2a9d8f">✅ 正确</span>`;
+        fb.innerHTML = `<span style="color:#2a9d8f">正确</span>`;
         fb.className = "gz-quiz-feedback correct";
       } else {
-        fb.innerHTML = `<span style="color:#c1272d">❌ 正确答案: ${expected}</span>`;
+        fb.innerHTML = `<span style="color:#c1272d">正确答案: ${expected}</span>`;
         fb.className = "gz-quiz-feedback wrong";
       }
       const qData = (area._quizData.questions||[]).find(q => q.qb_id === +qEl.dataset.qid);
@@ -314,7 +314,7 @@
     CONTENT.innerHTML = `<h2>C. 题库 + 组卷</h2>
       <p>当前题库: <strong>${stats.question_bank ?? "-"}</strong> 题 (仅已核验真题) / <strong>${stats.question_tags ?? "-"}</strong> 标签</p>
       <p>详细组卷器: <a href="/teacher#compose" target="_blank">/teacher tab "组卷"</a> (兼容旧 UI)</p>
-      <p style="color:#888;font-size:0.9em">🎧 听力练习区块已随 Phase 7 生成层下线（2026-06-15：生成范文回滚，教材基石完善后重建）。</p>`;
+      <p style="color:#888;font-size:0.9em"> 听力练习区块已随 Phase 7 生成层下线（2026-06-15：生成范文回滚，教材基石完善后重建）。</p>`;
   });
 
   function _renderListeningCard(q) {
@@ -396,7 +396,7 @@
     CONTENT.innerHTML = `
       <h2>D. 数据管理 + 设计宪法</h2>
       <div class="course-grid">
-        <div class="course-card ${fail > 0 ? 'G_FINAL' : 'G1'}">
+        <div class="course-card ${fail >0 ? 'G_FINAL' : 'G1'}">
           <strong>审计概览</strong>
           <div class="block">FAIL: ${fail} / WARN: ${warn}</div>
         </div>
@@ -415,7 +415,7 @@
       </div>
 
       <section class="layer-section" style="margin-top:1.5rem">
-        <h3>📜 设计宪法 <span class="layer-meta">${rules.length} 条 (${principles.length} 原则 + ${ironLaws.length} 铁律 + ${violations.length} 禁止)</span></h3>
+        <h3>设计宪法 <span class="layer-meta">${rules.length} 条 (${principles.length} 原则 + ${ironLaws.length} 铁律 + ${violations.length} 禁止)</span></h3>
         <p style="color:#666;font-size:0.85em">模型驱动内容生成最高原则 — 任何题目/教案/教程必须遵守. 入库强制执行.</p>
 
         <h4 style="color:#0a4d75;margin-top:1rem">六大原则</h4>
@@ -454,7 +454,7 @@
     let html = `<h2>E. 学生档案 (${list.count} 学生 · ${classes.count} 班)</h2>
 
       <section class="layer-section">
-        <h3>🎯 新学生入测 · 摸底测验</h3>
+        <h3>新学生入测 · 摸底测验</h3>
         <p style="color:#666;font-size:0.9em">巧妙 9-11 题快速摸清水平 → 自动推送对应 layer 课节 + 弱点</p>
         <div style="display:flex;gap:0.5rem;margin:0.5rem 0">
           <button onclick="window._startPlacement('G1')" style="padding:0.4rem 1rem;background:#2a9d8f;color:#fff;border:0;border-radius:3px;cursor:pointer">G1 入测 (9 题)</button>
@@ -496,10 +496,10 @@
 
   // 摸底测验流程 — D2 用户 2026-05-25
   window._startPlacement = async (grade) => {
-    CONTENT.innerHTML = `<h2>📝 ${grade} 摸底测验</h2><p>载入题目 ...</p>`;
+    CONTENT.innerHTML = `<h2>${grade} 摸底测验</h2><p>载入题目 ...</p>`;
     try {
       const paper = await fetchJSON("/api/placement/generate?grade=" + grade);
-      let html = `<h2>📝 ${grade} 摸底测验 (${paper.total_actual} 题)</h2>
+      let html = `<h2>${grade} 摸底测验 (${paper.total_actual} 题)</h2>
         <p style="color:#666">答完点"提交"自动评分 + 推送对应课节. 不会的题留空.</p>
         <form id="placement-form" style="background:#fff;padding:1rem;border-radius:4px;max-width:700px">`;
       let i = 0;
@@ -637,7 +637,7 @@
       let h = `<h2 style="margin:0">${info.student.name} (${sid})</h2>`;
       // 坑4 诚实(A5): 全平台 student_answers 100% demo 合成(0真实作答), 单生模态须标 demo 不在零真作答上呈伪造置信度
       if (((info.student && info.student.source) || "demo") === "demo" || (info.answers && info.answers.source === "demo"))
-        h += `<p style="background:#FAECE7;color:#993C1D;padding:6px 10px;border-radius:6px;font-size:13px;margin:6px 0;">⚠ 示例数据(demo 合成作答, 非真实学情) — 答题/弱点为演示用, 待导入真实答题卡后才是该生真实分析。</p>`;
+        h += `<p style="background:#FAECE7;color:#993C1D;padding:6px 10px;border-radius:6px;font-size:13px;margin:6px 0;">注 示例数据(demo 合成作答, 非真实学情) — 答题/弱点为演示用, 待导入真实答题卡后才是该生真实分析。</p>`;
       h += `<p>${info.student.school} · ${info.student.grade} · 答题 ${info.answers.total} 题 (正确 ${info.answers.correct})</p>`;
       h += `<h3>弱点 (${weakRows.length})</h3><ul>`;
       for (const w of weakRows) {
@@ -690,12 +690,12 @@
 
       <h3>命题趋势</h3>
       <div class="course-grid">
-        <div class="course-card G_FINAL"><strong>📈 近年高频上升词</strong>
+        <div class="course-card G_FINAL"><strong>近年高频上升词</strong>
           ${(trend.top_words || trend.rising_words || []).slice(0, 8)
             .map(w => `<div class="block">${GZ.conceptLink("word:" + (w.word || w.label || w), w.word || w.label || w)} ${w.recent_freq ? `(${w.recent_freq})` : ""}</div>`).join("") || "<div class='block'>无</div>"}
         </div>
-        <div class="course-card"><strong>📊 题型分布 (卷制 era 分层)</strong>
-          ${trend.trend_reliable === false ? `<div class="block" style="color:#c0392b;font-size:11px">⚠ 逐年样本不足, 不画斜率; 按卷制 era 看分布 (跨 2021 断点不混算)</div>` : ""}
+        <div class="course-card"><strong>题型分布 (卷制 era 分层)</strong>
+          ${trend.trend_reliable === false ? `<div class="block" style="color:#c0392b;font-size:11px">注 逐年样本不足, 不画斜率; 按卷制 era 看分布 (跨 2021 断点不混算)</div>` : ""}
           ${Object.entries(trend.type_distribution_by_era || {}).map(
             ([era, types]) => `<div class="block"><b>${era}</b>: ${Object.entries(types).sort((a,b)=>b[1]-a[1]).slice(0, 4).map(([t,n])=>`${t}(${n})`).join(" / ")}</div>`
           ).join("") || "<div class='block'>无</div>"}
@@ -811,13 +811,13 @@
         });
         const data = await resp.json();
         if (resp.ok) {
-          resultDiv.innerHTML = `✅ 上传成功 <code>${data.upload_id}</code>; sha=${data.sha256}; OCR 状态=${data.ocr_status} (${data.text_chars} 字符)`;
+          resultDiv.innerHTML = `上传成功 <code>${data.upload_id}</code>; sha=${data.sha256}; OCR 状态=${data.ocr_status} (${data.text_chars} 字符)`;
           setTimeout(() => route(), 1500);  // 刷新清单
         } else {
-          resultDiv.innerHTML = `<span style="color:#c00">❌ ${data.error || resp.statusText}</span>`;
+          resultDiv.innerHTML = `<span style="color:#c00">${data.error || resp.statusText}</span>`;
         }
       } catch (err) {
-        resultDiv.innerHTML = `<span style="color:#c00">❌ ${err.message}</span>`;
+        resultDiv.innerHTML = `<span style="color:#c00">${err.message}</span>`;
       }
     };
   });

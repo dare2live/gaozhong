@@ -1,0 +1,170 @@
+/* 设计令牌系统 — 备课驾驶舱 (2026-06-22 redesign-preserve; taste-skill + redesign-skill).
+ *
+ * Design read: 辽宁 K12 教师备课数据仪表盘, trust-first 且 D0=100% 精度关键 → 克制 editorial-utilitarian。
+ * 保留经济学人红 accent; 统一成单一暖灰中性系 + off-black(非纯黑) + tinted shadow + 一致圆角/焦点环。
+ * 数据用 tabular-nums(数据为先); 系统 CJK 字体(教师工具受众, 原生渲染 + 零 web-font 成本)。
+ * 单一 UI accent = 红; 图表里的蓝是数据编码(data series), 非 UI accent — 二者不冲突。
+ * 本文件最后加载, 是配色/排版唯一真相源, 覆盖旧 style.css/app.css 的散落色值。
+ */
+
+:root {
+  /* brand accent — 经济学人红, 由 #E3120B 去饱和到 <80% sat */
+  --accent: #BE3A2B;
+  --accent-ink: #9C2C20;
+  --accent-wash: #FaF0EE;
+  /* 中性 — 单一暖灰系 (warm, 不混冷暖) */
+  --ink: #1C1A17;
+  --ink-2: #45413A;
+  --ink-3: #76716A;
+  --line: #E7E2D9;
+  --line-soft: #F0ECE4;
+  --surface: #FCFAF6;
+  --card: #FFFFFF;
+  --sunken: #F6F2EB;
+  /* 侧栏 (暖 off-black, 非 #000) */
+  --nav: #1B1A17;
+  --nav-hover: #272420;
+  --nav-ink: #D7D2C9;
+  --nav-dim: #8B867D;
+  /* 语义状态 (单点定义, 取代散落 hex) */
+  --up: #9C2C20;     /* 上行/强调 (与 accent 同族) */
+  --down: #1F5F94;   /* 下行/数据蓝 */
+  --good: #2E7D54;
+  --warn: #9A6A00;
+  /* tinted shadow — 暖, 非纯黑 */
+  --shadow-sm: 0 1px 2px rgba(46,38,28,.05);
+  --shadow: 0 1px 3px rgba(46,38,28,.06), 0 4px 14px rgba(46,38,28,.05);
+  /* 圆角 (一致 scale) */
+  --r-xs: 3px; --r-sm: 5px; --r: 8px; --r-lg: 12px;
+  /* 排版 */
+  --font: -apple-system, "SF Pro Text", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --num: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+  /* 动效 (克制, MOTION 2) */
+  --ease: cubic-bezier(.16,1,.3,1);
+  --dur: 170ms;
+}
+
+/* ── base ─────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.003em;
+}
+/* 数据/计数 用等宽数字对齐 (数据为先) */
+.bk-h .bk-src, .bk-suff, td, th, .bk-shift-v, .bk-delta, .num, .layer-meta { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-xs); }
+::selection { background: var(--accent-wash); }
+
+/* ── sidebar ──────────────────────────────────────────── */
+.sidebar {
+  width: 216px;
+  background: var(--nav);
+  border-right: 1px solid #000;
+  padding: 14px 0 10px;
+}
+.sidebar .brand {
+  font-size: 15px; font-weight: 650; letter-spacing: -0.01em;
+  color: #F4F1EA; border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 0 18px 14px; margin-bottom: 10px;
+}
+.sidebar .brand small { color: var(--nav-dim); font-weight: 400; font-size: .8em; letter-spacing: 0; }
+.sidebar .tabnav a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; color: var(--nav-ink); font-size: 13.5px; font-weight: 450;
+  border-left: 2px solid transparent; text-decoration: none;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.sidebar .tabnav a:hover { background: var(--nav-hover); color: #fff; }
+.sidebar .tabnav a.active {
+  background: var(--nav-hover); color: #fff; border-left-color: var(--accent); font-weight: 550;
+}
+.sidebar .tabnav a .ic {
+  width: 17px; height: 17px; flex: none; color: var(--nav-dim);
+  fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+  transition: color var(--dur) var(--ease);
+}
+.sidebar .tabnav a:hover .ic, .sidebar .tabnav a.active .ic { color: var(--accent); }
+.sidebar-foot { color: var(--nav-dim); border-top: 1px solid rgba(255,255,255,.07); font-size: 12px; }
+.sidebar-foot a { color: var(--nav-ink); }
+
+/* ── content + headings ───────────────────────────────── */
+.content { background: var(--surface); padding: 26px 32px; }
+.content h2 { font-size: 21px; font-weight: 650; letter-spacing: -0.015em; color: var(--ink); margin: 0 0 3px; }
+.content h2 + .muted, .content h2 + p.muted { color: var(--ink-3); }
+.muted { color: var(--ink-3); }
+
+/* ── cards (elevation only where hierarchy needs it) ──── */
+.card, .bk-card, .layer-section {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+.bk-card { transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.bk-card:hover { box-shadow: var(--shadow); border-color: var(--line); }
+.bk-h { border-bottom: 1px solid var(--line-soft); }
+.bk-h span:first-child { font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.bk-h small { color: var(--ink-3); font-weight: 400; }
+.bk-src {
+  font-family: var(--num); font-size: 10.5px; color: var(--ink-3);
+  background: var(--sunken); padding: 2px 7px; border-radius: var(--r-xs);
+}
+
+/* ── filter bar / pills ───────────────────────────────── */
+.bk-pill {
+  border: 1px solid var(--line); background: var(--card); color: var(--ink-2);
+  border-radius: var(--r-sm); padding: 5px 11px; font-size: 12.5px; cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.bk-pill:hover { border-color: var(--accent); color: var(--accent-ink); }
+.bk-pill.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.bk-lock { color: var(--ink-3); font-size: 12px; }
+.bk-suff { font-size: 12px; }
+.bk-suff.ok { color: var(--good); }
+.bk-suff.warn { color: var(--warn); }
+
+/* ── shift rows (命题迁移) ────────────────────────────── */
+.bk-shift-row { border-bottom: 1px solid var(--line-soft); }
+.bk-shift-k { color: var(--ink-2); }
+.bk-delta { font-family: var(--num); border-radius: var(--r-xs); font-size: 12px; }
+
+/* ── tables (考试词典等) ──────────────────────────────── */
+table thead tr { background: var(--sunken) !important; }
+table th { color: var(--ink-3); font-weight: 600; font-size: 12px; letter-spacing: .01em; }
+table tbody tr { transition: background var(--dur) var(--ease); }
+table tbody tr:hover { background: var(--sunken); }
+
+/* ── buttons (active 物理反馈) ────────────────────────── */
+button, .btn {
+  font-family: var(--font); border-radius: var(--r-sm);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+button:active, .btn:active { transform: translateY(1px); }
+
+/* ── caveat marker (替代旧告警 emoji; 诚实标注用) ─────── */
+.caveat::before {
+  content: "注"; display: inline-block;
+  width: 15px; height: 15px; line-height: 15px; text-align: center;
+  font-size: 10px; font-weight: 700; color: var(--card); background: var(--warn);
+  border-radius: var(--r-xs); margin-right: 5px; vertical-align: 1px;
+}
+
+/* ── reduced motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto; }
+}
+
+/* ── responsive (窄屏侧栏收起为顶栏) ──────────────────── */
+@media (max-width: 820px) {
+  .app-shell { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid #000; padding: 8px; }
+  .sidebar .brand { width: 100%; border: 0; padding: 4px 10px 8px; }
+  .sidebar .tabnav { flex-direction: row; flex-wrap: wrap; gap: 2px; }
+  .sidebar .tabnav a { border-left: 0; border-radius: var(--r-sm); padding: 7px 10px; }
+  .sidebar .tabnav a.active { border-left: 0; }
+  .content { padding: 16px; }
+}

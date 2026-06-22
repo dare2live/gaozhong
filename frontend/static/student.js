@@ -6,7 +6,7 @@ let activeVersion = "waiyan";
 async function loadCities() {
   const rows = await fetchJSON("/api/liaoning/city_choice");
   $("#city-pick").innerHTML = rows.map(r =>
-    `<button data-pub="${r.publisher_short}" data-city="${r.city}">${r.city}<span style="font-size:10px;opacity:0.6"> (${r.publisher_short})</span></button>`).join("");
+    `<button data-pub="${r.publisher_short}" data-city="${r.city}">${r.city}<span style="font-size:10px;opacity:0.6">(${r.publisher_short})</span></button>`).join("");
   $$("#city-pick button").forEach(b => b.addEventListener("click", () => pickCity(b)));
   pickCity($('[data-city="沈阳"]'));
 }

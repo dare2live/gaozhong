@@ -20,7 +20,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">📖 讲课 · 概念调取 + 考点关联</h2>
+<h2 style="margin:0 0 2px;">讲课 · 概念调取 + 考点关联</h2>
 <p class="muted" style="margin:0 0 14px;font-size:13px;">当堂任一词/语法一键调出 4 路追溯(真题↔考点↔课标↔教材) · 共现网络看哪些考点同题考</p>
 
 <section class="bk-card" style="margin-bottom:14px;">

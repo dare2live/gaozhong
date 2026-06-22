@@ -27,7 +27,7 @@ const LOADERS = {
       const s = suff[era]; if (!s) return "";
       return s.distribution_eligible
         ? `<span class="ep-ok" title="同卷制 era 总题数达标, 占比可信">样本充足 ✓ (${s.n_total}题)</span>`
-        : `<span class="ep-thin" title="样本不足, 占比仅供参考">样本不足 ⚠ (${s.n_total}题)</span>`;
+        : `<span class="ep-thin" title="样本不足, 占比仅供参考">样本不足 注 (${s.n_total}题)</span>`;
     };
     const dimBlock = (dim) => d.eras.map(era => {
       const rows = (d.distribution[era] || {})[dim] || [];
@@ -51,7 +51,7 @@ const LOADERS = {
       const slot = d.by_era[era] || { pairs: [] };
       const tag = slot.distribution_eligible
         ? `<span class="ep-ok">样本充足 ✓ (${slot.era_total_questions}题)</span>`
-        : `<span class="ep-thin">样本不足 ⚠ 仅作参考 (${slot.era_total_questions}题)</span>`;
+        : `<span class="ep-thin">样本不足 注 仅作参考 (${slot.era_total_questions}题)</span>`;
       const rows = (slot.pairs || []).map(p =>
         `<div class="ep-bar"><span class="co-lab">${DIMN[p.a_dim]||p.a_dim}:${p.a_label} ⨯ ${DIMN[p.b_dim]||p.b_dim}:${p.b_label}</span>` +
         `<span class="ep-n">同卷 ${p.co_n} 题共现</span></div>`).join("");
@@ -130,13 +130,13 @@ async function renderLesson(uid) {
   const words = lp.words || [], grammar = lp.grammar || [], rex = lp.related_exams || [];
   const al = lp.alignment_summary || {}, th = lp.trend_honesty || {}, vp = lp.vocab_profile || {};
   const pr = lp.page_range || [];
-  const wChip = w => tagChip(`${w.word}${w.exam_freq_count ? " · " + w.exam_freq_count + "次" : ""}${w.syllabus_category === "真超纲·辽宁考过" ? " ⭐" : ""}`, "word");
+  const wChip = w => tagChip(`${w.word}${w.exam_freq_count ? " · " + w.exam_freq_count + "次" : ""}${w.syllabus_category === "真超纲·辽宁考过" ? " " : ""}`, "word");
   const gChip = g => tagChip(`${g.label} · ${g.recent_exam_trace.length}真题`, "grammar");
   $("#lp-body").innerHTML = `
     <p class="lp-meta"><strong>${lp.title || ""}</strong>${lp.theme ? " · 主题 " + lp.theme.replace("theme:", "") : " · 主题未匹配"} · p.${pr[0] ?? "-"}–${pr[1] ?? "-"}</p>
-    <div class="trend-banner">📊 命题趋势 (${th.province_scope || "辽宁卷"}): ${th.note || ""}${th.trend_reliable ? "" : " · <span style='color:#c1272d'>逐年斜率样本不足, 不画 slope</span>"}</div>
+    <div class="trend-banner">命题趋势 (${th.province_scope || "辽宁卷"}): ${th.note || ""}${th.trend_reliable ? "" : " · <span style='color:#c1272d'>逐年斜率样本不足, 不画 slope</span>"}</div>
     <h3>词汇 — 本单元引入 ${al.intro_total ?? words.length}, 高考考过 ${al.exam_overlap ?? "?"} (按高考频次降序)</h3>
-    <p class="vocab-profile">📚 词汇画像 (§不偏离学校 · 已词形归并+高考核对): 课标内 <b>${vp.in_syllabus ?? "-"}</b> · 真超纲<b style="color:#c1272d">辽宁考过 ${vp.over_ln_tested ?? "-"}</b>(必教) · 仅外省考过 ${vp.over_other_tested ?? "-"} · 未考 ${vp.over_untested ?? "-"}(选学)${vp.proper_noise ? " · 专名 "+vp.proper_noise : ""} · <b>越纲率 ${vp.over_rate_pct ?? "-"}%</b></p>
+    <p class="vocab-profile"> 词汇画像 (§不偏离学校 · 已词形归并+高考核对): 课标内 <b>${vp.in_syllabus ?? "-"}</b> · 真超纲<b style="color:#c1272d">辽宁考过 ${vp.over_ln_tested ?? "-"}</b>(必教) · 仅外省考过 ${vp.over_other_tested ?? "-"} · 未考 ${vp.over_untested ?? "-"}(选学)${vp.proper_noise ? " · 专名 "+vp.proper_noise : ""} · <b>越纲率 ${vp.over_rate_pct ?? "-"}%</b></p>
     <div>${words.length ? words.map(wChip).join("") : "<em>无</em>"}</div>
     <h3>语法 (${grammar.length}) — 课标项 + 真题溯源 (教此语法, 高考这么考)</h3>
     <div>${grammar.length ? grammar.map(gChip).join("") : "<em>本单元无 curated 语法点 (诚实跳过歧义)</em>"}</div>
