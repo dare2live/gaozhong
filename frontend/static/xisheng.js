@@ -10,14 +10,30 @@
   const { fetchJSON, registerTab } = G;
   let chart = null, state = { teacher: null, cls: null };
 
+  // getting-started 引导 (坑4: 学情全 demo, 诚实化为"示例 + 如何接真实学情")
+  function guide() {
+    const step = (n, t, d) => `<div class="eg-step"><span class="eg-n">${n}</span><div><div class="eg-st">${t}</div><div class="eg-sd">${d}</div></div></div>`;
+    return `<div class="empty-guide">
+      <span class="eg-tag">示例数据</span>
+      <div class="eg-title">接入真实学情 · 三步</div>
+      <div class="eg-why">当前 790 条作答为示例合成 (D0 诚实: 不在零真实作答上渲染伪造置信度)。导入真实数据后, 弱点 / 热力 / 分层推荐自动派生。</div>
+      <div class="eg-steps">
+        ${step(1, "建班 · 导入名单", '上传学生名单 CSV (姓名 + 学号), 系统建班建档 · 多租户隔离。<a href="#/students">学生档案 →</a>')}
+        ${step(2, "上传答题卡", '扫描录入 OCR 识别作答 → 自动判分入 student_answers。<a href="#/scan">扫描录入 →</a>')}
+        ${step(3, "自动学情", "错题聚合真考点弱点 + 分层复习推荐 + 结构对齐同构练习 (本页)。")}
+      </div>
+    </div>`;
+  }
+
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">分析学生 · 班级学情</h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">多租户: 老师只见自己班级学生 (teacher_id 隔离) · 错题 → 真考点弱点聚合</p>
+<p class="muted" style="margin:0 0 14px;font-size:13px;">多租户: 老师只见自己班级学生 (teacher_id 隔离) · 错题 → 真考点弱点聚合</p>
+${guide()}
 <div class="bk-filter"><span class="bk-flabel">老师</span><span id="xs-teachers"></span>
   <span class="bk-flabel" style="margin-left:8px;">班级</span><span id="xs-classes"></span></div>
 <div id="xs-banner"></div>
-<section class="bk-card"><div class="bk-h"><span>班级薄弱真考点 <small>错题聚合, avg 弱点分</small></span><span class="bk-src">/api/students/class_weakness</span></div>
+<section class="bk-card"><div class="bk-h"><span>班级薄弱真考点 <small>示例预览 · 错题聚合 avg 弱点分</small></span><span class="bk-src">/api/students/class_weakness</span></div>
   <div id="xs-heat" style="height:340px;"></div></section>`;
   }
 
