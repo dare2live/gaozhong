@@ -17,15 +17,30 @@
     return fetchJSON(path + sep + "teacher_id=" + encodeURIComponent(_tid));
   }
 
-  // nav 资产计数 (后端真实数据 — 教师一眼看见词典/题库/课程/图谱规模)
+  // 侧栏从 nav-config.js 数据渲染 (IA = 配置驱动, 非 hardcode HTML; 用户 no-hardcode 硬约束)
+  function renderSidebar() {
+    const nav = $(".tabnav");
+    if (!nav || !window.GZ_NAV) return;
+    nav.innerHTML = window.GZ_NAV.map(g =>
+      `<div class="navgroup">${g.group}${g.tag ? `<span class="gtag">${g.tag}</span>` : ""}<span class="gline"></span></div>` +
+      g.tabs.map(t =>
+        `<a href="#/${t.id}" data-tab="${t.id}"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor">${t.icon}</svg> ${t.label}${t.count ? `<span class="cnt" id="nav-cnt-${t.id}"></span>` : ""}</a>`
+      ).join("")
+    ).join("");
+  }
+
+  // nav 资产计数 (后端真实数据, count 源由配置定 — 非硬编码数字)
   async function populateNavCounts() {
-    const set = (id, v) => { const e = $("#" + id); if (e && v != null) e.textContent = v; };
+    const tabs = (window.GZ_NAV || []).flatMap(g => g.tabs).filter(t => t.count);
+    if (!tabs.length) return;
     const s = await fetchJSON("/api/stats").catch(() => ({}));
-    if (s.nodes) set("nav-cnt-edges", s.nodes.toLocaleString());
-    if (s.question_bank) set("nav-cnt-qb", s.question_bank);
-    if (s.courses) set("nav-cnt-course", s.courses);
-    const d = await fetchJSON("/api/exam_dictionary?prefix=zz&limit=1").catch(() => ({}));
-    if (d.total) set("nav-cnt-dict", d.total.toLocaleString());
+    let dictTotal = null;
+    if (tabs.some(t => t.count === "dict")) dictTotal = (await fetchJSON("/api/exam_dictionary?prefix=zz&limit=1").catch(() => ({}))).total;
+    tabs.forEach(t => {
+      const v = t.count === "dict" ? dictTotal : s[t.count];
+      const el = $("#nav-cnt-" + t.id);
+      if (el && v != null) el.textContent = Number(v).toLocaleString();
+    });
   }
 
   // -- 注册表 (M2)
@@ -48,7 +63,7 @@
     }
   }
   window.addEventListener("hashchange", route);
-  window.addEventListener("DOMContentLoaded", () => { if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts(); });
+  window.addEventListener("DOMContentLoaded", () => { renderSidebar(); if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts(); });
 
   // ===================================================================
   // A. 工作台
