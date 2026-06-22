@@ -63,6 +63,14 @@ gates:
     op: ge
     expect: 6
 
+  - id: exam_dictionary_gloss_no_bleed
+    domain: vocab
+    source: "exam_vocabulary.gloss (交付词典 + 练习题释义源, A2/A7)"
+    desc: "考试词典释义无邻栏bleed(页眉/课标说明吸入): exam_vocabulary.gloss 是 dict前端 + exercise quiz 共用释义源(A2修后poc读它非unit_vocab.zh_def), 须0 bleed标记防练习题/词典乱码回归"
+    query: "SELECT COUNT(*) FROM exam_vocabulary WHERE gloss LIKE '%sions in Each Unit%' OR gloss LIKE '%课标词；专有名词%' OR gloss LIKE '%在每单元词表后面单独列出%'"
+    op: eq
+    expect: 0
+
   - id: renjiao_variant_words_present
     domain: vocab
     source: "data/textbooks/renjiao/*.pdf (英美变体拼写头词 'organise (NAmE -ize) /IPA/')"

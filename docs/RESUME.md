@@ -3,6 +3,13 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
+## 🎯 交付就绪度裁决 (2026-06-22, 6维审计 — 接手先看这个)
+> 详 `docs/delivery_readiness_assessment.md` 顶部"2026-06-22复评"。
+- **① 单老师30min桌面pilot = READY**(本次清4 blocker: A1 students崩/A2 quiz乱码/A3 L4省份/A4 viewport + A5/A6/A8/A9; 三门绿)。**唯一剩=动员1名辽宁老师真用**(Rule10, AI做不了, 最高杠杆)。
+- **② 多校运营 = NOT-READY**: 差 B1鉴权(teacher_id裸传=PII红线, 收口点`_tenant.get_teacher`) + B2 Docker/nginx + HTTPS。
+- **③ 公开 = NOT-READY**(暂缓): 学情整条demo壳(790全合成, 必空态)+ 题库扩容 + genre/theme人工核验。**别再无限建KG维度**。
+- **诚实分**: 真值可卖=题型presence结构迁移+词汇热力四象限+设问技能侧+考试词典金矿; LLM方向性参考(标)=genre/theme题材分布+新era n=15迁移精度; demo壳(空态)=学情。对外口径卡见 exam_trend_design 末。
+
 ## 最近 session (2026-06-22 最新): 命题趋势驾驶舱 v1→v3 — "怎么考"第二轴跨era演变 (核心竞争力)
 
 > 主题: 用户纠偏"课标/真题命题趋势是可感知的真值, 万变不离其宗, 你的作用是总结分析" → 顶层设计 `docs/exam_trend_design.md`

@@ -1,8 +1,40 @@
-# 交付运营就绪度评估 (2026-06-20)
+# 交付运营就绪度评估 (2026-06-20 · 2026-06-22 复评)
 
 > 总控级评估: 离 goal.md "可对内部教研团队交付试运营" 还差什么 (操作/运营层, 非细节)。
 > 方法: 7 层并行评估(8-agent workflow) + 控制器综合。配 goal.md 第四阶段复核门 + Rule10。
 > **一句话裁决**: 距交付约差**一个收口冲刺(operational sprint), 不是一个建设阶段**。
+
+---
+
+## 🆕 2026-06-22 复评 (6维审计 + verify-the-verifier; 分场景分级)
+
+> 6-agent 交付就绪度审计(数据/竞争力/前端/学情/部署/门禁)+ 控制器分场景裁决 + 4处 load-bearing 事实复核。
+> 起点接本 session: 命题趋势驾驶舱(v1/v2/v3+交叉) + 考试词典金矿接前端 + A1/A4防御修。
+
+### 分场景就绪度
+| 场景 | 裁决 | 缺口 |
+|---|---|---|
+| **① 单个辽宁老师 30min 桌面 pilot** | **READY**(本次已清4 blocker) | 原差4个S blocker, 本次 A1-A9 全修+三门绿; **现只差 Rule10 动员真老师真用** |
+| **② 多老师/学校小范围运营** | **NOT-READY** | B1 鉴权(teacher_id裸传=PII红线, 修复点已收口`_tenant.get_teacher`单点) + B2 Dockerfile/compose/nginx + HTTPS + DB备份(A9已补脚本) |
+| **③ 公开产品** | **NOT-READY**(暂缓, 别再无限建KG维度) | ②全部 + 学情真实化(在线作答/OCR/CSV导入) + 题库164扩容 + genre/theme人工核验 |
+
+### ✅ 单老师pilot blocker 已清 (本次 commit 0cbc66b, 三门绿)
+A1 students tab整页崩(多租户缺teacher_id)→stuFetch自动附老师 · A2 quiz gloss bleed(乱码渗练习题)→改读已清洗exam_vocabulary.gloss · A3 L4省份子串bug(坑7)→前缀锚 · A4 viewport · A5 学情单生demo banner(坑4) · A6 `/`默认驾驶舱 · A8 D0标签82→100(诚实门自身bug) · A9 DB备份脚本 · A7 防回归门(exam_dictionary_gloss_no_bleed + l4-paper-liaoning-only)。
+
+### 诚实分 (谄媚死防线)
+- **真能交付(真值可对外卖)**: 命题趋势真值内核 = 题型presence结构迁移(structural_truth) + 词汇热力四象限(课标∩真题双可验) + cognitive_skill技能侧(explicit_label); **考试词典金矿4186词(第一手源)=最值钱资产**; 教材78/78单元 + 辽宁真题182 + PIT血缘。
+- **方向性参考(必标LLM, 不当真值卖)**: genre/theme分布(481边全dual_model_agree零人工核验, 坑16) + 设问×题材的题材侧 + cognitive_skill新era精确占比(仅2023单年n=15)。
+- **demo壳(强制空态/标注)**: **学情整条** student_answers 790全合成(0真实作答), 必空态引导不在零真作答上装满看板(坑4); pilot已加单生demo banner。
+- **对外口径卡**: 见 `docs/exam_trend_design.md` 末"对外口径卡" 三档(可断言真值/方向性参考标LLM/不可下结论), 防脱离前端的PPT/口头丢caveat。
+
+### 优化后续计划 (pilot→多校→公开 倒推, 别无限建KG)
+- **A. pilot前必做** = ✅ 已清(A1-A9)。**唯一剩 = 动员1名辽宁老师真用30min**(Rule10, AI做不了, 最高杠杆+范围裁决器)。
+- **B. 多校门槛(部署前必齐, 不阻塞pilot)**: B1 最小鉴权(口令→login→session派生teacher_id)M · B2 Docker+compose+nginx M · B3 HTTPS M · B5 补2022/24/25真辽宁设问标注(新era n 15→~60, 第二卖点方向性升真值)M。
+- **C. 公开(暂缓)**: 学情真实化(在线作答POST回库判分=最轻M) · 题库扩容 · genre/theme高频大类人工核验L。**明确不做**: 不再无限新增KG维度。
+
+---
+
+## 历史评估 (2026-06-20)
 
 > 🆕 **2026-06-21 更新**: 数据地基从"计数自洽"升级到"**内容钉第一手源**"(5大教学交付数据 cefr/grammar/标题/词典/
 > 释义 + renjiao召回 逐字核PDF + 内容门锁; 杜撰theme_l3已废; 见 RESUME 同日 + data_accuracy_audit 顶部)。

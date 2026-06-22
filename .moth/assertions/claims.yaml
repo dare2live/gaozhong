@@ -192,6 +192,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_by_content as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c,'genre');c.close();yw=d['by_content'].get('应用文',{}).get('skills',[]);top=yw[0]['label'] if yw else '?';ok=d['n_matched']==74 and d['era']=='2015-2020_旧课标II' and 'dual_model_agree' in d['content_provenance'] and top=='理解具体信息' and len(yw)==1;print('OK' if ok else f'FAIL match={d[\"n_matched\"]} era={d[\"era\"]} 应用文top={top}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: l4-paper-liaoning-only
+    claim: "L4模拟卷 province 前缀锚(坑7/§7, A3修): generate_l4_paper 用 LIKE '辽宁%' 前缀非 '%辽宁%' 子串(子串会命中'非辽宁'标签混全国卷); 实测出卷全部 province 以'辽宁'起"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exercise.poc import generate_l4_paper as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=f(c,'辽宁',2015,12,seed=1);c.close();qs=p.get('questions',[]);bad=[q for q in qs if not str(q.get('province','')).startswith('辽宁')];print('OK' if qs and not bad else f'FAIL {len(bad)}/{len(qs)} 非辽宁')"]
+    expect: {op: regex, pattern: "OK"}
   - id: question-type-structure-mask
     claim: "题型presence v2 提取完整性掩码(坑12): signal由卷面结构真相源(exam_structure_eras.yaml)定非数据presence — 听力=skeleton+extraction_gap(两卷制常驻本项目未抽全, ≠v1误标登场2021); 短文改错=retired(新高考真取消); 续写/应用文=introduced+gap(新高考真新增但登场年缺源)"
     type: shell

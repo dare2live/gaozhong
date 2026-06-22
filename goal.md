@@ -55,6 +55,10 @@
 
 详 `docs/data_accuracy_audit.md` (全项目 100% 数据审计表).
 
+**⚠ D0 边界诚实 (2026-06-22)**: "100% 准" 是对**已登记 D0 维度**的强校验; 交付就绪审计发现两处曾**未登记盲区**(坑1模式) — exercise 练习题生成的 gloss 路径(读 unit_vocab.zh_def 含 bleed)+ L4 模拟卷 province 子串 bug(坑7), 均已修(读清洗后 exam_vocabulary.gloss / 前缀锚)+ 补门(A7: content gate `exam_dictionary_gloss_no_bleed` + moth `l4-paper-liaoning-only`)纳入 D0。**任何"X% 准"先 grep 门覆盖该维度否, 未断言维度永远绿(未必对)。**
+
+**学情子系统诚实标注**: `student_answers` 790 行 **100% source='demo'**(0 真实作答), is_correct 为 md5 哈希(非真实判分)。弱点/热力/推荐派生引擎逻辑正确但全建在合成 seed 上 → **交付时学情必空态引导**(已加单生 demo banner), 不在零真作答上渲染伪造置信度(坑4)。真交付学情需在线作答/答题卡OCR/成绩单导入。
+
 ---
 
 ## 总目标
