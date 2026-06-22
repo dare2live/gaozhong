@@ -138,6 +138,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import inspect; from backend.services import canonical, links, recommend; ok=(canonical.pub_to_short('外语教学与研究出版社')=='外研版' and canonical.VERSION_KEY_TO_SHORT.get('renjiao')=='人教版' and 'canonical.pub_to_short' in inspect.getsource(links.build_allowed_in_ln) and 'canonical.VERSION_KEY_TO_SHORT' in inspect.getsource(recommend)); print(0 if ok else 1)"]
     expect: {op: "==", value: "0"}
+  - id: dim-label-single-point
+    claim: "exam_point 维度→课标标签收口 category-config.js GZ_CAT.dim 单点 (穷尽扫描: beike/teacher/jiangke 5处散落 + theme_context已漂移 → 收口归一); teacher.html 已加载 category-config.js"
+    type: shell
+    command: ["bash", "-c", "grep -q 'dim:' frontend/static/category-config.js && grep -q 'theme_context: \"主题语境\"' frontend/static/category-config.js && grep -q 'category-config.js' frontend/teacher.html && grep -q 'GZ_CAT.dim' frontend/static/beike.js && echo 0 || echo 1"]
+    expect: {op: "==", value: "0"}
   - id: vocab-slope-single-point
     claim: "词汇量slope显著阈收口 scope.VOCAB_SLOPE_SIGNIFICANT 单点 (P2); model._slope_interp + predicted 难度判定共读, 不再各自硬编码50 (防两处漂移)"
     type: shell

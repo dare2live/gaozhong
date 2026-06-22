@@ -21,7 +21,8 @@ const LOADERS = {
   },
   exam_point: async () => {
     const d = await fetchJSON("/api/exam_point/distribution");
-    const DIM = { genre: "体裁", theme_l2: "主题群 (课标官方10群)", theme_context: "主题 (3大类)" };
+    const _DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js
+    const DIM = { genre: _DC.genre, theme_l2: _DC.theme_l2 + " (课标官方10群)", theme_context: _DC.theme_context + " (3大类)" };
     const suff = (d.sufficiency || {}).by_era || {};  // 件3 样本诚实标
     const eraTag = (era) => {
       const s = suff[era]; if (!s) return "";
@@ -45,7 +46,8 @@ const LOADERS = {
   },
   cooccur: async () => {
     const d = await fetchJSON("/api/exam_point/cooccurrence");
-    const DIMN = { genre: "体裁", theme_l2: "主题群", theme_context: "主题" };
+    const _DCn = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 (归一: 原"主题"是漂移)
+    const DIMN = { genre: _DCn.genre, theme_l2: _DCn.theme_l2, theme_context: _DCn.theme_context };
     const eras = Object.keys(d.by_era).sort().reverse();  // 新高考II 在前
     const block = (era) => {
       const slot = d.by_era[era] || { pairs: [] };

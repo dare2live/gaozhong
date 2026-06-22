@@ -21,4 +21,10 @@ window.GZ_CAT = {
     "推断": "#993C1D", "理解具体信息": "#185FA5",
     "理解主旨要义": "#85B7EB", "理解词汇": "#B4B2A9",
   },
+  // exam_point 维度 key → 课标维度基础标签 (穷尽扫描: beike/teacher/jiangke 各写一份且 theme_context 已漂移
+  // 主题语境/课标主题语境/主题(3大类) → 收口此处. canonical 基础形 = 课标官方"主题语境"(teacher 旧"主题"是简写漂移).
+  // 各模块读 GZ_CAT.dim[key] 后本地拼后缀(·课标10群 / (课标官方10群) / 课标前缀).
+  dim: {
+    genre: "体裁", theme_l2: "主题群", theme_context: "主题语境",
+  },
 };

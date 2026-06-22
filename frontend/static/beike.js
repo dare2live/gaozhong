@@ -14,7 +14,8 @@
 
   const ERA_NEW = "2021+_新高考II";
   const ERA_OLD = "2015-2020_旧课标II";
-  const DIM_LABEL = { genre: "体裁", theme_context: "主题语境", theme_l2: "主题群·课标10群" };
+  const DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js (防 beike/teacher/jiangke 漂移)
+  const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群" };
   const C = { blue: "#185FA5", blueL: "#85B7EB", up: "#993C1D", upBg: "#FAECE7", down: "#185FA5", downBg: "#E6F1FB", grey: "#B4B2A9" };
   const STATUS = (window.GZ_CAT && window.GZ_CAT.examStatus) || {};   // 考点状态色单一来源 category-config.js
 
@@ -23,7 +24,7 @@
   const crossCache = {};
   // 设问技能堆叠色 (推断=强调红, 与 D 区一致); 固定堆叠顺序让"推断"锚左边便于跨题材比
   const SKILL_COLOR = (window.GZ_CAT && window.GZ_CAT.skill) || {};   // 设问技能色单一来源 category-config.js
-  const CROSS_LBL = { genre: "体裁", theme_l2: "主题群", theme_context: "课标主题语境" };
+  const CROSS_LBL = { genre: DC.genre, theme_l2: DC.theme_l2, theme_context: "课标" + DC.theme_context };
 
   function shell() {
     return `
