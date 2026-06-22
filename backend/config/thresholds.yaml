@@ -33,13 +33,14 @@ vocab:
     义教: 1500
     必修: 500
     选必: 1000
-  level_tolerance: 50          # 各层 |actual-expected| <= 此值 → OK
-  level_tolerance_warn: 200    # 各层 |actual-expected| <= 此值 → WARN
+  level_tolerance: 100         # 各层 |actual-expected| <= 此值 → OK (对齐 curriculum._level_sev 刻意值, 修旧50漂移; 星标抽取丢~70词容rounding)
+  level_tolerance_warn: 300    # 各层 |actual-expected| <= 此值 → WARN (修旧200漂移)
 
 # ===== 题库 =====
 question_bank:
   min_total: 509               # 最低题目数
   min_tags: 10000              # 最低标签数
+  difficulty_easy_threshold: 100  # 题干字符数: < 此值 = easy
   difficulty_char_threshold: 400  # 题干字符数: < 此值 = mid, >= 此值 = hard
   synth_n_blanks: 8            # 合成题默认空格数
   synth_n_quiz: 5              # L1 quiz 默认题数

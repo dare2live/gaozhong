@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import duckdb
 
+from backend.services.thresholds import get_threshold   # vocab 期望/容差单点 (thresholds.yaml vocab 块)
 from ._common import finding
 
-VOCAB_LEVEL_EXPECTED = {"义教": 1500, "必修": 500, "选必": 1000}
+# 课标分级期望词量 + 容差 → thresholds.yaml vocab 块单点 (穷尽扫描: 原硬编码 + yaml 块零消费 + drift)
+VOCAB_LEVEL_EXPECTED = {str(k): int(v) for k, v in (get_threshold("vocab.level_expected") or {}).items()}
 
 
 def _level_sev(got: int, want: int) -> str:
@@ -13,8 +15,8 @@ def _level_sev(got: int, want: int) -> str:
     # 偶丢星标致 ~70 词在义教/必修/选必间漂移 (总数仍≈3000, 词全在)。分级近似 → ±100 容 rounding。
     # 注: 超纲/越纲率判定只看词是否在 cefr (membership), 不看级别, 故分级漂移不影响 §1.2。
     diff = abs(got - want)
-    if diff <= 100: return "OK"
-    if diff <= 300: return "WARN"
+    if diff <= get_threshold("vocab.level_tolerance", 100): return "OK"
+    if diff <= get_threshold("vocab.level_tolerance_warn", 300): return "WARN"
     return "FAIL"
 
 
@@ -24,10 +26,12 @@ def audit_curriculum_vocab(con: duckdb.DuckDBPyConnection) -> list[dict]:
         "SELECT cefr_level, COUNT(*) FROM cefr_vocab GROUP BY cefr_level"
     ).fetchall())
     out = []
-    sev = "OK" if abs(total - 3000) <= 100 else ("WARN" if abs(total - 3000) <= 300 else "FAIL")
+    target = get_threshold("vocab.cefr_target", 3000)
+    ok_tol, warn_tol = get_threshold("vocab.cefr_tolerance_ok", 100), get_threshold("vocab.cefr_tolerance_warn", 300)
+    sev = "OK" if abs(total - target) <= ok_tol else ("WARN" if abs(total - target) <= warn_tol else "FAIL")
     out.append(finding("vocab_recall", sev,
-                       target="cefr_vocab.total", expected="3000", actual=str(total),
-                       delta=str(total - 3000),
+                       target="cefr_vocab.total", expected=str(target), actual=str(total),
+                       delta=str(total - target),
                        note="课标 p129: 义教 1500 + 必修 500 + 选必 1000 = 3000"))
     for lv, want in VOCAB_LEVEL_EXPECTED.items():
         got = by.get(lv, 0)

@@ -12,6 +12,8 @@ import re
 
 import duckdb
 
+from backend.services.thresholds import get_threshold   # section 字符边界单点 (extraction 块, 接孤儿key)
+
 # 简化 grammar fill: 在文本里找 derive_from cluster 的成员词遮蔽 + 给词根
 _TOKEN_RE = re.compile(r"\b([A-Za-z]+(?:ed|ing|tion|ment|ness|ity|ly|able|ful))\b")
 
@@ -39,7 +41,7 @@ def generate_grammar_fill(con: duckdb.DuckDBPyConnection, unit_id: str | None = 
         SELECT st.version_key, st.volume_key, st.unit_number, st.seq, st.raw_text
         FROM section_text st
         INNER JOIN sections s USING (version_key, volume_key, unit_number, seq)
-        WHERE s.kind IN ('Reading', 'Grammar') AND st.n_chars BETWEEN 500 AND 5000
+        WHERE s.kind IN ('Reading', 'Grammar') AND st.n_chars BETWEEN {get_threshold('extraction.section_text_min_chars', 500)} AND {get_threshold('extraction.section_text_max_chars', 5000)}
           AND {where}
         ORDER BY RANDOM() LIMIT 1
     """, args).fetchall()

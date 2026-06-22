@@ -14,6 +14,8 @@ from collections import Counter
 
 import duckdb
 
+from backend.services.thresholds import get_threshold   # section 字符边界单点 (extraction 块, 接孤儿key)
+
 _TOKEN_RE = re.compile(r"\b[A-Za-z][A-Za-z'\-]+\b")
 STOPWORDS = {
     "the","a","an","of","to","in","on","at","for","with","by","is","are","was","were",
@@ -64,7 +66,7 @@ def generate_cloze(con: duckdb.DuckDBPyConnection, unit_id: str | None = None,
         SELECT st.version_key, st.volume_key, st.unit_number, st.seq, st.raw_text
         FROM section_text st
         INNER JOIN sections s USING (version_key, volume_key, unit_number, seq)
-        WHERE s.kind = 'Reading' AND st.n_chars BETWEEN 800 AND 5000
+        WHERE s.kind = 'Reading' AND st.n_chars BETWEEN {get_threshold('extraction.cloze_text_min_chars', 800)} AND {get_threshold('extraction.section_text_max_chars', 5000)}
           AND {where}
         ORDER BY RANDOM() LIMIT 1
     """, args).fetchall()

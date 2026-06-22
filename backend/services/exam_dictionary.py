@@ -15,13 +15,14 @@ import duckdb
 import yaml
 
 from backend.services.exam_vocab import word_exam_hits_from_edges
+from backend.services.stage_labels import CEFR_LEVEL_STAGE
 from backend.services.vocab_classify import is_real_over
 
 _ROOT = Path(__file__).resolve().parents[2]
 _REFINED = _ROOT / "data" / "junior_high" / "structured" / "stage_refined.jsonl"
 _COCA = _ROOT / "data" / "structured" / "english-wordlists" / "COCA_with_translation.txt"
 _VARIANTS = _ROOT / "backend" / "config" / "word_variants.yaml"
-_LEVEL_STAGE = {"义教": "义务教育", "必修": "高中必修", "选必": "高中选修"}
+_LEVEL_STAGE = CEFR_LEVEL_STAGE   # cefr_level→stage 标签单点 (stage_labels.py)
 _COCA_POS = re.compile(r"^(n|v|vt|vi|adj|adv|art|prep|conj|pron|num|aux|int|abbr|a)\.")
 
 

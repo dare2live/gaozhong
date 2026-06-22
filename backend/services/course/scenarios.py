@@ -10,10 +10,10 @@ import re
 
 import duckdb
 
-from .loader import load_political_blacklist, load_theme_pool
+from .loader import get_threshold, load_political_blacklist, load_theme_pool
 
 MIN_SCENARIOS = 3
-NGRAM_N = 10   # ≥10 词连续重叠即判抄
+NGRAM_N = int(get_threshold("text.textbook_overlap_ngram", 10))   # ≥N 词连续重叠即判抄 (thresholds.yaml text 块单点, 消孤儿key双home)
 
 _TOK = re.compile(r"[A-Za-z]+")
 

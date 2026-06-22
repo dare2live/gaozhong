@@ -19,6 +19,7 @@ from __future__ import annotations
 import duckdb
 
 from backend.services.exam_vocab import word_exam_hits_from_edges
+from backend.services.stage_labels import CEFR_LEVEL_STAGE
 from backend.services.vocab_classify import is_real_over
 
 from ._common import finding
@@ -33,8 +34,8 @@ STATUS_HINT = {
 # stage 维 (K12 分阶段平台, docs/k12_staged_platform_design.md): cefr_level→引入阶段。
 # tag-not-exclude: with/the 等义教词标"义务教育"(非高中新词), 留图里供按 stage 过滤, 不删。
 # 小学/初中 细分待初中课标(义务教育2022 二级/三级)抽取后 reconcile (S1/S4)。
-_STAGE = {"义教": "义务教育", "必修": "高中必修", "选必": "高中选修",
-          "校本扩展": "校本超纲", "课标变形": "课标变形"}
+# 课标三级标签 = CEFR_LEVEL_STAGE 单点; 校本扩展/课标变形 是本审计合成 stage 值, 本地扩展 (不泄漏进 dictionary 域)
+_STAGE = {**CEFR_LEVEL_STAGE, "校本扩展": "校本超纲", "课标变形": "课标变形"}
 
 
 def _load_textbook_words(con: duckdb.DuckDBPyConnection) -> set[str]:

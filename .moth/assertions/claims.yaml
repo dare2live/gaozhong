@@ -143,6 +143,16 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -q 'dim:' frontend/static/category-config.js && grep -q 'theme_context: \"主题语境\"' frontend/static/category-config.js && grep -q 'category-config.js' frontend/teacher.html && grep -q 'GZ_CAT.dim' frontend/static/beike.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
+  - id: stage-label-single-point
+    claim: "cefr_level→stage 展示标签收口 stage_labels.CEFR_LEVEL_STAGE 单点 (穷尽扫描: exam_dictionary/exam_coverage 各写一份); exam_coverage 本地扩展校本扩展/课标变形"
+    type: shell
+    command: ["python3", "-c", "from backend.services.stage_labels import CEFR_LEVEL_STAGE as S; from backend.services.exam_dictionary import _LEVEL_STAGE; from backend.services.audit.exam_coverage import _STAGE; print(0 if (S=={'义教':'义务教育','必修':'高中必修','选必':'高中选修'} and _LEVEL_STAGE is S and _STAGE.get('校本扩展')=='校本超纲' and _STAGE.get('义教')=='义务教育') else 1)"]
+    expect: {op: "==", value: "0"}
+  - id: orphan-thresholds-wired
+    claim: "thresholds.yaml 孤儿key(vocab容差/question_bank难度/extraction字符边界/text ngram)已接活消费 (坑21: 声明却零消费→接线); get_threshold 抽中立 leaf backend/services/thresholds.py (避层级倒置)"
+    type: shell
+    command: ["python3", "-c", "import inspect; from backend.services import thresholds; from backend.services.audit import curriculum; from backend.services.question_bank import loader as ql; from backend.services.course import scenarios; from backend.services.exercise import cloze; ok=(thresholds.get_threshold('extraction.section_text_max_chars')==5000 and thresholds.get_threshold('vocab.level_tolerance')==100 and 'get_threshold' in inspect.getsource(curriculum._level_sev) and 'difficulty_char_threshold' in inspect.getsource(ql._difficulty) and 'section_text_max_chars' in inspect.getsource(cloze) and scenarios.NGRAM_N==10); print(0 if ok else 1)"]
+    expect: {op: "==", value: "0"}
   - id: vocab-slope-single-point
     claim: "词汇量slope显著阈收口 scope.VOCAB_SLOPE_SIGNIFICANT 单点 (P2); model._slope_interp + predicted 难度判定共读, 不再各自硬编码50 (防两处漂移)"
     type: shell

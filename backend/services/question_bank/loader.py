@@ -20,6 +20,8 @@ from datetime import datetime, timezone
 
 import duckdb
 
+from backend.services.thresholds import get_threshold   # 难度阈值单点 (中立 leaf, 避 question_bank→course 倒置)
+
 _TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z'\-]{1,}")
 
 
@@ -28,10 +30,10 @@ def _now() -> str:
 
 
 def _difficulty(text: str) -> str:
-    """Naive: by length."""
+    """Naive: by length. 阈值读 thresholds.yaml question_bank 块 (穷尽扫描: 原硬编码 + difficulty_char_threshold 孤儿key零消费)."""
     n = len(text or "")
-    if n < 100: return "easy"
-    if n < 400: return "mid"
+    if n < get_threshold("question_bank.difficulty_easy_threshold", 100): return "easy"
+    if n < get_threshold("question_bank.difficulty_char_threshold", 400): return "mid"
     return "hard"
 
 

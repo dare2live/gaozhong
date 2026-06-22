@@ -5,6 +5,8 @@ import re
 
 import duckdb
 
+from backend.services.thresholds import get_threshold   # 预览截断长度单点 (extraction 块, 接孤儿key)
+
 
 def _extract_functional_chunks(text: str) -> list[dict]:
     """Find applied-letter chunks (greeting / body / closing)."""
@@ -42,9 +44,11 @@ def list_applied_templates(con: duckdb.DuckDBPyConnection) -> dict:
 
 
 def list_narrative_passages(con: duckdb.DuckDBPyConnection) -> dict:
-    rows = con.execute("""
+    # 预览截断长度读 extraction.applied_preview_chars (注: 该key名含applied, 实际唯一消费点是此 narrative 预览; 值不变)
+    _prev = get_threshold("extraction.applied_preview_chars", 400)
+    rows = con.execute(f"""
         SELECT s.version_key, s.volume_key, s.unit_number, s.seq, st.n_chars,
-               SUBSTR(st.raw_text, 1, 400) AS preview
+               SUBSTR(st.raw_text, 1, {_prev}) AS preview
         FROM sections s INNER JOIN section_text st
           USING (version_key, volume_key, unit_number, seq)
         WHERE s.is_narrative = TRUE
