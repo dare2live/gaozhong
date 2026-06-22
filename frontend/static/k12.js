@@ -7,7 +7,7 @@
   const G = window.GZ;
   if (!G || !G.registerTab) return;
   const { fetchJSON, registerTab } = G;
-  const STAGE_C = { "小学": "#9FE1CB", "初中": "#1D9E75", "义务教育": "#85B7EB", "高中必修": "#378ADD", "高中选修": "#185FA5" };
+  const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (no-hardcode)
   let chS = null, chZ = null;
 
   function shell() {

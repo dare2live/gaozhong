@@ -14,7 +14,7 @@
     zhongkao: ["中考", "#378ADD"], exam: ["真题", "#185FA5"],
     coca: ["COCA兜底", "#B4B2A9"], coca_fallback: ["COCA兜底", "#B4B2A9"],
   };
-  const STAGE_C = { "初中": "#1D9E75", "义务教育": "#85B7EB", "高中必修": "#378ADD", "高中选修": "#185FA5", "高中": "#185FA5" };
+  const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (防 k12/dict 漂移)
 
   function srcBadge(s) {
     const k = (s || "").toLowerCase();

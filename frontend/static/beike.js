@@ -16,13 +16,13 @@
   const ERA_OLD = "2015-2020_旧课标II";
   const DIM_LABEL = { genre: "体裁", theme_context: "主题语境", theme_l2: "主题群·课标10群" };
   const C = { blue: "#185FA5", blueL: "#85B7EB", up: "#993C1D", upBg: "#FAECE7", down: "#185FA5", downBg: "#E6F1FB", grey: "#B4B2A9" };
-  const STATUS = { core: ["核心", "#185FA5"], standard: ["标准", "#1D9E75"], HV_extra: ["高频超纲", "#BA7517"], LV_extra: ["低频超纲", "#B4B2A9"] };
+  const STATUS = (window.GZ_CAT && window.GZ_CAT.examStatus) || {};   // 考点状态色单一来源 category-config.js
 
   let state = { era: ERA_NEW, dim: "theme_l2", dist: null, cross: "genre" };
   const charts = {};
   const crossCache = {};
   // 设问技能堆叠色 (推断=强调红, 与 D 区一致); 固定堆叠顺序让"推断"锚左边便于跨题材比
-  const SKILL_COLOR = { "推断": "#993C1D", "理解具体信息": "#185FA5", "理解主旨要义": "#85B7EB", "理解词汇": "#B4B2A9" };
+  const SKILL_COLOR = (window.GZ_CAT && window.GZ_CAT.skill) || {};   // 设问技能色单一来源 category-config.js
   const CROSS_LBL = { genre: "体裁", theme_l2: "主题群", theme_context: "课标主题语境" };
 
   function shell() {
