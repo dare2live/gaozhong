@@ -64,6 +64,15 @@ def check_cognitive_skill(con: duckdb.DuckDBPyConnection, check) -> None:
         f"OR {_SRC_YEAR} IS NULL)").fetchone()[0]
     check("cognitive_skill 边全带血缘 (version_ids.exam_paper + source_year)", bad_lin == 0, f"{bad_lin} 缺血缘")
 
+    # G4: _SKILL_MAP 收口 exam_point_taxonomy.yaml 单点 — 锁 yaml 题型→技能映射不漂出官方7。
+    # verify-the-verifier: _OFFICIAL_SKILLS 是本 check 独立字面量(非从 yaml 取), 抓"yaml alias 改成非官方 label
+    # (重建后技能分布错但边数仍 85)"这类 gate 时即可见的源漂移 (坑16: dual-model 一致≠对, 映射须钉官方真相源)。
+    from backend.services.exam_point.cognitive_skill import _load_skill_map
+    smap = _load_skill_map()
+    bad_tgt = sorted({t for t in smap.values() if t not in _OFFICIAL_SKILLS})
+    check("_SKILL_MAP yaml单点 (G4): ≥9条 + target ⊆ 官方7理解性技能 (坑16防非官方漂移)",
+          len(smap) >= 9 and not bad_tgt, f"n={len(smap)} 越界={bad_tgt}")
+
 
 _OFFICIAL_SKILLS = {"推断", "理解具体信息", "理解主旨要义", "理解词汇", "理解结构", "理解观点", "理解意图"}
 

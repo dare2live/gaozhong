@@ -11,30 +11,32 @@ from __future__ import annotations
 import json
 import re
 from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 
 import duckdb
+import yaml
 
 from backend.services.lineage import stamp
 from backend.services.trend import scope
 
 ROOT = Path(__file__).resolve().parents[3]
 _SUBQ = ROOT / "data" / "structured" / "exam_subquestions" / "xgkii_2021_2025_subquestions.jsonl"
+_TAXONOMY = ROOT / "backend" / "config" / "exam_point_taxonomy.yaml"
 DIMENSION = "cognitive_skill"
 
-# 教研解析题型 → 教育部考试中心《中国高考评价体系》7理解性技能 (官方真相源映射; 非阅读理解题不强标)
-# 变体名只映射**明确同义**(词义推测=词义猜测; 标题概括/大意=主旨); 模糊的(细节推理/写作意图/代词指代)诚实不映射→skip。
-_SKILL_MAP = {
-    "推理判断题": "推断",
-    "细节理解题": "理解具体信息",
-    "主旨大意题": "理解主旨要义",
-    "词义猜测题": "理解词汇",
-    "词句猜测题": "理解词汇",
-    "词义推测题": "理解词汇",        # = 词义猜测题 (同义变体, 2015-2020 教研解析用词)
-    "标题概括题": "理解主旨要义",    # = 主旨/标题 (同义)
-    "标题大意题": "理解主旨要义",
-    "标题判断题": "理解主旨要义",    # = 标题/主旨族 (judge best title = 理解主旨)
-}
+
+@lru_cache(maxsize=1)
+def _load_skill_map() -> dict[str, str]:
+    """教研解析题型名 → 教育部考试中心《中国高考评价体系》7理解性技能 (官方真相源映射)。
+    单点真相源 = exam_point_taxonomy.yaml question_intent.analysis_label_aliases (G4 去硬编码)。
+    仅明确同义入 yaml; 模糊题型不列 → _skill_of 返 None skip (坑16 不臆测)。"""
+    qi = (yaml.safe_load(_TAXONOMY.read_text(encoding="utf-8")) or {})["dimensions"]["question_intent"]
+    return dict(qi["analysis_label_aliases"])
+
+
+# 兼容旧引用 (_SKILL_MAP 现派生自 yaml 单点; 非硬编码第二份)
+_SKILL_MAP = _load_skill_map()
 
 # 2015-2020 旧课标II reading: 教研解析子题题型两格式 (FA: '21．A．细节理解题'(答案后可全角句号) / FB: '【21题详解】\n细节理解题')
 _FA = re.compile(r"(\d{1,2})[.．]\s*([A-E])[.．]?\s*([一-鿿]{2,7}题)")

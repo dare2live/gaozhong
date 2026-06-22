@@ -113,6 +113,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "from scripts.tools.audit.model_capability_audit import _check_weight_compliance as c; print(len(c()['mismatches']))"]
     expect: {op: "==", value: "0"}
+  - id: skill-map-yaml-single-point
+    claim: "cognitive_skill _SKILL_MAP 收口 exam_point_taxonomy.yaml 单点 (G4); 题型→技能 ≥9条 + target ⊆ 官方7理解性技能 (坑16 防非官方漂移; 独立官方7字面量校验)"
+    type: shell
+    command: ["python3", "-c", "from backend.services.exam_point.cognitive_skill import _load_skill_map as f; m=f(); off={'推断','理解具体信息','理解主旨要义','理解词汇','理解观点态度','理解目的','理解文章结构类型'}; print(0 if (len(m)>=9 and set(m.values())<=off) else 1)"]
+    expect: {op: "==", value: "0"}
 
   # ===== 分析诚实 (件1: D0 从"数据诚实"扩展到"分析诚实") =====
   - id: trend-province-scoped

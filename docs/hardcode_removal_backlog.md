@@ -17,7 +17,7 @@
 - ~~**G1 年份权重**~~ ✅ done (见上)。
 - ~~**G2 卷制 era 边界**~~ ✅ done (见上)。
 - **G3 卷型省份标签** `辽宁 (新课标 II 卷, 2021+)` ×4模块(exam_province/eol_import/pdf/extract) → exam_paper.py 的 LN_II_* 设唯一来源, 其余 import。
-- **G4 _SKILL_MAP** (cognitive_skill.py:27-37) ↔ 已有 exam_point_taxonomy.yaml `question_intent.aliases` → 补 yaml 缺的变体 + 读 yaml 删 .py 第二份 (坑16: 改后对真值交叉验证)。
+- ~~**G4 _SKILL_MAP**~~ ✅ done: 9条题型→官方7技能映射收口 `exam_point_taxonomy.yaml question_intent.analysis_label_aliases`; cognitive_skill.py `_load_skill_map()` 读 yaml (lru_cache)。坑16 验证: loaded==原字面 + target⊆官方7 + 读-only复算85边技能分布与DB逐项一致 + 3模糊题型skip保留。新锁: d0 check (yaml target⊆官方7独立字面量) + moth `skill-map-yaml-single-point` 断言。
 - **G5 stage/category→颜色映射** 前端散 3 份**且已漂移**(STAGE_C: k12.js/dict.js/beike.js, dict有"高中"键 k12无) → design-system.css 加 `--color-stage-*` 令牌 + 共享 `category-config.js`。**已漂移=真bug, 优先**。
 - **G6 卷面结构** exam_alignment_checker.py:21-28 `GAOKAO_STRUCTURE` ↔ 已有 question_types.yaml(分值重复) → 读 yaml 删字面。
 
