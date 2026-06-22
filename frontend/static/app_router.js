@@ -315,12 +315,37 @@
   // C. 题库 + 组卷
   // ===================================================================
   register("qbank", async () => {
-    CONTENT.innerHTML = `<h2>C. 题库 + 组卷</h2><p>载入中...</p>`;
-    const stats = await fetchJSON("/api/stats");
-    CONTENT.innerHTML = `<h2>C. 题库 + 组卷</h2>
-      <p>当前题库: <strong>${stats.question_bank ?? "-"}</strong> 题 (仅已核验真题) / <strong>${stats.question_tags ?? "-"}</strong> 标签</p>
-      <p>详细组卷器: <a href="/teacher#compose" target="_blank">/teacher tab "组卷"</a> (兼容旧 UI)</p>
-      <p style="color:#888;font-size:0.9em"> 听力练习区块已随 Phase 7 生成层下线（2026-06-15：生成范文回滚，教材基石完善后重建）。</p>`;
+    // 题库浏览器: 按题型筛真题 (全 fetch /api/qb/* 单算点; 仅真题无押题)。
+    CONTENT.innerHTML = `<h2>题库 + 组卷</h2><p class="muted">载入中...</p>`;
+    const st = await fetchJSON("/api/qb/stats").catch(() => ({ by_type: {}, by_difficulty: {} }));
+    const DIFF = { hard: ["难", "var(--accent-ink)"], mid: ["中", "var(--warn)"], easy: ["易", "var(--good)"] };
+    const types = Object.entries(st.by_type || {});
+    const totalN = st.total || types.reduce((a, [, n]) => a + n, 0);
+    let qtype = null;
+    const d = st.by_difficulty || {};
+    CONTENT.innerHTML = `
+      <h2>题库 + 组卷 <span class="muted" style="font-size:14px;font-weight:400">${totalN} 题 · 仅已核验真题 (无押题)</span></h2>
+      <p class="muted" style="margin:2px 0 12px;font-size:12.5px">按题型筛选浏览; 组卷走<a href="/teacher#compose" target="_blank">蓝图结构练习卷</a> (题面均历年真题, 结构对齐非预测)。难度 难 ${d.hard || 0} · 中 ${d.mid || 0} · 易 ${d.easy || 0}。</p>
+      <div class="bk-filter" id="qb-filters">
+        <button class="bk-pill on" data-qt="__all">全部 ${totalN}</button>
+        ${types.map(([k, n]) => `<button class="bk-pill" data-qt="${k}">${k} ${n}</button>`).join("")}
+      </div>
+      <div id="qb-list"><p class="muted">载入中...</p></div>`;
+    const loadList = async () => {
+      const url = "/api/qb/browse?limit=80" + (qtype ? "&type=" + encodeURIComponent(qtype) : "");
+      const rows = await fetchJSON(url).catch(() => []);
+      const list = Array.isArray(rows) ? rows : (rows.rows || []);
+      $("#qb-list").innerHTML = list.length ? `<div class="qb-list">${list.map(r => {
+        const df = DIFF[r.difficulty] || ["", "var(--ink-3)"];
+        return `<div class="qb-row"><span class="qb-tb">${r.question_type || ""}</span><span class="qb-stem">${(r.stem_preview || "").replace(/</g, "&lt;").slice(0, 90)}</span><span class="qb-ans">${r.answer || ""}</span><span class="qb-diff" style="color:${df[1]}">${df[0]}</span></div>`;
+      }).join("")}</div>` : '<p class="muted">该题型无题</p>';
+    };
+    $$("#qb-filters [data-qt]").forEach(b => b.onclick = () => {
+      qtype = b.dataset.qt === "__all" ? null : b.dataset.qt;
+      $$("#qb-filters .bk-pill").forEach(p => p.classList.toggle("on", p.dataset.qt === b.dataset.qt));
+      loadList();
+    });
+    await loadList();
   });
 
   function _renderListeningCard(q) {
