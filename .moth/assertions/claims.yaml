@@ -197,6 +197,12 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.trend.raw import question_type_era_presence as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d={x['question_type']:x for x in f(c)['by_question_type']};c.close();ok=d['听力']['signal']=='skeleton' and d['听力']['extraction_gap'] and d['短文改错']['signal']=='retired' and not d['短文改错']['extraction_gap'] and d['续写']['signal']=='introduced' and d['续写']['extraction_gap'];print('OK' if ok else f'FAIL 听力={d[\"听力\"][\"signal\"]}/{d[\"听力\"][\"extraction_gap\"]} 短改={d[\"短文改错\"][\"signal\"]}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: phrases-sentence-pattern-clean
+    claim: "phrases 句型(A1修): sentence_pattern regex去DOTALL+负向断言后, evidence=匹配span每行过其正则(防跨段误命中), 0 such-as/so-that(目的)bleed; 强调句据实改'It is…that 句型'(regex分不清cleft vs形式主语不假称强调); 进lesson_plan老师可见故必准"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM phrases WHERE phrase_type='sentence_pattern' AND (regexp_matches(evidence, '\\bsuch\\s+\\w+\\s+as\\b') OR regexp_matches(evidence, '\\bso that\\b'))"
+    expect: {op: "==", value: 0}
   - id: exam-point-trusted-provenance
     claim: "考点边 provenance ∈ {dual_model_agree(genre/theme双模型一致), explicit_label(cognitive_skill教研解析显式标签)} — 无弱provenance, 不冒充人工核验; explicit_label 强于双模型 (A1金矿)"
     type: duckdb_sql

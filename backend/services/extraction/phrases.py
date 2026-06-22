@@ -46,18 +46,25 @@ VERB_PHRASES = [
 ]
 
 # 句型 (sentence pattern)
+# 句型 regex (A1 修, 坑16/坑5 同型): 原版 .* + DOTALL 跨段贪婪 → 73% evidence 重配不上自己正则 +
+# such as/so that/形式主语 误命中(32% phrases 污染, 进 lesson_plan 老师可见)。修: (1) 不用 DOTALL(. 不跨行,
+# 限同句); (2) 量词限长 .{0,40}? 避跨段; (3) 负向断言排 such as / so that(目的状语) / It is ADJ to V(形式主语);
+# (4) "强调句"标签据实改"It is…that 句型"(regex 分不清 cleft 强调 vs 形式主语/报道句, 不假称全强调)。
+# evidence 存匹配 span 自身 → 保证可重配(D0 门锁: 每行 evidence 必过其 canonical 正则)。
 PATTERNS = [
-    (r"\bIt is .* that .*\b", "强调句"),
-    (r"\bNot only .* but also .*\b", "倒装/并列"),
-    (r"\bThe more .* the more .*\b", "the more...the more"),
-    (r"\bSo .* that .*\b", "so...that 结果状语"),
-    (r"\bSuch .* that .*\b", "such...that"),
-    (r"\bif .* would .*\b", "虚拟语气"),
-    (r"\bI wish .* were .*\b", "虚拟语气 (wish)"),
-    (r"\bRather than .* prefer .*\b", "rather than"),
-    (r"\bNo sooner .* than .*\b", "no sooner...than"),
-    (r"\bHardly .* when .*\b", "hardly...when"),
+    (r"\bIt (?:is|was) (?!\w+ to )[\w',\- ]{2,40}? that\b", "It is…that 句型"),
+    (r"\bNot only\b.{1,50}?\bbut also\b", "倒装/并列"),
+    (r"\bThe more\b.{1,40}?\bthe more\b", "the more...the more"),
+    (r"\bSo (?!that\b)\w+.{0,40}? that\b", "so...that 结果状语"),
+    (r"\bSuch (?!\w+ as\b).{1,40}? that\b", "such...that"),
+    (r"\bif\b.{1,40}?\bwould\b", "虚拟语气"),
+    (r"\bI wish\b.{1,30}?\bwere\b", "虚拟语气 (wish)"),
+    (r"\bRather than\b.{1,40}?\bprefer\b", "rather than"),
+    (r"\bNo sooner\b.{1,40}?\bthan\b", "no sooner...than"),
+    (r"\bHardly\b.{1,40}?\bwhen\b", "hardly...when"),
 ]
+# canonical → 正则 (D0 重配门单一源; lib 导入校验每行 evidence 过其正则)
+PATTERN_RE = {label: pat for pat, label in PATTERNS}
 
 # 功能表达
 FUNCTIONS = [
@@ -89,10 +96,10 @@ def _scan_text(text: str) -> list[tuple[str, str, str]]:
             end = min(len(text), idx + len(ph) + 60)
             evidence = text[start:end].replace("\n", " ")
             out.append((ph, "verb_phrase", evidence))
-    # patterns
+    # patterns — 不用 DOTALL(. 不跨行限同句); evidence = 匹配 span 自身(保证 D0 重配门过)
     for pat, label in PATTERNS:
-        for m in re.finditer(pat, text, re.IGNORECASE | re.DOTALL):
-            ev = text[max(0, m.start()-30):m.end()+30].replace("\n", " ")
+        for m in re.finditer(pat, text, re.IGNORECASE):
+            ev = m.group(0).replace("\n", " ").strip()
             out.append((label, "sentence_pattern", ev[:160]))
     # functions
     for trigger, label in FUNCTIONS:
