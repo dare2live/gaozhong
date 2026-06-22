@@ -22,6 +22,9 @@ LIAONING_PREDICATE = "province LIKE '辽宁%'"
 MIN_DISTRIBUTION_SAMPLE = 30  # 同卷制 era 总题数 ≥ 此 → 考点分布(占比)可报
 MIN_YEAR_SAMPLE = 10          # 一年真题 < 此, 该年趋势点不可靠
 MIN_TREND_YEARS = 5           # 一段内达标年 < 此, 不输出可信逐年 slope
+# 词汇量年 slope 显著阈 (±词/年): |slope|>此 → 逐年上升/下降, 否则持平 (P2: model._slope_interp +
+# predicted 难度判定共用此单点, 防两处 50 漂移; 与 MIN_* 同为 trend 判定阈值的模块单点)。
+VOCAB_SLOPE_SIGNIFICANT = 50
 # 卷制断点单点 (PIT §3.1): 2021 起辽宁用新高考全国 II 卷, 此前旧课标全国 II。
 # segment()/era_sql() 都用这三个常量, 下游 (loader._ERA_SQL / cooccur / exam_paper / cognitive_skill) 复用,
 # 不再各自硬编码 2021/2015 (G2 收口: 辽宁卷史边界全从这里取)。

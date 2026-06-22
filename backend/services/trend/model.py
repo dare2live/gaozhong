@@ -115,9 +115,9 @@ def _tokens_per_year(con: duckdb.DuckDBPyConnection,
 
 
 def _slope_interp(slope: float) -> str:
-    if slope > 50:
+    if slope > scope.VOCAB_SLOPE_SIGNIFICANT:
         return "词汇量逐年上升"
-    if slope < -50:
+    if slope < -scope.VOCAB_SLOPE_SIGNIFICANT:
         return "词汇量逐年下降"
     return "词汇量持平"
 

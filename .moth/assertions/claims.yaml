@@ -128,6 +128,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "from backend.services.trend import scope; from backend.services.data_sources.clean.exam_paper import LN_II_2021; from backend.services.extraction.exam_province import LABEL_XGKII_LN; from backend.services.imports.eol_import import PROVINCE; print(0 if (LN_II_2021==LABEL_XGKII_LN==PROVINCE==scope.LIAONING_XGKII_2021=='辽宁 (新课标 II 卷, 2021+)') else 1)"]
     expect: {op: "==", value: "0"}
+  - id: vocab-slope-single-point
+    claim: "词汇量slope显著阈收口 scope.VOCAB_SLOPE_SIGNIFICANT 单点 (P2); model._slope_interp + predicted 难度判定共读, 不再各自硬编码50 (防两处漂移)"
+    type: shell
+    command: ["python3", "-c", "import inspect; from backend.services.trend import scope, model as m; import backend.services.exercise.predicted as p; ok=(scope.VOCAB_SLOPE_SIGNIFICANT==50 and 'VOCAB_SLOPE_SIGNIFICANT' in inspect.getsource(m._slope_interp) and 'VOCAB_SLOPE_SIGNIFICANT' in inspect.getsource(p._spec_from_trends)); print(0 if ok else 1)"]
+    expect: {op: "==", value: "0"}
 
   # ===== 分析诚实 (件1: D0 从"数据诚实"扩展到"分析诚实") =====
   - id: trend-province-scoped

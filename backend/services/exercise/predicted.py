@@ -19,6 +19,7 @@ import duckdb
 from backend.services.question_bank import compose as cmp
 from backend.services.trend import (question_type_year_trend, top_rising_words,
                                        vocab_year_growth)
+from backend.services.trend import scope   # P2: 词汇slope显著阈单点 (与 model 共用)
 
 
 def _spec_from_trends(con: duckdb.DuckDBPyConnection, total: int = 30,
@@ -39,7 +40,7 @@ def _spec_from_trends(con: duckdb.DuckDBPyConnection, total: int = 30,
     total_w = sum(weights.values()) or 1.0
     type_mix = {qt: max(1, round(total * w / total_w)) for qt, w in weights.items()}
     growth = vocab_year_growth(con)
-    difficulty = "hard" if (growth.get("reliable") and growth.get("slope_per_year", 0) > 50) else "mixed"
+    difficulty = "hard" if (growth.get("reliable") and growth.get("slope_per_year", 0) > scope.VOCAB_SLOPE_SIGNIFICANT) else "mixed"
     return {
         "type_mix": type_mix,
         "require_tags": None,
