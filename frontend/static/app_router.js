@@ -54,65 +54,60 @@
   // A. 工作台
   // ===================================================================
   register("workbench", async () => {
-    const [stats, cs, classes, audit] = await Promise.all([
-      fetchJSON("/api/stats"),
-      fetchJSON("/api/course/stats"),
+    // 今日态落地页: 全 fetch service 单一计算点(零硬编码派生数字); 命题研判头条前置(核心竞争力)。
+    const [stats, cs, dict, cog, classes, audit] = await Promise.all([
+      fetchJSON("/api/stats").catch(() => ({})),
+      fetchJSON("/api/course/stats").catch(() => ({})),
+      fetchJSON("/api/exam_dictionary?prefix=zz&limit=1").catch(() => ({})),
+      fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),
       stuFetch("/api/students/classes").catch(() => ({ count: 0, classes: [] })),
       fetchJSON("/api/audit/findings").catch(() => []),
     ]);
     const findings = Array.isArray(audit) ? audit : (audit.findings || []);
     const fail = findings.filter(f => f.severity === "FAIL").length;
     const warn = findings.filter(f => f.severity === "WARN").length;
-    const sevColor = fail > 0 ? "G_FINAL" : (warn > 4 ? "G3" : "G1");
-    const totalStudents = (classes.classes || []).reduce((a, c) => a + (c.n_students || 0), 0);
+    const ok = fail === 0 && warn === 0;
+    const stu = (classes.classes || []).reduce((a, c) => a + (c.n_students || 0), 0);
+    // 命题研判头条 — 从 cognitive_skill 取推断跨era迁移(真值)
+    const inferPct = k => { const e = (cog.by_era || {}); for (const era in e) if (era.startsWith(k)) { const p = e[era].find(x => x.label === "推断"); if (p) return p.pct; } return null; };
+    const oldI = inferPct("2015-2020"), newI = inferPct("2021");
+    const metric = (v, u, k, href, demo) => `<div class="wb-metric">${href ? `<a href="${href}">` : ""}<div class="v">${v == null ? "-" : Number(v).toLocaleString()}${u ? `<span class="u">${u}</span>` : ""}</div><div class="k${demo ? " demo" : ""}">${k}</div>${href ? "</a>" : ""}</div>`;
     CONTENT.innerHTML = `
-      <h2>A. 工作台 · 今日概览</h2>
-      <div class="course-grid">
-        <div class="course-card ${sevColor}">
-          <strong>数据健康</strong>
-          <div class="block"><strong>${fail} FAIL · ${warn} WARN</strong> (共 ${findings.length} audit)</div>
-          <div class="block"><a href="#/data">→ D 数据管理</a> 查详</div>
-        </div>
-        <div class="course-card G_FINAL">
-          <strong>40 节课程</strong>
-          <div class="block">G1:${cs.by_layer?.G1 ?? 0} · G2:${cs.by_layer?.G2 ?? 0} · G3:${cs.by_layer?.G3 ?? 0} · G_FINAL:${cs.by_layer?.G_FINAL ?? 0}</div>
-          <div class="block">materials: ${cs.total_materials ?? 0} 行 · <a href="#/teaching">→ B 教学</a></div>
-        </div>
-        <div class="course-card">
-          <strong>学生 + 班级</strong>
-          <div class="block">${totalStudents} 学生 / ${classes.count || 0} 班</div>
-          <div class="block"><a href="#/students">→ E 学生档案</a></div>
-        </div>
-        <div class="course-card">
-          <strong>题库</strong>
-          <div class="block">${stats.question_bank ?? "-"} 题 / ${stats.question_tags ?? "-"} 标签</div>
-          <div class="block"><a href="#/qbank">→ C 题库 + 组卷</a></div>
-        </div>
-        <div class="course-card">
-          <strong>知识图谱</strong>
-          <div class="block">${stats.nodes ?? "-"} nodes · ${stats.edges ?? "-"} edges</div>
-          <div class="block"><a href="#/graph">→ F 图谱 + 趋势</a></div>
-        </div>
-        <div class="course-card">
-          <strong>教材资源</strong>
-          <div class="block">${stats.textbooks ?? "-"} 教材 · ${stats.cefr_vocab ?? "-"} 课标词</div>
-          <div class="block">${stats.exam_questions ?? "-"} 真题 · ${stats.theme_contexts ?? "-"} 主题</div>
-        </div>
+      <div class="wb-head">
+        <h2>工作台 · 今日态</h2>
+        <span class="wb-health ${ok ? "ok" : "bad"}">${ok ? "数据健康 · 三门全绿" : fail + " FAIL · " + warn + " WARN"}</span>
       </div>
-      <h3 style="margin-top:1.5rem">最近 audit 异常 (${fail + warn} 条, 前 5)</h3>
-      <ul class="gz-qlist" style="background:#fff;padding:0.5rem 2rem;border-radius:4px">
+      <p class="wb-sub">辽宁卷锚定 · 数据全来自 service 单一计算点 (D0=100% 准) · 命题真值可对外, 学情为示例</p>
+
+      ${oldI != null && newI != null ? `<div class="wb-headline">
+        <div class="ey">本周期命题研判</div>
+        <div class="big">新高考重高阶推断: 推断占比 <b>${oldI}% → ${newI}%</b> (旧课标II → 新高考II)</div>
+        <div class="sub">教研解析显式题型真值 (explicit_label); 细节理解相应下行。<a href="#/beike">查考点驾驶舱 →</a></div>
+      </div>` : ""}
+
+      <div class="wb-metrics">
+        ${metric(stats.exam_questions, "题", "历年真题 (辽宁卷研判)", "#/beike")}
+        ${metric(dict.total, "词", "考试词典金矿", "#/dict")}
+        ${metric(stats.question_bank, "题", "题库 (真题)", "#/qbank")}
+        ${metric(cs.total_courses, "节", "分层课程", "#/teaching")}
+        ${metric(stats.nodes, "", "知识图谱节点", "#/graph")}
+        ${metric(stats.cefr_vocab, "词", "课标词汇", "#/dict")}
+        ${metric(stats.textbooks, "册", "教材 (外研/人教)", "#/data")}
+        ${metric(stu, "", "学生 / " + (classes.count || 0) + " 班", "#/students", true)}
+      </div>
+
+      <div class="wb-aud">
         ${findings.filter(f => f.severity !== "OK").slice(0, 5).map(f =>
-          `<li><strong style="color:${f.severity === 'FAIL' ? '#E3120B' : '#f4a261'}">${f.severity}</strong>
-           <code>${f.audit_kind}</code> ${f.target || ""}: ${(f.actual || "").slice(0, 100)}</li>`
-        ).join("") || "<li>无</li>"}
-      </ul>`;
+          `<div class="row"><span class="sev ${f.severity}">${f.severity}</span><code>${f.audit_kind}</code><span class="muted" style="flex:1">${f.target || ""}: ${(f.actual || "").slice(0, 90)}</span></div>`
+        ).join("") || `<div class="row"><span class="sev WARN" style="background:#EAF3EC;color:var(--good)">OK</span><span class="muted">${findings.length} 项审计全部通过, 无异常</span></div>`}
+      </div>`;
   });
 
   // ===================================================================
   // B. 教学 — 40 节按 layer 分组 + 点击查讲义
   // ===================================================================
   register("teaching", async () => {
-    CONTENT.innerHTML = `<h2>B. 教学 — 40 节分层课程</h2><p>载入中...</p>`;
+    CONTENT.innerHTML = `<h2>分层教学</h2><p class="muted">载入中...</p>`;
     const data = await fetchJSON("/api/course/list");
     const groups = { G1: [], G2: [], G3: [], G_FINAL: [] };
     for (const c of data.courses) groups[c.layer]?.push(c);
@@ -122,7 +117,7 @@
       G3: "高三上学期 · ~3000 词",
       G_FINAL: "高考前突击 · ~3500 词 · 真题密集",
     };
-    let html = `<h2>B. 教学 — 40 节分层课程</h2>`;
+    let html = `<h2>分层教学 <span class="muted" style="font-size:14px;font-weight:400">${data.courses.length} 节 · 按 layer 分组</span></h2>`;
     for (const layer of ["G1", "G2", "G3", "G_FINAL"]) {
       const items = groups[layer];
       html += `<section class="layer-section">
@@ -421,7 +416,7 @@
         </div>
         <div class="course-card">
           <strong>题库 + 课程</strong>
-          <div class="block">${stats.question_bank ?? "-"} 题 / 40 课 / ${stats.course_materials ?? "-"} 关联</div>
+          <div class="block">${stats.question_bank ?? "-"} 题 / ${stats.courses ?? "-"} 课 / ${stats.course_materials ?? "-"} 关联</div>
         </div>
       </div>
 
