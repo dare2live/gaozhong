@@ -30,9 +30,16 @@ def check_local_pdf_integrity(con: duckdb.DuckDBPyConnection, check) -> None:
         "raw_question LIKE '%英语听力%' OR raw_question LIKE '%参考答案%' "
         "OR raw_question LIKE '%绝密★启用前%' OR raw_question LIKE '%普通高等学校招生%')"
     ).fetchone()[0]
+    # 坑18 续: 页中水印 bleed (锦宏/学科网 mock-PDF 每页页脚注入公众号/客服/页码, mid-passage 污染题干)
+    watermark = con.execute(
+        "SELECT COUNT(*) FROM exam_questions WHERE source_repo='local_pdf' AND ("
+        "raw_question LIKE '%锦宏教育%' OR raw_question LIKE '%学科 网（北 京）%' "
+        "OR regexp_matches(raw_question, '第\\s*\\d+\\s*页\\s*/\\s*共\\s*\\d+\\s*页'))"
+    ).fetchone()[0]
     check("local_pdf 题干无硬截断(len=2000)", trunc == 0, f"{trunc} 行")
     check("local_pdf 阅读/完形/语法 answer 已填", noans == 0, f"{noans} 行空答案")
     check("local_pdf 题干无卷尾附录污染", polluted == 0, f"{polluted} 行")
+    check("local_pdf 题干无页中水印bleed(锦宏/学科网/页码, 坑18)", watermark == 0, f"{watermark} 行残留水印")
     # B1 (强验证 wf_9d0ef21a): 2024/2025 辽宁卷 local_pdf 权威, GAOKAO-Bench 同卷重复已 supersede。
     dup = con.execute(
         "SELECT year, COUNT(*) FROM exam_questions WHERE year IN (2024, 2025) "

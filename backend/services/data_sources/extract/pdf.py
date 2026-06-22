@@ -148,8 +148,25 @@ def has_post_exam_contamination(text: str) -> bool:
     return any(m in text for m in _POST_EXAM_MARKERS)
 
 
+# 页中水印/页脚 (锦宏/学科网 mock-PDF 每页页脚注入公众号/客服微信/页码/公司名, mid-passage 污染题干 — 坑18):
+# 整行注入(\n 分隔), 英语题干不会出现这些中文营销/页码行 → 按行精确剥离(非截尾; _strip_post_exam_tail 只管卷尾).
+_WATERMARK_LINE_RE = re.compile(r"锦宏教育|学科\s*网（北\s*京）|第\s*\d+\s*页\s*/\s*共\s*\d+\s*页")
+
+
+def _strip_watermark(raw: str) -> str:
+    """按行剥离页中水印行 (公众号/客服微信/页码/学科网公司); 整行命中即删, 不触正文."""
+    if not raw:
+        return raw
+    return "\n".join(ln for ln in raw.split("\n") if not _WATERMARK_LINE_RE.search(ln))
+
+
+def has_watermark(text: str) -> bool:
+    """题干是否残留页中水印 (D0 raw_question 无水印门的判定单点, 坑18)."""
+    return bool(_WATERMARK_LINE_RE.search(text or ""))
+
+
 def _make_section(year: int, qtype: str, raw: str, qnum: int) -> dict:
-    raw = _strip_post_exam_tail(raw)
+    raw = _strip_watermark(_strip_post_exam_tail(raw))
     return {
         "question_id": f"pdf/{year}/xgkii/{qtype}/{qnum}",
         "year": year,

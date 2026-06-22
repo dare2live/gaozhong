@@ -42,6 +42,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE source_repo LIKE 'eol_xgkii%' AND LENGTH(raw_question)=900"
     expect: {op: "==", value: 0}
+  - id: local-pdf-no-watermark
+    claim: "local_pdf raw_question 无页中水印bleed (坑18续: 锦宏/学科网 mock-PDF 每页页脚公众号/客服/页码 mid-passage注入污染题干; _strip_watermark 按行剥, 正文0丢失)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE source_repo='local_pdf' AND (raw_question LIKE '%锦宏教育%' OR raw_question LIKE '%学科 网（北 京）%')"
+    expect: {op: "==", value: 0}
   - id: local-pdf-reproducible
     claim: "2024/2025 真题 PDF 18 题入库 (M6: init_db Layer 4g 改 in-process import_pdfs(con) 后可复现; 防 subprocess 第二写连接锁冲突回归 → local_pdf=0)"
     type: duckdb_sql
