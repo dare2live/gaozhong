@@ -29,13 +29,14 @@
 
 ## R1-R4 重构 (动单一计算点拓扑, 走 codegraph + 对抗 + 三门)
 - ✅ R1 (=G3 卷型标签收口 scope, codegraph驱动REVISE home) · ✅ R2 (=G4 _SKILL_MAP→yaml, 坑16真值验) · ✅ R4 (=G1 year_weights→yaml)。
-- **R3 lexicon_filter 分层映射→`layer_curriculum_map.yaml`**: 待核(下一候选, 需先 verify 是否真散落/真分类映射 vs 单点)。
+- **R3 lexicon_filter 分层映射** (verify-the-verifier 复核后 **不做**): VOLUME_TO_YEAR/YEAR_TO_LAYERS/CEFR_LEVELS_PER_LAYER **已单点** (vocab_guard 经 import 共用 YEAR_TO_LAYERS 无副本); VERSION_LABEL 看似散落(lexicon"外研"/links"外研版"/recommend反向)但**刻意不同语境形式** (lexicon 是紧凑面包屑"外研·必修1·U1" / links·recommend 用"外研版"全名匹配 DB publisher_short) → 统一会破坏面包屑或 DB 匹配, 非 bug。移 yaml = 过度config(单点)或改行为(强统一标签)。
 - **R5/R6 已核实**: nav 已config化(误报); app_router.js layerMeta ~1200词 两处重复 → 若纯展示只去重不入config。
 
 ## 收口campaign状态 (2026-06-22)
 **实质硬编码全清** (派生量/分类映射/卷型省份标签/年份权重/卷面结构/era边界/slope真重复): G1/G2/G3/G4/G5/G6 + P2-slope = 7 commits 三门全绿。
-**verify-the-verifier 拦截 3 个 backlog 误判** (不做, 防过度config): cooccur-min_co非bug · scope-MIN已单点 · junior-baselines是范围verifier字面。
-**剩余真待办** (低优, 真值已验): R3 lexicon_filter(待核) · alignment评分阈值 · PDF extract_pages→sources.yaml · build_manifest URL · d0 cog_cross_theme_l2 孤儿config接线。
+**verify-the-verifier 拦截 5 个 backlog 误判** (不做, 防过度config/改行为): cooccur-min_co非bug(explore-vs-persist刻意分层) · scope-MIN已单点 · junior-baselines是范围verifier字面 · R3核心map已单点 · R3 VERSION_LABEL刻意不同语境形式。
+**剩余真待办** (低优, 真值已验, 多为单文件单用 presentation/route 默认 = Occam边界): alignment评分阈值 · PDF extract_pages→sources.yaml · build_manifest URL · d0 cog_cross_theme_l2 孤儿config接线(唯一明确真孤儿)。
+**campaign 评判**: 实质硬编码(会漂移/影响数据/分类映射)全清; 剩余是"长尾"(单点常量/presentation/false-premise), 按用户自己"别动:防过度配置化=反奥卡姆"原则不强做。
 
 ## 别动 (合法常量, 防过度配置化)
 CSS像素/颜色令牌(design-system.css本就配置层) · HTTP状态码 · 数组下标 · 音频倍速[0.75,1,1.25,1.5] · 力导向物理参数 · 解析正则 · 路径常量 · LIMIT防滥用 · scope.py(era单点结构正确) · EOL YEARS(真值就2021/22) · 已config化的真相源(exam_structure_eras/question_types/sources/d0_baselines)。
