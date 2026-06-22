@@ -1,8 +1,37 @@
-# 交付运营就绪度评估 (2026-06-20 · 2026-06-22 复评)
+# 交付运营就绪度评估 (2026-06-20 · 2026-06-22 复评 · 2026-06-22-续 复评)
 
 > 总控级评估: 离 goal.md "可对内部教研团队交付试运营" 还差什么 (操作/运营层, 非细节)。
 > 方法: 7 层并行评估(8-agent workflow) + 控制器综合。配 goal.md 第四阶段复核门 + Rule10。
 > **一句话裁决**: 距交付约差**一个收口冲刺(operational sprint), 不是一个建设阶段**。
+
+---
+
+## 🆕 2026-06-22-续 复评 (硬编码 campaign 后 6维独立核实 + 对抗式 critic)
+
+> 触发: 11-commit 硬编码全局收口 campaign 后, 派 6维审计 Workflow **独立第一手核实** 0622 裁决是否还成立 + 谄媚死防线挑战乐观偏差 (非照抄旧 doc)。
+
+### 裁决: 三场景全 **HOLDS** (高置信), 硬编码 campaign **交付门一格未动**
+| 场景 | 裁决 | 置信 | 承重缺口 |
+|---|---|---|---|
+| **① 单老师 30min 桌面 pilot** | **READY** | high | 唯一真阻塞=动员真辽宁老师(Rule10, AI做不了); 软阻塞=backup_db.sh **从未实跑**(data/db/backups 不存在=0备份) |
+| **② 多校运营** | **NOT-READY** | high | B1 鉴权红线(`jwt/bcrypt/passlib=0命中`, get_teacher 直读 query string, 任意客户端可枚举他人学生PII) + B2 Docker/HTTPS/nginx=0 |
+| **③ 公开产品** | **NOT-READY** | high | 学情790全合成(source 100%demo + 单一seed时间戳) + OCR链路**比预想更弱**(scan.py 仅PDF文字层, 图片OCR=pending未端到端) + genre/theme 481边dual_model零核验 + 题库164薄 |
+
+### 硬编码 campaign 净影响 (诚实): 内部清洁, 非交付进展
+- 11 commit(94ed17d..c8cb513)逐项 git+live 核实 = **纯常量抽取**(去硬编码→单一计算点/中立leaf/config化), 触 49 文件但**零功能建设、零交付里程碑**。三门重构后 live 全绿(D0 exit0/moth **89**-0/stop_gate)。
+- **2 个"bug 修复"的诚实定性**: ① thresholds.yaml vocab 容差(YAML 50/200 vs 代码 100/300)是**潜伏陷阱 defuse 非 live 误判修正** — 代码一直 live 用 100/300, YAML 旧值是零消费孤儿, 修复只让休眠 config 对齐已 live 代码值, **审计行为未变**。② 前端 theme_context 标签分叉收口=显示标签归一, 不触 DB。
+- **`_tenant.py/students*.py/weakness/main.py/start.command/backup_db.sh` 本轮零触碰** → 交付相关行为零改变。**别把"代码更干净"读成"更接近能交付"。**
+
+### critic 抓出的 2 处乐观偏差 (谄媚死防线, 含我自己的叙事)
+1. **cognitive_skill "推断 28%→47% 命题哲学迁移真值" 叙事过强**: 工程诚实层到位(DB evidence_json + moth + 前端 L159 caveat 三处标 provenance/样本量), 但**新era 那 15 条边 100% 来自 2023 单年**(2021/2022/2024/2025=0), `distribution_reliable=False` guard 真触发"仅方向性非精确"。**叙事须收**: 这是 **1卷1年的方向性信号, 不是 era 间迁移结论**。(我此前 RESUME/评估把它 narrate 成"迁移真值", 已纠。)
+2. **backup_db.sh 写了未排程**: 脚本存在但 `data/db/backups/` 目录不存在=0 份备份, 无 launchd/cron → "有恢复路径"只到脚本级未到运行级。
+
+### 最高杠杆下一步 (分层非平均: pilot 前别碰 ②③ 投入)
+- **[用户·Rule10]** 动员 1 名真辽宁老师真跑通 pilot 一条线 = ①档唯一剩余 blocker, 是把"技术就绪"变"有人真用"的唯一证据。
+- **[AI·今天可收口·与动员解耦]** (a) 手跑一次 backup_db.sh 建 data/db/backups + 装 launchd 日备份(1命令+1plist), 消"真学情误删无恢复"软阻塞; (b) beike card F 新era(n=15全2023单年)前端加**显著"样本不足·仅方向性"空态警示**(reliability 元数据已返回但 UI 需防老师误读 28%→47% 为可信精度)。
+- **[别提前做]** B1 鉴权/Docker 是 ②③ 档投入, pilot 不需要 — 动员真老师前做=违反分层非平均(operating rule6)。
+
+---
 
 ---
 

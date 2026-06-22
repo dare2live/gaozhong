@@ -169,18 +169,20 @@
 | 6 | 运营交付准备 | 🚧 见下"交付门状态" — **距交付一个收口冲刺(非建设阶段)** |
 | KG | **知识图谱层** (2026-06-20 本轮大建) | ✅ 横切血缘地基(source_versions PIT+stamp) + 设问类型金矿(推断50%) + **考试词典 exam_vocabulary 4186词99%释义三源溯源** + **word_sense 142跨阶段多义(master A1)** + 考点共现 co_occurs + 主题特征词 characterizes_theme; ⚠️ 考试词典/word_sense **有API无前端=金矿没开矿口**; 语法考点/句型/表达三维真相源未成熟未建 |
 
-### 🚦 交付门状态 (2026-06-20; 详 `docs/delivery_readiness_assessment.md`)
+### 🚦 交付门状态 (2026-06-22-续 复评; 详 `docs/delivery_readiness_assessment.md`)
 
-第四阶段复核门 4 项 — **2 项已绿, 2 项硬缺口**:
+第四阶段复核门 4 项 — **2 项已绿, 2 项硬缺口** (6维独立审计+对抗critic, 三场景全 hold 高置信):
 
 | 交付 bar | 状态 |
 |---|---|
-| 数据 100% 准 (D0) | ✅ D0 36项 + moth 70 + stop_gate live 全绿 |
-| 前端 3 端统一可用 | ⚠️ 新 8-tab app 壳 + 旧 /teacher 碎片化; 金矿未接前端 |
-| Docker 服务器实跑 | ❌ 完全缺失 (单机 localhost) |
+| 数据 100% 准 (D0) | ✅ D0 36项 + moth **89** + stop_gate live 全绿 (硬编码campaign后重测) |
+| 前端 3 端统一可用 | ⚠️ `/`=8-tab app(默认考点驾驶舱)+ `/teacher` + `/legacy`; **两金矿(考试词典4186/考点cognitive_skill)nav可点渲真数据**; 仍3 UI并存待收敛 |
+| Docker 服务器实跑 | ❌ 完全缺失 (单机 localhost; auth jwt/bcrypt=0; HTTPS=0; backup脚本写了未排程) |
 | **1 名辽宁老师真用 30 分钟反馈入档** | ❌ 从未发生 (最高杠杆 Rule10, AI 做不了) |
 
-**收口冲刺路径** (非继续建 KG): 用户拍板形态+范围 → 统一前端入口 → 金矿接前端 → 学情空态引导 → Docker+最小鉴权 → **真老师试用** → 按反馈再建。
+**分场景**: ① 单老师桌面 pilot = **READY**(唯一剩 Rule10) · ② 多校 = **NOT-READY**(B1鉴权PII红线+B2 Docker/HTTPS) · ③ 公开 = **NOT-READY**(学情790全合成demo + OCR图片链路pending + genre/theme零核验 + 题库164薄)。
+**硬编码 campaign(11 commit)= 内部清洁, 交付门一格未动** — 别把"代码更干净"读成"更接近能交付"。
+**收口冲刺路径** (非继续建 KG): pilot 前 AI 可收口 backup排程 + card F样本不足警示; **唯一硬阻塞=动员真老师**(分层非平均: 动员前别碰 ②③ 的鉴权/Docker)。
 **别让"还能建更多 KG 维度"无限延迟真老师校验** (比建设更高杠杆 + 是范围裁决器)。
 
 **待用户拍板的 blocking 决策**: ① 试运营形态(单机教研机 vs 服务器多人)② 范围(高中真题分析+备课视图最小集 vs 含中考/讲义/真学情)③ 动员真老师。

@@ -3,12 +3,34 @@
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
 
-## 🎯 交付就绪度裁决 (2026-06-22, 6维审计 — 接手先看这个)
-> 详 `docs/delivery_readiness_assessment.md` 顶部"2026-06-22复评"。
-- **① 单老师30min桌面pilot = READY**(本次清4 blocker: A1 students崩/A2 quiz乱码/A3 L4省份/A4 viewport + A5/A6/A8/A9; 三门绿)。**唯一剩=动员1名辽宁老师真用**(Rule10, AI做不了, 最高杠杆)。
-- **② 多校运营 = NOT-READY**: 差 B1鉴权(teacher_id裸传=PII红线, 收口点`_tenant.get_teacher`) + B2 Docker/nginx + HTTPS。
-- **③ 公开 = NOT-READY**(暂缓): 学情整条demo壳(790全合成, 必空态)+ 题库扩容 + genre/theme人工核验。**别再无限建KG维度**。
-- **诚实分**: 真值可卖=题型presence结构迁移+词汇热力四象限+设问技能侧+考试词典金矿; LLM方向性参考(标)=genre/theme题材分布+新era n=15迁移精度; demo壳(空态)=学情。对外口径卡见 exam_trend_design 末。
+## 🎯 交付就绪度裁决 (2026-06-22-续 复评 — 接手先看这个)
+> 详 `docs/delivery_readiness_assessment.md` 顶部"2026-06-22-续复评"。硬编码campaign后6维独立核实, 三场景全 hold 高置信。
+- **① 单老师30min桌面pilot = READY**(三门绿 moth89; 两金矿nav可点渲真数据)。**唯一硬阻塞=动员1名辽宁老师真用**(Rule10, AI做不了)。软阻塞: backup_db.sh从未实跑(data/db/backups不存在=0备份), pilot前手跑+装launchd。
+- **② 多校运营 = NOT-READY**: B1鉴权红线(jwt/bcrypt=0, get_teacher直读query, 任意客户端可枚举他人学生PII; 收口点`_tenant.get_teacher`) + B2 Docker/HTTPS/nginx=0。
+- **③ 公开 = NOT-READY**: 学情790全合成(source 100%demo+单一seed时间戳) + OCR链路比预想弱(scan.py仅PDF文字层, 图片OCR=pending) + genre/theme 481边dual_model零核验(坑16) + 题库164薄。**别再无限建KG维度**。
+- **诚实分**: 真值可卖=题型presence结构迁移+词汇热力四象限+cognitive_skill技能侧(explicit_label)+考试词典4186词; LLM方向性参考(必标)=genre/theme题材分布(零核验); demo壳(必空态)=学情整条。
+- **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 叙事须收, 别narrate成"命题迁移真值"。
+- **硬编码campaign(11 commit)净影响**: 纯内部清洁(单点/中立leaf/config化), **交付门一格未动**; 2个"bug修"是潜伏陷阱defuse(vocab容差YAML孤儿)+前端标签归一, 非live修复。别把"代码更干净"读成"更接近能交付"。
+
+## 最近 session (2026-06-22 续): 硬编码全局收口 campaign — 两轮 11 commit + 穷尽扫描补漏
+
+> 用户硬约束: "硬编码应从全局移除, 都用模块+数据+配置文件实现." 全程 verify-the-verifier + 行为等价验证 + 三门绿 + moth锁.
+> **性质 = 内部重构 (可维护性/架构), 非功能建设; 交付门(auth/Docker/真老师)未动 — 见交付裁决.**
+
+**第一轮 (backlog 驱动, 7 commit)**: `docs/hardcode_removal_backlog.md`. G1 年份权重→year_weights.yaml · G2 卷制era边界→scope单点 ·
+  G3 辽宁卷province标签5处→scope(codegraph驱动REVISE: exam_paper fan-in会越线→改scope常量hub) · G4 _SKILL_MAP→taxonomy.yaml(坑16真值验) ·
+  G5 stage/类目色→category-config.js · G6 GAOKAO_STRUCTURE→question_types.yaml(weight派生现算) · P2 slope±50真重复→scope.VOCAB_SLOPE_SIGNIFICANT.
+  **verify-the-verifier 拦下 5 个 backlog 误判**(不做防过度config): cooccur min_co非bug(explore-vs-persist) / scope-MIN已单点 /
+  junior-baselines范围verifier字面 / R3核心map已单点 / VERSION_LABEL刻意语境形式.
+
+**第二轮 (ultracode 穷尽扫描补漏, 4 commit)**: 5-lens Workflow 全新扫全仓 + 对抗式裁决 → 13候选全genuine(backlog漏掉的):
+  批A(19e4bda) era_old+paper_type→scope · 批B(deeb15f) 出版社/版本短名→canonical · 批C(c56c39d) 前端维度标签5散落→GZ_CAT.dim+修teacher.html ·
+  批D(2cf1800) 6个坑21孤儿config+get_threshold抽中立leaf(backend/services/thresholds.py)+stage_labels单点.
+  **抓出2个backlog单审计漏掉的真bug**: ① thresholds.yaml vocab容差漂移(YAML 50/200 vs 代码 100/300, 零消费故没人发现) ②
+  前端theme_context标签5文件分叉(主题语境/课标主题语境/主题). 都靠穷尽扫描+漂移检测才现形.
+
+**新增基础设施**: `backend/services/thresholds.py`(中立阈值leaf, 解question_bank/exercise/audit→course层级倒置) · `backend/services/stage_labels.py`(cefr_level→stage标签单点).
+**门**: moth 79→89断言(+10: year-weights/skill-map/gaokao-structure/liaoning-label/vocab-slope/paper-type/publisher-version/dim-label/orphan-thresholds/stage-label). 三门全程绿.
 
 ## 最近 session (2026-06-22 最新): 命题趋势驾驶舱 v1→v3 — "怎么考"第二轴跨era演变 (核心竞争力)
 
