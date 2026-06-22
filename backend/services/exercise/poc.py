@@ -21,20 +21,23 @@ ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 
 def _unit_words(con: duckdb.DuckDBPyConnection, unit_id: str) -> list[dict]:
-    """Pull words for a unit + their zh_def from edges evidence."""
+    """Pull words for a unit + 释义. 释义取**已清洗的 exam_vocabulary.gloss**(单一计算点),
+    非 edges/unit_vocab_intro.zh_def — 后者含 renjiao 邻栏 bleed(页眉/缩写/短语吸入), 会渗进练习题(A2修)。"""
     rows = con.execute("""
-        SELECT e.dst_id, e.evidence_json
+        SELECT e.dst_id, e.evidence_json, ev.gloss
         FROM edges e
+        LEFT JOIN exam_vocabulary ev
+          ON ev.word = (CASE WHEN e.dst_id LIKE 'word:%' THEN substr(e.dst_id, 6) ELSE e.dst_id END)
         WHERE e.src_id = ? AND e.relation = 'introduces_word'
     """, [unit_id]).fetchall()
     out = []
-    for dst, ev in rows:
+    for dst, ev, gloss in rows:
         word = dst.split(":", 1)[1] if dst.startswith("word:") else dst
         try:
             data = json.loads(ev or "{}")
         except json.JSONDecodeError:
             data = {}
-        zh = (data.get("zh_def") or "").strip()
+        zh = (gloss or "").strip()   # exam_vocabulary 清洗后释义; 不在词典(变体/罕词)则无释义跳过
         if zh:
             out.append({"word": word, "zh_def": zh,
                         "in_curriculum": data.get("in_curriculum", False)})
@@ -42,15 +45,16 @@ def _unit_words(con: duckdb.DuckDBPyConnection, unit_id: str) -> list[dict]:
 
 
 def _distractor_pool(con: duckdb.DuckDBPyConnection, level: str = "义教") -> list[dict]:
-    """Pool of (word, zh_def) for distractors — pulled from any unit_vocab_intro.
+    """Pool of (word, 释义) for distractors. 释义取已清洗 exam_vocabulary.gloss(A2: 避 unit_vocab zh_def bleed)。
     Filter to 'standard' or 'core' words (avoid LV_extra noise)."""
     try:
         rows = con.execute("""
-            SELECT v.word, v.zh_def
+            SELECT v.word, ev.gloss
             FROM unit_vocab_intro v
             INNER JOIN cefr_vocab c ON c.word = v.word
+            INNER JOIN exam_vocabulary ev ON ev.word = v.word
             WHERE c.cefr_level = ?
-              AND v.zh_def IS NOT NULL AND LENGTH(v.zh_def) > 0
+              AND ev.gloss IS NOT NULL AND LENGTH(ev.gloss) > 0
         """, [level]).fetchall()
     except duckdb.CatalogException:
         rows = []
@@ -69,7 +73,7 @@ def generate_l4_paper(con: duckdb.DuckDBPyConnection, province: str = "辽宁",
         FROM exam_questions
         WHERE province LIKE ? AND year >= ?
         ORDER BY year DESC
-    """, [f"%{province}%", year_min]).fetchall()
+    """, [f"{province}%", year_min]).fetchall()   # 前缀锚(坑7: '%辽宁%'子串会命中'非辽宁'标签, §7锚定)
     if not rows:
         rows = con.execute("""
             SELECT question_id, year, province, question_type, raw_question, answer, analysis

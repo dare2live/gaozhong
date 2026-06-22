@@ -38,6 +38,13 @@ def guess_mime(name: str) -> str:
 
 class Handler(BaseHTTPRequestHandler):
     server_version = "gaozhong/0.2"
+    # 页面路由表 (path 集合 → html); / 默认 app 驾驶舱 (A6)
+    _PAGE_ROUTES = (
+        (("/", "/app", "/app.html"), "app.html"),
+        (("/index.html", "/legacy"), "index.html"),
+        (("/student", "/student.html"), "student.html"),
+        (("/teacher", "/teacher.html"), "teacher.html"),
+    )
 
     def log_message(self, fmt, *args):
         sys.stderr.write(f"[{self.log_date_time_string()}] {fmt % args}\n")
@@ -93,19 +100,11 @@ class Handler(BaseHTTPRequestHandler):
 
     # --- dispatch helpers ---
     def _try_static(self, path: str) -> bool:
-        # /app — 第五阶段统一 SPA 入口 (D1)
-        if path == "/app" or path == "/app.html":
-            self._send_file(FRONTEND_DIR / "app.html", "text/html; charset=utf-8")
-            return True
-        if path == "/" or path == "/index.html":
-            self._send_file(FRONTEND_DIR / "index.html", "text/html; charset=utf-8")
-            return True
-        if path == "/student" or path == "/student.html":
-            self._send_file(FRONTEND_DIR / "student.html", "text/html; charset=utf-8")
-            return True
-        if path == "/teacher" or path == "/teacher.html":
-            self._send_file(FRONTEND_DIR / "teacher.html", "text/html; charset=utf-8")
-            return True
+        # 页面路由表 (path in 集合 替 or 链, 降 CC; / 默认落地即驾驶舱 — A6 老师落地见考点驾驶舱非旧MVP治理面板)
+        for paths, html in self._PAGE_ROUTES:
+            if path in paths:
+                self._send_file(FRONTEND_DIR / html, "text/html; charset=utf-8")
+                return True
         if path.startswith("/static/"):
             self._send_file(FRONTEND_DIR / "static" / path[len("/static/"):],
                             guess_mime(path))

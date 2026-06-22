@@ -1,9 +1,9 @@
 """D0 设问类型 cognitive_skill 金矿校验 (KG层 A1; 坑16/坑17/§7, docs/kg_layer_design §5/§6).
 
 跨era(2026-06-22 v3): 两真值源拼出"考查方式演变"——
-  - 2015-20 旧课标全国II: exam_questions refine 后 province 门(坑3 provenance-aware 单点真值), reading 子题前导题型 67 边。
+  - 2015-20 旧课标全国II: exam_questions refine 后 province 门(坑3 provenance-aware 单点真值), reading 子题前导题型 85 边(六年全覆盖, 两格式抽)。
   - 2021+ 新高考全国II: subquestions jsonl + 真值锚交叉门(2021 经 ≥2 源证实=甲卷 Take a view 已剔§7), 现仅 2023 共 15 边。
-锁: 边数==82(67+15) + 源年 ∈ {2015-20, 2023}(无甲卷/无未映射年混入) + 命题迁移真值(推断占比 新era>旧era, 坑16) + explicit_label + 血缘。
+锁: 边数==100(85+15) + 源年 ∈ {2015-20, 2023}(无甲卷/无未映射年混入) + 命题迁移真值(推断占比 新era>旧era, 坑16) + explicit_label + 血缘。
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def check_cognitive_skill(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (30) 设问类型 cognitive_skill 金矿 (跨era: 旧课标II 2015-20 + 新高考II 2023, 真值锚剔2021甲卷, 坑16/§7) ===")
     n_edge = con.execute(
         f"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND {_DIM}").fetchone()[0]
-    check("cognitive_skill 边 == 82 (跨era: 旧课标II 67 + 新高考II 15)", n_edge == B('cognitive_skill'), f"{n_edge}")
+    check("cognitive_skill 边 == 100 (跨era: 旧课标II 85 + 新高考II 15)", n_edge == B('cognitive_skill'), f"{n_edge}")
 
     n_legacy = con.execute(
         f"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND {_DIM} "

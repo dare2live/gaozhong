@@ -5,6 +5,18 @@
   const { $, $$, fetchJSON, mdToHtml } = window.GZ;
   const CONTENT = $("#content");
 
+  // 多租户: /api/students/* 路由强制要求 teacher_id (域B 隔离); 缺则 {error} 致 students tab 崩 (A1修)。
+  // pilot 单租户: 取第一个老师作默认; helper 自动附 teacher_id 到 students 调用。鉴权(登录派生teacher_id)=B1后补。
+  let _tid = null;
+  async function stuFetch(path) {
+    if (_tid === null) {
+      const t = await fetchJSON("/api/students/teachers").catch(() => ({ teachers: [] }));
+      _tid = (t.teachers && t.teachers[0] && t.teachers[0].teacher_id) || "";
+    }
+    const sep = path.includes("?") ? "&" : "?";
+    return fetchJSON(path + sep + "teacher_id=" + encodeURIComponent(_tid));
+  }
+
   // -- 注册表 (M2)
   const TABS = {};
   function register(name, mount) { TABS[name] = mount; }
@@ -34,7 +46,7 @@
     const [stats, cs, classes, audit] = await Promise.all([
       fetchJSON("/api/stats"),
       fetchJSON("/api/course/stats"),
-      fetchJSON("/api/students/classes").catch(() => ({ count: 0, classes: [] })),
+      stuFetch("/api/students/classes").catch(() => ({ count: 0, classes: [] })),
       fetchJSON("/api/audit/findings").catch(() => []),
     ]);
     const findings = Array.isArray(audit) ? audit : (audit.findings || []);
@@ -436,8 +448,8 @@
   register("students", async () => {
     CONTENT.innerHTML = `<h2>E. 学生档案</h2><p>载入中...</p>`;
     const [list, classes] = await Promise.all([
-      fetchJSON("/api/students/list"),
-      fetchJSON("/api/students/classes"),
+      stuFetch("/api/students/list").catch(() => ({ count: 0, students: [] })),
+      stuFetch("/api/students/classes").catch(() => ({ count: 0, classes: [] })),
     ]);
     let html = `<h2>E. 学生档案 (${list.count} 学生 · ${classes.count} 班)</h2>
 
@@ -615,14 +627,17 @@
     cont.innerHTML = "载入中...";
     try {
       const [info, weak, rec] = await Promise.all([
-        fetchJSON("/api/students/get?id=" + sid),
-        fetchJSON("/api/students/weakness?id=" + sid),
-        fetchJSON("/api/students/recommend?id=" + sid),
+        stuFetch("/api/students/get?id=" + sid),
+        stuFetch("/api/students/weakness?id=" + sid),
+        stuFetch("/api/students/recommend?id=" + sid),
       ]);
       if (info.error) throw new Error(info.error);
       const weakRows = weak.error ? [] : (weak.weakness || []);
       const recRows = rec.error ? [] : (rec.recommendations || []);
       let h = `<h2 style="margin:0">${info.student.name} (${sid})</h2>`;
+      // 坑4 诚实(A5): 全平台 student_answers 100% demo 合成(0真实作答), 单生模态须标 demo 不在零真作答上呈伪造置信度
+      if (((info.student && info.student.source) || "demo") === "demo" || (info.answers && info.answers.source === "demo"))
+        h += `<p style="background:#FAECE7;color:#993C1D;padding:6px 10px;border-radius:6px;font-size:13px;margin:6px 0;">⚠ 示例数据(demo 合成作答, 非真实学情) — 答题/弱点为演示用, 待导入真实答题卡后才是该生真实分析。</p>`;
       h += `<p>${info.student.school} · ${info.student.grade} · 答题 ${info.answers.total} 题 (正确 ${info.answers.correct})</p>`;
       h += `<h3>弱点 (${weakRows.length})</h3><ul>`;
       for (const w of weakRows) {
@@ -715,7 +730,7 @@
     CONTENT.innerHTML = `<h2>G. 扫描 OCR</h2><p>载入中 ...</p>`;
     const [list, students] = await Promise.all([
       fetchJSON("/api/scan/list").catch(() => []),
-      fetchJSON("/api/students/list").catch(() => ({ students: [] })),
+      stuFetch("/api/students/list").catch(() => ({ students: [] })),
     ]);
     const rows = Array.isArray(list) ? list : (list.rows || []);
     const studentOpts = (students.students || [])
