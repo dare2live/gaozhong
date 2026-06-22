@@ -17,6 +17,17 @@
     return fetchJSON(path + sep + "teacher_id=" + encodeURIComponent(_tid));
   }
 
+  // nav 资产计数 (后端真实数据 — 教师一眼看见词典/题库/课程/图谱规模)
+  async function populateNavCounts() {
+    const set = (id, v) => { const e = $("#" + id); if (e && v != null) e.textContent = v; };
+    const s = await fetchJSON("/api/stats").catch(() => ({}));
+    if (s.nodes) set("nav-cnt-edges", s.nodes.toLocaleString());
+    if (s.question_bank) set("nav-cnt-qb", s.question_bank);
+    if (s.courses) set("nav-cnt-course", s.courses);
+    const d = await fetchJSON("/api/exam_dictionary?prefix=zz&limit=1").catch(() => ({}));
+    if (d.total) set("nav-cnt-dict", d.total.toLocaleString());
+  }
+
   // -- 注册表 (M2)
   const TABS = {};
   function register(name, mount) { TABS[name] = mount; }
@@ -37,7 +48,7 @@
     }
   }
   window.addEventListener("hashchange", route);
-  window.addEventListener("DOMContentLoaded", () => { if (!location.hash) location.hash = "#/beike"; route(); });
+  window.addEventListener("DOMContentLoaded", () => { if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts(); });
 
   // ===================================================================
   // A. 工作台

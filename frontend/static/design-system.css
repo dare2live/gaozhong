@@ -88,6 +88,23 @@ body {
   transition: color var(--dur) var(--ease);
 }
 .sidebar .tabnav a:hover .ic, .sidebar .tabnav a.active .ic { color: var(--accent); }
+/* 工作流分组 (研判/备课/组卷/学情/数据) — IA 贴合教师真实流程 */
+.sidebar .navgroup {
+  font-size: 10.5px; font-weight: 650; letter-spacing: .08em; color: var(--nav-dim);
+  padding: 14px 18px 5px; display: flex; align-items: center; gap: 7px;
+}
+.sidebar .navgroup:first-of-type { padding-top: 4px; }
+.sidebar .navgroup .gline { flex: 1; height: 1px; background: rgba(255,255,255,.07); }
+.sidebar .navgroup .gtag {
+  font-size: 9px; font-weight: 600; letter-spacing: 0; color: var(--nav);
+  background: var(--nav-dim); border-radius: 3px; padding: 1px 5px;
+}
+/* nav 数据角标 (后端真实计数 — 教师一眼看见资产规模) */
+.sidebar .tabnav a .cnt {
+  margin-left: auto; font-family: var(--num); font-size: 10.5px; color: var(--nav-dim);
+  font-variant-numeric: tabular-nums;
+}
+.sidebar .tabnav a.active .cnt, .sidebar .tabnav a:hover .cnt { color: var(--nav-ink); }
 .sidebar-foot { color: var(--nav-dim); border-top: 1px solid rgba(255,255,255,.07); font-size: 12px; }
 .sidebar-foot a { color: var(--nav-ink); }
 
