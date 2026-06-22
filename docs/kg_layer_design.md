@@ -13,7 +13,7 @@
 > | B轨 跨年级分阶 (at_stage 边已细, verify-the-verifier) | ✅ 1d5d2de |
 > | **⚠ 矿口缺口**: 考试词典/word_sense **有API无前端** (teacher 页未接) | ❌ 收口冲刺第3步 |
 > | A2 语法考点 / A3 句型 / A4 表达 | ⏸ 真相源未成熟·候选池, 需标注 workflow, **真老师校验前别预建** |
-> | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地(explicit_label最强, 2023辽宁15子题; 原"exam_method待建"系误判, 见§6纠偏) |
+> | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地+跨era(explicit_label最强, **82边 2015-20旧课标II 67 + 2023新高考II 15**, 推断28→47%迁移; 原"exam_method待建"系误判, 见§6) |
 > | A6 立体透视 stereo_query (stage×dim×era) | ⏸ 待 word_sense.stage 跨年级 + 真老师校验后再建 |
 >
 > **下一步不是继续建本设计的剩余件, 而是收口冲刺**: 详 `docs/delivery_readiness_assessment.md`。
@@ -141,13 +141,10 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 >   7理解性技能, _SKILL_MAP), 强于双模型。坑16红线: 禁用设问句 dual_model inference 补第二轴。
 > - **evidence.cue(481条, 非586) 是"考什么/题材"(genre/theme passage描述), NOT"怎么考"** — 与第二轴正交, 别动它。
 >
-> **覆盖天花板(诚实, 数据gap非结构gap)**: cognitive_skill 现 **仅2023辽宁15子题**(单年)。因:
-> - 2024/2025 辽宁子题 analysis **0 个前导显式题型**(教研解析未标) → 无真值源, **不可硬标(=theme_l3杜撰)**;
-> - 2021 = 全国甲卷已真值锚剔除; 2015-2020 真值源在 GAOKAO-Bench analysis(passage级, 需拆子题+省份过滤新课标II+补2015-20真值锚≥2源)。
-> 故第二轴可做"新高考重推断/高阶思维"方向锚, **单年不可做逐年/跨era设问演变结论**(样本量诚实, scope门)。
->
-> **扩量路径(v3, 待评估, 风险=坑3省份污染+坑16)**: GAOKAO-Bench 2015-2020 新课标全国II reading 子题前导题型
-> → 走同一 cognitive_skill loader(前导锚, 禁正文全文扫) + province过滤 + 2015-20真值锚 → 跨era设问演变。
-> 现用既有数据(非外部采集); 但需 careful 省份/锚/拆子题, 业主决定是否做这个大活。
+> **✅ v3 已落地(2026-06-22): 跨era设问演变解锁**。cognitive_skill 现 **82 边跨两卷制era**(改造 `cognitive_skill.py` 加第二真值源, 零新表):
+> - **2015-20 旧课标全国II = 67子题**: 从 `exam_questions.analysis` 抽 reading 子题前导题型(两格式 `_FA`/`_FB`)。真值门 = **refine后 province**(辽宁新课标II, 坑3 provenance-aware 单点真值 — 区别 subq jsonl 误标风险, 故不另设 anchor); 六年 ≥30 **分布可靠**。
+> - **2021+ 新高考全国II = 15子题**: 仅2023(2024/25 analysis 0前导题型→诚实空, 2021甲卷剔§7); n=15 **<30 方向性非精确**(reliability 每-era标记, 复用 scope.MIN_DISTRIBUTION_SAMPLE)。
+> - **命题哲学迁移真值**(显式标签拼出, 万变不离其宗): **推断 28.4%→46.7%**, 细节 53.7%→40.0% — 新高考重高阶推断。变体题型只映射明确同义(词义推测/标题概括), 模糊3子题(细节推理/写作意图/代词指代)诚实skip防臆造。
+> - **门**: D0 `d0_cognitive_skill_check`(82/67/15/源年集/迁移/explicit_label/血缘) + content gate `cognitive_skill_era_shift_truth` + moth `cognitive-skill-goldmine`(跨era改写)。前端 D面板 = 双era分组条形 + reliability诚实标注。
 
 其余建模决策(子题=passage级可逆升级 / provenance底层细分+前端3档 / 句型表达诚实候选池)控制器已定, 不占决策位。

@@ -110,28 +110,40 @@
   }
 
   function renderCognitiveSkill(cs) {
-    // 设问类型「怎么想」金矿 (单一计算点: service 已算 by_era 分布, 前端只渲染)。
-    const eras = Object.keys((cs && cs.by_era) || {});
-    const era = eras.includes(ERA_NEW) ? ERA_NEW : eras[0];
-    const rows = (((cs || {}).by_era || {})[era] || []).slice().reverse();
-    if (!rows.length) { G.$("#bk-cog").innerHTML = '<p class="muted">暂无设问类型数据</p>'; return; }
+    // 设问类型「怎么想」跨era演变 (单一计算点: service 已算 by_era + reliability, 前端只渲染双era迁移)。
+    const byEra = (cs && cs.by_era) || {};
+    const oldRows = byEra[ERA_OLD] || [], newRows = byEra[ERA_NEW] || [];
+    if (!oldRows.length && !newRows.length) { G.$("#bk-cog").innerHTML = '<p class="muted">暂无设问类型数据</p>'; return; }
+    const skills = [];
+    [oldRows, newRows].forEach(rs => rs.forEach(r => { if (!skills.includes(r.label)) skills.push(r.label); }));
+    const pctOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.pct : 0; };
+    const nOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.n : 0; };
+    const cats = skills.slice().reverse();
+    const lbl = { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: "#999" };
     charts.cog = charts.cog || echarts.init(G.$("#bk-cog"));
     charts.cog.setOption({
-      grid: { left: 4, right: 62, top: 8, bottom: 8, containLabel: true },
-      xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct)) * 1.18, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
-      yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
-      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n}` },
-      series: [{
-        type: "bar", barWidth: "58%",
-        data: rows.map(r => ({ value: r.pct, itemStyle: { color: r.label === "推断" ? C.up : C.blue, borderRadius: [0, 4, 4, 0] } })),
-        label: { show: true, position: "right", formatter: p => `${p.value}% · n=${rows[p.dataIndex].n}`, fontSize: 11, color: "#888" },
-      }],
+      grid: { left: 4, right: 48, top: 26, bottom: 8, containLabel: true },
+      legend: { top: 0, right: 0, textStyle: { fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+      xAxis: { type: "value", axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+      yAxis: { type: "category", data: cats, axisTick: { show: false }, axisLine: { show: false } },
+      tooltip: {
+        trigger: "axis", axisPointer: { type: "shadow" },
+        formatter: ps => `${ps[0].name}<br/>` + ps.map(p =>
+          `${p.marker}${p.seriesName}: ${p.value}% · n=${(p.seriesIndex === 0 ? nOf(oldRows, p.name) : nOf(newRows, p.name))}`).join("<br/>"),
+      },
+      series: [
+        { name: "旧课标II 15–20", type: "bar", barGap: "10%", data: cats.map(s => pctOf(oldRows, s)),
+          itemStyle: { color: C.grey, borderRadius: [0, 3, 3, 0] }, label: lbl },
+        { name: "新高考II 21+ ⚠n小", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
+          itemStyle: { color: s === "推断" ? C.up : C.blue, borderRadius: [0, 3, 3, 0] } })), label: lbl },
+      ],
     });
-    const td = rows.find(r => r.label === "推断");
-    const ntot = (cs && cs.n_total) || rows.reduce((a, r) => a + r.n, 0);
-    G.$("#bk-cognote").innerHTML = `真相源=教研解析<b>显式标签</b>(强于双模型)。<b style="color:${C.up}">推断 ${td ? td.pct : "?"}%</b> 是阅读最高频思维——`
-      + `当年只看设问句让模型猜, 错估成 <b>15%</b>(坑16)。"怎么想"维度: 设问表面像细节, 实则考推断。`
-      + `<br><small class="muted">⚠ 现仅 2023 真辽宁II卷 n=${ntot}(小样本); 2021源经真值锚验证为全国甲卷已剔(§7), 待补真2021/2022/2024设问标注。</small>`;
+    const oInf = pctOf(oldRows, "推断"), nInf = pctOf(newRows, "推断");
+    const rel = (cs && cs.reliability) || {};
+    const nNew = (rel[ERA_NEW] || {}).n || newRows.reduce((a, r) => a + r.n, 0);
+    const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
+    G.$("#bk-cognote").innerHTML = `真相源=教研解析<b>显式标签</b>(强于双模型)。命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断, 万变不离其宗的考查方式演变。`
+      + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II ⚠仅2023 n=${nNew}(&lt;30 方向性非精确)。2021源=全国甲卷已剔(§7), 待补2022/2024/2025真辽宁设问标注。</small>`;
   }
 
   function renderHeat(heat) {

@@ -75,6 +75,14 @@ gates:
     op: eq
     expect: 0
 
+  - id: cognitive_skill_era_shift_truth
+    domain: exam
+    source: "教研解析显式题型 (cognitive_skill edges, explicit_label 跨era)"
+    desc: "命题哲学迁移真值: 推断占比 新高考II(2021+) > 旧课标II(2015-20) — 新高考重高阶推断(坑16)。交叉相乘比占比避浮点; 违反=0"
+    query: "SELECT CASE WHEN ((SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND dst_id='exam_point:cognitive_skill:推断' AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT)>=2021) * (SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND json_extract_string(evidence_json,'$.dimension')='cognitive_skill' AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) BETWEEN 2015 AND 2020)) > ((SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND dst_id='exam_point:cognitive_skill:推断' AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) BETWEEN 2015 AND 2020) * (SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND json_extract_string(evidence_json,'$.dimension')='cognitive_skill' AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT)>=2021)) THEN 0 ELSE 1 END"
+    op: eq
+    expect: 0
+
   - id: weakness_recommend_bridge
     domain: student
     source: "图谱主题桥 (theme_aligns→theme_of_unit)"

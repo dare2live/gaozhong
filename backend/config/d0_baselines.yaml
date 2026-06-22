@@ -26,7 +26,9 @@ baselines:
   # KG 维度 (d0_*.py)
   exam_dict_min:        {value: 3500, op: ge, note: "考试词典规模下界(课标∪教材真超纲)"}
   exam_dict_max:        {value: 5000, op: le, note: "考试词典规模上界(防CET/GRE注水)"}
-  cognitive_skill:      {value: 15,   op: eq, note: "设问类型边(2023真辽宁II卷, 真值锚剔2021甲卷)"}
+  cognitive_skill:      {value: 82,   op: eq, note: "设问类型边跨era(2015-20旧课标II 67 + 2023新高考II 15; 真值锚剔2021甲卷)"}
+  cognitive_skill_legacy: {value: 67, op: eq, note: "2015-20旧课标全国II reading子题(exam_questions refine省份门, 坑3)"}
+  cognitive_skill_new:    {value: 15, op: eq, note: "2021+新高考全国II(subq jsonl真值锚门, 现仅2023)"}
   cooccur_min:          {value: 15,   op: ge, note: "考点共现边下界(删杜撰theme_l3共现27后实测19)"}
   exam_point_min:       {value: 300,  op: ge, note: "tests_exam_point 边下界"}
   word_glosses_min:     {value: 5000, op: ge, note: "释义词典规模下界(教材+中考)"}
