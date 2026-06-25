@@ -56,7 +56,7 @@
     const nodeMap = {};
     pairs.forEach(p => {
       [[p.a_label, p.a_dim], [p.b_label, p.b_dim]].forEach(([lab, dim]) => {
-        if (!nodeMap[lab]) nodeMap[lab] = { name: lab, category: DIMCAT[dim] ?? 1, value: 0 };
+        if (!nodeMap[lab]) nodeMap[lab] = { name: lab, category: DIMCAT[dim] ?? 1, dim: dim, value: 0 };   // #3: 存 dim 供 click 拼 concept_id
         nodeMap[lab].value += p.co_n;
       });
     });
@@ -87,7 +87,13 @@
     });
     setTimeout(() => chart && chart.resize(), 60);   // 修容器初始宽度0致节点挤左
     chart.off("click");
-    chart.on("click", p => { if (p.dataType === "node" && G.sendPrompt) G.sendPrompt(`看考点「${p.data.name}」在 2021+ 辽宁卷的真题与同题共现考点`); });
+    // #3: 点考点节点 → 弹该考点浮窗(关联+真题, 复用#2); fallback sendPrompt
+    chart.on("click", p => {
+      if (p.dataType !== "node") return;
+      const cid = p.data.dim ? `exam_point:${p.data.dim}:${p.data.name}` : null;
+      if (cid && G.openPopup) G.openPopup(cid);
+      else if (G.sendPrompt) G.sendPrompt(`看考点「${p.data.name}」在 2021+ 辽宁卷的真题与同题共现考点`);
+    });
   }
 
   registerTab("jiangke", async () => {

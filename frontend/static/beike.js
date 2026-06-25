@@ -73,7 +73,12 @@
       }],
     });
     charts.dist.off("click");
-    charts.dist.on("click", p => G.sendPrompt ? G.sendPrompt(`下钻 ${state.era} 辽宁卷 ${DIM_LABEL[state.dim]}「${p.name}」的真题清单`) : null);
+    // #3: 点考点条 → 弹该考点浮窗(关联+真题, 复用#2修好的 exam_point 真题); fallback sendPrompt 下钻
+    charts.dist.on("click", p => {
+      const cid = `exam_point:${state.dim}:${p.name}`;
+      if (G.openPopup) G.openPopup(cid);
+      else if (G.sendPrompt) G.sendPrompt(`下钻 ${state.era} 辽宁卷 ${DIM_LABEL[state.dim]}「${p.name}」的真题清单`);
+    });
   }
 
   function renderShift() {

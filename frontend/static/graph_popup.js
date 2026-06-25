@@ -121,4 +121,6 @@
       window._gzClosePopup();
     }
   };
+  // 可编程开浮窗 (#3: ECharts 图考点 click → 弹 concept_id 浮窗; 图表标签非 .gz-concept HTML 无法走 click 委托)
+  window.GZ.openPopup = openPopup;
 })();
