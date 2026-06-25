@@ -1,0 +1,37 @@
+kind: assertion_pack
+name: jiaoyanshi-completion-gate
+# 教研室完成度 loop 的 go/no-go 死亡条款门 (sherpa gates jiaoyanshi --repo .)。
+# 见 docs/jiaoyanshi_completion_plan.md。与 loop 每轮三门(D0/moth/stop_gate)互补:
+# 三门守数据诚实/无回归; 本门守"不碰②③轨 + 不建新KG维"(三门不覆盖的方向性红线)。fail-closed。
+assertions:
+  # ===== 死线2: 不建新KG维 (判断死镀金防线) =====
+  - id: kg-nodetype-frozen
+    claim: "node_type 集冻结 ==16 (新增KG节点类型=建新维度跑偏, 死线2)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(DISTINCT node_type) FROM nodes"
+    expect: {op: "==", value: 16}
+  - id: kg-relation-frozen
+    claim: "relation 集冻结 ==22 (新增关系类型=建新维度跑偏, 死线2)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(DISTINCT relation) FROM edges"
+    expect: {op: "==", value: 22}
+  # ===== 死线1: 不碰②③轨 (感知死防线) =====
+  - id: xueqing-demo-only
+    claim: "student_answers 仍全 demo (source distinct ==1, 没把假学情当真值落新source)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(DISTINCT source) FROM student_answers"
+    expect: {op: "==", value: 1}
+  - id: no-auth-deps
+    claim: "未引入鉴权依赖 (jwt/bcrypt/passlib 仍 0 命中 backend/, 没碰②③轨auth)"
+    type: shell
+    command: ["bash", "-c", "grep -rIlE 'import (jwt|bcrypt|passlib)|from (jwt|bcrypt|passlib)' backend/ 2>/dev/null | wc -l | tr -d ' '"]
+    expect: {op: "==", value: "0"}
+  # ===== 死线3: 诚实分层 (谄媚死防线) =====
+  - id: honest-layer-moth-present
+    claim: "provenance-honest moth 断言在位 (genre/theme dual_model 标模型推断不冒充真值)"
+    type: shell
+    command: ["bash", "-c", "grep -cE 'dual_model|provenance' .moth/assertions/claims.yaml 2>/dev/null | tr -d ' '"]
+    expect: {op: ">=", value: 1}
