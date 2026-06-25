@@ -27,4 +27,15 @@ window.GZ_CAT = {
   dim: {
     genre: "体裁", theme_l2: "主题群", theme_context: "主题语境",
   },
+  // 释义 gloss_source → [provenance徽章标签, 色] (词典释义可信度分层, 不混同).
+  // 按 gloss_source 子串匹配 (srcBadge 用 includes): 教材版本(renjiao/waiyan/hujiao)→教材;
+  // 中考词汇表→中考; exam→真题; variant:*→变体继承(继承基词释义); COCA→兜底. 单一来源防漂移(#1 修 85%裸代码).
+  glossSource: {
+    renjiao: ["教材", "#1D9E75"], waiyan: ["教材", "#1D9E75"], hujiao: ["教材", "#1D9E75"],
+    textbook: ["教材", "#1D9E75"], unit_vocab: ["教材", "#1D9E75"],
+    "中考": ["中考", "#378ADD"], zhongkao: ["中考", "#378ADD"],
+    exam: ["真题", "#185FA5"],
+    variant: ["变体继承", "#9C7A3C"],
+    coca: ["COCA兜底", "#B4B2A9"],
+  },
 };

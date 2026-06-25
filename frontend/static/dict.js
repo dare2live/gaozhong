@@ -8,17 +8,18 @@
   if (!G || !G.registerTab) return;
   const { fetchJSON, registerTab } = G;
 
-  // gloss_source provenance 徽章 (释义可信度分层, 不混同)
-  const SRC = {
-    textbook: ["教材", "#1D9E75"], unit_vocab: ["教材", "#1D9E75"], hujiao: ["教材", "#1D9E75"],
-    zhongkao: ["中考", "#378ADD"], exam: ["真题", "#185FA5"],
-    coca: ["COCA兜底", "#B4B2A9"], coca_fallback: ["COCA兜底", "#B4B2A9"],
+  // gloss_source provenance 徽章 (释义可信度分层, 不混同) — 单一来源 category-config.js GZ_CAT.glossSource
+  // (#1 修: 旧本地 SRC 表 key=textbook/zhongkao 与实际 gloss_source renjiao/waiyan/中考词汇表 失配 → 85%行渲裸代码)
+  const SRC = (window.GZ_CAT && window.GZ_CAT.glossSource) || {
+    renjiao: ["教材", "#1D9E75"], waiyan: ["教材", "#1D9E75"], hujiao: ["教材", "#1D9E75"],
+    "中考": ["中考", "#378ADD"], exam: ["真题", "#185FA5"],
+    variant: ["变体继承", "#9C7A3C"], coca: ["COCA兜底", "#B4B2A9"],
   };
   const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (防 k12/dict 漂移)
 
   function srcBadge(s) {
     const k = (s || "").toLowerCase();
-    const hit = Object.keys(SRC).find(x => k.includes(x));
+    const hit = Object.keys(SRC).find(x => k.includes(x.toLowerCase()));
     const [t, c] = hit ? SRC[hit] : [s || "—", "#B4B2A9"];
     return `<span style="font-size:10px;padding:1px 6px;border-radius:8px;background:${c}22;color:${c};white-space:nowrap;">${t}</span>`;
   }
