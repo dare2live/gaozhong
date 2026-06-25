@@ -67,6 +67,20 @@
       <small style="color:#888">${center.id}</small>
     </h3>`;
 
+    // #4: 教学元数据 chips (attrs_json 已 fetch 但原 0 渲染, 丢弃了 exam_status/辽宁命中/cefr/teaching_hint 教学价值)
+    let attrs = {};
+    try { attrs = JSON.parse(center.attrs_json || "{}"); } catch (e) { attrs = {}; }
+    const ES = (window.GZ_CAT && window.GZ_CAT.examStatus) || {};
+    const chip = (t, c) => `<span class="gz-meta-chip" style="background:${c}22;color:${c};">${escapeHtml(String(t))}</span>`;
+    const chips = [];
+    if (attrs.exam_status) { const e = ES[attrs.exam_status]; chips.push(chip(e ? e[0] : attrs.exam_status, e ? e[1] : "#888")); }
+    if (attrs.gaokao_hit_count_ln != null) chips.push(chip(`辽宁命中 ${attrs.gaokao_hit_count_ln}`, attrs.gaokao_hit_count_ln > 0 ? "#993C1D" : "#B4B2A9"));
+    if (attrs.cefr_level) chips.push(chip(attrs.cefr_level, "#185FA5"));
+    if (attrs.stage && attrs.stage !== attrs.cefr_level) chips.push(chip(attrs.stage, "#378ADD"));
+    if (attrs.dimension) chips.push(chip(attrs.dimension, "#0a4d75"));
+    if (chips.length) h += `<div class="gz-meta">${chips.join(" ")}</div>`;
+    if (attrs.teaching_hint) h += `<p class="gz-hint">${escapeHtml(attrs.teaching_hint)}</p>`;
+
     h += `<div class="gz-section">
       <div class="gz-sec-title">关联拓展 (${related.length})</div>`;
     if (related.length === 0) {

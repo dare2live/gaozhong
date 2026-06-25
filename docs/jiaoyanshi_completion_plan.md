@@ -88,4 +88,10 @@
 
 ## 进度
 - 立法 + scoping(7区审计Workflow) + #1/#2 controller 核实 = done (2026-06-23)。
-- punch-list 17 项: 0 done / 17 待做。Loop 起点 = #1。
+- **High-value 批 (loop 执行中)**:
+  - ☑ #1 词典徽章 85%裸代码 → GZ_CAT.glossSource 单点 (022c204; preview 301行徽章正确, 裸码泄漏=0)。
+  - ☑ #2 exam_point浮窗真题断链 → _fetch_questions 加 tests_exam_point + 子题分支 (d19408a; 记叙文8真题/推断8子题诚实/word回归; moth锁)。
+  - ☑ #3 考点图可点弹浮窗 → GZ.openPopup导出 + beike/cooccur图click (afee1d3; 端到端"真题命中8"; #2+#3=考点关联矿口打通)。
+  - ☑ #4 浮窗显教学元数据 → renderHTML渲attrs chips (preview: 核心/辽宁命中53/义教/teaching_hint; 不再丢弃)。
+  - ☐ #5 shared导出/打印 (M, 下一项)。 ☐ #12 blueprint接矿口。
+- 累计 4/17 done, 三门全程绿 + sherpa GO。Loop 续 #5。

@@ -153,6 +153,10 @@
   font-size: 0.85em; border-bottom: 1px solid #ddd;
 }
 #gz-popup .gz-chip:hover { background: #ffe6e6; border-color: #E3120B; }
+/* #4 教学元数据 chips (exam_status/辽宁命中/cefr/stage/dimension) + teaching_hint */
+#gz-popup .gz-meta { margin: 0.1rem 0 0.4rem; display: flex; flex-wrap: wrap; gap: 4px; }
+#gz-popup .gz-meta-chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; white-space: nowrap; }
+#gz-popup .gz-hint { color: #666; font-size: 12px; margin: 0 0 0.5rem; line-height: 1.4; }
 #gz-popup .gz-qlist { padding-left: 1.2rem; }
 #gz-popup .gz-qlist li { margin: 0.4rem 0; line-height: 1.4; }
 #gz-popup .gz-qlink { font-weight: 600; color: #E3120B; }
