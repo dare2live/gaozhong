@@ -153,6 +153,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import inspect; from backend.services import thresholds; from backend.services.audit import curriculum; from backend.services.question_bank import loader as ql; from backend.services.course import scenarios; from backend.services.exercise import cloze; ok=(thresholds.get_threshold('extraction.section_text_max_chars')==5000 and thresholds.get_threshold('vocab.level_tolerance')==100 and 'get_threshold' in inspect.getsource(curriculum._level_sev) and 'difficulty_char_threshold' in inspect.getsource(ql._difficulty) and 'section_text_max_chars' in inspect.getsource(cloze) and scenarios.NGRAM_N==10); print(0 if ok else 1)"]
     expect: {op: "==", value: "0"}
+  - id: exam-point-popup-not-empty
+    claim: "exam_point 浮窗真题不断链(教研室#2): genre考点显qbank真题 + cognitive_skill考点显2021+子题 + word回归; 防 relation IN 漏 tests_exam_point 再断链"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.api.routes.graph_popup import _fetch_questions as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); print(0 if (len(f(c,'exam_point:genre:记叙文'))>0 and len(f(c,'exam_point:cognitive_skill:推断'))>0 and len(f(c,'word:make'))>0) else 1)"]
+    expect: {op: "==", value: "0"}
   - id: vocab-slope-single-point
     claim: "词汇量slope显著阈收口 scope.VOCAB_SLOPE_SIGNIFICANT 单点 (P2); model._slope_interp + predicted 难度判定共读, 不再各自硬编码50 (防两处漂移)"
     type: shell

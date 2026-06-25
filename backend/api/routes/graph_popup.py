@@ -11,6 +11,8 @@
 """
 from __future__ import annotations
 
+import json
+
 from backend.api.db import db_ro
 from backend.services import graph
 
@@ -86,10 +88,13 @@ def _fetch_related(con, cid: str) -> list[dict]:
 
 
 def _fetch_questions(con, cid: str) -> list[dict]:
-    """真题题目节点 (tests_word / tests_grammar 反向).
+    """真题题目节点 (tests_word / tests_grammar / tests_exam_point 反向).
 
     INNER JOIN question_bank: 浮窗真题只来自 qbank (157 辽宁真题, §7 锚定); 外省题节点虽在
     tests_word 边里, 但不在 qbank → 不漏进浮窗 (原 LEFT JOIN + NULLS LAST 会把外省以空行带出)。
+    #2: 加 tests_exam_point → genre/theme 考点浮窗显真题 (src 在 qbank, 481边/~434命中);
+    cognitive_skill 考点的真题是 2021+ 新高考II 辽宁子题 (attrs.subquestion=true, 不在 qbank) →
+    走 _fetch_exam_point_subquestions 分支按 nodes.attrs 渲染 (诚实标子题级, 不混进 qbank真题)。
     """
     rows = con.execute(
         "SELECT DISTINCT n.concept_id, q.qb_id, q.question_type, q.stem, "
@@ -97,7 +102,7 @@ def _fetch_questions(con, cid: str) -> list[dict]:
         "        ORDER BY dst_id LIMIT 1) "
         "FROM edges e JOIN nodes n ON n.concept_id = e.src_id "
         "INNER JOIN question_bank q ON q.origin_ref = REPLACE(n.concept_id, 'question:', '') "
-        "WHERE e.dst_id = ? AND e.relation IN ('tests_word', 'tests_grammar') "
+        "WHERE e.dst_id = ? AND e.relation IN ('tests_word', 'tests_grammar', 'tests_exam_point') "
         "AND n.node_type = 'question' "
         "ORDER BY q.qb_id LIMIT ?",
         [cid, LIMIT_QUESTIONS],
@@ -110,6 +115,45 @@ def _fetch_questions(con, cid: str) -> list[dict]:
             "question_type": qtype,
             "stem_preview": (stem or "")[:120],
             "year": (year_node or "").replace("exam_year:", "") if year_node else None,
+        })
+    if len(out) < LIMIT_QUESTIONS:
+        out += _fetch_exam_point_subquestions(con, cid, LIMIT_QUESTIONS - len(out))
+    return out
+
+
+_QTYPE_ZH = {"reading_comprehension": "阅读理解", "cloze": "完形填空",
+             "grammar_filling": "语法填空", "writing": "写作"}
+
+
+def _fetch_exam_point_subquestions(con, cid: str, limit: int) -> list[dict]:
+    """cognitive_skill 等考点的 2021+ 新高考II 辽宁子题 (attrs.subquestion=true, 不在 qbank)。
+    诚实: 子题级标注无完整题面, 从 attrs 渲 year/篇/题号/题型; subquestion=true 过滤排除外省整题。"""
+    if limit <= 0 or not cid.startswith("exam_point:"):
+        return []
+    rows = con.execute(
+        "SELECT DISTINCT n.concept_id, n.attrs_json "
+        "FROM edges e JOIN nodes n ON n.concept_id = e.src_id "
+        "LEFT JOIN question_bank q ON q.origin_ref = REPLACE(n.concept_id, 'question:', '') "
+        "WHERE e.dst_id = ? AND e.relation = 'tests_exam_point' "
+        "AND n.node_type = 'question' AND q.qb_id IS NULL "
+        "AND json_extract_string(n.attrs_json, '$.subquestion') = 'true' "
+        "ORDER BY n.concept_id LIMIT ?",
+        [cid, limit],
+    ).fetchall()
+    out: list[dict] = []
+    for ccid, attrs in rows:
+        try:
+            a = json.loads(attrs or "{}")
+        except (json.JSONDecodeError, TypeError):
+            a = {}
+        yr, pl, qn = a.get("year"), a.get("passage_label"), a.get("question_number")
+        loc = f"{pl}篇第{qn}题" if pl and qn else "子题"
+        out.append({
+            "concept_id": ccid,
+            "qb_id": None,
+            "question_type": _QTYPE_ZH.get(a.get("question_type"), a.get("question_type") or "子题"),
+            "stem_preview": f"辽宁{yr or ''} {loc} · 子题级标注(2021+新高考II, 无完整题面)",
+            "year": str(yr) if yr else None,
         })
     return out
 
