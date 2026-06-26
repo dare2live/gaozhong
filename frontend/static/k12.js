@@ -136,6 +136,6 @@
     if (window.echarts) { renderStage(st); renderZk(zk); }
     renderPivot(zk);
     renderBlueprint(bp);
-    window.addEventListener("resize", () => { chS && chS.resize(); chZ && chZ.resize(); });
+    if (!window.__rzK12) { window.__rzK12 = 1; window.addEventListener("resize", () => { chS && chS.resize(); chZ && chZ.resize(); }); }  // RC1: 只绑一次防泄漏
   });
 })();

@@ -95,6 +95,6 @@ ${guide()}
     G.$$("#xs-teachers [data-tch]").forEach(b => b.onclick = () => { state.teacher = b.dataset.tch; state.cls = null; G.$$("#xs-teachers .bk-pill").forEach(p => p.classList.toggle("on", p.dataset.tch === state.teacher)); loadClasses(); });
     if (!window.echarts) await new Promise(r => setTimeout(r, 300));
     await loadClasses();
-    window.addEventListener("resize", () => chart && chart.resize());
+    if (!window.__rzXs) { window.__rzXs = 1; window.addEventListener("resize", () => chart && chart.resize()); }  // RC1: 只绑一次防泄漏
   });
 })();

@@ -343,6 +343,6 @@
     }
     renderShift();
     wireExports();   // #5: 图卡追加 PNG 导出 + 打印按钮接线
-    window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize()));
+    if (!window.__rzBeike) { window.__rzBeike = 1; window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize())); }  // RC1: 只绑一次防切tab累积泄漏
   });
 })();

@@ -136,6 +136,6 @@
     const pairs = ((co.by_era || {})[ERA] || {}).pairs || [];
     if (window.echarts && pairs.length) await renderGraph(pairs);
     else G.$("#jk-graph").innerHTML = '<p class="muted">无共现数据</p>';
-    window.addEventListener("resize", () => chart && chart.resize());
+    if (!window.__rzJk) { window.__rzJk = 1; window.addEventListener("resize", () => chart && chart.resize()); }  // RC1: 只绑一次防泄漏
   });
 })();
