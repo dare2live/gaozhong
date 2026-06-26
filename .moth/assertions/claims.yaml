@@ -555,6 +555,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE year=2026 AND province LIKE '辽宁%' AND paper_type='新课标 II 卷' AND source_repo='jhgk_xgkii_english_2026'"
     expect: {op: "==", value: 8}
+  - id: exam-year-coverage-no-stale
+    claim: "anti-stale 年覆盖(顶层设计死红线3): 每个有辽宁真题文本(>100字)的年份必有 tests_word 边传导, 0 漏年。抓'新卷入库成功+三门绿但KG空传导'盲区(实证2024/25曾0边=init_db层序bug, 已修Layer2a3)。新卷/中考漏传导即红。"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM (SELECT q.year FROM exam_questions q WHERE q.province LIKE '辽宁%' AND LENGTH(q.raw_question)>100 GROUP BY q.year HAVING SUM(CASE WHEN EXISTS (SELECT 1 FROM edges e WHERE e.relation='tests_word' AND e.src_id='question:'||q.question_id) THEN 1 ELSE 0 END)=0)"
+    expect: {op: "==", value: 0}
   - id: zhongkao-answer-fidelity
     claim: "中考MCQ答案保真: 四选一/完形∈{A-D} 五选四∈{A-E} (2024 answer-key-driven 答案=核心交付; 防小写/越界污染, 审计 HIGH#1)"
     type: duckdb_sql
