@@ -95,5 +95,10 @@
   - ☑ #4 浮窗显教学元数据 → renderHTML渲attrs chips (preview: 核心/辽宁命中53/义教/teaching_hint; 不再丢弃)。
   - ☑ #5 shared导出/打印 (e67d88d; common.js exportChartPNG/exportCSV + beike5图卡⬇PNG/打印 + dict⬇CSV + print CSS; preview真PNG/有效CSV)。
   - ☑ #12 blueprint练习卷接矿口 (qbank tab 调端点渲30题+诚实"非预测非押题"+blueprint_fixed; 原0消费空转修)。
-- **High-value 批 6/6 全清** ✅。累计 6/17 done, 三门全程绿 + sherpa GO。
-- 待续: 收敛批 #6 compose进SPA / #7 备课进SPA / #8 课materials矿口 / #9 K12 10维蓝图 / #10 word_sense; 诚实批 #11 新era降级 / #14 era锁徽章 / #16 详情modal / #17 侧栏live; #13 教材tab(L)。
+- **High-value 批 6/6 全清** ✅ + **诚实/减债批 4/4 全清** ✅:
+  - ☑ #11 D区新era视觉降级(edd7cd3; 灰+虚线+banner+叙事降"方向性非趋势", critic谄媚死flag修)。
+  - ☑ #14 F卡era锁徽章 + k12删complete恒0项(f82783a)。
+  - ☑ #16 题库详情 alert→内联modal(可滚复制全文) + 删死options分支(verify-the-verifier: options全None确证死)。
+  - ☑ #17 侧栏静态'0 FAIL'→live audit findings + graph tab过时"iframe嵌"注释修正。
+- **累计 10/17 done**, 三门全程绿 + sherpa GO + moth 79→94。
+- **剩余 = M收敛批 + L (都耦合 UI收敛终态 needs_user_decision)**: #6 compose进SPA(M) · #7 备课进SPA(M) · #8 课materials矿口(M) · #9 K12 10维蓝图(M) · #10 word_sense(M) · #13 教材tab(L)。#6/#7/#13 移植 legacy→SPA, 取决于 UI收敛终态拍板(302/banner/共存)。**loop 撞 needs_user_decision, 回报用户。**

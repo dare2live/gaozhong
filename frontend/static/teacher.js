@@ -179,7 +179,6 @@ async function composeRun() {
     html += `<div class="paper-q">
       <div><b>${q.seq}.</b> ${tagChip(q.qtype, "question_type")} ${tagChip(q.difficulty, "difficulty")}</div>
       <div class="stem">${(q.stem || "").slice(0, 1500)}</div>
-      ${q.options ? "<ul>" + q.options.map(o => `<li>${o.label}. ${o.text}</li>`).join("") + "</ul>" : ""}
       <details><summary>答案 / 解析</summary><pre style="white-space:pre-wrap">${q.answer || ""}
 ${q.analysis || ""}</pre></details>
       <div style="font-size:11px;color:#888">qb#${q.qb_id} · ${q.tags.slice(0, 8).map(t => tagChip(t, "")).join("")}</div>
@@ -190,7 +189,26 @@ ${q.analysis || ""}</pre></details>
 
 async function loadDetail(qbid) {
   const d = await fetchJSON(`/api/qb/detail?id=${qbid}`);
-  alert(`qb#${d.qb_id}\n类型: ${d.qtype}\n标签: ${d.tags.join(" · ")}\n\n${d.stem.slice(0, 1500)}\n\n答案: ${d.answer}`);
+  // #16: alert→内联 modal (可滚动可复制全文 stem+answer+analysis, 不再截 1500 看不全)
+  const esc = s => String(s == null ? "" : s).replace(/</g, "&lt;");
+  let m = document.getElementById("qb-detail-modal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "qb-detail-modal";
+    m.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:999;";
+    m.onclick = e => { if (e.target === m) m.style.display = "none"; };
+    document.body.appendChild(m);
+  }
+  m.innerHTML = `<div style="background:#fff;max-width:660px;max-height:82vh;overflow:auto;border-radius:8px;padding:18px 22px;box-shadow:0 8px 32px rgba(0,0,0,.2);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <strong>#${esc(d.qb_id)} · ${esc(d.qtype)}</strong>
+      <span style="cursor:pointer;color:#888;font-size:1.3em;" onclick="document.getElementById('qb-detail-modal').style.display='none'">✕</span></div>
+    <div style="font-size:12px;color:#888;margin-bottom:8px;">标签: ${(d.tags || []).map(esc).join(" · ")}</div>
+    <div style="white-space:pre-wrap;line-height:1.55;font-size:14px;">${esc(d.stem)}</div>
+    <div style="margin-top:10px;padding-top:8px;border-top:1px solid #eee;"><b>答案:</b> ${esc(d.answer)}</div>
+    ${d.analysis ? `<div style="margin-top:8px;color:#555;font-size:13px;"><b>解析:</b> ${esc(d.analysis)}</div>` : ""}
+  </div>`;
+  m.style.display = "flex";
 }
 
 window.loadDetail = loadDetail;

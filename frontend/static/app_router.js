@@ -41,6 +41,16 @@
       const el = $("#nav-cnt-" + t.id);
       if (el && v != null) el.textContent = Number(v).toLocaleString();
     });
+    // #17: 侧栏 audit 状态改 live (原硬编码 "0 FAIL" 数据真FAIL时仍绿=虚假安全感, 违D0诚实)
+    const ax = $("#sb-audit");
+    if (ax) {
+      const fnd = await fetchJSON("/api/audit/findings").catch(() => []);
+      const rows = Array.isArray(fnd) ? fnd : (fnd.findings || []);
+      const fail = rows.filter(r => r.severity === "FAIL").length;
+      const warn = rows.filter(r => r.severity === "WARN").length;
+      ax.textContent = (fail || warn) ? `${fail} FAIL · ${warn} WARN` : `0 FAIL audit`;
+      ax.style.color = fail ? "#993C1D" : (warn ? "#9a6a00" : "");
+    }
   }
 
   // -- 注册表 (M2)
@@ -735,7 +745,7 @@
   };
 
   // ===================================================================
-  // F. 知识图谱 (复用 /teacher 的图谱 tab, iframe 嵌)
+  // F. 知识图谱 (本tab: stats概览 + 高频考点词入口; 力导向SVG探索仍在 /legacy, 见 needs_user_decision UI收敛)
   // ===================================================================
   register("graph", async () => {
     CONTENT.innerHTML = `<h2>F. 知识图谱</h2><p>载入中 ...</p>`;
