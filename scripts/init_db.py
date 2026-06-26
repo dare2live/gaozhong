@@ -53,6 +53,10 @@ def main() -> None:
     from backend.services.imports import eol_import
     print(f"  {eol_import.import_eol_exams(con)}")
 
+    print("\n=== Layer 2a2: 2026 真题入库 (辽宁新高考全国II卷, 锦宏镜像PDF+双通道转录, group级) ===")
+    from backend.services.imports import xgkii2026_import
+    print(f"  {xgkii2026_import.import_xgkii_2026(con)}")
+
     print("\n=== Layer 2b: 真题 cross-verify 门禁 (宪法 §8.3) ===")
     try:
         from scripts.tools.audit.cross_verify_pdf import verify_year, PDF_MAP

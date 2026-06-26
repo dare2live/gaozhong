@@ -67,7 +67,7 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 12  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变
+SIZE_BIG_BASELINE = 13  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13
 
 
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:

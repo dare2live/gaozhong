@@ -538,17 +538,23 @@ assertions:
     query: "SELECT count(*) FROM zhongkao_questions WHERE content_status IS NULL OR (content_status='complete' AND (raw_question LIKE 'walled%' OR answer IS NULL OR TRIM(answer)=''))"
     expect: {op: "==", value: 0}
   - id: gaokao-count-baseline
-    claim: "高考真题计数基线 466 (B1双源去重后, 非陈旧472); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
+    claim: "高考真题计数基线 474 (B1双源去重466 + 2026锦宏镜像8 group, 写作不入); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions"
-    expect: {op: "==", value: 466}
+    expect: {op: "==", value: 474}
   - id: gaokao-liaoning-baseline
-    claim: "高考辽宁卷计数基线 182 (新课标II §7, B1去重后非陈旧188); 防漂移 (审计 HIGH#3)"
+    claim: "高考辽宁卷计数基线 190 (新课标II §7, B1去重182 + 2026锦宏镜像8); 防漂移 (审计 HIGH#3)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE province LIKE '辽宁%'"
-    expect: {op: "==", value: 182}
+    expect: {op: "==", value: 190}
+  - id: xgkii-2026-truth-imported
+    claim: "2026新高考全国II卷英语入库(锦宏镜像PDF双通道转录, group级8组 听力/阅读ABCD/七选五/完形/语法, 写作不入): province=辽宁/paper_type新课标II/客观题答案齐, source_repo=jhgk_xgkii_english_2026 (坑16 tier-B诚实标, 非官方冒充)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT count(*) FROM exam_questions WHERE year=2026 AND province LIKE '辽宁%' AND paper_type='新课标 II 卷' AND source_repo='jhgk_xgkii_english_2026'"
+    expect: {op: "==", value: 8}
   - id: zhongkao-answer-fidelity
     claim: "中考MCQ答案保真: 四选一/完形∈{A-D} 五选四∈{A-E} (2024 answer-key-driven 答案=核心交付; 防小写/越界污染, 审计 HIGH#1)"
     type: duckdb_sql

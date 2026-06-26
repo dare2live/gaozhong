@@ -184,6 +184,11 @@ def verify_year(year: int, con=None) -> dict:
     except PdfUnreadableError as e:
         # 损坏/非PDF源 → skip (不崩 init_db, 不假过): 该年真题数据另有可信源 (如 Updates JSON)
         return {"year": year, "status": "skip", "reason": str(e), "pdf_source_id": pdf_source_id}
+    if len((pdf_text or "").strip()) < 200:
+        # 扫描图 PDF (无文字层, 如 2026 锦宏镜像): PDF-text 交叉验证不适用 (无文字可比), 不假过 →
+        # 题面真值 = 双通道 ocrmac×视觉裁决转录 (.txt, 见 sources.yaml); 该年另由 D0/moth 断言守门 (避坑1绿门假绿)。
+        return {"year": year, "status": "skip", "pdf_source_id": pdf_source_id,
+                "reason": "scanned PDF (no text layer); 题面 verified via dual-channel transcript, gated by D0/moth"}
     pdf_words = set(re.findall(r"[a-zA-Z]{4,}", pdf_text.lower()))
     rows, jsonl_entries = _load_structured(year, con)
     sources = list(rows) + [(e.get("source", ""), e.get("question_type", ""),
