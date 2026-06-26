@@ -877,9 +877,8 @@
             ([era, types]) => `<div class="block"><b>${era}</b>: ${Object.entries(types).sort((a,b)=>b[1]-a[1]).slice(0, 4).map(([t,n])=>`${t}(${n})`).join(" / ")}</div>`
           ).join("") || "<div class='block'>无</div>"}
         </div>
-      </div>
-
-      <p style="margin-top:1rem;color:#888">老 /teacher 图谱保留为兼容 → <a href="/teacher" target="_blank">/teacher</a></p>`;
+      </div>`;
+      // (移除过时指针: 老 /teacher 图谱已 302 收敛进本 graph tab, "保留为兼容" 说明作废)
 
     // 异步载热门 concept (high exam_status=core word 前 20)
     try {

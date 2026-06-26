@@ -12,6 +12,21 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 叙事须收, 别narrate成"命题迁移真值"。
 - **硬编码campaign(11 commit)净影响**: 纯内部清洁(单点/中立leaf/config化), **交付门一格未动**; 2个"bug修"是潜伏陷阱defuse(vocab容差YAML孤儿)+前端标签归一, 非live修复。别把"代码更干净"读成"更接近能交付"。
 
+## 最近 session (2026-06-25/26): 教研室17项 punch-list 全清 — 断链矿口接通 + 全量收敛单一入口
+
+> 用户决策: "先不引入单/多老师验证(②③轨), 把教研室(单用户内网教研员)功能做好做完善" + "全量收敛单一入口"。
+> 真相源 = `docs/jiaoyanshi_completion_plan.md`(创世层3死亡红线 + 判断法典 + 17项punch-list + §进度)。
+> 性质 = 把"数据算好+API live却前端断链/无矿口/无导出/困legacy"打磨成"主入口app.html一处可达可导出"。**全程三门绿+sherpa GO+verify-the-verifier**。
+
+**高价值批 (#1-5)**: #1词典徽章85%裸码→GZ_CAT.glossSource单点 · #2 exam_point浮窗真题断链(加tests_exam_point+子题分支) · #3考点图可点弹浮窗(GZ.openPopup) · #4浮窗渲attrs教学元数据 · #5 shared导出/打印(exportChartPNG/CSV跨7区)。
+**诚实/减债批 (#11/12/14/16/17)**: #11 D区新era视觉降级(灰虚线+方向性叙事) · #12 blueprint练习卷接矿口 · #14 F卡era锁徽章 · #16题库详情内联modal+删死options分支 · #17侧栏live audit。
+**收敛批 (#6-10/#13, 全量收敛)**: #6自定义组卷进SPA · #7单元备课tab · #8课节materials矿口(按reason分3层, stage/cefr_level图谱管道滤掉) · #9中考语篇填空逐空考点表(_kaodian_pivot单点+修blueprint senior drop真bug) · #10 word_sense跨阶段多义全链路(/api/word_detail新路由+dict点展开, J4必标"方向性参考") · #13教材浏览tab(14册77单元+PDF+城市版本+跨版本对照, 56单元无匹配诚实空)。
+**legacy下线**: /teacher /legacy /index.html → 302收敛到/(Handler._REDIRECTS, ?moved=X前端movedBanner提示); 旧html保留可逆; /student未动。
+
+**verify-the-verifier 抓的真问题**: #2子题EN-XGKII不在qbank需独立分支 · #8 stage/cefr_level纯图谱节点漏滤 · #9 blueprint高中侧p.senior被drop(71对深化全看不见) · #13 cross_version param是unit非unit_id + nav误删teaching行。
+**门**: moth 79→104断言(+教研室15条: exam-point-popup/export-print/blueprint/cog-newera-honest/lesson-compose-in-spa/course-session-materials/k12-pivot/word-detail/textbook/legacy-converged等)。新增前端tab: lesson/textbook; 新路由: /api/word_detail · /api/recommend/cities。
+**净影响**: 教研员可用性大升(矿口接通+导出+单一入口), 但**②③轨交付门(auth/Docker/真老师/学情真数据)按用户决策刻意未碰** — 交付裁决(①pilot READY/②③NOT-READY)不变。
+
 ## 最近 session (2026-06-22 续): 硬编码全局收口 campaign — 两轮 11 commit + 穷尽扫描补漏
 
 > 用户硬约束: "硬编码应从全局移除, 都用模块+数据+配置文件实现." 全程 verify-the-verifier + 行为等价验证 + 三门绿 + moth锁.
