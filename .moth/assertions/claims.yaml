@@ -153,6 +153,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import inspect; from backend.services import thresholds; from backend.services.audit import curriculum; from backend.services.question_bank import loader as ql; from backend.services.course import scenarios; from backend.services.exercise import cloze; ok=(thresholds.get_threshold('extraction.section_text_max_chars')==5000 and thresholds.get_threshold('vocab.level_tolerance')==100 and 'get_threshold' in inspect.getsource(curriculum._level_sev) and 'difficulty_char_threshold' in inspect.getsource(ql._difficulty) and 'section_text_max_chars' in inspect.getsource(cloze) and scenarios.NGRAM_N==10); print(0 if ok else 1)"]
     expect: {op: "==", value: "0"}
+  - id: blueprint-practice-wired
+    claim: "蓝图练习卷接矿口(教研室#12): qbank tab 调 /api/exercise/blueprint_practice 渲 paper + 诚实标 composition_basis(结构对齐非预测非押题); 原0前端消费空转修复"
+    type: shell
+    command: ["bash", "-c", "grep -q 'blueprint_practice' frontend/static/app_router.js && grep -q 'composition_basis\\|非预测' frontend/static/app_router.js && echo 0 || echo 1"]
+    expect: {op: "==", value: "0"}
   - id: export-print-wired
     claim: "导出/打印能力在位(教研室#5): common.js 导出 exportChartPNG/exportCSV 共享helper + beike图卡⬇PNG/打印本页 + dict⬇CSV 消费; 研判产物可带进教研会/打印"
     type: shell

@@ -340,7 +340,14 @@
     const d = st.by_difficulty || {};
     CONTENT.innerHTML = `
       <h2>题库 + 组卷 <span class="muted" style="font-size:14px;font-weight:400">${totalN} 题 · 仅已核验真题 (无押题)</span></h2>
-      <p class="muted" style="margin:2px 0 12px;font-size:12.5px">按题型筛选浏览; 组卷走<a href="/teacher#compose" target="_blank">蓝图结构练习卷</a> (题面均历年真题, 结构对齐非预测)。难度 难 ${d.hard || 0} · 中 ${d.mid || 0} · 易 ${d.easy || 0}。</p>
+      <p class="muted" style="margin:2px 0 10px;font-size:12.5px">按题型筛选浏览; 或一键生成蓝图练习卷(题面均历年真题, 结构对齐非预测)。难度 难 ${d.hard || 0} · 中 ${d.mid || 0} · 易 ${d.easy || 0}。</p>
+      <div class="bk-filter" id="qb-blueprint" style="margin-bottom:10px;">
+        <span class="bk-flabel">蓝图练习卷</span>
+        <label style="font-size:12px;color:#666;">题量 <input id="qb-bp-total" type="number" value="30" min="5" max="60" style="width:54px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+        <button id="qb-bp-go" class="bk-pill on">🧩 生成蓝图练习卷</button>
+        <span class="muted" style="font-size:11px;">按考纲蓝图结构从真题加权抽样 · 非预测/非押题</span>
+      </div>
+      <div id="qb-paper"></div>
       <div class="bk-filter" id="qb-filters">
         <button class="bk-pill on" data-qt="__all">全部 ${totalN}</button>
         ${types.map(([k, n]) => `<button class="bk-pill" data-qt="${k}">${k} ${n}</button>`).join("")}
@@ -360,6 +367,31 @@
       $$("#qb-filters .bk-pill").forEach(p => p.classList.toggle("on", p.dataset.qt === b.dataset.qt));
       loadList();
     });
+    // #12: 蓝图练习卷接矿口 (/api/exercise/blueprint_practice 原0前端消费空转; 诚实=结构对齐非预测)
+    const genBlueprint = async () => {
+      const total = Math.max(5, Math.min(60, parseInt($("#qb-bp-total").value, 10) || 30));
+      const box = $("#qb-paper");
+      box.innerHTML = `<p class="muted">生成中...</p>`;
+      const p = await fetchJSON(`/api/exercise/blueprint_practice?total=${total}`).catch(() => null);
+      if (!p || !p.questions) { box.innerHTML = `<p class="muted">生成失败</p>`; return; }
+      const cb = p.composition_basis || {};
+      const esc = s => (s || "").replace(/</g, "&lt;");
+      const shortf = (p.shortfalls && p.shortfalls.length)
+        ? `<p class="muted" style="color:#9a6a00;font-size:12px;margin:4px 0;">注 部分题型库存不足: ${p.shortfalls.map(s => `${s.question_type || s.type || ""}缺${s.shortfall ?? s.missing ?? ""}`).join(" · ")}（诚实披露, 不补押题）</p>`
+        : "";
+      box.innerHTML = `
+        <div class="bk-card" style="margin:6px 0 12px;">
+          <div class="bk-h"><span>蓝图练习卷 <small>${p.actual_total}/${p.target_total} 题</small></span>
+            <button id="qb-bp-print" class="bk-export">🖶 打印此卷</button></div>
+          <p class="muted" style="font-size:12px;margin:0 0 6px;">${esc(cb.positioning)}</p>
+          <p class="muted" style="font-size:11px;margin:0 0 8px;">依据: <b>${esc(cb.selection_basis)}</b></p>
+          ${shortf}
+          <ol style="padding-left:1.4rem;font-size:13px;line-height:1.5;">
+            ${p.questions.map(q => `<li style="margin:3px 0;"><span class="qb-tb">${esc(q.qtype)}</span> <span style="color:#888;font-size:11px;">#${q.qb_id}·${esc((q.difficulty||""))}</span><br><span>${esc((q.stem || "").slice(0, 110))}…</span> <span style="color:#185FA5;">[答:${esc(q.answer || "")}]</span></li>`).join("")}
+          </ol></div>`;
+      const pb = $("#qb-bp-print"); if (pb) pb.onclick = () => window.print();
+    };
+    $("#qb-bp-go").onclick = genBlueprint;
     await loadList();
   });
 

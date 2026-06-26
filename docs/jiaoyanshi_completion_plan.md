@@ -93,5 +93,7 @@
   - ☑ #2 exam_point浮窗真题断链 → _fetch_questions 加 tests_exam_point + 子题分支 (d19408a; 记叙文8真题/推断8子题诚实/word回归; moth锁)。
   - ☑ #3 考点图可点弹浮窗 → GZ.openPopup导出 + beike/cooccur图click (afee1d3; 端到端"真题命中8"; #2+#3=考点关联矿口打通)。
   - ☑ #4 浮窗显教学元数据 → renderHTML渲attrs chips (preview: 核心/辽宁命中53/义教/teaching_hint; 不再丢弃)。
-  - ☐ #5 shared导出/打印 (M, 下一项)。 ☐ #12 blueprint接矿口。
-- 累计 4/17 done, 三门全程绿 + sherpa GO。Loop 续 #5。
+  - ☑ #5 shared导出/打印 (e67d88d; common.js exportChartPNG/exportCSV + beike5图卡⬇PNG/打印 + dict⬇CSV + print CSS; preview真PNG/有效CSV)。
+  - ☑ #12 blueprint练习卷接矿口 (qbank tab 调端点渲30题+诚实"非预测非押题"+blueprint_fixed; 原0消费空转修)。
+- **High-value 批 6/6 全清** ✅。累计 6/17 done, 三门全程绿 + sherpa GO。
+- 待续: 收敛批 #6 compose进SPA / #7 备课进SPA / #8 课materials矿口 / #9 K12 10维蓝图 / #10 word_sense; 诚实批 #11 新era降级 / #14 era锁徽章 / #16 详情modal / #17 侧栏live; #13 教材tab(L)。
