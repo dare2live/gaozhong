@@ -555,6 +555,16 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
+  - id: textbook-tab-cities-truth
+    claim: "教研室#13: 教材tab城市选择器从/api/recommend/cities真值(liaoning_city_textbook_choice 14地市)不前端hardcode; cities服务单点返城市→版本"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services import recommend as r;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);cs=r.cities(c);c.close();print('OK' if len(cs)==14 and all('city' in x and 'publisher' in x for x in cs) else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: textbook-tab-in-spa
+    claim: "教研室#13: 教材浏览tab进主SPA(textbook.js registerTab) — 14册77单元+PDF(/api/textbooks)+跨版本对照(/api/recommend/cross_version_units param=unit), 无匹配诚实返空非杜撰(宁缺毋滥)"
+    type: shell
+    command: ["bash", "-c", "grep -qF 'registerTab(\"textbook\"' frontend/static/textbook.js && grep -qF '/api/textbooks' frontend/static/textbook.js && grep -qF 'cross_version_units?unit=' frontend/static/textbook.js && grep -qF '无同主题对照' frontend/static/textbook.js && grep -qF 'textbook.js' frontend/app.html && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: word-detail-api-truth
     claim: "教研室#10: /api/word_detail 跨阶段多义 read单算点(word_sense.word_detail)=DB真值(power高中new_senses + provenance从edge读=dual_model_adversarial); 独立DB读对账防verifier自欺(坑1)"
     type: shell

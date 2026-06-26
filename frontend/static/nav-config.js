@@ -19,6 +19,7 @@ window.GZ_NAV = [
     { id: "dict", label: "考试词典", count: "dict", icon: '<path d="M19 4v16H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9 4v16"/>' },
     { id: "jiangke", label: "讲课调取", icon: '<path d="M3 5a17 17 0 0 1 9 2 17 17 0 0 1 9-2v13a17 17 0 0 0-9 2 17 17 0 0 0-9-2z"/><path d="M12 7v15"/>' },
     { id: "lesson", label: "单元备课", icon: '<path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M14 3v5h5"/><path d="M8 13h6"/><path d="M8 17h4"/>' },
+    { id: "textbook", label: "教材浏览", icon: '<rect x="4" y="3" width="6" height="18" rx="1"/><rect x="14" y="3" width="6" height="18" rx="1"/><path d="M4 8h6"/><path d="M14 8h6"/>' },
     { id: "teaching", label: "分层教学", count: "courses", icon: '<path d="M3 4h18"/><path d="M4 4v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4"/><path d="M12 15v4"/><path d="M9 19h6"/>' },
     { id: "k12", label: "K12衔接", icon: '<path d="M9 7H6.5a3 3 0 0 0 0 6H9"/><path d="M15 7h2.5a3 3 0 0 1 0 6H15"/><path d="M8.5 10h7"/>' },
   ]},

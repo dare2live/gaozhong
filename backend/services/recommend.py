@@ -8,6 +8,14 @@ import duckdb
 from backend.services import canonical, vocab
 
 
+def cities(con: duckdb.DuckDBPyConnection) -> list[dict]:
+    """辽宁地市 → 教材版本短名 (city 选择器数据源, 单点; 前端不 hardcode 城市名/版本)."""
+    rows = con.execute(
+        "SELECT city, publisher_short FROM liaoning_city_textbook_choice "
+        "WHERE subject = '英语' ORDER BY city").fetchall()
+    return [{"city": c, "publisher": p} for c, p in rows]
+
+
 def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
     """城市 → 教材版本 → 7 册 unit 列表 + 累计已学词数."""
     row = con.execute("""

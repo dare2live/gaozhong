@@ -5,6 +5,12 @@ from backend.api.db import db_ro
 from backend.services import recommend as r
 
 
+def api_cities(_qs: dict) -> list[dict]:
+    con = db_ro()
+    try: return r.cities(con)
+    finally: con.close()
+
+
 def api_city_curriculum(qs: dict) -> dict:
     city = qs.get("city", ["沈阳"])[0]
     con = db_ro()
@@ -35,6 +41,7 @@ def api_unit_exam_alignment(qs: dict) -> dict:
 
 
 ROUTES = {
+    "/api/recommend/cities": api_cities,
     "/api/recommend/city_curriculum": api_city_curriculum,
     "/api/recommend/top_exam_words": api_top_exam_words,
     "/api/recommend/cross_version_units": api_cross_version_units,
