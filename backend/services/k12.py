@@ -66,11 +66,31 @@ def zhongkao_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         "WHERE analysis IS NOT NULL AND question_type LIKE '语篇填空%' ORDER BY question_id").fetchall()
     status = dict(con.execute(
         "SELECT content_status, COUNT(*) FROM zhongkao_questions GROUP BY 1").fetchall())
+    pivot = _kaodian_pivot(kaodian)  # 逐空 pivot (空号×年) 单算点, 前端禁重pivot (铁律1)
     return {
         "exam_type": "中考", "province": "辽宁", "paper": "辽宁省统一(2024起)", "years": [2024, 2025],
         "by_question_type": [{"type": t, "n": n} for t, n in by_type],
         "语篇填空考点": [{"year": y, "qid": q, "考点": a} for y, q, a in kaodian],
-        "content_status": status,
+        "语篇填空_pivot": pivot,
         "data_honesty": ("题型骨架完整, 但题面/答案部分门控 — "
                          "2024 题面免费源全门控(仅官方答案可得), 2025 部分小题答案待补; 见 content_status"),
+    }
+
+
+def _kaodian_pivot(kaodian: list) -> dict:
+    """语篇填空逐空 pivot: 空号(qid末段) × 年 → 考点. 单算点 reshape (前端禁重pivot, 铁律1).
+
+    辽宁中考语篇填空固定每年 10 空(31-40), 每空 1 语法考点 = 高考语法填空考点全集(N=2 省统一卷实证).
+    年列从数据派生(不 hardcode 年份, 防漂移); 缺空留空串(诚实非补零).
+    """
+    by_blank: dict[str, dict] = {}
+    for y, q, a in kaodian:
+        blank = q.rsplit("-", 1)[-1]
+        by_blank.setdefault(blank, {})[str(y)] = a
+    years = sorted({str(y) for y, _, _ in kaodian})
+    blanks = sorted(by_blank, key=lambda b: int(b) if b.isdigit() else 0)
+    return {
+        "years": years,
+        "rows": [{"blank": b, "考点": {yr: by_blank[b].get(yr, "") for yr in years}} for b in blanks],
+        "basis": "中考语篇填空考点 = 高考语法填空考点全集 (N=2 省统一卷实证, zhongkao_gaokao_alignment.md)",
     }

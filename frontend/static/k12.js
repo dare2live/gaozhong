@@ -13,13 +13,16 @@
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">K12 衔接 · 初中 → 高中</h2>
-<p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空 10 维语法 = 高考语法填空考点全集 (最高优先级地基)</p>
+<p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空逐空考点 = 高考语法填空考点全集 (最高优先级地基)</p>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" style="height:300px;"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" style="height:300px;"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:#9a6a00;"></p></section>
 </div>
-<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>B 10维语法蓝图 <small>中考语篇填空 ∩ 高考语法填空 (deepens 衔接边)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
-  <p class="muted" style="font-size:11px;margin:0 0 8px;">N=2 省统一卷实证(非趋势) · 初中学牢 → 高中深化 · 点对查关联</p>
+<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>B 语篇填空逐空考点 <small>每年10空 = 高考语法填空考点全集</small></span><span class="bk-src">/api/zhongkao/distribution</span></div>
+  <p class="muted" style="font-size:11px;margin:0 0 8px;">辽宁中考语篇填空固定 10 空(31-40), 每空 1 语法考点 · 这 10 空 = 高考语法填空(7空)的考点母集 (N=2 省统一卷实证, 非趋势)</p>
+  <div id="k12-pivot"></div></section>
+<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>D 细粒度语法点初高衔接 <small>deepens 边 (初中学牢→高中深化)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
+  <p class="muted" style="font-size:11px;margin:0 0 8px;">细粒度语法点逐一衔接(非10维粗分) · 初中掌握 → 高中同名深化 · N=2 实证</p>
   <div id="k12-bp"></div></section>`;
   }
 
@@ -68,14 +71,40 @@
       : "";
   }
 
+  // 语篇填空逐空考点 pivot 表 (空号×年) — #9: service 单算点产物, 此前被前端 drop。
+  // 考点文本如 "and连词" = 答案 + 语法类别; 展示时轻分割(纯排版, 非发明taxonomy), 不匹配则原样。
+  function _splitKaodian(txt) {
+    const m = /^([^一-龥]+?)\s*([一-龥].*)$/.exec(txt || "");
+    return m ? { ans: m[1].trim(), cat: m[2].trim() } : { ans: "", cat: txt || "" };
+  }
+  function renderPivot(d) {
+    const p = d["语篇填空_pivot"];
+    const el = G.$("#k12-pivot");
+    if (!el) return;
+    if (!p || !p.rows || !p.rows.length) { el.innerHTML = '<p class="muted" style="font-size:12px;">暂无语篇填空考点数据</p>'; return; }
+    const yrs = p.years || [];
+    const cell = (txt) => {
+      if (!txt) return '<span class="muted">—</span>';
+      const s = _splitKaodian(txt);
+      return `${s.ans ? `<span style="font-family:var(--mono,monospace);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:#0C447C;padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
+    };
+    el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="text-align:left;border-bottom:2px solid #ddd;">
+        <th style="padding:5px 8px;width:64px;">空号</th>${yrs.map(y => `<th style="padding:5px 8px;">${y} 中考考点</th>`).join("")}</tr></thead>
+      <tbody>${p.rows.map(r => `<tr style="border-bottom:1px solid #eee;">
+        <td style="padding:5px 8px;color:#888;">第 ${r.blank} 空</td>${yrs.map(y => `<td style="padding:5px 8px;">${cell(r["考点"][y])}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table><p class="muted" style="font-size:11px;margin:8px 0 0;">${p.basis || ""}</p>`;
+  }
+
   function renderBlueprint(d) {
     const pairs = d.pairs || [];
-    G.$("#k12-bp").innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;">` +
+    // #9 修 bug: 原代码高中侧 <span>高中</span> 把 p.senior 整个 drop, 只显字面"高中"。
+    G.$("#k12-bp").innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;">` +
       pairs.map(p => `<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 8px;background:var(--color-background-secondary,#f7f7f4);border-radius:6px;">
         <span style="background:#E1F5EE;color:#085041;padding:2px 7px;border-radius:5px;">初中 ${p.junior}</span>
         <span style="color:#888;">→</span>
-        <span style="background:#E6F1FB;color:#0C447C;padding:2px 7px;border-radius:5px;">高中</span></div>`).join("") +
-      `</div><p class="muted" style="font-size:11px;margin:8px 0 0;">共 ${d.n} 对衔接 · ${d.basis}</p>`;
+        <span style="background:#E6F1FB;color:#0C447C;padding:2px 7px;border-radius:5px;">高中 ${p.senior || p.junior}</span></div>`).join("") +
+      `</div><p class="muted" style="font-size:11px;margin:8px 0 0;">共 ${d.n} 对细粒度衔接边(非10维粗分) · ${d.basis}</p>`;
   }
 
   registerTab("k12", async () => {
@@ -87,6 +116,7 @@
       fetchJSON("/api/zhongkao/distribution").catch(() => ({ by_question_type: [] })),
     ]);
     if (window.echarts) { renderStage(st); renderZk(zk); }
+    renderPivot(zk);
     renderBlueprint(bp);
     window.addEventListener("resize", () => { chS && chS.resize(); chZ && chZ.resize(); });
   });

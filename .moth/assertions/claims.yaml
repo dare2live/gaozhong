@@ -555,6 +555,16 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
+  - id: k12-yupian-pivot-10x2
+    claim: "教研室#9: 中考语篇填空逐空考点pivot单算点(k12.zhongkao_distribution.语篇填空_pivot)=10空×{2024,2025}, 此前前端drop的20考点now surfaced; 年份从数据派生不hardcode"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services import k12;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=k12.zhongkao_distribution(c)['语篇填空_pivot'];c.close();print('OK' if len(p['rows'])==10 and p['years']==['2024','2025'] else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: k12-blueprint-senior-rendered
+    claim: "教研室#9: k12前端渲pivot表(renderPivot) + blueprint高中侧p.senior不再drop(原<span>高中</span>裸字符bug修, 71对细粒度衔接非10维粗分诚实标)"
+    type: shell
+    command: ["bash", "-c", "grep -qF 'renderPivot' frontend/static/k12.js && grep -qF '高中 ${p.senior' frontend/static/k12.js && grep -qF '非10维粗分' frontend/static/k12.js && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: course-session-materials-in-spa
     claim: "教研室#8: 课节modal接/api/course/session真值矿口(40节course_materials非空壳), 按reason分3层渲染(核心/真题/关联), 纯图谱结构节点stage/cefr_level滤掉(诚实分层: 管道≠本节内容)"
     type: shell
