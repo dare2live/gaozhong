@@ -75,6 +75,12 @@
 | **P0-4 cognitive `_SUBQ` glob(修高考漏年) + anchor改UNKNOWN不剔** | 高考2024/25/26补cognitive; **中考维诚实标unknown不杜撰** | 中(诚实分层语义review) |
 | **P0-5 中考相关漂移计数走 rebaseline**(zhongkao_total等) | 中考卷zhongkao_total 90→135不必手敲 | 中(一次性对账) |
 
+> **P0-4 cognitive 实证裁定 (2026-06-26 controller核验, verify-the-verifier 修正agent)**: `_truth_valid_years` 用
+> `all(辽宁markers)` 门(剔甲卷冒辽宁, 坑3)。实证 xgkii_2021_2025_subquestions.jsonl 含 **2021/2023/2024/2025(无2022)**:
+> 2025=45行**0有解析**(数据阻塞,源只给答案无设问类型,需双模型标注) · 2024=仅2行有解析(边际) · 2021=19行可救但唯一命中
+> ='Spot'(常见词)→简单 `all→any` 会让含"spot"甲卷**假阳性(坑3)**, 强marker(Trost/Zafirakou)2021 subq不含。
+> **裁定: 不做弱marker的 all→any(坑3赌不起)。安全路径**: 给2021补唯一专名强marker入 truth_anchors → `any(强marker)`安全救; 或承认cognitive仅覆盖有解析年。2026/中考 cognitive 同 exam_point 需双模型标注产物入仓, 非接线可解。
+
 ### P1 — 紧随 (传导完整)
 - exam_point genre_theme_labels 年覆盖门 + 2026/中考考点标注产物入仓(需双模型, 标方向性参考)。
 - file_manifest 对生成物改"读DB现算"。
