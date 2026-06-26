@@ -100,7 +100,12 @@ def mirror_to_jsonl(write_db_conn=None) -> dict:
         summary["by_type"][row["question_type"]] = summary["by_type"].get(row["question_type"], 0) + 1
     summary["files"] = len(summary["files"])
     if write_db_conn is not None and db_rows:
-        write_db_conn.execute("DELETE FROM exam_questions_all WHERE exam_type='高考'")
+        # P0-1 (架构优化 2026-06-26): 只删本 mirror 自己写的 source_repo, 不再 DELETE WHERE exam_type='高考'。
+        # 旧谓词过宽 — EOL(110)/2026锦宏(8)/中考 写的也是 exam_type='高考', 单独重跑此 mirror 会**静默清空它们**
+        # (仅靠 init_db Layer 2<2a<2a2 层序侥幸); 按 source_repo 精确删 = 幂等且不误伤邻入库路径 (死红线: 真值不可被捷径清空)。
+        repos = sorted({r["source_repo"] for r in db_rows})
+        write_db_conn.executemany("DELETE FROM exam_questions_all WHERE source_repo = ?",
+                                  [(r,) for r in repos])
         write_db_conn.executemany(
             "INSERT OR REPLACE INTO exam_questions_all (question_id, year, province, paper_type, "
             "question_type, raw_question, answer, analysis, source_file, source_index, source_repo) "
