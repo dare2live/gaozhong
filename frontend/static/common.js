@@ -63,7 +63,24 @@ window.GZ = (function () {
     const id = String(conceptId || "");
     const text = String(label || conceptId || "");
     const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    return `<a class="gz-concept" data-concept="${id.replace(/"/g, '&quot;')}">${safe}</a>`;
+    // a11y: tabindex+role 使无 href 的概念链接键盘可聚焦; Enter/Space 由全局 keydown 委托激活
+    return `<a class="gz-concept" tabindex="0" role="link" data-concept="${id.replace(/"/g, '&quot;')}">${safe}</a>`;
+  }
+
+  // ===== 全局键盘可达委托 (a11y RC1): 非原生可激活元素响应 Enter/Space → click =====
+  // 用法: 给可点 div/span/li 加 role="button" tabindex="0" (或 data-gz-key), click 处理已有即可键盘激活。
+  if (typeof document !== "undefined") {
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;
+      const el = e.target;
+      if (!el || typeof el.matches !== "function") return;
+      if (el.tagName === "BUTTON" || (el.tagName === "A" && el.hasAttribute("href")) ||
+          el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") return;
+      if (el.matches('a.gz-concept, [data-gz-key], [role="button"][tabindex], [role="link"][tabindex]')) {
+        e.preventDefault();
+        el.click();
+      }
+    });
   }
 
   /**

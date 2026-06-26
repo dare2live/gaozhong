@@ -29,7 +29,7 @@
         <div class="gz-popup-body">
           <div class="gz-popup-head">
             <span class="gz-popup-nav"></span>
-            <span class="gz-popup-close" onclick="window._gzClosePopup()">✕</span>
+            <button type="button" class="gz-iconbtn gz-popup-close" aria-label="关闭" onclick="window._gzClosePopup()">${window.GZ.icon('close')}</button>
           </div>
           <div class="gz-popup-content">载入中...</div>
         </div>`;

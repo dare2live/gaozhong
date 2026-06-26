@@ -10,7 +10,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">备课 · 单元备课 <button id="lp-print" class="bk-export" title="打印本单元备课">🖶 打印</button></h2>
+<h2 style="margin:0 0 2px;">备课 · 单元备课 <button id="lp-print" class="bk-export" title="打印本单元备课">${G.icon("printer")} 打印</button></h2>
 <p class="muted" style="margin:0 0 12px;font-size:13px;">选 unit 看 词汇画像(越纲率)/语法+真题溯源/同主题高考真题 · service 单一整合点 · 词与考点可点弹 4 路追溯浮窗</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
   <label style="font-size:13px;color:#666;">单元 <select id="lp-unit" style="padding:6px 8px;min-width:360px;border:1px solid #d8d6cd;border-radius:6px;font-size:13px;"></select></label>

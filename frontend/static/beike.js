@@ -28,8 +28,8 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">备课 · 考点驾驶舱 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">🖶 打印本页</button></h2>
-<p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上 ⬇PNG 可单独导出</p>
+<h2 style="margin:0 0 2px;">备课 · 考点驾驶舱 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button></h2>
+<p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上可单独导出 PNG</p>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的出现占比" style="height:300px;"></div></section>

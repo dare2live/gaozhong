@@ -64,7 +64,7 @@
     const stage = w.stage || "—", sc = STAGE_C[stage] || "#888";
     const hit = w.gaokao_hit_ln ? `<b style="color:#993C1D;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
     return `<tr style="border-bottom:1px solid #ece9e0;">
-      <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed #b9b6ab;">${w.word}</span></td>
+      <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed #b9b6ab;">${w.word}</span></td>
       <td style="padding:6px 8px;color:#444;">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>
       <td style="padding:6px 8px;"><span style="color:${sc};font-size:12px;">${stage}</span></td>
       <td style="padding:6px 8px;font-size:12px;color:#888;">${w.curriculum_level || "—"}</td>

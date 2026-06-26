@@ -92,8 +92,8 @@
     const bar = document.createElement("div");
     bar.style.cssText = "background:#FBF3E0;border-bottom:1px solid #E3CF95;color:#7A5A12;font-size:13px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;";
     bar.innerHTML = `<span>旧版「${label}」功能已并入此统一入口（备课/组卷/教材/图谱/词典各 tab）。请更新书签到本页。</span>` +
-      '<span style="cursor:pointer;padding:0 6px;" title="关闭">✕</span>';
-    bar.querySelector("span:last-child").onclick = () => bar.remove();
+      `<button class="gz-iconbtn" aria-label="关闭" title="关闭" style="padding:0 6px;">${GZ.icon("close")}</button>`;
+    bar.querySelector("button").onclick = () => bar.remove();
     document.body.insertBefore(bar, document.body.firstChild);
   }
 
@@ -173,7 +173,7 @@
         <h3>${layer} <span class="layer-meta">${layerMeta[layer]} · ${items.length} 节</span></h3>
         <div class="course-grid">`;
       for (const c of items) {
-        html += `<div class="course-card ${c.layer}" onclick="window._openHandout(${c.course_id})">
+        html += `<div class="course-card ${c.layer}" role="button" tabindex="0" onclick="window._openHandout(${c.course_id})">
           <span class="cid">#${c.course_id}</span>
           <span class="layer-badge">${c.block_kind}</span>
           <div><strong>${c.title.replace(/^[GFINAL\d_·]+·/, "")}</strong></div>
@@ -184,7 +184,7 @@
     }
     html += `<div id="handout-modal" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="modal-body">
-        <span class="close-btn" onclick="document.getElementById('handout-modal').classList.remove('open')">✕</span>
+        <button class="gz-iconbtn close-btn" aria-label="关闭" onclick="document.getElementById('handout-modal').classList.remove('open')">${GZ.icon("close")}</button>
         <button class="print-btn" onclick="window.print()">打印 / PDF</button>
         <div id="handout-md">载入中 ...</div>
       </div>
@@ -234,7 +234,7 @@
 
   function _renderPrinciples() {
     return `<div style="text-align:right">
-      <span class="principles-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+      <span class="principles-toggle" role="button" tabindex="0" onclick="this.nextElementSibling.classList.toggle('open')">
         生成规则 (R2/R5/D0)
       </span>
       <div class="principles-body">
@@ -336,7 +336,7 @@
         if (opts.length) {
           html += `<ul class="gz-quiz-opts">`;
           opts.forEach(o => {
-            html += `<li data-label="${o.label}" onclick="window._selectOpt(this)">${o.label}. ${o.text}</li>`;
+            html += `<li data-label="${o.label}" role="button" tabindex="0" onclick="window._selectOpt(this)">${o.label}. ${o.text}</li>`;
           });
           html += `</ul>`;
         } else {
@@ -513,7 +513,7 @@
       </div>
       ${GZ.audioPlayer(null, q.audio_duration)}
       <div style="margin:0.4rem 0;font-size:0.9em">${(q.stem_preview || "").replace(/\n/g, "<br>")}</div>
-      <span class="gz-transcript-toggle" onclick="window._showTranscript(${q.qb_id}, this)">显示原文</span>
+      <span class="gz-transcript-toggle" role="button" tabindex="0" onclick="window._showTranscript(${q.qb_id}, this)">显示原文</span>
       <div class="gz-transcript" id="transcript-${q.qb_id}" style="display:none">载入中...</div>
     </div>`;
   }
@@ -665,7 +665,7 @@
         <h3>学生列表 <span class="layer-meta">点击查弱点 + 推送课节</span></h3>
         <div class="course-grid">`;
     for (const s of list.students) {
-      html += `<div class="course-card" onclick="window._openStudent('${s.student_id}')">
+      html += `<div class="course-card" role="button" tabindex="0" onclick="window._openStudent('${s.student_id}')">
         <strong>${s.name}</strong> <span class="layer-badge">${s.grade}</span>
         <div class="block">学号: ${s.student_id}</div>
         <div class="block">${s.school} · ${s.city}</div>
@@ -674,7 +674,7 @@
     html += `</div></section>
       <div id="student-modal" onclick="if(event.target===this)this.classList.remove('open')">
         <div class="modal-body">
-          <span class="close-btn" onclick="document.getElementById('student-modal').classList.remove('open')">✕</span>
+          <button class="gz-iconbtn close-btn" aria-label="关闭" onclick="document.getElementById('student-modal').classList.remove('open')">${GZ.icon("close")}</button>
           <div id="student-content">载入中...</div>
         </div>
       </div>`;
