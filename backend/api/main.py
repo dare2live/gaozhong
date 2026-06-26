@@ -39,12 +39,17 @@ def guess_mime(name: str) -> str:
 class Handler(BaseHTTPRequestHandler):
     server_version = "gaozhong/0.2"
     # 页面路由表 (path 集合 → html); / 默认 app 驾驶舱 (A6)
+    # 全量收敛单一入口 (用户 2026-06 决策): legacy /teacher /legacy /index.html 功能已全移植进主 SPA
+    # (overview/exam_point/cooccur→考点驾驶舱 · lesson→单元备课 · qbank/compose→题库组卷 · 14地市/PDF→教材浏览
+    #  · 词表→考试词典 · 审计→数据 · KG→知识图谱 · 趋势→驾驶舱), 故 302 收敛到 /; 旧 html 文件保留(可逆)。
     _PAGE_ROUTES = (
         (("/", "/app", "/app.html"), "app.html"),
-        (("/index.html", "/legacy"), "index.html"),
         (("/student", "/student.html"), "student.html"),
-        (("/teacher", "/teacher.html"), "teacher.html"),
     )
+    _REDIRECTS = {
+        "/teacher": "/?moved=teacher", "/teacher.html": "/?moved=teacher",
+        "/legacy": "/?moved=legacy", "/index.html": "/?moved=legacy",
+    }
 
     def log_message(self, fmt, *args):
         sys.stderr.write(f"[{self.log_date_time_string()}] {fmt % args}\n")
@@ -100,6 +105,10 @@ class Handler(BaseHTTPRequestHandler):
 
     # --- dispatch helpers ---
     def _try_static(self, path: str) -> bool:
+        # legacy 单一入口收敛: /teacher /legacy /index.html → 302 到主 SPA (功能已全移植)
+        if path in self._REDIRECTS:
+            self._redirect(self._REDIRECTS[path])
+            return True
         # 页面路由表 (path in 集合 替 or 链, 降 CC; / 默认落地即驾驶舱 — A6 老师落地见考点驾驶舱非旧MVP治理面板)
         for paths, html in self._PAGE_ROUTES:
             if path in paths:
@@ -146,6 +155,12 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(payload)
+
+    def _redirect(self, location: str) -> None:
+        self.send_response(302)
+        self.send_header("Location", location)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def _send_file(self, path: Path, mime: str) -> None:
         if not path.exists() or not path.is_file():

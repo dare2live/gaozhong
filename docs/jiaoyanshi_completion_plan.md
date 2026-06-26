@@ -100,5 +100,13 @@
   - ☑ #14 F卡era锁徽章 + k12删complete恒0项(f82783a)。
   - ☑ #16 题库详情 alert→内联modal(可滚复制全文) + 删死options分支(verify-the-verifier: options全None确证死)。
   - ☑ #17 侧栏静态'0 FAIL'→live audit findings + graph tab过时"iframe嵌"注释修正。
-- **累计 10/17 done**, 三门全程绿 + sherpa GO + moth 79→94。
-- **剩余 = M收敛批 + L (都耦合 UI收敛终态 needs_user_decision)**: #6 compose进SPA(M) · #7 备课进SPA(M) · #8 课materials矿口(M) · #9 K12 10维蓝图(M) · #10 word_sense(M) · #13 教材tab(L)。#6/#7/#13 移植 legacy→SPA, 取决于 UI收敛终态拍板(302/banner/共存)。**loop 撞 needs_user_decision, 回报用户。**
+- **收敛批 (UI收敛终态已拍板=「全量收敛单一入口」, 移植 legacy→主SPA + /teacher /legacy 重定向到 /):**
+  - ☑ #7 单元备课进主SPA(abadf47; lesson.js registerTab, 78单元选择器+词汇画像/越纲率/语法/同主题真题, 词走conceptLink可点)。
+  - ☑ #6 自定义组卷进主SPA(e3d697a; qbank tab genCompose调/api/paper/compose, defMix真类型去legacy不存在题型, paperHTML/mountPaper共享渲染)。
+  - ☑ #8 课节materials矿口(b31c0f8; _openHandout接/api/course/session, 按reason分3层核心/真题/关联, stage/cefr_level纯图谱节点滤掉=诚实分层, 40节课不再空壳)。
+  - ☑ #9 中考语篇填空逐空考点(67824a5; service _kaodian_pivot单算点10空×2年, 前端renderPivot渲此前drop的20考点表; verify-the-verifier抓真bug修blueprint高中侧p.senior被drop; 诚实改标"71对细粒度衔接非10维粗分")。
+  - ☑ #10 word_sense跨阶段多义全链路(63b6542; service word_detail read单算点+/api/word_detail新路由+dict词行点展开; J4守门: dual_model必标"方向性参考"非真值; 新增义高亮; =DB真值)。
+  - ☑ #13 教材浏览tab进主SPA(e916621; textbook.js 14册77单元+PDF开整册/按页跳转+城市→版本+跨版本同主题对照; service cities单点; verify-the-verifier抓cross_version param=unit非unit_id bug + 修nav误删teaching; 56单元无对照诚实空非杜撰)。
+  - ☑ legacy下线·全量收敛单一入口(本提交; /teacher /teacher.html /legacy /index.html → 302收敛到/(?moved=X), Handler._REDIRECTS; 旧html保留可逆; 前端movedBanner提示旧书签; /student未动)。
+- **累计 17/17 done ✅ 全 punch-list 清**, 三门全程绿 + sherpa GO + moth 79→104。
+- legacy功能映射(收敛前核实全覆盖): teacher.html(overview/exam_point/cooccur/lesson/qbank/compose/graph)→SPA对应tab全有; index.html(14地市/PDF→教材浏览 · 词表→考试词典 · 审计→数据 · KG→知识图谱 · 趋势→驾驶舱 · 真题→题库)。少数legacy-only纯reference视图(主题语境/语法项目表全表)数据仍可经API/相关tab达, 未做1:1搬运(非新建scope)。

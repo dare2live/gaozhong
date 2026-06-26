@@ -555,6 +555,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
+  - id: legacy-converged-single-entry
+    claim: "教研室收尾(全量收敛单一入口): legacy /teacher /legacy /index.html 功能已全移植主SPA → 302收敛(Handler._REDIRECTS), 不再服务旧html; 前端movedBanner提示旧书签"
+    type: shell
+    command: ["bash", "-c", "python3 -c \"from backend.api.main import Handler as H;r=H._REDIRECTS;assert r.get('/teacher')=='/?moved=teacher' and r.get('/legacy')=='/?moved=legacy' and '/index.html' in r and '/teacher.html' in r; assert not any('teacher.html' in (h if isinstance(h,str) else '') or 'index.html' in (h if isinstance(h,str) else '') for _,h in H._PAGE_ROUTES)\" && grep -qF 'movedBanner' frontend/static/app_router.js && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: textbook-tab-cities-truth
     claim: "教研室#13: 教材tab城市选择器从/api/recommend/cities真值(liaoning_city_textbook_choice 14地市)不前端hardcode; cities服务单点返城市→版本"
     type: shell

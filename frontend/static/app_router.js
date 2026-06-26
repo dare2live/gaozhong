@@ -73,7 +73,21 @@
     }
   }
   window.addEventListener("hashchange", route);
-  window.addEventListener("DOMContentLoaded", () => { renderSidebar(); if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts(); });
+
+  // 全量收敛: 旧 /teacher /legacy 已 302 收敛到此(?moved=X), 顶部一次性提示(可关), 让旧书签用户知道入口已统一
+  function movedBanner() {
+    const m = new URLSearchParams(location.search).get("moved");
+    if (!m) return;
+    const label = m === "teacher" ? "教师工作台" : "旧版数据面板";
+    const bar = document.createElement("div");
+    bar.style.cssText = "background:#FBF3E0;border-bottom:1px solid #E3CF95;color:#7A5A12;font-size:13px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;";
+    bar.innerHTML = `<span>旧版「${label}」功能已并入此统一入口（备课/组卷/教材/图谱/词典各 tab）。请更新书签到本页。</span>` +
+      '<span style="cursor:pointer;padding:0 6px;" title="关闭">✕</span>';
+    bar.querySelector("span:last-child").onclick = () => bar.remove();
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
+  window.addEventListener("DOMContentLoaded", () => { renderSidebar(); movedBanner(); if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts(); });
 
   // ===================================================================
   // A. 工作台
