@@ -158,6 +158,11 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -q 'distribution_reliable' frontend/static/beike.js && grep -q '方向性参考' frontend/static/beike.js && grep -q '样本不足' frontend/static/beike.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
+  - id: lesson-tab-in-spa
+    claim: "单元备课进主SPA(教研室#7 全量收敛): lesson.js registerTab('lesson') 读 /api/lesson_plan + app.html 加载 + nav-config 有'单元备课' tab; 词 conceptLink 可点弹浮窗"
+    type: shell
+    command: ["bash", "-c", "grep -q \"registerTab(.lesson\" frontend/static/lesson.js && grep -q 'lesson_plan' frontend/static/lesson.js && grep -q 'lesson.js' frontend/app.html && grep -q '单元备课' frontend/static/nav-config.js && echo 0 || echo 1"]
+    expect: {op: "==", value: "0"}
   - id: blueprint-practice-wired
     claim: "蓝图练习卷接矿口(教研室#12): qbank tab 调 /api/exercise/blueprint_practice 渲 paper + 诚实标 composition_basis(结构对齐非预测非押题); 原0前端消费空转修复"
     type: shell
