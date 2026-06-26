@@ -13,6 +13,21 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量, cognitive边100条全explicit_label), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 引47%必同句带"n=15方向性", 别narrate成"命题迁移真值"。
 - **门覆盖(2026-06-26 实证, 反坑17)**: `d0_exam_point_check` 有**全局 provenance 不变量**(所有 tests_exam_point 边 provenance∈{dual_model_agree,explicit_label}, 按边属性非按年)→ 2026 新边自动入 D0; 加端点有效+计数门+moth(exam-point-edges-present/xgkii-2026-truth-imported/exam-year-coverage-no-stale)。**新卷传导连门禁都自动覆盖**, 这是中考一键传导的门侧保证。
 
+## 最近 session (2026-06-26 前端 RC1 phase-2 = 达标): loop自主6迭代收口三系统性缺口 (用户: "制定方案+设goal+用loop和多agents并发达到RC1")
+
+> goal-app 设 session 目标 + loop dynamic 自我节奏 + 多agent并发(iter1/2 按互斥文件)。建 RC1 验收门 `scratchpad/rc1_gate.py`(客观项) + 持久锁 `scripts/lib/frontend_rc1_check.py`+moth。**RC1 客观门全过**: emoji=0 / off-token旧红蓝=0 / 图表role=img 9/9 / sr-only / #999对比=0 / 三门绿。
+
+**6 迭代 (每轮 workflow或手改→node-check+preview+0console+三门→commit)**:
+- **iter1 (13d05b9)** a11y键盘: common.js全局keydown委托([role=button][tabindex] Enter/Space→click一处覆盖)+conceptLink可聚焦; 课节/学生卡/quiz/toggle加role+tabindex, close✕→button+SVG (4agent并发); 残留emoji清。实测focus卡Enter开modal/close关。
+- **iter2 (0a0559a)** 图表读屏: 9图role=img+**动态aria-label**(真实数据值)+**.sr-only数据表fallback**(复用service数据不重算)(4agent并发); #999→#76716A(AA); app.html audit计数aria-live。
+- **iter3 (f0a9617+5cad53e)** 令牌收敛: 图表数据色安全1:1对齐令牌族(蓝→#1F5F94/红→#BE3A2B/绿→#2E7D54/金→#9A6A00, 不合并区分色)across category-config/dict/k12/xisheng/jiangke/beike; 删死colorByTagKind; style.css+beike.css chromatic→令牌+去双声明债。
+- **iter4 (d22baa3)** echarts resize监听泄漏修(window.__rz<file> guard只绑一次, 实测多次切tab flag=1); 响应式断点统一820。
+- **iter5 (9f3aca5)** 打印保图(GZ.printWithCharts: echarts getDataURL→img注入打印后还原, 实测5图全有效PNG)接4打印按钮; students空态提示。
+- **iter6** moth防回归锁(`frontend_rc1_check.py`+断言 rc1-frontend-quality, moth 107→108)+终验收+本段。
+
+**RC1 达标裁决**: ①单老师pilot **前端 RC1 客观门全过 + 防回归锁定**(a11y键盘可达/图表读屏/D0诚实错误态+caveat/单红accent+数据色令牌族)。人验项preview实测: 键盘开关modal✓/图表富aria+sr-only✓/切tab加载占位无白屏✓/打印保图注入✓/760窄屏可用✓。**唯一剩=动员真辽宁老师真跑(Rule10, AI做不了)**。
+**文档化豁免(非RC1阻塞, 语义/数据色)**: app.css course-card/handout-seg 分层语义色(G1/G2/G3) · category-config数据编码色(已对齐令牌族) · 死文件app.js/teacher.js/teacher.css(legacy页引用, "保留可逆"需用户OK删) · 窄屏侧栏栈式(桌面pilot非阻塞)。
+
 ## 最近 session (2026-06-26 前端 RC1 phase-1): 令牌收敛 + D0诚实错误态 + emoji清除 (用户: "前端按现有架构+项目目标再次优化, 作为RC1")
 
 > 5维审计workflow(令牌/a11y/空错态+诚实/响应式/AI-tell)+综合punch-list(16 do_now+4 defer)。审计揭露**前端"局部成熟、整体未达RC1"**: dashboard走令牌干净, 但三处系统性缺口跨多tab — ①D0诚实有真漏洞(所有fetchJSON .catch静默吞500/断网=假空) ②a11y近乎零(0 role/aria/tabindex) ③令牌落地C+(旧亮红#E3120B与令牌#BE3A2B同屏+~280内联hex两套调色板)。**redesign-PRESERVE不重做**, 优先级=D0诚实>a11y>令牌收口。

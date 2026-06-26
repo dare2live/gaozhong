@@ -617,3 +617,8 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.api.routes import students as st;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=c.execute(\"SELECT a.teacher_id,b.sid FROM (SELECT DISTINCT teacher_id FROM classes WHERE teacher_id IS NOT NULL) a,(SELECT s.student_id sid,cl.teacher_id o FROM students s JOIN classes cl ON cl.class_id=s.class_id) b WHERE a.teacher_id<>b.o LIMIT 1\").fetchone();c.close();r=st.api_students_get({'id':[p[1]],'teacher_id':[p[0]]});print('OK' if 'forbidden' in str(r.get('error','')) else 'LEAK')"]
     expect: {op: regex, pattern: "OK"}
+  - id: rc1-frontend-quality
+    claim: "RC1前端质量锁: live前端无emoji(内联SVG图标) + echarts图表全有role=img读屏文字替代 + 无off-token旧红/旧蓝(单红accent+数据色对齐令牌族; category-config数据色源豁免)。防回归: 新增前端勿引emoji/旧调色板, 新图必带role=img+aria-label。"
+    type: shell
+    command: ["bash", "-c", "python3 scripts/lib/frontend_rc1_check.py >/dev/null 2>&1 && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}

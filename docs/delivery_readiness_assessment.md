@@ -35,6 +35,15 @@
 - **cognitive 新era "推断 28%→47%" 维持 n=15 方向性, 非 era 迁移真值**: 唯一通过辽宁锚门的新era真值只有 2023 单年 15 条(cognitive 边 100 条全 explicit_label, 干净映射官方7理解性技能子集; 但新era distribution_reliable=False)。引 47% 必同句带 "n=15 方向性, 非逐题真值"。
 - **2026 新卷 67 子题 cognitive 标注=0 是诚实留空**(官方教研评析未出版, `xgkii2026_import.py` 已标"无逐题解析不臆造/待官方评析交叉核验"), 非缺陷。
 
+### 🆕 前端 RC1 收口 (2026-06-26 续, loop自主6迭代)
+- 审计揭露前端"局部成熟整体未达RC1"三系统性缺口, loop+多agent 6迭代收口, **RC1 客观门全过 + moth防回归锁定** (详 RESUME 同日"前端RC1 phase-2"段):
+  - **D0诚实**: route()显式错误态(主数据fetch失败不冒充空) + .caveat-banner/.error-state令牌 + 诚实标注(n=15方向性/示例/模型推断)
+  - **a11y(WCAG-AA向)**: 全局keydown委托(可点元素键盘可达, 实测Enter开关modal) + 9图role=img+动态aria-label+sr-only数据表 + #999→AA对比 + aria-live
+  - **令牌单一调色板**: 旧亮红#E3120B/旧蓝#0a4d75全清→令牌; 图表数据色对齐令牌族; emoji全清→内联SVG; 双声明债/死代码清
+  - **健壮**: echarts resize监听泄漏修 · 打印保图(getDataURL→img) · 响应式断点统一820 · students空态引导
+  - **锁**: `scripts/lib/frontend_rc1_check.py` + moth `rc1-frontend-quality`(防新增emoji/旧调色板/漏图aria)
+- **①pilot 前端层 RC1 就绪**; 唯一剩仍是动员真老师(Rule10)。
+
 ### 本轮 AI 已收口 / 待用户
 - **[已收口·AI]** backup 首份已实跑(`data/db/backups/gaozhong_20260626_203249.duckdb` 46MB); 文档全线计数刷 live + 改引真相源; README/agent "RESUME 已删" 硬矛盾消解(RESUME=断点续传叙事交接, 数字引 moth/d0_baselines)。
 - **[待用户·Rule10]** 动员 1 名真辽宁老师真跑 pilot 30min = ①档唯一硬阻塞。
