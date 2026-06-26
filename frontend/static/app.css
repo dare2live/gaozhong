@@ -374,7 +374,12 @@
   }
   #handout-modal .close-btn, .print-btn, .principles-toggle,
   .principles-body, .gz-audio-player, .gz-transcript-toggle,
-  .answer-toggle { display: none !important; }
+  .answer-toggle, .bk-export, .bk-filter, #dict-q, #dict-stage,
+  #dict-export, #bk-crosstoggle { display: none !important; }
+  /* #5: 驾驶舱/词典/K12 分析卡整页打印 — 卡不跨页断 */
+  .bk-card, .bk-grid > section, #dict-list table { break-inside: avoid; page-break-inside: avoid; }
+  .bk-grid { display: block !important; }
+  #dict-list { max-height: none !important; overflow: visible !important; }
   .answer-body { display: block !important; }
   .handout-seg { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; }
   .handout-seg-head { background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }

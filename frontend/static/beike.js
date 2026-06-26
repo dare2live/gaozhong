@@ -28,8 +28,8 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">备课 · 考点驾驶舱</h2>
-<p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算</p>
+<h2 style="margin:0 0 2px;">备课 · 考点驾驶舱 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">🖶 打印本页</button></h2>
+<p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上 ⬇PNG 可单独导出</p>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" style="height:300px;"></div></section>
@@ -226,6 +226,26 @@
     if (sel) sel.onchange = () => { state.dim = sel.value; renderDist(); renderShift(); };
   }
 
+  // #5: 给每张含 echarts 实例的卡追加"⬇PNG"导出按钮 (getInstanceByDom 自动跳过非图卡如B区HTML)
+  function wireExports() {
+    if (!window.echarts) return;
+    G.$$(".bk-card").forEach(card => {
+      if (card.querySelector(".bk-export")) return;        // 防重复
+      let inst = null;
+      card.querySelectorAll("div[id]").forEach(d => { const i = echarts.getInstanceByDom(d); if (i) inst = i; });
+      if (!inst) return;
+      const h = card.querySelector(".bk-h");
+      if (!h) return;
+      const title = ((h.querySelector("span") || {}).textContent || "图").trim().split(" ")[0];
+      const btn = document.createElement("button");
+      btn.className = "bk-export"; btn.textContent = "⬇ PNG"; btn.title = "导出本图 PNG";
+      btn.onclick = () => G.exportChartPNG(inst, `辽宁卷_${title}.png`);
+      h.appendChild(btn);
+    });
+    const pb = G.$("#bk-print");
+    if (pb) pb.onclick = () => window.print();
+  }
+
   registerTab("beike", async () => {
     G.$("#content").innerHTML = shell();
     if (!window.echarts) { G.$("#bk-dist").innerHTML = '<p class="muted">ECharts 载入中…</p>'; await new Promise(r => setTimeout(r, 300)); }
@@ -247,6 +267,7 @@
       renderCrossToggle(); renderCogCross(cross);
     }
     renderShift();
+    wireExports();   // #5: 图卡追加 ⬇PNG + 打印按钮接线
     window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize()));
   });
 })();

@@ -189,9 +189,33 @@ window.GZ = (function () {
   }
 
   // expose
+  // ===== 导出/打印共享 helper (#5: 跨研判/词典/K12 把分析产物带进教研会/打印, 一次建解多区) =====
+  function _downloadURL(url, filename) {
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  // ECharts 图 → PNG 下载 (驾驶舱命题迁移图/词汇热力等研判图)
+  function exportChartPNG(chart, filename) {
+    if (!chart || typeof chart.getDataURL !== "function") return false;
+    _downloadURL(chart.getDataURL({ type: "png", pixelRatio: 2, backgroundColor: "#fff" }), filename || "chart.png");
+    return true;
+  }
+  // 表格 rows → CSV 下载 (词典词表/越纲清单带走; rows=对象数组, columns=[{key,label}]; BOM 兜 Excel 中文)
+  function exportCSV(rows, columns, filename) {
+    const esc = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
+    const head = columns.map(c => esc(c.label)).join(",");
+    const body = (rows || []).map(r => columns.map(c => esc(r[c.key])).join(",")).join("\n");
+    const blob = new Blob(["﻿" + head + "\n" + body], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    _downloadURL(url, filename || "export.csv");
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
   return {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
     mountLayout, colorByTagKind, conceptLink, mdToHtml, NAV,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
+    exportChartPNG, exportCSV,
   };
 })();

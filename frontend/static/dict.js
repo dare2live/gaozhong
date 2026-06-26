@@ -34,6 +34,7 @@
     <option value="">全部阶段</option><option>初中</option><option>高中必修</option><option>高中选修</option>
   </select>
   <label style="font-size:13px;color:#666;"><input type="checkbox" id="dict-exam"> 仅辽宁高考命中</label>
+  <button id="dict-export" class="bk-export" title="导出当前筛选词表 CSV (备课发学生)">⬇ CSV</button>
   <span id="dict-n" class="muted" style="font-size:12px;"></span>
 </div>
 <div id="dict-list" style="max-height:62vh;overflow:auto;"></div>`;
@@ -50,7 +51,10 @@
       <td style="padding:6px 8px;text-align:center;font-size:12px;">${hit}</td></tr>`;
   }
 
+  let lastRows = [];   // #5: 当前筛选结果, 供导出 CSV
+
   function render(rows) {
+    lastRows = rows;
     const el = G.$("#dict-list");
     G.$("#dict-n").textContent = `${rows.length} 词` + (rows.length >= 300 ? " (前300, 缩小前缀)" : "");
     if (!rows.length) { el.innerHTML = '<p class="muted" style="padding:16px;">无匹配词 — 试试其它前缀</p>'; return; }
@@ -80,6 +84,15 @@
     G.$("#dict-q").oninput = () => { clearTimeout(t); t = setTimeout(load, 220); };
     G.$("#dict-stage").onchange = load;
     G.$("#dict-exam").onchange = load;
+    // #5: 导出当前筛选词表 CSV (词/释义/源/阶段/课标级/辽宁命中), 教研员备课发学生
+    G.$("#dict-export").onclick = () => {
+      if (!lastRows.length) return;
+      G.exportCSV(lastRows, [
+        { key: "word", label: "词" }, { key: "gloss", label: "释义" },
+        { key: "gloss_source", label: "释义源" }, { key: "stage", label: "阶段" },
+        { key: "curriculum_level", label: "课标级" }, { key: "gaokao_hit_ln", label: "辽宁高考命中" },
+      ], `辽宁考试词典_${lastRows.length}词.csv`);
+    };
     await load();
   });
 })();
