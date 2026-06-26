@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-06-26T06:36:02+00:00",
+  "tool": "scripts/tools/data_sources/acquire_external_source.py",
+  "records": [
+    {
+      "generated_at": "2026-06-26T06:36:02+00:00",
+      "source_id": "local_pdf_xgkii_english_2026",
+      "name": "2026 新高考全国 II 卷英语 真题 PDF (锦宏镜像, 同 2024/2025 source family)",
+      "family": "exam_truth_source_local_pdf",
+      "org": "锦宏高考 jhgk.cn (民间聚合 tier-B; EOL 官方 2026 暂未发布, 用既有同源同 tier)",
+      "publish_url": "https://www.jhgk.cn/trendDetails.htm?id=d7c00c3c-6b56-4ea5-86f6-1b627dfa708b",
+      "year": 2026,
+      "paper_type": "新高考全国II卷",
+      "configured_status": "raw_source_acquiring",
+      "observed_scope": "锦宏直链 PDF 题面 + 答案 PDF; 题面主用(tier-B 民间聚合, 与 2024/2025 同 family), 答案待官方教育考试院评析交叉核验(坑16 dual/民间不冒充官方真值)",
+      "status": "ok",
+      "findings": [],
+      "attachments": [
+        {
+          "kind": "pdf",
+          "url": "https://www.jhgk.cn/upload/file/20260611/1781160539525089562.pdf",
+          "local_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/local_pdfs/2026_xgkii_english.pdf",
+          "text_path": null,
+          "expected_sha256": null,
+          "actual_sha256": "b415f6262c8fbfbe03c0287418d08c6cc33a1e409889bf70db9c02ad026014d1",
+          "bytes": 14787348,
+          "text_chars": null,
+          "status": "ok",
+          "action": "downloaded",
+          "findings": []
+        },
+        {
+          "kind": "pdf_answer",
+          "url": "https://www.jhgk.cn/upload/file/20260611/1781160567938008198.pdf",
+          "local_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/local_pdfs/2026_xgkii_english_answers.pdf",
+          "text_path": null,
+          "expected_sha256": null,
+          "actual_sha256": "22f789100fcd0f0e8da5c89e049eae917ea6731b3f10c3f4fd594ee1560797a8",
+          "bytes": 493890,
+          "text_chars": null,
+          "status": "ok",
+          "action": "downloaded",
+          "findings": []
+        }
+      ]
+    }
+  ],
+  "status": "ok"
+}

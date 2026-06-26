@@ -249,6 +249,27 @@ exam_sources:
         expected_sha256: e2245b5a498ea340f2617e85ad892c15e5ed83f0571394ef34afc4982a7f1818
         min_bytes: 500000
 
+  local_pdf_xgkii_english_2026:
+    name: 2026 新高考全国 II 卷英语 真题 PDF (锦宏镜像, 同 2024/2025 source family)
+    family: exam_truth_source_local_pdf
+    org: 锦宏高考 jhgk.cn (民间聚合 tier-B; EOL 官方 2026 暂未发布, 用既有同源同 tier)
+    year: 2026
+    paper_type: 新高考全国II卷
+    publish_url: https://www.jhgk.cn/trendDetails.htm?id=d7c00c3c-6b56-4ea5-86f6-1b627dfa708b
+    status: raw_source_acquired_not_import_ready
+    observed_scope: 锦宏直链 PDF 题面(12页扫描图, 0文字层需OCR) + 答案 PDF(7页有文字层, 评分参考). 题面主用(tier-B 民间聚合, 与 2024/2025 同 family), 答案待官方教育考试院评析交叉核验(坑16 dual/民间不冒充官方真值)
+    attachments:
+      - kind: pdf
+        url: https://www.jhgk.cn/upload/file/20260611/1781160539525089562.pdf
+        local_path: data/external/exam_sources/local_pdfs/2026_xgkii_english.pdf
+        expected_sha256: b415f6262c8fbfbe03c0287418d08c6cc33a1e409889bf70db9c02ad026014d1
+        min_bytes: 100000
+      - kind: pdf_answer
+        url: https://www.jhgk.cn/upload/file/20260611/1781160567938008198.pdf
+        local_path: data/external/exam_sources/local_pdfs/2026_xgkii_english_answers.pdf
+        expected_sha256: 22f789100fcd0f0e8da5c89e049eae917ea6731b3f10c3f4fd594ee1560797a8
+        min_bytes: 5000
+
   sohu_shared_new_gaokao_listening_2021_candidate:
     name: 2021 全国新高考卷英语听力试题及答案 Sohu mirror candidate
     family: listening_source_candidate
