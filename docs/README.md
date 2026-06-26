@@ -16,7 +16,9 @@
 | `goal.md` | 当前目标、铁律、阶段控制板 |
 | `backend/config/project_architecture.yaml` | 模块 / 数据 / 配置 / gate 所有权机器契约 |
 | `docs/architecture.md` | 系统分层与八条铁律 |
-| `docs/top_level_module_data_config_architecture_20260615.md` | 2026-06-15 模块 + 数据 + 配置收口设计 |
+| `docs/toplevel_architecture_design.md` | **顶层架构(现行)**: 模块+数据+配置三层范式 + 7类扩展 playbook(≤2处) + 治理/演进路线(2026-06-26) |
+| `docs/exam_ingestion_pipeline_design.md` | 真题入库管道架构优化 + 2026经验教训 + KG传导gap + P0/P1/P2(中考forcing) |
+| `docs/top_level_module_data_config_architecture_20260615.md` | 三层范式首版立法(2026-06-15, 已被 toplevel_architecture_design 承接演进) |
 
 ## Current verdict / gate evidence
 
