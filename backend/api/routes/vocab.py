@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from backend.api.db import db_ro, rows_to_dicts
+from backend.services import word_sense
 
 
 def api_cefr_vocab(qs: dict) -> list[dict]:
@@ -57,4 +58,20 @@ def api_exam_dictionary(qs: dict) -> dict:
         con.close()
 
 
-ROUTES = {"/api/cefr_vocab": api_cefr_vocab, "/api/exam_dictionary": api_exam_dictionary}
+def api_word_detail(qs: dict) -> dict:
+    """GET /api/word_detail?word=X — 跨阶段多义详情 (薄壳; 计算在 services/word_sense 单算点).
+
+    provenance=dual_model_adversarial → 前端必标'方向性参考'非真值 (守 J4)。
+    """
+    word = (qs.get("word", [""])[0] or "").strip()
+    if not word:
+        return {"error": "missing ?word"}
+    con = db_ro()
+    try:
+        return word_sense.word_detail(con, word)
+    finally:
+        con.close()
+
+
+ROUTES = {"/api/cefr_vocab": api_cefr_vocab, "/api/exam_dictionary": api_exam_dictionary,
+          "/api/word_detail": api_word_detail}

@@ -555,6 +555,16 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
+  - id: word-detail-api-truth
+    claim: "教研室#10: /api/word_detail 跨阶段多义 read单算点(word_sense.word_detail)=DB真值(power高中new_senses + provenance从edge读=dual_model_adversarial); 独立DB读对账防verifier自欺(坑1)"
+    type: shell
+    command: ["python3", "-c", "import duckdb,json;from backend.services import word_sense;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=word_sense.word_detail(c,'power');hs=[s for s in d['stages'] if s['stage']=='高中'][0];exp=json.loads(c.execute(\"SELECT attrs_json FROM nodes WHERE concept_id='word_sense:power:高中'\").fetchone()[0]);c.close();print('OK' if d['cross_stage_multi'] and sorted(hs['new_senses'])==sorted(exp['new_senses']) and d['provenance']=='dual_model_adversarial' else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: word-sense-directional-labeled
+    claim: "教研室#10: dict词行接/api/word_detail展跨阶段义项, LLM推断层必标'方向性参考'非真值(守J4死亡红线: dual_model不渲成确定真值)"
+    type: shell
+    command: ["bash", "-c", "grep -qF '/api/word_detail' frontend/static/dict.js && grep -qF '方向性参考' frontend/static/dict.js && grep -qF 'dict-word' frontend/static/dict.js && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: k12-yupian-pivot-10x2
     claim: "教研室#9: 中考语篇填空逐空考点pivot单算点(k12.zhongkao_distribution.语篇填空_pivot)=10空×{2024,2025}, 此前前端drop的20考点now surfaced; 年份从数据派生不hardcode"
     type: shell

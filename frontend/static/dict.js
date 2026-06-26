@@ -27,7 +27,7 @@
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">考试词典 · 金矿</h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · service 单算点</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · <span style="border-bottom:1px dashed #b9b6ab;">点词</span>查跨阶段多义 · service 单算点</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid #d8d6cd;border-radius:6px;font-size:14px;">
   <select id="dict-stage" style="padding:7px;border:1px solid #d8d6cd;border-radius:6px;">
@@ -40,11 +40,31 @@
 <div id="dict-list" style="max-height:62vh;overflow:auto;"></div>`;
   }
 
+  // #10: 跨阶段多义详情渲染 (word_sense; provenance=dual_model → 必标方向性参考非真值, 守 J4 死亡红线)
+  function _renderSenseDetail(d) {
+    if (!d || !d.cross_stage_multi) {
+      return '<div class="muted" style="font-size:12px;padding:6px 12px;">该词无跨阶段多义记录（单义, 或未判定为跨阶段真多义）</div>';
+    }
+    const hs = d.stages.find(s => s.stage === "高中") || {};
+    const newset = new Set(hs.new_senses || []);
+    const stageRow = (s) => {
+      const sc = STAGE_C[s.stage] || "#888";
+      const items = (s.senses || []).map(x =>
+        (s.stage === "高中" && newset.has(x))
+          ? `<span style="background:#FBEFD6;color:#8A5A00;padding:1px 6px;border-radius:4px;">${x}<span style="font-size:10px;margin-left:2px;">新增</span></span>`
+          : `<span style="padding:1px 4px;">${x}</span>`).join("、");
+      return `<div style="margin:3px 0;font-size:13px;"><span style="color:${sc};font-weight:600;">${s.stage}</span> ${items || '<span class="muted">—</span>'}</div>`;
+    };
+    return `<div style="padding:8px 12px;background:#FFFDF8;border-left:3px solid #D8A93B;">
+      <div style="font-size:11px;color:#8A5A00;margin-bottom:5px;">⚠ 跨阶段多义 · 方向性参考（双模型对抗推断 LLM 层, 非确定真值; 确定释义以上方词条释义为准）</div>
+      ${d.stages.map(stageRow).join("")}</div>`;
+  }
+
   function row(w) {
     const stage = w.stage || "—", sc = STAGE_C[stage] || "#888";
     const hit = w.gaokao_hit_ln ? `<b style="color:#993C1D;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
     return `<tr style="border-bottom:1px solid #ece9e0;">
-      <td style="padding:6px 8px;font-weight:600;">${w.word}</td>
+      <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed #b9b6ab;">${w.word}</span></td>
       <td style="padding:6px 8px;color:#444;">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>
       <td style="padding:6px 8px;"><span style="color:${sc};font-size:12px;">${stage}</span></td>
       <td style="padding:6px 8px;font-size:12px;color:#888;">${w.curriculum_level || "—"}</td>
@@ -81,6 +101,20 @@
   registerTab("dict", async () => {
     G.$("#content").innerHTML = shell();
     let t = null;
+    // #10: 点词展开跨阶段多义 (事件委托挂容器, survive render 重绘子节点); 再点收起
+    G.$("#dict-list").addEventListener("click", async (e) => {
+      const wel = e.target.closest(".dict-word");
+      if (!wel) return;
+      const tr = wel.closest("tr");
+      const nx = tr.nextElementSibling;
+      if (nx && nx.classList.contains("dict-expand")) { nx.remove(); return; }
+      const exp = document.createElement("tr");
+      exp.className = "dict-expand";
+      exp.innerHTML = '<td colspan="5" style="padding:0;"><div class="muted" style="padding:6px 12px;font-size:12px;">载入义项…</div></td>';
+      tr.after(exp);
+      const d = await fetchJSON("/api/word_detail?word=" + encodeURIComponent(wel.getAttribute("data-word"))).catch(() => null);
+      exp.querySelector("td").innerHTML = _renderSenseDetail(d);
+    });
     G.$("#dict-q").oninput = () => { clearTimeout(t); t = setTimeout(load, 220); };
     G.$("#dict-stage").onchange = load;
     G.$("#dict-exam").onchange = load;

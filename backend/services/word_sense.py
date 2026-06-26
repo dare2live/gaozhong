@@ -62,3 +62,35 @@ def build_word_senses(con: duckdb.DuckDBPyConnection) -> dict:
                         "derived_by": "word_sense_judge@workflow",
                         "source_artifact": "word_sense_judged.jsonl"})
     return {"word_sense 节点": n_node, "has_sense 边": n_has, "expands_sense 边": n_exp}
+
+
+_STAGE_ORD = {"初中": 0, "高中": 1}
+
+
+def word_detail(con: duckdb.DuckDBPyConnection, word: str) -> dict:
+    """跨阶段多义 read 单算点: word 的逐阶段义项 + 高中新增义 + provenance.
+
+    provenance 从 expands_sense 边 evidence 读(不 hardcode): dual_model_adversarial = LLM 推断层,
+    必标'方向性参考'非确定真值(守 J4 死亡红线; 确定词典义项见词条 gloss 真值源)。无跨阶段多义则 stages=[]。
+    """
+    rows = con.execute(
+        "SELECT json_extract_string(attrs_json,'stage'), attrs_json FROM nodes "
+        "WHERE node_type='word_sense' AND json_extract_string(attrs_json,'word')=?", [word]).fetchall()
+    stages = []
+    for stage, attrs in rows:
+        d = json.loads(attrs)
+        stages.append({"stage": stage, "senses": d.get("senses", []),
+                       "new_senses": d.get("new_senses", [])})
+    stages.sort(key=lambda s: _STAGE_ORD.get(s["stage"], 9))
+    ev = con.execute("SELECT evidence_json FROM edges WHERE relation='expands_sense' AND src_id=?",
+                     [f"word_sense:{word}:初中"]).fetchone()
+    prov = json.loads(ev[0]).get("provenance") if ev else None
+    return {
+        "word": word,
+        "cross_stage_multi": len(stages) >= 2,
+        "stages": stages,
+        "provenance": prov,
+        "provenance_note": ("跨阶段义项由双模型对抗判断推断(LLM 层, 防过度检测), 方向性参考非确定真值; "
+                            "确定词典义项以词条释义 gloss 真值源为准"),
+        "source_artifact": "word_sense_judged.jsonl",
+    }
