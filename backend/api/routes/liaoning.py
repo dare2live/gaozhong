@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 
 from backend.api.db import db_ro, rows_to_dicts
+from backend.services import canonical
 
 
 def api_allowed_publishers(_qs: dict) -> list[dict]:
@@ -23,10 +24,9 @@ def api_allowed_publishers(_qs: dict) -> list[dict]:
 def api_city_choice(_qs: dict) -> list[dict]:
     con = db_ro()
     try:
-        return rows_to_dicts(con.execute(
-            "SELECT city, publisher_short, source FROM liaoning_city_textbook_choice "
-            "WHERE subject = '英语' ORDER BY publisher_short, city"
-        ))
+        # city→version 走 canonical 单点 (同表查询收口); 印证页按 publisher_short, city 排序
+        rows = sorted(canonical.city_version_rows(con), key=lambda r: (r[1], r[0]))
+        return [{"city": c, "publisher_short": p, "source": s} for c, p, s in rows]
     finally:
         con.close()
 

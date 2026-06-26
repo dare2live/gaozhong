@@ -9,22 +9,18 @@ from backend.services import canonical, vocab
 
 
 def cities(con: duckdb.DuckDBPyConnection) -> list[dict]:
-    """辽宁地市 → 教材版本短名 (city 选择器数据源, 单点; 前端不 hardcode 城市名/版本)."""
-    rows = con.execute(
-        "SELECT city, publisher_short FROM liaoning_city_textbook_choice "
-        "WHERE subject = '英语' ORDER BY city").fetchall()
-    return [{"city": c, "publisher": p} for c, p in rows]
+    """辽宁地市 → 教材版本短名 (city 选择器数据源; 前端不 hardcode 城市名/版本).
+
+    走 canonical.city_version_rows 单一查询点 (同表多处 SELECT 收口, 防 schema 漂移)。
+    """
+    return [{"city": c, "publisher": p} for c, p, _ in canonical.city_version_rows(con)]
 
 
 def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
-    """城市 → 教材版本 → 7 册 unit 列表 + 累计已学词数."""
-    row = con.execute("""
-        SELECT publisher_short FROM liaoning_city_textbook_choice
-        WHERE city = ? AND subject = '英语'
-    """, [city]).fetchone()
-    if not row:
+    """城市 → 教材版本 → 7 册 unit 列表 + 累计已学词数 (city→version 走 canonical 单点)."""
+    pub = next((p for c, p, _ in canonical.city_version_rows(con) if c == city), None)
+    if pub is None:
         return {"error": f"city not found: {city}"}
-    pub = row[0]
     ver_map = {v: k for k, v in canonical.VERSION_KEY_TO_SHORT.items()}   # 短名→version_key (canonical 单点反查)
     ver = ver_map.get(pub, pub)
     units = con.execute("""

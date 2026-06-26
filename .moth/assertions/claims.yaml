@@ -555,6 +555,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
+  - id: city-version-single-query-point
+    claim: "backlog收口: city→version查询收敛canonical.city_version_rows单点(返14城市×3列); cities/city_curriculum/api_city_choice/build_city_uses不再各自SELECT该表; 防同表多处投影schema漂移(聚合/DISTINCT/audit用途不同保留)"
+    type: shell
+    command: ["bash", "-c", "python3 -c \"import duckdb;from backend.services import canonical;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);r=canonical.city_version_rows(c);c.close();assert len(r)==14 and all(len(x)==3 for x in r),'rows'\" && ! grep -qE 'FROM liaoning_city_textbook_choice' backend/services/recommend.py && ! grep -qE 'FROM liaoning_city_textbook_choice' backend/api/routes/liaoning.py && grep -qF 'canonical.city_version_rows' backend/services/links.py && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: legacy-converged-single-entry
     claim: "教研室收尾(全量收敛单一入口): legacy /teacher /legacy /index.html 功能已全移植主SPA → 302收敛(Handler._REDIRECTS), 不再服务旧html; 前端movedBanner提示旧书签"
     type: shell

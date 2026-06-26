@@ -90,9 +90,7 @@ def build_city_uses(con: duckdb.DuckDBPyConnection) -> int:
     rows = [
         (f"city:{city}", f"publisher:{pub}", 1.0,
          json.dumps({"source": src}, ensure_ascii=False))
-        for city, pub, src in con.execute(
-            "SELECT city, publisher_short, source FROM liaoning_city_textbook_choice"
-        ).fetchall()
+        for city, pub, src in canonical.city_version_rows(con)   # 同表查询收口单点 (防漂移)
     ]
     return _replace_relation(con, "city_uses", rows)
 

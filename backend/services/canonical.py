@@ -34,6 +34,20 @@ def pub_to_short(full: str) -> str:
     return PUBLISHER_SHORT_MAP.get(full, full.split("/")[0].split("、")[0])
 
 
+def city_version_rows(con: duckdb.DuckDBPyConnection) -> list[tuple]:
+    """辽宁 14 地市 → (city, publisher_short, source) 单一查询点.
+
+    收口同表 liaoning_city_textbook_choice 的多处全行 SELECT 投影 (cities 选择器 / city_choice
+    印证页 / build_city_uses 边构建 / city_curriculum 单城市), 防 schema 变更需改多处的查询面漂移。
+    返回 ORDER BY city 稳定默认序; 消费方各自投影/再排序/按 city 过滤。subject 现仅 '英语'
+    一类, 显式过滤防未来多学科混入 (与既有运行时消费方 cities/api_city_choice 同口径)。
+    注: 聚合(stats GROUP BY)/建节点(canonical DISTINCT city)/审计(audit) 用途不同, 不经此口。
+    """
+    return con.execute(
+        "SELECT city, publisher_short, source FROM liaoning_city_textbook_choice "
+        "WHERE subject = '英语' ORDER BY city").fetchall()
+
+
 def build_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     """Replace-all build (MVP 不做增量). 返回各 node_type 的行数."""
     con.execute("DELETE FROM nodes")
