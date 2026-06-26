@@ -12,6 +12,28 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 叙事须收, 别narrate成"命题迁移真值"。
 - **硬编码campaign(11 commit)净影响**: 纯内部清洁(单点/中立leaf/config化), **交付门一格未动**; 2个"bug修"是潜伏陷阱defuse(vocab容差YAML孤儿)+前端标签归一, 非live修复。别把"代码更干净"读成"更接近能交付"。
 
+## 最近 session (2026-06-26 续): 真题入库管道架构优化 + 顶层设计 + 2026考点双模型标注
+
+> 用户: "引入最新高考题后从系统/流程/架构/存储/分析层面优化, 中考几天后来" → "用架构师skill做全局顶层设计, 模块+数据+配置, 可扩展可维护" → "按方案推进/继续/并行"。架构师协议(立法→控制→执行) + 诊断Workflow + 对抗critic + controller实证核验。
+
+**两份设计文档(立法层, 新session先读)**:
+- `docs/toplevel_architecture_design.md`: **全局顶层** — 模块+数据+配置三层范式 + **7类扩展playbook(目标≤2处)** + 创世层3死红线 + 治理/演进。实证: 39表/28config/无god-module; 4/7类扩展已达标(前端/教材/词典/KG关系), #1真题卷+#5分析维度高摩擦。承接 top_level_..._20260615 演进。
+- `docs/exam_ingestion_pipeline_design.md`: **真题入库管道** — 2026入库经验教训(加一份卷8-9处/4处手敲基线/~4次重建级联) + KG传导gap + P0/P1/P2(中考forcing)。
+
+**P0 落地(7 commit, 全程三门绿)**:
+- ✅ P0-1 (f078046) mirror `DELETE WHERE exam_type='高考'`过宽 → 按source_repo精确删(拆"单独重跑清空EOL/2026/中考真值"地雷)。
+- ✅ **Layer2a3层序修** (0f844ea) import_pdfs前移(原Layer4g在边构建后)→ **2024/2025 tests_word 0→886/883**(传播洞修复, 真题进KG)。
+- ✅ **P0-2 年覆盖断言** (1920d58) moth exam-year-coverage-no-stale: 有辽宁真题文本年份必有tests_word边, 对抗验证真抓漏年。**抓"入库成功+三门绿但KG空传导"盲区**。
+- ✅ **P0-3 vocab接init_db** (41c7e3a) build_vocab抽build(con)复用写连接 + init_db Layer3w自动调 + file_manifest排除生成物 → **多次重建级联根治**(中考一键传导)。
+- ⏳ P0-4 cognitive漏年 (22a356c 实证裁定=**缓做**): 简单`all→any`有坑3风险(2021唯一marker'Spot'常见词→甲卷假阳性) + 2025/2024大半数据阻塞(源无设问类型解析)。安全路径见doc。
+- ✅ **2026考点双模型标注** (f235d73) Workflow 2独立模型标genre+theme → reconcile → genre_theme_labels.jsonl +8条 → **2026 tests_exam_point 0→12**(填exam_point=0缺口; 边界主题adjudicated诚实不建边)。
+
+**中考就绪 = 核心达成**: 加中考卷 = `sources.yaml`一entry + 一次`init_db` → tests_word/vocab/越纲率/考点全自动传导(P0-3后无手工regen+无多次重建), 年覆盖门锁回归。**中考卷到直接走管道**。
+
+**剩余(下轮/等数据)**: ① 2026 cognitive设问类型(group级无subquestion节点+坑16无解析真值, 需另议数据模型) ② 2021 cognitive救(补唯一专名强marker入truth_anchors, 避坑3) ③ P1 sources.yaml驱动Layer编排(降init_db.main CC=13 WARN; 非中考阻塞) ④ rebaseline工具(需先给d0_baselines加query字段)。
+
+**工具**: codegraph **1.1.1**(query/callers/impact/affected; 索引最新) · complexity-optimizer skill可用。sprint收尾codegraph审计干净(无CC>15/无坏耦合)。
+
 ## 最近 session (2026-06-26): 2026新高考II卷英语真题入库 + 多校轨收口
 
 > 用户: "2026高考英语题出来了, 获取并解析使用; 数据源 t.urongda.com/regions/liaoning; 从数据模块用专用工具非临时脚本" + "多校/多教研员先停在这里收口, 不用管枚举, 先有一个教研员".

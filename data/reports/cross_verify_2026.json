@@ -1,0 +1,173 @@
+{
+  "year": 2026,
+  "pdf_source_id": "local_pdf_xgkii_english_2026",
+  "pdf_path": "/Users/dp/Documents/M/gaozhong/data/external/exam_sources/local_pdfs/2026_xgkii_english.pdf",
+  "pdf_chars": 0,
+  "pdf_unique_words": 0,
+  "structured_entries": 10,
+  "jsonl_entries": 0,
+  "checks": [
+    {
+      "qid": "xgkii/2026/listening",
+      "type": "听力",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "Rose",
+        "going",
+        "downtown",
+        "host",
+        "party"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/reading_A",
+      "type": "阅读理解",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "Best",
+        "Chinese",
+        "Restaurants",
+        "Around",
+        "area"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/reading_B",
+      "type": "阅读理解",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "Roland",
+        "Reisley",
+        "Frank",
+        "Lloyd",
+        "Wright"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/reading_C",
+      "type": "阅读理解",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "level",
+        "reference",
+        "point",
+        "book",
+        "history"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/reading_D",
+      "type": "阅读理解",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "Barcelona",
+        "subway",
+        "MetroCharge",
+        "regenerative",
+        "brakes"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/seven",
+      "type": "完形填空(七选五/语篇)",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "Ways",
+        "Teach",
+        "Kids",
+        "Work",
+        "Ethic"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/cloze",
+      "type": "完形填空",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "becoming",
+        "writer",
+        "teacher",
+        "never",
+        "thought"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/grammar",
+      "type": "语法填空",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "first",
+        "time",
+        "doing",
+        "first",
+        "minutes"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/essay",
+      "type": "应用文写作",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 11,
+      "sample_words": [
+        "Kate",
+        "Kate",
+        "Dear",
+        "Kate",
+        "great"
+      ]
+    },
+    {
+      "qid": "xgkii/2026/continuation",
+      "type": "读后续写",
+      "match": "fail",
+      "match_rate": 0.0,
+      "matched_words": 0,
+      "total_words": 20,
+      "sample_words": [
+        "remember",
+        "always",
+        "been",
+        "night",
+        "Even"
+      ]
+    }
+  ],
+  "summary": {
+    "pass": 0,
+    "warn": 0,
+    "fail": 10,
+    "skip": 0
+  },
+  "html_identity_checks": [],
+  "html_summary": {
+    "pass": 0,
+    "fail": 0
+  },
+  "overall": "FAIL"
+}
