@@ -34,7 +34,8 @@ ${guide()}
   <span class="bk-flabel" style="margin-left:8px;">班级</span><span id="xs-classes"></span></div>
 <div id="xs-banner"></div>
 <section class="bk-card"><div class="bk-h"><span>班级薄弱真考点 <small>示例预览 · 错题聚合 avg 弱点分</small></span><span class="bk-src">/api/students/class_weakness</span></div>
-  <div id="xs-heat" style="height:340px;"></div></section>`;
+  <div id="xs-heat" role="img" aria-label="班级薄弱真考点热力图 (示例数据)" style="height:340px;"></div>
+  <div id="xs-heat-sr" class="sr-only"></div></section>`;
   }
 
   function pill(id, label, on, attr) {
@@ -69,6 +70,19 @@ ${guide()}
     });
     chart.off("click");
     chart.on("click", p => G.sendPrompt && G.sendPrompt(`为班级薄弱考点「${rows[p.dataIndex].label}」推荐分层复习课`));
+    // a11y: 复用已派生 rows (单一计算点, 不重算/不 refetch)。rows 已 reverse 为图表自下而上序,
+    // 这里再 reverse 回弱点由高到低的自然阅读序。诚实标"示例"。
+    const ordered = rows.slice().reverse();
+    const heatEl = G.$("#xs-heat");
+    if (heatEl) {
+      const head = ordered.slice(0, 5).map(r => `${r.label} ${Math.round(r.avg_score * 100)}%`).join(", ");
+      heatEl.setAttribute("aria-label", `班级薄弱真考点热力图 (示例数据)，共 ${ordered.length} 项，弱点由高到低：${head}${ordered.length > 5 ? " 等" : ""}`);
+    }
+    const srEl = G.$("#xs-heat-sr");
+    if (srEl) {
+      const body = ordered.map(r => `<tr><td>${r.label}</td><td>${Math.round(r.avg_score * 100)}%</td><td>${r.n_weak_students}</td><td>${r.total_sample}</td></tr>`).join("");
+      srEl.innerHTML = `<table><caption>班级薄弱真考点 (示例数据) — 弱点由高到低</caption><thead><tr><th>考点</th><th>弱点分</th><th>薄弱学生数</th><th>样本量 n</th></tr></thead><tbody>${body}</tbody></table>`;
+    }
   }
 
   registerTab("xisheng", async () => {

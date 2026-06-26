@@ -56,7 +56,7 @@
       return `<div style="margin:3px 0;font-size:13px;"><span style="color:${sc};font-weight:600;">${s.stage}</span> ${items || '<span class="muted">—</span>'}</div>`;
     };
     return `<div style="padding:8px 12px;background:#FFFDF8;border-left:3px solid #D8A93B;">
-      <div style="font-size:11px;color:#8A5A00;margin-bottom:5px;">⚠ 跨阶段多义 · 方向性参考（双模型对抗推断 LLM 层, 非确定真值; 确定释义以上方词条释义为准）</div>
+      <div style="font-size:11px;color:#8A5A00;margin-bottom:5px;"><span class="caveat"></span>跨阶段多义 · 方向性参考（双模型对抗推断 LLM 层, 非确定真值; 确定释义以上方词条释义为准）</div>
       ${d.stages.map(stageRow).join("")}</div>`;
   }
 

@@ -22,6 +22,22 @@
   let state = { era: ERA_NEW, dim: "theme_l2", dist: null, cross: "genre" };
   const charts = {};
   const crossCache = {};
+
+  // ── a11y (RC1): 动态 aria-label + sr-only 数据表 fallback。复用各 render 已有的同一份 service 数据
+  //    (单一计算点, 不重算/不 refetch); 仅追加读屏文字, 不动任何视觉 echarts option。
+  const escHtml = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  // 给图表容器(div#id)旁注入/替换 sr-only 兄弟节点 (idempotent: 同 chartId 重渲染只替换不累加)。
+  function setSrTable(chartId, captionHtml, headers, rows) {
+    const el = G.$("#" + chartId);
+    if (!el) return;
+    const cls = "bk-sr-" + chartId;
+    let sr = el.parentNode.querySelector("." + cls);
+    if (!sr) { sr = document.createElement("table"); sr.className = "sr-only " + cls; el.insertAdjacentElement("afterend", sr); }
+    const thead = "<thead><tr>" + headers.map(h => `<th>${escHtml(h)}</th>`).join("") + "</tr></thead>";
+    const tbody = "<tbody>" + rows.map(r => "<tr>" + r.map(c => `<td>${escHtml(c)}</td>`).join("") + "</tr>").join("") + "</tbody>";
+    sr.innerHTML = `<caption>${captionHtml}</caption>${thead}${tbody}`;
+  }
+  function setAria(chartId, label) { const el = G.$("#" + chartId); if (el) el.setAttribute("aria-label", label); }
   // 设问技能堆叠色 (推断=强调红, 与 D 区一致); 固定堆叠顺序让"推断"锚左边便于跨题材比
   const SKILL_COLOR = (window.GZ_CAT && window.GZ_CAT.skill) || {};   // 设问技能色单一来源 category-config.js
   const CROSS_LBL = { genre: DC.genre, theme_l2: DC.theme_l2, theme_context: "课标" + DC.theme_context };
@@ -72,6 +88,15 @@
         label: { show: true, position: "right", formatter: p => `${p.value}% · n=${rows[p.dataIndex].n}`, fontSize: 11, color: "#888" },
       }],
     });
+    // a11y: 动态 aria-label(图名+维度+era+前几项实值) + sr-only 数据表 — 复用本函数已用的 rows(原序非 reverse)
+    const ariaRows = rows.slice().reverse();   // rows 已 reverse 给 echarts(自下而上); 读屏按占比大→小线性读
+    const dimName = DIM_LABEL[state.dim];
+    setAria("bk-dist",
+      `考点分布条形图(${dimName} · ${state.era} 辽宁卷): ` +
+      (ariaRows.slice(0, 4).map(r => `${r.label} ${r.pct}%`).join(", ") || "无数据") +
+      (ariaRows.length > 4 ? ` 等共 ${ariaRows.length} 项` : ""));
+    setSrTable("bk-dist", `考点分布 — ${escHtml(dimName)} · ${escHtml(state.era)} 辽宁卷`,
+      ["类别", "占比", "题数"], ariaRows.map(r => [r.label, r.pct + "%", "n=" + r.n]));
     charts.dist.off("click");
     // #3: 点考点条 → 弹该考点浮窗(关联+真题, 复用#2修好的 exam_point 真题); fallback sendPrompt 下钻
     charts.dist.on("click", p => {
@@ -122,6 +147,16 @@
     const ret = items.filter(x => x.signal === "retired").map(x => x.question_type);
     const intro = items.filter(x => x.signal === "introduced").map(x => x.question_type);
     const gaps = items.filter(x => x.extraction_gap).map(x => x.question_type);
+    // a11y: 动态 aria-label(题型数+信号分类) + sr-only 表(题型→信号+在场年份) — 复用本函数 list/SIG/all
+    const skel = items.filter(x => x.signal === "skeleton").map(x => x.question_type);
+    setAria("bk-trend",
+      `题型结构演变矩阵(辽宁卷 ${Math.min(...all)}–${Math.max(...all)} 年, 共 ${list.length} 题型): ` +
+      `骨架常驻 ${skel.length} 种, 真退场 ${ret.length} 种(${ret.join("、") || "无"}), 真登场 ${intro.length} 种(${intro.join("、") || "无"})`);
+    setSrTable("bk-trend", "题型结构演变 — 各题型在场年份 · 信号",
+      ["题型", "信号", "在场年份", "提取不全"], list.map(x => {
+        const yrs = [...new Set([...(x.old_years || []), ...(x.new_years || [])])].sort((a, b) => a - b);
+        return [x.question_type, (SIG[x.signal] || SIG.unregistered).t, yrs.join(" ") || "无", x.extraction_gap ? "是(年份仅样本)" : "否"];
+      }));
     G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型 presence · signal 由<b>卷面结构</b>定非数据, 粒度无关): `
       + `蓝=骨架两卷制常驻(<b>万变不离其宗</b>) · 红=<b>真退场</b>(${ret.join("、") || "无"}: 新高考取消) · 绿=<b>真登场</b>(${intro.join("、") || "无"}: 新高考新增)。`
       + `<br><small class="muted">注 淡色虚线格=提取不全(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>presence年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信)。</small>`;
@@ -137,7 +172,7 @@
     const pctOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.pct : 0; };
     const nOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.n : 0; };
     const cats = skills.slice().reverse();
-    const lbl = { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: "#999" };
+    const lbl = { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: "#76716A" };
     // #11: 新era reliability — distribution_reliable=false(n<30)时不可把单年噪声渲成可信精度(死线3诚实分层)
     const relNew = (cs && cs.reliability && cs.reliability[ERA_NEW]) || {};
     const newOK = relNew.distribution_reliable !== false;   // 缺省视为可信; 仅显式 false 才降级
@@ -159,12 +194,20 @@
           itemStyle: {
             color: !newOK ? "#C9C4B8" : (s === "推断" ? C.up : C.blue),   // #11 不可信→灰, 推断不抢眼防误读为可信精度
             opacity: newOK ? 1 : 0.5,
-            borderColor: newOK ? "#fff" : "#999", borderWidth: 1, borderType: newOK ? "solid" : "dashed",
+            borderColor: newOK ? "#fff" : "#76716A", borderWidth: 1, borderType: newOK ? "solid" : "dashed",
             borderRadius: [0, 3, 3, 0],
           } })), label: lbl },
       ],
     });
     const oInf = pctOf(oldRows, "推断"), nInf = pctOf(newRows, "推断");
+    // a11y: 动态 aria-label(双era推断迁移概览) + sr-only 表(技能×双era占比/题数) — 复用 skills/pctOf/nOf/newOK
+    const ariaSkills = skills.slice();   // skills 原序; cats 是其 reverse 仅供 echarts 自下而上
+    setAria("bk-cog",
+      `设问类型分布对比(辽宁卷, 旧课标II 2015–20 vs 新高考II 21+${newOK ? "" : " 样本不足"}): ` +
+      `推断占比 旧 ${oInf}% → 新 ${nInf}%; 共 ${ariaSkills.length} 类认知技能`);
+    setSrTable("bk-cog", `设问类型「怎么想」 — 旧课标II vs 新高考II${newOK ? "" : "(新era样本不足, 方向性信号)"}`,
+      ["认知技能", "旧课标II 占比", "旧 题数", "新高考II 占比", "新 题数"],
+      ariaSkills.map(s => [s, pctOf(oldRows, s) + "%", "n=" + nOf(oldRows, s), pctOf(newRows, s) + "%", "n=" + nOf(newRows, s)]));
     const rel = (cs && cs.reliability) || {};
     const nNew = (rel[ERA_NEW] || {}).n || newRows.reduce((a, r) => a + r.n, 0);
     const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
@@ -212,6 +255,14 @@
       series: skills.map(sk => ({ name: sk, type: "bar", stack: "t", barWidth: "62%", data: ordered.map(c => pctOf(c, sk)), itemStyle: { color: SKILL_COLOR[sk] } })),
     });
     const cov = d.n_matched && d.n_subq_total ? `${d.n_matched}/${d.n_subq_total}` : "?";
+    // a11y: 动态 aria-label(交叉维度+题材数+首项构成) + sr-only 表(题材×各技能占比) — 复用 ordered/skills/pctOf/bc
+    const ariaCats = ordered.slice().reverse();   // ordered 升序给 echarts 自下而上; 读屏按 total 大→小
+    const top = ariaCats[0];
+    setAria("bk-cross",
+      `题材与思维交叉(${CROSS_LBL[state.cross]} · 仅旧课标II 2015–20截面 辽宁卷, 共 ${ariaCats.length} 类语篇): ` +
+      (top ? `${top} 占比最大, ${skills.map(sk => `${sk} ${pctOf(top, sk)}%`).join(", ")}` : "无数据"));
+    setSrTable("bk-cross", `题材 × 思维 — ${escHtml(CROSS_LBL[state.cross])} · 仅旧课标II 2015–20截面`,
+      ["语篇题材", "子题数", ...skills], ariaCats.map(c => [c, "n=" + bc[c].total, ...skills.map(sk => pctOf(c, sk) + "%")]));
     // #14: era 锁醒目徽章 (F卡是唯一旧era截面卡, 防夹在双era视图里被误读为新高考结论)
     G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:#EDE8DF;color:#7a2e15;padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
     G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
@@ -232,6 +283,15 @@
       tooltip: { formatter: p => `${heat.letters[p.data[0]]} · ${STATUS[sts[p.data[1]]][0]}<br/>${p.data[2]} 词` },
       series: [{ type: "heatmap", data, label: { show: false }, itemStyle: { borderColor: "rgba(255,255,255,0.4)", borderWidth: 1 } }],
     });
+    // a11y: 动态 aria-label(各词汇状态总词数) + sr-only 表(字母×状态词数) — 复用 heat.letters/heat.cells/sts/STATUS
+    const statusName = s => (STATUS[s] && STATUS[s][0]) || s;
+    const statusTotal = s => heat.letters.reduce((a, L) => a + ((heat.cells[L] || {})[s] || 0), 0);
+    setAria("bk-heat",
+      `词汇热力图(词频非考点 · 字母开头 × 词汇状态): ` +
+      sts.map(s => `${statusName(s)} ${statusTotal(s)} 词`).join(", "));
+    setSrTable("bk-heat", "词汇热力 — 字母 × 词汇状态 词数(词频非考点)",
+      ["字母", ...sts.map(statusName)],
+      heat.letters.map(L => [L, ...sts.map(s => (heat.cells[L] || {})[s] || 0)]));
     charts.heat.off("click");
     charts.heat.on("click", p => G.sendPrompt ? G.sendPrompt(`列出 ${STATUS[sts[p.data[1]]][0]} 类 ${heat.letters[p.data[0]]} 开头的词`) : null);
   }
@@ -243,7 +303,7 @@
     if (sel) sel.onchange = () => { state.dim = sel.value; renderDist(); renderShift(); };
   }
 
-  // #5: 给每张含 echarts 实例的卡追加"⬇PNG"导出按钮 (getInstanceByDom 自动跳过非图卡如B区HTML)
+  // #5: 给每张含 echarts 实例的卡追加 PNG 导出按钮 (getInstanceByDom 自动跳过非图卡如B区HTML)
   function wireExports() {
     if (!window.echarts) return;
     G.$$(".bk-card").forEach(card => {
@@ -281,7 +341,7 @@
       renderCrossToggle(); renderCogCross(cross);
     }
     renderShift();
-    wireExports();   // #5: 图卡追加 ⬇PNG + 打印按钮接线
+    wireExports();   // #5: 图卡追加 PNG 导出 + 打印按钮接线
     window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize()));
   });
 })();

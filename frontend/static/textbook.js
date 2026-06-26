@@ -34,7 +34,7 @@
       const cid = `unit:${u.version_key}/${u.volume_key}/U${u.unit_number}`;
       const pg = (u.page_start != null) ? `${u.page_start}-${u.page_end}` : "—";
       return `<div class="tb-unit" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 6px;border-bottom:1px solid #f0eee6;">
-        <span style="min-width:34px;color:#999;">U${u.unit_number}</span>
+        <span style="min-width:34px;color:var(--ink-3);">U${u.unit_number}</span>
         <span style="flex:1;font-weight:500;">${(u.title_en || "").replace(/</g, "&lt;") || '<span class="muted">(无标题)</span>'}</span>
         <span class="muted" style="font-size:11px;">p.${pg}</span>
         <a href="${pdfUrl}#page=${u.page_start || 1}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent-ink);">开PDF</a>

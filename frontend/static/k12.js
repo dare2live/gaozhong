@@ -15,8 +15,8 @@
 <h2 style="margin:0 0 2px;">K12 衔接 · 初中 → 高中</h2>
 <p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空逐空考点 = 高考语法填空考点全集 (最高优先级地基)</p>
 <div class="bk-grid">
-  <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" style="height:300px;"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" style="height:300px;"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:#9a6a00;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" role="img" style="height:300px;"></div><div id="k12-stage-sr" class="sr-only"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" role="img" style="height:300px;"></div><div id="k12-zk-sr" class="sr-only"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:#9a6a00;"></p></section>
 </div>
 <section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>B 语篇填空逐空考点 <small>每年10空 = 高考语法填空考点全集</small></span><span class="bk-src">/api/zhongkao/distribution</span></div>
   <p class="muted" style="font-size:11px;margin:0 0 8px;">辽宁中考语篇填空固定 10 空(31-40), 每空 1 语法考点 · 这 10 空 = 高考语法填空(7空)的考点母集 (N=2 省统一卷实证, 非趋势)</p>
@@ -49,6 +49,15 @@
         { name: "语法", type: "bar", stack: "t", data: grams, itemStyle: { color: "#BA7517" }, label: { show: true, fontSize: 10 } },
       ],
     });
+    // a11y: 动态 aria-label + sr-only 数据表 (复用已算 stages/words/grams, 不重算)
+    const stEl = G.$("#k12-stage");
+    if (stEl) stEl.setAttribute("aria-label",
+      "stage 阶梯分布柱状图: " + stages.map((s, i) => `${s} 词${words[i]}、语法${grams[i]}`).join("; "));
+    const stSr = G.$("#k12-stage-sr");
+    if (stSr) stSr.innerHTML = `<table><caption>stage 阶梯分布（各阶段词数与语法点数）</caption>`
+      + `<thead><tr><th>阶段</th><th>词</th><th>语法</th></tr></thead><tbody>`
+      + stages.map((s, i) => `<tr><td>${s}</td><td>${words[i]}</td><td>${grams[i]}</td></tr>`).join("")
+      + `</tbody></table>`;
   }
 
   function renderZk(d) {
@@ -61,6 +70,15 @@
       yAxis: { type: "category", data: rows.map(r => r.type), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 10 } },
       series: [{ type: "bar", data: rows.map(r => r.n), barWidth: "60%", itemStyle: { color: "#c1272d", borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", fontSize: 11 } }],
     });
+    // a11y: 动态 aria-label + sr-only 数据表 (复用已算 rows, 不重算)
+    const zkEl = G.$("#k12-zk");
+    if (zkEl) zkEl.setAttribute("aria-label",
+      "中考题型分布柱状图 (2024+2025 省统一): " + rows.map(r => `${r.type} ${r.n}`).join("; "));
+    const zkSr = G.$("#k12-zk-sr");
+    if (zkSr) zkSr.innerHTML = `<table><caption>中考题型分布（2024+2025 省统一卷）</caption>`
+      + `<thead><tr><th>题型</th><th>题数</th></tr></thead><tbody>`
+      + rows.map(r => `<tr><td>${r.type}</td><td>${r.n}</td></tr>`).join("")
+      + `</tbody></table>`;
     // 内容完整性诚实 banner (审计HIGH#8: 不把空心当完整; content_status 来自 service 单算点)
     // #14: 删"完整 ${complete}"——service content_status 无 complete 键(全 walled/pending), 恒显"完整0"是误导冗余项
     const cs = d.content_status || {};
