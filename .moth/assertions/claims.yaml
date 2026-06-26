@@ -555,6 +555,11 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions_all WHERE exam_type='中考' AND ((question_type IN ('完形填空','阅读理解(四选一)') AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D')) OR (question_type LIKE '阅读理解(五选四%' AND answer IS NOT NULL AND TRIM(answer)<>'' AND TRIM(answer) NOT IN ('A','B','C','D','E')))"
     expect: {op: "==", value: 0}
+  - id: course-session-materials-in-spa
+    claim: "教研室#8: 课节modal接/api/course/session真值矿口(40节course_materials非空壳), 按reason分3层渲染(核心/真题/关联), 纯图谱结构节点stage/cefr_level滤掉(诚实分层: 管道≠本节内容)"
+    type: shell
+    command: ["bash", "-c", "grep -qF '/api/course/session' frontend/static/app_router.js && grep -qF '_SKIP_KIND = { stage: 1, cefr_level: 1 }' frontend/static/app_router.js && grep -qF '本节核心' frontend/static/app_router.js && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
   - id: multitenant-isolation-enforced
     claim: "审计BLOCK修: 跨租户读学生被路由拒(老师A取老师B学生→forbidden); 行为级非仅结构(坑21契约接执行点)"
     type: shell

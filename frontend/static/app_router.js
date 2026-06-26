@@ -225,14 +225,59 @@
     </div>`;
   }
 
-  // 全局: 打开课节 modal (讲义生成层 2026-06-15 已回滚, 仅保留基于真题的课后测验)
-  window._openHandout = (cid) => {
+  // 全局: 打开课节 modal — #8: 渲染本节真值 materials(/api/course/session)。
+  // materials 按 reason 分 3 层(诚实分层, 非按 kind 平铺): yaml核心(教研设计选定) / 真题命中(homework_tags) / 图谱关联(R1邻接)。
+  // 纯结构节点 stage/cefr_level 是图谱管道(每节都有, 零教学价值), 不渲成"本节内容"(死亡红线: 管道≠内容)。
+  // 讲义范文生成层仍下线(2026-06-15 回滚, 依据不完整教材的范文不可信), 但 materials 本身是真值矿口, 40节课不再空壳。
+  const _KIND_LABEL = { word: "词汇", grammar: "语法", exam_question: "真题", question: "关联题", unit: "教材单元", word_sense: "词义" };
+  const _SKIP_KIND = { stage: 1, cefr_level: 1 };  // 纯图谱结构节点, 非教学内容
+  const _matTier = (reason) => {
+    if (reason === "yaml core_item") return "core";
+    if (reason && reason.indexOf("homework_tags") >= 0) return "exam";
+    return "rel";
+  };
+  const _renderMatItem = (m) => {
+    const ref = m.ref_id || "";
+    const bare = ref.replace(/^(word|grammar|exam_question|question|unit|word_sense):/, "");
+    let label;
+    if (m.kind === "word" && ref.startsWith("word:")) label = GZ.conceptLink(ref, bare);
+    else if (m.kind === "grammar") label = `<span>${(m.textbook_position || bare).replace(/</g, "&lt;")}</span>`;  // 语法用人话标签(可数名词单复数…)非 ref 码
+    else label = `<span style="font-family:var(--mono,monospace);font-size:12px;">${bare.replace(/</g, "&lt;")}</span>`;
+    const pos = (m.kind !== "grammar" && m.textbook_position) ? ` <span class="muted" style="font-size:11px;">[${m.textbook_position}]</span>` : "";
+    return `<span style="display:inline-block;margin:2px 8px 2px 0;">${label}${pos}</span>`;
+  };
+  const _renderTier = (mats, title, hint) => {
+    const shown = mats.filter(m => !_SKIP_KIND[m.kind]);
+    if (!shown.length) return "";
+    const byKind = {};
+    for (const m of shown) (byKind[m.kind] = byKind[m.kind] || []).push(m);
+    const body = Object.keys(byKind).map(k =>
+      `<div style="margin:4px 0;"><span class="muted" style="font-size:12px;">${_KIND_LABEL[k] || k} (${byKind[k].length})</span><div style="font-size:13px;line-height:1.9;">${byKind[k].map(_renderMatItem).join("")}</div></div>`
+    ).join("");
+    return `<div style="margin:8px 0;"><strong>${title}</strong>${hint ? ` <span class="muted" style="font-size:11px;">${hint}</span>` : ""}${body}</div>`;
+  };
+  window._openHandout = async (cid) => {
     const modal = $("#handout-modal");
     const md = $("#handout-md");
     modal.classList.add("open");
-    md.innerHTML = '<p style="color:#888;line-height:1.7"> 讲义生成层已下线（2026-06-15 回滚）。<br>' +
-      '依据不完整教材生成的范文不可信，待教材基石完善后重建。<br>下方课后测验基于已核验真题，仍可用。</p>' +
-      _renderQuizButton(cid);
+    md.innerHTML = '<p class="muted">载入本节内容…</p>';
+    const d = await fetchJSON("/api/course/session?id=" + cid).catch(() => null);
+    const mats = (d && d.materials) || [];
+    const co = (d && d.course) || {};
+    let html = `<h3 style="margin:0 0 2px;">${(co.title || "课节 #" + cid).replace(/</g, "&lt;")}</h3>`;
+    const sub = [co.layer, co.block_kind, co.duration_min ? co.duration_min + "分钟" : "", co.listening_required ? "含听力" : ""].filter(Boolean).join(" · ");
+    if (sub) html += `<div class="muted" style="font-size:12px;margin-bottom:8px;">${sub}</div>`;
+    if (mats.length) {
+      const tiers = { core: [], exam: [], rel: [] };
+      for (const m of mats) tiers[_matTier(m.reason)].push(m);
+      html += _renderTier(tiers.core, "本节核心", "教研设计选定 (课标·义教)");
+      html += _renderTier(tiers.exam, "配套真题", "命中本节 homework 考点");
+      html += _renderTier(tiers.rel, "图谱关联", "知识图谱 R1 邻接, 拓展参考非本节核心");
+    } else {
+      html += '<p class="muted">本节暂无 materials 数据</p>';
+    }
+    html += '<p class="muted" style="font-size:12px;border-top:1px solid #eee;padding-top:8px;margin-top:10px;line-height:1.6;">以上为本节真值 materials(词/语法/真题, 带教材位置+入选依据)。讲义范文生成层 2026-06-15 已下线(依据不完整教材的范文不可信), 待基石完善后重建。下方测验基于已核验真题。</p>';
+    md.innerHTML = html + _renderQuizButton(cid);
   };
 
   function _renderQuizButton(cid) {
