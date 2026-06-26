@@ -8,10 +8,10 @@ body {
   line-height: 1.55;
 }
 header {
-  background: #0a4d75;
+  background: var(--down);
   color: white;
   padding: 18px 32px;
-  border-bottom: 3px solid #c1272d;
+  border-bottom: 3px solid var(--accent);
 }
 header h1 {
   margin: 0;
@@ -23,7 +23,7 @@ header h1 {
 header .subtitle { margin: 6px 0 0; opacity: 0.9; font-size: 13px; }
 header .nav-inline { font-family: -apple-system, sans-serif; font-size: 14px; font-weight: 400; opacity: 0.92; margin-left: 16px; }
 header .nav-inline a { color: white; text-decoration: none; margin: 0 4px; border-bottom: 2px solid transparent; padding-bottom: 2px; }
-header .nav-inline a.active { border-bottom-color: #c1272d; }
+header .nav-inline a.active { border-bottom-color: var(--accent); }
 header .nav-inline a:hover { opacity: 0.7; }
 .badge {
   display: inline-block;
@@ -48,8 +48,8 @@ header .nav-inline a:hover { opacity: 0.7; }
   font-family: Georgia, serif;
   font-size: 17px;
   font-weight: 700;
-  color: #0a4d75;
-  border-bottom: 2px solid #c1272d;
+  color: var(--down);
+  border-bottom: 2px solid var(--accent);
   padding-bottom: 6px;
 }
 .src { font-size: 12px; color: #666; margin: -4px 0 8px; }
@@ -111,11 +111,11 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 }
 .controls input[type=number] { width: 70px; }
 .controls button {
-  padding: 4px 14px; background: #1c5d99; color: white; border: 0; border-radius: 3px; cursor: pointer;
+  padding: 4px 14px; background: var(--down); color: white; border: 0; border-radius: 3px; cursor: pointer;
 }
 .controls button:hover { background: #164a7d; }
 
-.theme-l1 { font-weight: 600; color: #0a4d75; margin-top: 6px; }
+.theme-l1 { font-weight: 600; color: var(--down); margin-top: 6px; }
 .theme-l2 { margin-left: 16px; font-size: 13px; color: #555; }
 
 /* === 4 象限热力图 === */
@@ -123,11 +123,11 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 .heat-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .heat-legend i { display: inline-block; width: 14px; height: 14px; }
 .heat-totals { font-family: Georgia, serif; font-size: 14px; color: #555; margin-bottom: 10px; }
-.heat-totals b { font-size: 22px; color: #0a4d75; }
+.heat-totals b { font-size: 22px; color: var(--down); }
 
 .heat-grid { display: grid; grid-template-columns: 26px repeat(4, 1fr); gap: 2px; font-size: 11px; }
 .heat-grid .head { font-weight: 700; text-align: center; background: #f1eee7; padding: 4px; color: #444; }
-.heat-grid .letter { text-align: center; padding: 4px; font-weight: 700; color: #0a4d75; background: #f7f5ef; }
+.heat-grid .letter { text-align: center; padding: 4px; font-weight: 700; color: var(--down); background: #f7f5ef; }
 .heat-grid .cell {
   padding: 4px; text-align: center; color: white; cursor: pointer;
   transition: transform 0.1s;
@@ -142,7 +142,7 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
                         background: white; border: 1px solid #e8e6e0; }
 
 /* === Quiz === */
-.quiz-q { margin: 12px 0; padding: 10px 12px; border-left: 3px solid #0a4d75; background: #f7f5ef; }
+.quiz-q { margin: 12px 0; padding: 10px 12px; border-left: 3px solid var(--down); background: #f7f5ef; }
 .quiz-q p { margin: 0 0 6px; font-family: Georgia, serif; }
 .quiz-opts { list-style: none; padding: 0; margin: 6px 0; }
 .quiz-opts li { padding: 4px 8px; border: 1px solid transparent; margin: 2px 0; border-radius: 0; }
@@ -152,7 +152,7 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 /* === 简易"图表"风 === */
 .stat-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 8px 0; }
 .stat-row .stat { flex: 1 1 140px; }
-.stat-row .stat .n { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: #0a4d75; }
+.stat-row .stat .n { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: var(--down); }
 .stat-row .stat .l { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
 
 footer {
@@ -162,18 +162,18 @@ footer {
 }
 footer p { margin: 4px 0; }
 
-a { color: #1c5d99; text-decoration: none; }
+a { color: var(--down); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /* === 4.4 经济学人风格新元素 (见 docs/design_reference_economist.md) === */
 .drop-cap::first-letter {
   float: left; font-family: Georgia, serif; font-size: 56px; line-height: 0.8;
-  margin: 6px 8px 0 0; color: #c1272d; font-weight: 700;
+  margin: 6px 8px 0 0; color: var(--accent); font-weight: 700;
 }
 .cite { font-size: 10px; color: #888; vertical-align: super; margin-left: 2px; }
 .sticky-stat {
   position: sticky; top: 0; z-index: 5;
-  background: white; border-bottom: 2px solid #c1272d; padding: 8px 16px;
+  background: white; border-bottom: 2px solid var(--accent); padding: 8px 16px;
   font-family: Georgia, serif; font-size: 13px;
 }
 .annotation {

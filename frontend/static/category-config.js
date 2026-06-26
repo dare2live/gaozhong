@@ -8,17 +8,17 @@
 window.GZ_CAT = {
   // 学段 → 色 (完整并集, 小学→高中全; 防 k12/dict 各缺一键的漂移 bug)
   stage: {
-    "小学": "#9FE1CB", "初中": "#1D9E75", "义务教育": "#85B7EB",
-    "高中": "#185FA5", "高中必修": "#378ADD", "高中选修": "#185FA5",
+    "小学": "#9FE1CB", "初中": "#2E7D54", "义务教育": "#85B7EB",
+    "高中": "#1F5F94", "高中必修": "#378ADD", "高中选修": "#1F5F94",
   },
   // 词汇 exam_status 四象限 → [标签, 色] (课标∩真题双可验集合)
   examStatus: {
-    core: ["核心", "#185FA5"], standard: ["标准", "#1D9E75"],
-    HV_extra: ["高频超纲", "#BA7517"], LV_extra: ["低频超纲", "#B4B2A9"],
+    core: ["核心", "#1F5F94"], standard: ["标准", "#2E7D54"],
+    HV_extra: ["高频超纲", "#9A6A00"], LV_extra: ["低频超纲", "#B4B2A9"],
   },
   // 设问技能 → 色 (推断=强调红, 与备课 D 区一致)
   skill: {
-    "推断": "#993C1D", "理解具体信息": "#185FA5",
+    "推断": "#9C2C20", "理解具体信息": "#1F5F94",
     "理解主旨要义": "#85B7EB", "理解词汇": "#B4B2A9",
   },
   // exam_point 维度 key → 课标维度基础标签 (穷尽扫描: beike/teacher/jiangke 各写一份且 theme_context 已漂移
@@ -31,11 +31,11 @@ window.GZ_CAT = {
   // 按 gloss_source 子串匹配 (srcBadge 用 includes): 教材版本(renjiao/waiyan/hujiao)→教材;
   // 中考词汇表→中考; exam→真题; variant:*→变体继承(继承基词释义); COCA→兜底. 单一来源防漂移(#1 修 85%裸代码).
   glossSource: {
-    renjiao: ["教材", "#1D9E75"], waiyan: ["教材", "#1D9E75"], hujiao: ["教材", "#1D9E75"],
-    textbook: ["教材", "#1D9E75"], unit_vocab: ["教材", "#1D9E75"],
+    renjiao: ["教材", "#2E7D54"], waiyan: ["教材", "#2E7D54"], hujiao: ["教材", "#2E7D54"],
+    textbook: ["教材", "#2E7D54"], unit_vocab: ["教材", "#2E7D54"],
     "中考": ["中考", "#378ADD"], zhongkao: ["中考", "#378ADD"],
-    exam: ["真题", "#185FA5"],
-    variant: ["变体继承", "#9C7A3C"],
+    exam: ["真题", "#1F5F94"],
+    variant: ["变体继承", "#9A6A00"],
     coca: ["COCA兜底", "#B4B2A9"],
   },
 };

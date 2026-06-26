@@ -13,7 +13,7 @@
 
   const ERA = "2021+_新高考II";
   const _DCj = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js
-  const CATS = [{ name: _DCj.genre, c: "#c1272d" }, { name: _DCj.theme_context, c: "#0a4d75" }, { name: _DCj.theme_l2, c: "#1d9e75" }];
+  const CATS = [{ name: _DCj.genre, c: "#BE3A2B" }, { name: _DCj.theme_context, c: "#1F5F94" }, { name: _DCj.theme_l2, c: "#2E7D54" }];
   const DIMCAT = { genre: 0, theme_context: 1, theme_l2: 2 };
   // 高 gaokao 命中考点词 (teaching_hint 双印证), 当堂快查示例
   const QUICK = [["word:time", "time"], ["word:people", "people"], ["word:make", "make"], ["word:work", "work"], ["word:important", "important"], ["word:environment", "environment"], ["word:experience", "experience"]];

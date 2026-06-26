@@ -11,9 +11,9 @@
   // gloss_source provenance 徽章 (释义可信度分层, 不混同) — 单一来源 category-config.js GZ_CAT.glossSource
   // (#1 修: 旧本地 SRC 表 key=textbook/zhongkao 与实际 gloss_source renjiao/waiyan/中考词汇表 失配 → 85%行渲裸代码)
   const SRC = (window.GZ_CAT && window.GZ_CAT.glossSource) || {
-    renjiao: ["教材", "#1D9E75"], waiyan: ["教材", "#1D9E75"], hujiao: ["教材", "#1D9E75"],
-    "中考": ["中考", "#378ADD"], exam: ["真题", "#185FA5"],
-    variant: ["变体继承", "#9C7A3C"], coca: ["COCA兜底", "#B4B2A9"],
+    renjiao: ["教材", "#2E7D54"], waiyan: ["教材", "#2E7D54"], hujiao: ["教材", "#2E7D54"],
+    "中考": ["中考", "#378ADD"], exam: ["真题", "#1F5F94"],
+    variant: ["变体继承", "#9A6A00"], coca: ["COCA兜底", "#B4B2A9"],
   };
   const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (防 k12/dict 漂移)
 
@@ -62,7 +62,7 @@
 
   function row(w) {
     const stage = w.stage || "—", sc = STAGE_C[stage] || "#888";
-    const hit = w.gaokao_hit_ln ? `<b style="color:#993C1D;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
+    const hit = w.gaokao_hit_ln ? `<b style="color:#9C2C20;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
     return `<tr style="border-bottom:1px solid #ece9e0;">
       <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed #b9b6ab;">${w.word}</span></td>
       <td style="padding:6px 8px;color:#444;">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>

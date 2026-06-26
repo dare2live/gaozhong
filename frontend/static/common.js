@@ -123,15 +123,6 @@ window.GZ = (function () {
     return out.join("\n");
   }
 
-  function colorByTagKind(kind) {
-    const map = {
-      word: "#0a4d75", grammar: "#1c5d99", year: "#f4a261",
-      question_type: "#c1272d", difficulty: "#2a9d8f",
-      unit: "#7aa6c2", theme: "#2a9d8f",
-    };
-    return map[kind] || "#888";
-  }
-
   /**
    * 听力播放器 HTML (Phase 7.2).
    * audioSrc: mp3 路径 (或空 → 显示 "无音频" 提示)
@@ -246,7 +237,7 @@ window.GZ = (function () {
 
   return {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
-    mountLayout, colorByTagKind, conceptLink, mdToHtml, NAV, icon,
+    mountLayout, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV,
   };

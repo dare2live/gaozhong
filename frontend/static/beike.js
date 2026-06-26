@@ -16,7 +16,8 @@
   const ERA_OLD = "2015-2020_旧课标II";
   const DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js (防 beike/teacher/jiangke 漂移)
   const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群" };
-  const C = { blue: "#185FA5", blueL: "#85B7EB", up: "#993C1D", upBg: "#FAECE7", down: "#185FA5", downBg: "#E6F1FB", grey: "#B4B2A9" };
+  // 图表数据编码色 — 锚 design-system 令牌族值 (--down/--accent-ink; echarts 需 hex 故写值非 var, 跨图一致)
+  const C = { blue: "#1F5F94", blueL: "#85B7EB", up: "#9C2C20", upBg: "#FAECE7", down: "#1F5F94", downBg: "#E6F1FB", grey: "#B4B2A9" };
   const STATUS = (window.GZ_CAT && window.GZ_CAT.examStatus) || {};   // 考点状态色单一来源 category-config.js
 
   let state = { era: ERA_NEW, dim: "theme_l2", dist: null, cross: "genre" };
@@ -120,7 +121,7 @@
   function renderTrend(p) {
     // 题型×年份 presence 热力(结构真值, 粒度无关; v2: signal 由卷面结构config定, extraction_gap 淡色虚线诚实标)。
     const items = (p && p.by_question_type) || [];
-    const SIG = { skeleton: { c: C.blue, t: "骨架·两卷制常驻" }, retired: { c: "#c1272d", t: "真退场·卷面取消" }, introduced: { c: "#1d9e75", t: "真登场·卷面新增" }, unregistered: { c: C.grey, t: "未登记结构" } };
+    const SIG = { skeleton: { c: C.blue, t: "骨架·两卷制常驻" }, retired: { c: "#BE3A2B", t: "真退场·卷面取消" }, introduced: { c: "#2E7D54", t: "真登场·卷面新增" }, unregistered: { c: C.grey, t: "未登记结构" } };
     const ord = { skeleton: 0, retired: 1, introduced: 2, unregistered: 3 };
     const list = items.slice().sort((a, b) => (ord[a.signal] ?? 9) - (ord[b.signal] ?? 9));
     const all = items.flatMap(x => [...(x.old_years || []), ...(x.new_years || [])]);
@@ -279,7 +280,7 @@
       grid: { left: 60, right: 8, top: 8, bottom: 40, containLabel: false },
       xAxis: { type: "category", data: heat.letters, splitArea: { show: true }, axisLabel: { fontSize: 9 } },
       yAxis: { type: "category", data: sts.map(s => STATUS[s][0]), splitArea: { show: true } },
-      visualMap: { min: 0, max: maxv, calculable: true, orient: "horizontal", left: "center", bottom: 0, inRange: { color: ["#F1EFE8", "#85B7EB", "#185FA5"] }, textStyle: { fontSize: 10 } },
+      visualMap: { min: 0, max: maxv, calculable: true, orient: "horizontal", left: "center", bottom: 0, inRange: { color: ["#F1EFE8", "#85B7EB", "#1F5F94"] }, textStyle: { fontSize: 10 } },
       tooltip: { formatter: p => `${heat.letters[p.data[0]]} · ${STATUS[sts[p.data[1]]][0]}<br/>${p.data[2]} 词` },
       series: [{ type: "heatmap", data, label: { show: false }, itemStyle: { borderColor: "rgba(255,255,255,0.4)", borderWidth: 1 } }],
     });

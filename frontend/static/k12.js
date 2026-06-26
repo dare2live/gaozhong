@@ -46,7 +46,7 @@
       yAxis: { type: "category", data: stages, axisTick: { show: false }, axisLine: { show: false } },
       series: [
         { name: "词", type: "bar", stack: "t", data: words.map((v, i) => ({ value: v, itemStyle: { color: STAGE_C[stages[i]] || "#888" } })), label: { show: true, position: "insideRight", fontSize: 10, color: "#fff" } },
-        { name: "语法", type: "bar", stack: "t", data: grams, itemStyle: { color: "#BA7517" }, label: { show: true, fontSize: 10 } },
+        { name: "语法", type: "bar", stack: "t", data: grams, itemStyle: { color: "#9A6A00" }, label: { show: true, fontSize: 10 } },
       ],
     });
     // a11y: 动态 aria-label + sr-only 数据表 (复用已算 stages/words/grams, 不重算)
@@ -68,7 +68,7 @@
       tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
       xAxis: { type: "value", splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
       yAxis: { type: "category", data: rows.map(r => r.type), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 10 } },
-      series: [{ type: "bar", data: rows.map(r => r.n), barWidth: "60%", itemStyle: { color: "#c1272d", borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", fontSize: 11 } }],
+      series: [{ type: "bar", data: rows.map(r => r.n), barWidth: "60%", itemStyle: { color: "#BE3A2B", borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", fontSize: 11 } }],
     });
     // a11y: 动态 aria-label + sr-only 数据表 (复用已算 rows, 不重算)
     const zkEl = G.$("#k12-zk");
@@ -104,7 +104,7 @@
     const cell = (txt) => {
       if (!txt) return '<span class="muted">—</span>';
       const s = _splitKaodian(txt);
-      return `${s.ans ? `<span style="font-family:var(--num);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:#0C447C;padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
+      return `${s.ans ? `<span style="font-family:var(--num);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:#1F5F94;padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
     };
     el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
       <thead><tr style="text-align:left;border-bottom:2px solid #ddd;">
@@ -119,9 +119,9 @@
     // #9 修 bug: 原代码高中侧 <span>高中</span> 把 p.senior 整个 drop, 只显字面"高中"。
     G.$("#k12-bp").innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;">` +
       pairs.map(p => `<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 8px;background:var(--sunken);border-radius:6px;">
-        <span style="background:#E1F5EE;color:#085041;padding:2px 7px;border-radius:5px;">初中 ${p.junior}</span>
+        <span style="background:#E1F5EE;color:#2E7D54;padding:2px 7px;border-radius:5px;">初中 ${p.junior}</span>
         <span style="color:#888;">→</span>
-        <span style="background:#E6F1FB;color:#0C447C;padding:2px 7px;border-radius:5px;">高中 ${p.senior || p.junior}</span></div>`).join("") +
+        <span style="background:#E6F1FB;color:#1F5F94;padding:2px 7px;border-radius:5px;">高中 ${p.senior || p.junior}</span></div>`).join("") +
       `</div><p class="muted" style="font-size:11px;margin:8px 0 0;">共 ${d.n} 对细粒度衔接边(非10维粗分) · ${d.basis}</p>`;
   }
 
