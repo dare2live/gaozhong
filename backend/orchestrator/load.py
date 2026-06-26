@@ -105,6 +105,12 @@ def load_textbooks(con: duckdb.DuckDBPyConnection) -> int:
     return len(rows)
 
 
+# 派生生成物 (init_db 自动重生成, 非 checked-in 真相源) — 不入 file_manifest sha 锁:
+# 它们随上游数据(真题/教材)变而变, sha 锁会在每次新卷后失配触发"再重建"级联 (P0-3 根治)。
+# file_sha 审计只锁真相源(PDF/课标/题面 txt), 派生物的正确性由其各自 D0 断言守(如 HV_extra node==jsonl)。
+_GENERATED_ARTIFACTS = {"data/structured/vocab_classification.jsonl"}
+
+
 def load_file_manifest(con: duckdb.DuckDBPyConnection) -> int:
     now = datetime.now(timezone.utc).isoformat()
     rows = []
@@ -114,6 +120,8 @@ def load_file_manifest(con: duckdb.DuckDBPyConnection) -> int:
                         (ROOT/"data/external", "external")]:
         if not base.exists(): continue
         for f in _input_files(base):
+            if str(f.relative_to(ROOT)) in _GENERATED_ARTIFACTS:
+                continue   # 派生生成物不 sha 锁 (P0-3)
             rows.append((str(f.relative_to(ROOT)), kind,
                           _sha256(f), f.stat().st_size, None, now))
     con.executemany("INSERT OR REPLACE INTO file_manifest VALUES (?, ?, ?, ?, ?, ?)", rows)

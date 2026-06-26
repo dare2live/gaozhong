@@ -132,6 +132,11 @@ def main() -> None:
     print(f"  edges.derive_from: {extract.run_derive_edges(con)}")
     print(f"  TOTAL edges: {con.execute('SELECT COUNT(*) FROM edges').fetchone()[0]}")
 
+    print("\n=== Layer 3w: 超纲词分层 vocab_classification (P0-3: 接进主链, tests_word边后自动重生成) ===")
+    # 前置链外手工脚本 → 现入主链: 新卷→超纲分层全自动, 消除手工 build_vocab + file_sha 级联 (复用写连接)
+    from scripts.build_vocab_classification import build as build_vocab_classification
+    print(f"  vocab_classification: {dict(build_vocab_classification(con))}")
+
     print("\n=== Layer 3x: 初中节点 (域A; word/grammar, stage 标注; inc2; 在全部高中word节点建完后跑计数才准) ===")
     from backend.services.data_sources.extract.junior import (
         vocab as junior_vocab, grammar as junior_grammar, stage_link as junior_stage_link,

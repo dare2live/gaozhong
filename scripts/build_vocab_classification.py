@@ -84,18 +84,28 @@ def classify(con, lemm) -> dict[str, str]:
     return {w: _classify_word(w, cefr, ln_edged, all_edged, lemm) for w in sorted(tb - cefr)}
 
 
-def main() -> int:
+def build(con) -> dict:
+    """生成 vocab_classification.jsonl (复用调用方 con — 不自开第二连接, 避 DuckDB 单写者冲突, 坑11)。
+
+    P0-3 (2026-06-26 架构): 接进 init_db Layer 3w(tests_word 边建完后), 使新卷→超纲分层全自动,
+    消除"重建→手跑 build_vocab→jsonl sha 变→file_manifest 失配→再重建"的级联(本文件 OUT 由
+    load_file_manifest 排除 sha 锁, 因它是派生生成物非真相源)。输出确定序(classify 已 sorted)。
+    """
     from nltk.stem import WordNetLemmatizer  # 仅生成期依赖
-    con = duckdb.connect(str(DB), read_only=True)
-    try:
-        rec = classify(con, WordNetLemmatizer())
-    finally:
-        con.close()
+    rec = classify(con, WordNetLemmatizer())
     OUT.write_text("\n".join(json.dumps({"word": w, "category": c}, ensure_ascii=False)
                              for w, c in rec.items()) + "\n", encoding="utf-8")
     from collections import Counter
-    dist = Counter(rec.values())
-    print(f"vocab_classification.jsonl: {len(rec)} 词")
+    return Counter(rec.values())
+
+
+def main() -> int:
+    con = duckdb.connect(str(DB), read_only=True)
+    try:
+        dist = build(con)
+    finally:
+        con.close()
+    print(f"vocab_classification.jsonl: {sum(dist.values())} 词")
     for k, v in dist.most_common():
         print(f"  {k}: {v}")
     return 0
