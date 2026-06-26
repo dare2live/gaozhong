@@ -12,6 +12,19 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 叙事须收, 别narrate成"命题迁移真值"。
 - **硬编码campaign(11 commit)净影响**: 纯内部清洁(单点/中立leaf/config化), **交付门一格未动**; 2个"bug修"是潜伏陷阱defuse(vocab容差YAML孤儿)+前端标签归一, 非live修复。别把"代码更干净"读成"更接近能交付"。
 
+## 最近 session (2026-06-26): 2026新高考II卷英语真题入库 + 多校轨收口
+
+> 用户: "2026高考英语题出来了, 获取并解析使用; 数据源 t.urongda.com/regions/liaoning; 从数据模块用专用工具非临时脚本" + "多校/多教研员先停在这里收口, 不用管枚举, 先有一个教研员".
+
+**2026 真题全链路 (commit 4c8c854 获取转录 + bff9651 入库)**: EOL官方2026未发布 → 锦宏 jhgk.cn(项目既有 local_pdf 同家族)直链 PDF。
+- 获取: sources.yaml `local_pdf_xgkii_english_2026` → `acquire_external_source.py`(fetcher+sha256+manifest, 专用工具非临时脚本)。题面14.7MB扫描图 + 答案493KB有文字层。卷型三源核验=新高考全国II卷(辽宁§7锚定)。
+- 题面转录: 12页扫描图 **双通道 ocrmac(macOS Vision)×视觉精读裁决**(坑23), 抓多处单词级分歧(cold≠cool/polite≠busy/完形subject≠account, 均OCR对我初读错)。落 `2026_xgkii_english.txt`(137行)。
+- 入库: `xgkii2026_import.py` group级8组(听力/阅读ABCD/七选五/完形/语法; 写作主观题不入=跨年一致) → exam_questions, init_db Layer 2a2 可复现。canonical建10节点+links建边。
+- 传播: vocab_classification.jsonl 重生成(真超纲·辽宁考过 142→157, +15合法超纲考点词 breakthrough/cable/determination/steward… 无专名噪声); 越纲率/词汇热力/主题(课标三大主题语境)/答案分布 自动含2026。
+- 门: cross_verify_pdf 加扫描图skip(题面真值=双通道转录, D0/moth守, 非假过); 基线 辽宁190/高考474; moth 106/0 + D0 + stop_gate **三门绿**。诚实分层: source_repo=jhgk(tier-B转印官方评分参考, 待官方评析交叉核验); 无逐题cognitive-skill解析不臆造。
+
+**多校/多教研员轨收口 (用户决策)**: `_tenant.py` 记录决策 — 当前=单教研员内网工具(不管枚举); 隔离骨架(owns_student/owns_class+单一执行点 get_teacher)保留作扩展接口, 接鉴权时唯一改 get_teacher 从session派生; 未做(刻意): 登录/JWT/枚举防护/Docker。恢复多校从这几项起。
+
 ## 最近 session (2026-06-25/26): 教研室17项 punch-list 全清 — 断链矿口接通 + 全量收敛单一入口
 
 > 用户决策: "先不引入单/多老师验证(②③轨), 把教研室(单用户内网教研员)功能做好做完善" + "全量收敛单一入口"。

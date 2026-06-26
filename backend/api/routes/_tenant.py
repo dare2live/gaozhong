@@ -6,6 +6,14 @@
 
 注: 当前系统无 auth/session, teacher_id 由客户端传 (demo 阶段); 真上线需服务端鉴权派生 teacher_id,
 此 helper 是隔离的**单一执行点**, 接入鉴权后只改 get_teacher 一处。
+
+══ 多租户收口决策 (用户 2026-06-26): 多校/多教研员轨**止步于此** ══
+- 当前定位 = **单教研员内网工具** (无需鉴权/枚举防护; 用户明确"不用管枚举的问题, 先有一个教研员就行")。
+- 隔离骨架**保留不删** (owns_student/owns_class + 全 per-student 端点已走本 helper), 作未来多租户的**扩展接口**:
+  接入登录/JWT 时唯一改动点 = get_teacher 改为从 server-side session 派生 (不再信 query 参数);
+  owns_* 归属判定无需改 (已是 server 端 SQL 校验), 其余端点零改动 (单一执行点红利)。
+- 未做 (刻意非遗漏): 登录/JWT/bcrypt · 跨租户枚举防护(IDOR) · Docker/HTTPS/nginx · 多租户压测。
+  恢复多校轨从这几项起步; 见 docs/RESUME.md 交付裁决 ②③轨。
 """
 from __future__ import annotations
 
