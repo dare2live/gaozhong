@@ -235,10 +235,32 @@ window.GZ = (function () {
     setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
+  // 打印保图 (RC1): echarts canvas 默认不进打印 → 打印前把各图 getDataURL 注入 <img>, 打印后还原。
+  function printWithCharts() {
+    if (!window.echarts) { window.print(); return; }
+    const restores = [];
+    document.querySelectorAll("[_echarts_instance_]").forEach(d => {
+      const inst = window.echarts.getInstanceByDom(d);
+      if (!inst) return;
+      let url;
+      try { url = inst.getDataURL({ type: "png", pixelRatio: 2, backgroundColor: "#fff" }); } catch (e) { return; }
+      const img = document.createElement("img");
+      img.className = "gz-print-img"; img.src = url;
+      img.style.cssText = "width:100%;height:auto;max-width:" + (d.offsetWidth || 640) + "px;";
+      d.style.display = "none";
+      d.insertAdjacentElement("afterend", img);
+      restores.push(() => { d.style.display = ""; img.remove(); });
+    });
+    let done = false;
+    const cleanup = () => { if (done) return; done = true; restores.forEach(f => f()); };
+    window.addEventListener("afterprint", cleanup, { once: true });
+    try { window.print(); } finally { setTimeout(cleanup, 1500); }
+  }
+
   return {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
     mountLayout, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
-    exportChartPNG, exportCSV,
+    exportChartPNG, exportCSV, printWithCharts,
   };
 })();

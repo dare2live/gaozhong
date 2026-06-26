@@ -49,7 +49,7 @@
     if (!list.length) { $("#lp-body").innerHTML = '<p class="muted">无单元数据</p>'; return; }
     sel.innerHTML = list.map(r => `<option value="unit:${r.version_key}/${r.volume_key}/U${r.unit_number}">${r.version_key}/${r.volume_key}/U${r.unit_number} — ${r.title_en || ""}</option>`).join("");
     sel.onchange = () => renderLesson(sel.value);
-    const pb = $("#lp-print"); if (pb) pb.onclick = () => window.print();
+    const pb = $("#lp-print"); if (pb) pb.onclick = () => G.printWithCharts();
     await renderLesson(sel.value);
   });
 })();

@@ -185,7 +185,7 @@
     html += `<div id="handout-modal" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="modal-body">
         <button class="gz-iconbtn close-btn" aria-label="关闭" onclick="document.getElementById('handout-modal').classList.remove('open')">${GZ.icon("close")}</button>
-        <button class="print-btn" onclick="window.print()">打印 / PDF</button>
+        <button class="print-btn" onclick="window.GZ.printWithCharts()">打印 / PDF</button>
         <div id="handout-md">载入中 ...</div>
       </div>
     </div>`;
@@ -472,7 +472,7 @@
           ${p.questions.map(q => `<li style="margin:6px 0;"><span class="qb-tb">${esc(q.qtype)}</span> <span style="color:#888;font-size:11px;">#${q.qb_id}·${esc(q.difficulty || "")}</span><br><span style="white-space:pre-wrap;">${esc((q.stem || "").slice(0, 3000))}</span> <span style="color:var(--accent-ink);">[答:${esc(q.answer || "")}]</span></li>`).join("")}
         </ol></div>`;
     };
-    const mountPaper = (box, html) => { box.innerHTML = html; const pb = $("#qb-paper-print"); if (pb) pb.onclick = () => window.print(); };
+    const mountPaper = (box, html) => { box.innerHTML = html; const pb = $("#qb-paper-print"); if (pb) pb.onclick = () => window.GZ.printWithCharts(); };
     // #12: 蓝图练习卷接矿口 (/api/exercise/blueprint_practice 原0前端消费空转; 诚实=结构对齐非预测)
     const genBlueprint = async () => {
       const total = Math.max(5, Math.min(60, parseInt($("#qb-bp-total").value, 10) || 30));
@@ -660,7 +660,7 @@
         <div class="block">学生: ${c.n_students}</div>
       </div>`;
     }
-    html += `</div></section>
+    html += `${classes.classes.length ? "" : '<p class="muted" style="padding:6px 4px;">暂无班级 — 先建班并导入学生名单 (教研室单用户内网)</p>'}</div></section>
       <section class="layer-section">
         <h3>学生列表 <span class="layer-meta">点击查弱点 + 推送课节</span></h3>
         <div class="course-grid">`;
@@ -671,7 +671,7 @@
         <div class="block">${s.school} · ${s.city}</div>
       </div>`;
     }
-    html += `</div></section>
+    html += `${list.students.length ? "" : '<p class="muted" style="padding:6px 4px;">暂无学生 — 新学生先做上方“摸底入测”自动建档</p>'}</div></section>
       <div id="student-modal" onclick="if(event.target===this)this.classList.remove('open')">
         <div class="modal-body">
           <button class="gz-iconbtn close-btn" aria-label="关闭" onclick="document.getElementById('student-modal').classList.remove('open')">${GZ.icon("close")}</button>

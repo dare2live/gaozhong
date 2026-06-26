@@ -321,7 +321,7 @@
       h.appendChild(btn);
     });
     const pb = G.$("#bk-print");
-    if (pb) pb.onclick = () => window.print();
+    if (pb) pb.onclick = () => G.printWithCharts();   // RC1: 打印保图(echarts→PNG注入)
   }
 
   registerTab("beike", async () => {
