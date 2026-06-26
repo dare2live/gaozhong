@@ -74,10 +74,10 @@
     const chip = (t, c) => `<span class="gz-meta-chip" style="background:${c}22;color:${c};">${escapeHtml(String(t))}</span>`;
     const chips = [];
     if (attrs.exam_status) { const e = ES[attrs.exam_status]; chips.push(chip(e ? e[0] : attrs.exam_status, e ? e[1] : "#888")); }
-    if (attrs.gaokao_hit_count_ln != null) chips.push(chip(`辽宁命中 ${attrs.gaokao_hit_count_ln}`, attrs.gaokao_hit_count_ln > 0 ? "#993C1D" : "#B4B2A9"));
-    if (attrs.cefr_level) chips.push(chip(attrs.cefr_level, "#185FA5"));
-    if (attrs.stage && attrs.stage !== attrs.cefr_level) chips.push(chip(attrs.stage, "#378ADD"));
-    if (attrs.dimension) chips.push(chip(attrs.dimension, "#0a4d75"));
+    if (attrs.gaokao_hit_count_ln != null) chips.push(chip(`辽宁命中 ${attrs.gaokao_hit_count_ln}`, attrs.gaokao_hit_count_ln > 0 ? "var(--accent-ink)" : "var(--ink-3)"));
+    if (attrs.cefr_level) chips.push(chip(attrs.cefr_level, "var(--down)"));
+    if (attrs.stage && attrs.stage !== attrs.cefr_level) chips.push(chip(attrs.stage, "var(--down)"));
+    if (attrs.dimension) chips.push(chip(attrs.dimension, "var(--down)"));
     if (chips.length) h += `<div class="gz-meta">${chips.join(" ")}</div>`;
     if (attrs.teaching_hint) h += `<p class="gz-hint">${escapeHtml(attrs.teaching_hint)}</p>`;
 

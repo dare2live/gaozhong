@@ -34,7 +34,7 @@
     <option value="">全部阶段</option><option>初中</option><option>高中必修</option><option>高中选修</option>
   </select>
   <label style="font-size:13px;color:#666;"><input type="checkbox" id="dict-exam"> 仅辽宁高考命中</label>
-  <button id="dict-export" class="bk-export" title="导出当前筛选词表 CSV (备课发学生)">⬇ CSV</button>
+  <button id="dict-export" class="bk-export" title="导出当前筛选词表 CSV (备课发学生)">${GZ.icon("download")} CSV</button>
   <span id="dict-n" class="muted" style="font-size:12px;"></span>
 </div>
 <div id="dict-list" style="max-height:62vh;overflow:auto;"></div>`;

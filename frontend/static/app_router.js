@@ -49,7 +49,7 @@
       const fail = rows.filter(r => r.severity === "FAIL").length;
       const warn = rows.filter(r => r.severity === "WARN").length;
       ax.textContent = (fail || warn) ? `${fail} FAIL · ${warn} WARN` : `0 FAIL audit`;
-      ax.style.color = fail ? "#993C1D" : (warn ? "#9a6a00" : "");
+      ax.style.color = fail ? "var(--accent-ink)" : (warn ? "var(--warn)" : "");
     }
   }
 
@@ -63,13 +63,23 @@
     const hash = (location.hash || "#/beike").slice(2);  // strip "#/" (备课驾驶舱=默认落地页)
     const name = (hash.split("/")[0] || "beike").toLowerCase();
     $$(".tabnav a").forEach(a => a.classList.toggle("active", a.dataset.tab === name));
+    // RC1: 切 tab 回顶 (滚动容器在不同布局下可能是 window / documentElement / body / .content, 全复位)
+    window.scrollTo(0, 0);
+    if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+    if (CONTENT) CONTENT.scrollTop = 0;
     const mount = TABS[name];
     if (mount) {
+      // RC1: 即时加载占位 (不白等上一屏看似卡死)
+      CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入中…</div>';
       mount().catch(err => {
-        CONTENT.innerHTML = `<p style="color:#c00">tab ${name} 出错: ${err.message}</p>`;
+        // RC1 / D0 诚实: 加载失败=可见错误, 不冒充空数据 (后端未起/数据未就绪都该显式告知)
+        CONTENT.innerHTML = '<div class="error-state">'
+          + '<div class="es-title">该模块加载失败</div>'
+          + `<div class="es-msg">页面 <code>${name}</code>: ${String(err && err.message || err)}。可能后端未启动或数据未就绪 — 这是真实错误, 非"无数据"。</div>`
+          + '<button class="es-retry" type="button" onclick="location.reload()">重新载入</button></div>';
       });
     } else {
-      CONTENT.innerHTML = `<p>未知 tab: ${name}</p>`;
+      CONTENT.innerHTML = `<div class="error-state"><div class="es-title">未知页面</div><div class="es-msg">页面 <code>${name}</code> 不存在。</div></div>`;
     }
   }
   window.addEventListener("hashchange", route);
@@ -95,7 +105,7 @@
   register("workbench", async () => {
     // 今日态落地页: 全 fetch service 单一计算点(零硬编码派生数字); 命题研判头条前置(核心竞争力)。
     const [stats, cs, dict, cog, classes, audit] = await Promise.all([
-      fetchJSON("/api/stats").catch(() => ({})),
+      fetchJSON("/api/stats"),  // RC1/D0: 工作台主数据, 失败必抛 → route() 错误态
       fetchJSON("/api/course/stats").catch(() => ({})),
       fetchJSON("/api/exam_dictionary?prefix=zz&limit=1").catch(() => ({})),
       fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),
@@ -225,7 +235,7 @@
   function _renderPrinciples() {
     return `<div style="text-align:right">
       <span class="principles-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
-        ℹ生成规则 (R2/R5/D0)
+        生成规则 (R2/R5/D0)
       </span>
       <div class="principles-body">
         <dl>
@@ -307,7 +317,7 @@
     try {
       const data = await fetchJSON("/api/course/quiz?id=" + cid);
       if (data.error) {
-        area.innerHTML = `<p style="color:#c00">课后测验加载失败: ${data.error}</p>`;
+        area.innerHTML = `<p style="color:var(--accent)">课后测验加载失败: ${data.error}</p>`;
         return;
       }
       const questions = Array.isArray(data.questions) ? data.questions : [];
@@ -340,7 +350,7 @@
       area.innerHTML = html;
       area._quizData = Object.assign({}, data, { questions });
     } catch (err) {
-      area.innerHTML = `<p style="color:#c00">载入失败: ${err.message}</p>`;
+      area.innerHTML = `<p style="color:var(--accent)">载入失败: ${err.message}</p>`;
     }
   };
 
@@ -379,10 +389,10 @@
       fb.style.display = "block";
       if (given === expected) {
         correct++;
-        fb.innerHTML = `<span style="color:#2a9d8f">正确</span>`;
+        fb.innerHTML = `<span style="color:var(--good)">正确</span>`;
         fb.className = "gz-quiz-feedback correct";
       } else {
-        fb.innerHTML = `<span style="color:#c1272d">正确答案: ${expected}</span>`;
+        fb.innerHTML = `<span style="color:var(--accent)">正确答案: ${expected}</span>`;
         fb.className = "gz-quiz-feedback wrong";
       }
       const qData = (area._quizData.questions||[]).find(q => q.qb_id === +qEl.dataset.qid);
@@ -415,10 +425,10 @@
       <div class="bk-filter" id="qb-blueprint" style="margin-bottom:10px;">
         <span class="bk-flabel">蓝图练习卷</span>
         <label style="font-size:12px;color:#666;">题量 <input id="qb-bp-total" type="number" value="30" min="5" max="60" style="width:54px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
-        <button id="qb-bp-go" class="bk-pill on">🧩 生成蓝图练习卷</button>
+        <button id="qb-bp-go" class="bk-pill on">${GZ.icon("grid")} 生成蓝图练习卷</button>
         <span class="muted" style="font-size:11px;">按考纲蓝图结构从真题加权抽样 · 非预测/非押题</span>
       </div>
-      <details id="qb-compose" style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:#185FA5;">⚙ 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
+      <details id="qb-compose" style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:var(--accent-ink);">${GZ.icon("gear")} 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
         <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
           <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
           <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
@@ -453,13 +463,13 @@
     const paperHTML = (p, title, basisHtml) => {
       const sf = p.shortfalls;
       const hasSf = Array.isArray(sf) ? sf.length : (sf && Object.values(sf).some(v => v > 0));
-      const shortf = hasSf ? `<p class="muted" style="color:#9a6a00;font-size:12px;margin:4px 0;">注 部分题型库存不足: ${esc(JSON.stringify(sf))}（诚实披露, 不补押题）</p>` : "";
+      const shortf = hasSf ? `<p class="muted" style="color:var(--warn);font-size:12px;margin:4px 0;">注 部分题型库存不足: ${esc(JSON.stringify(sf))}（诚实披露, 不补押题）</p>` : "";
       return `<div class="bk-card" style="margin:6px 0 12px;">
         <div class="bk-h"><span>${title} <small>${p.actual_total}/${p.target_total} 题</small></span>
-          <button id="qb-paper-print" class="bk-export">🖶 打印此卷</button></div>
+          <button id="qb-paper-print" class="bk-export">${GZ.icon("printer")} 打印此卷</button></div>
         ${basisHtml || ""}${shortf}
         <ol style="padding-left:1.4rem;font-size:13px;line-height:1.55;">
-          ${p.questions.map(q => `<li style="margin:6px 0;"><span class="qb-tb">${esc(q.qtype)}</span> <span style="color:#888;font-size:11px;">#${q.qb_id}·${esc(q.difficulty || "")}</span><br><span style="white-space:pre-wrap;">${esc((q.stem || "").slice(0, 3000))}</span> <span style="color:#185FA5;">[答:${esc(q.answer || "")}]</span></li>`).join("")}
+          ${p.questions.map(q => `<li style="margin:6px 0;"><span class="qb-tb">${esc(q.qtype)}</span> <span style="color:#888;font-size:11px;">#${q.qb_id}·${esc(q.difficulty || "")}</span><br><span style="white-space:pre-wrap;">${esc((q.stem || "").slice(0, 3000))}</span> <span style="color:var(--accent-ink);">[答:${esc(q.answer || "")}]</span></li>`).join("")}
         </ol></div>`;
     };
     const mountPaper = (box, html) => { box.innerHTML = html; const pb = $("#qb-paper-print"); if (pb) pb.onclick = () => window.print(); };
@@ -496,7 +506,7 @@
 
   function _renderListeningCard(q) {
     const audioSrc = q.audio_id ? `/data/audio/${q.audio_id}.mp3` : "";
-    return `<div class="listening-card" data-qtype="${q.question_type}" style="background:#fff;border:1px solid #e8e6e0;border-left:4px solid #0a4d75;border-radius:4px;padding:0.7rem 1rem;margin-bottom:0.5rem">
+    return `<div class="listening-card" data-qtype="${q.question_type}" style="background:#fff;border:1px solid #e8e6e0;border-left:4px solid var(--down);border-radius:4px;padding:0.7rem 1rem;margin-bottom:0.5rem">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <strong>#${q.qb_id} · ${q.question_type}</strong>
         <span style="color:#888;font-size:0.85em">${q.difficulty} · ${q.audio_duration || "?"}s</span>
@@ -543,7 +553,7 @@
           if (d.analysis) html += `<div style="color:#666;font-size:0.9em">${d.analysis}</div>`;
           div.innerHTML = html || "(无原文)";
         } catch (err) {
-          div.innerHTML = `<span style="color:#c00">载入失败: ${err.message}</span>`;
+          div.innerHTML = `<span style="color:var(--accent)">载入失败: ${err.message}</span>`;
         }
       }
     } else {
@@ -595,16 +605,16 @@
         <h3>设计宪法 <span class="layer-meta">${rules.length} 条 (${principles.length} 原则 + ${ironLaws.length} 铁律 + ${violations.length} 禁止)</span></h3>
         <p style="color:#666;font-size:0.85em">模型驱动内容生成最高原则 — 任何题目/教案/教程必须遵守. 入库强制执行.</p>
 
-        <h4 style="color:#0a4d75;margin-top:1rem">六大原则</h4>
+        <h4 style="color:var(--down);margin-top:1rem">六大原则</h4>
         <div class="course-grid">${principles.map(r => `
-          <div class="course-card" style="border-left-color:#0a4d75">
+          <div class="course-card" style="border-left-color:var(--down)">
             <strong>${r.rule_id}: ${r.title}</strong>
             <div class="block">${r.description}</div>
-            ${r.enforcement ? `<div class="block" style="color:#2a9d8f">执行: ${r.enforcement}</div>` : ""}
+            ${r.enforcement ? `<div class="block" style="color:var(--good)">执行: ${r.enforcement}</div>` : ""}
           </div>`).join("")}
         </div>
 
-        <h4 style="color:#E3120B;margin-top:1rem">正向铁律 (P1-P15)</h4>
+        <h4 style="color:var(--accent);margin-top:1rem">正向铁律 (P1-P15)</h4>
         <div class="course-grid">${ironLaws.map(r => `
           <div class="course-card G_FINAL">
             <strong>${r.rule_id}: ${r.title}</strong>
@@ -614,7 +624,7 @@
 
         <h4 style="color:#888;margin-top:1rem">违宪清单 (V1-V8)</h4>
         <ul style="background:#fff;padding:0.5rem 2rem;border-radius:4px;font-size:0.9em">
-          ${violations.map(r => `<li><strong style="color:#c1272d">${r.rule_id}</strong> ${r.title} → <em>${r.description}</em></li>`).join("")}
+          ${violations.map(r => `<li><strong style="color:var(--accent)">${r.rule_id}</strong> ${r.title} → <em>${r.description}</em></li>`).join("")}
         </ul>
       </section>`;
   });
@@ -634,7 +644,7 @@
         <h3>新学生入测 · 摸底测验</h3>
         <p style="color:#666;font-size:0.9em">巧妙 9-11 题快速摸清水平 → 自动推送对应 layer 课节 + 弱点</p>
         <div style="display:flex;gap:0.5rem;margin:0.5rem 0">
-          <button onclick="window._startPlacement('G1')" style="padding:0.4rem 1rem;background:#2a9d8f;color:#fff;border:0;border-radius:3px;cursor:pointer">G1 入测 (9 题)</button>
+          <button onclick="window._startPlacement('G1')" style="padding:0.4rem 1rem;background:var(--good);color:#fff;border:0;border-radius:3px;cursor:pointer">G1 入测 (9 题)</button>
           <button onclick="window._startPlacement('G2')" style="padding:0.4rem 1rem;background:#f4a261;color:#fff;border:0;border-radius:3px;cursor:pointer">G2 入测 (10 题)</button>
           <button onclick="window._startPlacement('G3')" style="padding:0.4rem 1rem;background:#e76f51;color:#fff;border:0;border-radius:3px;cursor:pointer">G3 入测 (11 题)</button>
         </div>
@@ -691,7 +701,7 @@
           </div>`;
         }
       }
-      html += `<button type="submit" style="background:#E3120B;color:#fff;border:0;padding:0.6rem 1.5rem;border-radius:3px;cursor:pointer">提交评分</button>
+      html += `<button type="submit" style="background:var(--accent);color:#fff;border:0;padding:0.6rem 1.5rem;border-radius:3px;cursor:pointer">提交评分</button>
         <button type="button" onclick="window.location.hash='#/students'" style="margin-left:0.5rem;padding:0.6rem 1rem">取消</button>
         </form>
         <div id="placement-result" style="margin-top:1rem"></div>`;
@@ -720,12 +730,12 @@
         }
       };
     } catch (err) {
-      CONTENT.innerHTML = `<h2>载入失败</h2><p style="color:#c00">${err.message}</p>`;
+      CONTENT.innerHTML = `<h2>载入失败</h2><p style="color:var(--accent)">${err.message}</p>`;
     }
   };
 
   function _showFinalResult(rd, result) {
-    rd.innerHTML = `<div style="background:#fff;padding:1rem;border-left:4px solid #E3120B;border-radius:4px">
+    rd.innerHTML = `<div style="background:#fff;padding:1rem;border-left:4px solid var(--accent);border-radius:4px">
       <h3>评分结果</h3>
       <p><strong>正确率: ${((result.combined_accuracy || result.accuracy) * 100).toFixed(1)}%</strong>
         ${result.phase1_accuracy != null ? `(一阶段 ${(result.phase1_accuracy * 100).toFixed(1)}% + 二阶段 ${(result.phase2_accuracy * 100).toFixed(1)}%)` : `(${result.n_correct}/${result.n_total})`}</p>
@@ -773,7 +783,7 @@
           <input type="text" name="fu_${q.qb_id}" placeholder="答案" style="width:300px;padding:0.3rem">
         </div>`;
       });
-      html += `<button type="submit" style="background:#E3120B;color:#fff;border:0;padding:0.6rem 1.5rem;border-radius:3px;cursor:pointer">提交追问</button>
+      html += `<button type="submit" style="background:var(--accent);color:#fff;border:0;padding:0.6rem 1.5rem;border-radius:3px;cursor:pointer">提交追问</button>
         </form><div id="followup-result"></div>`;
       rd.innerHTML = html;
       document.getElementById("followup-form").onsubmit = async (ev2) => {
@@ -792,7 +802,7 @@
         _showFinalResult(document.getElementById("followup-result"), finalResult);
       };
     } catch (err) {
-      rd.innerHTML += `<p style="color:#c00">追问载入失败: ${err.message}</p>`;
+      rd.innerHTML += `<p style="color:var(--accent)">追问载入失败: ${err.message}</p>`;
       _showFinalResult(rd, firstResult);
     }
   }
@@ -814,7 +824,7 @@
       let h = `<h2 style="margin:0">${info.student.name} (${sid})</h2>`;
       // 坑4 诚实(A5): 全平台 student_answers 100% demo 合成(0真实作答), 单生模态须标 demo 不在零真作答上呈伪造置信度
       if (((info.student && info.student.source) || "demo") === "demo" || (info.answers && info.answers.source === "demo"))
-        h += `<p style="background:#FAECE7;color:#993C1D;padding:6px 10px;border-radius:6px;font-size:13px;margin:6px 0;">注 示例数据(demo 合成作答, 非真实学情) — 答题/弱点为演示用, 待导入真实答题卡后才是该生真实分析。</p>`;
+        h += `<p style="background:#FAECE7;color:var(--accent-ink);padding:6px 10px;border-radius:6px;font-size:13px;margin:6px 0;">注 示例数据(demo 合成作答, 非真实学情) — 答题/弱点为演示用, 待导入真实答题卡后才是该生真实分析。</p>`;
       h += `<p>${info.student.school} · ${info.student.grade} · 答题 ${info.answers.total} 题 (正确 ${info.answers.correct})</p>`;
       h += `<h3>弱点 (${weakRows.length})</h3><ul>`;
       for (const w of weakRows) {
@@ -839,7 +849,7 @@
   register("graph", async () => {
     CONTENT.innerHTML = `<h2>F. 知识图谱</h2><p>载入中 ...</p>`;
     const [gstats, trend] = await Promise.all([
-      fetchJSON("/api/graph/stats").catch(() => ({})),
+      fetchJSON("/api/graph/stats"),  // RC1/D0: 图谱主数据, 失败必抛 → route() 错误态
       fetchJSON("/api/trend/summary").catch(() => ({})),
     ]);
     // /api/graph/stats 实际字段: {nodes, edges, total_nodes, total_edges}
@@ -940,7 +950,7 @@
               <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
             </label>
           </div>
-          <button type="submit" style="background:#E3120B;color:#fff;border:0;padding:0.5rem 1rem;border-radius:3px;cursor:pointer">上传</button>
+          <button type="submit" style="background:var(--accent);color:#fff;border:0;padding:0.5rem 1rem;border-radius:3px;cursor:pointer">上传</button>
           <div id="scan-result" style="margin-top:0.7rem;color:#1a5e1a"></div>
         </form>
       </section>
@@ -972,7 +982,7 @@
       const form = ev.target;
       const file = form.file.files[0];
       const resultDiv = document.getElementById("scan-result");
-      if (!file) { resultDiv.innerHTML = `<span style="color:#c00">请选文件</span>`; return; }
+      if (!file) { resultDiv.innerHTML = `<span style="color:var(--accent)">请选文件</span>`; return; }
       resultDiv.textContent = "上传中 ...";
       const params = new URLSearchParams({
         student_id: form.student_id.value,
@@ -990,10 +1000,10 @@
           resultDiv.innerHTML = `上传成功 <code>${data.upload_id}</code>; sha=${data.sha256}; OCR 状态=${data.ocr_status} (${data.text_chars} 字符)`;
           setTimeout(() => route(), 1500);  // 刷新清单
         } else {
-          resultDiv.innerHTML = `<span style="color:#c00">${data.error || resp.statusText}</span>`;
+          resultDiv.innerHTML = `<span style="color:var(--accent)">${data.error || resp.statusText}</span>`;
         }
       } catch (err) {
-        resultDiv.innerHTML = `<span style="color:#c00">${err.message}</span>`;
+        resultDiv.innerHTML = `<span style="color:var(--accent)">${err.message}</span>`;
       }
     };
   });

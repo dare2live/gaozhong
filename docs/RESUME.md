@@ -13,6 +13,22 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量, cognitive边100条全explicit_label), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 引47%必同句带"n=15方向性", 别narrate成"命题迁移真值"。
 - **门覆盖(2026-06-26 实证, 反坑17)**: `d0_exam_point_check` 有**全局 provenance 不变量**(所有 tests_exam_point 边 provenance∈{dual_model_agree,explicit_label}, 按边属性非按年)→ 2026 新边自动入 D0; 加端点有效+计数门+moth(exam-point-edges-present/xgkii-2026-truth-imported/exam-year-coverage-no-stale)。**新卷传导连门禁都自动覆盖**, 这是中考一键传导的门侧保证。
 
+## 最近 session (2026-06-26 前端 RC1 phase-1): 令牌收敛 + D0诚实错误态 + emoji清除 (用户: "前端按现有架构+项目目标再次优化, 作为RC1")
+
+> 5维审计workflow(令牌/a11y/空错态+诚实/响应式/AI-tell)+综合punch-list(16 do_now+4 defer)。审计揭露**前端"局部成熟、整体未达RC1"**: dashboard走令牌干净, 但三处系统性缺口跨多tab — ①D0诚实有真漏洞(所有fetchJSON .catch静默吞500/断网=假空) ②a11y近乎零(0 role/aria/tabindex) ③令牌落地C+(旧亮红#E3120B与令牌#BE3A2B同屏+~280内联hex两套调色板)。**redesign-PRESERVE不重做**, 优先级=D0诚实>a11y>令牌收口。
+
+**已落地 phase-1 (10前端文件, 三门绿, 0 console错误, beike/qbank视觉验证)**:
+- **令牌收敛(消两套调色板)**: design-system.css补基础令牌(.caveat-banner/.error-state/.loading-state/.gz-iconbtn/.sr-only/print@media); app.css删死.sidebar块+chromatic旧色(#E3120B红/#0a4d75蓝/#1a1a1a暗底→令牌, 浮窗#gz-popup全收敛); 非echarts JS(app_router/textbook/graph_popup/lesson)内联UI色→令牌(单红accent: 链接=红/数据=蓝); k12错令牌名(--mono→--num, --color-background-secondary→--sunken)。**echarts option色(beike/k12/xisheng/jiangke)是数据编码, 留GZ_CHART统一=phase-2**。
+- **D0诚实**: route()加错误态(.error-state, 切tab失败显式可见非白屏)+加载占位(.loading-state, 不白等上一屏)+scroll-to-top(切tab回顶); **主数据fetch抛错**(beike/k12/textbook/workbench/graph去静默catch → 后端故障显式错误非假空dashboard); beike新era n=15警示→.caveat-banner令牌。
+- **emoji清除(硬约束)**: GZ.icon()内联SVG注册表(download/printer/play/pause/grid/gear, Tabler风格currentColor+aria-hidden); 🖶⬇🧩⚙→SVG · ⚠→.caveat-banner · 🔒/ℹ删字形 · 音频▶⏸→SVG。
+- **a11y cheap赢(零回归)**: beike 5图容器role=img+aria-label · 图标SVG aria-hidden · 音频按钮aria-label。
+
+**RC1 phase-2 backlog (未达RC1门, 下轮)**:
+- **a11y深度(RC1门)**: 可点div/span/li→button或tabindex+role+keydown(键盘可达) · echarts数据表fallback(读屏) · aria-live · 内联#999小字→--ink-3(对比AA)。
+- **令牌收口第二波**: GZ_CHART统一图表蓝(6文件5个蓝值) · 冷灰大扫(#888/#666/#ddd→暖灰令牌) · app.css/style.css live类绿/橙语义色 · style.css死类清理。
+- **体验/健壮**: students/scan空态引导 · workbench/jiangke诚实标注补齐 · echarts resize监听泄漏(切tab累积) · 打印保图(getDataURL→img) · 响应式断点统一(768/820/980→820) · 部分fetch失败渲.caveat(非主数据降级标注)。
+- **死文件删除(#6)**: app.js/teacher.js/teacher.css(被legacy index/teacher.html引用, "保留可逆"刻意决策, 删需用户OK)。
+
 ## 最近 session (2026-06-26 文档对齐): 实际状态对账 + 文档刷 live + 前进计划 (用户: "中考不等了, 更新文档, 结合项目实际制定计划推进")
 
 > 5镜头并行评估workflow(门/文档漂移/工程债/价值核验/交付) + 综合 + **谄媚死对抗critic(REVISE)** + 主线 live 实测裁决。核心发现: **卡点不在"建新东西", 在文档集体滞后一个sprint + README/agent 硬自相矛盾(说"RESUME已删"但它是活跃主交接)**; 价值已不在新增KG维度(核验型机会经实测榨干/证伪)。

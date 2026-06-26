@@ -1,5 +1,6 @@
-/* /app SPA layout — 单入口 7 tab (第五阶段 5.1).
-   配色复用 style.css 经济学人风格 (red E3120B / cream FCFAF7) */
+/* /app SPA layout — 单入口 8-tab SPA.
+   配色/排版唯一真相源 = design-system.css (最后加载, 令牌系统). 本文件只留 design-system 未覆盖的布局/组件;
+   颜色一律走 var(--*) 令牌, 勿再硬编码 hex (2026-06-26 RC1 令牌收敛). */
 
 .app-shell {
   display: flex;
@@ -7,72 +8,20 @@
   margin: 0;
 }
 
-.sidebar {
-  width: 200px;
-  flex-shrink: 0;
-  background: #1a1a1a;
-  color: #fafafa;
-  padding: 1rem 0;
-  border-right: 3px solid #E3120B;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar .brand {
-  font-size: 1.1rem;
-  font-weight: 800;
-  padding: 0 1rem 1rem 1rem;
-  border-bottom: 1px solid #444;
-  margin: 0 0 1rem 0;
-  color: #FCFAF7;
-}
-.sidebar .brand small { color: #aaa; font-weight: 400; font-size: 0.8em; }
-
-.sidebar .tabnav {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-.sidebar .tabnav a {
-  display: block;
-  padding: 0.7rem 1rem;
-  color: #ccc;
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: background 0.1s;
-}
-.sidebar .tabnav a:hover { background: #2a2a2a; color: #fff; }
-.sidebar .tabnav a.active {
-  background: #2a2a2a;
-  color: #fff;
-  border-left-color: #E3120B;
-}
-.sidebar .tabnav .ic {
-  display: inline-block;
-  width: 1.2em;
-  color: #E3120B;
-}
-
-.sidebar-foot {
-  padding: 0 1rem;
-  color: #777;
-  border-top: 1px solid #333;
-  padding-top: 0.7rem;
-  margin-top: 0.7rem;
-}
-.sidebar-foot a { color: #ccc; }
+/* .sidebar / .brand / .tabnav / .sidebar-foot 整套由 design-system.css 定义 (令牌真相源);
+   旧硬编码块已删 (2026-06-26 RC1, 避免重复声明 + specificity 风险). */
 
 .content {
   flex: 1;
   padding: 1.5rem 2rem;
   overflow-x: auto;
-  background: #FCFAF7;
+  background: var(--surface);
 }
 
 /* tab 内容样式 */
 .content h2 {
   margin-top: 0;
-  border-bottom: 2px solid #E3120B;
+  border-bottom: 2px solid var(--accent);
   padding-bottom: 0.4rem;
 }
 .tab-panel { display: block; }
@@ -87,18 +36,18 @@
 .course-card.G1      { border-left-color: #2a9d8f; }
 .course-card.G2      { border-left-color: #f4a261; }
 .course-card.G3      { border-left-color: #e76f51; }
-.course-card.G_FINAL { border-left-color: #E3120B; }
+.course-card.G_FINAL { border-left-color: var(--accent); }
 .course-card .cid { color: #888; font-size: 0.85em; }
 .course-card .layer-badge {
   display: inline-block; padding: 0 0.4rem; border-radius: 2px;
-  background: #1a1a1a; color: #fff; font-size: 0.75em; margin-left: 0.4rem;
+  background: var(--nav); color: #fff; font-size: 0.75em; margin-left: 0.4rem;
 }
 .course-card .block { color: #666; font-size: 0.85em; margin-top: 0.2rem; }
 
 .layer-section { margin-bottom: 1.2rem; }
 .layer-section h3 {
   margin: 0.5rem 0 0.3rem 0; padding-bottom: 0.2rem;
-  border-bottom: 1px solid #ddd; color: #1a1a1a;
+  border-bottom: 1px solid #ddd; color: var(--nav);
 }
 .layer-section h3 .layer-meta { color: #888; font-size: 0.7em; font-weight: 400; margin-left: 0.7rem; }
 
@@ -109,7 +58,7 @@
 }
 #handout-modal.open { display: flex; }
 #handout-modal .modal-body {
-  background: #FCFAF7; max-width: 800px; max-height: 90vh;
+  background: var(--surface); max-width: 800px; max-height: 90vh;
   width: 90%; padding: 1rem 1.5rem; overflow-y: auto; border-radius: 4px;
 }
 #handout-modal pre { white-space: pre-wrap; font-family: 'Menlo', monospace; font-size: 0.85em; }
@@ -117,11 +66,11 @@
 
 /* ===== 全局图谱浮窗 (用户 2026-05-24) ===== */
 .gz-concept {
-  color: #0a4d75; text-decoration: none;
-  border-bottom: 1px dashed #aac3d6;
+  color: var(--down); text-decoration: none;
+  border-bottom: 1px dashed var(--line);
   cursor: pointer;
 }
-.gz-concept:hover { color: #E3120B; border-bottom-color: #E3120B; }
+.gz-concept:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
 #gz-popup {
   display: none; position: fixed; inset: 0; z-index: 1000;
@@ -133,7 +82,7 @@
 #gz-popup .gz-popup-body {
   position: absolute; top: 5vh; left: 50%; transform: translateX(-50%);
   width: min(90vw, 640px); max-height: 90vh; overflow-y: auto;
-  background: #FCFAF7; border-radius: 6px; padding: 1rem 1.3rem;
+  background: var(--surface); border-radius: 6px; padding: 1rem 1.3rem;
   box-shadow: 0 4px 30px rgba(0,0,0,0.3);
 }
 #gz-popup .gz-popup-head {
@@ -152,22 +101,22 @@
   background: #fff; border: 1px solid #ddd; border-radius: 3px;
   font-size: 0.85em; border-bottom: 1px solid #ddd;
 }
-#gz-popup .gz-chip:hover { background: #ffe6e6; border-color: #E3120B; }
+#gz-popup .gz-chip:hover { background: #ffe6e6; border-color: var(--accent); }
 /* #4 教学元数据 chips (exam_status/辽宁命中/cefr/stage/dimension) + teaching_hint */
 #gz-popup .gz-meta { margin: 0.1rem 0 0.4rem; display: flex; flex-wrap: wrap; gap: 4px; }
 #gz-popup .gz-meta-chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; white-space: nowrap; }
 #gz-popup .gz-hint { color: #666; font-size: 12px; margin: 0 0 0.5rem; line-height: 1.4; }
 #gz-popup .gz-qlist { padding-left: 1.2rem; }
 #gz-popup .gz-qlist li { margin: 0.4rem 0; line-height: 1.4; }
-#gz-popup .gz-qlink { font-weight: 600; color: #E3120B; }
+#gz-popup .gz-qlink { font-weight: 600; color: var(--accent); }
 #gz-popup .gz-year {
-  background: #1a1a1a; color: #fff; padding: 1px 4px;
+  background: var(--nav); color: #fff; padding: 1px 4px;
   border-radius: 2px; font-size: 0.75em;
 }
-.gz-type-word    { color: #0a4d75; }
-.gz-type-grammar { color: #1c5d99; }
+.gz-type-word    { color: var(--down); }
+.gz-type-grammar { color: var(--down); }
 .gz-type-phrase  { color: #2a9d8f; }
-.gz-type-unit    { color: #7aa6c2; }
+.gz-type-unit    { color: var(--down); }
 .gz-type-theme   { color: #f4a261; }
 
 .tab-placeholder {
@@ -198,31 +147,31 @@
 .handout-seg-body li { margin: 0.2rem 0; }
 
 /* segment color coding */
-.handout-seg.seg-header  { border-left-color: #1a1a1a; background: #f7f5ef; }
-.handout-seg.seg-hook    { border-left-color: #0a4d75; }
+.handout-seg.seg-header  { border-left-color: var(--nav); background: #f7f5ef; }
+.handout-seg.seg-hook    { border-left-color: var(--down); }
 .handout-seg.seg-review  { border-left-color: #888; }
-.handout-seg.seg-core    { border-left-color: #E3120B; }
+.handout-seg.seg-core    { border-left-color: var(--accent); }
 .handout-seg.seg-relations { border-left-color: #2a9d8f; }
 .handout-seg.seg-exam    { border-left-color: #f4a261; }
 .handout-seg.seg-practice { border-left-color: #264653; }
-.handout-seg.seg-homework { border-left-color: #0a4d75; }
+.handout-seg.seg-homework { border-left-color: var(--down); }
 .handout-seg.seg-summary { border-left-color: #6c757d; }
 
-.handout-seg.seg-header .handout-seg-head { color: #1a1a1a; }
-.handout-seg.seg-hook .handout-seg-head { color: #0a4d75; }
+.handout-seg.seg-header .handout-seg-head { color: var(--nav); }
+.handout-seg.seg-hook .handout-seg-head { color: var(--down); }
 .handout-seg.seg-review .handout-seg-head { color: #555; }
-.handout-seg.seg-core .handout-seg-head { color: #E3120B; }
+.handout-seg.seg-core .handout-seg-head { color: var(--accent); }
 .handout-seg.seg-relations .handout-seg-head { color: #2a9d8f; }
-.handout-seg.seg-exam .handout-seg-head { color: #c47600; }
+.handout-seg.seg-exam .handout-seg-head { color: var(--warn); }
 .handout-seg.seg-practice .handout-seg-head { color: #264653; }
-.handout-seg.seg-homework .handout-seg-head { color: #0a4d75; }
+.handout-seg.seg-homework .handout-seg-head { color: var(--down); }
 .handout-seg.seg-summary .handout-seg-head { color: #6c757d; }
 
 /* difficulty markers */
 .diff-stars { letter-spacing: 1px; font-size: 0.85em; }
 .diff-stars[data-level="basic"] { color: #2a9d8f; }
 .diff-stars[data-level="intermediate"] { color: #f4a261; }
-.diff-stars[data-level="advanced"] { color: #E3120B; }
+.diff-stars[data-level="advanced"] { color: var(--accent); }
 
 /* answer reveal toggle */
 .answer-toggle {
@@ -257,17 +206,17 @@
 /* ===== 听力播放器 (Phase 7.2) ===== */
 .gz-audio-player {
   display: flex; align-items: center; gap: 0.6rem;
-  background: #1a1a1a; border-radius: 6px; padding: 0.5rem 0.8rem;
+  background: var(--nav); border-radius: 6px; padding: 0.5rem 0.8rem;
   max-width: 500px; margin: 0.5rem 0;
 }
 .gz-audio-player .play-btn {
   width: 36px; height: 36px; border-radius: 50%;
-  background: #E3120B; color: #fff; border: none;
+  background: var(--accent); color: #fff; border: none;
   font-size: 1rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.gz-audio-player .play-btn:hover { background: #c50e09; }
+.gz-audio-player .play-btn:hover { background: var(--accent-ink); }
 .gz-audio-player .progress-wrap {
   flex: 1; display: flex; flex-direction: column; gap: 2px;
 }
@@ -279,11 +228,11 @@
 .gz-audio-player .progress-bar::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
   width: 12px; height: 12px; border-radius: 50%;
-  background: #E3120B; cursor: pointer;
+  background: var(--accent); cursor: pointer;
 }
 .gz-audio-player .progress-bar::-moz-range-thumb {
   width: 12px; height: 12px; border-radius: 50%;
-  background: #E3120B; cursor: pointer; border: none;
+  background: var(--accent); cursor: pointer; border: none;
 }
 .gz-audio-player .time-label {
   color: #aaa; font-size: 0.75em; font-family: monospace;
@@ -299,7 +248,7 @@
   padding: 0.6rem 1rem; margin: 0.3rem 0 0.8rem;
   font-size: 0.9em; line-height: 1.6;
 }
-.gz-transcript .speaker { font-weight: 600; color: #0a4d75; }
+.gz-transcript .speaker { font-weight: 600; color: var(--down); }
 .gz-transcript-toggle {
   display: inline-block; padding: 2px 10px; margin: 0.3rem 0;
   background: #f0ede7; border: 1px solid #ddd; border-radius: 3px;
@@ -312,23 +261,23 @@
   background: #f7f5ef; cursor: pointer; font-size: 0.85em; color: #555;
 }
 .gz-qfilter:hover { background: #e8e6e0; }
-.gz-qfilter.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.gz-qfilter.active { background: var(--nav); color: #fff; border-color: var(--nav); }
 
 /* ===== 课后测验 Quiz mode (Phase 7.5) ===== */
 .gz-quiz-btn {
-  padding: 0.5rem 1.5rem; background: #E3120B; color: #fff;
+  padding: 0.5rem 1.5rem; background: var(--accent); color: #fff;
   border: none; border-radius: 4px; font-size: 0.95em;
   cursor: pointer; font-weight: 600;
 }
-.gz-quiz-btn:hover { background: #c50e09; }
+.gz-quiz-btn:hover { background: var(--accent-ink); }
 .gz-quiz { margin-top: 1rem; }
-.gz-quiz h3 { border-bottom: 2px solid #E3120B; padding-bottom: 0.3rem; }
+.gz-quiz h3 { border-bottom: 2px solid var(--accent); padding-bottom: 0.3rem; }
 .gz-quiz-q {
-  background: #fff; border: 1px solid #e8e6e0; border-left: 4px solid #0a4d75;
+  background: #fff; border: 1px solid #e8e6e0; border-left: 4px solid var(--down);
   border-radius: 4px; padding: 0.7rem 1rem; margin-bottom: 0.6rem;
 }
 .gz-quiz-type {
-  background: #1a1a1a; color: #fff; padding: 1px 6px;
+  background: var(--nav); color: #fff; padding: 1px 6px;
   border-radius: 2px; font-size: 0.75em;
 }
 .gz-quiz-diff { color: #888; font-size: 0.8em; margin-left: 0.3rem; }
@@ -339,7 +288,7 @@
   border-radius: 3px; cursor: pointer; transition: background 0.1s;
 }
 .gz-quiz-opts li:hover { background: #f0ede7; }
-.gz-quiz-opts li.selected { background: #d6e9f7; border-color: #0a4d75; }
+.gz-quiz-opts li.selected { background: #d6e9f7; border-color: var(--down); }
 .gz-quiz-input {
   width: 60%; padding: 0.4rem 0.6rem; border: 1px solid #ddd;
   border-radius: 3px; font-size: 0.9em;
@@ -350,7 +299,7 @@
 .gz-quiz-analysis { color: #555; font-size: 0.85em; margin-top: 0.3rem; border-top: 1px dashed #ddd; padding-top: 0.3rem; }
 .gz-quiz-result {
   text-align: center; padding: 0.8rem; background: #f7f5ef;
-  border: 2px solid #E3120B; border-radius: 4px; font-size: 1.1em;
+  border: 2px solid var(--accent); border-radius: 4px; font-size: 1.1em;
 }
 
 /* ===== 打印样式 (Phase 7.2) ===== */
@@ -393,11 +342,11 @@
 /* mobile responsive */
 @media (max-width: 768px) {
   .app-shell { flex-direction: column; }
-  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 0.5rem; border-right: 0; border-bottom: 3px solid #E3120B; }
+  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 0.5rem; border-right: 0; border-bottom: 3px solid var(--accent); }
   .sidebar .brand { padding: 0.3rem 0.5rem; border-bottom: 0; margin: 0; font-size: 0.9rem; }
   .sidebar .tabnav { flex-direction: row; flex-wrap: wrap; }
   .sidebar .tabnav a { padding: 0.4rem 0.7rem; font-size: 0.85em; border-left: 0; border-bottom: 3px solid transparent; }
-  .sidebar .tabnav a.active { border-bottom-color: #E3120B; border-left: 0; }
+  .sidebar .tabnav a.active { border-bottom-color: var(--accent); border-left: 0; }
   .sidebar-foot { display: none; }
   .content { padding: 1rem; }
   .course-grid { grid-template-columns: 1fr; }

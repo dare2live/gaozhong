@@ -10,7 +10,7 @@
   const { fetchJSON, registerTab } = G;
 
   // 出版社短名 → 色 (canonical 版本两类: 外研10市 / 人教4市)
-  const VER_C = { waiyan: "#1D6FB8", renjiao: "#1D9E75" };
+  const VER_C = { waiyan: "var(--accent-ink)", renjiao: "#1D9E75" };
 
   function shell() {
     return `
@@ -37,14 +37,14 @@
         <span style="min-width:34px;color:#999;">U${u.unit_number}</span>
         <span style="flex:1;font-weight:500;">${(u.title_en || "").replace(/</g, "&lt;") || '<span class="muted">(无标题)</span>'}</span>
         <span class="muted" style="font-size:11px;">p.${pg}</span>
-        <a href="${pdfUrl}#page=${u.page_start || 1}" target="_blank" rel="noopener" style="font-size:11px;color:#1D6FB8;">开PDF</a>
+        <a href="${pdfUrl}#page=${u.page_start || 1}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent-ink);">开PDF</a>
         <button class="tb-xver bk-export" data-unit="${cid}" style="font-size:11px;padding:1px 7px;">跨版本对照</button>
       </div><div class="tb-xver-slot" data-for="${cid}"></div>`;
     }).join("");
     return `<section class="bk-card" style="margin-bottom:10px;">
       <div class="bk-h">
         <span><span style="color:${c};">●</span> ${bk.publisher_label || bk.version_key} <small>${bk.volume_key}</small></span>
-        <span class="bk-src">${bk.pdf_pages || "?"}页 · <a href="${pdfUrl}" target="_blank" rel="noopener" style="color:#1D6FB8;">开整册PDF</a></span>
+        <span class="bk-src">${bk.pdf_pages || "?"}页 · <a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent-ink);">开整册PDF</a></span>
       </div>
       <div>${uList || '<p class="muted" style="font-size:12px;padding:6px;">该册无单元数据</p>'}</div>
     </section>`;
@@ -89,7 +89,7 @@
   registerTab("textbook", async () => {
     G.$("#content").innerHTML = shell();
     const [units, books, cityList] = await Promise.all([
-      fetchJSON("/api/units").catch(() => []),
+      fetchJSON("/api/units"),  // RC1/D0: 教材主数据, 失败必抛 → route() 错误态
       fetchJSON("/api/textbooks").catch(() => []),
       fetchJSON("/api/recommend/cities").catch(() => []),   // 14地市真值, 不前端hardcode
     ]);

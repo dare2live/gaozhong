@@ -32,12 +32,12 @@
 <p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上 ⬇PNG 可单独导出</p>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
-  <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" style="height:300px;"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的出现占比" style="height:300px;"></div></section>
   <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
-  <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" style="height:300px;"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构演变矩阵: 各题型在两个卷制时期的在场情况" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" role="img" aria-label="词汇热力图: 字母开头的词频分布(词频非考点)" style="height:300px;"></div></section>
 </div>`;
   }
 
@@ -155,7 +155,7 @@
       series: [
         { name: "旧课标II 15–20", type: "bar", barGap: "10%", data: cats.map(s => pctOf(oldRows, s)),
           itemStyle: { color: C.grey, borderRadius: [0, 3, 3, 0] }, label: lbl },
-        { name: newOK ? "新高考II 21+" : "新高考II 21+ ⚠样本不足", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
+        { name: newOK ? "新高考II 21+" : "新高考II 21+ (样本不足)", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
           itemStyle: {
             color: !newOK ? "#C9C4B8" : (s === "推断" ? C.up : C.blue),   // #11 不可信→灰, 推断不抢眼防误读为可信精度
             opacity: newOK ? 1 : 0.5,
@@ -170,7 +170,7 @@
     const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
     // #11: 诚实叙事 — 新era不可信时 banner 显著(非12px灰) + 把"迁移真值"降级为"方向性信号"(critic: n=15单年不作趋势结论)
     const banner = !newOK
-      ? `<div style="background:#FAECE7;border-left:3px solid #993C1D;padding:5px 9px;border-radius:4px;margin:0 0 6px;font-size:12px;color:#7a2e15;">⚠ 新高考II 仅 2023 单年 n=${nNew}(&lt;30)= <b>方向性信号, 非精确分布/趋势结论</b>; 待补 2022/2024/2025 真辽宁设问标注确认。</div>`
+      ? `<div class="caveat-banner"><span class="cb-tag">样本不足</span><span>新高考II 仅 2023 单年 n=${nNew}(&lt;30) = <b>方向性信号, 非精确分布/趋势结论</b>; 待补 2022/2024/2025 真辽宁设问标注确认。</span></div>`
       : "";
     const inf = !newOK
       ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(2023) ${nInf}%`
@@ -213,7 +213,7 @@
     });
     const cov = d.n_matched && d.n_subq_total ? `${d.n_matched}/${d.n_subq_total}` : "?";
     // #14: era 锁醒目徽章 (F卡是唯一旧era截面卡, 防夹在双era视图里被误读为新高考结论)
-    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:#EDE8DF;color:#7a2e15;padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">🔒仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
+    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:#EDE8DF;color:#7a2e15;padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
     G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
       + `<br><small class="muted">注 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格注仅参考。</small>`;
   }
@@ -255,7 +255,7 @@
       if (!h) return;
       const title = ((h.querySelector("span") || {}).textContent || "图").trim().split(" ")[0];
       const btn = document.createElement("button");
-      btn.className = "bk-export"; btn.textContent = "⬇ PNG"; btn.title = "导出本图 PNG";
+      btn.className = "bk-export"; btn.innerHTML = G.icon("download") + " PNG"; btn.title = "导出本图 PNG";
       btn.onclick = () => G.exportChartPNG(inst, `辽宁卷_${title}.png`);
       h.appendChild(btn);
     });
@@ -267,11 +267,8 @@
     G.$("#content").innerHTML = shell();
     if (!window.echarts) { G.$("#bk-dist").innerHTML = '<p class="muted">ECharts 载入中…</p>'; await new Promise(r => setTimeout(r, 300)); }
     const [dist, qt, heat, cog] = await Promise.all([
-      // distribution 失败也给安全空壳 (eras+空 era 字典 + shift), 否则 renderDist/renderShift 崩整 tab
-      fetchJSON("/api/exam_point/distribution").catch(() => ({
-        eras: [ERA_NEW, ERA_OLD], distribution: { [ERA_NEW]: {}, [ERA_OLD]: {} },
-        shift: { by_dimension: {} },
-      })),
+      // RC1/D0: distribution 是驾驶舱主数据, 失败必抛 → route() 显式错误态 (不冒充空壳掩盖后端故障)
+      fetchJSON("/api/exam_point/distribution"),
       fetchJSON("/api/trend/question_type_presence").catch(() => ({ by_question_type: [] })),
       fetchJSON("/api/heatmap/vocab").catch(() => ({ letters: [], cells: {} })),
       fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),

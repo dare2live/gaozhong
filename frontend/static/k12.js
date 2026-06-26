@@ -86,7 +86,7 @@
     const cell = (txt) => {
       if (!txt) return '<span class="muted">—</span>';
       const s = _splitKaodian(txt);
-      return `${s.ans ? `<span style="font-family:var(--mono,monospace);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:#0C447C;padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
+      return `${s.ans ? `<span style="font-family:var(--num);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:#0C447C;padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
     };
     el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
       <thead><tr style="text-align:left;border-bottom:2px solid #ddd;">
@@ -100,7 +100,7 @@
     const pairs = d.pairs || [];
     // #9 修 bug: 原代码高中侧 <span>高中</span> 把 p.senior 整个 drop, 只显字面"高中"。
     G.$("#k12-bp").innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;">` +
-      pairs.map(p => `<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 8px;background:var(--color-background-secondary,#f7f7f4);border-radius:6px;">
+      pairs.map(p => `<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 8px;background:var(--sunken);border-radius:6px;">
         <span style="background:#E1F5EE;color:#085041;padding:2px 7px;border-radius:5px;">初中 ${p.junior}</span>
         <span style="color:#888;">→</span>
         <span style="background:#E6F1FB;color:#0C447C;padding:2px 7px;border-radius:5px;">高中 ${p.senior || p.junior}</span></div>`).join("") +
@@ -111,7 +111,7 @@
     G.$("#content").innerHTML = shell();
     if (!window.echarts) { await new Promise(r => setTimeout(r, 300)); }
     const [st, bp, zk] = await Promise.all([
-      fetchJSON("/api/k12/stage_distribution").catch(() => ({ by_stage: {} })),
+      fetchJSON("/api/k12/stage_distribution"),
       fetchJSON("/api/k12/blueprint").catch(() => ({ pairs: [], n: 0 })),
       fetchJSON("/api/zhongkao/distribution").catch(() => ({ by_question_type: [] })),
     ]);

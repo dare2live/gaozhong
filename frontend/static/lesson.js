@@ -31,9 +31,9 @@
     const gChip = g => tagChip(`${g.label} · ${(g.recent_exam_trace || []).length}真题`, "grammar");
     body.innerHTML = `
       <p class="lp-meta" style="font-size:13px;"><strong>${lp.title || ""}</strong>${lp.theme ? " · 主题 " + lp.theme.replace("theme:", "") : " · 主题未匹配"} · p.${pr[0] ?? "-"}–${pr[1] ?? "-"}</p>
-      <div class="trend-banner" style="background:#f7f7f4;border:1px solid #e6e3da;border-radius:8px;padding:6px 10px;font-size:12px;margin:6px 0;">命题趋势 (${th.province_scope || "辽宁卷"}): ${th.note || ""}${th.trend_reliable ? "" : " · <span style='color:#993C1D'>逐年斜率样本不足, 不画 slope</span>"}</div>
+      <div class="trend-banner" style="background:#f7f7f4;border:1px solid #e6e3da;border-radius:8px;padding:6px 10px;font-size:12px;margin:6px 0;">命题趋势 (${th.province_scope || "辽宁卷"}): ${th.note || ""}${th.trend_reliable ? "" : " · <span style='color:var(--accent-ink)'>逐年斜率样本不足, 不画 slope</span>"}</div>
       <h3 style="margin:14px 0 6px;font-size:15px;">词汇 — 本单元引入 ${al.intro_total ?? words.length}, 高考考过 ${al.exam_overlap ?? "?"} (按高考频次降序)</h3>
-      <p class="muted" style="font-size:12px;margin:0 0 6px;">词汇画像 (§不偏离学校 · 词形归并+高考核对): 课标内 <b>${vp.in_syllabus ?? "-"}</b> · 真超纲<b style="color:#993C1D">辽宁考过 ${vp.over_ln_tested ?? "-"}</b>(必教) · 仅外省 ${vp.over_other_tested ?? "-"} · 未考 ${vp.over_untested ?? "-"}(选学)${vp.proper_noise ? " · 专名 " + vp.proper_noise : ""} · <b>越纲率 ${vp.over_rate_pct ?? "-"}%</b></p>
+      <p class="muted" style="font-size:12px;margin:0 0 6px;">词汇画像 (§不偏离学校 · 词形归并+高考核对): 课标内 <b>${vp.in_syllabus ?? "-"}</b> · 真超纲<b style="color:var(--accent-ink)">辽宁考过 ${vp.over_ln_tested ?? "-"}</b>(必教) · 仅外省 ${vp.over_other_tested ?? "-"} · 未考 ${vp.over_untested ?? "-"}(选学)${vp.proper_noise ? " · 专名 " + vp.proper_noise : ""} · <b>越纲率 ${vp.over_rate_pct ?? "-"}%</b></p>
       <div>${words.length ? words.map(wChip).join(" ") : "<em class='muted'>无</em>"}</div>
       <h3 style="margin:14px 0 6px;font-size:15px;">语法 (${grammar.length}) — 课标项 + 真题溯源 (教此语法, 高考这么考)</h3>
       <div>${grammar.length ? grammar.map(gChip).join(" ") : "<em class='muted'>本单元无 curated 语法点 (诚实跳过歧义)</em>"}</div>

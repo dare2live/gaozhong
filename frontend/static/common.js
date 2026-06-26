@@ -124,15 +124,15 @@ window.GZ = (function () {
     const uid = "ap_" + Math.random().toString(36).slice(2, 8);
     if (!audioSrc) {
       return `<div class="gz-audio-player" style="opacity:0.6">
-        <button class="play-btn" disabled>▶</button>
+        <button class="play-btn" disabled aria-label="播放(无音频)">${icon("play")}</button>
         <div class="progress-wrap">
-          <span class="time-label">无音频文件 (预估 ${duration || "?"}s) — 可用 TTS 合成</span>
+          <span class="time-label">无音频文件 (预估 ${duration || "?"}s), 可用 TTS 合成</span>
         </div>
       </div>`;
     }
     return `<div class="gz-audio-player" id="${uid}">
       <audio preload="metadata" src="${audioSrc}"></audio>
-      <button class="play-btn" onclick="GZ._toggleAudio('${uid}')">▶</button>
+      <button class="play-btn" aria-label="播放/暂停" onclick="GZ._toggleAudio('${uid}')">${icon("play")}</button>
       <div class="progress-wrap">
         <input type="range" class="progress-bar" min="0" max="100" value="0"
                oninput="GZ._seekAudio('${uid}', this.value)">
@@ -153,8 +153,8 @@ window.GZ = (function () {
     if (!wrap) return;
     const audio = wrap.querySelector("audio");
     const btn = wrap.querySelector(".play-btn");
-    if (audio.paused) { audio.play(); btn.textContent = "⏸"; }
-    else { audio.pause(); btn.textContent = "▶"; }
+    if (audio.paused) { audio.play(); btn.innerHTML = icon("pause"); }
+    else { audio.pause(); btn.innerHTML = icon("play"); }
     if (!audio._bound) {
       audio._bound = true;
       audio.addEventListener("timeupdate", () => {
@@ -165,7 +165,7 @@ window.GZ = (function () {
           label.textContent = _fmtTime(audio.currentTime) + " / " + _fmtTime(audio.duration);
         }
       });
-      audio.addEventListener("ended", () => { btn.textContent = "▶"; });
+      audio.addEventListener("ended", () => { btn.innerHTML = icon("play"); });
     }
   }
 
@@ -186,6 +186,21 @@ window.GZ = (function () {
     const next = speeds[(cur + 1) % speeds.length];
     audio.playbackRate = next;
     btn.textContent = next + "x";
+  }
+
+  // ===== 内联 SVG 图标 (替代 emoji; 全局禁 emoji, Tabler 风格 currentColor) =====
+  const _ICONS = {
+    download: '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 21h16"/>',
+    printer: '<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/>',
+    play: '<path d="M7 5v14l11-7z" fill="currentColor" stroke="none"/>',
+    pause: '<rect x="7" y="5" width="3.4" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="13.6" y="5" width="3.4" height="14" rx="1" fill="currentColor" stroke="none"/>',
+    grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 15a1.65 1.65 0 0 0-1.51-1H2a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 3.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+    close: '<path d="M6 6l12 12"/><path d="M18 6 6 18"/>',
+  };
+  function icon(name, cls) {
+    const p = _ICONS[name] || "";
+    return `<svg class="gz-ic ${cls || ""}" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
   }
 
   // expose
@@ -214,7 +229,7 @@ window.GZ = (function () {
 
   return {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
-    mountLayout, colorByTagKind, conceptLink, mdToHtml, NAV,
+    mountLayout, colorByTagKind, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV,
   };
