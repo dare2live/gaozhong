@@ -2,15 +2,38 @@
 
 > 配 goal.md + CLAUDE.md + docs/architecture.md 用。本文件 = 最近进度 + 下一步, 更新于每个大节点。
 > 🏛️ **平台级最高设计 = `docs/k12_platform_master_design.md`** (第一性原理顶层, 统一高中八铁律+初中子系统+核心竞争力)。新方向先读它。
+> ⚖️ **本文件本地立法 (2026-06-26): 禁固化会漂的计数/状态** —— 真题数/图谱规模/moth断言数/词典量等一律**只写"见 `moth assert` + `python3 -m scripts.tools.map doctor` + `backend/config/d0_baselines.yaml`"**, 不在叙事里 hardcode 裸数(否则下个 sprint 必陈旧 = 坑1/坑2 陈旧快照)。历史 session 段里的过程性数字是当时快照, 接手取真值走 live 工具。
 
-## 🎯 交付就绪度裁决 (2026-06-22-续 复评 — 接手先看这个)
-> 详 `docs/delivery_readiness_assessment.md` 顶部"2026-06-22-续复评"。硬编码campaign后6维独立核实, 三场景全 hold 高置信。
-- **① 单老师30min桌面pilot = READY**(三门绿 moth89; 两金矿nav可点渲真数据)。**唯一硬阻塞=动员1名辽宁老师真用**(Rule10, AI做不了)。软阻塞: backup_db.sh从未实跑(data/db/backups不存在=0备份), pilot前手跑+装launchd。
-- **② 多校运营 = NOT-READY**: B1鉴权红线(jwt/bcrypt=0, get_teacher直读query, 任意客户端可枚举他人学生PII; 收口点`_tenant.get_teacher`) + B2 Docker/HTTPS/nginx=0。
-- **③ 公开 = NOT-READY**: 学情790全合成(source 100%demo+单一seed时间戳) + OCR链路比预想弱(scan.py仅PDF文字层, 图片OCR=pending) + genre/theme 481边dual_model零核验(坑16) + 题库164薄。**别再无限建KG维度**。
-- **诚实分**: 真值可卖=题型presence结构迁移+词汇热力四象限+cognitive_skill技能侧(explicit_label)+考试词典4186词; LLM方向性参考(必标)=genre/theme题材分布(零核验); demo壳(必空态)=学情整条。
-- **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 叙事须收, 别narrate成"命题迁移真值"。
-- **硬编码campaign(11 commit)净影响**: 纯内部清洁(单点/中立leaf/config化), **交付门一格未动**; 2个"bug修"是潜伏陷阱defuse(vocab容差YAML孤儿)+前端标签归一, 非live修复。别把"代码更干净"读成"更接近能交付"。
+## 🎯 交付就绪度裁决 (2026-06-26 复评 — 接手先看这个)
+> 详 `docs/delivery_readiness_assessment.md` 顶部"2026-06-26 复评"(2026真题+P0 sprint 后 live 实测 + 5镜头workflow + 对抗critic)。**三场景全 HOLDS, 交付门一格未动**; 计数已刷 live(详该文档计数校正表, 不在此 hardcode)。
+- **① 单老师30min桌面pilot = READY**(三门全绿: D0 exit0/stop_gate exit0/moth PASS 0fail; 前端单一入口已收敛✅; 两金矿nav可点渲真数据)。**唯一硬阻塞=动员1名辽宁老师真用**(Rule10, AI做不了)。软阻塞: backup 首份已实跑(`data/db/backups/` 已建); launchd 日备份**用户2026-06-26决定暂不装**(现价值low: DB可复现+学情全合成; pilot真学情落库前再议)。
+- **② 多校运营 = NOT-READY**: B1鉴权红线(jwt/bcrypt真实现=0, get_teacher直读query可枚举他人学生PII; 收口点`_tenant.get_teacher`) + B2 Docker/HTTPS/nginx=0。**但用户2026-06-26已主动降多校为"刻意非目标"** → 此为"按决策延后"非阻塞。
+- **③ 公开 = NOT-READY**: 学情整条全合成(student_answers全demo seed) + OCR图片链路pending(scan.py仅GET stub) + genre/theme dual_model**零核验**(坑16, 维持方向性标LLM) + 题库薄。**别再无限建KG维度**(核验型机会经2026-06-26实测已基本榨干/证伪)。
+- **诚实分**: 真值可卖=题型presence结构迁移+词汇热力四象限+cognitive_skill技能侧(explicit_label)+考试词典(第一手源最值钱); LLM方向性参考(必标)=genre/theme题材分布(零核验, **不可用 tests_exam_point 真值边数顶替这条 caveat**); demo壳(必空态)=学情整条。
+- **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量, cognitive边100条全explicit_label), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 引47%必同句带"n=15方向性", 别narrate成"命题迁移真值"。
+- **门覆盖(2026-06-26 实证, 反坑17)**: `d0_exam_point_check` 有**全局 provenance 不变量**(所有 tests_exam_point 边 provenance∈{dual_model_agree,explicit_label}, 按边属性非按年)→ 2026 新边自动入 D0; 加端点有效+计数门+moth(exam-point-edges-present/xgkii-2026-truth-imported/exam-year-coverage-no-stale)。**新卷传导连门禁都自动覆盖**, 这是中考一键传导的门侧保证。
+
+## 最近 session (2026-06-26 文档对齐): 实际状态对账 + 文档刷 live + 前进计划 (用户: "中考不等了, 更新文档, 结合项目实际制定计划推进")
+
+> 5镜头并行评估workflow(门/文档漂移/工程债/价值核验/交付) + 综合 + **谄媚死对抗critic(REVISE)** + 主线 live 实测裁决。核心发现: **卡点不在"建新东西", 在文档集体滞后一个sprint + README/agent 硬自相矛盾(说"RESUME已删"但它是活跃主交接)**; 价值已不在新增KG维度(核验型机会经实测榨干/证伪)。
+
+**真值快照 (2026-06-26 主线实测, 供文档引用; 数字真相源=d0_baselines+moth+map doctor)**:
+- 三门全绿(D0 exit0/stop_gate exit0/moth PASS 107-0); 架构契约 block=0 warn=1。
+- exam_questions 474(辽宁190) · question_bank 190 · 考试词典 4396 · student_answers 920(全合成) · nodes 5959/edges 41996 · unit 78 · tests_exam_point 593 · cognitive边100(全explicit_label)。
+- **CC裁决(纠 critic 与 eng-debt agent 之争)**: CC>15=**12 = stop_gate baseline 12(贴界未破)**, CC>10=37=baseline。stop_gate exit0 正因 `=` 非 `>`。**CC减债=恢复余量(nice-to-have)非"门已破"**。
+- **坑17反查=无缺口**: exam_point D0 check 有全局 provenance 不变量 → 2026 dual_model边自动入门(详顶部"门覆盖")。
+- backup 首份已实跑(46MB); 前端单一入口 live 确认收敛(main.py 302)。
+
+**已落地 (本轮 AI 自主, 全可逆文档/校验)**:
+- 消硬矛盾: README:5/8 + agent.md:113 "RESUME已删" → "RESUME=断点续传叙事交接(数字引真相源)"; README current law 加 RESUME + d0_baselines 两行。
+- delivery_readiness_assessment 加"2026-06-26 复评"段(三场景HOLDS+每条live实证+计数校正表+诚实分层校正); RESUME 顶部刷 live-引用 + **加本地立法"禁固化漂计数"**; goal.md 漂移点引真相源(见下条goal session)。
+- **保留诚实caveat不动**: genre/theme"零核验"不换593; cognitive 47%带n=15方向性。
+
+**前进计划裁决 (critic REVISE 后, 价值排序: 交付软阻塞>核验加固>工程债>新建≈不做)**:
+- **明确不做(KG-creep红线, 全实测无源)**: cog n=15→60升真值(2022=甲乙卷/2024-25 analysis全空/2021=甲卷冒辽宁) · cog×genre跨era桥(新建维度+两侧不可信) · genre/theme升真值(教研解析无体裁/主题显式标签) · 2026补cognitive(官方评析未出版) · ②鉴权/Docker(用户降多校为非目标) · ③OCR(公开轨L级)。
+- **待用户**: 动员真辽宁老师跑pilot(①唯一硬阻塞)。
+- **已决**: backup launchd=**暂不装**(用户2026-06-26; 现价值low, pilot真学情落库前再议; 首份手备份已建)。
+- **下轮可做(非阻塞)**: 见末尾 backlog。
 
 ## 最近 session (2026-06-26 续): 真题入库管道架构优化 + 顶层设计 + 2026考点双模型标注
 
@@ -30,7 +53,15 @@
 
 **中考就绪 = 核心达成**: 加中考卷 = `sources.yaml`一entry + 一次`init_db` → tests_word/vocab/越纲率/考点全自动传导(P0-3后无手工regen+无多次重建), 年覆盖门锁回归。**中考卷到直接走管道**。
 
-**剩余(下轮/等数据)**: ① 2026 cognitive设问类型(group级无subquestion节点+坑16无解析真值, 需另议数据模型) ② 2021 cognitive救(补唯一专名强marker入truth_anchors, 避坑3) ③ P1 sources.yaml驱动Layer编排(降init_db.main CC=13 WARN; 非中考阻塞) ④ rebaseline工具(需先给d0_baselines加query字段)。
+**剩余 backlog (2026-06-26 复评后, 全非阻塞; 价值排序+去伪)**:
+- ① 2026 cognitive设问类型 = **等外部源**(官方教研评析未出版, group级无subquestion节点; 非AI现可达)。
+- ② 2021 cognitive救(补唯一专名marker入truth_anchors避坑3) = **高风险缓做**(2021唯一marker'Spot'是常见词→甲卷假阳性; P0-4已裁缓做)。
+- ② -bis **BLOCKED-no-source (2026-06-26实测证伪, 别再挂此项空耗)**: "2022/24/25真辽宁设问标注升新era n→~60" 不可达 — 2022=全国甲乙卷(非辽宁II卷), 2024/25 subquestions analysis字段全空 → 无第一手显式标签源。
+- ③ P1 sources.yaml驱动Layer编排(降 init_db.main CC=13 WARN; fan-in近零=重构安全) = 可做, 非中考阻塞。
+- ④ rebaseline工具(先给d0_baselines加query字段) = 等"下一张卷"才兑现; 收尾人审diff(非derived防坑1假绿)。
+- ⑤ CC>15减债(现 **12=baseline 贴界未破**, 恢复门余量) = nice-to-have非紧急; 拆 readiness._assess_row/eol_review_decisions.validate_decisions(纯校验逻辑) 后降 baseline。
+- ⑥ structural-share占比(已验证 structural_truth 再聚合, **非新维度**) = 可做; 前提=分母用真题数/分值真值非presence集合(坑12)+按era分层+配D0/moth(坑17)。
+- ⑦ (later)goal.md结构精简: Week65 ledger 迁 analysis/project_state_ledger; RESUME 历史段过程性计数清理。
 
 **工具**: codegraph **1.1.1**(query/callers/impact/affected; 索引最新) · complexity-optimizer skill可用。sprint收尾codegraph审计干净(无CC>15/无坏耦合)。
 
@@ -117,7 +148,7 @@ v2 加卷改结构真相源 `backend/config/exam_structure_eras.yaml`(canonical�
 signal 改由**卷面结构**(非数据presence)定: 短改=真退场/听力=skeleton+缺源(≠登场2021)/续写应用文=真登场+缺源(登场年不可信)。
 `raw.py::_era_structure`单点+`_qt_signal`; D0项23 + moth + C面板缺源格淡色虚线。
 
-**待办 backlog(按顺序)**: cog×genre 跨era版(给2023子题node补passage_label桥) → 2022/24/25真辽宁设问标注 → structural-share占比 → 旧口径收口。
+**待办 backlog (2026-06-26 复评纠偏)**: ~~cog×genre 跨era版(补passage_label桥)~~ **删除** — 新建跨era交叉维度违"别建KG维度"红线, 且新era侧 genre/theme 未核验(坑16)+n=15, 交叉=方向性×方向性不可下结论(与本节"诚实不建跨era交叉"自洽) · ~~2022/24/25真辽宁设问标注~~ **BLOCKED-no-source**(2022甲乙卷/2024-25 analysis全空) · **structural-share占比 = 唯一可做项**(structural_truth再聚合非新维度, 见顶部 backlog⑥) · 旧口径收口。
 
 ### 三路并行推进 (2026-06-22, 6-agent勘测workflow + verify-the-verifier 驱动)
 > 用户"都推进": 防御性内容核验 + 交付收口 + 采集可行性 三路并行验后 inline 执行。**全程 verify-the-verifier**(agent输出=证据非定论)。

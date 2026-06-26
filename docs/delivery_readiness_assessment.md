@@ -1,8 +1,45 @@
-# 交付运营就绪度评估 (2026-06-20 · 2026-06-22 复评 · 2026-06-22-续 复评)
+# 交付运营就绪度评估 (2026-06-20 · 2026-06-22 复评 · 2026-06-22-续 复评 · 2026-06-26 复评)
 
 > 总控级评估: 离 goal.md "可对内部教研团队交付试运营" 还差什么 (操作/运营层, 非细节)。
 > 方法: 7 层并行评估(8-agent workflow) + 控制器综合。配 goal.md 第四阶段复核门 + Rule10。
 > **一句话裁决**: 距交付约差**一个收口冲刺(operational sprint), 不是一个建设阶段**。
+
+---
+
+## 🆕 2026-06-26 复评 (2026真题+P0架构 sprint 后 live 实测对账 + 5镜头workflow + 对抗critic)
+
+> 触发: 2026新高考II卷入库 + P0真题管道架构优化 + 考点双模型标注 一个 sprint 后, 下方 2026-06-22-续裁决的**计数已陈旧一个 sprint**(466/182→474/190 等)。用户指令"更新文档, 结合项目实际制定计划推进"。5镜头并行评估(门/文档漂移/工程债/价值核验/交付) + 综合 + 谄媚死对抗 critic(REVISE 后纠 3 处乐观偏差落地)。
+
+### 裁决: 三场景**全 HOLDS**(交付门一格未动), 仅计数 + 前端状态校正
+| 场景 | 裁决 | live 一句实证 (2026-06-26 实测) |
+|---|---|---|
+| **① 单老师 30min 桌面 pilot** | **READY** | 三门全绿(D0 exit0/stop_gate exit0/moth PASS 0 fail); 前端单一入口已收敛 ✅; **唯一硬阻塞=动员真辽宁老师(Rule10, AI做不了)**; 软阻塞 backup 本轮首份已建(见下), launchd 排程**用户2026-06-26决定暂不装**(现价值low) |
+| **② 多校运营** | **NOT-READY** | 鉴权真实现仍 0(`grep jwt/bcrypt/passlib/argon2 backend/` 仅命中 `_tenant.py` 注释自述未做) + Docker/compose/nginx 仍 0。**但用户 2026-06-26 已主动把多校降为"刻意非目标"**(`_tenant.py` 立法: 先有一个教研员就行); 故此为"按决策延后"非"阻塞" |
+| **③ 公开产品** | **NOT-READY** | 学情整条仍全合成(student_answers=920 全 demo seed) + 图片 OCR 链路仍 pending(scan.py 仅 GET stub) + genre/theme dual_model **零核验**(方向性标 LLM, 见下). **别再无限建 KG 维度**(核验型机会经本轮实测已基本榨干/证伪) |
+
+### 计数校正 (live 实测, 一律以 `backend/config/d0_baselines.yaml` + `moth assert` 为准, 下表为 2026-06-26 快照)
+| 指标 | 旧文档值 | live 实测 |
+|---|---|---|
+| exam_questions / 辽宁 | 466 / 182 | **474 / 190** (含 2026 新高考II卷锦宏镜像 8 group) |
+| question_bank | 164 | **190** |
+| 考试词典 exam_vocabulary | 4186 | **4396** |
+| student_answers | 790 | **920** (全合成 demo, 非真作答) |
+| 图谱 nodes / edges | ~5073 / ~26066 | **5959 / 41996** |
+| 教材单元 unit | 77 | **78** (renjiao/bixiu_2 UNIT5 已补抓) |
+| tests_exam_point 边 | 498 | **593** |
+| moth 断言 | 70 / 89 | **107 PASS / 0 fail** |
+| CC>15 单函数 | — | **12 = stop_gate baseline 12 (贴界未破, 非"门已破")** |
+
+### 诚实分层校正 (谄媚死防线: 不把方向性叙述成真值)
+- **genre/theme dual_model 边维持"方向性参考(必标LLM)"不升真值**: 实测教研解析(第一手源)只含认知技能标签(细节理解/推理判断), **不含"记叙文/说明文"体裁或"人与自然"主题的显式标签** → 交叉核验缺锚(坑16: dual_model 0分歧≠正确)。**不要**用 tests_exam_point=593(真值边族)顶替这条"零核验"caveat — 两个不同 entity。
+- **cognitive 新era "推断 28%→47%" 维持 n=15 方向性, 非 era 迁移真值**: 唯一通过辽宁锚门的新era真值只有 2023 单年 15 条(cognitive 边 100 条全 explicit_label, 干净映射官方7理解性技能子集; 但新era distribution_reliable=False)。引 47% 必同句带 "n=15 方向性, 非逐题真值"。
+- **2026 新卷 67 子题 cognitive 标注=0 是诚实留空**(官方教研评析未出版, `xgkii2026_import.py` 已标"无逐题解析不臆造/待官方评析交叉核验"), 非缺陷。
+
+### 本轮 AI 已收口 / 待用户
+- **[已收口·AI]** backup 首份已实跑(`data/db/backups/gaozhong_20260626_203249.duckdb` 46MB); 文档全线计数刷 live + 改引真相源; README/agent "RESUME 已删" 硬矛盾消解(RESUME=断点续传叙事交接, 数字引 moth/d0_baselines)。
+- **[待用户·Rule10]** 动员 1 名真辽宁老师真跑 pilot 30min = ①档唯一硬阻塞。
+- **[已决·暂不装]** backup launchd 日备份排程(写 `~/Library/LaunchAgents`)— **用户 2026-06-26 决定暂不装**。理由: 现价值 low — DB gitignored 且可从代码+源 PDF 完全复现(init_db 单一计算点), 学情又全合成, 备份只省重建时间非救命; 首份手备份已建。真价值在 pilot 真学情落库后, 届时再议。
+- **[刻意不做]** ②鉴权/Docker(用户已降多校为非目标) · ③OCR/学情真数据(公开轨, L级) · 任何新 KG 维度(红线) · cog n=15→60 升真值(实测无第一手源: 2022=甲乙卷/2024-25无解析/2021=甲卷冒辽宁) · cog×genre 跨era桥(新建维度+两侧皆不可信)。
 
 ---
 

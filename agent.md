@@ -106,11 +106,12 @@
 - **补救验证要三层闭环**：代码 diff 只是第一层；还要有只读数据/产物证据、真实退出码或用户可见行为。新增硬 gate 后必须处理旧 artifact：回填、隔离或标记降级。baseline/waiver schema 要 fail closed；如果扫描器只 print 不 fail，必须修扫描器或加 wrapper。
 
 ## Must-Know Files
+- `docs/RESUME.md` = 断点续传叙事交接(现行): 最近进度脉络 + 下一步 + backlog. 读它拿叙事; 数字一律去 moth/DB/d0_baselines 取真值(RESUME 不 hardcode 易漂计数).
 - `goal.md` for active objective, blockers, and plan.
 - `CLAUDE.md` for history/reference (treat as secondary unless user explicitly requests migration).
 - `docs/architecture.md` for layering and request flow.
 - `docs/data_accuracy_audit.md` for quality gates.
-- `moth assert --repo .` + `.moth/assertions/claims.yaml` for live data-honesty state (stage-snapshot docs like RESUME removed — they rot/mislead).
+- `moth assert --repo .` + `.moth/assertions/claims.yaml` + `backend/config/d0_baselines.yaml` for live data-honesty state and pinned counts (one-shot snapshot docs like round/closure-checkpoint removed — they rot/mislead; RESUME kept as narrative handoff but its numbers cite truth sources, not hardcoded).
 - `analysis/project_state_ledger.md` for completed work and historical evidence.
 - `.moth/profile.yaml` for local project tooling profile.
 - `.codegraph/codegraph.db` for dependency map and query context.

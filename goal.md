@@ -65,17 +65,19 @@
 
 把"枯燥教材" 拆细打碎重组成"符合年轻人习惯的内容", 不偏离学校 (单词/语法/进度), 围绕**辽宁高考特点** (新课标 II 卷, 听 30+笔 120), 兼顾趣味性, 最终产出**后端 + HTML 前端教学+作业+知识图谱+条件组卷系统**, 推进到**可交付内部运营**.
 
-## 当前架构控制面 (2026-06-15)
+## 当前架构控制面 (2026-06-26)
 
 | 面 | 当前约束 |
 |---|---|
 | 架构契约 | `backend/config/project_architecture.yaml` 是模块 / 数据 / 配置 / gate 所有权总账 |
-| 顶层说明 | `docs/top_level_module_data_config_architecture_20260615.md` |
-| 文档索引 | `docs/README.md` 区分 current law / current verdict / spec / legacy |
+| 顶层说明(现行) | `docs/toplevel_architecture_design.md`(模块+数据+配置三层范式 + 7类扩展playbook) + `docs/exam_ingestion_pipeline_design.md`(真题入库管道 + P0/P1/P2); `top_level_..._20260615.md`=首版, 已被承接演进 |
+| 真题管道 P0 (2026-06-26) | ✅ mirror精确删 + Layer层序修(真题进KG) + 年覆盖anti-stale门 + vocab接init_db主链(中考一键传导); 详 exam_ingestion_pipeline_design |
+| 文档索引 | `docs/README.md` 区分 current law / current verdict / spec / legacy; `docs/RESUME.md`=断点续传叙事交接 |
+| 数字真相源 | `backend/config/d0_baselines.yaml`(锚) + `moth assert` + `map doctor`; 文档不 hardcode 会漂的计数 |
 | 架构 gate | `python3 scripts/tools/audit/project_architecture_audit.py --strict --output data/reports/project_architecture_audit_20260615.json` |
 | sibling 项目 | gaokao / LifeHack / ChunkyMonkey 只作为 pattern reference；不得成为 gaozhong 数据真相源 |
 | 奥卡姆约束 | 不新建大平台；沿用现有 `data_sources` / `contracts` / `audit` / `imports` 模块，新增机器契约和只读审计防漂移 |
-| **数据诚实性守护** | `moth assert --repo .`(17 条 claims-vs-reality 弹仓); `gaozhong-ops` skill(坑库); 定位用 codegraph 不 grep |
+| **数据诚实性守护** | `moth assert --repo .`(claims-vs-reality 弹仓, 条数以 verdict 为准); `gaozhong-ops` skill(坑库); 定位用 codegraph 不 grep |
 
 ### M6 数据模块系统化 ✅ 已完成 (2026-06-15: 数据获取→加工→清洗收口到专门模块 + 通用工具)
 > 原则: 散落的数据代码(exam.py/exam_eol/eol_import/import_recent_exams/cross_verify_pdf/inline vocab+browser)收口到 `backend/services/data_sources/`, 按源类型建**通用工具**, 各 loader 变薄壳调通用工具。
@@ -91,7 +93,7 @@
 - 三入口薄壳化委托: `extraction/exam.py`(105 行)→ `gaokao_bench.iter_records`+`exam_paper.classify_paper`; `import_recent_exams.py`→`extract/pdf`; `cross_verify_pdf.py`→`extract/pdf`(单一计算点 Rule 1)。
 - crawl4ai 0.8.9 作通用工具, `chrome_channel="chrome"` 驱动本机 Chrome 149 (实测 example.com 200; 删 531M bundled chromium); 强反爬官方站升级走 Chrome MCP(jyt.ln.gov.cn 实证)。
 - 修 2 个 init_db 全量重建 bug: (1) `load.py` 用 `git ls-files -z` 防中文名八进制引号炸 file_manifest; (2) Layer 4g PDF 导入从 subprocess 改 in-process `import_pdfs(con)` 防 DuckDB 单写者锁冲突。
-- **init_db 可复现** exam_questions=466 / 辽宁=182 / eol=110 / local_pdf=18 (B1双源去重后; 原472/188含6个2024辽宁重复, D0/moth 计数基线锁); 三门全绿(data_accuracy_check exit0 · moth PASS 58/0 · stop_gate exit0); 详 lessons L-Z/ZA/ZB。
+- **init_db 可复现** exam_questions=466 / 辽宁=182 / eol=110 / local_pdf=18 (B1双源去重后; 原472/188含6个2024辽宁重复, D0/moth 计数基线锁); 三门全绿(data_accuracy_check exit0 · moth PASS 58/0 · stop_gate exit0); 详 lessons L-Z/ZA/ZB。 ⚠ 此为 M6(2026-06-16)当时基线; **现行可复现基线以 `backend/config/d0_baselines.yaml` 为准**(2026新高考II入库后 = 474/190)。
 
 ### M7 真题分析层 — verified-complete 状态 (2026-06-16 整固)
 > **真题分析层已 thorough 且经真相源验证**(含一次自我纠错)。24 commits。
@@ -161,28 +163,27 @@
 
 | # | 阶段 | 状态 |
 |---|---|---|
-| 1 | 数据基石 + 框架 | ✅ 图谱核心(2026-06-15 去停用词后 nodes ~5073 / edges ~26066) |
+| 1 | 数据基石 + 框架 | ✅ 图谱核心(规模见 `python3 -m scripts.tools.map doctor` / `d0_baselines.yaml`, 不固化会漂的裸数) |
 | 2 | 题库 + 条件组卷 | ⚠️ 2026-06-15 改为**仅真题**(回滚合成题/生成练习) |
 | 3 | 教师端 + 本地部署 | ✅ start.command |
 | 4 | 真问题修 (data/UI/趋势/economist) | ✅ + 2026-06-15 真题 provenance/EOL/学情 深度整改 |
 | **5** | **统一教学系统 + 40 节分层课程** | ⚠️ **课程结构骨架保留, 生成讲义/范文已回滚**(教材基石不完整 §1.1; 基石现已完整可重建, 但重建是产品方向决策, 应先经真老师验证"骨架够不够") |
 | 6 | 运营交付准备 | 🚧 见下"交付门状态" — **距交付一个收口冲刺(非建设阶段)** |
-| KG | **知识图谱层** (2026-06-20 本轮大建) | ✅ 横切血缘地基(source_versions PIT+stamp) + 设问类型金矿(推断50%) + **考试词典 exam_vocabulary 4186词99%释义三源溯源** + **word_sense 142跨阶段多义(master A1)** + 考点共现 co_occurs + 主题特征词 characterizes_theme; ⚠️ 考试词典/word_sense **有API无前端=金矿没开矿口**; 语法考点/句型/表达三维真相源未成熟未建 |
+| KG | **知识图谱层** (2026-06-20 本轮大建) | ✅ 横切血缘地基(source_versions PIT+stamp) + 设问类型金矿(推断50%) + **考试词典 exam_vocabulary(99%释义三源溯源; 词量见 d0_baselines/DB, 不固化裸数)** + **word_sense 跨阶段多义(master A1)** + 考点共现 co_occurs + 主题特征词 characterizes_theme; ⚠️ 考试词典/word_sense **有API无前端=金矿没开矿口**; 语法考点/句型/表达三维真相源未成熟未建 |
 
-### 🚦 交付门状态 (2026-06-22-续 复评; 详 `docs/delivery_readiness_assessment.md`)
+### 🚦 交付门状态 (2026-06-26 复评; 详 `docs/delivery_readiness_assessment.md` 顶部"2026-06-26 复评")
 
-第四阶段复核门 4 项 — **2 项已绿, 2 项硬缺口** (6维独立审计+对抗critic, 三场景全 hold 高置信):
+第四阶段复核门 4 项 — **2 项已绿, 2 项硬缺口** (5镜头评估+对抗critic, 三场景全 HOLDS 高置信; 数字见 d0_baselines/delivery 文档计数表):
 
 | 交付 bar | 状态 |
 |---|---|
-| 数据 100% 准 (D0) | ✅ D0 36项 + moth **89** + stop_gate live 全绿 (硬编码campaign后重测) |
-| 前端 3 端统一可用 | ⚠️ `/`=8-tab app(默认考点驾驶舱)+ `/teacher` + `/legacy`; **两金矿(考试词典4186/考点cognitive_skill)nav可点渲真数据**; 仍3 UI并存待收敛 |
-| Docker 服务器实跑 | ❌ 完全缺失 (单机 localhost; auth jwt/bcrypt=0; HTTPS=0; backup脚本写了未排程) |
+| 数据 100% 准 (D0) | ✅ D0 + moth + stop_gate live 全绿 (项数/断言数以脚本 verdict 为准, 不 hardcode) |
+| 前端 3 端统一可用 | ✅ **单一入口已收敛**: `/`=8-tab app(默认驾驶舱); `/teacher` `/legacy` `/index.html` → 302 收敛到主 SPA(main.py 实证); 两金矿 nav 可点渲真数据 |
+| Docker 服务器实跑 | ❌ 完全缺失 (单机 localhost; auth jwt/bcrypt真实现=0; HTTPS=0) — 属②多校轨(用户已降为非目标) |
 | **1 名辽宁老师真用 30 分钟反馈入档** | ❌ 从未发生 (最高杠杆 Rule10, AI 做不了) |
 
-**分场景**: ① 单老师桌面 pilot = **READY**(唯一剩 Rule10) · ② 多校 = **NOT-READY**(B1鉴权PII红线+B2 Docker/HTTPS) · ③ 公开 = **NOT-READY**(学情790全合成demo + OCR图片链路pending + genre/theme零核验 + 题库164薄)。
-**硬编码 campaign(11 commit)= 内部清洁, 交付门一格未动** — 别把"代码更干净"读成"更接近能交付"。
-**收口冲刺路径** (非继续建 KG): pilot 前 AI 可收口 backup排程 + card F样本不足警示; **唯一硬阻塞=动员真老师**(分层非平均: 动员前别碰 ②③ 的鉴权/Docker)。
+**分场景**: ① 单老师桌面 pilot = **READY**(唯一硬阻塞=动员真老师 Rule10; backup首份已建/launchd用户决定暂不装) · ② 多校 = **NOT-READY**(B1鉴权PII红线+B2 Docker; **用户2026-06-26已降多校为刻意非目标**) · ③ 公开 = **NOT-READY**(学情全合成demo + OCR图片链路pending + genre/theme零核验 + 题库薄)。
+**收口冲刺路径** (非继续建 KG): backup首份已实跑(`data/db/backups/`); **唯一硬阻塞=动员真老师**(分层非平均: 动员前别碰 ②③ 的鉴权/Docker)。
 **别让"还能建更多 KG 维度"无限延迟真老师校验** (比建设更高杠杆 + 是范围裁决器)。
 
 **待用户拍板的 blocking 决策**: ① 试运营形态(单机教研机 vs 服务器多人)② 范围(高中真题分析+备课视图最小集 vs 含中考/讲义/真学情)③ 动员真老师。

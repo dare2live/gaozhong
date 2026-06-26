@@ -270,4 +270,4 @@ STRUCTURAL PROOF (code):
   锁: D0 21f(无900+非空) + moth eol-no-hard-truncation。
 
 ### 全部 BLOCK/WARN 数据问题已清 (14 + 本轮新发现 4 = 18 项)
-剩纯**代码债**(非数据正确性): textbook.py `_from_outline` CC=11 预存 + 4 god-module 拆分 (task_90d55f25)。
+剩纯**代码债**(非数据正确性): textbook.py `_from_outline` CC=11 预存 + **CC>15 函数减债** (task_90d55f25; **术语校准 2026-06-26: 全仓无 >400L god-module, 实为 CC>15 单函数 backlog**, 现 12=stop_gate baseline 贴界未破=恢复门余量 nice-to-have, 非"巨石拆分")。
