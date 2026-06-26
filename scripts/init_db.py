@@ -57,6 +57,13 @@ def main() -> None:
     from backend.services.imports import xgkii2026_import
     print(f"  {xgkii2026_import.import_xgkii_2026(con)}")
 
+    print("\n=== Layer 2a3: 2024/2025 local_pdf 真题入库 (前移自原 Layer 4g, 2026-06-26 架构修) ===")
+    # 必须早于 Layer 3 边构建: 原在 Layer 4g(canonical/links 之后) → build_tests_word/exam_point 跑时
+    # 这些行未入库 → tests_word 漏年(实证 2024/25 曾 0 边)。全部真题入库归位 Layer 2a*, 早于派生层。
+    # import_policies(污染/缺题干门) + sources.yaml(PDF路径) 驱动, 见 scripts/import_recent_exams.py。
+    from scripts.import_recent_exams import import_pdfs
+    print(f"  {import_pdfs(con)}")
+
     print("\n=== Layer 2b: 真题 cross-verify 门禁 (宪法 §8.3) ===")
     try:
         from scripts.tools.audit.cross_verify_pdf import verify_year, PDF_MAP
@@ -176,14 +183,7 @@ def main() -> None:
     from backend.services import students as students_seed
     print(f"  {students_seed.seed_demo(con)}")
 
-    print("\n=== Layer 4g: 2024/2025 真题 PDF 导入 ===")
-    # in-process 用现有写连接 (不再 subprocess 开第二写连接 → 避 DuckDB 单写者锁冲突,
-    # 历来 Layer 4g subprocess 崩, local_pdf 行靠 out-of-band 手工补, 不可复现; 现入主链).
-    # 非静默 legacy 导入 (架构契约 init_db_legacy_importer_call): import_pdfs 由
-    # backend/config/import_policies.yaml (exam_truth_source_import.block_if 污染/缺题干门) +
-    # backend/config/sources.yaml (PDF 路径真相源) 驱动, 见 scripts/import_recent_exams.py.
-    from scripts.import_recent_exams import import_pdfs
-    print(f"  {import_pdfs(con)}")
+    # (Layer 4g 2024/2025 local_pdf 导入已前移到 Layer 2a3 — 必须早于 Layer 3 边构建, 见上)
 
     print("\n=== Layer 4h: 设计宪法入库 (model_driven_design) ===")
     from backend.services import constitution
