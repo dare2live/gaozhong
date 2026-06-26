@@ -138,6 +138,9 @@
     const nOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.n : 0; };
     const cats = skills.slice().reverse();
     const lbl = { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: "#999" };
+    // #11: 新era reliability — distribution_reliable=false(n<30)时不可把单年噪声渲成可信精度(死线3诚实分层)
+    const relNew = (cs && cs.reliability && cs.reliability[ERA_NEW]) || {};
+    const newOK = relNew.distribution_reliable !== false;   // 缺省视为可信; 仅显式 false 才降级
     charts.cog = charts.cog || echarts.init(G.$("#bk-cog"));
     charts.cog.setOption({
       grid: { left: 4, right: 48, top: 26, bottom: 8, containLabel: true },
@@ -152,16 +155,29 @@
       series: [
         { name: "旧课标II 15–20", type: "bar", barGap: "10%", data: cats.map(s => pctOf(oldRows, s)),
           itemStyle: { color: C.grey, borderRadius: [0, 3, 3, 0] }, label: lbl },
-        { name: "新高考II 21+ 注n小", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
-          itemStyle: { color: s === "推断" ? C.up : C.blue, borderRadius: [0, 3, 3, 0] } })), label: lbl },
+        { name: newOK ? "新高考II 21+" : "新高考II 21+ ⚠样本不足", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
+          itemStyle: {
+            color: !newOK ? "#C9C4B8" : (s === "推断" ? C.up : C.blue),   // #11 不可信→灰, 推断不抢眼防误读为可信精度
+            opacity: newOK ? 1 : 0.5,
+            borderColor: newOK ? "#fff" : "#999", borderWidth: 1, borderType: newOK ? "solid" : "dashed",
+            borderRadius: [0, 3, 3, 0],
+          } })), label: lbl },
       ],
     });
     const oInf = pctOf(oldRows, "推断"), nInf = pctOf(newRows, "推断");
     const rel = (cs && cs.reliability) || {};
     const nNew = (rel[ERA_NEW] || {}).n || newRows.reduce((a, r) => a + r.n, 0);
     const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
-    G.$("#bk-cognote").innerHTML = `真相源=教研解析<b>显式标签</b>(强于双模型)。命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断, 万变不离其宗的考查方式演变。`
-      + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II 注仅2023 n=${nNew}(&lt;30 方向性非精确)。2021源=全国甲卷已剔(§7), 待补2022/2024/2025真辽宁设问标注。</small>`;
+    // #11: 诚实叙事 — 新era不可信时 banner 显著(非12px灰) + 把"迁移真值"降级为"方向性信号"(critic: n=15单年不作趋势结论)
+    const banner = !newOK
+      ? `<div style="background:#FAECE7;border-left:3px solid #993C1D;padding:5px 9px;border-radius:4px;margin:0 0 6px;font-size:12px;color:#7a2e15;">⚠ 新高考II 仅 2023 单年 n=${nNew}(&lt;30)= <b>方向性信号, 非精确分布/趋势结论</b>; 待补 2022/2024/2025 真辽宁设问标注确认。</div>`
+      : "";
+    const inf = !newOK
+      ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(2023) ${nInf}%`
+      : `命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断`;
+    G.$("#bk-cognote").innerHTML = banner
+      + `真相源=教研解析<b>显式标签</b>(强于双模型)。${inf}。`
+      + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II 仅2023 n=${nNew}。2021源=全国甲卷已剔(§7)。</small>`;
   }
 
   async function loadCross(by) {

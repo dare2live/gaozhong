@@ -153,6 +153,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import inspect; from backend.services import thresholds; from backend.services.audit import curriculum; from backend.services.question_bank import loader as ql; from backend.services.course import scenarios; from backend.services.exercise import cloze; ok=(thresholds.get_threshold('extraction.section_text_max_chars')==5000 and thresholds.get_threshold('vocab.level_tolerance')==100 and 'get_threshold' in inspect.getsource(curriculum._level_sev) and 'difficulty_char_threshold' in inspect.getsource(ql._difficulty) and 'section_text_max_chars' in inspect.getsource(cloze) and scenarios.NGRAM_N==10); print(0 if ok else 1)"]
     expect: {op: "==", value: "0"}
+  - id: cog-newera-honest-downgrade
+    claim: "D区设问技能新era不可信(n=15<30)视觉降级(教研室#11 死线3诚实分层): beike 读 distribution_reliable, false时灰降级+'⚠样本不足'banner+叙事'方向性参考(非趋势结论)'(critic谄媚死flag修; C区结构presence的'万变不离其宗'是合法structural_truth不在此列)"
+    type: shell
+    command: ["bash", "-c", "grep -q 'distribution_reliable' frontend/static/beike.js && grep -q '方向性参考' frontend/static/beike.js && grep -q '样本不足' frontend/static/beike.js && echo 0 || echo 1"]
+    expect: {op: "==", value: "0"}
   - id: blueprint-practice-wired
     claim: "蓝图练习卷接矿口(教研室#12): qbank tab 调 /api/exercise/blueprint_practice 渲 paper + 诚实标 composition_basis(结构对齐非预测非押题); 原0前端消费空转修复"
     type: shell
