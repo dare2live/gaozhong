@@ -346,6 +346,8 @@
     const DIFF = { hard: ["难", "var(--accent-ink)"], mid: ["中", "var(--warn)"], easy: ["易", "var(--good)"] };
     const types = Object.entries(st.by_type || {});
     const totalN = st.total || types.reduce((a, [, n]) => a + n, 0);
+    // #6: 默认 type_mix 用库内真实题型动态生成 (去掉 legacy 硬编码的库内不存在题型; 阅读多, 其余各2)
+    const defMix = types.slice(0, 4).map(([k]) => `${k}:${k.includes("阅读") ? 4 : 2}`).join(",") || "阅读理解:4";
     let qtype = null;
     const d = st.by_difficulty || {};
     CONTENT.innerHTML = `
@@ -357,6 +359,16 @@
         <button id="qb-bp-go" class="bk-pill on">🧩 生成蓝图练习卷</button>
         <span class="muted" style="font-size:11px;">按考纲蓝图结构从真题加权抽样 · 非预测/非押题</span>
       </div>
+      <details id="qb-compose" style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:#185FA5;">⚙ 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
+        <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
+          <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+          <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+          <label>难度 <select id="qb-c-diff" style="padding:3px;border:1px solid #d8d5cc;border-radius:6px;"><option value="">混合</option><option>easy</option><option>mid</option><option>hard</option></select></label>
+          <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+          <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+          <button id="qb-c-go" class="bk-pill on">组卷</button>
+        </div>
+      </details>
       <div id="qb-paper"></div>
       <div class="bk-filter" id="qb-filters">
         <button class="bk-pill on" data-qt="__all">全部 ${totalN}</button>
@@ -377,6 +389,21 @@
       $$("#qb-filters .bk-pill").forEach(p => p.classList.toggle("on", p.dataset.qt === b.dataset.qt));
       loadList();
     });
+    // 共享试卷渲染 (Rule5: 蓝图练习卷 + 自定义组卷 复用; stem 3000 容阅读完整篇章不截小题)
+    const esc = s => (s || "").replace(/</g, "&lt;");
+    const paperHTML = (p, title, basisHtml) => {
+      const sf = p.shortfalls;
+      const hasSf = Array.isArray(sf) ? sf.length : (sf && Object.values(sf).some(v => v > 0));
+      const shortf = hasSf ? `<p class="muted" style="color:#9a6a00;font-size:12px;margin:4px 0;">注 部分题型库存不足: ${esc(JSON.stringify(sf))}（诚实披露, 不补押题）</p>` : "";
+      return `<div class="bk-card" style="margin:6px 0 12px;">
+        <div class="bk-h"><span>${title} <small>${p.actual_total}/${p.target_total} 题</small></span>
+          <button id="qb-paper-print" class="bk-export">🖶 打印此卷</button></div>
+        ${basisHtml || ""}${shortf}
+        <ol style="padding-left:1.4rem;font-size:13px;line-height:1.55;">
+          ${p.questions.map(q => `<li style="margin:6px 0;"><span class="qb-tb">${esc(q.qtype)}</span> <span style="color:#888;font-size:11px;">#${q.qb_id}·${esc(q.difficulty || "")}</span><br><span style="white-space:pre-wrap;">${esc((q.stem || "").slice(0, 3000))}</span> <span style="color:#185FA5;">[答:${esc(q.answer || "")}]</span></li>`).join("")}
+        </ol></div>`;
+    };
+    const mountPaper = (box, html) => { box.innerHTML = html; const pb = $("#qb-paper-print"); if (pb) pb.onclick = () => window.print(); };
     // #12: 蓝图练习卷接矿口 (/api/exercise/blueprint_practice 原0前端消费空转; 诚实=结构对齐非预测)
     const genBlueprint = async () => {
       const total = Math.max(5, Math.min(60, parseInt($("#qb-bp-total").value, 10) || 30));
@@ -385,23 +412,26 @@
       const p = await fetchJSON(`/api/exercise/blueprint_practice?total=${total}`).catch(() => null);
       if (!p || !p.questions) { box.innerHTML = `<p class="muted">生成失败</p>`; return; }
       const cb = p.composition_basis || {};
-      const esc = s => (s || "").replace(/</g, "&lt;");
-      const shortf = (p.shortfalls && p.shortfalls.length)
-        ? `<p class="muted" style="color:#9a6a00;font-size:12px;margin:4px 0;">注 部分题型库存不足: ${p.shortfalls.map(s => `${s.question_type || s.type || ""}缺${s.shortfall ?? s.missing ?? ""}`).join(" · ")}（诚实披露, 不补押题）</p>`
-        : "";
-      box.innerHTML = `
-        <div class="bk-card" style="margin:6px 0 12px;">
-          <div class="bk-h"><span>蓝图练习卷 <small>${p.actual_total}/${p.target_total} 题</small></span>
-            <button id="qb-bp-print" class="bk-export">🖶 打印此卷</button></div>
-          <p class="muted" style="font-size:12px;margin:0 0 6px;">${esc(cb.positioning)}</p>
-          <p class="muted" style="font-size:11px;margin:0 0 8px;">依据: <b>${esc(cb.selection_basis)}</b></p>
-          ${shortf}
-          <ol style="padding-left:1.4rem;font-size:13px;line-height:1.5;">
-            ${p.questions.map(q => `<li style="margin:3px 0;"><span class="qb-tb">${esc(q.qtype)}</span> <span style="color:#888;font-size:11px;">#${q.qb_id}·${esc((q.difficulty||""))}</span><br><span>${esc((q.stem || "").slice(0, 110))}…</span> <span style="color:#185FA5;">[答:${esc(q.answer || "")}]</span></li>`).join("")}
-          </ol></div>`;
-      const pb = $("#qb-bp-print"); if (pb) pb.onclick = () => window.print();
+      mountPaper(box, paperHTML(p, "蓝图练习卷",
+        `<p class="muted" style="font-size:12px;margin:0 0 4px;">${esc(cb.positioning)}</p><p class="muted" style="font-size:11px;margin:0 0 8px;">依据: <b>${esc(cb.selection_basis)}</b></p>`));
     };
     $("#qb-bp-go").onclick = genBlueprint;
+    // #6: 自定义组卷接矿口 (/api/paper/compose; 收敛自 legacy /teacher#compose)
+    const genCompose = async () => {
+      const box = $("#qb-paper");
+      box.innerHTML = `<p class="muted">组卷中...</p>`;
+      const q = new URLSearchParams();
+      q.set("type_mix", $("#qb-c-mix").value);
+      const req = $("#qb-c-req").value, diff = $("#qb-c-diff").value, year = $("#qb-c-year").value, seed = $("#qb-c-seed").value;
+      if (req) q.set("require_tags", req);
+      if (diff) q.set("difficulty", diff);
+      if (year) q.set("year_in", year);
+      if (seed) q.set("seed", seed);
+      const p = await fetchJSON("/api/paper/compose?" + q).catch(() => null);
+      if (!p || p.error) { box.innerHTML = `<p class="muted">组卷失败: ${esc((p && p.error) || "")}</p>`; return; }
+      mountPaper(box, paperHTML(p, "自定义组卷", `<p class="muted" style="font-size:11px;margin:0 0 8px;">题面均历年真题(无押题); 缺额诚实披露。</p>`));
+    };
+    $("#qb-c-go").onclick = genCompose;
     await loadList();
   });
 

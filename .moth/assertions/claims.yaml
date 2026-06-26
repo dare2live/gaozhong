@@ -158,6 +158,11 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -q 'distribution_reliable' frontend/static/beike.js && grep -q '方向性参考' frontend/static/beike.js && grep -q '样本不足' frontend/static/beike.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
+  - id: compose-in-spa
+    claim: "自定义组卷进主SPA(教研室#6 全量收敛): app_router genCompose 调 /api/paper/compose + 默认type_mix从库内真类型(去legacy不存在的'选义单选') + stem放宽; 收敛自 /teacher#compose"
+    type: shell
+    command: ["bash", "-c", "grep -q 'genCompose' frontend/static/app_router.js && grep -q 'paper/compose' frontend/static/app_router.js && ! grep -q '选义单选' frontend/static/app_router.js && echo 0 || echo 1"]
+    expect: {op: "==", value: "0"}
   - id: lesson-tab-in-spa
     claim: "单元备课进主SPA(教研室#7 全量收敛): lesson.js registerTab('lesson') 读 /api/lesson_plan + app.html 加载 + nav-config 有'单元备课' tab; 词 conceptLink 可点弹浮窗"
     type: shell
