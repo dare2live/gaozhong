@@ -212,7 +212,8 @@
       series: skills.map(sk => ({ name: sk, type: "bar", stack: "t", barWidth: "62%", data: ordered.map(c => pctOf(c, sk)), itemStyle: { color: SKILL_COLOR[sk] } })),
     });
     const cov = d.n_matched && d.n_subq_total ? `${d.n_matched}/${d.n_subq_total}` : "?";
-    G.$("#bk-crosslbl").textContent = `${CROSS_LBL[state.cross]}·2015–20截面`;
+    // #14: era 锁醒目徽章 (F卡是唯一旧era截面卡, 防夹在双era视图里被误读为新高考结论)
+    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:#EDE8DF;color:#7a2e15;padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">🔒仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
     G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
       + `<br><small class="muted">注 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格注仅参考。</small>`;
   }

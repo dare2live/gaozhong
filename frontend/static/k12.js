@@ -59,11 +59,12 @@
       series: [{ type: "bar", data: rows.map(r => r.n), barWidth: "60%", itemStyle: { color: "#c1272d", borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", fontSize: 11 } }],
     });
     // 内容完整性诚实 banner (审计HIGH#8: 不把空心当完整; content_status 来自 service 单算点)
+    // #14: 删"完整 ${complete}"——service content_status 无 complete 键(全 walled/pending), 恒显"完整0"是误导冗余项
     const cs = d.content_status || {};
-    const walled = cs.stem_walled || 0, pending = cs.answer_pending || 0, complete = cs.complete || 0;
+    const walled = cs.stem_walled || 0, pending = cs.answer_pending || 0;
     const el = G.$("#k12-zk-honesty");
     if (el) el.innerHTML = (walled || pending)
-      ? `注 内容完整性: 题面门控 ${walled} · 答案待补 ${pending} · 完整 ${complete}（题型骨架完整, 题面/答案部分待补）`
+      ? `注 内容完整性: 题面门控 ${walled} · 答案待补 ${pending}（题型骨架完整, 题面/答案部分待补）`
       : "";
   }
 
