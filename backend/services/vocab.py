@@ -14,13 +14,14 @@ import duckdb
 # 建边(含95词阅读篇章), 直接当"考查/必教"会把 make/time/go 等篇章功能词刷成高频考词(实测辽宁74%边来自
 # 阅读/听力/续写等语篇题型)。且原函数**无 province 过滤**(make 66%边非辽宁), 违 §7 辽宁锚定 +
 # lesson_plan.py docstring 谎称"word 同省"。故"考查频次/对齐"收口到: **辽宁卷 离散vocab/grammar题型**
-# (完形/语法填空/短改/单选 — 个体词被考点化处), 排除阅读/听力/续写/七选五/应用文篇章。与 _grammar_exam_trace 同省同口径。
+# (TESTED_QTYPES, 与 exam_vocab/exam_status 同源同口径), 排除阅读/听力/续写/七选五/应用文篇章。
 # (注: 完形/语法填空 raw_question 仍含空格上下文, 非完美"被考词"; 但已剔除最严重的阅读篇章污染, 见 task 根因A 深修。)
-_TESTED_QTYPES = ("完形填空", "语法填空", "短文改错", "单选(语法/词汇)")
+from backend.services.exam_vocab import TESTED_QTYPES   # 单一真相源: 离散考点题型口径
+_TESTED_IN = ",".join("'" + t.replace("'", "''") + "'" for t in TESTED_QTYPES)
 _TESTED_JOIN = (
     "JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id, 10) "
     "WHERE e.relation = 'tests_word' AND q.province LIKE '辽宁%' "
-    "AND q.question_type IN ('完形填空','语法填空','短文改错','单选(语法/词汇)')")
+    f"AND q.question_type IN ({_TESTED_IN})")
 
 
 def unit_introduced_words(con: duckdb.DuckDBPyConnection, unit_id: str) -> list[str]:

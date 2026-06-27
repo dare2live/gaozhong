@@ -85,7 +85,8 @@ def _attrs_for(word: str, status: str, is_extra: bool,
     parts.append(f'"stage": "{_STAGE.get(cefr_field, cefr_field)}"')
     parts.append(f'"exam_status": "{status}"')
     parts.append(f'"teaching_hint": "{STATUS_HINT[status]}"')
-    parts.append(f'"gaokao_hit_count_ln": {hit["ln"]}')
+    parts.append(f'"gaokao_hit_count_ln": {hit.get("ln_tested", 0)}')   # 审计根因A: 辽宁**考查**数(离散考点题型), 非出现数
+    parts.append(f'"gaokao_appears_ln": {hit["ln"]}')                    # 辽宁出现数(含阅读篇章, 透明保留)
     parts.append(f'"gaokao_hit_count_all": {hit["all"]}')
     if is_extra:
         parts.append('"extracurricular": true')
@@ -100,7 +101,7 @@ def _write_all(con: duckdb.DuckDBPyConnection, bins: dict[str, set[str]],
     for status, words in bins.items():
         is_extra = status.endswith("_extra")
         for w in words:
-            hit = hits.get(w, {"ln": 0, "all": 0})   # 无边词 (standard/LV) 命中 0
+            hit = hits.get(w, {"ln": 0, "all": 0, "ln_tested": 0})   # 无边词 (standard/LV) 命中 0
             rows.append((_attrs_for(w, status, is_extra, hit, cefr_lv), f"word:{w}"))
     if rows:
         con.executemany("UPDATE nodes SET attrs_json=? WHERE concept_id=?", rows)
@@ -110,8 +111,9 @@ def audit_vocab_4q_classification(con: duckdb.DuckDBPyConnection) -> list[dict]:
     cefr_lv = _cefr_levels(con)
     cefr = set(cefr_lv)
     textbook = _load_textbook_words(con)
-    hits = word_exam_hits_from_edges(con)   # 唯一真相=tests_word 边 (core 词必有边)
-    ln_tested = {w for w, h in hits.items() if h["ln"] > 0}      # 辽宁命中 ≥1 题
+    hits = word_exam_hits_from_edges(con)   # 唯一真相=tests_word 边 (core 词必有离散考查边)
+    # 后端审计 根因A: 用 ln_tested(辽宁∧离散考点题型 考查)定 core/HV_extra, 非 ln(辽宁出现, 含阅读篇章内容词)。
+    ln_tested = {w for w, h in hits.items() if h.get("ln_tested", 0) > 0}      # 辽宁离散考查 ≥1 题
     bins = _classify(cefr, textbook, ln_tested)
     _write_all(con, bins, hits, cefr_lv)
     core_ratio = len(bins["core"]) / max(1, len(cefr))

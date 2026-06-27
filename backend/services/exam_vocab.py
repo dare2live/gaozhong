@@ -20,6 +20,12 @@ from backend.services.stopwords import load_stopwords
 _TOKEN = re.compile(r"[A-Za-z]+")
 _MIN_LEN = 2
 
+# 后端审计 根因A: "词被**考查**" ≠ "词出现在阅读篇章". tests_word 边对整篇 raw_question 建边(含95词阅读篇章),
+# ln(辽宁任意题型)含大量阅读篇章内容词(make/time 等). "考过/必教" 应只认**离散考点题型**(个体词被考查处):
+# 完形/语法填空/短改/单选. (注: 完形/语法填空仍含空格上下文, 非完美"被考词"; 已剔除最严重的阅读篇章污染.)
+# 单一真相源: vocab.py 也 import 此常量, 保口径一致 (lesson_plan/recommend/dict/exam_status 全同口径)。
+TESTED_QTYPES = ("完形填空", "语法填空", "短文改错", "单选(语法/词汇)")
+
 
 def _lemma_tokens(text: str, lemm) -> set[str]:
     """题面 → lemmatize 实词 token 集 (token 原形 + v/n-lemma, len≥2, **去停用词**).
@@ -46,16 +52,19 @@ def word_inflections(w: str, lemm) -> set[str]:
 
 
 def word_exam_hits_from_edges(con: duckdb.DuckDBPyConnection) -> dict[str, dict[str, int]]:
-    """每词 {"ln": 辽宁命中题数, "all": 全部命中题数} — 从 tests_word 边 (唯一真相) 算.
+    """每词 {"ln": 辽宁出现题数, "all": 全部出现题数, "ln_tested": 辽宁**离散考点题型**考查题数} — tests_word 边算.
 
-    取代 token-bag 命中: 边是'考过'唯一真相 (Rule3), exam_status / 超纲考过档据此推 →
-    'core'/'辽宁考过' 词必有边。§7 用 province LIKE '辽宁%' 精确前缀。
+    后端审计 根因A: ln/all 是"出现"(含阅读篇章内容词); **ln_tested** 才是"考查"(辽宁∧离散考点题型 TESTED_QTYPES)。
+    exam_status core/HV_extra + 超纲考过档 + dict命中 应据 **ln_tested** 推(出现≠考过); core 词必有离散考查边。
     """
+    qmarks = ",".join("?" * len(TESTED_QTYPES))
     rows = con.execute(
         "SELECT SUBSTR(e.dst_id, 6) AS word, "
         "       SUM(CASE WHEN q.province LIKE '辽宁%' THEN 1 ELSE 0 END) AS ln, "
-        "       COUNT(*) AS all_c "
+        "       COUNT(*) AS all_c, "
+        f"       SUM(CASE WHEN q.province LIKE '辽宁%' AND q.question_type IN ({qmarks}) THEN 1 ELSE 0 END) AS ln_tested "
         "FROM edges e JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id, 10) "
-        "WHERE e.relation = 'tests_word' GROUP BY 1"
+        "WHERE e.relation = 'tests_word' GROUP BY 1",
+        list(TESTED_QTYPES)
     ).fetchall()
-    return {w: {"ln": int(ln), "all": int(a)} for w, ln, a in rows}
+    return {w: {"ln": int(ln), "all": int(a), "ln_tested": int(lt)} for w, ln, a, lt in rows}

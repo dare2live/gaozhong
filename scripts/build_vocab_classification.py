@@ -79,7 +79,9 @@ def classify(con, lemm) -> dict[str, str]:
     cefr = {r[0].lower() for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     tb = {r[0].lower() for r in con.execute("SELECT DISTINCT word FROM unit_vocab_intro").fetchall()}
     hits = word_exam_hits_from_edges(con)   # 唯一真相=tests_word 边 (§7 辽宁/外省)
-    ln_edged = {w for w, h in hits.items() if h["ln"] > 0}
+    # 后端审计 根因A: "辽宁考过"用 ln_tested(辽宁∧离散考点题型 考查), 非 ln(出现, 含阅读篇章内容词);
+    # 与 exam_coverage core/HV_extra 同源同口径 → 3源一致 by construction (d0_exam_status 锁)。
+    ln_edged = {w for w, h in hits.items() if h.get("ln_tested", 0) > 0}
     all_edged = {w for w, h in hits.items() if h["all"] > 0}
     return {w: _classify_word(w, cefr, ln_edged, all_edged, lemm) for w in sorted(tb - cefr)}
 
