@@ -447,7 +447,7 @@
         <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
           <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
           <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
-          <label>难度 <select id="qb-c-diff" style="padding:3px;border:1px solid #d8d5cc;border-radius:6px;"><option value="">混合</option><option>easy</option><option>mid</option><option>hard</option></select></label>
+          <label>难度 <select id="qb-c-diff" aria-label="组卷难度筛选" style="padding:3px;border:1px solid var(--line);border-radius:6px;"><option value="">混合</option><option>easy</option><option>mid</option><option>hard</option></select></label>
           <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
           <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
           <button id="qb-c-go" class="bk-pill on">组卷</button>
@@ -897,7 +897,7 @@
         <form id="scan-form" style="background:var(--card);padding:1rem;border:1px solid var(--line);border-radius:var(--r);max-width:500px">
           <div style="margin:0.5rem 0">
             <label>学生 (可选):
-              <select name="student_id" style="width:100%">
+              <select name="student_id" aria-label="关联学生(可选)" style="width:100%">
                 <option value="">--- 未关联 ---</option>
                 ${studentOpts}
               </select>
@@ -905,7 +905,7 @@
           </div>
           <div style="margin:0.5rem 0">
             <label>类型:
-              <select name="kind" style="width:100%">
+              <select name="kind" aria-label="扫描件类型" style="width:100%">
                 <option value="answer_sheet">答题卡</option>
                 <option value="homework">作业</option>
                 <option value="essay">作文</option>
