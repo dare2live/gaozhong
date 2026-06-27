@@ -11,18 +11,20 @@
   let chart = null, state = { teacher: null, cls: null };
 
   // getting-started 引导 (坑4: 学情全 demo, 诚实化为"示例 + 如何接真实学情")
+  // RC1#39: 默认折叠(<details>), 避免与画满示例数据的热力图同屏三处"示例"信息冗余; 想接真实学情时展开看三步。
   function guide() {
     const step = (n, t, d) => `<div class="eg-step"><span class="eg-n">${n}</span><div><div class="eg-st">${t}</div><div class="eg-sd">${d}</div></div></div>`;
-    return `<div class="empty-guide">
-      <span class="eg-tag">示例数据</span>
-      <div class="eg-title">接入真实学情 · 三步</div>
-      <div class="eg-why">当前作答为示例合成 (D0 诚实: 不在零真实作答上渲染伪造置信度)。导入真实数据后, 弱点 / 热力 / 分层推荐自动派生。</div>
-      <div class="eg-steps">
-        ${step(1, "建班 · 导入名单", '上传学生名单 CSV (姓名 + 学号), 系统建班建档 · 多租户隔离。<a href="#/students">学生档案 →</a>')}
-        ${step(2, "上传答题卡", '扫描录入 OCR 识别作答 → 自动判分入 student_answers。<a href="#/scan">扫描录入 →</a>')}
-        ${step(3, "自动学情", "错题聚合真考点弱点 + 分层复习推荐 + 结构对齐同构练习 (本页)。")}
+    return `<details style="margin-bottom:12px;">
+      <summary style="cursor:pointer;font-size:13px;color:var(--accent-ink);font-weight:500;">示例数据 · 如何接入真实学情(三步) →</summary>
+      <div class="empty-guide" style="margin-top:8px;">
+        <div class="eg-why">当前作答为示例合成 (D0 诚实: 不在零真实作答上渲染伪造置信度)。导入真实数据后, 弱点 / 热力 / 分层推荐自动派生。</div>
+        <div class="eg-steps">
+          ${step(1, "建班 · 导入名单", '上传学生名单 CSV (姓名 + 学号), 系统建班建档 · 多租户隔离。<a href="#/students">学生档案 →</a>')}
+          ${step(2, "上传答题卡", '扫描录入 OCR 识别作答 → 自动判分入 student_answers。<a href="#/scan">扫描录入 →</a>')}
+          ${step(3, "自动学情", "错题聚合真考点弱点 + 分层复习推荐 + 结构对齐同构练习 (本页)。")}
+        </div>
       </div>
-    </div>`;
+    </details>`;
   }
 
   function shell() {
@@ -46,7 +48,11 @@ ${guide()}
     const d = await fetchJSON(`/api/students/classes?teacher_id=${encodeURIComponent(state.teacher)}`).catch(() => ({ classes: [] }));
     const cls = d.classes || [];
     G.$("#xs-classes").innerHTML = cls.map(c => pill(c.class_id, `${c.name} (${c.n_students}人)`, c.class_id === state.cls, "cls")).join("") || '<span class="muted" style="font-size:12px;">无班级</span>';
-    G.$$("#xs-classes [data-cls]").forEach(b => b.onclick = () => { state.cls = b.dataset.cls; loadClasses(); loadWeakness(); });
+    G.$$("#xs-classes [data-cls]").forEach(b => b.onclick = () => {
+      state.cls = b.dataset.cls;
+      G.$$("#xs-classes .bk-pill").forEach(p => p.classList.toggle("on", p.dataset.cls === state.cls));
+      loadWeakness();   // RC1#40: 切班只重算弱点, 不再 loadClasses() 重 fetch+重建 pill(原致单击双请求)
+    });
     if (cls.length) { if (!cls.some(c => c.class_id === state.cls)) state.cls = cls[0].class_id; loadWeakness(); }   // 总渲: 重访时 state.cls 已有也要渲, 否则 #xs-heat 空
   }
 
@@ -54,9 +60,9 @@ ${guide()}
     if (!state.cls || !state.teacher) return;
     // teacher_id 必传: 路由 owns_class 多租户校验 (缺则 MISSING → 热力图空白死链, 已修)
     const d = await fetchJSON(`/api/students/class_weakness?class_id=${encodeURIComponent(state.cls)}&teacher_id=${encodeURIComponent(state.teacher)}`).catch(() => ({ weakness: [] }));
-    if (d.error) { G.$("#xs-banner").innerHTML = `<span style="color:#BE3A2B">学情加载失败: ${d.error}</span>`; return; }
+    if (d.error) { G.$("#xs-banner").innerHTML = `<span style="color:var(--accent)">学情加载失败: ${d.error}</span>`; return; }
     G.$("#xs-banner").innerHTML = d.data_status
-      ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FCEBEB;border:1px solid #F09595;border-radius:6px;margin-bottom:12px;font-size:12px;color:#791F1F;"><b style="font-weight:500;">${d.data_status}</b></div>` : "";
+      ? `<div class="caveat-banner demo" style="margin-bottom:12px;"><span class="cb-tag">示例</span><span>${d.data_status}</span></div>` : "";
     const rows = (d.weakness || []).slice(0, 12).reverse();
     if (!window.echarts) { G.chartLoadError(G.$("#xs-heat")); return; }   // D0诚实: 图表组件失败显式报错
     if (!rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted" style="padding:12px">暂无弱点数据 (示例库)</p>'; return; }

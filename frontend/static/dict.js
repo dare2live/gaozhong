@@ -48,7 +48,7 @@
     const hs = d.stages.find(s => s.stage === "高中") || {};
     const newset = new Set(hs.new_senses || []);
     const stageRow = (s) => {
-      const sc = STAGE_C[s.stage] || "#888";
+      const sc = STAGE_C[s.stage] || "var(--ink-3)";
       const items = (s.senses || []).map(x =>
         (s.stage === "高中" && newset.has(x))
           ? `<span style="background:#FBEFD6;color:#8A5A00;padding:1px 6px;border-radius:4px;">${x}<span style="font-size:10px;margin-left:2px;">新增</span></span>`
@@ -61,13 +61,13 @@
   }
 
   function row(w) {
-    const stage = w.stage || "—", sc = STAGE_C[stage] || "#888";
+    const stage = w.stage || "—", sc = STAGE_C[stage] || "var(--ink-3)";
     const hit = w.gaokao_hit_ln ? `<b style="color:#9C2C20;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
     return `<tr style="border-bottom:1px solid #ece9e0;">
       <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed #b9b6ab;">${w.word}</span></td>
-      <td style="padding:6px 8px;color:#444;">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>
+      <td style="padding:6px 8px;color:var(--ink-2);">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>
       <td style="padding:6px 8px;"><span style="color:${sc};font-size:12px;">${stage}</span></td>
-      <td style="padding:6px 8px;font-size:12px;color:#888;">${w.curriculum_level || "—"}</td>
+      <td style="padding:6px 8px;font-size:12px;color:var(--ink-3);">${w.curriculum_level || "—"}</td>
       <td style="padding:6px 8px;text-align:center;font-size:12px;">${hit}</td></tr>`;
   }
 

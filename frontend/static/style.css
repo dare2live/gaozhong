@@ -3,7 +3,7 @@
 body {
   font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
   margin: 0;
-  background: #fdfdfb;     /* warm off-white */
+  background: var(--card);     /* warm off-white */
   color: #1a1a1a;
   line-height: 1.55;
 }
@@ -52,7 +52,7 @@ header .nav-inline a:hover { opacity: 0.7; }
   border-bottom: 2px solid var(--accent);
   padding-bottom: 6px;
 }
-.src { font-size: 12px; color: #666; margin: -4px 0 8px; }
+.src { font-size: 12px; color: var(--ink-3); margin: -4px 0 8px; }
 
 table {
   width: 100%;
@@ -62,10 +62,10 @@ table {
 th, td {
   text-align: left;
   padding: 6px 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--line-soft);
 }
 th { background: #fafbfc; font-weight: 600; }
-code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
+code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: var(--ink-2); }
 
 .city-grid {
   display: grid;
@@ -73,7 +73,7 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
   gap: 8px;
 }
 .city {
-  border: 1px solid #ddd;
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 6px 10px;
   font-size: 13px;
@@ -81,7 +81,7 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 }
 .city.waiyan { border-left: 4px solid #2a9d8f; }
 .city.renjiao { border-left: 4px solid #e76f51; }
-.city .pub { font-size: 11px; color: #888; }
+.city .pub { font-size: 11px; color: var(--ink-3); }
 
 .vocab-grid {
   display: grid;
@@ -98,16 +98,16 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
   padding: 3px 6px;
   border-radius: 3px;
   background: white;
-  border: 1px solid #eee;
+  border: 1px solid var(--line-soft);
 }
-.vocab-item.l-义教 { border-left: 3px solid #999; }
+.vocab-item.l-义教 { border-left: 3px solid var(--ink-3); }
 .vocab-item.l-必修 { border-left: 3px solid #e9c46a; }
 .vocab-item.l-选必 { border-left: 3px solid #f4a261; }
-.vocab-item .lvl { font-size: 10px; color: #999; margin-left: 4px; }
+.vocab-item .lvl { font-size: 10px; color: var(--ink-3); margin-left: 4px; }
 
 .controls { margin: 8px 0 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 13px; }
 .controls input, .controls select {
-  padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px;
+  padding: 4px 6px; border: 1px solid var(--line); border-radius: 3px; font-size: 13px;
 }
 .controls input[type=number] { width: 70px; }
 .controls button {
@@ -116,17 +116,17 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 .controls button:hover { background: #164a7d; }
 
 .theme-l1 { font-weight: 600; color: var(--down); margin-top: 6px; }
-.theme-l2 { margin-left: 16px; font-size: 13px; color: #555; }
+.theme-l2 { margin-left: 16px; font-size: 13px; color: var(--ink-2); }
 
 /* === 4 象限热力图 === */
 .heat-legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0 14px; font-size: 12px; }
 .heat-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .heat-legend i { display: inline-block; width: 14px; height: 14px; }
-.heat-totals { font-family: Georgia, serif; font-size: 14px; color: #555; margin-bottom: 10px; }
+.heat-totals { font-family: Georgia, serif; font-size: 14px; color: var(--ink-2); margin-bottom: 10px; }
 .heat-totals b { font-size: 22px; color: var(--down); }
 
 .heat-grid { display: grid; grid-template-columns: 26px repeat(4, 1fr); gap: 2px; font-size: 11px; }
-.heat-grid .head { font-weight: 700; text-align: center; background: #f1eee7; padding: 4px; color: #444; }
+.heat-grid .head { font-weight: 700; text-align: center; background: var(--sunken); padding: 4px; color: var(--ink-2); }
 .heat-grid .letter { text-align: center; padding: 4px; font-weight: 700; color: var(--down); background: #f7f5ef; }
 .heat-grid .cell {
   padding: 4px; text-align: center; color: white; cursor: pointer;
@@ -147,18 +147,18 @@ code { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: #555; }
 .quiz-opts { list-style: none; padding: 0; margin: 6px 0; }
 .quiz-opts li { padding: 4px 8px; border: 1px solid transparent; margin: 2px 0; border-radius: 0; }
 .quiz-opts li:hover { background: #ebe8e0; }
-.quiz-ans { margin-top: 6px; padding: 4px 6px; background: #fdfdfb; border-top: 1px dashed #ccc; }
+.quiz-ans { margin-top: 6px; padding: 4px 6px; background: var(--card); border-top: 1px dashed var(--line); }
 
 /* === 简易"图表"风 === */
 .stat-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 8px 0; }
 .stat-row .stat { flex: 1 1 140px; }
 .stat-row .stat .n { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: var(--down); }
-.stat-row .stat .l { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-row .stat .l { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
 
 footer {
   margin: 24px 32px;
   font-size: 12px;
-  color: #666;
+  color: var(--ink-3);
 }
 footer p { margin: 4px 0; }
 
@@ -170,7 +170,7 @@ a:hover { text-decoration: underline; }
   float: left; font-family: Georgia, serif; font-size: 56px; line-height: 0.8;
   margin: 6px 8px 0 0; color: var(--accent); font-weight: 700;
 }
-.cite { font-size: 10px; color: #888; vertical-align: super; margin-left: 2px; }
+.cite { font-size: 10px; color: var(--ink-3); vertical-align: super; margin-left: 2px; }
 .sticky-stat {
   position: sticky; top: 0; z-index: 5;
   background: white; border-bottom: 2px solid var(--accent); padding: 8px 16px;

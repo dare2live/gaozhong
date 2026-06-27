@@ -64,7 +64,7 @@
 
     let h = `<h3 class="gz-center">
       <span class="gz-type-${center.type}">[${center.type}]</span> ${center.label}
-      <small style="color:#888">${center.id}</small>
+      <small style="color:var(--ink-3)">${center.id}</small>
     </h3>`;
 
     // #4: 教学元数据 chips (attrs_json 已 fetch 但原 0 渲染, 丢弃了 exam_status/辽宁命中/cefr/teaching_hint 教学价值)
@@ -73,7 +73,7 @@
     const ES = (window.GZ_CAT && window.GZ_CAT.examStatus) || {};
     const chip = (t, c) => `<span class="gz-meta-chip" style="background:${c}22;color:${c};">${escapeHtml(String(t))}</span>`;
     const chips = [];
-    if (attrs.exam_status) { const e = ES[attrs.exam_status]; chips.push(chip(e ? e[0] : attrs.exam_status, e ? e[1] : "#888")); }
+    if (attrs.exam_status) { const e = ES[attrs.exam_status]; chips.push(chip(e ? e[0] : attrs.exam_status, e ? e[1] : "var(--ink-3)")); }
     if (attrs.gaokao_hit_count_ln != null) chips.push(chip(`辽宁命中 ${attrs.gaokao_hit_count_ln}`, attrs.gaokao_hit_count_ln > 0 ? "var(--accent-ink)" : "var(--ink-3)"));
     if (attrs.cefr_level) chips.push(chip(attrs.cefr_level, "var(--down)"));
     if (attrs.stage && attrs.stage !== attrs.cefr_level) chips.push(chip(attrs.stage, "var(--down)"));
@@ -84,7 +84,7 @@
     h += `<div class="gz-section">
       <div class="gz-sec-title">关联拓展 (${related.length})</div>`;
     if (related.length === 0) {
-      h += `<p style="color:#888">无直接关联</p>`;
+      h += `<p style="color:var(--ink-3)">无直接关联</p>`;
     } else {
       for (const t of Object.keys(byType).sort()) {
         h += `<div class="gz-group"><strong>${t}</strong> `;
@@ -100,7 +100,7 @@
     h += `<div class="gz-section">
       <div class="gz-sec-title">真题命中 (${questions.length})</div>`;
     if (questions.length === 0) {
-      h += `<p style="color:#888">无真题直接命中</p>`;
+      h += `<p style="color:var(--ink-3)">无真题直接命中</p>`;
     } else {
       h += `<ul class="gz-qlist">`;
       for (const q of questions) {

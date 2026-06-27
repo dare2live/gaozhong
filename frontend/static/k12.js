@@ -28,6 +28,7 @@
 
   function renderStage(d) {
     const stages = Object.keys(d.by_stage || {});
+    if (!stages.length) { const e = G.$("#k12-stage"); if (e) e.innerHTML = '<p class="muted" style="padding:12px">暂无 stage 分布数据</p>'; return; }   // RC1#37: 空态守卫(不渲零柱空图)
     const words = stages.map(s => (d.by_stage[s].word || 0));
     const grams = stages.map(s => (d.by_stage[s].grammar || 0));
     // 覆盖度诚实披露 (审计MEDIUM: 未分阶词不静默丢; coverage 来自 service)
@@ -62,6 +63,7 @@
 
   function renderZk(d) {
     const rows = (d.by_question_type || []).slice().reverse();
+    if (!rows.length) { const e = G.$("#k12-zk"); if (e) e.innerHTML = '<p class="muted" style="padding:12px">暂无中考题型数据</p>'; return; }   // RC1#37: 空态守卫
     chZ = G.initChart(G.$("#k12-zk"));
     chZ.setOption({
       grid: { left: 4, right: 30, top: 8, bottom: 8, containLabel: true },
@@ -104,24 +106,25 @@
     const cell = (txt) => {
       if (!txt) return '<span class="muted">—</span>';
       const s = _splitKaodian(txt);
-      return `${s.ans ? `<span style="font-family:var(--num);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:#1F5F94;padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
+      return `${s.ans ? `<span style="font-family:var(--num);">${s.ans}</span> ` : ""}<span style="background:#EAF0F6;color:var(--down);padding:1px 6px;border-radius:4px;font-size:11px;">${s.cat}</span>`;
     };
     el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
-      <thead><tr style="text-align:left;border-bottom:2px solid #ddd;">
+      <thead><tr style="text-align:left;border-bottom:2px solid var(--line);">
         <th style="padding:5px 8px;width:64px;">空号</th>${yrs.map(y => `<th style="padding:5px 8px;">${y} 中考考点</th>`).join("")}</tr></thead>
-      <tbody>${p.rows.map(r => `<tr style="border-bottom:1px solid #eee;">
-        <td style="padding:5px 8px;color:#888;">第 ${r.blank} 空</td>${yrs.map(y => `<td style="padding:5px 8px;">${cell(r["考点"][y])}</td>`).join("")}</tr>`).join("")}</tbody>
+      <tbody>${p.rows.map(r => `<tr style="border-bottom:1px solid var(--line-soft);">
+        <td style="padding:5px 8px;color:var(--ink-3);">第 ${r.blank} 空</td>${yrs.map(y => `<td style="padding:5px 8px;">${cell(r["考点"][y])}</td>`).join("")}</tr>`).join("")}</tbody>
     </table><p class="muted" style="font-size:11px;margin:8px 0 0;">${p.basis || ""}</p>`;
   }
 
   function renderBlueprint(d) {
     const pairs = d.pairs || [];
+    if (!pairs.length) { G.$("#k12-bp").innerHTML = '<p class="muted" style="padding:12px">暂无语法衔接边数据</p>'; return; }   // RC1#21: 空态守卫(不渲空网格+"共0对"+undefined)
     // #9 修 bug: 原代码高中侧 <span>高中</span> 把 p.senior 整个 drop, 只显字面"高中"。
     G.$("#k12-bp").innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;">` +
       pairs.map(p => `<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 8px;background:var(--sunken);border-radius:6px;">
-        <span style="background:#E1F5EE;color:#2E7D54;padding:2px 7px;border-radius:5px;">初中 ${p.junior}</span>
-        <span style="color:#888;">→</span>
-        <span style="background:#E6F1FB;color:#1F5F94;padding:2px 7px;border-radius:5px;">高中 ${p.senior || p.junior}</span></div>`).join("") +
+        <span style="background:#E1F5EE;color:var(--good);padding:2px 7px;border-radius:5px;">初中 ${p.junior}</span>
+        <span style="color:var(--ink-3);">→</span>
+        <span style="background:#E6F1FB;color:var(--down);padding:2px 7px;border-radius:5px;">高中 ${p.senior || p.junior}</span></div>`).join("") +
       `</div><p class="muted" style="font-size:11px;margin:8px 0 0;">共 ${d.n} 对细粒度衔接边(非10维粗分) · ${d.basis}</p>`;
   }
 

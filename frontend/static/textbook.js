@@ -9,8 +9,8 @@
   if (!G || !G.registerTab) return;
   const { fetchJSON, registerTab } = G;
 
-  // 出版社短名 → 色 (canonical 版本两类: 外研10市 / 人教4市)
-  const VER_C = { waiyan: "var(--accent-ink)", renjiao: "#1D9E75" };
+  // 出版社短名 → 身份色 (canonical 版本两类: 外研10市=红 / 人教4市=蓝; 均走令牌, 非裸 hex)
+  const VER_C = { waiyan: "var(--accent-ink)", renjiao: "var(--down)" };
 
   function shell() {
     return `
@@ -19,21 +19,21 @@
 <div class="bk-card" style="margin-bottom:12px;">
   <div class="bk-h"><span>辽宁地市 → 教材版本</span><span class="bk-src">/api/recommend/city_curriculum</span></div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;">
-    <select id="tb-city" style="padding:6px 10px;border:1px solid #d8d6cd;border-radius:6px;font-size:14px;"></select>
-    <span id="tb-city-info" class="muted" style="font-size:13px;"></span>
+    <select id="tb-city" aria-label="选择辽宁地市以查看对应教材版本" style="padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></select>
+    <span id="tb-city-info" class="muted" aria-live="polite" style="font-size:13px;"></span>
   </div>
 </div>
 <div id="tb-books"></div>`;
   }
 
-  // 一个册卡: publisher + volume + pages + 开PDF + 单元列表(可展)
+  // 一个册卡: publisher + volume + pages + 开PDF + 单元列表(默认折叠, 避免 14册×5-6=78行数据墙 #12)
   function bookCard(bk, units) {
-    const c = VER_C[bk.version_key] || "#888";
+    const c = VER_C[bk.version_key] || "var(--ink-3)";
     const pdfUrl = `/api/textbooks/${bk.version_key}/${bk.volume_key}/pdf`;
     const uList = units.map(u => {
       const cid = `unit:${u.version_key}/${u.volume_key}/U${u.unit_number}`;
       const pg = (u.page_start != null) ? `${u.page_start}-${u.page_end}` : "—";
-      return `<div class="tb-unit" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 6px;border-bottom:1px solid #f0eee6;">
+      return `<div class="tb-unit" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 6px;border-bottom:1px solid var(--line-soft);">
         <span style="min-width:34px;color:var(--ink-3);">U${u.unit_number}</span>
         <span style="flex:1;font-weight:500;">${(u.title_en || "").replace(/</g, "&lt;") || '<span class="muted">(无标题)</span>'}</span>
         <span class="muted" style="font-size:11px;">p.${pg}</span>
@@ -41,12 +41,15 @@
         <button class="tb-xver bk-export" data-unit="${cid}" style="font-size:11px;padding:1px 7px;">跨版本对照</button>
       </div><div class="tb-xver-slot" data-for="${cid}"></div>`;
     }).join("");
+    // #12: <details> 折叠单元列表(summary 显册名/页数/单元数), 默认折叠消除原始数据墙
     return `<section class="bk-card" style="margin-bottom:10px;">
-      <div class="bk-h">
-        <span><span style="color:${c};">●</span> ${bk.publisher_label || bk.version_key} <small>${bk.volume_key}</small></span>
-        <span class="bk-src">${bk.pdf_pages || "?"}页 · <a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent-ink);">开整册PDF</a></span>
-      </div>
-      <div>${uList || '<p class="muted" style="font-size:12px;padding:6px;">该册无单元数据</p>'}</div>
+      <details>
+        <summary style="cursor:pointer;list-style:none;display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
+          <span style="font-weight:600;"><span style="color:${c};">●</span> ${bk.publisher_label || bk.version_key} <small style="color:var(--ink-3);font-weight:400;">${bk.volume_key} · ${units.length} 单元</small></span>
+          <span class="bk-src">${bk.pdf_pages || "?"}页 · <a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent-ink);">开整册PDF</a></span>
+        </summary>
+        <div style="margin-top:8px;">${uList || '<p class="muted" style="font-size:12px;padding:6px;">该册无单元数据</p>'}</div>
+      </details>
     </section>`;
   }
 
@@ -54,7 +57,9 @@
     if (slot.dataset.open === "1") { slot.innerHTML = ""; slot.dataset.open = "0"; return; }
     slot.dataset.open = "1";
     slot.innerHTML = '<div class="muted" style="font-size:12px;padding:4px 40px;">查同主题对照…</div>';
-    const res = await fetchJSON("/api/recommend/cross_version_units?unit=" + encodeURIComponent(cid)).catch(() => []);
+    // RC1#19: 接口失败 ≠ "无对照"(宁缺毋滥是因果断言), 须区分, 不把 500 伪装成"正好没有"
+    const res = await G.fetchSafe("/api/recommend/cross_version_units?unit=" + encodeURIComponent(cid));
+    if (G.isErr(res)) { slot.innerHTML = '<div style="font-size:12px;padding:4px 40px;color:var(--warn);">对照查询失败 (接口错误, 非无对照)</div>'; return; }
     if (!res || !res.length) {
       slot.innerHTML = '<div class="muted" style="font-size:12px;padding:4px 40px;">无同主题对照单元（标题核心词无交集 = 宁缺毋滥不强推, 非全部单元都有跨版本同主题对应）</div>';
       return;
@@ -80,9 +85,9 @@
 
   async function loadCity(city) {
     const info = G.$("#tb-city-info");
-    const cc = await fetchJSON("/api/recommend/city_curriculum?city=" + encodeURIComponent(city)).catch(() => null);
-    if (!cc || cc.error) { info.textContent = (cc && cc.error) || "查询失败"; return; }
-    const c = VER_C[cc.version_key] || "#888";
+    const cc = await G.fetchSafe("/api/recommend/city_curriculum?city=" + encodeURIComponent(city));
+    if (G.isErr(cc) || !cc || cc.error) { info.innerHTML = '<span style="color:var(--warn)">查询失败 (接口错误)</span>'; return; }
+    const c = VER_C[cc.version_key] || "var(--ink-3)";
     info.innerHTML = `<span style="color:${c};font-weight:600;">${cc.publisher}</span> · ${cc.units.length} 单元 · 累计已学词随册递增(末单元 ${cc.units.length ? cc.units[cc.units.length - 1].cumulative_words_learned : 0} 词)`;
   }
 

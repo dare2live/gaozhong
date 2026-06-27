@@ -25,7 +25,7 @@
 <section class="bk-card" style="margin-bottom:14px;">
   <div class="bk-h"><span>D 概念快查 <small>点词 → 4 路追溯浮窗</small></span><span class="bk-src">/api/graph/popup</span></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-    <input id="jk-q" placeholder="输入讲到的词 (如 power / family) 回车" style="flex:1;padding:7px 10px;border:1px solid #d8d5cc;border-radius:6px;font-size:13px;">
+    <input id="jk-q" placeholder="输入讲到的词 (如 power / family) 回车" aria-label="输入要查 4 路追溯的词或语法" style="flex:1;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px;">
     <button id="jk-go" style="padding:7px 14px;">查 4 路</button>
   </div>
   <div id="jk-hit" style="margin-bottom:10px;"></div>
@@ -68,9 +68,11 @@
     const echartsOk = await G.ensureECharts();   // RC1: 等 echarts 就绪防静默空白
     const co = await fetchJSON("/api/exam_point/cooccurrence").catch(() => ({ by_era: {} }));
     const pairs = ((co.by_era || {})[ERA] || {}).pairs || [];
-    if (!echartsOk) G.chartLoadError(G.$("#jk-graph"));   // D0诚实: 图表组件失败显式报错
-    else if (pairs.length) await renderGraph(pairs);
-    else G.$("#jk-graph").innerHTML = '<p class="muted">无共现数据</p>';
+    // RC1#27: 空/错分支同步更新 aria-label(原 role=img 永久停"加载中"盖过真实空/错内容)
+    const gel = G.$("#jk-graph");
+    if (!echartsOk) { gel.removeAttribute("role"); gel.setAttribute("aria-label", "考点共现网络: 图表组件加载失败"); G.chartLoadError(gel); }
+    else if (pairs.length) await renderGraph(pairs);   // 成功: renderCooccurNetwork 内更新 aria-label 为真实概览
+    else { gel.removeAttribute("role"); gel.setAttribute("aria-label", "考点共现网络: 暂无共现数据"); gel.innerHTML = '<p class="muted" style="padding:12px">无共现数据</p>'; }
     if (!window.__rzJk) { window.__rzJk = 1; window.addEventListener("resize", () => chart && chart.resize()); }  // RC1: 只绑一次防泄漏
   });
 })();
