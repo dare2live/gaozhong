@@ -427,7 +427,9 @@
     // 题库浏览器: 按题型筛真题 (全 fetch /api/qb/* 单算点; 仅真题无押题)。
     CONTENT.innerHTML = `<h2>题库 + 组卷</h2><p class="muted">载入中...</p>`;
     const st = await fetchJSON("/api/qb/stats").catch(() => ({ by_type: {}, by_difficulty: {} }));
-    const DIFF = { hard: ["难", "var(--accent-ink)"], mid: ["中", "var(--warn)"], easy: ["易", "var(--good)"] };
+    // 后端审计#7: difficulty 实为 len(题面) 篇幅档(非教研难度), 且跨 source 粒度混淆(2021子题短/2015篇章长)
+    // → 据实标"篇幅"(长/中/短), 不冒充"难度"(老师筛"短"得短题=诚实, 非误导难度伪影)。
+    const DIFF = { hard: ["长", "var(--ink-2)"], mid: ["中", "var(--ink-3)"], easy: ["短", "var(--ink-3)"] };
     const types = Object.entries(st.by_type || {});
     const totalN = st.total || types.reduce((a, [, n]) => a + n, 0);
     // #6: 默认 type_mix 用库内真实题型动态生成 (去掉 legacy 硬编码的库内不存在题型; 阅读多, 其余各2)
@@ -436,7 +438,7 @@
     const d = st.by_difficulty || {};
     CONTENT.innerHTML = `
       <h2>题库 + 组卷 <span class="muted" style="font-size:14px;font-weight:400">${totalN} 题 · 仅已核验真题 (无押题)</span></h2>
-      <p class="muted" style="margin:2px 0 10px;font-size:12.5px">按题型筛选浏览; 或一键生成蓝图练习卷(题面均历年真题, 结构对齐非预测)。难度 难 ${d.hard || 0} · 中 ${d.mid || 0} · 易 ${d.easy || 0}。</p>
+      <p class="muted" style="margin:2px 0 10px;font-size:12.5px">按题型筛选浏览; 或一键生成蓝图练习卷(题面均历年真题, 结构对齐非预测)。题面篇幅(字数估·非难度) 长 ${d.hard || 0} · 中 ${d.mid || 0} · 短 ${d.easy || 0}。</p>
       <div class="bk-filter" id="qb-blueprint" style="margin-bottom:10px;">
         <span class="bk-flabel">蓝图练习卷</span>
         <label style="font-size:12px;color:var(--ink-3);">题量 <input id="qb-bp-total" type="number" value="30" min="5" max="60" style="width:54px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
@@ -447,7 +449,7 @@
         <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
           <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
-          <label>难度 <select id="qb-c-diff" aria-label="组卷难度筛选" style="padding:3px;border:1px solid var(--line);border-radius:6px;"><option value="">混合</option><option>easy</option><option>mid</option><option>hard</option></select></label>
+          <label>题面篇幅 <select id="qb-c-diff" aria-label="组卷题面篇幅筛选(字数估, 非难度)" style="padding:3px;border:1px solid var(--line);border-radius:6px;"><option value="">混合</option><option value="easy">短</option><option value="mid">中</option><option value="hard">长</option></select></label>
           <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <button id="qb-c-go" class="bk-pill on">组卷</button>

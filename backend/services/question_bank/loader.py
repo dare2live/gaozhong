@@ -30,7 +30,9 @@ def _now() -> str:
 
 
 def _difficulty(text: str) -> str:
-    """Naive: by length. 阈值读 thresholds.yaml question_bank 块 (穷尽扫描: 原硬编码 + difficulty_char_threshold 孤儿key零消费)."""
+    """**题面篇幅档**(len(题面)), 非教研验证难度 (后端审计#7: 无真难度源, 此为字数代理)。
+    字段名保留 difficulty(schema/compose/placement 内部码), 但教师面据实标"篇幅(长/中/短)"不冒充难度;
+    且跨 source 粒度混淆(eol子题短/篇章源长), 仅作篇幅档参考。阈值读 thresholds.yaml question_bank 块。"""
     n = len(text or "")
     if n < get_threshold("question_bank.difficulty_easy_threshold", 100): return "easy"
     if n < get_threshold("question_bank.difficulty_char_threshold", 400): return "mid"
