@@ -846,64 +846,70 @@
   // ===================================================================
   // F. 知识图谱 (本tab: stats概览 + 高频考点词入口; 力导向SVG探索仍在 /legacy, 见 needs_user_decision UI收敛)
   // ===================================================================
-  // 知识图谱: 节点类型 → 色 (锚令牌族; exam_point=红=核心竞争力, word=蓝, grammar=绿, theme=金, 结构节点=灰)
-  const _GNODE_COLOR = {
-    subject: "#1C1A17", exam_point: "#BE3A2B", word: "#1F5F94", word_sense: "#5B7FA6",
-    grammar: "#2E7D54", phrase: "#1F5F94", theme: "#9A6A00", unit: "#76716A", volume: "#76716A",
-    publisher: "#76716A", city: "#76716A", stage: "#9A6A00", cefr_level: "#85B7EB",
-    exam_year: "#B4B2A9", question: "#9C2C20", qtype: "#9A6A00",
-  };
-  const _gColor = t => _GNODE_COLOR[t] || "#B4B2A9";
+  // 考点维度 → 色 (题材/主题/思维 关联网络; 锚令牌族, 维度间区分)
+  const _DIM_COLOR = { genre: "#BE3A2B", theme_context: "#9A6A00", theme_l2: "#C98A2B", cognitive_skill: "#1F5F94" };
+  const _DIM_LABEL = { genre: "体裁", theme_context: "主题语境", theme_l2: "主题群", cognitive_skill: "设问思维" };
+  const _gdim = d => _DIM_COLOR[d] || "#B4B2A9";
 
-  // 渲染交互力导向子图 (后端 /api/graph/subgraph; 点节点→openPopup 关联+真题下钻)。发挥后端 KG 优势。
-  async function _renderGraphViz(rootId, rootLabel) {
+  // 渲染考点共现网络 (同题共现的 题材/主题/思维 = 命题关联真值, 万变不离其宗; 点考点→该考点真题)。
+  // 弃旧通用 subgraph (会暴露教材版本/城市行政结构 + 问题星形噪声); 只渲真正有教研意义的考点关联。
+  async function _renderCooccur(era, eraLabel) {
     const box = document.getElementById("graph-viz");
     if (!box) return;
-    document.getElementById("graph-center").textContent = rootLabel || rootId;
-    box.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入子图…</div>';
-    let sub;
-    try { sub = await fetchJSON(`/api/graph/subgraph?node=${encodeURIComponent(rootId)}&depth=2&max_nodes=60`); }
-    catch (e) { box.innerHTML = `<div class="error-state" style="margin:0"><div class="es-title">子图载入失败</div><div class="es-msg">${e.message}</div></div>`; return; }
-    const nodes = sub.nodes || [], edges = sub.edges || [];
-    if (!nodes.length) { box.innerHTML = '<p class="muted" style="padding:16px">该概念暂无关联子图</p>'; return; }
+    const ctr = document.getElementById("graph-center"); if (ctr) ctr.textContent = eraLabel;
+    box.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入考点共现…</div>';
+    let co;
+    try { co = await fetchJSON("/api/exam_point/cooccurrence"); }
+    catch (e) { box.innerHTML = `<div class="error-state" style="margin:0"><div class="es-title">考点共现载入失败</div><div class="es-msg">${e.message}</div></div>`; return; }
+    const pairs = ((co.by_era || {})[era] || {}).pairs || [];
+    if (!pairs.length) { box.innerHTML = '<p class="muted" style="padding:16px">该卷制暂无考点共现数据</p>'; return; }
     if (!(await GZ.ensureECharts())) { GZ.chartLoadError(box); return; }
-    box.innerHTML = `<div id="graph-viz-c" role="img" aria-label="知识图谱力导向关联图, 中心 ${rootLabel || rootId}, 共 ${nodes.length} 节点 ${edges.length} 边; 点节点看其关联与真题" style="height:480px"></div>`;
-    const deg = {}; edges.forEach(e => { deg[e.src] = (deg[e.src] || 0) + 1; deg[e.dst] = (deg[e.dst] || 0) + 1; });
-    const types = [...new Set(nodes.map(n => n.node_type))];
-    if (window.__gGraphInst) { try { window.__gGraphInst.dispose(); } catch (e) { /* 已游离 */ } }   // 释放上次子图实例(防 re-root/重访累积泄漏)
+    box.innerHTML = `<div id="graph-viz-c" role="img" aria-label="考点共现网络(${eraLabel}): 同题共现的题材/主题/思维, 共 ${pairs.length} 对关联; 点考点看其真题" style="height:520px"></div>`;
+    const nodeMap = {}, deg = {};
+    const addNode = (dim, label) => { const id = `exam_point:${dim}:${label}`; if (!nodeMap[id]) nodeMap[id] = { id, name: label, dim }; return id; };
+    const links = pairs.map(p => {
+      const s = addNode(p.a_dim, p.a_label), t = addNode(p.b_dim, p.b_label);
+      deg[s] = (deg[s] || 0) + p.co_n; deg[t] = (deg[t] || 0) + p.co_n;
+      return { source: s, target: t, value: p.co_n, lineStyle: { width: Math.min(1 + p.co_n / 6, 8) } };
+    });
+    const nodes = Object.values(nodeMap);
+    const dims = [...new Set(nodes.map(n => n.dim))];
+    if (window.__gGraphInst) { try { window.__gGraphInst.dispose(); } catch (e) { /* 已游离 */ } }   // 释放上次实例(防累积泄漏)
     const inst = GZ.initChart(document.getElementById("graph-viz-c"));
     inst.setOption({
-      tooltip: { formatter: p => p.dataType === "node" ? `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${p.data.cat} · 关联 ${deg[p.data.id] || 0}</span>` : "" },
-      legend: [{ data: types, bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 9, itemHeight: 9 }],
+      tooltip: {
+        formatter: p => p.dataType === "edge"
+          ? `${p.data.source.split(":").pop()} × ${p.data.target.split(":").pop()}<br/><span style="color:#76716A">同题共现 ${p.data.value} 次</span>`
+          : `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${_DIM_LABEL[p.data.dim] || p.data.dim} · 关联强度 ${p.data.value}</span>`,
+      },
+      legend: [{ data: dims.map(d => _DIM_LABEL[d] || d), bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 10, itemHeight: 10 }],
       series: [{
         type: "graph", layout: "force", roam: true, draggable: true,
-        categories: types.map(t => ({ name: t, itemStyle: { color: _gColor(t) } })),
-        force: { repulsion: 200, edgeLength: [50, 130], gravity: 0.08 },
-        label: { show: true, fontSize: 10, color: "#45413A", position: "right" },
-        lineStyle: { color: "#D8D5CC", width: 1, curveness: 0.06 },
-        emphasis: { focus: "adjacency", lineStyle: { width: 2, color: "#BE3A2B" } },
+        categories: dims.map(d => ({ name: _DIM_LABEL[d] || d, itemStyle: { color: _gdim(d) } })),
+        force: { repulsion: 360, edgeLength: [70, 170], gravity: 0.05, friction: 0.3 },
+        label: { show: true, fontSize: 11.5, color: "#45413A", position: "right" },
+        lineStyle: { color: "#CFC9BD", curveness: 0.04, opacity: 0.75 },
+        emphasis: { focus: "adjacency", lineStyle: { color: "#BE3A2B" }, label: { fontWeight: "bold" } },
         data: nodes.map(n => ({
-          id: n.concept_id, name: n.label || n.concept_id, cat: n.node_type,
-          category: types.indexOf(n.node_type),
-          symbolSize: Math.min(12 + (deg[n.concept_id] || 0) * 3, 44),
-          itemStyle: n.concept_id === rootId ? { borderColor: "#BE3A2B", borderWidth: 2.5 } : {},
+          id: n.id, name: n.name, dim: n.dim, value: deg[n.id] || 0,
+          category: dims.indexOf(n.dim),
+          symbolSize: Math.min(18 + (deg[n.id] || 0) / 3, 56),
         })),
-        links: edges.map(e => ({ source: e.src, target: e.dst, value: e.relation })),
+        links,
       }],
     });
     inst.off("click");
     inst.on("click", p => { if (p.dataType === "node" && GZ.openPopup) GZ.openPopup(p.data.id); });
-    setTimeout(() => inst.resize(), 60);   // 修容器初始宽度0(力导向图挤左/空白); 同 jiangke 模式
+    setTimeout(() => inst.resize(), 60);   // 修容器初始0宽
     window.__gGraphInst = inst;
     if (!window.__rzGraph) { window.__rzGraph = 1; window.addEventListener("resize", () => window.__gGraphInst && window.__gGraphInst.resize()); }
   }
 
   register("graph", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入知识图谱…</div>';
-    const [gstats, trend, top] = await Promise.all([
+    const [gstats, trend] = await Promise.all([
       fetchJSON("/api/graph/stats"),  // RC1/D0: 图谱主数据, 失败必抛 → route() 错误态
       fetchJSON("/api/trend/summary").catch(() => ({})),
-      fetchJSON("/api/recommend/top_exam_words?limit=14").catch(() => ([])),
     ]);
     const nodeKinds = gstats.nodes || gstats.by_node_type || {};
     const relations = gstats.edges || gstats.by_relation || {};
@@ -911,32 +917,25 @@
     const totE = gstats.total_edges || Object.values(relations).reduce((a, v) => a + v, 0);
     const topTypes = Object.entries(nodeKinds).sort((a, b) => b[1] - a[1]).slice(0, 6)
       .map(([k, v]) => `${k} <b style="color:var(--ink)">${v}</b>`).join(" · ");
-    // 探索入口 chips: subject 根 + 关键考点 + 高频考词 (点 chip 换图中心)
-    const words = Array.isArray(top) ? top : (top.words || top.items || []);
-    const wordChips = words.slice(0, 12).map(it => {
-      const w = (it.word || it.label || it.id || it).replace(/^word:/, "");
-      return `<button class="bk-pill gz-reroot" data-root="word:${w}" data-label="${w}">${w}</button>`;
-    }).join("");
-    const epChips = ["exam_point:genre:记叙文", "exam_point:genre:说明文", "exam_point:theme_context:人与自我", "exam_point:cognitive_skill:推断"]
-      .map(c => `<button class="bk-pill gz-reroot" data-root="${c}" data-label="${c.split(":").pop()}">${c.split(":").pop()}</button>`).join("");
 
     CONTENT.innerHTML = `
-      <h2 style="margin:0 0 2px">知识图谱 · 关联探索</h2>
-      <p class="muted" style="margin:0 0 12px;font-size:13px">力导向图谱 = 后端 <code style="font-family:var(--num);font-size:11px">/api/graph/subgraph</code> 实时展开 · <b>点任一节点</b>看其关联通图 + 真题下钻 · 拖拽/滚轮缩放 · ${totN.toLocaleString()} 节点 / ${totE.toLocaleString()} 边</p>
+      <h2 style="margin:0 0 2px">知识图谱 · 考点关联网络</h2>
+      <p class="muted" style="margin:0 0 12px;font-size:13px">考点共现网络 = 同一道真题里共同出现的 <b>题材 / 主题 / 设问思维</b> (命题关联真值, 万变不离其宗) · 边粗=同题共现次数 · <b>点任一考点</b>看其真题 · 拖拽/滚轮缩放</p>
 
       <section class="bk-card" style="margin-bottom:14px">
-        <div class="bk-h"><span>关联通图 <small id="graph-center" style="color:var(--accent-ink)">英语</small></span>
-          <span class="bk-src">subgraph · depth 2</span></div>
-        <div style="margin:2px 0 8px;font-size:12px;color:var(--ink-3)">换中心:
-          <button class="bk-pill gz-reroot on" data-root="subject:英语" data-label="英语">英语(全局)</button>
-          ${epChips} ${wordChips}
+        <div class="bk-h"><span>考点共现关联 <small id="graph-center" style="color:var(--accent-ink)">新高考II 2021+</small></span>
+          <span class="bk-src">/api/exam_point/cooccurrence</span></div>
+        <div style="margin:2px 0 8px;font-size:12px;color:var(--ink-3)">卷制:
+          <button class="bk-pill gz-era on" data-era="2021+_新高考II" data-label="新高考II 2021+">2021+ 新高考II</button>
+          <button class="bk-pill gz-era" data-era="2015-2020_旧课标II" data-label="旧课标II 2015–20">2015–2020 旧课标II</button>
         </div>
         <div id="graph-viz"></div>
       </section>
 
       <div class="bk-grid">
-        <section class="bk-card"><div class="bk-h"><span>图谱概览</span><span class="bk-src">/api/graph/stats</span></div>
-          <div style="font-size:12.5px;color:var(--ink-2);line-height:1.9">${topTypes}</div>
+        <section class="bk-card"><div class="bk-h"><span>图谱规模 <small>底座资产</small></span><span class="bk-src">/api/graph/stats</span></div>
+          <div style="font-size:12.5px;color:var(--ink-2);line-height:1.9">共 <b style="color:var(--ink)">${totN.toLocaleString()}</b> 节点 / <b style="color:var(--ink)">${totE.toLocaleString()}</b> 边 · ${topTypes}</div>
+          <p class="muted" style="font-size:11px;margin:6px 0 0">单概念深入(某词/语法的 4 路追溯) → 「讲课调取」tab</p>
         </section>
         <section class="bk-card"><div class="bk-h"><span>命题趋势 · 题型分布(卷制era)</span><span class="bk-src">/api/trend/summary</span></div>
           ${trend.trend_reliable === false ? `<div class="caveat-banner" style="margin:0 0 6px"><span class="cb-tag">样本不足</span><span>逐年样本不足不画斜率; 按卷制 era 看分布(跨 2021 断点不混算)</span></div>` : ""}
@@ -946,12 +945,12 @@
         </section>
       </div>`;
 
-    CONTENT.querySelectorAll(".gz-reroot").forEach(b => b.onclick = () => {
-      CONTENT.querySelectorAll(".gz-reroot").forEach(x => x.classList.remove("on"));
+    CONTENT.querySelectorAll(".gz-era").forEach(b => b.onclick = () => {
+      CONTENT.querySelectorAll(".gz-era").forEach(x => x.classList.remove("on"));
       b.classList.add("on");
-      _renderGraphViz(b.dataset.root, b.dataset.label);
+      _renderCooccur(b.dataset.era, b.dataset.label);
     });
-    _renderGraphViz("subject:英语", "英语");
+    _renderCooccur("2021+_新高考II", "新高考II 2021+");
   });
 
   // ===================================================================
