@@ -12,9 +12,7 @@
   const { fetchJSON, conceptLink, registerTab } = G;
 
   const ERA = "2021+_新高考II";
-  const _DCj = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js
-  const CATS = [{ name: _DCj.genre, c: "#BE3A2B" }, { name: _DCj.theme_context, c: "#1F5F94" }, { name: _DCj.theme_l2, c: "#2E7D54" }];
-  const DIMCAT = { genre: 0, theme_context: 1, theme_l2: 2 };
+  // 共现网络渲染口径 = GZ.renderCooccurNetwork (common.js 单点, 与图谱tab同源同配色; dim色/节点边/点击→popup/a11y 统一)
   // 高 gaokao 命中考点词 (teaching_hint 双印证), 当堂快查示例
   const QUICK = [["word:time", "time"], ["word:people", "people"], ["word:make", "make"], ["word:work", "work"], ["word:important", "important"], ["word:environment", "environment"], ["word:experience", "experience"]];
   let chart = null;
@@ -53,77 +51,13 @@
     G.$("#jk-hit").innerHTML = `点击调出 4 路追溯: ${conceptLink("word:" + v, v)} <span class="muted" style="font-size:11px;">(不存在则浮窗提示, 可改词/语法)</span>`;
   }
 
-  function buildGraph(pairs) {
-    const nodeMap = {};
-    pairs.forEach(p => {
-      [[p.a_label, p.a_dim], [p.b_label, p.b_dim]].forEach(([lab, dim]) => {
-        if (!nodeMap[lab]) nodeMap[lab] = { name: lab, category: DIMCAT[dim] ?? 1, dim: dim, value: 0 };   // #3: 存 dim 供 click 拼 concept_id
-        nodeMap[lab].value += p.co_n;
-      });
-    });
-    const nodes = Object.values(nodeMap).map(n => ({ ...n, symbolSize: Math.min(54, 14 + n.value / 2.5) }));
-    const links = pairs.map(p => ({ source: p.a_label, target: p.b_label, value: p.co_n, lineStyle: { width: Math.max(1, p.co_n / 5) } }));
-    return { nodes, links };
-  }
-
-  function dimLabel(dim) { return _DCj[dim] || dim || "维度"; }   // genre→体裁 theme_context→主题语境 theme_l2→主题群
-
-  // 读屏 a11y: 复用已算 nodes / usedPairs, 不重算不 refetch(Rule1 单一计算点)。
-  // 诚实声明: 体裁/主题维度标签由模型推断方向性标注(C 层), 非官方判定; 共现=同题出现, 非因果。
-  function applyA11y(el, nodes, usedPairs) {
-    const topNodes = [...nodes].sort((a, b) => b.value - a.value).slice(0, 5);
-    const topPairs = [...usedPairs].sort((a, b) => b.co_n - a.co_n).slice(0, 8);
-    const overview = topPairs.length
-      ? `共现对 ${usedPairs.length} 条、考点节点 ${nodes.length} 个。关联最强: ` +
-        topPairs.slice(0, 3).map(p => `${p.a_label}×${p.b_label} 同题 ${p.co_n} 次`).join("、")
-      : "暂无共现数据。";
-    el.setAttribute("aria-label", `C' 考点同题共现网络(2021+ 辽宁卷)。${overview} 体裁/主题维度为模型推断方向性标注。`);
-
-    const rowsNode = topNodes.map(n =>
-      `<tr><td>${n.name}</td><td>${dimLabel(n.dim)}(模型推断)</td><td>${n.value}</td></tr>`).join("");
-    const rowsPair = topPairs.map(p =>
-      `<tr><td>${p.a_label}(${dimLabel(p.a_dim)})</td><td>${p.b_label}(${dimLabel(p.b_dim)})</td><td>${p.co_n}</td></tr>`).join("");
-    const sr = G.$("#jk-graph-sr");
-    if (sr) sr.innerHTML =
-      `<p>C' 考点同题共现网络数据表(2021+ 辽宁卷, 共 ${nodes.length} 节点 / ${usedPairs.length} 共现对)。` +
-      `体裁、主题语境、主题群维度为模型推断方向性标注(C 层, 非官方判定); 共现指同一真题中同时出现, 非因果。</p>` +
-      `<table><caption>关联强度最高的考点(节点, 强度=同题共现次数累加)</caption>` +
-      `<thead><tr><th>考点</th><th>维度</th><th>关联强度</th></tr></thead><tbody>${rowsNode}</tbody></table>` +
-      `<table><caption>同题共现最频繁的考点对</caption>` +
-      `<thead><tr><th>考点 A</th><th>考点 B</th><th>同题共现次数</th></tr></thead><tbody>${rowsPair}</tbody></table>`;
-  }
-
   async function renderGraph(pairs) {
-    const strong = pairs.filter(p => p.co_n >= 3);   // 滤弱边减 hairball (key 关联 co_n≥3 全保留)
-    const usedPairs = strong.length ? strong : pairs;   // a11y 复用此同一选择, 不重算(Rule1)
-    const { nodes, links } = buildGraph(usedPairs);
     const el = G.$("#jk-graph");
-    // force 布局按 init 时 canvas 宽算节点位 → 必须等 SPA 挂载后 layout 完成(容器有宽)再 init, 否则挤左
+    // force 布局按 init 时 canvas 宽算节点位 → 必须等 SPA 挂载后 layout 完成(容器有宽)再渲, 否则挤左
     for (let i = 0; i < 30 && el.clientWidth < 80; i++) await new Promise(r => requestAnimationFrame(r));
-    chart = G.initChart(el);
-    chart.setOption({
-      color: CATS.map(c => c.c),
-      legend: [{ data: CATS.map(c => c.name), bottom: 0, textStyle: { fontSize: 11 } }],
-      tooltip: { formatter: p => p.dataType === "edge" ? `${p.data.source} × ${p.data.target}<br/>同题共现 ${p.data.value} 次` : `${p.data.name}<br/>关联强度 ${p.data.value}` },
-      series: [{
-        type: "graph", layout: "force", roam: true, draggable: true,
-        categories: CATS.map(c => ({ name: c.name })), data: nodes, links,
-        label: { show: true, position: "right", fontSize: 11, color: "#333" },
-        force: { repulsion: 480, edgeLength: [80, 200], gravity: 0.04, friction: 0.5 },
-        lineStyle: { color: "source", opacity: 0.4, curveness: 0.15 },
-        emphasis: { focus: "adjacency", label: { fontSize: 13 }, lineStyle: { width: 4, opacity: 0.8 } },
-      }],
-    });
-    applyA11y(el, nodes, usedPairs);   // 读屏: aria-label 概览 + sr-only 共现对表(复用已算 nodes/usedPairs)
-    setTimeout(() => chart && chart.resize(), 60);   // 修容器初始宽度0致节点挤左
-    chart.off("click");
-    // #3: 点考点节点 → 弹该考点浮窗(关联+真题, 复用#2); fallback sendPrompt
-    chart.on("click", p => {
-      if (p.dataType !== "node") return;
-      const cid = p.data.dim ? `exam_point:${p.data.dim}:${p.data.name}` : null;
-      if (cid && G.openPopup) G.openPopup(cid);
-      else if (G.sendPrompt) G.sendPrompt(`看考点「${p.data.name}」在 2021+ 辽宁卷的真题与同题共现考点`);
-    });
+    // 共享口径: 与图谱 tab 同源同配色 (dim色/节点边/点击→popup/aria+sr表 全在 GZ.renderCooccurNetwork)。
+    // strongMin=3 滤弱边减 hairball (讲课聚焦强关联); srEl 出读屏数据表。
+    chart = G.renderCooccurNetwork(el, pairs, { strongMin: 3, srEl: "#jk-graph-sr", eraLabel: "2021+ 新高考II" });
   }
 
   registerTab("jiangke", async () => {

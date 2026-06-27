@@ -214,6 +214,66 @@ window.GZ = (function () {
     if (!el || !window.echarts) return null;
     return window.echarts.getInstanceByDom(el) || window.echarts.init(el);
   }
+  // ===== 考点共现网络 单一渲染口径 (图谱tab + 讲课C' 共用, 防配色/交互漂移) =====
+  // 维度→{标签,色}: 体裁=红(accent) / 主题语境·主题群=金(warn族) / 设问思维=蓝(down)。锚令牌族。
+  const COOCCUR_DIM = {
+    genre:           { label: "体裁",     color: "#BE3A2B" },
+    theme_context:   { label: "主题语境", color: "#9A6A00" },
+    theme_l2:        { label: "主题群",   color: "#C98A2B" },
+    cognitive_skill: { label: "设问思维", color: "#1F5F94" },
+  };
+  const _coDim = d => COOCCUR_DIM[d] || { label: d || "维度", color: "#B4B2A9" };
+  // 渲染考点共现力导向图。el=容器, pairs=cooccurrence.pairs ({a_dim,a_label,b_dim,b_label,co_n});
+  // opts: {strongMin?: 滤 co_n≥N (留则用强边), srEl?: sr-only 表容器, eraLabel?: 标题}。
+  // 点考点节点 → GZ.openPopup(exam_point:dim:label) 真题下钻。返回 echarts 实例 (调用方管 dispose)。
+  function renderCooccurNetwork(el, pairs, opts) {
+    opts = opts || {};
+    if (!el || !window.echarts || !pairs || !pairs.length) return null;
+    let used = pairs;
+    if (opts.strongMin) { const s = pairs.filter(p => p.co_n >= opts.strongMin); if (s.length) used = s; }
+    const nodeMap = {}, deg = {}, dims = [];
+    used.forEach(p => {
+      [[p.a_dim, p.a_label], [p.b_dim, p.b_label]].forEach(([dim, label]) => {
+        const id = `exam_point:${dim}:${label}`;
+        if (!nodeMap[id]) { nodeMap[id] = { id, name: label, dim }; if (dims.indexOf(dim) < 0) dims.push(dim); }
+        deg[id] = (deg[id] || 0) + p.co_n;
+      });
+    });
+    const nodes = Object.values(nodeMap);
+    const inst = initChart(el);
+    inst.setOption({
+      tooltip: {
+        formatter: p => p.dataType === "edge"
+          ? `${p.data.source.split(":").pop()} × ${p.data.target.split(":").pop()}<br/><span style="color:#76716A">同题共现 ${p.data.value} 次</span>`
+          : `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${_coDim(p.data.dim).label} · 关联强度 ${p.data.value}</span>`,
+      },
+      legend: [{ data: dims.map(d => _coDim(d).label), bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 10, itemHeight: 10 }],
+      series: [{
+        type: "graph", layout: "force", roam: true, draggable: true,
+        categories: dims.map(d => ({ name: _coDim(d).label, itemStyle: { color: _coDim(d).color } })),
+        force: { repulsion: 360, edgeLength: [70, 170], gravity: 0.05, friction: 0.35 },
+        label: { show: true, fontSize: 11.5, color: "#45413A", position: "right" },
+        lineStyle: { color: "#CFC9BD", curveness: 0.04, opacity: 0.75 },
+        emphasis: { focus: "adjacency", lineStyle: { color: "#BE3A2B" }, label: { fontWeight: "bold" } },
+        data: nodes.map(n => ({ id: n.id, name: n.name, dim: n.dim, value: deg[n.id] || 0, category: dims.indexOf(n.dim), symbolSize: Math.min(18 + (deg[n.id] || 0) / 3, 56) })),
+        links: used.map(p => ({ source: `exam_point:${p.a_dim}:${p.a_label}`, target: `exam_point:${p.b_dim}:${p.b_label}`, value: p.co_n, lineStyle: { width: Math.min(1 + p.co_n / 6, 8) } })),
+      }],
+    });
+    inst.off("click");
+    inst.on("click", p => { if (p.dataType === "node" && window.GZ && window.GZ.openPopup) window.GZ.openPopup(p.data.id); });
+    setTimeout(() => inst.resize(), 60);
+    // a11y: aria-label 概览 + 可选 sr-only 数据表 (复用已算 nodes/used, 不重算)
+    const top = [...used].sort((a, b) => b.co_n - a.co_n).slice(0, 3).map(p => `${p.a_label}×${p.b_label} 同题${p.co_n}次`).join("、");
+    el.setAttribute("role", "img");
+    el.setAttribute("aria-label", `考点共现网络${opts.eraLabel ? "(" + opts.eraLabel + ")" : ""}: ${nodes.length}考点/${used.length}共现对, 关联最强 ${top}。题材/主题为模型推断方向性标注。`);
+    const sr = opts.srEl && (typeof opts.srEl === "string" ? document.querySelector(opts.srEl) : opts.srEl);
+    if (sr) {
+      const rows = [...used].sort((a, b) => b.co_n - a.co_n).map(p => `<tr><td>${p.a_label}(${_coDim(p.a_dim).label})</td><td>${p.b_label}(${_coDim(p.b_dim).label})</td><td>${p.co_n}</td></tr>`).join("");
+      sr.innerHTML = `<table><caption>考点同题共现(${nodes.length}节点/${used.length}对; 题材/主题维度为模型推断方向性标注, 共现=同题出现非因果)</caption><thead><tr><th>考点A</th><th>考点B</th><th>同题共现次数</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+    return inst;
+  }
+
   // 图表载入失败时在容器显式报错 (取代静默空白)。
   function chartLoadError(el) {
     if (el) el.innerHTML = '<div class="error-state" style="margin:0"><div class="es-title">图表组件未能载入</div>'
@@ -285,6 +345,6 @@ window.GZ = (function () {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
     mountLayout, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
-    exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart,
+    exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,
   };
 })();

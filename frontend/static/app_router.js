@@ -846,12 +846,7 @@
   // ===================================================================
   // F. 知识图谱 (本tab: stats概览 + 高频考点词入口; 力导向SVG探索仍在 /legacy, 见 needs_user_decision UI收敛)
   // ===================================================================
-  // 考点维度 → 色 (题材/主题/思维 关联网络; 锚令牌族, 维度间区分)
-  const _DIM_COLOR = { genre: "#BE3A2B", theme_context: "#9A6A00", theme_l2: "#C98A2B", cognitive_skill: "#1F5F94" };
-  const _DIM_LABEL = { genre: "体裁", theme_context: "主题语境", theme_l2: "主题群", cognitive_skill: "设问思维" };
-  const _gdim = d => _DIM_COLOR[d] || "#B4B2A9";
-
-  // 渲染考点共现网络 (同题共现的 题材/主题/思维 = 命题关联真值, 万变不离其宗; 点考点→该考点真题)。
+  // 渲染考点共现网络 — 复用 GZ.renderCooccurNetwork 单一口径(与「讲课调取」C' 同源同配色, 防漂移)。
   // 弃旧通用 subgraph (会暴露教材版本/城市行政结构 + 问题星形噪声); 只渲真正有教研意义的考点关联。
   async function _renderCooccur(era, eraLabel) {
     const box = document.getElementById("graph-viz");
@@ -864,44 +859,9 @@
     const pairs = ((co.by_era || {})[era] || {}).pairs || [];
     if (!pairs.length) { box.innerHTML = '<p class="muted" style="padding:16px">该卷制暂无考点共现数据</p>'; return; }
     if (!(await GZ.ensureECharts())) { GZ.chartLoadError(box); return; }
-    box.innerHTML = `<div id="graph-viz-c" role="img" aria-label="考点共现网络(${eraLabel}): 同题共现的题材/主题/思维, 共 ${pairs.length} 对关联; 点考点看其真题" style="height:520px"></div>`;
-    const nodeMap = {}, deg = {};
-    const addNode = (dim, label) => { const id = `exam_point:${dim}:${label}`; if (!nodeMap[id]) nodeMap[id] = { id, name: label, dim }; return id; };
-    const links = pairs.map(p => {
-      const s = addNode(p.a_dim, p.a_label), t = addNode(p.b_dim, p.b_label);
-      deg[s] = (deg[s] || 0) + p.co_n; deg[t] = (deg[t] || 0) + p.co_n;
-      return { source: s, target: t, value: p.co_n, lineStyle: { width: Math.min(1 + p.co_n / 6, 8) } };
-    });
-    const nodes = Object.values(nodeMap);
-    const dims = [...new Set(nodes.map(n => n.dim))];
+    box.innerHTML = '<div id="graph-viz-c" style="height:520px"></div>';
     if (window.__gGraphInst) { try { window.__gGraphInst.dispose(); } catch (e) { /* 已游离 */ } }   // 释放上次实例(防累积泄漏)
-    const inst = GZ.initChart(document.getElementById("graph-viz-c"));
-    inst.setOption({
-      tooltip: {
-        formatter: p => p.dataType === "edge"
-          ? `${p.data.source.split(":").pop()} × ${p.data.target.split(":").pop()}<br/><span style="color:#76716A">同题共现 ${p.data.value} 次</span>`
-          : `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${_DIM_LABEL[p.data.dim] || p.data.dim} · 关联强度 ${p.data.value}</span>`,
-      },
-      legend: [{ data: dims.map(d => _DIM_LABEL[d] || d), bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 10, itemHeight: 10 }],
-      series: [{
-        type: "graph", layout: "force", roam: true, draggable: true,
-        categories: dims.map(d => ({ name: _DIM_LABEL[d] || d, itemStyle: { color: _gdim(d) } })),
-        force: { repulsion: 360, edgeLength: [70, 170], gravity: 0.05, friction: 0.3 },
-        label: { show: true, fontSize: 11.5, color: "#45413A", position: "right" },
-        lineStyle: { color: "#CFC9BD", curveness: 0.04, opacity: 0.75 },
-        emphasis: { focus: "adjacency", lineStyle: { color: "#BE3A2B" }, label: { fontWeight: "bold" } },
-        data: nodes.map(n => ({
-          id: n.id, name: n.name, dim: n.dim, value: deg[n.id] || 0,
-          category: dims.indexOf(n.dim),
-          symbolSize: Math.min(18 + (deg[n.id] || 0) / 3, 56),
-        })),
-        links,
-      }],
-    });
-    inst.off("click");
-    inst.on("click", p => { if (p.dataType === "node" && GZ.openPopup) GZ.openPopup(p.data.id); });
-    setTimeout(() => inst.resize(), 60);   // 修容器初始0宽
-    window.__gGraphInst = inst;
+    window.__gGraphInst = GZ.renderCooccurNetwork(document.getElementById("graph-viz-c"), pairs, { eraLabel });
     if (!window.__rzGraph) { window.__rzGraph = 1; window.addEventListener("resize", () => window.__gGraphInst && window.__gGraphInst.resize()); }
   }
 
