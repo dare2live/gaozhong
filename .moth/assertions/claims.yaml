@@ -206,9 +206,9 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services import trend;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=trend.trend_summary(c);print('OK' if s.get('province_scope')=='辽宁卷' and 'sample_diagnosis' in s else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: practice-not-prediction
-    claim: "练习卷不冒充'预测/押题': 趋势不可信(辽宁样本不足)时退回蓝图固定占比, 不按 slope 加权 (REVISE predicted.py)"
+    claim: "练习卷不冒充'预测/押题': 趋势不可信(辽宁样本不足)时退回**考纲蓝图固定结构**(后端审计B2: exam_structure_eras.item_counts 真考纲题数, 取代原 grain混合 avg_share), 不按 slope 加权 (REVISE predicted.py)"
     type: shell
-    command: ["python3", "-c", "import duckdb;from backend.services.exercise.predicted import generate_blueprint_practice_paper as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=g(c,total=10);b=p['composition_basis']['selection_basis'];print('OK' if 'blueprint_fixed' in b and p['paper_type']=='blueprint_structured_practice' else 'FAIL')"]
+    command: ["python3", "-c", "import duckdb;from backend.services.exercise.predicted import generate_blueprint_practice_paper as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=g(c,total=10);b=p['composition_basis']['selection_basis'];print('OK' if 'blueprint_canonical' in b and 'slope' not in b and p['paper_type']=='blueprint_structured_practice' else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
 
   # ===== 词×真题考过状态 单一计算点 (#12/#13/#14: exam_vocab 唯一 tokenizer + exam_coverage 唯一 writer) =====
