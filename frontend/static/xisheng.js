@@ -35,7 +35,7 @@ ${guide()}
 <div class="bk-filter"><span class="bk-flabel">老师</span><span id="xs-teachers"></span>
   <span class="bk-flabel" style="margin-left:8px;">班级</span><span id="xs-classes"></span></div>
 <div id="xs-banner"></div>
-<section class="bk-card"><div class="bk-h"><span>班级薄弱真考点 <small>示例预览 · 错题聚合 avg 弱点分</small></span><span class="bk-src">/api/students/class_weakness</span></div>
+<section class="bk-card"><div class="bk-h"><span>班级薄弱真考点 <small>示例预览 · 班级薄弱率=薄弱学生/班级人数 (非弱生子集均值)</small></span><span class="bk-src">/api/students/class_weakness</span></div>
   <div id="xs-heat" role="img" aria-label="班级薄弱真考点热力图 (示例数据)" style="height:340px;"></div>
   <div id="xs-heat-sr" class="sr-only"></div></section>`;
   }
@@ -64,16 +64,20 @@ ${guide()}
     G.$("#xs-banner").innerHTML = d.data_status
       ? `<div class="caveat-banner demo" style="margin-bottom:12px;"><span class="cb-tag">示例</span><span>${d.data_status}</span></div>` : "";
     const rows = (d.weakness || []).slice(0, 12).reverse();
+    // 后端审计#6: 横轴=**班级薄弱率**=该考点薄弱学生数/班级总人数(真班级口径), 非 avg_score(只在已弱学生子集
+    // 求均, 分母错=虚高+结构上≥0.40永不可低)。avg_score 降为 tooltip"弱生平均严重度"。班级人数 d.n_students。
+    const nCls = d.n_students || 0;
+    const wrate = r => (nCls ? (r.n_weak_students || 0) / nCls : 0);
     if (!window.echarts) { G.chartLoadError(G.$("#xs-heat")); return; }   // D0诚实: 图表组件失败显式报错
     if (!rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted" style="padding:12px">暂无弱点数据 (示例库)</p>'; return; }
     chart = G.initChart(G.$("#xs-heat"));
     chart.setOption({
       grid: { left: 4, right: 50, top: 8, bottom: 8, containLabel: true },
-      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>弱点 ${(p[0].value * 100).toFixed(0)}% · ${rows[p[0].dataIndex].n_weak_students}生 · n=${rows[p[0].dataIndex].total_sample}` },
+      tooltip: { trigger: "axis", formatter: p => { const r = rows[p[0].dataIndex]; return `${p[0].name}<br/>班级薄弱率 ${(p[0].value * 100).toFixed(0)}% (${r.n_weak_students}/${nCls}生)<br/><span style="color:#76716A;font-size:11px">弱生平均严重度 ${(r.avg_score * 100).toFixed(0)}% · n=${r.total_sample}</span>`; } },
       xAxis: { type: "value", max: 1, axisLabel: { formatter: v => Math.round(v * 100) + "%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
       yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 10 } },
       visualMap: { show: false, min: 0, max: 1, inRange: { color: ["#FCEBEB", "#E24B4A", "#A32D2D"] } },
-      series: [{ type: "bar", data: rows.map(r => r.avg_score), barWidth: "62%", itemStyle: { borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", formatter: p => Math.round(p.value * 100) + "%", fontSize: 11, color: "#888" } }],
+      series: [{ type: "bar", data: rows.map(wrate), barWidth: "62%", itemStyle: { borderRadius: [0, 4, 4, 0] }, label: { show: true, position: "right", formatter: p => Math.round(p.value * 100) + "%", fontSize: 11, color: "#888" } }],
     });
     chart.off("click");
     chart.on("click", p => G.sendPrompt && G.sendPrompt(`为班级薄弱考点「${rows[p.dataIndex].label}」推荐分层复习课`));
@@ -82,13 +86,13 @@ ${guide()}
     const ordered = rows.slice().reverse();
     const heatEl = G.$("#xs-heat");
     if (heatEl) {
-      const head = ordered.slice(0, 5).map(r => `${r.label} ${Math.round(r.avg_score * 100)}%`).join(", ");
-      heatEl.setAttribute("aria-label", `班级薄弱真考点热力图 (示例数据)，共 ${ordered.length} 项，弱点由高到低：${head}${ordered.length > 5 ? " 等" : ""}`);
+      const head = ordered.slice(0, 5).map(r => `${r.label} ${Math.round(wrate(r) * 100)}%`).join(", ");
+      heatEl.setAttribute("aria-label", `班级薄弱真考点 (示例数据), 横轴=班级薄弱率(薄弱学生/班级${nCls}人), 共 ${ordered.length} 项, 由高到低: ${head}${ordered.length > 5 ? " 等" : ""}`);
     }
     const srEl = G.$("#xs-heat-sr");
     if (srEl) {
-      const body = ordered.map(r => `<tr><td>${r.label}</td><td>${Math.round(r.avg_score * 100)}%</td><td>${r.n_weak_students}</td><td>${r.total_sample}</td></tr>`).join("");
-      srEl.innerHTML = `<table><caption>班级薄弱真考点 (示例数据) — 弱点由高到低</caption><thead><tr><th>考点</th><th>弱点分</th><th>薄弱学生数</th><th>样本量 n</th></tr></thead><tbody>${body}</tbody></table>`;
+      const body = ordered.map(r => `<tr><td>${r.label}</td><td>${Math.round(wrate(r) * 100)}%</td><td>${r.n_weak_students}/${nCls}</td><td>${Math.round(r.avg_score * 100)}%</td><td>${r.total_sample}</td></tr>`).join("");
+      srEl.innerHTML = `<table><caption>班级薄弱真考点 (示例数据) — 班级薄弱率由高到低</caption><thead><tr><th>考点</th><th>班级薄弱率</th><th>薄弱/班级</th><th>弱生平均严重度</th><th>样本量 n</th></tr></thead><tbody>${body}</tbody></table>`;
     }
   }
 

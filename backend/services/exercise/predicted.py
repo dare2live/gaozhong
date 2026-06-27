@@ -22,21 +22,46 @@ from backend.services.trend import (question_type_year_trend, top_rising_words,
 from backend.services.trend import scope   # P2: 词汇slope显著阈单点 (与 model 共用)
 
 
+def _canonical_type_weights() -> dict:
+    """新高考II 笔试 canonical 题数 → 真考纲蓝图结构占比 (exam_structure_eras.yaml item_counts, 数据化单点).
+
+    后端审计 根因B: 原 type_mix 用 question_type_year_trend.avg_share, 但该 share 跨卷制混算 2021/22 子题级
+    与 2023-26 篇章级(阅读占比虚高); docstring 一直承诺"退回考纲蓝图固定结构" 实际却用 grain混合历史均值。
+    此处兑现: 用真考纲题数(听力外笔试 47 题)做固定结构占比。
+    """
+    import yaml
+    from pathlib import Path
+    p = Path(__file__).resolve().parents[3] / "backend" / "config" / "exam_structure_eras.yaml"
+    if not p.exists():
+        return {}
+    data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    ic = ((data.get("eras") or {}).get("2021+_新高考II") or {}).get("item_counts") or {}
+    return {str(k): float(v) for k, v in ic.items() if float(v) > 0}
+
+
+def _type_weights(con: duckdb.DuckDBPyConnection, trends: list, reliable: bool, canonical: dict) -> tuple:
+    """type_mix 权重 + preference_tags + basis (根因B: canonical 考纲结构优先, 仅可信才叠 slope)。
+    返回 (weights, prefs, basis)。抽出以降 _spec_from_trends 复杂度 (Rule8 CC≤10)."""
+    if canonical and reliable:
+        slope = {t["question_type"]: t.get("slope_per_year", 0) for t in trends}
+        w = {qt: max(v + 5 * slope.get(qt, 0), 0.02) for qt, v in canonical.items()}
+        prefs = [f"word:{x['word']}" for x in top_rising_words(con, top_n=10)[:6]]
+        return w, prefs, "trend_weighted (考纲 canonical 结构 + 辽宁卷可信 slope 轻微近年加权)"
+    if canonical:
+        # 样本不足: 退回**考纲蓝图固定结构**(item_counts 真值), 不按 slope 加权, 不注入上升词
+        return dict(canonical), [], "blueprint_canonical (辽宁卷样本不足 → 退回考纲蓝图固定结构 item_counts; 非 grain混合历史均值)"
+    # canonical 缺失兜底 (config 异常): 诚实降级历史均值并标明
+    return ({t["question_type"]: max(t["avg_share"], 0.02) for t in trends}, [],
+            "avg_share_fallback (canonical 结构缺失, 降级历史平均占比; 注: 跨卷制 grain 未归一)")
+
+
 def _spec_from_trends(con: duckdb.DuckDBPyConnection, total: int = 30,
                        seed: int | None = None) -> dict:
-    """推 compose spec: 趋势可信→轻微 slope 加权; 不可信→蓝图固定占比 (件1 reliability 门控)."""
+    """推 compose spec: type_mix 用考纲 canonical 结构(根因B 修, 非 grain混合 avg_share);
+    仅辽宁卷趋势可信(reliable=True)时叠加轻微 slope 近年方向加权 (件1 reliability 门控)."""
     trends = question_type_year_trend(con)
     reliable = bool(trends and trends[0].get("reliable"))
-    if reliable:
-        weights = {t["question_type"]: max(t["avg_share"] + 5 * t["slope_per_year"], 0.02)
-                   for t in trends}
-        prefs = [f"word:{w['word']}" for w in top_rising_words(con, top_n=10)[:6]]
-        basis = "trend_weighted (辽宁卷趋势可信, slope 轻微加权近年方向)"
-    else:
-        # 样本不足: 退回考纲蓝图固定结构 (历史平均占比), 不按 slope 加权, 不注入"上升词"
-        weights = {t["question_type"]: max(t["avg_share"], 0.02) for t in trends}
-        prefs = []
-        basis = "blueprint_fixed (辽宁卷样本不足 reliable=False → 退回蓝图固定占比, 不按不可信 slope 加权)"
+    weights, prefs, basis = _type_weights(con, trends, reliable, _canonical_type_weights())
     total_w = sum(weights.values()) or 1.0
     type_mix = {qt: max(1, round(total * w / total_w)) for qt, w in weights.items()}
     growth = vocab_year_growth(con)
