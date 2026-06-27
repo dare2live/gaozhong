@@ -21,7 +21,8 @@
 > lesson/course/recommend(make 194→16) + **dict命中/必教 三源级联(ln_tested, node=jsonl=59 一致)** + placement假弱点 全修;
 > 根因B(粒度未归一)= #6班级薄弱率(全班分母) + B2蓝图考纲结构 + #7 difficulty→篇幅 全修; 根因C(样本量)=#5 per-dim;
 > 根因D(门重言式)= 本轮新增门均跨源/as-served(cumulative调真公式/3源一致/passage口径)。
-> **剩架构P2/低优**(task_cff4f9b3): exam_questions_norm view 彻底归一 · 显示层grain caveat · 越纲率双命名 · placement阅读题真弱点走exam_point。
+> **P2收尾 (2026-06-27, commit 0ff017d)**: #2 趋势题型分布显示层 grain → 加 caveat(上游2015-20无item粒度无法归一); #3 越纲率双命名 → audit改"教材额外词比例(exact-surface)"与教师面lemma越纲率区分 = **已做**。
+> **#1 exam_questions_norm view / #4 placement阅读cognitive弱点 → 经验证归 over-engineering-now, 不建**(mio质疑需求本身+verify-the-verifier): #1 各grain消费方语义正交(passage-dedup/discrete/canonical 一个标记统一不了)+趋势是上游缺失+各处已D0门锁; #4 实测 qb.origin_ref(篇章级)JOIN cognitive_skill边(子题节点#qN) **0命中**=grain不匹配, 真做需#1。两者仅当未来有"需grain归一计数"的新消费方才值得建; 当前分散但正确+已门锁。**口径治理至此实质收口。**
 
 **已修 (commit 4245827, 3个独立手术项, 三门全绿)**:
 - **#1 [BLOCKER] cumulative_words_learned 跨册重置** (recommend.py:36 volume_key=? 谓词): 末单元 198 vs 整版本~2025 低估~10x, **是 D0§1.2"词量≤已学单元"越纲判断输入**(低估会误判可学词越纲)。改按学习序列 running distinct(volume_key字典序=教学序)。验证: 外研 198→2025。D0门 _check_cumulative_words 调 as-served 公式断言(防绿门盖坏字段)。
