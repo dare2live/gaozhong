@@ -10,6 +10,18 @@ from __future__ import annotations
 
 import duckdb
 
+# 后端审计 根因A+#3 (2026-06-27): "该词被真题**考查**" ≠ "词出现在阅读篇章"。tests_word 边对整篇 raw_question
+# 建边(含95词阅读篇章), 直接当"考查/必教"会把 make/time/go 等篇章功能词刷成高频考词(实测辽宁74%边来自
+# 阅读/听力/续写等语篇题型)。且原函数**无 province 过滤**(make 66%边非辽宁), 违 §7 辽宁锚定 +
+# lesson_plan.py docstring 谎称"word 同省"。故"考查频次/对齐"收口到: **辽宁卷 离散vocab/grammar题型**
+# (完形/语法填空/短改/单选 — 个体词被考点化处), 排除阅读/听力/续写/七选五/应用文篇章。与 _grammar_exam_trace 同省同口径。
+# (注: 完形/语法填空 raw_question 仍含空格上下文, 非完美"被考词"; 但已剔除最严重的阅读篇章污染, 见 task 根因A 深修。)
+_TESTED_QTYPES = ("完形填空", "语法填空", "短文改错", "单选(语法/词汇)")
+_TESTED_JOIN = (
+    "JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id, 10) "
+    "WHERE e.relation = 'tests_word' AND q.province LIKE '辽宁%' "
+    "AND q.question_type IN ('完形填空','语法填空','短文改错','单选(语法/词汇)')")
+
 
 def unit_introduced_words(con: duckdb.DuckDBPyConnection, unit_id: str) -> list[str]:
     """该单元 introduces_word 边引入的词 (去 'word:' 前缀, 不去重 — 调用方按需 set)."""
@@ -21,9 +33,9 @@ def unit_introduced_words(con: duckdb.DuckDBPyConnection, unit_id: str) -> list[
 
 
 def word_exam_frequency(con: duckdb.DuckDBPyConnection, word: str) -> int:
-    """该词被真题考查的真实频次 (tests_word 边数, 不截断)."""
+    """该词在辽宁卷**离散考点题型**(完形/语法填空/短改/单选)被考查的频次 (非阅读篇章出现; §7+根因A)."""
     return con.execute(
-        "SELECT COUNT(*) FROM edges WHERE relation = 'tests_word' AND dst_id = ?",
+        f"SELECT COUNT(*) FROM edges e {_TESTED_JOIN} AND e.dst_id = ?",
         [f"word:{word}"],
     ).fetchone()[0]
 
@@ -39,8 +51,8 @@ def unit_word_frequencies(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict[
     keys = [f"word:{w}" for w in uniq]
     ph = ",".join("?" * len(keys))
     rows = con.execute(
-        f"SELECT dst_id, COUNT(*) FROM edges "
-        f"WHERE relation = 'tests_word' AND dst_id IN ({ph}) GROUP BY dst_id",
+        f"SELECT e.dst_id, COUNT(*) FROM edges e {_TESTED_JOIN} "
+        f"AND e.dst_id IN ({ph}) GROUP BY e.dst_id",
         keys,
     ).fetchall()
     freq = {r[0].split(":", 1)[1]: r[1] for r in rows}
@@ -49,12 +61,11 @@ def unit_word_frequencies(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict[
 
 def word_exam_trace(con: duckdb.DuckDBPyConnection, word: str,
                     recent_n: int = 5) -> list[dict]:
-    """近 N 次真题中考查该词的 question 溯源 (year DESC)."""
+    """近 N 次辽宁卷**离散考点题型**考查该词的 question 溯源 (year DESC; §7+根因A, 非阅读篇章出现)."""
     rows = con.execute(
-        "SELECT q.question_id, q.year, q.question_type "
-        "FROM edges e INNER JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id, 10) "
-        "WHERE e.relation = 'tests_word' AND e.dst_id = ? "
-        "ORDER BY q.year DESC, q.question_id LIMIT ?",
+        f"SELECT q.question_id, q.year, q.question_type "
+        f"FROM edges e {_TESTED_JOIN} AND e.dst_id = ? "
+        f"ORDER BY q.year DESC, q.question_id LIMIT ?",
         [f"word:{word}", recent_n],
     ).fetchall()
     return [{"question_id": r[0], "year": r[1], "question_type": r[2]} for r in rows]

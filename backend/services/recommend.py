@@ -50,14 +50,18 @@ def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
 
 
 def top_exam_words(con: duckdb.DuckDBPyConnection, limit: int = 30) -> list[dict]:
-    """高频考词 — 按 tests_word edge 度数排序."""
+    """高频考词 — 辽宁卷**离散考点题型**考查度数排序 (根因A+§7: 原无 province/题型过滤 → top10 全是
+    make/one/time 阅读篇章功能词; 收口到辽宁离散题型, 与 vocab._TESTED_QTYPES 同口径)."""
     rows = con.execute("""
         SELECT n.label AS word,
                COUNT(*) AS exam_freq,
                MAX(n.attrs_json) AS attrs
         FROM edges e
         INNER JOIN nodes n ON n.concept_id = e.dst_id
+        JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id, 10)
         WHERE e.relation = 'tests_word' AND n.node_type = 'word'
+          AND q.province LIKE '辽宁%'
+          AND q.question_type IN ('完形填空','语法填空','短文改错','单选(语法/词汇)')
         GROUP BY n.label
         ORDER BY exam_freq DESC LIMIT ?
     """, [limit]).fetchall()
