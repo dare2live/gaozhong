@@ -846,67 +846,111 @@
   // ===================================================================
   // F. 知识图谱 (本tab: stats概览 + 高频考点词入口; 力导向SVG探索仍在 /legacy, 见 needs_user_decision UI收敛)
   // ===================================================================
+  // 知识图谱: 节点类型 → 色 (锚令牌族; exam_point=红=核心竞争力, word=蓝, grammar=绿, theme=金, 结构节点=灰)
+  const _GNODE_COLOR = {
+    subject: "#1C1A17", exam_point: "#BE3A2B", word: "#1F5F94", word_sense: "#5B7FA6",
+    grammar: "#2E7D54", phrase: "#1F5F94", theme: "#9A6A00", unit: "#76716A", volume: "#76716A",
+    publisher: "#76716A", city: "#76716A", stage: "#9A6A00", cefr_level: "#85B7EB",
+    exam_year: "#B4B2A9", question: "#9C2C20", qtype: "#9A6A00",
+  };
+  const _gColor = t => _GNODE_COLOR[t] || "#B4B2A9";
+
+  // 渲染交互力导向子图 (后端 /api/graph/subgraph; 点节点→openPopup 关联+真题下钻)。发挥后端 KG 优势。
+  async function _renderGraphViz(rootId, rootLabel) {
+    const box = document.getElementById("graph-viz");
+    if (!box) return;
+    document.getElementById("graph-center").textContent = rootLabel || rootId;
+    box.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入子图…</div>';
+    let sub;
+    try { sub = await fetchJSON(`/api/graph/subgraph?node=${encodeURIComponent(rootId)}&depth=2&max_nodes=60`); }
+    catch (e) { box.innerHTML = `<div class="error-state" style="margin:0"><div class="es-title">子图载入失败</div><div class="es-msg">${e.message}</div></div>`; return; }
+    const nodes = sub.nodes || [], edges = sub.edges || [];
+    if (!nodes.length) { box.innerHTML = '<p class="muted" style="padding:16px">该概念暂无关联子图</p>'; return; }
+    if (!(await GZ.ensureECharts())) { GZ.chartLoadError(box); return; }
+    box.innerHTML = `<div id="graph-viz-c" role="img" aria-label="知识图谱力导向关联图, 中心 ${rootLabel || rootId}, 共 ${nodes.length} 节点 ${edges.length} 边; 点节点看其关联与真题" style="height:480px"></div>`;
+    const deg = {}; edges.forEach(e => { deg[e.src] = (deg[e.src] || 0) + 1; deg[e.dst] = (deg[e.dst] || 0) + 1; });
+    const types = [...new Set(nodes.map(n => n.node_type))];
+    const inst = echarts.init(document.getElementById("graph-viz-c"));
+    inst.setOption({
+      tooltip: { formatter: p => p.dataType === "node" ? `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${p.data.cat} · 关联 ${deg[p.data.id] || 0}</span>` : "" },
+      legend: [{ data: types, bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 9, itemHeight: 9 }],
+      series: [{
+        type: "graph", layout: "force", roam: true, draggable: true,
+        categories: types.map(t => ({ name: t, itemStyle: { color: _gColor(t) } })),
+        force: { repulsion: 200, edgeLength: [50, 130], gravity: 0.08 },
+        label: { show: true, fontSize: 10, color: "#45413A", position: "right" },
+        lineStyle: { color: "#D8D5CC", width: 1, curveness: 0.06 },
+        emphasis: { focus: "adjacency", lineStyle: { width: 2, color: "#BE3A2B" } },
+        data: nodes.map(n => ({
+          id: n.concept_id, name: n.label || n.concept_id, cat: n.node_type,
+          category: types.indexOf(n.node_type),
+          symbolSize: Math.min(12 + (deg[n.concept_id] || 0) * 3, 44),
+          itemStyle: n.concept_id === rootId ? { borderColor: "#BE3A2B", borderWidth: 2.5 } : {},
+        })),
+        links: edges.map(e => ({ source: e.src, target: e.dst, value: e.relation })),
+      }],
+    });
+    inst.off("click");
+    inst.on("click", p => { if (p.dataType === "node" && GZ.openPopup) GZ.openPopup(p.data.id); });
+    setTimeout(() => inst.resize(), 60);   // 修容器初始宽度0(力导向图挤左/空白); 同 jiangke 模式
+    window.__gGraphInst = inst;
+    if (!window.__rzGraph) { window.__rzGraph = 1; window.addEventListener("resize", () => window.__gGraphInst && window.__gGraphInst.resize()); }
+  }
+
   register("graph", async () => {
-    CONTENT.innerHTML = `<h2>F. 知识图谱</h2><p>载入中 ...</p>`;
-    const [gstats, trend] = await Promise.all([
+    CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入知识图谱…</div>';
+    const [gstats, trend, top] = await Promise.all([
       fetchJSON("/api/graph/stats"),  // RC1/D0: 图谱主数据, 失败必抛 → route() 错误态
       fetchJSON("/api/trend/summary").catch(() => ({})),
+      fetchJSON("/api/recommend/top_exam_words?limit=14").catch(() => ([])),
     ]);
-    // /api/graph/stats 实际字段: {nodes, edges, total_nodes, total_edges}
-    // nodes 是 {kind: count}, edges 是 {relation: count}
     const nodeKinds = gstats.nodes || gstats.by_node_type || {};
     const relations = gstats.edges || gstats.by_relation || {};
+    const totN = gstats.total_nodes || Object.values(nodeKinds).reduce((a, v) => a + v, 0);
+    const totE = gstats.total_edges || Object.values(relations).reduce((a, v) => a + v, 0);
+    const topTypes = Object.entries(nodeKinds).sort((a, b) => b[1] - a[1]).slice(0, 6)
+      .map(([k, v]) => `${k} <b style="color:var(--ink)">${v}</b>`).join(" · ");
+    // 探索入口 chips: subject 根 + 关键考点 + 高频考词 (点 chip 换图中心)
+    const words = Array.isArray(top) ? top : (top.words || top.items || []);
+    const wordChips = words.slice(0, 12).map(it => {
+      const w = (it.word || it.label || it.id || it).replace(/^word:/, "");
+      return `<button class="bk-pill gz-reroot" data-root="word:${w}" data-label="${w}">${w}</button>`;
+    }).join("");
+    const epChips = ["exam_point:genre:记叙文", "exam_point:genre:说明文", "exam_point:theme_context:人与自我", "exam_point:cognitive_skill:推断"]
+      .map(c => `<button class="bk-pill gz-reroot" data-root="${c}" data-label="${c.split(":").pop()}">${c.split(":").pop()}</button>`).join("");
+
     CONTENT.innerHTML = `
-      <h2>F. 知识图谱 · 探索入口</h2>
-      <p style="color:#666">点任一节点 → 弹联通图 + 真题 (graph_popup 全局浮窗). 此 tab 列入口节点 + 命题趋势.</p>
+      <h2 style="margin:0 0 2px">知识图谱 · 关联探索</h2>
+      <p class="muted" style="margin:0 0 12px;font-size:13px">力导向图谱 = 后端 <code style="font-family:var(--num);font-size:11px">/api/graph/subgraph</code> 实时展开 · <b>点任一节点</b>看其关联通图 + 真题下钻 · 拖拽/滚轮缩放 · ${totN.toLocaleString()} 节点 / ${totE.toLocaleString()} 边</p>
 
-      <h3>图谱概览</h3>
-      <div class="course-grid">
-        <div class="course-card"><strong>nodes by type</strong>
-          ${Object.entries(nodeKinds).map(([k, v]) => `<div class="block">${k}: ${v}</div>`).join("")}
+      <section class="bk-card" style="margin-bottom:14px">
+        <div class="bk-h"><span>关联通图 <small id="graph-center" style="color:var(--accent-ink)">英语</small></span>
+          <span class="bk-src">subgraph · depth 2</span></div>
+        <div style="margin:2px 0 8px;font-size:12px;color:var(--ink-3)">换中心:
+          <button class="bk-pill gz-reroot on" data-root="subject:英语" data-label="英语">英语(全局)</button>
+          ${epChips} ${wordChips}
         </div>
-        <div class="course-card"><strong>edges by relation (top 6)</strong>
-          ${Object.entries(relations).slice(0, 6).map(([k, v]) => `<div class="block">${k}: ${v}</div>`).join("")}
-        </div>
-      </div>
+        <div id="graph-viz"></div>
+      </section>
 
-      <h3>探索入口 — 点任一概念弹联通图 + 真题</h3>
-      <div id="graph-explore" style="background:#fff;padding:1rem;border-radius:4px">
-        <p>载入热门 concept ...</p>
-      </div>
-
-      <h3>命题趋势</h3>
-      <div class="course-grid">
-        <div class="course-card G_FINAL"><strong>近年高频上升词</strong>
-          ${(trend.top_words || trend.rising_words || []).slice(0, 8)
-            .map(w => `<div class="block">${GZ.conceptLink("word:" + (w.word || w.label || w), w.word || w.label || w)} ${w.recent_freq ? `(${w.recent_freq})` : ""}</div>`).join("") || "<div class='block'>无</div>"}
-        </div>
-        <div class="course-card"><strong>题型分布 (卷制 era 分层)</strong>
-          ${trend.trend_reliable === false ? `<div class="block" style="color:#c0392b;font-size:11px">注 逐年样本不足, 不画斜率; 按卷制 era 看分布 (跨 2021 断点不混算)</div>` : ""}
+      <div class="bk-grid">
+        <section class="bk-card"><div class="bk-h"><span>图谱概览</span><span class="bk-src">/api/graph/stats</span></div>
+          <div style="font-size:12.5px;color:var(--ink-2);line-height:1.9">${topTypes}</div>
+        </section>
+        <section class="bk-card"><div class="bk-h"><span>命题趋势 · 题型分布(卷制era)</span><span class="bk-src">/api/trend/summary</span></div>
+          ${trend.trend_reliable === false ? `<div class="caveat-banner" style="margin:0 0 6px"><span class="cb-tag">样本不足</span><span>逐年样本不足不画斜率; 按卷制 era 看分布(跨 2021 断点不混算)</span></div>` : ""}
           ${Object.entries(trend.type_distribution_by_era || {}).map(
-            ([era, types]) => `<div class="block"><b>${era}</b>: ${Object.entries(types).sort((a,b)=>b[1]-a[1]).slice(0, 4).map(([t,n])=>`${t}(${n})`).join(" / ")}</div>`
-          ).join("") || "<div class='block'>无</div>"}
-        </div>
+            ([era, types]) => `<div style="font-size:12.5px;margin:3px 0"><b>${era}</b>: ${Object.entries(types).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([t, n]) => `${t}(${n})`).join(" / ")}</div>`
+          ).join("") || '<p class="muted" style="font-size:12px">无趋势数据</p>'}
+        </section>
       </div>`;
-      // (移除过时指针: 老 /teacher 图谱已 302 收敛进本 graph tab, "保留为兼容" 说明作废)
 
-    // 异步载热门 concept (high exam_status=core word 前 20)
-    try {
-      const top = await fetchJSON("/api/recommend/top_exam_words?limit=20").catch(() => ([]));
-      const items = Array.isArray(top) ? top : (top.words || top.items || []);
-      const explore = document.getElementById("graph-explore");
-      if (items.length) {
-        explore.innerHTML = items.map(it => {
-          const w = it.word || it.label || it.id || it;
-          const cid = w.startsWith && w.startsWith("word:") ? w : "word:" + w;
-          return GZ.conceptLink(cid, w.replace(/^word:/, ""));
-        }).join("&nbsp; ");
-      } else {
-        explore.innerHTML = "<p>无 top exam words 数据.</p>";
-      }
-    } catch (err) {
-      document.getElementById("graph-explore").innerHTML = `<p>载入失败: ${err.message}</p>`;
-    }
+    CONTENT.querySelectorAll(".gz-reroot").forEach(b => b.onclick = () => {
+      CONTENT.querySelectorAll(".gz-reroot").forEach(x => x.classList.remove("on"));
+      b.classList.add("on");
+      _renderGraphViz(b.dataset.root, b.dataset.label);
+    });
+    _renderGraphViz("subject:英语", "英语");
   });
 
   // ===================================================================

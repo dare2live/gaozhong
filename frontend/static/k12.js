@@ -127,13 +127,13 @@
 
   registerTab("k12", async () => {
     G.$("#content").innerHTML = shell();
-    if (!window.echarts) { await new Promise(r => setTimeout(r, 300)); }
+    const echartsOk = await G.ensureECharts();   // RC1: 等 echarts 就绪防静默空白
     const [st, bp, zk] = await Promise.all([
       fetchJSON("/api/k12/stage_distribution"),
       fetchJSON("/api/k12/blueprint").catch(() => ({ pairs: [], n: 0 })),
       fetchJSON("/api/zhongkao/distribution").catch(() => ({ by_question_type: [] })),
     ]);
-    if (window.echarts) { renderStage(st); renderZk(zk); }
+    if (echartsOk) { renderStage(st); renderZk(zk); } else { G.chartLoadError(G.$("#k12-stage")); }
     renderPivot(zk);
     renderBlueprint(bp);
     if (!window.__rzK12) { window.__rzK12 = 1; window.addEventListener("resize", () => { chS && chS.resize(); chZ && chZ.resize(); }); }  // RC1: 只绑一次防泄漏

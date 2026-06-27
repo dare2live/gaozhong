@@ -196,6 +196,24 @@ window.GZ = (function () {
     btn.textContent = next + "x";
   }
 
+  // ===== echarts 就绪保障 (RC1: 根治 load 竞态致图表静默空白) =====
+  // echarts.min.js 1MB 本地脚本; 个别环境(慢盘/缓存重验)首帧未就绪 → 旧 if(window.echarts) 静默跳过=空白。
+  // 此处轮询等就绪 (默认 5s), 返回 bool; 调用方就绪才渲、未就绪显式报错 (D0诚实: 真失败不冒充空白)。
+  async function ensureECharts(timeoutMs) {
+    const limit = timeoutMs || 5000;
+    let waited = 0;
+    while (!window.echarts && waited < limit) {
+      await new Promise(r => setTimeout(r, 60));
+      waited += 60;
+    }
+    return !!window.echarts;
+  }
+  // 图表载入失败时在容器显式报错 (取代静默空白)。
+  function chartLoadError(el) {
+    if (el) el.innerHTML = '<div class="error-state" style="margin:0"><div class="es-title">图表组件未能载入</div>'
+      + '<div class="es-msg">ECharts 渲染库加载失败 (非数据问题)。<button class="es-retry" type="button" onclick="location.reload()">重新载入</button></div></div>';
+  }
+
   // ===== 内联 SVG 图标 (替代 emoji; 全局禁 emoji, Tabler 风格 currentColor) =====
   const _ICONS = {
     download: '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 21h16"/>',
@@ -261,6 +279,6 @@ window.GZ = (function () {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
     mountLayout, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
-    exportChartPNG, exportCSV, printWithCharts,
+    exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError,
   };
 })();

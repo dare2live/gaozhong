@@ -326,7 +326,7 @@
 
   registerTab("beike", async () => {
     G.$("#content").innerHTML = shell();
-    if (!window.echarts) { G.$("#bk-dist").innerHTML = '<p class="muted">ECharts 载入中…</p>'; await new Promise(r => setTimeout(r, 300)); }
+    const echartsOk = await G.ensureECharts();   // RC1: 轮询等 echarts 就绪, 根治 load 竞态静默空白
     const [dist, qt, heat, cog] = await Promise.all([
       // RC1/D0: distribution 是驾驶舱主数据, 失败必抛 → route() 显式错误态 (不冒充空壳掩盖后端故障)
       fetchJSON("/api/exam_point/distribution"),
@@ -337,9 +337,11 @@
     state.dist = dist;
     wire();
     const cross = await loadCross(state.cross);
-    if (window.echarts) {
+    if (echartsOk) {
       renderDist(); renderTrend(qt); renderHeat(heat); renderCognitiveSkill(cog);
       renderCrossToggle(); renderCogCross(cross);
+    } else {
+      G.chartLoadError(G.$("#bk-dist"));   // D0诚实: echarts 真失败显式报错, 不冒充空白
     }
     renderShift();
     wireExports();   // #5: 图卡追加 PNG 导出 + 打印按钮接线

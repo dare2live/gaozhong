@@ -131,10 +131,11 @@
     renderQuick();
     G.$("#jk-go").onclick = doSearch;
     G.$("#jk-q").addEventListener("keydown", e => { if (e.key === "Enter") doSearch(); });
-    if (!window.echarts) { G.$("#jk-graph").innerHTML = '<p class="muted">ECharts 载入中…</p>'; await new Promise(r => setTimeout(r, 300)); }
+    const echartsOk = await G.ensureECharts();   // RC1: 等 echarts 就绪防静默空白
     const co = await fetchJSON("/api/exam_point/cooccurrence").catch(() => ({ by_era: {} }));
     const pairs = ((co.by_era || {})[ERA] || {}).pairs || [];
-    if (window.echarts && pairs.length) await renderGraph(pairs);
+    if (!echartsOk) G.chartLoadError(G.$("#jk-graph"));   // D0诚实: 图表组件失败显式报错
+    else if (pairs.length) await renderGraph(pairs);
     else G.$("#jk-graph").innerHTML = '<p class="muted">无共现数据</p>';
     if (!window.__rzJk) { window.__rzJk = 1; window.addEventListener("resize", () => chart && chart.resize()); }  // RC1: 只绑一次防泄漏
   });

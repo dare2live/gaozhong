@@ -58,7 +58,8 @@ ${guide()}
     G.$("#xs-banner").innerHTML = d.data_status
       ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#FCEBEB;border:1px solid #F09595;border-radius:6px;margin-bottom:12px;font-size:12px;color:#791F1F;"><b style="font-weight:500;">${d.data_status}</b></div>` : "";
     const rows = (d.weakness || []).slice(0, 12).reverse();
-    if (!window.echarts || !rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted">无弱点数据</p>'; return; }
+    if (!window.echarts) { G.chartLoadError(G.$("#xs-heat")); return; }   // D0诚实: 图表组件失败显式报错
+    if (!rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted" style="padding:12px">暂无弱点数据 (示例库)</p>'; return; }
     chart = chart || echarts.init(G.$("#xs-heat"));
     chart.setOption({
       grid: { left: 4, right: 50, top: 8, bottom: 8, containLabel: true },
@@ -93,7 +94,7 @@ ${guide()}
     state.teacher = teachers[0].teacher_id;
     G.$("#xs-teachers").innerHTML = teachers.map(x => pill(x.teacher_id, `${x.name} (${x.n_classes}班)`, x.teacher_id === state.teacher, "tch")).join("");
     G.$$("#xs-teachers [data-tch]").forEach(b => b.onclick = () => { state.teacher = b.dataset.tch; state.cls = null; G.$$("#xs-teachers .bk-pill").forEach(p => p.classList.toggle("on", p.dataset.tch === state.teacher)); loadClasses(); });
-    if (!window.echarts) await new Promise(r => setTimeout(r, 300));
+    await G.ensureECharts();   // RC1: 等 echarts 就绪防静默空白
     await loadClasses();
     if (!window.__rzXs) { window.__rzXs = 1; window.addEventListener("resize", () => chart && chart.resize()); }  // RC1: 只绑一次防泄漏
   });
