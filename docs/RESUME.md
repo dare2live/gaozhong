@@ -13,6 +13,22 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量, cognitive边100条全explicit_label), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 引47%必同句带"n=15方向性", 别narrate成"命题迁移真值"。
 - **门覆盖(2026-06-26 实证, 反坑17)**: `d0_exam_point_check` 有**全局 provenance 不变量**(所有 tests_exam_point 边 provenance∈{dual_model_agree,explicit_label}, 按边属性非按年)→ 2026 新边自动入 D0; 加端点有效+计数门+moth(exam-point-edges-present/xgkii-2026-truth-imported/exam-year-coverage-no-stale)。**新卷传导连门禁都自动覆盖**, 这是中考一键传导的门侧保证。
 
+## 最近 session (2026-06-27 全局口径 bug 审计): 用"数据真但口径错→分析无效"当透镜扫7子系统 (用户: "全局审计类似问题")
+
+> workflow `w2axv2nxv`(7子系统 × 4 bug模式[计数单位/边语义≠消费/跨段apples-to-oranges/门重言式] + 对抗复核)。**结论: 7/7 都有同类 bug(23条确认), 但高度收敛于 4 根因 + 1 普遍门盲区** — 不是23个孤立bug, 根治4根+加通用门关掉绝大多数。
+
+**已修 (commit 4245827, 3个独立手术项, 三门全绿)**:
+- **#1 [BLOCKER] cumulative_words_learned 跨册重置** (recommend.py:36 volume_key=? 谓词): 末单元 198 vs 整版本~2025 低估~10x, **是 D0§1.2"词量≤已学单元"越纲判断输入**(低估会误判可学词越纲)。改按学习序列 running distinct(volume_key字典序=教学序)。验证: 外研 198→2025。D0门 _check_cumulative_words 调 as-served 公式断言(防绿门盖坏字段)。
+- **#5 [major] sufficiency 样本量口径**: era子题池(142)给篇章级维度当样本量徽章, 虚高~4.5x+掩盖 theme_l2(n=19<30)不足。加 by_era_dim per-(era,维度)篇章级样本量; 徽章现显"样本不足(方向性)·19篇"。
+- **#8 [major] deepens "母集"伪claim**: k12 basis 称"中考语篇填空=高考语法填空考点全集N=2实证"证伪(50/71边在10空外)→诚实化措辞。
+
+**待修 (宽blast根因, 留焦点session, 见 spawn_task task_07b9bbd9/task_d4fa8ece)**:
+- **根因A [major] tests_word "出现≠考查"** (task_07b9bbd9): 一边坏3方 — vocab必教(155/180仅篇章)/course对齐76.8%(真12.1%)/placement假弱点 + 省份混算(make 66%非辽宁, lesson_plan.py:33 docstring说谎违§7) + 越纲率双定义。姊妹 tests_grammar 已收窄而 tests_word 漏。需拆"出现vs考查"边语义+省份过滤+跨源真值门。
+- **根因B [major] source_repo 子题/篇章粒度未归一** (task_d4fa8ece): SUBQ_SOURCE_LIKE 鉴别器已存在但没传播到 trend/model.py(avg_share→蓝图)/question_bank/loader.py(题型分布)/difficulty(=len(stem)粒度伪影) + class_weakness分母(弱生子集非全班 42%vs真28%)。需 exam_questions_norm view 归一(docs已列P2)。
+- **根因C** 样本量分母(部分由#5缓解, 余 scope.py 收口随B做) · **根因D [系统性] 门普遍是"派生==同源派生"重言式**(坑1/16/17): 应所有口径断言跨第一手真相源(非同源自证)+ moth AND D0 双门 + 对抗注入。本次新增门均按此(as-served公式/跨源)。
+
+**可信(对账确认无此类bug)**: cross_version jaccard · 越纲率算法本体(lemma归并守恒, 错在子分层命名) · demo学情诚实性 · cognitive_skill子题级 · trend slope reliability门 · stage分布 · homework tag-based · 营销话术已清除。
+
 ## 最近 session (2026-06-27 后端正确性审计): KG关联/热力图/题目-考点/考察方式 对第一手教研解析交叉验证 (用户: "检查后端正确性与准确性")
 
 > workflow `woxkh1evu`(5维度×对第一手教研解析[xgkii_*_subquestions.jsonl 的 analysis 字段直写题型]交叉验证 + 对抗复核)。**核心结论(坑12教科书案例)**: 机械正确性(0孤儿/0停用词/结构)全绿且诚实, 但2个**分析有效性**根因被三门静默放行 —— "每条边都真, 但聚合口径错 → 分析无效"。
