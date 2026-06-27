@@ -37,6 +37,18 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_no_theme_l3(con, check)
     _check_passage_dim_granularity(con, check)
     _check_evidence_json_valid(con, check)
+    _check_grammar_qtype(con, check)
+
+
+def _check_grammar_qtype(con: duckdb.DuckDBPyConnection, check) -> None:
+    """RC1#4 防回归: tests_grammar 只落离散语法考点题型(语法填空/单选/短改); 阅读理解/完形结构上不考
+    离散语法(原子串匹配致 7 条落阅读理解=误报, 污染'教此语法→高考这么考')。"""
+    bad = con.execute(
+        "SELECT COUNT(*) FROM edges e "
+        "JOIN exam_questions q ON ('question:'||q.question_id)=e.src_id "
+        "WHERE e.relation='tests_grammar' "
+        "AND q.question_type NOT IN ('语法填空','单选(语法/词汇)','短文改错')").fetchone()[0]
+    check("tests_grammar 仅落离散语法题型 (无阅读/完形误报)", bad == 0, f"{bad} 误报落非语法题型")
 
 
 def _check_passage_dim_granularity(con: duckdb.DuckDBPyConnection, check) -> None:

@@ -98,14 +98,21 @@ def build_tests_word(con: duckdb.DuckDBPyConnection) -> int:
     return _replace(con, "tests_word", rows)
 
 
+# RC1#4 (后端审计): tests_grammar 只对**离散语法考点题型**建边。阅读理解/完形/七选五结构上不考离散语法
+# (原对全题型子串匹配 → 7条落阅读理解=确证误报, 污染 lesson_plan"教此语法→高考这么考")。
+_GRAMMAR_QTYPES = ("语法填空", "单选(语法/词汇)", "短文改错")
+
+
 def build_tests_grammar(con: duckdb.DuckDBPyConnection) -> int:
-    """question → grammar: 题面 / analysis 含中文语法术语即建 edge."""
+    """question → grammar: 题面 / analysis 含中文语法术语即建 edge (仅离散语法题型, 见 _GRAMMAR_QTYPES)."""
     items = con.execute(
         "SELECT grammar_item_id, label FROM grammar_items"
     ).fetchall()
     rows: list[tuple] = []
+    qmarks = ",".join("?" * len(_GRAMMAR_QTYPES))
     for qid, qtext, anl in con.execute(
-        "SELECT question_id, raw_question, analysis FROM exam_questions"
+        f"SELECT question_id, raw_question, analysis FROM exam_questions "
+        f"WHERE question_type IN ({qmarks})", list(_GRAMMAR_QTYPES)
     ).fetchall():
         blob = (qtext or "") + " " + (anl or "")
         for term, kw in TERM_TO_LABEL_KEYWORD.items():
