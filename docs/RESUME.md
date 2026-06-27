@@ -29,7 +29,10 @@
   "辽宁高考命中"/"必教★"档仍走 word_exam_hits {ln}(含阅读篇章, make显命中66)→ 需加 ln_tested + 改 dict/
   exam_status/vocab_classify 三消费方 + 同步**三源一致断言**(会 trip stop_gate, 故留焦点 context 谨慎做)。
   placement 假弱点 + 越纲率双命名 也并入该收尾 task。
-- **根因B [major] source_repo 子题/篇章粒度未归一** (task_d4fa8ece): SUBQ_SOURCE_LIKE 鉴别器已存在但没传播到 trend/model.py(avg_share→蓝图)/question_bank/loader.py(题型分布)/difficulty(=len(stem)粒度伪影) + class_weakness分母(弱生子集非全班 42%vs真28%)。需 exam_questions_norm view 归一(docs已列P2)。
+- **根因B [major] source_repo 子题/篇章粒度未归一** — **部分已修 (commit 5d029e2)**:
+  - #6 class_weakness 分母: 改 xisheng.js 横轴=真班级薄弱率(n_weak/n_students), avg_score 降 tooltip(验证 bar 0.333=1弱生/3班级)。
+  - B2 蓝图 type_mix: exam_structure_eras.yaml 加 canonical item_counts(新高考II 笔试结构), predicted.py 退回**真考纲结构**(blueprint_canonical)取代 grain混合 avg_share(验证 阅读10/完形10/语法6/七选3/续写1/应用1)。moth practice-not-prediction 对齐。
+  - **剩 (task_d4fa8ece)**: #7 difficulty=len(stem) 粒度伪影(与 alignment 难度JSD门纠缠, 改动险) + question_type_year_trend/question_bank **显示层** grain(趋势已 reliability 门控, qbank 是 inventory 计数, 影响低)。彻底归一需 exam_questions_norm view(docs P2)。
 - **根因C** 样本量分母(部分由#5缓解, 余 scope.py 收口随B做) · **根因D [系统性] 门普遍是"派生==同源派生"重言式**(坑1/16/17): 应所有口径断言跨第一手真相源(非同源自证)+ moth AND D0 双门 + 对抗注入。本次新增门均按此(as-served公式/跨源)。
 
 **可信(对账确认无此类bug)**: cross_version jaccard · 越纲率算法本体(lemma归并守恒, 错在子分层命名) · demo学情诚实性 · cognitive_skill子题级 · trend slope reliability门 · stage分布 · homework tag-based · 营销话术已清除。
