@@ -13,6 +13,22 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量, cognitive边100条全explicit_label), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 引47%必同句带"n=15方向性", 别narrate成"命题迁移真值"。
 - **门覆盖(2026-06-26 实证, 反坑17)**: `d0_exam_point_check` 有**全局 provenance 不变量**(所有 tests_exam_point 边 provenance∈{dual_model_agree,explicit_label}, 按边属性非按年)→ 2026 新边自动入 D0; 加端点有效+计数门+moth(exam-point-edges-present/xgkii-2026-truth-imported/exam-year-coverage-no-stale)。**新卷传导连门禁都自动覆盖**, 这是中考一键传导的门侧保证。
 
+## 最近 session (2026-06-27 前端 RC1 ceiling 收口): workflow审计41条缺陷 → 按价值序全修 + 强化门 (用户三连主诉"其他画面太乱了")
+
+> 起因: 用户截图反馈"考点驾驶舱大部分空白 / 知识图谱不正常 / 其他画面太乱了 / 关联出版社+几个词+球型旋转+弹出不知所云"。前两轮已修图表生命周期+图谱重建为考点共现网络; 本轮收口"太乱"。
+> **核心方法**: 门测 floor(数据诚实/a11y/单点)≠ 测 ceiling(乱/消费者锚定/陈旧)。发 `rc1-ceiling-audit` workflow(14 tab × 6维度审计 + 逐条对抗验证 + 综合)→ **41条确认 RC1-blocking** + 5大系统性根因。preview 截图与代码审计**交叉验证**(beike "布局正常"的截图判读被 computed-style 推翻 = workflow 对、我宽容)。
+
+**根因级修复 (5commits: cc3f66d→7d522a1, 三门全绿 stop_gate/D0/moth 108-0)**:
+- **根因#1 门结构性失明**: frontend_rc1_check 只查4项, 对布局回归/冷灰/select无名失明 → 41缺陷全"绿门过"。强化加 check_cold_grey(CSS冷灰族禁) + check_layout_restored(锁 .bk-card padding/.bk-h flex) + check_select_aria(各CC≤5, 3探针对抗验证均抓)。
+- **根因#2 静默吞错**: dict/lesson/textbook/k12/qbank 的 `.catch(()=>空)` 把500/断网冒充无数据 → common.js 加 `fetchSafe/isErr/errorBox`, 全 call-site 区分"真无数据"vs"接口失败"(D0诚实)。
+- **根因#3 三套调色板/legacy未迁**: app.css 整文件令牌化(退役青#2a9d8f/橙#f4a261/珊瑚#e76f51第三套→good/warn/accent-ink + 冷灰→令牌) → teaching/students/data/scan **一处改全和谐**(用户"不一致"主因)。
+- **根因#4 诚实标注藏读屏层**: 共现图可见副标题"命题关联真值,万变不离其宗"→"双模型推断·非因果"; renderCooccurNetwork 内统一插**可见** caveat(graph+jiangke 复用即得)。
+- **根因#5 a11y控件缺口**: modal role=dialog+Esc+聚焦; 各 select aria-label; graph srEl; jiangke/textbook 空错分支同步 aria。
+- **关键 blocker**: beike 布局回归(我自己 commit 5cad53e 误删 .bk-card 布局致"太乱"主因, 已恢复+锁门) · students modal 0 CSS(点卡不浮)修 · beike sufficiency 取键错(120→权威142) · data 审计概览恒0冒充"全清"修 · workbench头条 n=15 推断降级 · qbank题量参数前后端对齐 · 删qbank死听力代码57行。
+
+**裁决**: 14 tab 逐屏 preview 实测 0 console 报错 + 视觉确认(beike四象限+142 / 图谱共现+真题下钻 / students modal / teaching绿金和谐 / lesson三段bk-card / data审计token)。**前端 RC1 ceiling 达标**, 单老师pilot 交付门未变(仍唯一硬阻塞=动员真辽宁老师, Rule10)。
+> open-question 已裁: 设计宪法措辞"模型驱动内容生成"读 constitution.py 确认=治理框架非陈旧能力声明(讲义生成回滚不影响其作为组卷/标注约束法), 不改。
+
 ## 最近 session (2026-06-26 前端 RC1 phase-2 = 达标): loop自主6迭代收口三系统性缺口 (用户: "制定方案+设goal+用loop和多agents并发达到RC1")
 
 > goal-app 设 session 目标 + loop dynamic 自我节奏 + 多agent并发(iter1/2 按互斥文件)。建 RC1 验收门 `scratchpad/rc1_gate.py`(客观项) + 持久锁 `scripts/lib/frontend_rc1_check.py`+moth。**RC1 客观门全过**: emoji=0 / off-token旧红蓝=0 / 图表role=img 9/9 / sr-only / #999对比=0 / 三门绿。
