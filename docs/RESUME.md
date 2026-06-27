@@ -13,6 +13,24 @@
 - **⚠ 叙事纠偏(critic抓我自己的乐观)**: cognitive_skill "推断28%→47%" 工程诚实层到位(三处标样本量, cognitive边100条全explicit_label), 但**新era 15边100%来自2023单年**(distribution_reliable=False), 是 **1卷1年方向性信号非era迁移结论** — 引47%必同句带"n=15方向性", 别narrate成"命题迁移真值"。
 - **门覆盖(2026-06-26 实证, 反坑17)**: `d0_exam_point_check` 有**全局 provenance 不变量**(所有 tests_exam_point 边 provenance∈{dual_model_agree,explicit_label}, 按边属性非按年)→ 2026 新边自动入 D0; 加端点有效+计数门+moth(exam-point-edges-present/xgkii-2026-truth-imported/exam-year-coverage-no-stale)。**新卷传导连门禁都自动覆盖**, 这是中考一键传导的门侧保证。
 
+## 最近 session (2026-06-27 后端正确性审计): KG关联/热力图/题目-考点/考察方式 对第一手教研解析交叉验证 (用户: "检查后端正确性与准确性")
+
+> workflow `woxkh1evu`(5维度×对第一手教研解析[xgkii_*_subquestions.jsonl 的 analysis 字段直写题型]交叉验证 + 对抗复核)。**核心结论(坑12教科书案例)**: 机械正确性(0孤儿/0停用词/结构)全绿且诚实, 但2个**分析有效性**根因被三门静默放行 —— "每条边都真, 但聚合口径错 → 分析无效"。
+> **维度裁决**: cognitive_skill(考察方式)=**可信**(100/100对第一手解析对账, 坑16系统性低估推断已实证根治) · 热力图=**可信**(本项目诚实最扎实) · genre/theme关联=**已修** · 题目↔词/语法=tests_exam_point/tests_grammar已修, tests_word语义待修。
+
+**已修 (commit 935ec14 + f599c72, 三门全绿)**:
+- **#1/#2 [blocker] genre/theme 篇章级口径根治**: genre/theme 是篇章属性, eol 2021/22 按子题存(每篇N行)→ 1篇25子题记25次 → 记叙文55.8%(子题膨胀)/"命题迁移+24pt"=纯口径伪迁移。修: distribution+cooccur 对篇章级维度排除子题级源(`source_repo LIKE 'eol_xgkii%'`), cognitive_skill不动(子题级正确)。**校正后真相**(apples-to-apples): 记叙文31.8%→30.0%(持平!) / 说明文43.2%→33.3%(-9.9pt) / 应用文+6.4pt —— 与伪造的"记叙文暴涨"相反。
+- **#8 co_occurs 去膨胀**: 顶边记叙文×人与社会w=52(2021/22主导)→ 篇章级11边, 顶边记叙文×人与自我w=12。
+- **#5 [major] evidence_json 非法JSON**: 2条 introduces_phrase 含控制字符\\x7f → 全表json_extract崩(byte21); json.dumps+清控制字符, 重建546边(非法2→0)。
+- **#4 [major] tests_grammar 阅读误报**: 全题型子串匹配→7条落阅读理解(不考语法)。限离散语法题型(语法填空/单选/短改), 383→360边, 误报0。
+- **三件套门**(坑17): D0 _check_passage_dim_granularity/_check_evidence_json_valid/_check_grammar_qtype + d0_trend计数门改篇章级口径 + cooccur_min基线15→10 + moth cooccur改结构不变量。DB备份 /tmp/gz_pre_correctness.bak。
+
+**待修 (精确 flag, 见 spawn_task)**:
+- **#3 [major] tests_word "必教/被考过"语义**: tests_word边语义="词出现在raw_question(含95词阅读篇章)", 但 exam_status core/HV_extra 当"必教/被考过"(72%辽宁"考过"词仅来自阅读篇章内容词从未做离散考点)。**贯穿10+文件**(heatmap/k12/vocab_classify/exam_vocab/lesson_plan/course/audit+前端lesson/teacher)宽blast → 留焦点session做(mio#11 别在长session尾鲁莽改宽影响面)。两选: (a)深重建tests_word加scope=passage|item (b)语义改标"辽宁卷文本曾出现"。修前**必caveat**: "必教"在修复前降级"辽宁卷文本曾出现"。
+- **#7 [minor]** cognitive_skill FB正则漏抽2020#24(缺左括号【), recall 99%(85应86); 前导改`【?`重建+级联baselines。
+- **#badge nuance** (本次修复暴露): genre/theme 现按篇章(~19新卷制)算, 但徽章仍显"142题"(子题数) → 迁移是小样本方向性, 徽章对篇章级维度应显篇章数(或加caveat)。
+- **#10/#11 [minor]** characterizes_theme泛词噪声(随#3归真) · audit/graph.py加provenance契约门(防御纵深)。
+
 ## 最近 session (2026-06-27 前端 RC1 ceiling 收口): workflow审计41条缺陷 → 按价值序全修 + 强化门 (用户三连主诉"其他画面太乱了")
 
 > 起因: 用户截图反馈"考点驾驶舱大部分空白 / 知识图谱不正常 / 其他画面太乱了 / 关联出版社+几个词+球型旋转+弹出不知所云"。前两轮已修图表生命周期+图谱重建为考点共现网络; 本轮收口"太乱"。
