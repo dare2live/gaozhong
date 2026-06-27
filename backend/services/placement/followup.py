@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import duckdb
 
+from backend.services.exam_vocab import TESTED_QTYPES   # 根因A: 词/语法弱点只取离散考点题型(出现≠考查)
+
 
 def pick_followup_questions(con: duckdb.DuckDBPyConnection,
                             wrong_qids: list[int],
@@ -25,11 +27,12 @@ def pick_followup_questions(con: duckdb.DuckDBPyConnection,
         {questions: [...], tag_coverage: [...]}
     """
     if not wrong_qids:
-        return {"questions": [], "tag_coverage": []}
+        return {"questions": [], "n_questions": 0, "tag_coverage": []}
 
     weak_tags = _extract_weak_tags(con, wrong_qids)
     if not weak_tags:
-        return {"questions": [], "tag_coverage": []}
+        # 根因A: 错题全为阅读/听力等语篇题型时无离散词/语法弱点 → 诚实返空(n_questions=0), 不冒充弱点
+        return {"questions": [], "n_questions": 0, "tag_coverage": []}
 
     exclude_set = set(exclude_qids)
     chosen = _pick_by_tags(con, weak_tags, exclude_set, n)
@@ -105,14 +108,19 @@ def _extract_weak_tags(con: duckdb.DuckDBPyConnection,
                        wrong_qids: list[int]) -> list[str]:
     """从错题提取 word/grammar tag (去重, 按频次降序)."""
     placeholders = ",".join("?" * len(wrong_qids))
+    tmarks = ",".join("?" * len(TESTED_QTYPES))
+    # 根因A: 词/语法弱点只取**离散考点题型**(完形/语法填空/短改/单选)的 tag; 错的阅读/听力题其篇章词
+    # (first/marathon 等)不冒充弱点(出现≠考查; 阅读真弱点是 cognitive_skill, 走 exam_point 见 task)。
     rows = con.execute(
         f"SELECT qt.tag_id, COUNT(*) as cnt "
         f"FROM question_tags qt "
         f"JOIN tag_dictionary td ON td.tag_id = qt.tag_id "
+        f"JOIN question_bank qb ON qb.qb_id = qt.qb_id "
         f"WHERE qt.qb_id IN ({placeholders}) "
         f"AND td.tag_kind IN ('word', 'grammar') "
+        f"AND qb.question_type IN ({tmarks}) "
         f"GROUP BY qt.tag_id ORDER BY cnt DESC",
-        wrong_qids,
+        wrong_qids + list(TESTED_QTYPES),
     ).fetchall()
     return [r[0] for r in rows]
 

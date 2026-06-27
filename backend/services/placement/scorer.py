@@ -60,16 +60,21 @@ def _layer_recommendation(accuracy: float, spec: dict) -> dict:
 
 
 def _weak_concepts(con: duckdb.DuckDBPyConnection, wrong_qids: list[int]) -> list[dict]:
-    """错题的 word/grammar tag → 弱点 concept (去重)."""
+    """错题的 word/grammar tag → 弱点 concept (去重)。根因A: 只取**离散考点题型**(完形/语法填空/短改/单选)
+    的 word/grammar tag — 错的阅读/听力题其篇章词(first/marathon)不冒充弱点(出现≠考查; 阅读真弱点走 exam_point)。"""
     if not wrong_qids:
         return []
+    from backend.services.exam_vocab import TESTED_QTYPES
     placeholders = ",".join("?" * len(wrong_qids))
+    tmarks = ",".join("?" * len(TESTED_QTYPES))
     rows = con.execute(
-        f"SELECT DISTINCT tag_id FROM question_tags "
-        f"WHERE qb_id IN ({placeholders}) "
-        f"AND (tag_id LIKE 'word:%' OR tag_id LIKE 'grammar:%') "
+        f"SELECT DISTINCT qt.tag_id FROM question_tags qt "
+        f"JOIN question_bank qb ON qb.qb_id = qt.qb_id "
+        f"WHERE qt.qb_id IN ({placeholders}) "
+        f"AND (qt.tag_id LIKE 'word:%' OR qt.tag_id LIKE 'grammar:%') "
+        f"AND qb.question_type IN ({tmarks}) "
         f"LIMIT 30",
-        wrong_qids,
+        wrong_qids + list(TESTED_QTYPES),
     ).fetchall()
     return [
         {"concept_id": r[0], "kind": r[0].split(":", 1)[0]}

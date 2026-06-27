@@ -83,9 +83,11 @@ def check_cross_version(con: duckdb.DuckDBPyConnection, check) -> None:
 def check_followup(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (18) placement followup (Codex Q6) ===")
     from backend.services.placement import followup
-    # 抽 G1 placement 的前 3 题假装做错, 验证 followup 能抽到题
+    # 抽**离散考点题型**(完形/语法填空/短改/单选) 3 题假装做错, 验证 followup 能抽到题。
+    # 根因A: word/grammar 弱点只从离散题型派生(阅读篇章词不冒充弱点), 故测试须用离散题型 qids。
     rows = con.execute(
-        "SELECT qb_id FROM question_bank LIMIT 5"
+        "SELECT qb_id FROM question_bank "
+        "WHERE question_type IN ('完形填空','语法填空','短文改错','单选(语法/词汇)') LIMIT 5"
     ).fetchall()
     all_qids = [r[0] for r in rows]
     wrong_qids = all_qids[:3] if len(all_qids) >= 3 else all_qids
