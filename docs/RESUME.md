@@ -23,7 +23,12 @@
 - **#8 [major] deepens "母集"伪claim**: k12 basis 称"中考语篇填空=高考语法填空考点全集N=2实证"证伪(50/71边在10空外)→诚实化措辞。
 
 **待修 (宽blast根因, 留焦点session, 见 spawn_task task_07b9bbd9/task_d4fa8ece)**:
-- **根因A [major] tests_word "出现≠考查"** (task_07b9bbd9): 一边坏3方 — vocab必教(155/180仅篇章)/course对齐76.8%(真12.1%)/placement假弱点 + 省份混算(make 66%非辽宁, lesson_plan.py:33 docstring说谎违§7) + 越纲率双定义。姊妹 tests_grammar 已收窄而 tests_word 漏。需拆"出现vs考查"边语义+省份过滤+跨源真值门。
+- **根因A [major] tests_word "出现≠考查"** — **部分已修 (commit 2120c07)**: lesson_plan/recommend/备课整合 的
+  vocab.py 词频/对齐/top词已收口**辽宁离散考点题型**(_TESTED_QTYPES=完形/语法填空/短改/单选, +省份); make 频次
+  194→16, 单元 alignment top 从 make/time→confirm/crowd 真vocab, §7 省份谎言修。**剩 (task_fddbf266)**: 词典
+  "辽宁高考命中"/"必教★"档仍走 word_exam_hits {ln}(含阅读篇章, make显命中66)→ 需加 ln_tested + 改 dict/
+  exam_status/vocab_classify 三消费方 + 同步**三源一致断言**(会 trip stop_gate, 故留焦点 context 谨慎做)。
+  placement 假弱点 + 越纲率双命名 也并入该收尾 task。
 - **根因B [major] source_repo 子题/篇章粒度未归一** (task_d4fa8ece): SUBQ_SOURCE_LIKE 鉴别器已存在但没传播到 trend/model.py(avg_share→蓝图)/question_bank/loader.py(题型分布)/difficulty(=len(stem)粒度伪影) + class_weakness分母(弱生子集非全班 42%vs真28%)。需 exam_questions_norm view 归一(docs已列P2)。
 - **根因C** 样本量分母(部分由#5缓解, 余 scope.py 收口随B做) · **根因D [系统性] 门普遍是"派生==同源派生"重言式**(坑1/16/17): 应所有口径断言跨第一手真相源(非同源自证)+ moth AND D0 双门 + 对抗注入。本次新增门均按此(as-served公式/跨源)。
 
