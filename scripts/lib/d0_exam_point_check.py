@@ -35,6 +35,35 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
         "SELECT COUNT(*) FROM student_weakness WHERE concept_id NOT LIKE 'exam_point:%'").fetchone()[0]
     check("薄弱环节维度=exam_point真考点 (非word token)", bad_wk == 0, f"{bad_wk} 非考点")
     _check_no_theme_l3(con, check)
+    _check_passage_dim_granularity(con, check)
+    _check_evidence_json_valid(con, check)
+
+
+def _check_passage_dim_granularity(con: duckdb.DuckDBPyConnection, check) -> None:
+    """RC1#6 防回归 (后端审计 2026-06-27): genre/theme/theme_l2 是**篇章级**维度(整篇1个体裁/主题),
+    eol 2021/2022 按子题存 → 分布/共现必须排除子题级源(source_repo LIKE 'eol_xgkii%'), 否则 1 篇 N 子题
+    记 N 次失真(记叙文 55.8% 子题膨胀, 篇章级真值~30%; "命题迁移+24pt"伪迁移)。
+    断言: 分布数的 genre/theme 边 == 非子题级源 genre/theme 边(证明滤生效; 回归则分布数虚高 → FAIL)。"""
+    from backend.services.exam_point.loader import exam_point_distribution
+    dist = exam_point_distribution(con)
+    dist_n = sum(x["n"] for era in dist.values()
+                 for d in ("genre", "theme_context", "theme_l2") for x in era.get(d, []))
+    truth_n = con.execute(
+        "SELECT COUNT(*) FROM edges e "
+        "JOIN exam_questions q ON ('question:'||q.question_id)=e.src_id AND q.province LIKE '辽宁%' "
+        "WHERE e.relation='tests_exam_point' "
+        "AND json_extract_string(e.evidence_json,'$.dimension') IN ('genre','theme_context','theme_l2') "
+        "AND q.source_repo NOT LIKE 'eol_xgkii%'").fetchone()[0]
+    check("genre/theme 分布=篇章级口径 (排除子题级eol源; 防记叙文子题膨胀+伪迁移回归)",
+          dist_n == truth_n, f"分布数{dist_n} ≠ 篇章级真值{truth_n}")
+
+
+def _check_evidence_json_valid(con: duckdb.DuckDBPyConnection, check) -> None:
+    """RC1#5 防回归: 全边 evidence_json 须合法 JSON (手拼含 \\x7f/制表符=非法, 全表 json_extract 崩)。"""
+    bad = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE evidence_json IS NOT NULL "
+        "AND TRIM(evidence_json) <> '' AND NOT json_valid(evidence_json)").fetchone()[0]
+    check("全边 evidence_json 合法JSON (防手拼控制字符致全表json_extract崩)", bad == 0, f"{bad} 非法")
 
 
 def _check_no_theme_l3(con: duckdb.DuckDBPyConnection, check) -> None:

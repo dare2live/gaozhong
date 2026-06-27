@@ -103,6 +103,19 @@ def load_exam_points(con: duckdb.DuckDBPyConnection) -> dict:
 # 卷制断点 (PIT §3.1) 走 trend.scope 单点, 不再各自硬编码 2021 (与 segment() 同口径)。
 _ERA_SQL = scope.era_sql("q.year")
 
+# 篇章级口径 (RC1 后端审计 #1, 2026-06-27): genre/theme 是**篇章属性**(整篇一个体裁/主题群);
+# eol 2021/2022 源按**子题**存(每篇 N 行)→ 这些维度若按子题计, 1 篇 25 子题 = 记 25 次(失真~5x:
+# 记叙文 55.8% 实为子题膨胀, 篇章级真值~30%; "命题迁移 +24pt"是纯口径伪迁移)。
+# 故 genre/theme/theme_l2 的分布/共现**排除子题级源**, 与篇章级年份(2015-20/2023-26)apples-to-apples。
+# cognitive_skill 是**子题属性**(每子题 1 题型, 审计 100/100 对账正确), 不在此列, 照常计子题。
+# 2021/2022 待 eol 篇章重建后再以篇章级纳入 genre/theme(当前 schema 无篇章边界, 见 docs)。
+PASSAGE_LEVEL_DIMS = ("genre", "theme_context", "theme_l2")
+SUBQ_SOURCE_LIKE = "eol_xgkii%"   # 子题级源鉴别 (source_repo); 单一真相源, cooccur 等复用
+# SQL 片段: 篇章级维度边须来自非子题级源 (cognitive_skill 维度不受限)
+_PASSAGE_DIM_SQL = (
+    "NOT (json_extract_string(e.evidence_json, '$.dimension') IN ('genre','theme_context','theme_l2') "
+    f"AND q.source_repo LIKE '{SUBQ_SOURCE_LIKE}')")
+
 
 def bridge_exam_point_themes(con: duckdb.DuckDBPyConnection) -> dict:
     """桥接 exam_point 主题考点 ↔ 教材 theme 节点 (同课标主题群) — 补 4 路追溯断缝.
@@ -155,6 +168,7 @@ def exam_point_distribution(con: duckdb.DuckDBPyConnection,
         JOIN exam_questions q
           ON ('question:' || q.question_id) = e.src_id AND q.province LIKE '辽宁%'
         WHERE e.relation = 'tests_exam_point'
+          AND {_PASSAGE_DIM_SQL}
         GROUP BY 1, 2, 3
     """).fetchall()
     totals: dict[tuple, int] = {}

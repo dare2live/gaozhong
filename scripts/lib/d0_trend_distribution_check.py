@@ -34,12 +34,15 @@ def _check_pct_sums(dist: dict, check) -> None:
 
 
 def _check_count_total(con, dist: dict, check) -> None:
+    # 后端审计#1: 分布对 genre/theme 篇章级维度排除子题级源(eol_xgkii), 故边计数须用同口径(复用
+    # loader._PASSAGE_DIM_SQL 单一源, 防 check 与 service 漂移)。原"dist==全部边"是子题膨胀下的重言式。
+    from backend.services.exam_point.loader import _PASSAGE_DIM_SQL
     dist_n = sum(r["n"] for dims in dist.values() for rows in dims.values() for r in rows)
     edge_n = con.execute(
         "SELECT COUNT(*) FROM edges e JOIN exam_questions q "
         "ON ('question:'||q.question_id)=e.src_id AND q.province LIKE '辽宁%' "
-        "WHERE e.relation='tests_exam_point'").fetchone()[0]
-    check("分布计数总和=辽宁考点边数", dist_n == edge_n, f"dist={dist_n} edge={edge_n}")
+        f"WHERE e.relation='tests_exam_point' AND {_PASSAGE_DIM_SQL}").fetchone()[0]
+    check("分布计数总和=辽宁篇章级口径考点边数(genre/theme排子题源)", dist_n == edge_n, f"dist={dist_n} edge={edge_n}")
 
 
 def _check_era_labels(dist: dict, check) -> None:

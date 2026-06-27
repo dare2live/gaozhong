@@ -248,9 +248,9 @@ assertions:
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='characterizes_theme'\").fetchone()[0];s=c.execute(\"SELECT COUNT(*) FROM edges e JOIN nodes n ON n.concept_id=e.dst_id WHERE e.relation='characterizes_theme' AND e.src_id='word:plastic' AND n.label='环境保护'\").fetchone()[0];c.close();print('OK' if n>=30 and s==1 else f'FAIL {n} {s}')"]
     expect: {op: regex, pattern: "OK"}
   - id: cooccur-materialized
-    claim: "考点共现关联性入图(件3第三腿): co_occurs 19边跨维(genre×theme_l2/context)+era分层(PIT); 记叙文×人与社会等辽宁命题模式成图一等公民; 单算点service+持久化 (删杜撰theme_l3共现27条后, 原46)"
+    claim: "考点共现关联性入图(件3第三腿): co_occurs **篇章级11边**跨维(genre×theme)+era分层(PIT); 单算点service+持久化。后端审计#8已校正: 原19含2021/22子题级5x膨胀(顶边记叙文×人与社会w=52伪关联), 排除eol子题级后篇章级实测11(顶边记叙文×人与自我w=12); 跨维only(无theme L1×L2同轴冗余)。"
     type: shell
-    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='co_occurs'\").fetchone()[0];s=c.execute(\"SELECT COUNT(*) FROM edges e JOIN nodes a ON a.concept_id=e.src_id JOIN nodes b ON b.concept_id=e.dst_id WHERE e.relation='co_occurs' AND ((a.label='记叙文' AND b.label='人与社会') OR (a.label='人与社会' AND b.label='记叙文'))\").fetchone()[0];c.close();print('OK' if n>=15 and s==1 else f'FAIL {n} {s}')"]
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='co_occurs'\").fetchone()[0];self_axis=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='co_occurs' AND json_extract_string(evidence_json,'$.a_dim') IN ('theme_context','theme_l2') AND json_extract_string(evidence_json,'$.b_dim') IN ('theme_context','theme_l2')\").fetchone()[0];c.close();print('OK' if n>=10 and self_axis==0 else f'FAIL n={n} self_axis={self_axis}')"]
     expect: {op: regex, pattern: "OK"}
   - id: word-sense-cross-stage
     claim: "word_sense本体(master A1): 142确认跨阶段多义词→284节点+142 expands_sense边(初中→高中); 双模型判断+对抗验证(坑16过度检测305→142); ceiling天花板→上限新义"

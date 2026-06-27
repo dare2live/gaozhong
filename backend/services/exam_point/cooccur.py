@@ -14,6 +14,7 @@ import json
 import duckdb
 
 from backend.services.trend import scope
+from backend.services.exam_point.loader import SUBQ_SOURCE_LIKE
 
 _THEME_AXIS = {"theme_context", "theme_l2"}  # L1/L2 同属 theme 轴, 互相嵌套非命题关联
 
@@ -35,6 +36,7 @@ def exam_point_cooccurrence(con: duckdb.DuckDBPyConnection, min_co: int = 2) -> 
         JOIN edges eb ON ea.src_id = eb.src_id AND ea.dst_id < eb.dst_id
              AND ea.relation = 'tests_exam_point' AND eb.relation = 'tests_exam_point'
         JOIN exam_questions q ON ('question:' || q.question_id) = ea.src_id AND q.province LIKE '辽宁%'
+             AND q.source_repo NOT LIKE '{SUBQ_SOURCE_LIKE}'
         JOIN nodes na ON na.concept_id = ea.dst_id
         JOIN nodes nb ON nb.concept_id = eb.dst_id
         GROUP BY 1, 2, 3, 4, 5

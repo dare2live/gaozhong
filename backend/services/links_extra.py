@@ -13,6 +13,12 @@ import duckdb
 from .audit.grammar_4q import TERM_TO_LABEL_KEYWORD
 
 _TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z'\-]{1,}")
+_CTRL_RE = re.compile(r"[\x00-\x1f\x7f]")   # RC1#5: 控制字符(\x7f/制表符等)清洗, 防非法 JSON
+
+
+def _clean_ctrl(s: str) -> str:
+    """去控制字符 (源含 \\x7f/制表符会污染 evidence_json; json.dumps 也会转义, 此处源头清干净)."""
+    return _CTRL_RE.sub(" ", s or "")
 
 # Unit title 关键词 → 主题语境. 简短 keyword 子串匹配 (broad覆盖).
 UNIT_THEME_HINTS = {
@@ -150,13 +156,13 @@ def build_introduces_phrase(con: duckdb.DuckDBPyConnection) -> int:
         cid = f"phrase:{sha}"
         if cid not in seen_nodes:
             seen_nodes.add(cid)
-            attrs = ('{"canonical": "%s", "type": "%s"}'
-                     % (canon.replace('"', '\\"'), ptype))
-            node_rows.append((cid, "phrase", canon, attrs))
-        ev_short = (ev or "")[:200].replace('"', "'")
+            # RC1#5: 用 json.dumps 生成 JSON (默认转义控制字符+引号), 不再手拼只转双引号 —
+            # 手拼会让源含 \x7f/制表符的 canon/ev 产出非法 JSON, 全表 json_extract 直接崩。
+            node_rows.append((cid, "phrase", canon,
+                              json.dumps({"canonical": _clean_ctrl(canon), "type": ptype}, ensure_ascii=False)))
         edge_rows.append((
             f"unit:{ver}/{vol}/U{un}", cid, 1.0,
-            '{"evidence": "%s"}' % ev_short,
+            json.dumps({"evidence": _clean_ctrl((ev or "")[:200])}, ensure_ascii=False),
         ))
     if node_rows:
         con.executemany("INSERT OR REPLACE INTO nodes VALUES (?, ?, ?, ?)", node_rows)
