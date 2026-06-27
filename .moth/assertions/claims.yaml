@@ -179,9 +179,9 @@ assertions:
     command: ["bash", "-c", "grep -q 'exportChartPNG' frontend/static/common.js && grep -q 'exportCSV' frontend/static/common.js && grep -q 'wireExports' frontend/static/beike.js && grep -q 'GZ.exportCSV\\|G.exportCSV' frontend/static/dict.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
   - id: exam-point-popup-entry-wired
-    claim: "考点浮窗入口在位(教研室#3): graph_popup 导出 GZ.openPopup + beike A区/jiangke cooccur 图 click 调它弹考点浮窗(图表标签非HTML无法走click委托)"
+    claim: "考点浮窗入口在位(教研室#3): graph_popup 导出 GZ.openPopup; 共现图 click→popup 收口在 common.js renderCooccurNetwork 单点(铁律1, 图表标签非HTML无法走click委托故需图内绑定); jiangke C' + 图谱tab 均复用该单点渲染器; beike A区 click 调 G.openPopup"
     type: shell
-    command: ["bash", "-c", "grep -q 'GZ.openPopup = openPopup' frontend/static/graph_popup.js && grep -q 'G.openPopup' frontend/static/beike.js && grep -q 'G.openPopup' frontend/static/jiangke.js && echo 0 || echo 1"]
+    command: ["bash", "-c", "grep -q 'GZ.openPopup = openPopup' frontend/static/graph_popup.js && grep -q 'window.GZ.openPopup' frontend/static/common.js && grep -q 'G.openPopup' frontend/static/beike.js && grep -q 'renderCooccurNetwork' frontend/static/jiangke.js && grep -q 'renderCooccurNetwork' frontend/static/app_router.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
   - id: exam-point-popup-not-empty
     claim: "exam_point 浮窗真题不断链(教研室#2): genre考点显qbank真题 + cognitive_skill考点显2021+子题 + word回归; 防 relation IN 漏 tests_exam_point 再断链"
