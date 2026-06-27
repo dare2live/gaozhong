@@ -13,12 +13,22 @@ from backend.services.exam_point import (cognitive_skill_by_content, cognitive_s
 from backend.services.trend import scope
 
 
-def _era_sufficiency(con) -> dict:
-    """各 era 分布充足度 (单点取自 scope.diagnose, 与趋势同源); 供前端透出诚实标注."""
+def _era_sufficiency(con, by_era=None) -> dict:
+    """各 era 分布充足度 (单点取自 scope.diagnose, 与趋势同源); 供前端透出诚实标注.
+
+    后端审计#5: by_era 是 era **子题池**总数(新卷制142), 对 cognitive_skill(子题级维度)正确;
+    但 genre/theme 是**篇章级**维度, 样本量应按该(era,dim)的篇章数(distribution 的 n 之和, ~19-30),
+    用142会虚高~4.5x 并误判 theme_l2(n=19<30)为充足。故加 by_era_dim 给前端按显示维度取真样本量。
+    """
     diag = scope.diagnose(con)
     suff = {era: {"n_total": seg["total"], "distribution_eligible": seg["distribution_eligible"]}
             for era, seg in diag["by_segment"].items()}
-    return {"by_era": suff, "distribution_reliable": diag["distribution_reliable"]}
+    by_dim: dict = {}
+    for era, dims in (by_era or {}).items():
+        by_dim[era] = {dim: {"n_total": sum(r["n"] for r in rows),
+                             "distribution_eligible": sum(r["n"] for r in rows) >= scope.MIN_DISTRIBUTION_SAMPLE}
+                       for dim, rows in dims.items()}
+    return {"by_era": suff, "by_era_dim": by_dim, "distribution_reliable": diag["distribution_reliable"]}
 
 
 def api_exam_point_distribution(qs: dict) -> dict:
@@ -37,7 +47,7 @@ def api_exam_point_distribution(qs: dict) -> dict:
             "dimensions": dims,
             "distribution": by_era,
             "shift": exam_point_shift(con),   # 命题迁移单算点 (前端不重算, Rule1; 审计HIGH#18)
-            "sufficiency": _era_sufficiency(con),
+            "sufficiency": _era_sufficiency(con, by_era),   # 审计#5: 传 by_era 得 per-(era,dim) 篇章级样本量
         }
     finally:
         con.close()

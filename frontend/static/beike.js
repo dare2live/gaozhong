@@ -62,16 +62,19 @@
     const eraPill = (id, label) => `<button class="bk-pill ${state.era === id ? "on" : ""}" data-era="${id}">${label}</button>`;
     const dimOpt = Object.keys(DIM_LABEL).map(k => `<option value="${k}" ${state.dim === k ? "selected" : ""}>${DIM_LABEL[k]}</option>`).join("");
     const eras = state.dist ? state.dist.eras : [ERA_NEW, ERA_OLD];
-    // 样本充足性读 service 透传的 sufficiency.by_era[era] (scope.MIN_DISTRIBUTION_SAMPLE 已 service 算), 前端不重判/不求和 (Rule1)
-    // RC1#8: 修取键 sufficiency[era] → sufficiency.by_era[era](原键错落空致前端求和=120, 权威 n_total=142)
-    const suff = ((state.dist && state.dist.sufficiency && state.dist.sufficiency.by_era) || {})[state.era] || {};
+    // 样本充足性: 后端审计#5 — genre/theme 是篇章级维度, 样本量按该(era,维度)篇章数(by_era_dim),
+    // 非 era 子题池(142会虚高~4.5x 且掩盖 theme_l2 n=19<30 的不足)。service 已算 distribution_eligible, 前端不重判 (Rule1)。
+    const _sf = (state.dist && state.dist.sufficiency) || {};
+    const suff = ((_sf.by_era_dim || {})[state.era] || {})[state.dim]
+              || ((_sf.by_era || {})[state.era] || {});   // 兜底: 无 per-dim 时回退 era 池
     const n = suff.n_total != null ? suff.n_total : 0;
     const ok = !!suff.distribution_eligible;
+    const unit = (_sf.by_era_dim && _sf.by_era_dim[state.era] && _sf.by_era_dim[state.era][state.dim]) ? "篇" : "题";
     return `
 <span class="bk-flabel">卷制</span>${eraPill(ERA_NEW, "2021+ 新高考II")}${eraPill(ERA_OLD, "2015–2020")}
 <span class="bk-lock">辽宁卷·锁定</span>
 <span class="bk-flabel" style="margin-left:8px;">维度</span><select id="bk-dim" aria-label="考点分布维度">${dimOpt}</select>
-<span class="bk-suff ${ok ? "ok" : "warn"}">${ok ? "分布可用 · " + n + "题" : "样本不足 · " + n + "题"}</span>`;
+<span class="bk-suff ${ok ? "ok" : "warn"}">${ok ? "分布可用 · " + n + unit : "样本不足(方向性) · " + n + unit}</span>`;
   }
 
   function renderDist() {

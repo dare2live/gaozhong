@@ -50,7 +50,10 @@ def blueprint(con: duckdb.DuckDBPyConnection) -> dict:
         "WHERE e.relation='deepens' ORDER BY sj.label"
     ).fetchall()
     return {"pairs": [{"junior": j, "senior": h} for j, h in rows], "n": len(rows),
-            "basis": "中考语篇填空 = 高考语法填空考点全集 (N=2 省统一卷实证, zhongkao_gaokao_alignment.md)",
+            # 后端审计#8 诚实化: deepens 边是初中课标语法附录按术语匹配高中同名/别名点(全71对, 含自映射+别名),
+            # 非"高考语法填空考点全集 N=2实证"——50/71 在中考语篇填空10空之外, 属通用语法taxonomy衔接。
+            "basis": "初中↔高中 同名/别名语法点衔接 (deepens; 初中课标语法附录按术语匹配高中同名点, 71对)。"
+                     "注: 非'高考语法填空考点全集'——多数在中考语篇填空10空之外, 为通用语法 taxonomy 衔接。",
             "edge": "deepens (初中语法→高中深化)"}
 
 
@@ -80,8 +83,9 @@ def zhongkao_distribution(con: duckdb.DuckDBPyConnection) -> dict:
 def _kaodian_pivot(kaodian: list) -> dict:
     """语篇填空逐空 pivot: 空号(qid末段) × 年 → 考点. 单算点 reshape (前端禁重pivot, 铁律1).
 
-    辽宁中考语篇填空固定每年 10 空(31-40), 每空 1 语法考点 = 高考语法填空考点全集(N=2 省统一卷实证).
-    年列从数据派生(不 hardcode 年份, 防漂移); 缺空留空串(诚实非补零).
+    辽宁中考语篇填空固定每年 10 空(31-40), 每空 1 语法考点。年列从数据派生(不 hardcode); 缺空留空串.
+    后端审计#8: 行键=空号仅为呈现, **同一空号逐年语法维度可不同**(非"同空逐年考同点"); "换词不换维"
+    只在维度集合层成立(2024/2025 维度 ∩=10)。母集对照见 zhongkao_gaokao_alignment.md(高考侧仅2021有逐空标签).
     """
     by_blank: dict[str, dict] = {}
     for y, q, a in kaodian:
@@ -92,5 +96,7 @@ def _kaodian_pivot(kaodian: list) -> dict:
     return {
         "years": years,
         "rows": [{"blank": b, "考点": {yr: by_blank[b].get(yr, "") for yr in years}} for b in blanks],
-        "basis": "中考语篇填空考点 = 高考语法填空考点全集 (N=2 省统一卷实证, zhongkao_gaokao_alignment.md)",
+        # 审计#8 诚实化: 逐空逐年考点(同空号逐年维度可不同, 行键仅呈现); "换词不换维"是维度集合层(∩=10), 非逐空。
+        "basis": "辽宁中考语篇填空逐空逐年考点 (N=2: 2024/2025 省统一卷)。注: 同一空号逐年语法维度可不同, "
+                 "'换词不换维'在维度集合层成立(两年∩=10维); 高考母集对照见 zhongkao_gaokao_alignment.md。",
     }

@@ -40,3 +40,27 @@ def check_versions(con: duckdb.DuckDBPyConnection, check) -> None:
              ("curriculum", 2022, "gaozhong"), ("exam_paper", 2024, "shenyang_zhongkao")]
     miss = [c for c in cases if effective_version(con, c[0], c[1], c[2]) is None]
     check("effective_version 已知年解析到唯一版本 (PIT 行为级)", not miss, f"未解析: {miss}")
+    _check_cumulative_words(con, check)
+
+
+def _check_cumulative_words(con: duckdb.DuckDBPyConnection, check) -> None:
+    """RC1后端审计#1 防回归: cumulative_words_learned 是 D0§1.2 '词量≤已学单元'越纲判断输入,
+    原 volume_key=? 谓词把累计锁单册内每跨册重置(末单元低估~10x→误判可学词越纲)。
+    断言 **as-served** city_curriculum 公式(非另写公式自证, 防绿门盖坏字段): 沿(册序,unit)单调非递减
+    + 末单元≈整版本 distinct 词(running distinct 收敛全集)。"""
+    from backend.services.recommend import city_curriculum
+    bad = []
+    for city in ("沈阳", "锦州"):   # 沈阳=外研 / 锦州=人教, 两版本都验
+        r = city_curriculum(con, city)
+        us = r.get("units") or []
+        if not us:
+            continue
+        cums = [u["cumulative_words_learned"] for u in us]
+        if any(cums[i] < cums[i - 1] for i in range(1, len(cums))):
+            bad.append(f"{city}:累计跨册非单调(重置?)")
+        tot = con.execute("SELECT COUNT(DISTINCT word) FROM unit_vocab_intro WHERE version_key=?",
+                          [r["version_key"]]).fetchone()[0]
+        if cums and cums[-1] != tot:
+            bad.append(f"{city}:末单元累计{cums[-1]}≠整版本distinct{tot}")
+    check("cumulative_words_learned 跨册 running distinct (单调+末≈整版本; 防单册重置低估越纲误判)",
+          not bad, f"{bad}")

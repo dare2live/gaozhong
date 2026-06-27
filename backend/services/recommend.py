@@ -28,13 +28,16 @@ def city_curriculum(con: duckdb.DuckDBPyConnection, city: str) -> dict:
         FROM units WHERE version_key = ?
         ORDER BY volume_key, unit_number
     """, [ver]).fetchall()
-    # 累计已学词 (per unit, distinct word)
+    # 累计已学词 (per unit, distinct word) — 后端审计#1 修: 原 volume_key=? 把累计锁单册内每跨册重置
+    # (bixiu_2 u1 不含 bixiu_1, 末单元 198 vs 真实整版本 ~2025, 低估~10x; 是 D0§1.2 "词量≤已学单元"
+    # 越纲判断输入, 低估会误判可学词越纲)。改按学习序列 running distinct: 前序册全部 + 本册≤本单元。
+    # volume_key 字典序恰=教学序 (bixiu_1<bixiu_2<bixiu_3<xuanze_1..4), DISTINCT 跨册去重(学过一次算一次)。
     word_acc: dict[tuple, int] = {}
     for vol, un, *_ in units:
         n = con.execute("""
             SELECT COUNT(DISTINCT word) FROM unit_vocab_intro
-            WHERE version_key=? AND volume_key=? AND unit_number<=?
-        """, [ver, vol, un]).fetchone()[0]
+            WHERE version_key=? AND (volume_key < ? OR (volume_key = ? AND unit_number <= ?))
+        """, [ver, vol, vol, un]).fetchone()[0]
         word_acc[(vol, un)] = n
     return {
         "city": city, "publisher": pub, "version_key": ver,
