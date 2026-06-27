@@ -439,17 +439,17 @@
       <p class="muted" style="margin:2px 0 10px;font-size:12.5px">按题型筛选浏览; 或一键生成蓝图练习卷(题面均历年真题, 结构对齐非预测)。难度 难 ${d.hard || 0} · 中 ${d.mid || 0} · 易 ${d.easy || 0}。</p>
       <div class="bk-filter" id="qb-blueprint" style="margin-bottom:10px;">
         <span class="bk-flabel">蓝图练习卷</span>
-        <label style="font-size:12px;color:var(--ink-3);">题量 <input id="qb-bp-total" type="number" value="30" min="5" max="60" style="width:54px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+        <label style="font-size:12px;color:var(--ink-3);">题量 <input id="qb-bp-total" type="number" value="30" min="5" max="60" style="width:54px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
         <button id="qb-bp-go" class="bk-pill on">${GZ.icon("grid")} 生成蓝图练习卷</button>
         <span class="muted" style="font-size:11px;">按考纲蓝图结构从真题加权抽样 · 非预测/非押题</span>
       </div>
       <details id="qb-compose" style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:var(--accent-ink);">${GZ.icon("gear")} 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
         <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
-          <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
-          <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+          <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
+          <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>难度 <select id="qb-c-diff" aria-label="组卷难度筛选" style="padding:3px;border:1px solid var(--line);border-radius:6px;"><option value="">混合</option><option>easy</option><option>mid</option><option>hard</option></select></label>
-          <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
-          <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid #d8d5cc;border-radius:6px;"></label>
+          <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
+          <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <button id="qb-c-go" class="bk-pill on">组卷</button>
         </div>
       </details>

@@ -27,7 +27,7 @@
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">考试词典 · 金矿</h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · <span style="border-bottom:1px dashed #b9b6ab;">点词</span>查跨阶段多义 · service 单算点</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · <span style="border-bottom:1px dashed var(--line);">点词</span>查跨阶段多义 · service 单算点</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" aria-label="按词首字母前缀检索" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;">
   <select id="dict-stage" aria-label="按学段筛选" style="padding:7px;border:1px solid var(--line);border-radius:6px;">
@@ -63,8 +63,8 @@
   function row(w) {
     const stage = w.stage || "—", sc = STAGE_C[stage] || "var(--ink-3)";
     const hit = w.gaokao_hit_ln ? `<b style="color:#9C2C20;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
-    return `<tr style="border-bottom:1px solid #ece9e0;">
-      <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed #b9b6ab;">${w.word}</span></td>
+    return `<tr style="border-bottom:1px solid var(--line-soft);">
+      <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed var(--line);">${w.word}</span></td>
       <td style="padding:6px 8px;color:var(--ink-2);">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>
       <td style="padding:6px 8px;"><span style="color:${sc};font-size:12px;">${stage}</span></td>
       <td style="padding:6px 8px;font-size:12px;color:var(--ink-3);">${w.curriculum_level || "—"}</td>
@@ -79,7 +79,7 @@
     G.$("#dict-n").textContent = `${rows.length} 词` + (rows.length >= 300 ? " (前300, 缩小前缀)" : "");
     if (!rows.length) { el.innerHTML = '<p class="muted" style="padding:16px;">无匹配词 — 试试其它前缀</p>'; return; }
     el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <thead><tr style="position:sticky;top:0;background:#faf9f5;text-align:left;border-bottom:2px solid #d8d6cd;">
+      <thead><tr style="position:sticky;top:0;background:#faf9f5;text-align:left;border-bottom:2px solid var(--line);">
         <th style="padding:6px 8px;">词</th><th style="padding:6px 8px;">释义 · 源</th><th style="padding:6px 8px;">阶段</th><th style="padding:6px 8px;">课标级</th><th style="padding:6px 8px;text-align:center;">辽宁高考命中</th></tr></thead>
       <tbody>${rows.map(row).join("")}</tbody></table>`;
   }
