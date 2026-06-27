@@ -4,7 +4,7 @@
  *   service 算 (exam_point_shift, 审计HIGH#18 修; 前端只渲染 shift.by_dimension)。绝不在前端聚合/做差。
  * 分层非平均: 按卷制 era 分段看, 不混历史均值。
  * 样本量诚实: 趋势读 service 的 reliable 旗, 不可信→灰显虚线 + "样本不足" banner, 不画实斜率。
- * 词频≠考点: 词汇热力标题写"词频热力"(坑12 澄清)。
+ * 词数(按状态)≠考点: 词汇热力单元格=该首字母×exam_status 的**词数**(非语料词频, 非考点热), 标"词数(按状态)非考点"(坑12 澄清)。
  * ECharts 仅渲染层 (CDN), 数据仍 service 单算。
  */
 (function () {
@@ -54,7 +54,7 @@
   <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构演变矩阵: 各题型在两个卷制时期的在场情况" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词频非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" role="img" aria-label="词汇热力图: 字母开头的词频分布(词频非考点)" style="height:300px;"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词数(按状态)非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" role="img" aria-label="词汇热力图: 首字母 × 词汇状态 的词数分布(非考点热)" style="height:300px;"></div></section>
 </div>`;
   }
 
@@ -291,9 +291,9 @@
     const statusName = s => (STATUS[s] && STATUS[s][0]) || s;
     const statusTotal = s => heat.letters.reduce((a, L) => a + ((heat.cells[L] || {})[s] || 0), 0);
     setAria("bk-heat",
-      `词汇热力图(词频非考点 · 字母开头 × 词汇状态): ` +
+      `词汇热力图(词数按状态·非考点 · 首字母 × 词汇状态): ` +
       sts.map(s => `${statusName(s)} ${statusTotal(s)} 词`).join(", "));
-    setSrTable("bk-heat", "词汇热力 — 字母 × 词汇状态 词数(词频非考点)",
+    setSrTable("bk-heat", "词汇热力 — 字母 × 词汇状态 词数(按状态·非考点)",
       ["字母", ...sts.map(statusName)],
       heat.letters.map(L => [L, ...sts.map(s => (heat.cells[L] || {})[s] || 0)]));
     charts.heat.off("click");
