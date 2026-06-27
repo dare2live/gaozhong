@@ -60,7 +60,7 @@ ${guide()}
     const rows = (d.weakness || []).slice(0, 12).reverse();
     if (!window.echarts) { G.chartLoadError(G.$("#xs-heat")); return; }   // D0诚实: 图表组件失败显式报错
     if (!rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted" style="padding:12px">暂无弱点数据 (示例库)</p>'; return; }
-    chart = chart || echarts.init(G.$("#xs-heat"));
+    chart = echarts.getInstanceByDom(G.$("#xs-heat")) || echarts.init(G.$("#xs-heat"));
     chart.setOption({
       grid: { left: 4, right: 50, top: 8, bottom: 8, containLabel: true },
       tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>弱点 ${(p[0].value * 100).toFixed(0)}% · ${rows[p[0].dataIndex].n_weak_students}生 · n=${rows[p[0].dataIndex].total_sample}` },

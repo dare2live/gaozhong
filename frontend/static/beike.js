@@ -77,7 +77,7 @@
   function renderDist() {
     const rows = (state.dist.distribution[state.era][state.dim] || []).slice().reverse();
     G.$("#bk-dimname").textContent = DIM_LABEL[state.dim];
-    charts.dist = charts.dist || echarts.init(G.$("#bk-dist"));
+    charts.dist = echarts.getInstanceByDom(G.$("#bk-dist")) || echarts.init(G.$("#bk-dist"));
     charts.dist.setOption({
       grid: { left: 4, right: 44, top: 8, bottom: 8, containLabel: true },
       xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct)) * 1.15, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
@@ -137,7 +137,7 @@
       });
     });
     G.$("#bk-relbadge").innerHTML = `<span class="bk-suff ok">结构真值·卷面config掩码</span>`;
-    charts.trend = charts.trend || echarts.init(G.$("#bk-trend"));
+    charts.trend = echarts.getInstanceByDom(G.$("#bk-trend")) || echarts.init(G.$("#bk-trend"));
     charts.trend.setOption({
       grid: { left: 4, right: 12, top: 10, bottom: 22, containLabel: true },
       xAxis: { type: "category", data: years, splitArea: { show: true }, axisLabel: { fontSize: 10 } },
@@ -177,7 +177,7 @@
     // #11: 新era reliability — distribution_reliable=false(n<30)时不可把单年噪声渲成可信精度(死线3诚实分层)
     const relNew = (cs && cs.reliability && cs.reliability[ERA_NEW]) || {};
     const newOK = relNew.distribution_reliable !== false;   // 缺省视为可信; 仅显式 false 才降级
-    charts.cog = charts.cog || echarts.init(G.$("#bk-cog"));
+    charts.cog = echarts.getInstanceByDom(G.$("#bk-cog")) || echarts.init(G.$("#bk-cog"));
     charts.cog.setOption({
       grid: { left: 4, right: 48, top: 26, bottom: 8, containLabel: true },
       legend: { top: 0, right: 0, textStyle: { fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
@@ -246,7 +246,7 @@
     const ordered = cats.slice().sort((a, b) => bc[a].total - bc[b].total); // 横向条 y 轴自下而上 → 大类在上
     const skills = ["推断", "理解具体信息", "理解主旨要义", "理解词汇"];
     const pctOf = (cat, sk) => { const s = (bc[cat].skills || []).find(x => x.label === sk); return s ? s.pct : 0; };
-    charts.cross = charts.cross || echarts.init(G.$("#bk-cross"));
+    charts.cross = echarts.getInstanceByDom(G.$("#bk-cross")) || echarts.init(G.$("#bk-cross"));
     charts.cross.setOption({
       grid: { left: 4, right: 8, top: 22, bottom: 6, containLabel: true },
       legend: { top: 0, textStyle: { fontSize: 10 }, itemWidth: 11, itemHeight: 8 },
@@ -275,7 +275,7 @@
     const data = [];
     heat.letters.forEach((L, xi) => sts.forEach((s, yi) => data.push([xi, yi, (heat.cells[L] || {})[s] || 0])));
     const maxv = Math.max(...data.map(d => d[2]));
-    charts.heat = charts.heat || echarts.init(G.$("#bk-heat"));
+    charts.heat = echarts.getInstanceByDom(G.$("#bk-heat")) || echarts.init(G.$("#bk-heat"));
     charts.heat.setOption({
       grid: { left: 60, right: 8, top: 8, bottom: 40, containLabel: false },
       xAxis: { type: "category", data: heat.letters, splitArea: { show: true }, axisLabel: { fontSize: 9 } },

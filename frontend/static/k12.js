@@ -37,7 +37,7 @@
       const r = cov.unstaged_by_reason || {};
       covEl.innerHTML = `词分阶覆盖 ${cov.staged}/${cov.total_words} · 未分阶 ${cov.unstaged}（校本超纲 ${r["校本超纲"] || 0} + 课标变形 ${r["课标变形"] || 0}, 无标准阶段）`;
     }
-    chS = chS || echarts.init(G.$("#k12-stage"));
+    chS = echarts.getInstanceByDom(G.$("#k12-stage")) || echarts.init(G.$("#k12-stage"));
     chS.setOption({
       legend: { data: ["词", "语法"], bottom: 0, textStyle: { fontSize: 11 } },
       grid: { left: 4, right: 40, top: 8, bottom: 28, containLabel: true },
@@ -62,7 +62,7 @@
 
   function renderZk(d) {
     const rows = (d.by_question_type || []).slice().reverse();
-    chZ = chZ || echarts.init(G.$("#k12-zk"));
+    chZ = echarts.getInstanceByDom(G.$("#k12-zk")) || echarts.init(G.$("#k12-zk"));
     chZ.setOption({
       grid: { left: 4, right: 30, top: 8, bottom: 8, containLabel: true },
       tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
