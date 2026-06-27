@@ -29,11 +29,11 @@
 <h2 style="margin:0 0 2px;">考试词典 · 金矿</h2>
 <p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · <span style="border-bottom:1px dashed #b9b6ab;">点词</span>查跨阶段多义 · service 单算点</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
-  <input id="dict-q" placeholder="输入词首字母前缀检索…" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid #d8d6cd;border-radius:6px;font-size:14px;">
-  <select id="dict-stage" style="padding:7px;border:1px solid #d8d6cd;border-radius:6px;">
-    <option value="">全部阶段</option><option>初中</option><option>高中必修</option><option>高中选修</option>
+  <input id="dict-q" placeholder="输入词首字母前缀检索…" aria-label="按词首字母前缀检索" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;">
+  <select id="dict-stage" aria-label="按学段筛选" style="padding:7px;border:1px solid var(--line);border-radius:6px;">
+    <option value="">全部学段</option>${["小学", "义务教育", "初中", "高中必修", "高中选修", "校本超纲"].map(s => `<option>${s}</option>`).join("")}
   </select>
-  <label style="font-size:13px;color:#666;"><input type="checkbox" id="dict-exam"> 仅辽宁高考命中</label>
+  <label style="font-size:13px;color:var(--ink-2);"><input type="checkbox" id="dict-exam"> 仅辽宁高考命中</label>
   <button id="dict-export" class="bk-export" title="导出当前筛选词表 CSV (备课发学生)">${GZ.icon("download")} CSV</button>
   <span id="dict-n" class="muted" style="font-size:12px;"></span>
 </div>
@@ -92,7 +92,9 @@
     if (q) qs.push("prefix=" + encodeURIComponent(q));
     if (stage) qs.push("stage=" + encodeURIComponent(stage));
     if (exam) qs.push("source=exam");
-    const data = await fetchJSON("/api/exam_dictionary?" + qs.join("&")).catch(() => ({ rows: [] }));
+    // RC1#5: 接口失败显式 error-state, 不再 .catch(()=>空) 冒充"无匹配词"(D0 诚实)
+    const data = await G.fetchSafe("/api/exam_dictionary?" + qs.join("&"));
+    if (G.isErr(data)) { G.$("#dict-list").innerHTML = G.errorBox({ title: "词典加载失败", msg: "后端未能返回词表 (非'无匹配词')。" }); G.$("#dict-n").textContent = ""; return; }
     const tot = G.$("#dict-total");                       // 词典总词数 = service 返回 total, 非写死(no-hardcode)
     if (tot && data.total != null) tot.textContent = Number(data.total).toLocaleString();
     render(Array.isArray(data) ? data : (data.rows || data.words || []));
@@ -112,8 +114,10 @@
       exp.className = "dict-expand";
       exp.innerHTML = '<td colspan="5" style="padding:0;"><div class="muted" style="padding:6px 12px;font-size:12px;">载入义项…</div></td>';
       tr.after(exp);
-      const d = await fetchJSON("/api/word_detail?word=" + encodeURIComponent(wel.getAttribute("data-word"))).catch(() => null);
-      exp.querySelector("td").innerHTML = _renderSenseDetail(d);
+      const d = await G.fetchSafe("/api/word_detail?word=" + encodeURIComponent(wel.getAttribute("data-word")));
+      exp.querySelector("td").innerHTML = G.isErr(d)
+        ? '<div class="muted" style="padding:6px 12px;font-size:12px;color:var(--warn)">义项加载失败 (接口错误, 非"单义")。</div>'
+        : _renderSenseDetail(d);
     });
     G.$("#dict-q").oninput = () => { clearTimeout(t); t = setTimeout(load, 220); };
     G.$("#dict-stage").onchange = load;

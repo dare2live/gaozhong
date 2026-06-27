@@ -62,15 +62,15 @@
     const eraPill = (id, label) => `<button class="bk-pill ${state.era === id ? "on" : ""}" data-era="${id}">${label}</button>`;
     const dimOpt = Object.keys(DIM_LABEL).map(k => `<option value="${k}" ${state.dim === k ? "selected" : ""}>${DIM_LABEL[k]}</option>`).join("");
     const eras = state.dist ? state.dist.eras : [ERA_NEW, ERA_OLD];
-    // 样本充足性读 service 透传的 sufficiency.distribution_eligible (scope.MIN_DISTRIBUTION_SAMPLE 已 service 算), 前端不重判30 (Rule1)
-    const suff = (state.dist && state.dist.sufficiency && state.dist.sufficiency[state.era]) || {};
-    const n = suff.n_total != null ? suff.n_total
-      : (eras.includes(state.era) && state.dist ? (state.dist.distribution[state.era].genre || []).reduce((a, x) => a + x.n, 0) : 0);
-    const ok = suff.distribution_eligible != null ? suff.distribution_eligible : n >= 30;
+    // 样本充足性读 service 透传的 sufficiency.by_era[era] (scope.MIN_DISTRIBUTION_SAMPLE 已 service 算), 前端不重判/不求和 (Rule1)
+    // RC1#8: 修取键 sufficiency[era] → sufficiency.by_era[era](原键错落空致前端求和=120, 权威 n_total=142)
+    const suff = ((state.dist && state.dist.sufficiency && state.dist.sufficiency.by_era) || {})[state.era] || {};
+    const n = suff.n_total != null ? suff.n_total : 0;
+    const ok = !!suff.distribution_eligible;
     return `
 <span class="bk-flabel">卷制</span>${eraPill(ERA_NEW, "2021+ 新高考II")}${eraPill(ERA_OLD, "2015–2020")}
 <span class="bk-lock">辽宁卷·锁定</span>
-<span class="bk-flabel" style="margin-left:8px;">维度</span><select id="bk-dim">${dimOpt}</select>
+<span class="bk-flabel" style="margin-left:8px;">维度</span><select id="bk-dim" aria-label="考点分布维度">${dimOpt}</select>
 <span class="bk-suff ${ok ? "ok" : "warn"}">${ok ? "分布可用 · " + n + "题" : "样本不足 · " + n + "题"}</span>`;
   }
 
@@ -265,7 +265,7 @@
     setSrTable("bk-cross", `题材 × 思维 — ${escHtml(CROSS_LBL[state.cross])} · 仅旧课标II 2015–20截面`,
       ["语篇题材", "子题数", ...skills], ariaCats.map(c => [c, "n=" + bc[c].total, ...skills.map(sk => pctOf(c, sk) + "%")]));
     // #14: era 锁醒目徽章 (F卡是唯一旧era截面卡, 防夹在双era视图里被误读为新高考结论)
-    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:#EDE8DF;color:#7a2e15;padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
+    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:var(--accent-wash);color:var(--accent-ink);padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
     G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
       + `<br><small class="muted">注 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格注仅参考。</small>`;
   }

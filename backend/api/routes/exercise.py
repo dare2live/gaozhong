@@ -99,7 +99,8 @@ def api_exercise_narrative_passages(_qs: dict) -> dict:
 
 def api_exercise_blueprint_practice(qs: dict) -> dict:
     from backend.services.exercise import predicted
-    try: total = min(int(qs.get("n", ["30"])[0]), 80)
+    # RC1#3: 前端 #qb-bp-total 发 ?total=, 兼容旧 ?n=; 否则控件填 5/60 恒出 30 题(控件骗人, 违 D0)。
+    try: total = min(int(qs.get("total", qs.get("n", ["30"]))[0]), 80)
     except ValueError: total = 30
     seed_s = qs.get("seed", [None])[0]
     seed = int(seed_s) if seed_s and seed_s.isdigit() else None

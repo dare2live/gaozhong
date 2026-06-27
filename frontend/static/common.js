@@ -20,6 +20,21 @@ window.GZ = (function () {
     return r.json();
   }
 
+  // ===== D0 诚实取数: 区分"真无数据"与"接口失败" (RC1 根因#2: 根治 .catch(()=>空) 把 500/断网冒充无数据) =====
+  // fetchSafe: 失败返回 {__err} 哨兵 (不再静默吞成 []/{}); 调用方 isErr() 判, 用 errorBox() 渲可见错误态。
+  async function fetchSafe(path) {
+    try { return await fetchJSON(path); }
+    catch (e) { return { __err: String((e && e.message) || e), __path: path }; }
+  }
+  function isErr(v) { return !!(v && v.__err); }
+  // 可见错误态 HTML (取代各 tab 灰字"无数据"静默降级; 与 design-system .error-state 同源)。
+  function errorBox(opts) {
+    opts = opts || {};
+    const retry = opts.retry === false ? "" : '<button class="es-retry" type="button" onclick="location.reload()">重新载入</button>';
+    return `<div class="error-state" style="margin:0"><div class="es-title">${opts.title || "加载失败"}</div>`
+      + `<div class="es-msg">${opts.msg || "后端接口未能返回 (非数据为空)。"} ${retry}</div></div>`;
+  }
+
   function tagChip(text, kind) {
     const k = (kind || "").replace(/[^a-z_]/gi, "");
     return `<span class="tag-chip ${k}">${text}</span>`;
@@ -271,6 +286,15 @@ window.GZ = (function () {
       const rows = [...used].sort((a, b) => b.co_n - a.co_n).map(p => `<tr><td>${p.a_label}(${_coDim(p.a_dim).label})</td><td>${p.b_label}(${_coDim(p.b_dim).label})</td><td>${p.co_n}</td></tr>`).join("");
       sr.innerHTML = `<table><caption>考点同题共现(${nodes.length}节点/${used.length}对; 题材/主题维度为模型推断方向性标注, 共现=同题出现非因果)</caption><thead><tr><th>考点A</th><th>考点B</th><th>同题共现次数</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
+    // 可见诚实口径 (RC1 根因#4): 题材/主题=双模型推断方向性, 共现≠因果。主受众=老师看屏, 不只藏 aria/sr-only。
+    // helper 层统一插一次, graph + jiangke 复用本渲染器即自动获得一致可见 caveat (防逐 tab 文案漂移)。
+    if (el.parentNode && !el.parentNode.querySelector(".cooccur-caveat")) {
+      const cv = document.createElement("p");
+      cv.className = "muted cooccur-caveat";
+      cv.style.cssText = "font-size:11px;margin:6px 0 0;";
+      cv.textContent = "注 体裁/主题维度为双模型推断(方向性, 非真值); 边=同题共现次数, 非因果。";
+      el.insertAdjacentElement("afterend", cv);
+    }
     return inst;
   }
 
@@ -342,7 +366,7 @@ window.GZ = (function () {
   }
 
   return {
-    $, $$, fetchJSON, tagChip, renderTable, formToQs,
+    $, $$, fetchJSON, fetchSafe, isErr, errorBox, tagChip, renderTable, formToQs,
     mountLayout, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,

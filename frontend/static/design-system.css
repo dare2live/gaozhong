@@ -121,9 +121,12 @@ body {
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-sm);
 }
-.bk-card { transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.bk-card { padding: 14px 16px; transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
 .bk-card:hover { box-shadow: var(--shadow); border-color: var(--line); }
-.bk-h { border-bottom: 1px solid var(--line-soft); }
+/* 布局(非装饰): 卡头标题↔源徽章两端对齐。2026-06-27 RC1 ceiling 修复 —
+ * commit 5cad53e"去双声明债"误删本组 flex/padding/宽度, 致 .bk-card 贴边/迁移行竖堆/delta 丢 pill。
+ * .bk-card 等为共享类故归 design-system 单一源(beike/graph/k12/jiangke/xisheng/textbook 一改全受益)。 */
+.bk-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--line-soft); }
 .bk-h span:first-child { font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
 .bk-h small { color: var(--ink-3); font-weight: 400; }
 .bk-src {
@@ -144,10 +147,12 @@ body {
 .bk-suff.ok { color: var(--good); }
 .bk-suff.warn { color: var(--warn); }
 
-/* ── shift rows (命题迁移) ────────────────────────────── */
-.bk-shift-row { border-bottom: 1px solid var(--line-soft); }
-.bk-shift-k { color: var(--ink-2); }
-.bk-delta { font-family: var(--num); border-radius: var(--r-xs); font-size: 12px; }
+/* ── shift rows (命题迁移): 标签 | 旧%→新% | delta-pill 三列对齐 ──── */
+.bk-shift-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); }
+.bk-shift-row:last-child { border-bottom: 0; }
+.bk-shift-k { flex: 0 0 132px; color: var(--ink-2); }
+.bk-shift-v { flex: 0 0 118px; white-space: nowrap; }
+.bk-delta { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; font-family: var(--num); border-radius: var(--r-xs); font-size: 12px; }
 
 /* ── tables (考试词典等) ──────────────────────────────── */
 table thead tr { background: var(--sunken) !important; }
