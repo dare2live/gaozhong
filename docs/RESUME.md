@@ -16,6 +16,12 @@
 ## 最近 session (2026-06-27 全局口径 bug 审计): 用"数据真但口径错→分析无效"当透镜扫7子系统 (用户: "全局审计类似问题")
 
 > workflow `w2axv2nxv`(7子系统 × 4 bug模式[计数单位/边语义≠消费/跨段apples-to-oranges/门重言式] + 对抗复核)。**结论: 7/7 都有同类 bug(23条确认), 但高度收敛于 4 根因 + 1 普遍门盲区** — 不是23个孤立bug, 根治4根+加通用门关掉绝大多数。
+>
+> **✅ 4 根因全部已修 (2026-06-27 收尾, commit 4245827→c1a66f3, 三门全绿)**: 根因A(tests_word出现≠考查)=
+> lesson/course/recommend(make 194→16) + **dict命中/必教 三源级联(ln_tested, node=jsonl=59 一致)** + placement假弱点 全修;
+> 根因B(粒度未归一)= #6班级薄弱率(全班分母) + B2蓝图考纲结构 + #7 difficulty→篇幅 全修; 根因C(样本量)=#5 per-dim;
+> 根因D(门重言式)= 本轮新增门均跨源/as-served(cumulative调真公式/3源一致/passage口径)。
+> **剩架构P2/低优**(task_cff4f9b3): exam_questions_norm view 彻底归一 · 显示层grain caveat · 越纲率双命名 · placement阅读题真弱点走exam_point。
 
 **已修 (commit 4245827, 3个独立手术项, 三门全绿)**:
 - **#1 [BLOCKER] cumulative_words_learned 跨册重置** (recommend.py:36 volume_key=? 谓词): 末单元 198 vs 整版本~2025 低估~10x, **是 D0§1.2"词量≤已学单元"越纲判断输入**(低估会误判可学词越纲)。改按学习序列 running distinct(volume_key字典序=教学序)。验证: 外研 198→2025。D0门 _check_cumulative_words 调 as-served 公式断言(防绿门盖坏字段)。
