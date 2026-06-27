@@ -870,7 +870,8 @@
     box.innerHTML = `<div id="graph-viz-c" role="img" aria-label="知识图谱力导向关联图, 中心 ${rootLabel || rootId}, 共 ${nodes.length} 节点 ${edges.length} 边; 点节点看其关联与真题" style="height:480px"></div>`;
     const deg = {}; edges.forEach(e => { deg[e.src] = (deg[e.src] || 0) + 1; deg[e.dst] = (deg[e.dst] || 0) + 1; });
     const types = [...new Set(nodes.map(n => n.node_type))];
-    const inst = echarts.init(document.getElementById("graph-viz-c"));
+    if (window.__gGraphInst) { try { window.__gGraphInst.dispose(); } catch (e) { /* 已游离 */ } }   // 释放上次子图实例(防 re-root/重访累积泄漏)
+    const inst = GZ.initChart(document.getElementById("graph-viz-c"));
     inst.setOption({
       tooltip: { formatter: p => p.dataType === "node" ? `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${p.data.cat} · 关联 ${deg[p.data.id] || 0}</span>` : "" },
       legend: [{ data: types, bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 9, itemHeight: 9 }],

@@ -47,7 +47,7 @@ ${guide()}
     const cls = d.classes || [];
     G.$("#xs-classes").innerHTML = cls.map(c => pill(c.class_id, `${c.name} (${c.n_students}人)`, c.class_id === state.cls, "cls")).join("") || '<span class="muted" style="font-size:12px;">无班级</span>';
     G.$$("#xs-classes [data-cls]").forEach(b => b.onclick = () => { state.cls = b.dataset.cls; loadClasses(); loadWeakness(); });
-    if (cls.length && !cls.some(c => c.class_id === state.cls)) { state.cls = cls[0].class_id; loadWeakness(); }
+    if (cls.length) { if (!cls.some(c => c.class_id === state.cls)) state.cls = cls[0].class_id; loadWeakness(); }   // 总渲: 重访时 state.cls 已有也要渲, 否则 #xs-heat 空
   }
 
   async function loadWeakness() {
@@ -60,7 +60,7 @@ ${guide()}
     const rows = (d.weakness || []).slice(0, 12).reverse();
     if (!window.echarts) { G.chartLoadError(G.$("#xs-heat")); return; }   // D0诚实: 图表组件失败显式报错
     if (!rows.length) { G.$("#xs-heat").innerHTML = '<p class="muted" style="padding:12px">暂无弱点数据 (示例库)</p>'; return; }
-    chart = echarts.getInstanceByDom(G.$("#xs-heat")) || echarts.init(G.$("#xs-heat"));
+    chart = G.initChart(G.$("#xs-heat"));
     chart.setOption({
       grid: { left: 4, right: 50, top: 8, bottom: 8, containLabel: true },
       tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>弱点 ${(p[0].value * 100).toFixed(0)}% · ${rows[p[0].dataIndex].n_weak_students}生 · n=${rows[p[0].dataIndex].total_sample}` },

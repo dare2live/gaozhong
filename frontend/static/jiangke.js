@@ -100,7 +100,7 @@
     const el = G.$("#jk-graph");
     // force 布局按 init 时 canvas 宽算节点位 → 必须等 SPA 挂载后 layout 完成(容器有宽)再 init, 否则挤左
     for (let i = 0; i < 30 && el.clientWidth < 80; i++) await new Promise(r => requestAnimationFrame(r));
-    chart = echarts.getInstanceByDom(el) || echarts.init(el);
+    chart = G.initChart(el);
     chart.setOption({
       color: CATS.map(c => c.c),
       legend: [{ data: CATS.map(c => c.name), bottom: 0, textStyle: { fontSize: 11 } }],

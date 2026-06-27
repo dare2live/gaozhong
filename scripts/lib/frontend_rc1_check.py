@@ -54,7 +54,7 @@ def check_emoji() -> list[str]:
 
 
 def check_chart_aria() -> list[str]:
-    init_n = sum(len(re.findall(r"echarts\.init", _rd(f))) for f in ECHARTS_JS)
+    init_n = sum(len(re.findall(r"\.initChart\(", _rd(f))) for f in ECHARTS_JS)
     aria_n = sum(len(re.findall(r'role="img"', _rd(f))) for f in ECHARTS_JS)
     return [] if (init_n and aria_n >= init_n) else [f"chart role=img 覆盖不足: {aria_n}/{init_n} init"]
 
@@ -69,8 +69,21 @@ def check_off_token() -> list[str]:
     return bad
 
 
+def check_raw_echarts_init() -> list[str]:
+    """raw echarts.init 仅允许 common.js (GZ.initChart 单一安全入口); 其余文件须经 GZ.initChart,
+    根治"重访 tab 陈旧实例渲到已销毁 DOM 致空白" + load 竞态。防回归: 新图勿直接 echarts.init。"""
+    bad = []
+    for f in LIVE_JS:
+        if f == "common":
+            continue
+        for ln, line in enumerate(_strip_js_comments(_rd(f)).splitlines(), 1):
+            if "echarts.init(" in line:
+                bad.append(f"raw echarts.init {f}.js:{ln} (应用 GZ.initChart 防陈旧实例/竞态空白)")
+    return bad
+
+
 def main() -> int:
-    bad = check_emoji() + check_chart_aria() + check_off_token()
+    bad = check_emoji() + check_chart_aria() + check_off_token() + check_raw_echarts_init()
     if bad:
         print("前端 RC1 回归:")
         for b in bad[:20]:

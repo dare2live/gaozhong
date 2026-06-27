@@ -208,6 +208,12 @@ window.GZ = (function () {
     }
     return !!window.echarts;
   }
+  // 单一安全图表初始化 (RC1 根因锁): getInstanceByDom 复用当前容器实例, 仅新容器才 init →
+  //   根治"重访 tab 陈旧实例渲到已销毁 DOM 致空白"。全前端 echarts 图必经此; raw echarts.init 仅本文件。
+  function initChart(el) {
+    if (!el || !window.echarts) return null;
+    return window.echarts.getInstanceByDom(el) || window.echarts.init(el);
+  }
   // 图表载入失败时在容器显式报错 (取代静默空白)。
   function chartLoadError(el) {
     if (el) el.innerHTML = '<div class="error-state" style="margin:0"><div class="es-title">图表组件未能载入</div>'
@@ -279,6 +285,6 @@ window.GZ = (function () {
     $, $$, fetchJSON, tagChip, renderTable, formToQs,
     mountLayout, conceptLink, mdToHtml, NAV, icon,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
-    exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError,
+    exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart,
   };
 })();
