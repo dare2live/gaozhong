@@ -90,8 +90,11 @@ def audit_vocab_curriculum_alignment(con: duckdb.DuckDBPyConnection) -> list[dic
         # OBS, 非 bug. OK ≤ 60% (含正常扩展), WARN > 60% (真异常)
         sev_a = "OK" if extra_ratio <= 0.60 else ("WARN" if extra_ratio <= 0.80 else "FAIL")
         out.append(finding("vocab_alignment", sev_a,
-                           target="教材引入词 ∩ 课标 (越纲率)",
+                           target="教材额外词比例 (exact-surface, 非教师面越纲率)",
                            expected="≤ 60% (真实特征 30-60% OBS), 60-80% WARN, >80% FAIL",
                            actual=f"{extra_ratio:.1%}",
-                           note=f"OBS 教材物理特征; total={total} in_cur={in_cur} extra={out_cur}"))
+                           # 后端审计#9 更名区分: 此为 exact-surface 教材∉课标比例(extractor sanity OBS, 含~144课标
+                           # 变形/派生噪声如 abandoned/announcement); **教师面"越纲率"是 vocab_classify lemma归并真超纲率**
+                           # (折掉变形/派生, 较此低~5pt)。两者不同度量, 勿混用同名"越纲率"。
+                           note=f"OBS exact-surface 教材额外词; total={total} in_cur={in_cur} extra={out_cur}; 真超纲越纲率(教师面)见 vocab_classify lemma口径"))
     return out

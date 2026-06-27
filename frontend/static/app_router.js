@@ -867,6 +867,7 @@
           ${Object.entries(trend.type_distribution_by_era || {}).map(
             ([era, types]) => `<div style="font-size:12.5px;margin:3px 0"><b>${era}</b>: ${Object.entries(types).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([t, n]) => `${t}(${n})`).join(" / ")}</div>`
           ).join("") || '<p class="muted" style="font-size:12px">无趋势数据</p>'}
+          <p class="muted" style="font-size:11px;margin:6px 0 0">注 题量为真题**条目数**, 跨 source 粒度不一(2021/22 子题级, 其余年篇章级) → 仅看各 era 内题型相对构成, 不作跨 era 题量直接比较。题型存废真值见上"题型结构演变"(粒度无关)。</p>
         </section>
       </div>`;
 

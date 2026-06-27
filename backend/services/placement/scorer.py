@@ -76,10 +76,10 @@ def _weak_concepts(con: duckdb.DuckDBPyConnection, wrong_qids: list[int]) -> lis
         f"LIMIT 30",
         wrong_qids + list(TESTED_QTYPES),
     ).fetchall()
-    return [
-        {"concept_id": r[0], "kind": r[0].split(":", 1)[0]}
-        for r in rows
-    ]
+    # 注(P2收尾#4 验证证伪): "错阅读题→cognitive_skill 能力弱点" 需 qb→cognitive 链路, 但 cognitive_skill 边在
+    # **子题节点**(question:..#qN), qb.origin_ref 是**篇章级** question_id, grain 不匹配(实测 JOIN 0命中)→
+    # 真做需 grain 归一(exam_questions_norm view, 架构 P2 task_cff4f9b3)。当前 demo 数据低优, 不发恒空死代码。
+    return [{"concept_id": r[0], "kind": r[0].split(":", 1)[0]} for r in rows]
 
 
 def _recommend_courses_for_weak(con: duckdb.DuckDBPyConnection,
