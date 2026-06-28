@@ -108,10 +108,16 @@
       `<div class="muted" style="font-size:11px;margin-top:3px;">基于标题核心名词交集(去停用词+lemma归一)+共享level1主题, 100%准目标</div></div>`;
   }
 
-  function renderBooks(books, unitsByVol) {
-    G.$("#tb-books").innerHTML = books.map(bk =>
-      bookCard(bk, unitsByVol[`${bk.version_key}/${bk.volume_key}`] || [])).join("");
-    // 委托(survive 重绘): 查内容(DB) + 跨版本对照
+  let _books = [], _unitsByVol = {};
+  // 按版本渲染册卡 (verKey 指定版本=只显该版本; 默认按所选地市版本, 沈阳=外研)
+  function renderBooksForVersion(verKey) {
+    const shown = verKey ? _books.filter(b => b.version_key === verKey) : _books;
+    G.$("#tb-books").innerHTML = shown.map(bk =>
+      bookCard(bk, _unitsByVol[`${bk.version_key}/${bk.volume_key}`] || [])).join("")
+      || '<p class="muted" style="font-size:12px;padding:8px;">该版本暂无册数据</p>';
+  }
+  // 点击委托一次性绑 (#tb-books 容器, survive innerHTML 重绘): 查内容(DB) + 跨版本对照
+  function wireBooks() {
     G.$("#tb-books").addEventListener("click", (e) => {
       const cbtn = e.target.closest(".tb-content");
       if (cbtn) {
@@ -133,6 +139,7 @@
     if (G.isErr(cc) || !cc || cc.error) { info.innerHTML = '<span style="color:var(--warn)">查询失败 (接口错误)</span>'; return; }
     const c = VER_C[cc.version_key] || "var(--ink-3)";
     info.innerHTML = `<span style="color:${c};font-weight:600;">${cc.publisher}</span> · ${cc.units.length} 单元 · 累计已学词随册递增(末单元 ${cc.units.length ? cc.units[cc.units.length - 1].cumulative_words_learned : 0} 词)`;
+    renderBooksForVersion(cc.version_key);  // 只显该地市版本的册 (沈阳→外研); 切城市自动换版本
   }
 
   registerTab("textbook", async () => {
@@ -142,17 +149,19 @@
       fetchJSON("/api/textbooks").catch(() => []),
       fetchJSON("/api/recommend/cities").catch(() => []),   // 14地市真值, 不前端hardcode
     ]);
-    const unitsByVol = {};
+    _unitsByVol = {};
     (units || []).forEach(u => {
       const k = `${u.version_key}/${u.volume_key}`;
-      (unitsByVol[k] = unitsByVol[k] || []).push(u);
+      (_unitsByVol[k] = _unitsByVol[k] || []).push(u);
     });
-    renderBooks(books || [], unitsByVol);
-    // 城市选择器 — 从 /api/recommend/cities 真值(liaoning_city_textbook_choice), 默认首个
+    _books = books || [];
+    wireBooks();  // 一次性绑委托; 册卡由 loadCity 按版本渲染
+    // 城市选择器 — 从 /api/recommend/cities 真值(liaoning_city_textbook_choice); 默认沈阳 (用户)
     const sel = G.$("#tb-city");
     const list = (cityList && cityList.length) ? cityList : [{ city: "沈阳" }];
-    sel.innerHTML = list.map(c => `<option>${c.city}</option>`).join("");
+    const def = list.some(c => c.city === "沈阳") ? "沈阳" : list[0].city;
+    sel.innerHTML = list.map(c => `<option${c.city === def ? " selected" : ""}>${c.city}</option>`).join("");
     sel.onchange = () => loadCity(sel.value);
-    await loadCity(list[0].city);
+    await loadCity(def);  // 默认沈阳 → 外研版册
   });
 })();
