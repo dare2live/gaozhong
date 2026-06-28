@@ -16,9 +16,9 @@
 > | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地+跨era(explicit_label最强, **100边 2015-20旧课标II 85 + 2023新高考II 15**, 推断28→47%迁移; 原"exam_method待建"系误判, 见§6) |
 > | A6 立体透视 stereo_query (stage×dim×era) | ⏸ 待 word_sense.stage 跨年级 + 真老师校验后再建 |
 >
-> **下一步不是继续建本设计的剩余件, 而是收口冲刺**: 详 `docs/delivery_readiness_assessment.md`。
+> **2026-06-27 产品重置后**: 本文是 **L2 解析关联层 (KG)** 的工程设计参考, 产品方向以北极星 `docs/product_master_plan.md` 为准 (L3 课程层是产品心脏)。下方"A2/A3/A6 待建"诸件按北极星就绪门推进, 不在数据未就绪时预建。
 >
-> 关系: 本文 amend `docs/k12_platform_master_design.md` 的 §2(Canonical)/§6(分析层)/§7(建设DAG), 新增 KG 维度扩展层 + 横切时间/血缘机制. master 已立的法(三真相源/stage统一原语/word_sense带stage/八铁律)全继承不改.
+> 关系: 本文继承的地基法 (三真相源 / stage 统一原语 / word_sense 带 stage / 八铁律) 仍有效, 见 `docs/architecture.md`。
 
 ---
 
@@ -58,7 +58,7 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 | **语法考点 grammar_point** | exam_point dim=grammar_point + 新 `tests_grammar_point` 边 → grammar课标节点 `aligns_to` | 辽宁语法填空真题 + grammar_point_distribution.json(dual_model_avg分歧0.04); **旧弱 tests_grammar(84%非辽宁旧MCQ)降级 legacy_mcq_keyword 不进辽宁分布** | absent(节点全/边弱) | 复用grammar节点+新边 |
 | **句型 syntax_pattern** | exam_point dim=syntax_pattern, **真题归纳**(非教材词典) | 辽宁真题双模型归纳; 教材 phrases.phrase_type=候选种子非真相源(phrase→question 实测0边) | absent(真相源未成熟→v1诚实标候选池) | 复用 |
 | **表达方式 function_expression** | exam_point dim=function_expression | 应用文/续写真题归纳 + 课标功能意念表(S全集锚) | absent(同句型 v1候选池) | 复用 |
-| **命题方式 exam_method「怎么考」第二轴** | **唯一新 node_type** + `tested_by_method` 边 | exam_scenario_patterns.md(284行已实证)+evidence.cue(586边); **unclaimed land, 真相源最弱** | absent | **新建(待业主拍板, §6)** |
+| **命题方式 exam_method「怎么考」第二轴** | **唯一新 node_type** + `tested_by_method` 边 | 设问解析实证 + evidence.cue(586边); **unclaimed land, 真相源最弱** | absent | **新建(待业主拍板, §6)** |
 | 词→主题 word_in_theme | 新 relation, **word_sense→theme**(非word, 守master A1) | 真相源不足→末位低优先标unknown | absent | 延后 |
 
 **Rule3 判据统一 (红队 concern 收口)**: cognitive_skill/grammar_point/syntax_pattern/function_expression 走 `tests_exam_point` + `dimension` 区分 = **既有机制**(genre/theme 已4次验证), 合法不算"塞JSON". 唯 `exam_method` 因"怎么考"与"考什么"语义**正交** + 需独立画趋势 → 才升 node_type. 判据: **同一内容轴的子维寄生 dimension; 正交新轴才建 node_type**.

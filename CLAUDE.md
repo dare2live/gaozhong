@@ -134,7 +134,7 @@
 - [ ] 21 科课标 + 课程方案 PDF 完整 (英语必到)
 - [ ] 辽宁省 2024-2025 教学用书目录原文 (jyt.ln.gov.cn) 至少 1 份缓存
 - [ ] 沈阳市教育局官方选用版本印证 ≥ 1 (现仅民间聚合)
-- [ ] 高考英语命题概览 (题型/分值/年代变化) 入 `docs/exam_overview_liaoning.md`
+- [ ] 高考英语命题概览 (题型/分值/年代变化) — 数据化入 `backend/config/question_types.yaml` + L2 真题分析
 - [ ] 结构化词汇/课文资源至少 1 个 repo 入仓
 - [ ] git init + 完整 commit + README/goal.md
 
@@ -148,7 +148,7 @@
     真值基线 jsonl → `data/external/gaokao_xgkii_2021_2025_mirror.jsonl`。`gaokao_bench.py`/`truth_baseline_common.py`
     已重指向本地。守门: moth `gaozhong-self-contained` 断言 (路径常量不含 gaokao 项目路径)。
 - **DuckDB 完全独立**, 不 ATTACH 不混用 (用户 2026-05-23 硬约束) — 此约束是 **gaozhong↔gaokao 跨项目**,
-  **不是** 初中↔高中同项目内 (后者单库 `gaozhong.duckdb` + node_type/stage 区分, 见 docs/k12_platform_master_design.md §4)。
+  **不是** 初中↔高中同项目内 (后者单库 `gaozhong.duckdb` + node_type/stage 区分; 初中板块见北极星 `docs/product_master_plan.md` Phase E)。
 - 分工: gaokao=真题研判侧 / gaozhong=教材+真题+学情完整 K12 平台 (已自带真题, 不依赖 gaokao 运行)。
 
 ## 7. 辽宁卷锚定 (用户 2026-05-23 再次强调)

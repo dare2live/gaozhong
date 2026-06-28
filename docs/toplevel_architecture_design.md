@@ -1,12 +1,9 @@
 # gaozhong 顶层架构设计 — 模块+数据+配置 三层范式 (可扩展可维护)
 
-> 立法层文档 (架构师协议: 立法→控制→执行). 统合 [docs/architecture.md](architecture.md)(八铁律) +
-> [project_architecture.yaml](../backend/config/project_architecture.yaml)(机器契约) +
-> [k12_platform_master_design.md](k12_platform_master_design.md)(平台master) +
-> [exam_ingestion_pipeline_design.md](exam_ingestion_pipeline_design.md)(真题管道).
-> **承接** [top_level_module_data_config_architecture_20260615.md](top_level_module_data_config_architecture_20260615.md)(2026-06-15 首版收口: 模块拓扑/配置分工/数据区) —
-> 本文件(2026-06-26)是其**演进**: 保留三层范式骨架, **新增** 每类扩展 playbook(§2) + 2026真题入库实证gap + 中考 forcing-function 演进路线. 0615 仍可读作三层范式的首版立法.
-> **不重复 architecture.md/project_architecture.yaml/master, 补"模块+数据+配置三层 + 每类扩展 playbook"的顶层可操作视图.** 2026-06-26 立.
+> 工程层架构权威文档 (架构师协议: 立法→控制→执行). 统合 [docs/architecture.md](architecture.md)(八铁律) +
+> [project_architecture.yaml](../backend/config/project_architecture.yaml)(机器契约).
+> **产品方向以北极星 [product_master_plan.md](product_master_plan.md) 为准**; 本文只管工程侧"模块+数据+配置三层 + 每类扩展 playbook(§2)"的可操作视图, 不重复 architecture.md/机器契约.
+> 沿革: 承接 2026-06-15 三层范式首版立法演进而来 (历史在 git); 2026-06-26 加每类扩展 playbook + 2026 真题入库实证 gap + 中考 forcing-function.
 >
 > grounding 实证: 39 DuckDB 表 · 28 config yaml · services 13907 行无 god-module(>400) · 8-9 处/加一份卷(2026实证).
 
@@ -93,7 +90,7 @@
 
 | # | 扩展类型 | 现状摩擦 | 目标 playbook (≤2处) | 达标? |
 |---|---|---|---|---|
-| 1 | **新真题卷**(高考/中考) | 8-9处(2026实证) | ① `sources.yaml` 加 entry(源+sha+provenance) ② 放 structured jsonl(题面+答案) → `init_db` 遍历自动入库+传导+rebaseline | ✗ 待 [exam管道P0](exam_ingestion_pipeline_design.md) |
+| 1 | **新真题卷**(高考/中考) | 8-9处(2026实证) | ① `sources.yaml` 加 entry(源+sha+provenance) ② 放 structured jsonl(题面+答案) → `init_db` 遍历自动入库+传导+rebaseline | ✗ 真题入库管道 P0 待收口(详 git 历史) |
 | 2 | **新教材版本**(某市换版) | 中(canonical已单点) | ① `sources.yaml`+`source_versions` 加版本 ② 放教材PDF → extraction 自动出 units/vocab/sections + canonical 节点 | ~达标(canonical驱动) |
 | 3 | **新词典/词汇源** | 中 | ① `sources.yaml` 加源 + `source_crosscheck_rules` 加校验 ② 提取入 word_glosses → exam_vocabulary 单算点自动并 | ~达标 |
 | 4 | **新 KG 关系/边类型** | 低-中 | ① 边白名单(relation 加值, 走 `links`/`links_extra` builder) ② 无需改消费方(graph service + 前端浮窗泛读 relation) | ~达标(白名单驱动) |

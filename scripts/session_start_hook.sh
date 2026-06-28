@@ -24,8 +24,8 @@ cat <<'BANNER'
   Stop  数据 FAIL/复杂度/前端 inline 任一升级则阻断
 
 新 session 必读 (按需):
+  docs/product_master_plan.md (北极星) / docs/RESUME.md (断点续传)
   goal.md / CLAUDE.md / docs/architecture.md / docs/lessons_learned.md
-  docs/data_completeness_report.md / docs/pr_checklist.md
 ────────────────────────────────────────────────
 近期教训 (docs/lessons_learned.md 最新 5 条):
 BANNER

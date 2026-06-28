@@ -193,7 +193,6 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 | 核验项 | 依据 |
 |---|---|
 | 预启动报告 | `data/reports/m5_ready_20260610T135344Z.json` |
-| 运行手册 | `docs/ops_runbook.md` |
 | 巡检脚本 | `scripts/weekly_healthcheck.sh` |
 | 接力演练脚本 | `scripts/m4_m5_smoke.sh` |
 | 演练模板 | `docs/week1_review_round1.md`、`docs/week2_review_round1.md`、`docs/week3_review_round1.md`、`docs/week4_review_round1.md`、`docs/week5_review_round1.md`、`docs/week6_review_round1.md`、`docs/week7_review_round1.md`、`docs/week8_review_round1.md`、`docs/week9_review_round1.md`、`docs/week10_review_round1.md`、`docs/week11_review_round1.md`、`docs/week12_review_round1.md`、`docs/week13_review_round1.md`、`docs/week14_review_round1.md`、`docs/week15_review_round1.md`、`docs/week16_review_round1.md`、`docs/week17_review_round1.md`、`docs/week18_review_round1.md`、`docs/week19_review_round1.md`、`docs/week20_review_round1.md`、`docs/week21_review_round1.md`、`docs/week22_review_round1.md`、`docs/week23_review_round1.md`、`docs/week24_review_round1.md`、`docs/week25_review_round1.md`、`docs/week26_review_round1.md`、`docs/week27_review_round1.md`、`docs/week28_review_round1.md`、`docs/week29_review_round1.md`、`docs/week30_review_round1.md`、`docs/week31_review_round1.md`、`docs/week32_review_round1.md`、`docs/week33_review_round1.md`、`docs/week34_review_round1.md`、`docs/week35_review_round1.md`、`docs/week36_review_round1.md`、`docs/week37_review_round1.md`、`docs/week38_review_round1.md`、`docs/week39_review_round1.md`、`docs/week40_review_round1.md`、`docs/week41_review_round1.md`、`docs/week42_review_round1.md`、`docs/week43_review_round1.md`、`docs/week44_review_round1.md`、`docs/week45_review_round1.md`、`docs/week46_review_round1.md`、`docs/week47_review_round1.md`、`docs/week48_review_round1.md`、`docs/week49_review_round1.md`、`docs/week50_review_round1.md`、`docs/week51_review_round1.md`、`docs/week52_review_round1.md`、`docs/week53_review_round1.md`、`docs/week54_review_round1.md`、`docs/week55_review_round1.md`、`docs/week56_review_round1.md`、`docs/week57_review_round1.md`、`docs/week58_review_round1.md`、`docs/week59_review_round1.md`, `docs/week60_review_round1.md` |
@@ -304,7 +303,7 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 结论：新增执行顺序文档和只打印计划的 CLI，不产生新的 PASS 证据。
 
 - 新增 `scripts/tools/audit/m0_gate_plan.py`，用于输出 M0 gate 顺序，默认 markdown，也可输出 JSON。
-- 新增 `docs/m0_gate_runbook.md`，说明每个 gate 的职责、预期当前状态、失败处理和已知阻塞。
+- M0 gate 职责/预期状态/失败处理以 `backend/config/m0_gates.yaml` + planner 为权威。
 - 保护口径：该 planner 不执行任何验证；不能作为 M0 完成证据，只作为后续 gate 执行入口。
 
 ## 2026-06-12 Week65g / EOL Draft Source Lineage Alignment
@@ -454,7 +453,7 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 
 结论：PARTIAL PROGRESS，仅减少 gate 文档双维护，不产生新的通过证据。
 
-- `docs/m0_gate_runbook.md` 不再复制完整 gate table，改为引用 `backend/config/m0_gates.yaml` 与 `scripts/tools/audit/m0_gate_plan.py`。
+- M0 gate table 单一真相源 = `backend/config/m0_gates.yaml` + `scripts/tools/audit/m0_gate_plan.py`(不在文档复制)。
 - 未运行 planner/gate，未写 DB。
 
 ## 2026-06-12 Week65z / M0 Gate Planner Config Validation

@@ -190,7 +190,7 @@ def main() -> None:
 
     # (Layer 4g 2024/2025 local_pdf 导入已前移到 Layer 2a3 — 必须早于 Layer 3 边构建, 见上)
 
-    print("\n=== Layer 4h: 设计宪法入库 (model_driven_design) ===")
+    print("\n=== Layer 4h: 设计宪法入库 (constitution) ===")
     from backend.services import constitution
     cs = constitution.seed(con)
     print(f"  constitution: {cs['total']} 条 ({cs['principles']} 原则 + {cs['iron_laws']} 铁律 + {cs['violations']} 违宪)")

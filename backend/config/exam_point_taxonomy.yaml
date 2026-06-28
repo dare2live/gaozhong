@@ -1,7 +1,7 @@
 # 考点 canonical 分类体系 (件2 地基) — 数据化判断规则 (§3.5 不 hardcode)
 #
 # 2026-06-16 细化 (回应用户"太粗/考纲就是这么分类的吗"): 升到官方层级 + 每 label 带 provenance。
-# 详据 docs/exam_point_taxonomy_research.md (每分类 🟢官方/🟡实证/🔴民间 + 来源)。
+# 每分类 provenance 标 🟢官方/🟡实证/🔴民间 (本文件内 provenance 字段即真相源, 锚课标官方层级)。
 #
 # provenance 取值 (§3.2 可信度分层, moth 锁"🟡不冒充🟢"):
 #   official_curriculum — 普通高中英语课程标准(2017年版2020修订), 课标逐字

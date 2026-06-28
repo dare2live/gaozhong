@@ -164,7 +164,7 @@ data_zones:
     owner_module: scripts.extract_junior_curriculum
     write_policy: >
       初中子系统 (沈阳沪教牛津 + 义务课标2022) — separate-build, 产物 structured/*.jsonl
-      未入主 DB (Phase3 单库集成, 见 docs/k12_platform_master_design.md §4)。提取器读 PDF 真相源。
+      未入主 DB (单库 gaozhong.duckdb + node_type/stage 区分初中↔高中; 初中板块为北极星 Phase E)。提取器读 PDF 真相源。
     truth_policy: >
       stage 分阶段 K12 平台真相源 (小学/初中). 落库前必过 scripts/junior_accuracy_check.py
       (坑17 双门; 审计 F1-F8 不变量). 当前 Phase2.6 地基修复中, 多项 RED 待修绿。
@@ -220,12 +220,13 @@ documentation_authority:
   required_index:
     path: docs/README.md
   current_docs:
+    - docs/product_master_plan.md
     - docs/architecture.md
-    - docs/top_level_module_data_config_architecture_20260615.md
+    - docs/toplevel_architecture_design.md
     - docs/data_accuracy_audit.md
   evidence_ledgers:
     - goal.md
-    - analysis/project_state_ledger.md
+    - docs/RESUME.md
 
 gate_contracts:
   project_architecture_audit:

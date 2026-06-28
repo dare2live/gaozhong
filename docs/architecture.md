@@ -2,7 +2,7 @@
 
 > 用户 2026-05-23 明确: **"从顶层设计的角度来总体设计架构, 模块化 可扩展 可复用, 而不是到处计算各自展示"**.
 > 本文是后续所有代码的强约束, 反此设计的 PR 直接拒.
-> 2026-06-15 控制面补充: 模块 / 数据 / 配置文件的机器可检查契约见 `backend/config/project_architecture.yaml`, 只读审计入口见 `scripts/tools/audit/project_architecture_audit.py`, 设计说明见 `docs/top_level_module_data_config_architecture_20260615.md`. 新增模块、数据区、配置或 gate 时必须同步机器契约。
+> 2026-06-15 控制面补充: 模块 / 数据 / 配置文件的机器可检查契约见 `backend/config/project_architecture.yaml`, 只读审计入口见 `scripts/tools/audit/project_architecture_audit.py`, 设计说明见 `docs/toplevel_architecture_design.md`. 新增模块、数据区、配置或 gate 时必须同步机器契约。
 
 ---
 

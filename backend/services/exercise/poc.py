@@ -1,4 +1,4 @@
-"""L1 课时词汇题 PoC — 给定 unit, 出 N 道"选义" 单选 (符合 docs/exercise_design.md L1).
+"""L1 课时词汇题 PoC — 给定 unit, 出 N 道"选义" 单选 (L1 词汇层练习).
 
 不依赖 LLM, 走纯 graph 查询:
   1. unit_id → introduces_word edge → 该 Unit 引入词 (含 zh_def)
@@ -107,7 +107,7 @@ def generate_l4_paper(con: duckdb.DuckDBPyConnection, province: str = "辽宁",
         "paper_level": "L4_replay", "scope": f"province={province} year>={year_min}",
         "target_count": n, "actual_count": len(picked),
         "mix": target_mix, "questions": picked,
-        "note": "L4 模拟卷 = 历年真题重组, 非押题/非合成. 见 docs/exercise_design.md",
+        "note": "L4 模拟卷 = 历年真题重组, 非押题/非合成.",
     }
 
 

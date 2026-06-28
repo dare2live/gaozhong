@@ -28,7 +28,7 @@
 - 改动后：不得只凭“已编辑文件”结束。根据变更面执行最窄真实业务门禁，并补充结构审计：`codegraph affected <changed_files>`（适用时）和 `moth doctor --repo . --format markdown`。若发生 commit/push，则先 `moth sync --repo . --format json` 刷新快照，再跑 `moth doctor --repo . --format markdown`。
 - Moth / CodeGraph / Complexity 的角色分工：Moth 是项目级状态总览和 evidence locator；CodeGraph 用于定位依赖与受影响测试；Complexity 是维护风险线索，不替代 D0、API、DB、前端 smoke 或人工业务复核。
 - Moth 或复杂度结果与直觉冲突时，先 verify the verifier：检查 repo scope、缓存/stale、未跟踪文件、baseline 是否过时、命令是否扫到正确路径，再决定是否修代码或更新基线。
-- 每个自然停顿点都要留下可追溯证据：命令、退出码、关键日志路径、Moth/CodeGraph 结论、剩余风险和下一步写入 `goal.md`、`docs/data_accuracy_audit.md` 或 `analysis/project_state_ledger.md`。
+- 每个自然停顿点都要留下可追溯证据：命令、退出码、关键日志路径、Moth/CodeGraph 结论、剩余风险和下一步写入 `goal.md`、`docs/data_accuracy_audit.md` 或 `docs/RESUME.md`(断点续传)。
 - `agent.md`、`goal.md`、核心 docs、Moth profile、数据审计记录属于共享状态；同一时间只允许一个 controller 负责编辑与验收，避免多个 agent 抢写。
 
 ## Borrowed constraints from `chunkymonkey/AGENTS.md`
@@ -112,7 +112,7 @@
 - `docs/architecture.md` for layering and request flow.
 - `docs/data_accuracy_audit.md` for quality gates.
 - `moth assert --repo .` + `.moth/assertions/claims.yaml` + `backend/config/d0_baselines.yaml` for live data-honesty state and pinned counts (one-shot snapshot docs like round/closure-checkpoint removed — they rot/mislead; RESUME kept as narrative handoff but its numbers cite truth sources, not hardcoded).
-- `analysis/project_state_ledger.md` for completed work and historical evidence.
+- `docs/RESUME.md` for the断点续传 narrative handoff (recent progress + next step); deep history lives in git log.
 - `.moth/profile.yaml` for local project tooling profile.
 - `.codegraph/codegraph.db` for dependency map and query context.
 
@@ -136,4 +136,4 @@
 - Frontend integration points in `frontend/static/app.js` and `frontend/static/app_router.js`
 
 ## Next Action
-- 将课程/题库链路修复与前端兼容性修复提交并推送；若仍有缺项则同步更新 `goal.md` 与 `analysis/project_state_ledger.md`。
+- 将课程/题库链路修复与前端兼容性修复提交并推送；若仍有缺项则同步更新 `goal.md` 与 `docs/RESUME.md`。
