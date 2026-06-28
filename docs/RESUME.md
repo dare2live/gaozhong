@@ -17,11 +17,12 @@
 - **产品 IA(高中, 初中镜像)**: ① 命题研判首页(结论先行) · ② 真题特点(统计/热力 + **小初高词在高考卷占比** = "最少覆盖最大"王牌实证) · ③ 基础库(教材/真题/课标可查可溯源) · ④ 40节课程(L3, 每段↔考点↔真题↔趋势权重, 替掉裸题号)。
 - **阶段路线图**: Phase A 前端 IA 重构(两板块+四页骨架, 教师 tab 下线) → Phase B 现可建产品页(真题特点含小初高词占比 + 基础库 + 研判结论首页) → Phase C L3 框架(教学提纲+覆盖模型+可溯源 schema+作业挂真题, **零内容生成**+补就绪门) → Phase D L3 内容(就绪门绿才做) → Phase E 初中板块。
 
-### ⏭️ 进度 + 下一步
-- **✅ 文档重置 (commit bc70716)**: 写北极星 `docs/product_master_plan.md`; 文档大清理(删 37 份过时/被取代/快照 + 改全部悬挂引用 + goal.md 2600→95 / RESUME 457→70 瘦身); 四门全绿。
-- **✅ Phase A 前端 IA 重构 (commit 22c1e9d)**: 初中/高中两板块切换器 + 高中四页(① 命题研判=复用考点驾驶舱去教师化 / ② 真题特点=新骨架 / ③ 基础库=新hub链教材+词典 / ④ 40节课程=复用teaching标L3) + 教师工具下线(备课/讲课/组卷/学情/扫描 移出 nav, 后端服务保留) + 初中 Phase E 占位 + 新 `scaffold.js`。品牌改学习者口径。preview 桌面+移动实测全通, 前端RC1门+stop_gate绿。
-- **下一步 = Phase B (现可建产品页)**: 重点 **② 真题特点·小初高词占比**(产品"最少覆盖最大"论点王牌, 数据在 L2 已算) + 基础库真题库/课标库浏览 + ① 研判首页"结论先行"重构(beike 现是图表仪表盘, 加一句话研判结论)。
-- **铁律**: 四门继续全绿, 不回退本季 L2 口径修复; L3 内容不达就绪门不生成 (Phase C 框架先于 Phase D 内容)。
+### ⏭️ 进度 + 下一步 (autonomous /loop 推进中, goal-app 已设会话目标)
+- **✅ 文档重置 (commit bc70716)**: 北极星 `docs/product_master_plan.md` + 删 37 份过时文档 + goal.md 2600→95 / RESUME 457→70 瘦身。
+- **✅ Phase A 前端 IA 重构 (commit 22c1e9d)**: 初中/高中两板块切换器 + 高中四页 + 教师工具下线(后端保留) + 初中 Phase E 占位 + `scaffold.js`。
+- **✅ PhaseB-1 小初高词占比王牌图 (commit 108cccb)**: 单一计算点 `k12.tested_word_stage_distribution`(考查口径 × at_stage 边) + `/api/k12/tested_word_stage` + 真题特点页 结论先行 banner + echarts 学段分布图。**实证: 辽宁高考考查词 小初阶 75.7% / 高中新增仅 18.1% / 未分类 6.2%(诚实)** → "用最少课程覆盖最大考点"。双门(D0 check32 跨源 + moth assertion)。四门绿。
+- **下一步 (autonomous loop 续)**: **PhaseB-3** 基础库 真题库浏览(`/api/exam_questions` province=辽宁, 按年/题型, 每题溯源)+ 课标库浏览(`/api/theme_contexts`+`/api/grammar_items`+cefr词汇) → **PhaseB-2** 真题特点 分布迁移/套路热力(复用 exam_point distribution/shift/cognitive)→ **PhaseB-4** 命题研判首页 结论先行 banner → **Phase C** L3 框架(教学提纲+覆盖模型+段级schema+作业挂真题, 不生成内容)。
+- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10; 新数据 moth AND D0 双门; 数据真值不估算; 不生成 L3 内容(Phase D 需就绪门)。
 
 ---
 
