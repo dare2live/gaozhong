@@ -119,3 +119,30 @@ def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:
     check("词轴非空 (辽宁考查词存在)", ax["word"]["n_total"] > 0, f"{ax['word']['n_total']}")
     bad = [k for k, a in ax.items() if a["high_yield_n"] > a["n_total"]]
     check("各轴 高产出集 ≤ 全集 (覆盖单调, 无越界)", not bad, f"越界轴={bad}")
+
+
+def check_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
+    """L3 教学提纲 correctness (北极星 Phase C, 决策C 框架). 无孤儿内容(段↔考点↔真题可溯源) +
+    content 一律 null(不生成 L3 内容) + 作业=辽宁真题(非生成). 防框架塞生成内容或挂孤儿/非辽宁题。"""
+    print("\n=== (34) L3 教学提纲 correctness (course.syllabus 段级可溯源/无孤儿/content=null) ===")
+    from backend.services.course.syllabus import syllabus
+    s = syllabus(con)
+    lessons = s["lessons"]
+    check("有课节 (n_lessons>0)", len(lessons) > 0, f"{len(lessons)}")
+    # 1. content 一律 null (决策C: 不生成 L3 内容, Phase D 才填)
+    n_content = sum(1 for l in lessons if l.get("content") is not None)
+    check("所有段 content==null (决策C 框架不生成内容)", n_content == 0, f"{n_content} 段已有内容(违决策C)")
+    # 2. 无孤儿: 每节 covers_exam_points 指向真实 exam_point 节点
+    pts = {p for l in lessons for p in l["covers_exam_points"]}
+    real = {r[0] for r in con.execute("SELECT concept_id FROM nodes WHERE concept_id LIKE 'exam_point:%'").fetchall()}
+    orphan_pt = pts - real
+    check("段考点焦点全指向真实 exam_point (无孤儿)", not orphan_pt, f"孤儿考点={list(orphan_pt)[:3]}")
+    # 3. 作业真题全可溯源 (source) 且为辽宁真题 (非生成)
+    qids = [q["question_id"] for l in lessons for q in l["evidence_questions"]]
+    no_src = sum(1 for l in lessons for q in l["evidence_questions"] if not q.get("source"))
+    check("作业真题全有溯源 (source, 无孤儿)", no_src == 0, f"{no_src} 题无溯源")
+    if qids:
+        ph = ",".join("?" * len(qids))
+        ln_real = con.execute(
+            f"SELECT COUNT(*) FROM exam_questions WHERE question_id IN ({ph}) AND province LIKE '辽宁%'", qids).fetchone()[0]
+        check("作业真题全为辽宁真题 (非生成 非外省, 坑14)", ln_real == len(qids), f"{ln_real}/{len(qids)} 辽宁")

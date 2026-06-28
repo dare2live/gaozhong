@@ -319,6 +319,25 @@
 .bk-verdict-body { font-size: 14px; line-height: 1.6; color: var(--ink); margin: 0 0 4px; }
 .bk-verdict-body strong { font-weight: 660; color: var(--accent-ink); }
 .bk-verdict-foot { font-size: 11.5px; line-height: 1.5; color: var(--ink-3); margin: 0; }
+/* 40 节课程 L3 框架 (kecheng) */
+.ks-list { display: flex; flex-direction: column; gap: 6px; }
+.ks-lesson { border: 1px solid var(--line); border-radius: var(--r); background: var(--card); overflow: hidden; }
+.ks-lesson[open] { border-color: var(--accent); }
+.ks-sum { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; font-size: 13.5px; list-style: none; }
+.ks-sum::-webkit-details-marker { display: none; }
+.ks-sum:hover { background: var(--sunken); }
+.ks-seq { flex: 0 0 56px; font-weight: 650; color: var(--ink); }
+.ks-focus { flex: 1; color: var(--accent-ink); font-weight: 550; }
+.ks-w { flex: 0 0 auto; font-family: var(--num); font-size: 11.5px; color: var(--ink-3); }
+.ks-hwn { flex: 0 0 auto; font-family: var(--num); font-size: 11.5px; color: var(--down); }
+.ks-content { flex: 0 0 auto; font-size: 10.5px; color: var(--warn); border: 1px solid #E3CF95; border-radius: var(--r-xs); padding: 1px 6px; }
+.ks-body { padding: 4px 16px 14px; border-top: 1px solid var(--line-soft); }
+.ks-body-h { font-size: 11.5px; font-weight: 600; color: var(--ink-3); margin: 8px 0 6px; }
+.ks-hwlist { list-style: none; margin: 0; padding: 0; }
+.ks-hw { display: flex; align-items: baseline; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+.ks-hw-t { flex: 0 0 92px; font-weight: 600; color: var(--accent-ink); font-size: 11.5px; }
+.ks-hw-p { flex: 1; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ks-hw-s { flex: 0 0 auto; font-family: var(--num); font-size: 11px; color: var(--ink-3); }
 
 /* ===== 打印样式 (Phase 7.2) ===== */
 .print-btn {

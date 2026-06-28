@@ -189,43 +189,47 @@
   });
 
   // ===================================================================
-  // B. 教学 — 40 节按 layer 分组 + 点击查讲义
+  // B. 40 节课程 — L3 框架 (北极星 Phase C): 覆盖模型 + 教学提纲(考点焦点+作业真题溯源, content=null)
+  //    替代旧 course-grid+handout (旧生成内容已回滚; 内容生成是 Phase D, 需就绪门)。
   // ===================================================================
+  const _esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  function _covLine(cov) {
+    const ax = (cov && cov.axes) || {};
+    const part = (k, name) => ax[k] ? `${name} ${ax[k].n_total} 考点 (覆盖${cov.target_pct}%需 ${ax[k].high_yield_n})` : "";
+    return [part("genre", "题材"), part("theme_l2", "主题群"), part("word", "高频考词"), part("grammar", "语法")].filter(Boolean).join(" · ");
+  }
+  function _lessonCard(l) {
+    // 溯源友好化: 显示"年份 辽宁卷 · #题号", 原始 source_file#index 入 title (机器血缘); 不甩裸 gb/... 路径
+    const _srcShort = q => `${q.year} 辽宁卷 · #${(q.source || "").split("#").pop()}`;
+    const hw = (l.evidence_questions || []).map(q =>
+      `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${_esc(q.preview)}…</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
+    return `<details class="ks-lesson"><summary class="ks-sum">
+        <span class="ks-seq">第 ${l.seq} 节</span>
+        <span class="ks-focus">考点焦点: ${_esc(l.focus)}</span>
+        <span class="ks-w" title="命题频次权重">权重 ${l.trend_weight}</span>
+        <span class="ks-hwn">作业 ${(l.evidence_questions || []).length} 真题</span>
+        <span class="ks-content">内容待生成 (Phase D)</span>
+      </summary>
+      <div class="ks-body"><div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div><ul class="ks-hwlist">${hw || '<li class="ks-hw">该考点暂无匹配真题</li>'}</ul></div>
+    </details>`;
+  }
   register("teaching", async () => {
-    CONTENT.innerHTML = `<h2>40 节课程</h2><p class="muted">载入中...</p>`;
-    const data = await fetchJSON("/api/course/list");
-    const groups = { G1: [], G2: [], G3: [], G_FINAL: [] };
-    for (const c of data.courses) groups[c.layer]?.push(c);
-    const layerMeta = {
-      G1: "高一系统课 · ~1200 词",
-      G2: "高二系统课 · ~2200 词",
-      G3: "高三上学期 · ~3000 词",
-      G_FINAL: "高考前突击 · ~3500 词 · 真题密集",
-    };
-    let html = `<h2>40 节课程 <span class="muted" style="font-size:14px;font-weight:400">${data.courses.length} 节 · 分层 (L3 框架, 北极星 Phase C)</span></h2>`;
-    for (const layer of ["G1", "G2", "G3", "G_FINAL"]) {
-      const items = groups[layer];
-      html += `<section class="layer-section">
-        <h3>${layer} <span class="layer-meta">${layerMeta[layer]} · ${items.length} 节</span></h3>
-        <div class="course-grid">`;
-      for (const c of items) {
-        html += `<div class="course-card ${c.layer}" role="button" tabindex="0" onclick="window._openHandout(${c.course_id})">
-          <span class="cid">#${c.course_id}</span>
-          <span class="layer-badge">${c.block_kind}</span>
-          <div><strong>${c.title.replace(/^[GFINAL\d_·]+·/, "")}</strong></div>
-          <div class="block">主题: ${c.themes_main || "(待补)"}</div>
-        </div>`;
-      }
-      html += `</div></section>`;
-    }
-    html += `<div id="handout-modal" role="dialog" aria-modal="true" aria-label="课节内容" onclick="if(event.target===this)this.classList.remove('open')">
-      <div class="modal-body">
-        <button class="gz-iconbtn close-btn" aria-label="关闭" onclick="document.getElementById('handout-modal').classList.remove('open')">${GZ.icon("close")}</button>
-        <button class="print-btn" onclick="window.GZ.printWithCharts()">打印 / PDF</button>
-        <div id="handout-md">载入中 ...</div>
+    CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入 40 节课程框架…</div>';
+    const [syl, cov] = await Promise.all([fetchSafe("/api/course/syllabus"), fetchSafe("/api/course/coverage")]);
+    if (isErr(syl)) { CONTENT.innerHTML = '<div class="error-state"><div class="es-title">课程框架加载失败</div><div class="es-msg">后端未就绪 — 真实错误。</div></div>'; return; }
+    CONTENT.innerHTML = `<section class="scaffold">
+      <header class="sc-head">
+        <div class="sc-badge">高中 · 40 节课程 (L3 框架)</div>
+        <h1 class="sc-title">40 节课程</h1>
+        <p class="sc-lead">北极星 L3 课程层 — 按命题频次把高产出考点分配到 ${syl.n_lessons} 节, 每节考点焦点 + 可溯源真题作业。<strong>当前是框架 (决策 C): 每段内容待生成 (Phase D, 需 L1/L2 就绪门)</strong>; 作业=辽宁真题非生成。</p>
+      </header>
+      <div class="sc-takeaway">
+        <div class="sc-tk-h">覆盖模型 · 用最少课程覆盖最大考点</div>
+        <p class="sc-tk-body">${isErr(cov) ? "覆盖数据加载失败。" : _esc(_covLine(cov))}。${syl.coverage ? _esc(syl.coverage.note) : ""}</p>
+        <p class="sc-tk-caveat">考点焦点↔真题作业全程可溯源 (替代旧版裸题号); 内容生成是 Phase D, 不在框架阶段产出。详见<a href="#/zhenti">真题特点</a>的小初高词占比与命题套路。</p>
       </div>
-    </div>`;
-    CONTENT.innerHTML = html;
+      <div class="ks-list">${syl.lessons.map(_lessonCard).join("")}</div>
+    </section>`;
   });
 
   // -- 讲义分段元数据 (Phase 7.1)

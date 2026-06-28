@@ -22,6 +22,16 @@ def api_course_coverage(qs: dict) -> dict:
         con.close()
 
 
+def api_course_syllabus(qs: dict) -> dict:
+    """L3 教学提纲 — 40 节考点焦点 + 段级可溯源作业真题 (content=null, 北极星 Phase C)."""
+    from backend.services.course import syllabus as syl
+    con = db_ro()
+    try:
+        return syl.syllabus(con)
+    finally:
+        con.close()
+
+
 def api_course_list(qs: dict) -> dict:
     layer = (qs.get("layer", [None])[0] or "").strip()
     con = db_ro()
@@ -155,4 +165,5 @@ ROUTES = {
     "/api/course/stats":    api_course_stats,
     "/api/course/quiz":     api_course_quiz,
     "/api/course/coverage": api_course_coverage,
+    "/api/course/syllabus": api_course_syllabus,
 }
