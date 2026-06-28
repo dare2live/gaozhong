@@ -12,6 +12,16 @@ from backend.api.db import db_ro
 from backend.services.course import loader
 
 
+def api_course_coverage(qs: dict) -> dict:
+    """L3 覆盖模型 — "用最少课程覆盖最大考点" 可证量化 (北极星 Phase C)."""
+    from backend.services.course import coverage
+    con = db_ro()
+    try:
+        return coverage.coverage_model(con)
+    finally:
+        con.close()
+
+
 def api_course_list(qs: dict) -> dict:
     layer = (qs.get("layer", [None])[0] or "").strip()
     con = db_ro()
@@ -140,8 +150,9 @@ def api_course_quiz(qs: dict) -> dict:
 
 
 ROUTES = {
-    "/api/course/list":    api_course_list,
-    "/api/course/session": api_course_session,
-    "/api/course/stats":   api_course_stats,
-    "/api/course/quiz":    api_course_quiz,
+    "/api/course/list":     api_course_list,
+    "/api/course/session":  api_course_session,
+    "/api/course/stats":    api_course_stats,
+    "/api/course/quiz":     api_course_quiz,
+    "/api/course/coverage": api_course_coverage,
 }

@@ -279,6 +279,7 @@ def _bad_grammar_chain(gid: str, by_id: dict) -> bool:
 # (序号, 模块, 函数): 22考点/23趋势分布/24备课/25考过状态/26教材section/27中考/28多租户/29版本注册表.
 _LIB_CHECKS = [
     ("d0_exam_point_check", "check_exam_point"),
+    ("d0_exam_point_check", "check_coverage"),
     ("d0_trend_distribution_check", "check_trend_distribution"),
     ("d0_lesson_plan_check", "check_lesson_plan"),
     ("d0_exam_status_check", "check_exam_status"),

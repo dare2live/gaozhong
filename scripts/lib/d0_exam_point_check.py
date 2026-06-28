@@ -94,3 +94,28 @@ def _check_no_theme_l3(con: duckdb.DuckDBPyConnection, check) -> None:
         "SELECT COUNT(*) FROM nodes WHERE node_type='theme' "
         "AND length(concept_id)-length(replace(concept_id,'/',''))>=2").fetchone()[0]
     check("无 theme depth2 叶节点 (杜撰子主题命名空间已废)", n_l3_node == 0, f"{n_l3_node} 残留")
+
+
+def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:
+    """L3 覆盖模型 correctness (北极星 Phase C). 跨源核验: service 各轴权重 == 独立SQL重算 (as-served, 非同源重言);
+    高产出集 ≤ 全集 (单调); 词轴非空 (考查词存在)。防覆盖口径漂移 (如丢省份/边类型)。"""
+    print("\n=== (33) L3 覆盖模型 correctness (course.coverage_model 跨源) ===")
+    from backend.services.course.coverage import coverage_model
+    from backend.services.exam_vocab import TESTED_QTYPES
+    m = coverage_model(con)
+    ax = m["axes"]
+    # 词轴权重独立重算 (tests_word ∧ 辽宁 ∧ 离散 边数)
+    qm = ",".join("?" * len(TESTED_QTYPES))
+    w_indep = con.execute(
+        "SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) "
+        f"WHERE e.relation='tests_word' AND q.province LIKE '辽宁%' AND q.question_type IN ({qm})",
+        list(TESTED_QTYPES)).fetchone()[0]
+    check("词轴 weight_total == 独立SQL重算 (as-served==源, 非重言)", ax["word"]["weight_total"] == w_indep, f"svc={ax['word']['weight_total']} sql={w_indep}")
+    # 题材轴权重独立重算 (tests_exam_point genre ∧ 辽宁)
+    g_indep = con.execute(
+        "SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) "
+        "WHERE e.relation='tests_exam_point' AND e.dst_id LIKE 'exam_point:genre:%' AND q.province LIKE '辽宁%'").fetchone()[0]
+    check("题材轴 weight_total == 独立SQL重算 (跨源)", ax["genre"]["weight_total"] == g_indep, f"svc={ax['genre']['weight_total']} sql={g_indep}")
+    check("词轴非空 (辽宁考查词存在)", ax["word"]["n_total"] > 0, f"{ax['word']['n_total']}")
+    bad = [k for k, a in ax.items() if a["high_yield_n"] > a["n_total"]]
+    check("各轴 高产出集 ≤ 全集 (覆盖单调, 无越界)", not bad, f"越界轴={bad}")

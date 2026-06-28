@@ -627,6 +627,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.api.routes.exam import api_liaoning_browse;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);pre=c.execute(\"SELECT COUNT(*) FROM exam_questions WHERE province LIKE '辽宁%'\").fetchone()[0];sub=c.execute(\"SELECT COUNT(*) FROM exam_questions WHERE province LIKE '%辽宁%'\").fetchone()[0];c.close();t=api_liaoning_browse({})['total'];print('OK' if t==pre and pre<sub else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: l3-coverage-model-sound
+    claim: "L3覆盖模型(course.coverage_model 北极星PhaseC): 词轴非空 + 各轴高产出集≤全集(覆盖单调) + 设问思维不入覆盖全集(套路非可教考点); '用最少课程覆盖最大考点'可证量化"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.course.coverage import coverage_model;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);m=coverage_model(c);c.close();ax=m['axes'];ok=ax['word']['n_total']>0 and all(a['high_yield_n']<=a['n_total'] for a in ax.values()) and 'cognitive_skill' not in ax;print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
   - id: rc1-frontend-quality
     claim: "RC1前端质量锁: live前端无emoji(内联SVG图标) + echarts图表全有role=img读屏文字替代 + 无off-token旧红/旧蓝(单红accent+数据色对齐令牌族; category-config数据色源豁免)。防回归: 新增前端勿引emoji/旧调色板, 新图必带role=img+aria-label。"
     type: shell
