@@ -21,9 +21,12 @@
 - **✅ 文档重置 (commit bc70716)**: 北极星 `docs/product_master_plan.md` + 删 37 份过时文档 + goal.md 2600→95 / RESUME 457→70 瘦身。
 - **✅ Phase A 前端 IA 重构 (commit 22c1e9d)**: 初中/高中两板块切换器 + 高中四页 + 教师工具下线(后端保留) + 初中 Phase E 占位 + `scaffold.js`。
 - **✅ PhaseB-1 小初高词占比王牌图 (commit 108cccb)**: `k12.tested_word_stage_distribution` + `/api/k12/tested_word_stage` + 真题特点页 结论先行 banner + echarts 图。**实证: 辽宁高考考查词 小初阶 75.7% / 高中新增仅 18.1% / 未分类 6.2%**。双门。
-- **✅ PhaseB-3 基础库真题库+课标库 (commit f874b38)**: 真题库 `/api/exam/liaoning_browse`(province 前缀坑7-safe, 按年/题型, 每题溯源 source_file#index) + 课标库(复用 theme_contexts/grammar_items + 新 `/api/curriculum/summary` 计数: 主题13/语法108/词汇3052) + 基础库hub四库全通; 新 `jichu_pages.js`(tiku/kebiao); moth liaoning-browse-prefix-safe。四门绿。
-- **下一步 (autonomous loop 续)**: **PhaseB-2** 真题特点 分布迁移/套路热力(复用 exam_point distribution/shift/cognitive, 分卷制era, 填 zhenti 页两个 Phase B 占位卡)→ **PhaseB-4** 命题研判首页 结论先行 banner(beike 顶部加一句话研判结论)→ **Phase C** L3 框架(教学提纲+覆盖模型+段级schema+作业挂真题, 不生成内容)。
-- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10; 新数据 moth AND D0 双门; 数据真值不估算; 不生成 L3 内容(Phase D 需就绪门)。
+- **✅ PhaseB-3 基础库真题库+课标库 (commit f874b38)**: 真题库 `/api/exam/liaoning_browse`(province 前缀坑7-safe, 按年/题型, 每题溯源 source_file#index) + 课标库(复用 theme_contexts/grammar_items + 新 `/api/curriculum/summary`) + 基础库hub四库全通; 新 `jichu_pages.js`; moth liaoning-browse-prefix-safe。
+- **✅ PhaseB-2 真题特点 迁移+套路 (commit 468ef8c)**: zhenti 两卡 → 命题迁移(shift delta 蒸馏 题材+主题群)+ 题材×思维套路(cognitive_by_content); 学习者向结论框架, 复用 endpoint。
+- **✅ PhaseB-4 命题研判 结论先行 (commit 67321da)**: beike 顶部 renderVerdict banner — live 蒸馏 3 结论(考查词75.7%小初阶/设问思维推断46.7%/最大迁移生活与学习降23.6pt), 样本量诚实。
+- **🎉 Phase B 全完成** (B-1/2/3/4)。四门全绿。
+- **下一步 (autonomous loop 续) = Phase C L3 框架**(决策C: 只搭框架不生成内容): 教学提纲(考点全集→课节映射) + 覆盖模型(加权集合覆盖+覆盖率%+缺口报告, 权重按命题频次) + 段级可溯源 schema(course_segment: covers_exam_points/evidence_questions/trend_weight, content=null) + 作业挂真题。前端 ④40节课程 页展示框架替裸题号。**待决可能阻塞**: 覆盖模型"考试权重"口径(题数/分值/频次, 北极星§10 默认频次, 遇歧义回报)。
+- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 
 ---
 
