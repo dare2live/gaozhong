@@ -71,20 +71,47 @@
     if (!el._wired) { window.addEventListener("resize", () => inst.resize()); el._wired = true; }
   }
 
+  // 命题迁移卡: shift.by_dimension (2015-20 → 2021+) 蒸馏成 top movers delta 结论 (学习者向)
+  const _DIM_LABEL = { genre: "题材 · 体裁", theme_l2: "主题群 (课标)", cognitive_skill: "设问思维" };
+  function _migrationCard(shiftByDim) {
+    const blocks = Object.keys(shiftByDim).map(dim => {
+      const movers = (shiftByDim[dim] || []).filter(m => Math.abs(m.delta) >= 0.05)
+        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, 4);
+      if (!movers.length) return "";
+      const rows = movers.map(m => {
+        const up = m.delta >= 0;
+        return `<div class="zt-mv"><span class="zt-mv-l">${esc(m.label)}</span><span class="zt-mv-d">${m.then_pct}% → ${m.now_pct}%</span><span class="zt-mv-delta ${up ? "up" : "down"}">${up ? "▲" : "▼"} ${Math.abs(m.delta).toFixed(1)}pt</span></div>`;
+      }).join("");
+      return `<div class="zt-mv-dim"><div class="zt-mv-h">${_DIM_LABEL[dim] || dim}</div>${rows}</div>`;
+    }).filter(Boolean).join("");
+    return blocks || '<p class="kb-dim">迁移数据不足。</p>';
+  }
+  // 题材×设问思维 套路卡: cognitive_by_content 每题材主导技能 (era 2015-20, dual_model 方向性)
+  function _taoluCard(cbc) {
+    const bc = cbc.by_content || {};
+    const rows = Object.keys(bc).filter(g => !bc[g].thin && bc[g].skills && bc[g].skills.length).map(g => {
+      const top = bc[g].skills[0];
+      return `<div class="kb-row"><span class="kb-row-h">${esc(g)}</span><span class="zt-taolu">主导 <strong>${esc(top.label)}</strong> ${top.pct}%<span class="kb-dim"> · ${bc[g].total}子题</span></span></div>`;
+    }).join("");
+    return rows || '<p class="kb-dim">题材×思维数据不足。</p>';
+  }
+  const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const d = await fetchSafe("/api/k12/tested_word_stage");
+    const [d, distG, distT, cbc] = await Promise.all([
+      fetchSafe("/api/k12/tested_word_stage"),
+      fetchSafe("/api/exam_point/distribution?dimension=genre"),
+      fetchSafe("/api/exam_point/distribution?dimension=theme_l2"),
+      fetchSafe("/api/exam_point/cognitive_by_content"),
+    ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
-    const placeholders = _scaffold({
-      badge: "", title: "", lead: "",
-      cards: [
-        { title: "题材 · 主题 · 设问思维 分布与迁移", icon: IC.chart, phase: "Phase B",
-          desc: "按卷制 era 分层 (不取全历史平均) 看体裁/课标主题群/设问思维的占比与年际迁移; 样本不足维度诚实标\"方向性\"。底层 L2 数据已在命题研判页, 本页聚合为 Phase B。" },
-        { title: "命题套路热力 (考点 × 题型)", icon: IC.heat, phase: "Phase B",
-          desc: "哪些考点/题型/题材在升温, 对应怎么考 — 数据驱动方向性指引 (非押题; 样本量诚实, D0 红线)。" },
-      ],
-    }).replace('<header class="sc-head">', '<header class="sc-head" hidden>');
+    const shiftByDim = {};  // 只取题材+主题群两 passage 维 (theme_context 与 theme_l2 冗余, 不重复)
+    const _WANT = ["genre", "theme_l2"];
+    [distG, distT].forEach(x => { if (!isErr(x) && x.shift && x.shift.by_dimension) _WANT.forEach(k => { if (x.shift.by_dimension[k]) shiftByDim[k] = x.shift.by_dimension[k]; }); });
+    const migHTML = Object.keys(shiftByDim).length ? _migrationCard(shiftByDim) : '<p class="kb-dim">迁移数据加载失败。</p>';
+    const taoluHTML = (!isErr(cbc)) ? _taoluCard(cbc) : '<p class="kb-dim">套路数据加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
       <header class="sc-head">
         <div class="sc-badge">高中 · 真题特点</div>
@@ -101,7 +128,16 @@
         <div id="zt-stage" role="img" aria-label="辽宁高考考查词学段分布条形图" style="height:300px;"></div>
         ${_stageSrTable(d)}
       </section>
-      ${placeholders}
+      <section class="bk-card">
+        <div class="bk-h"><span>命题迁移 · 近年怎么变 (2015–20 → 2021+)</span><span class="bk-src">/api/exam_point/distribution · shift</span></div>
+        <div class="zt-mig">${migHTML}</div>
+        <p class="kb-dim" style="margin:8px 0 0;">题材/主题为双模型推断 (方向性, 非真值); 按卷制 era 分层非全历史平均。完整交互图见<a href="#/beike">命题研判</a>。</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>命题套路 · 题材 × 设问思维</span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div>
+        <div class="kb-list">${taoluHTML}</div>
+        <p class="kb-dim" style="margin:8px 0 0;">"每类语篇主导哪种思维" = 命题套路 (设问思维=教研显式标签真值; 题材=双模型方向性; era 2015–20, 2021+ 桥缺)。</p>
+      </section>
     </section>`;
     if (await ensureECharts()) _renderStageChart(d);
     else { const e = document.querySelector("#zt-stage"); if (e) window.GZ.chartLoadError(e); }
