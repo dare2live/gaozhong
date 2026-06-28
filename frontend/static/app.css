@@ -243,6 +243,34 @@
   border: 2px solid var(--accent); border-radius: 4px; font-size: 1.1em;
 }
 
+/* ===== 骨架 / hub 页 (scaffold.js — 北极星 Phase A: 真题特点/基础库/初中占位) ===== */
+.scaffold { max-width: 940px; margin: 0 auto; padding: 6px 2px 44px; }
+.sc-head { padding: 6px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.sc-badge {
+  display: inline-block; font-size: 11px; font-weight: 650; letter-spacing: .05em;
+  color: var(--accent); background: var(--accent-wash); padding: 3px 9px; border-radius: var(--r-xs); margin-bottom: 12px;
+}
+.sc-title { font-size: 27px; font-weight: 680; letter-spacing: -0.02em; margin: 0 0 8px; color: var(--ink); }
+.sc-lead { font-size: 14.5px; line-height: 1.65; color: var(--ink-2); max-width: 72ch; margin: 0; }
+.sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 14px; }
+.sc-card {
+  border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; background: var(--card);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.sc-card.link { text-decoration: none; color: inherit; transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.sc-card.link:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
+.sc-card.link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sc-card-h { display: flex; align-items: center; gap: 9px; }
+.sc-ic { width: 19px; height: 19px; flex: none; color: var(--accent); }
+.sc-card-t { font-size: 15px; font-weight: 620; color: var(--ink); flex: 1; }
+.sc-chip {
+  font-size: 10.5px; font-weight: 600; color: var(--ink-3); white-space: nowrap;
+  background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-xs); padding: 1px 7px;
+}
+.sc-chip.ready { color: var(--good); background: #EEF6F1; border-color: #CFE6D9; }
+.sc-card-d { font-size: 13px; line-height: 1.6; color: var(--ink-3); margin: 0; }
+.sc-go { font-size: 12.5px; font-weight: 600; color: var(--accent); margin-top: 2px; }
+
 /* ===== 打印样式 (Phase 7.2) ===== */
 .print-btn {
   display: inline-flex; align-items: center; gap: 0.3rem;

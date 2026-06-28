@@ -45,7 +45,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">备课 · 考点驾驶舱 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button></h2>
+<h2 style="margin:0 0 2px;">命题研判 · 高考考什么 / 怎么考 / 怎么变 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button></h2>
 <p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上可单独导出 PNG</p>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">

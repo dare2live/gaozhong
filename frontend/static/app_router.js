@@ -17,16 +17,35 @@
     return fetchJSON(path + sep + "teacher_id=" + encodeURIComponent(_tid));
   }
 
+  // 板块状态 (初中/高中) — 北极星 IA 两大板块; 默认高中 (决策 B 先跑通)
+  let _section = localStorage.getItem("gz_section") || (window.GZ_SECTIONS && window.GZ_SECTIONS[0] && window.GZ_SECTIONS[0].id) || "senior";
+  function _sectionOf(tabId) {
+    for (const g of (window.GZ_NAV || [])) if (g.tabs.some(t => t.id === tabId)) return g.section || _section;
+    return _section;
+  }
+
   // 侧栏从 nav-config.js 数据渲染 (IA = 配置驱动, 非 hardcode HTML; 用户 no-hardcode 硬约束)
+  // 顶部板块切换器 (GZ_SECTIONS) + 当前板块的分组 (GZ_NAV 按 section 过滤)。
   function renderSidebar() {
     const nav = $(".tabnav");
     if (!nav || !window.GZ_NAV) return;
-    nav.innerHTML = window.GZ_NAV.map(g =>
+    const secs = window.GZ_SECTIONS || [];
+    const switcher = secs.length > 1
+      ? `<div class="section-switch" role="tablist" aria-label="学段板块">` + secs.map(s =>
+          `<button type="button" role="tab" class="ss-btn${s.id === _section ? " active" : ""}" data-section="${s.id}" aria-selected="${s.id === _section}" title="${s.hint || ""}">${s.label}</button>`
+        ).join("") + `</div>`
+      : "";
+    const groups = (window.GZ_NAV || []).filter(g => !g.section || g.section === _section).map(g =>
       `<div class="navgroup">${g.group}${g.tag ? `<span class="gtag">${g.tag}</span>` : ""}<span class="gline"></span></div>` +
       g.tabs.map(t =>
         `<a href="#/${t.id}" data-tab="${t.id}"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor">${t.icon}</svg> ${t.label}${t.count ? `<span class="cnt" id="nav-cnt-${t.id}"></span>` : ""}</a>`
       ).join("")
     ).join("");
+    nav.innerHTML = switcher + groups;
+    nav.querySelectorAll(".ss-btn").forEach(b => b.onclick = () => {
+      const g = (window.GZ_NAV || []).find(x => x.section === b.dataset.section);
+      if (g && g.tabs[0]) location.hash = "#/" + g.tabs[0].id;  // 切板块=跳该板块首页; route() 同步 _section + 重渲
+    });
   }
 
   // nav 资产计数 (后端真实数据, count 源由配置定 — 非硬编码数字)
@@ -71,8 +90,11 @@
 
   // -- router
   function route() {
-    const hash = (location.hash || "#/beike").slice(2);  // strip "#/" (备课驾驶舱=默认落地页)
+    const hash = (location.hash || "#/beike").slice(2);  // strip "#/" (命题研判=默认落地页)
     const name = (hash.split("/")[0] || "beike").toLowerCase();
+    // 板块同步: 路由到的页若属另一板块 (含 hub 内链/直接 hash), 切板块并重渲侧栏
+    const sec = _sectionOf(name);
+    if (sec !== _section) { _section = sec; localStorage.setItem("gz_section", _section); renderSidebar(); populateNavCounts(); }
     $$(".tabnav a").forEach(a => a.classList.toggle("active", a.dataset.tab === name));
     // RC1: 切 tab 回顶 (滚动容器在不同布局下可能是 window / documentElement / body / .content, 全复位)
     window.scrollTo(0, 0);
@@ -102,7 +124,7 @@
     const label = m === "teacher" ? "教师工作台" : "旧版数据面板";
     const bar = document.createElement("div");
     bar.style.cssText = "background:#FBF3E0;border-bottom:1px solid #E3CF95;color:#7A5A12;font-size:13px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;";
-    bar.innerHTML = `<span>旧版「${label}」功能已并入此统一入口（备课/组卷/教材/图谱/词典各 tab）。请更新书签到本页。</span>` +
+    bar.innerHTML = `<span>旧版「${label}」入口已统一到本学习者平台 (初中/高中两板块)。请更新书签到本页。</span>` +
       `<button class="gz-iconbtn" aria-label="关闭" title="关闭" style="padding:0 6px;">${GZ.icon("close")}</button>`;
     bar.querySelector("button").onclick = () => bar.remove();
     document.body.insertBefore(bar, document.body.firstChild);
@@ -170,7 +192,7 @@
   // B. 教学 — 40 节按 layer 分组 + 点击查讲义
   // ===================================================================
   register("teaching", async () => {
-    CONTENT.innerHTML = `<h2>分层教学</h2><p class="muted">载入中...</p>`;
+    CONTENT.innerHTML = `<h2>40 节课程</h2><p class="muted">载入中...</p>`;
     const data = await fetchJSON("/api/course/list");
     const groups = { G1: [], G2: [], G3: [], G_FINAL: [] };
     for (const c of data.courses) groups[c.layer]?.push(c);
@@ -180,7 +202,7 @@
       G3: "高三上学期 · ~3000 词",
       G_FINAL: "高考前突击 · ~3500 词 · 真题密集",
     };
-    let html = `<h2>分层教学 <span class="muted" style="font-size:14px;font-weight:400">${data.courses.length} 节 · 按 layer 分组</span></h2>`;
+    let html = `<h2>40 节课程 <span class="muted" style="font-size:14px;font-weight:400">${data.courses.length} 节 · 分层 (L3 框架, 北极星 Phase C)</span></h2>`;
     for (const layer of ["G1", "G2", "G3", "G_FINAL"]) {
       const items = groups[layer];
       html += `<section class="layer-section">
