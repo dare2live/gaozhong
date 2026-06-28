@@ -270,6 +270,14 @@
 .sc-chip.ready { color: var(--good); background: #EEF6F1; border-color: #CFE6D9; }
 .sc-card-d { font-size: 13px; line-height: 1.6; color: var(--ink-3); margin: 0; }
 .sc-go { font-size: 12.5px; font-weight: 600; color: var(--accent); margin-top: 2px; }
+/* 真题特点 · 结论先行 banner (北极星 Phase B "最少覆盖最大" 实证) */
+.sc-takeaway { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: var(--r); padding: 14px 18px; margin-bottom: 18px; }
+.sc-tk-h { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--accent); margin-bottom: 6px; }
+.sc-tk-body { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0 0 6px; }
+.sc-tk-body strong { font-weight: 680; }
+.sc-tk-body .tk-found { color: var(--down); }
+.sc-tk-body .tk-senior { color: var(--accent); }
+.sc-tk-caveat { font-size: 12px; line-height: 1.55; color: var(--ink-3); margin: 0; }
 
 /* ===== 打印样式 (Phase 7.2) ===== */
 .print-btn {

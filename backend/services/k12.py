@@ -41,6 +41,40 @@ def stage_unstaged_disclosure(con: duckdb.DuckDBPyConnection) -> dict:
             "note": "stage 分布覆盖有标准阶段的词; 校本超纲/课标变形词无标准阶段, 不计入(诚实非静默)"}
 
 
+def tested_word_stage_distribution(con: duckdb.DuckDBPyConnection) -> dict:
+    """辽宁高考**离散考点题型考查词(去重)** 按学段分布 — "用最少课程覆盖最大考点" 实证 (北极星 Phase B).
+
+    口径 (D0 诚实): 考查 = tests_word 边 ∧ province 辽宁 ∧ TESTED_QTYPES (出现≠考查, 根因A);
+    学段 = at_stage 边 (word→学段, 单一计算点 §7); 无 at_stage 边的词标"未分类"(校本超纲/外省词, 不估算, 坑6)。
+    foundation = 小学+初中+义务教育 (≤初中), senior = 高中必修+选修。返回 {stages, total, foundation_pct, senior_pct, unclassified_pct}.
+    """
+    from backend.services.exam_vocab import TESTED_QTYPES
+    qmarks = ",".join("?" * len(TESTED_QTYPES))
+    rows = con.execute(
+        "WITH tw AS ("
+        "  SELECT DISTINCT SUBSTR(e.dst_id,6) AS word FROM edges e "
+        "  JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
+        f"  WHERE e.relation='tests_word' AND q.province LIKE '辽宁%' AND q.question_type IN ({qmarks})) "
+        "SELECT COALESCE(SUBSTR(es.dst_id,7),'未分类') AS stage, COUNT(*) AS n "
+        "FROM tw LEFT JOIN edges es ON 'word:'||tw.word=es.src_id AND es.relation='at_stage' GROUP BY 1",
+        list(TESTED_QTYPES),
+    ).fetchall()
+    counts = {s: int(n) for s, n in rows}
+    total = sum(counts.values())
+    if total == 0:
+        return {"stages": [], "total": 0, "foundation_pct": 0.0, "senior_pct": 0.0, "unclassified_pct": 0.0}
+    pct = lambda n: round(100.0 * n / total, 1)
+    order = _STAGE_ORDER + ["未分类"]
+    stages = [{"stage": s, "n": counts[s], "pct": pct(counts[s])} for s in order if counts.get(s)]
+    grp = lambda ks: pct(sum(counts.get(k, 0) for k in ks))
+    return {
+        "stages": stages, "total": total,
+        "foundation_pct": grp(["小学", "初中", "义务教育"]),
+        "senior_pct": grp(["高中必修", "高中选修"]),
+        "unclassified_pct": pct(counts.get("未分类", 0)),
+    }
+
+
 def blueprint(con: duckdb.DuckDBPyConnection) -> dict:
     """10维语法蓝图: 初中 grammar → 高中 deepens 边 (中考语篇填空∩高考语法填空衔接)."""
     rows = con.execute(

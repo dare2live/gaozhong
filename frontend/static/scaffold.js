@@ -5,7 +5,7 @@
  * 不伪造图表/不甩原始题号。可用的子库 (教材库/考试词典) 直接链到现有 working tab。
  */
 (function () {
-  const { registerTab } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, ensureECharts, initChart } = window.GZ;
 
   // 通用骨架渲染: 标题 + Phase 徽章 + 引言 + 计划模块卡片
   function _scaffold({ title, badge, lead, cards }) {
@@ -41,21 +41,70 @@
     build: '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h.01"/><path d="M9 13h.01"/>',
   };
 
-  // ② 真题特点 (Phase B): 命题特点/趋势/小初高词占比 — 数据在 L2 后端, 前端可视化建设中
+  // ② 真题特点: 小初高词占比 (真实数据, 王牌实证) + 分布迁移/套路热力 (Phase B 占位)
+  const STAGE_COLOR = {
+    "小学": "#2E7D54", "初中": "#3C7AA6", "义务教育": "#6BA3C4",
+    "高中必修": "#BE3A2B", "高中选修": "#9C2C20", "未分类": "#B4B2A9",
+  };
+
+  function _stageSrTable(d) {
+    const rows = d.stages.map(s => `<tr><td>${s.stage}</td><td>${s.pct}%</td><td>${s.n}</td></tr>`).join("");
+    return `<table class="sr-only"><caption>辽宁高考考查词学段分布</caption><thead><tr><th>学段</th><th>占比</th><th>词数</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function _renderStageChart(d) {
+    const el = document.querySelector("#zt-stage");
+    if (!el) return;
+    const cats = d.stages.map(s => s.stage);
+    const data = d.stages.map(s => ({ value: s.pct, itemStyle: { color: STAGE_COLOR[s.stage] || "#B4B2A9" } }));
+    const inst = initChart(el);
+    inst.setOption({
+      grid: { left: 70, right: 56, top: 10, bottom: 24 },
+      xAxis: { type: "value", max: Math.ceil(Math.max(...d.stages.map(s => s.pct)) / 10) * 10, axisLabel: { formatter: "{value}%", fontSize: 11, color: "#76716A" }, splitLine: { lineStyle: { color: "#F0ECE4" } } },
+      yAxis: { type: "category", inverse: true, data: cats, axisLabel: { fontSize: 12, color: "#45413A" }, axisTick: { show: false } },
+      series: [{
+        type: "bar", data, barWidth: "58%",
+        label: { show: true, position: "right", formatter: p => `${d.stages[p.dataIndex].pct}% · ${d.stages[p.dataIndex].n}词`, fontSize: 11, color: "#76716A" },
+      }],
+    });
+    el.setAttribute("aria-label", `辽宁高考考查词学段分布条形图: ` + d.stages.map(s => `${s.stage} ${s.pct}%`).join(", "));
+    if (!el._wired) { window.addEventListener("resize", () => inst.resize()); el._wired = true; }
+  }
+
   registerTab("zhenti", async () => {
-    document.querySelector("#content").innerHTML = _scaffold({
-      badge: "高中 · Phase B 建设中",
-      title: "真题特点",
-      lead: "围绕辽宁高考真题 (新课标 II 卷) 的命题特点与趋势 — 用数据回答\"高考考什么、怎么考、近年怎么变\"。下列模块的底层数据已在 L2 关联层算出, 前端可视化为 Phase B 任务。",
+    const C = document.querySelector("#content");
+    C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
+    const d = await fetchSafe("/api/k12/tested_word_stage");
+    if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
+    const placeholders = _scaffold({
+      badge: "", title: "", lead: "",
       cards: [
         { title: "题材 · 主题 · 设问思维 分布与迁移", icon: IC.chart, phase: "Phase B",
-          desc: "按卷制 era 分层 (不取全历史平均) 看体裁/课标主题群/设问思维的占比与年际迁移; 样本不足的维度诚实标\"方向性\"。" },
-        { title: "小学 / 初中 / 高中 词在高考卷的占比", icon: IC.words, phase: "Phase B",
-          desc: "本产品\"用最少课程覆盖最大考点\"论点的王牌实证 — 若高考多数词为初中/小学级, 高中课程只攻高频×高中新增的 delta。" },
+          desc: "按卷制 era 分层 (不取全历史平均) 看体裁/课标主题群/设问思维的占比与年际迁移; 样本不足维度诚实标\"方向性\"。底层 L2 数据已在命题研判页, 本页聚合为 Phase B。" },
         { title: "命题套路热力 (考点 × 题型)", icon: IC.heat, phase: "Phase B",
-          desc: "哪些考点/题型/题材在升温, 对应怎么考 — 数据驱动的方向性指引 (非押题; 样本量诚实, 见 D0 红线)。" },
+          desc: "哪些考点/题型/题材在升温, 对应怎么考 — 数据驱动方向性指引 (非押题; 样本量诚实, D0 红线)。" },
       ],
-    });
+    }).replace('<header class="sc-head">', '<header class="sc-head" hidden>');
+    C.innerHTML = `<section class="scaffold">
+      <header class="sc-head">
+        <div class="sc-badge">高中 · 真题特点</div>
+        <h1 class="sc-title">真题特点</h1>
+        <p class="sc-lead">围绕辽宁高考真题 (新课标 II 卷) 的命题特点 — 用数据回答"高考考什么、怎么考、近年怎么变"。</p>
+      </header>
+      <div class="sc-takeaway">
+        <div class="sc-tk-h">结论 · 用最少课程覆盖最大考点</div>
+        <p class="sc-tk-body">辽宁高考<strong>离散考点题型</strong>(完形/语法填空/短改/单选)考查的词中, <strong class="tk-found">${d.foundation_pct}% 是小学 / 初中阶</strong>(学生入高中前已学), 真正属<strong class="tk-senior">高中新增的仅 ${d.senior_pct}%</strong>。→ 高中课程不必重教基础词, 主攻这 ${d.senior_pct}% 的高中 delta + 高频考点。</p>
+        <p class="sc-tk-caveat">${d.caveat || ""} · 共 ${d.total} 个去重考查词${d.unclassified_pct ? `; 未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算` : ""}。</p>
+      </div>
+      <section class="bk-card">
+        <div class="bk-h"><span>辽宁高考考查词 · 学段分布</span><span class="bk-src">/api/k12/tested_word_stage</span></div>
+        <div id="zt-stage" role="img" aria-label="辽宁高考考查词学段分布条形图" style="height:300px;"></div>
+        ${_stageSrTable(d)}
+      </section>
+      ${placeholders}
+    </section>`;
+    if (await ensureECharts()) _renderStageChart(d);
+    else { const e = document.querySelector("#zt-stage"); if (e) window.GZ.chartLoadError(e); }
   });
 
   // ③ 基础库 hub: 教材库 / 真题库 / 课标库 (可用的直接链到现有 working tab)

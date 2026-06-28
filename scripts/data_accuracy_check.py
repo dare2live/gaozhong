@@ -290,6 +290,7 @@ _LIB_CHECKS = [
     ("d0_cognitive_skill_check", "check_cognitive_cross"),
     ("d0_phrases_check", "check_phrases"),
     ("d0_stage_check", "check_stage"),
+    ("d0_stage_check", "check_tested_word_stage"),
     ("d0_glossary_check", "check_glossary"),
     ("d0_exam_dict_check", "check_exam_dict"),
     ("d0_word_sense_check", "check_word_sense"),
