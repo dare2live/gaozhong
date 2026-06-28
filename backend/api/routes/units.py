@@ -30,33 +30,22 @@ def api_units(qs: dict) -> list[dict]:
 
 
 def api_unit_content(qs: dict) -> dict:
-    """单元内容直出 DB (教材已解析入库, 不链 PDF): 词表(unit_vocab_intro) + 课文段(sections).
-
-    入参 version/volume/unit. 词表带 在课标/词性/中文释义; 课文段带 kind/title/页码 (语篇/应用文/听力标记)。
-    """
+    """单元内容直出 DB (薄壳; 计算在 services.textbook_content 单算点): 上半知识点(词/短语/句型/语法/表达) + 下半正文."""
     version = (qs.get("version", [None])[0] or "").strip()
     volume = (qs.get("volume", [None])[0] or "").strip()
-    raw_unit = qs.get("unit", [None])[0]  # unit=0 是合法的预备单元(如人教 WELCOME UNIT), 不能用 falsy 判
-    _empty = {"vocab": [], "vocab_n": 0, "sections": [], "sections_n": 0}
+    raw_unit = qs.get("unit", [None])[0]  # unit=0 是合法预备单元(人教 WELCOME UNIT), 不用 falsy 判
     if not version or not volume or raw_unit is None:
-        return {"error": "version/volume/unit required", **_empty}
+        return {"error": "version/volume/unit required", "knowledge": {}, "passages": [], "passages_n": 0}
     try:
         unit = int(raw_unit)
     except (TypeError, ValueError):
-        return {"error": "unit must be int", **_empty}
+        return {"error": "unit must be int", "knowledge": {}, "passages": [], "passages_n": 0}
+    from backend.services.textbook_content import unit_content
     con = db_ro()
     try:
-        vocab = rows_to_dicts(con.execute(
-            "SELECT word, pos, zh_def, in_curriculum FROM unit_vocab_intro "
-            "WHERE version_key=? AND volume_key=? AND unit_number=? ORDER BY word", [version, volume, unit]))
-        sections = rows_to_dicts(con.execute(
-            "SELECT seq, kind, title, page_start, page_end, is_narrative, is_applied, is_listening "
-            "FROM sections WHERE version_key=? AND volume_key=? AND unit_number=? ORDER BY seq", [version, volume, unit]))
+        return unit_content(con, version, volume, unit)
     finally:
         con.close()
-    return {"version_key": version, "volume_key": volume, "unit_number": unit,
-            "vocab": vocab, "vocab_n": len(vocab), "sections": sections, "sections_n": len(sections),
-            "note": "教材已解析入库, 内容直接来自 DB (unit_vocab_intro + sections), 不依赖 PDF。"}
 
 
 ROUTES = {"/api/units": api_units, "/api/unit/content": api_unit_content}

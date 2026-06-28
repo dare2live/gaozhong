@@ -50,25 +50,44 @@
     </section>`;
   }
 
-  // 单元内容直出 DB: 词表(unit_vocab_intro) + 课文段(sections), 不依赖 PDF (用户: 教材已入库直接排版)
+  const _esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  // 知识点小节 (有则渲, 无则跳)
+  function _kgroup(title, n, inner) { return n ? `<div class="tb-kg"><span class="tb-kg-h">${title} <b>${n}</b></span>${inner}</div>` : ""; }
+  function _knowledgeHTML(k) {
+    const words = (k.vocab || []).map(v =>
+      `<span class="tb-word" title="${_esc(v.zh_def)}">${_esc(v.word)}${v.pos ? `<i>${_esc(v.pos)}</i>` : ""}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}</span>`).join("");
+    const chips = arr => (arr || []).map(x => `<span class="tb-chip">${_esc(x)}</span>`).join("");
+    const exprs = (k.expression || []).map(e => `<span class="tb-chip">${_esc(e.text)}${e.intent ? `<i>${_esc(e.intent)}</i>` : ""}</span>`).join("");
+    const gram = (k.grammar || []).map(g =>
+      `<div class="tb-gram-row"><span class="tb-gram-l">${_esc(g.label || "?")}</span>${g.example ? `<span class="tb-gram-ex">e.g. ${_esc(g.example)}</span>` : ""}</div>`).join("");
+    const parts = [
+      _kgroup("单词", k.vocab_n, `<div class="tb-words">${words}</div>`),
+      _kgroup("固定搭配", (k.collocation || []).length, `<div class="tb-chips">${chips(k.collocation)}</div>`),
+      _kgroup("句型", (k.sentence_pattern || []).length, `<div class="tb-chips">${chips(k.sentence_pattern)}</div>`),
+      _kgroup("语法", (k.grammar || []).length, `<div>${gram}</div>`),
+      _kgroup("表达方式", (k.expression || []).length, `<div class="tb-chips">${exprs}</div>`),
+    ].filter(Boolean).join("");
+    return parts || '<span class="muted" style="font-size:12px;">本单元暂无结构化知识点</span>';
+  }
+  function _passagesHTML(passages) {
+    if (!passages || !passages.length) return '<span class="muted" style="font-size:12px;">本单元正文未入库</span>';
+    return passages.map(p => {
+      const tag = p.is_narrative ? "语篇" : (p.is_applied ? "应用文" : (p.is_listening ? "听力" : (p.kind || "段")));
+      return `<div class="tb-passage"><div class="tb-passage-h">${_esc(p.title || p.kind || "段")} <span class="tb-passage-tag">${tag}</span></div><div class="tb-passage-t">${_esc(p.text)}</div></div>`;
+    }).join("");
+  }
+  // 单元内容直出 DB: 上半知识点(词/短语/句型/语法/表达) + 下半教材正文 (用户: 直接显示内容)
   async function showUnitContent(btn, slot) {
     if (slot.dataset.open === "1") { slot.innerHTML = ""; slot.dataset.open = "0"; return; }
     slot.dataset.open = "1";
     slot.innerHTML = '<div class="muted" style="font-size:12px;padding:4px 40px;">载入单元内容…</div>';
     const q = `version=${encodeURIComponent(btn.dataset.ver)}&volume=${encodeURIComponent(btn.dataset.vol)}&unit=${btn.dataset.unit}`;
     const d = await G.fetchSafe("/api/unit/content?" + q);
-    if (G.isErr(d)) { slot.innerHTML = '<div style="font-size:12px;padding:4px 40px;color:var(--warn);">内容加载失败 (接口错误)</div>'; return; }
-    const esc = s => String(s == null ? "" : s).replace(/</g, "&lt;");
-    const secs = (d.sections || []).map(s => {
-      const tag = s.is_narrative ? "语篇" : (s.is_applied ? "应用文" : (s.is_listening ? "听力" : (s.kind || "段")));
-      return `<span class="tb-sec">${esc(s.title || s.kind || "段")} <span class="muted">[${tag}]</span></span>`;
-    }).join("");
-    const vocab = (d.vocab || []).map(v =>
-      `<span class="tb-word" title="${esc(v.zh_def)}">${esc(v.word)}${v.pos ? `<i>${esc(v.pos)}</i>` : ""}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}</span>`).join("");
+    if (G.isErr(d) || d.error) { slot.innerHTML = '<div style="font-size:12px;padding:4px 40px;color:var(--warn);">内容加载失败 (接口错误)</div>'; return; }
     slot.innerHTML = `<div class="tb-content-body">
-      <div class="tb-cg"><span class="tb-cg-h">课文段 (${d.sections_n})</span>${secs || '<span class="muted">无课文段</span>'}</div>
-      <div class="tb-cg"><span class="tb-cg-h">引入词 (${d.vocab_n})</span><div class="tb-words">${vocab || '<span class="muted">无词表</span>'}</div></div>
-      <p class="kb-dim" style="margin:4px 0 0;">${d.note || ""} (词带词性/中文释义 hover; "超"=校本超纲非课标)</p>
+      <div class="tb-half"><div class="tb-half-h">知识点 (上)</div>${_knowledgeHTML(d.knowledge || {})}</div>
+      <div class="tb-half"><div class="tb-half-h">教材正文 (下) · ${d.passages_n} 段</div>${_passagesHTML(d.passages)}</div>
+      <p class="kb-dim" style="margin:6px 0 0;">${d.note || ""}</p>
     </div>`;
   }
 
