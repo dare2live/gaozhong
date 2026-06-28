@@ -126,48 +126,6 @@
 }
 .tab-placeholder code { background: var(--line-soft); padding: 1px 4px; border-radius: 2px; }
 
-/* ===== 讲义分段卡片 (Phase 7.1 enriched handouts) ===== */
-.handout-segments { display: flex; flex-direction: column; gap: 0.8rem; }
-.handout-seg {
-  background: var(--card); border-radius: 4px;
-  border: 1px solid var(--line); border-left: 4px solid var(--ink-3);
-  padding: 0;
-}
-.handout-seg-head {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.5rem 1rem; font-weight: 600; font-size: 0.95em;
-  border-bottom: 1px solid var(--sunken); cursor: default;
-}
-.handout-seg-head .seg-icon {
-  display: inline-block; width: 1.5em; text-align: center; flex-shrink: 0;
-}
-.handout-seg-body { padding: 0.6rem 1rem 0.8rem; font-size: 0.9em; line-height: 1.6; }
-.handout-seg-body h3 { display: none; } /* hide the ### header already shown in seg-head */
-.handout-seg-body p { margin: 0.3rem 0; }
-.handout-seg-body ul { margin: 0.3rem 0 0.3rem 1rem; padding: 0; }
-.handout-seg-body li { margin: 0.2rem 0; }
-
-/* segment color coding */
-.handout-seg.seg-header  { border-left-color: var(--nav); background: var(--sunken); }
-.handout-seg.seg-hook    { border-left-color: var(--down); }
-.handout-seg.seg-review  { border-left-color: var(--ink-3); }
-.handout-seg.seg-core    { border-left-color: var(--accent); }
-.handout-seg.seg-relations { border-left-color: var(--good); }
-.handout-seg.seg-exam    { border-left-color: var(--warn); }
-.handout-seg.seg-practice { border-left-color: var(--down); }
-.handout-seg.seg-homework { border-left-color: var(--down); }
-.handout-seg.seg-summary { border-left-color: var(--ink-3); }
-
-.handout-seg.seg-header .handout-seg-head { color: var(--nav); }
-.handout-seg.seg-hook .handout-seg-head { color: var(--down); }
-.handout-seg.seg-review .handout-seg-head { color: var(--ink-2); }
-.handout-seg.seg-core .handout-seg-head { color: var(--accent); }
-.handout-seg.seg-relations .handout-seg-head { color: var(--good); }
-.handout-seg.seg-exam .handout-seg-head { color: var(--warn); }
-.handout-seg.seg-practice .handout-seg-head { color: var(--down); }
-.handout-seg.seg-homework .handout-seg-head { color: var(--down); }
-.handout-seg.seg-summary .handout-seg-head { color: var(--ink-3); }
-
 /* difficulty markers */
 .diff-stars { letter-spacing: 1px; font-size: 0.85em; }
 .diff-stars[data-level="basic"] { color: var(--good); }
@@ -183,23 +141,6 @@
 .answer-toggle:hover { background: var(--line); }
 .answer-body { display: none; margin: 0.3rem 0 0.5rem; padding: 0.4rem 0.8rem; background: var(--sunken); border-radius: 3px; font-size: 0.9em; }
 .answer-body.open { display: block; }
-
-/* content principles info button */
-.principles-toggle {
-  display: inline-flex; align-items: center; gap: 0.3rem;
-  padding: 0.3rem 0.8rem; margin-top: 0.8rem;
-  background: var(--sunken); border: 1px solid var(--line); border-radius: 3px;
-  font-size: 0.82em; cursor: pointer; color: var(--ink-3);
-}
-.principles-toggle:hover { background: var(--line); color: var(--ink); }
-.principles-body {
-  display: none; margin-top: 0.5rem; padding: 0.6rem 1rem;
-  background: var(--card); border: 1px solid var(--line); border-radius: 4px;
-  font-size: 0.82em; color: var(--ink-2); line-height: 1.5;
-}
-.principles-body.open { display: block; }
-.principles-body dt { font-weight: 600; color: var(--ink); margin-top: 0.3rem; }
-.principles-body dd { margin: 0 0 0.2rem 1rem; }
 
 /* modal wider for enriched content */
 #handout-modal .modal-body { max-width: 900px; }
@@ -358,8 +299,7 @@
     max-height: none !important; overflow: visible !important;
     box-shadow: none !important; padding: 0 !important;
   }
-  #handout-modal .close-btn, .print-btn, .principles-toggle,
-  .principles-body, .gz-audio-player, .gz-transcript-toggle,
+  #handout-modal .close-btn, .print-btn, .gz-audio-player, .gz-transcript-toggle,
   .answer-toggle, .bk-export, .bk-filter, #dict-q, #dict-stage,
   #dict-export, #bk-crosstoggle { display: none !important; }
   /* #5: 驾驶舱/词典/K12 分析卡整页打印 — 卡不跨页断 */
@@ -367,8 +307,6 @@
   .bk-grid { display: block !important; }
   #dict-list { max-height: none !important; overflow: visible !important; }
   .answer-body { display: block !important; }
-  .handout-seg { break-inside: avoid; page-break-inside: avoid; border: 1px solid var(--line); }
-  .handout-seg-head { background: var(--sunken) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .gz-concept { color: #000 !important; border-bottom: none !important; text-decoration: underline; }
   .gz-transcript { display: block !important; }
   h2 { border-bottom: 2px solid #000 !important; }
@@ -388,5 +326,4 @@
   .content { padding: 1rem; }
   .course-grid { grid-template-columns: 1fr; }
   #handout-modal .modal-body { width: 98%; padding: 0.7rem; max-height: 95vh; }
-  .handout-seg-body { padding: 0.4rem 0.6rem 0.5rem; font-size: 0.85em; }
 }
