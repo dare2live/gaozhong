@@ -29,7 +29,13 @@
 - **✅ PhaseC-2 教学提纲+段级schema+作业+④前端 (commit b7da84c)**: `course.syllabus`(40节按主题群频次比例分配, 段级 course_segment schema content=null) + `homework_for_point`(考点→辽宁真题溯源 非生成) + `/api/course/syllabus` + 前端 ④40节课程重建(覆盖banner+考点焦点+作业真题友好溯源, **替裸题号 gb/...44 用户痛点**)。双门(D0 check34 + moth l3-syllabus)。
 - **✅ PhaseC-3 收尾: 对抗复核修复 (commit 6210614+6ffe45c)**: ultracode 5维度对抗复核(wf)抓到门测不到的真问题, 全修: _alloc 名实不符(贪心→真最大余数法, 生活与学习12→8) · trend_weight 坑12(重复计权→份额/节数) · theme_weight_covered_pct 误导→诚实标 · §3.2 schema 补 segment_id/course_id+coverage_proof · D0 强化(段考点必有 tests_exam_point 边+分配比例+份额防回归)。CC=16 拆 3 子helper 回门绿。
 - **🎉🎉 Phase B + Phase C 全完成 (autonomous goal#29 达成, 经对抗复核验证)**: 产品三层贯通 L1 数据→L2 解析→L3 课程框架。前端学习者产品: ①命题研判(结论先行)/②真题特点(小初高词占比75.7%基础阶+迁移+套路)/③基础库(教材/词典/真题190溯源/课标)/④40节课程(L3框架: 覆盖模型+教学提纲最大余数法+段级可溯源+作业真题, content待Phase D)。
-- **下一步 (待用户决策, 非 loop 自动)**: Phase D (L3 内容生成) 需 **就绪门**(北极星§5)绿 + 用户拍板才进; 或 Phase E (初中板块)。**不自动进 Phase D**(决策C)。已知待办(非阻塞): 坑16 genre/theme 显式真相源交叉验证(GenreTruthChecker, Phase D 就绪门前置, 现维持方向性标注); 旧 course handout/quiz 死代码清理(④重建后未用, 已 flag chip)。
+- **✅ 用户反馈 N1-N4 + 死代码清理 (commit c61e007/7613a32/9ea32ae)**: 
+  - 死代码清理: 删 _renderSegments 死簇(57行)+死CSS(59行); verify-the-verifier 厘清 _openHandout 等非死(off-nav teacher tab 活链), 仅删确认死簇; off-nav 教师子系统全移除是单独产品决策(尤 graph 宜恢复)留用户。
+  - N1 义务教育档改标"义务·未细分(小初)"(残档非重叠, 诚实)。
+  - N2 语法/搭配统计扩展 (exam_grammar_stats): 语法考查(课标第二级子类 辽宁频次真值: 从句28%/被动17.5%/非谓语14%/时态7%) + 教材搭配/句型/表达库(phrases, 出现非考查诚实标); /api/grammar/stats + 双门; 真题特点页加2卡。
+  - N3 设问思维讲解(套路卡可展开: 4认知技能定义+设问信号词, 教学可懂)。
+  - N4 教材 DB 直出渲染(/api/unit/content 词表+课文段; textbook.js 去PDF链改"查内容"展开; 修 unit=0 WELCOME UNIT 合法)。
+- **下一步 (待用户决策, 非 loop 自动)**: Phase D (L3 内容生成) 需 **就绪门**(北极星§5)绿 + 用户拍板; 或 Phase E (初中板块)。**不自动进 Phase D**(决策C)。已知待办(非阻塞): 坑16 genre/theme 显式真相源交叉验证(GenreTruthChecker, Phase D 前置, 现维持方向性标注); 固定搭配/表达的短语级真题考查标注(现 phrases 是教材库出现非考查); off-nav 教师子系统是否全移除/graph 恢复入产品。
 - **铁律**: 四门每步绿; 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 - **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 
