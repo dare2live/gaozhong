@@ -26,8 +26,11 @@
 - **✅ PhaseB-4 命题研判 结论先行 (commit 67321da)**: beike 顶部 renderVerdict banner — live 蒸馏 3 结论(考查词75.7%小初阶/设问思维推断46.7%/最大迁移生活与学习降23.6pt), 样本量诚实。
 - **🎉 Phase B 全完成** (B-1/2/3/4)。四门全绿。
 - **✅ PhaseC-1 覆盖模型 (commit 23fc3e8)**: `course.coverage_model` + `/api/course/coverage` — 考点全集可教轴(题材6/主题群8/高频考词1166/语法22)+ 命题频次权重 + 覆盖曲线(题材90%需3/主题群需7/词需903但小初高filter后高中仅~18%delta/语法需17); 设问思维正确排除(套路非可教覆盖). 双门(D0 check33 跨源 + moth l3-coverage-model-sound)。
-- **下一步 (autonomous loop 续 Phase C 余项)**: (a) 作业挂真题 — 考点→辽宁真题(反向 tests_exam_point, 复用 liaoning_browse, 非生成 坑14); (b) 教学提纲 — 高产出考点→40课节焦点分配(L2派生, content=null); (c) 段级可溯源 schema course_segment(covers_exam_points/evidence_questions/trend_weight, content=null); (d) 前端 ④40节课程页重建 — 展示 覆盖率+考点焦点+作业题源, **替原始裸题号 gb/...44**。
-- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
+- **✅ PhaseC-2 教学提纲+段级schema+作业+④前端 (commit b7da84c)**: `course.syllabus`(40节按主题群频次比例分配, 段级 course_segment schema content=null) + `homework_for_point`(考点→辽宁真题溯源 非生成) + `/api/course/syllabus` + 前端 ④40节课程重建(覆盖banner+考点焦点+作业真题友好溯源, **替裸题号 gb/...44 用户痛点**)。双门(D0 check34 + moth l3-syllabus)。
+- **✅ PhaseC-3 收尾: 对抗复核修复 (commit 6210614+6ffe45c)**: ultracode 5维度对抗复核(wf)抓到门测不到的真问题, 全修: _alloc 名实不符(贪心→真最大余数法, 生活与学习12→8) · trend_weight 坑12(重复计权→份额/节数) · theme_weight_covered_pct 误导→诚实标 · §3.2 schema 补 segment_id/course_id+coverage_proof · D0 强化(段考点必有 tests_exam_point 边+分配比例+份额防回归)。CC=16 拆 3 子helper 回门绿。
+- **🎉🎉 Phase B + Phase C 全完成 (autonomous goal#29 达成, 经对抗复核验证)**: 产品三层贯通 L1 数据→L2 解析→L3 课程框架。前端学习者产品: ①命题研判(结论先行)/②真题特点(小初高词占比75.7%基础阶+迁移+套路)/③基础库(教材/词典/真题190溯源/课标)/④40节课程(L3框架: 覆盖模型+教学提纲最大余数法+段级可溯源+作业真题, content待Phase D)。
+- **下一步 (待用户决策, 非 loop 自动)**: Phase D (L3 内容生成) 需 **就绪门**(北极星§5)绿 + 用户拍板才进; 或 Phase E (初中板块)。**不自动进 Phase D**(决策C)。已知待办(非阻塞): 坑16 genre/theme 显式真相源交叉验证(GenreTruthChecker, Phase D 就绪门前置, 现维持方向性标注); 旧 course handout/quiz 死代码清理(④重建后未用, 已 flag chip)。
+- **铁律**: 四门每步绿; 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 - **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 
 ---
