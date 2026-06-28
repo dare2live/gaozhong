@@ -25,7 +25,9 @@
 - **✅ PhaseB-2 真题特点 迁移+套路 (commit 468ef8c)**: zhenti 两卡 → 命题迁移(shift delta 蒸馏 题材+主题群)+ 题材×思维套路(cognitive_by_content); 学习者向结论框架, 复用 endpoint。
 - **✅ PhaseB-4 命题研判 结论先行 (commit 67321da)**: beike 顶部 renderVerdict banner — live 蒸馏 3 结论(考查词75.7%小初阶/设问思维推断46.7%/最大迁移生活与学习降23.6pt), 样本量诚实。
 - **🎉 Phase B 全完成** (B-1/2/3/4)。四门全绿。
-- **下一步 (autonomous loop 续) = Phase C L3 框架**(决策C: 只搭框架不生成内容): 教学提纲(考点全集→课节映射) + 覆盖模型(加权集合覆盖+覆盖率%+缺口报告, 权重按命题频次) + 段级可溯源 schema(course_segment: covers_exam_points/evidence_questions/trend_weight, content=null) + 作业挂真题。前端 ④40节课程 页展示框架替裸题号。**待决可能阻塞**: 覆盖模型"考试权重"口径(题数/分值/频次, 北极星§10 默认频次, 遇歧义回报)。
+- **✅ PhaseC-1 覆盖模型 (commit 23fc3e8)**: `course.coverage_model` + `/api/course/coverage` — 考点全集可教轴(题材6/主题群8/高频考词1166/语法22)+ 命题频次权重 + 覆盖曲线(题材90%需3/主题群需7/词需903但小初高filter后高中仅~18%delta/语法需17); 设问思维正确排除(套路非可教覆盖). 双门(D0 check33 跨源 + moth l3-coverage-model-sound)。
+- **下一步 (autonomous loop 续 Phase C 余项)**: (a) 作业挂真题 — 考点→辽宁真题(反向 tests_exam_point, 复用 liaoning_browse, 非生成 坑14); (b) 教学提纲 — 高产出考点→40课节焦点分配(L2派生, content=null); (c) 段级可溯源 schema course_segment(covers_exam_points/evidence_questions/trend_weight, content=null); (d) 前端 ④40节课程页重建 — 展示 覆盖率+考点焦点+作业题源, **替原始裸题号 gb/...44**。
+- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 - **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 
 ---
