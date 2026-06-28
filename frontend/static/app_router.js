@@ -195,7 +195,11 @@
   const _esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   function _covLine(cov) {
     const ax = (cov && cov.axes) || {};
-    const part = (k, name) => ax[k] ? `${name} ${ax[k].n_total} 考点 (覆盖${cov.target_pct}%需 ${ax[k].high_yield_n})` : "";
+    const part = (k, name) => {
+      if (!ax[k] || !ax[k].n_total) return "";
+      const eff = Math.round(100 * ax[k].high_yield_n / ax[k].n_total);
+      return `${name} ${ax[k].n_total} 考点 (覆盖${cov.target_pct}%需 ${ax[k].high_yield_n}, 即 ${eff}%)`;
+    };
     return [part("genre", "题材"), part("theme_l2", "主题群"), part("word", "高频考词"), part("grammar", "语法")].filter(Boolean).join(" · ");
   }
   function _lessonCard(l) {
@@ -206,11 +210,11 @@
     return `<details class="ks-lesson"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-focus">考点焦点: ${_esc(l.focus)}</span>
-        <span class="ks-w" title="命题频次权重">权重 ${l.trend_weight}</span>
+        <span class="ks-w" title="本节命题权重份额 = 该主题群辽宁频次 ÷ 该主题节数">权重 ${l.trend_weight}</span>
         <span class="ks-hwn">作业 ${(l.evidence_questions || []).length} 真题</span>
         <span class="ks-content">内容待生成 (Phase D)</span>
       </summary>
-      <div class="ks-body"><div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div><ul class="ks-hwlist">${hw || '<li class="ks-hw">该考点暂无匹配真题</li>'}</ul></div>
+      <div class="ks-body"><div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div><ul class="ks-hwlist">${hw || '<li class="ks-hw">该主题真题作业框架阶段待补 (Phase D 完善)</li>'}</ul></div>
     </details>`;
   }
   register("teaching", async () => {

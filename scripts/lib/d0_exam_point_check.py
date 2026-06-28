@@ -132,11 +132,27 @@ def check_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
     # 1. content 一律 null (决策C: 不生成 L3 内容, Phase D 才填)
     n_content = sum(1 for l in lessons if l.get("content") is not None)
     check("所有段 content==null (决策C 框架不生成内容)", n_content == 0, f"{n_content} 段已有内容(违决策C)")
-    # 2. 无孤儿: 每节 covers_exam_points 指向真实 exam_point 节点
+    # 2. 无孤儿: 每节 covers_exam_points 指向真实 exam_point 节点 **且有 tests_exam_point 边** (§3.2: 存在于L2考查边, 非仅节点)
     pts = {p for l in lessons for p in l["covers_exam_points"]}
     real = {r[0] for r in con.execute("SELECT concept_id FROM nodes WHERE concept_id LIKE 'exam_point:%'").fetchall()}
+    edged = {r[0] for r in con.execute("SELECT DISTINCT dst_id FROM edges WHERE relation='tests_exam_point'").fetchall()}
     orphan_pt = pts - real
-    check("段考点焦点全指向真实 exam_point (无孤儿)", not orphan_pt, f"孤儿考点={list(orphan_pt)[:3]}")
+    no_edge = pts - edged
+    check("段考点焦点全指向真实 exam_point (无孤儿节点)", not orphan_pt, f"孤儿={list(orphan_pt)[:3]}")
+    check("段考点焦点全有 tests_exam_point 考查边 (§3.2 存在于L2, 非空考点)", not no_edge, f"无考查边={list(no_edge)[:3]}")
+    # 2b. 分配=最大余数法 (防回归到贪心 rich-get-richer 偏差); trend_weight 份额求和=主题频次 (坑12 防重复计权)
+    from backend.services.course.syllabus import _alloc
+    from backend.services.course.coverage import _ln_freq_by_point
+    themes = _ln_freq_by_point(con, "theme_l2")
+    want = _alloc(themes, len([l for l in lessons]))
+    got = [sum(1 for l in lessons if l["focus"] == t) for t, _ in themes]
+    check("课节分配=最大余数法比例 (无 rich-get-richer 偏差)", want == got, f"got={got} want={want}")
+    import collections as _c
+    wsum = _c.defaultdict(float)
+    for l in lessons:
+        wsum[l["focus"]] += l.get("trend_weight", 0)
+    drift = [t for t, f in themes if abs(wsum[t] - f) > 1.0]
+    check("trend_weight 份额按主题求和≈频次 (坑12: 多节不重复计全额)", not drift, f"漂移主题={drift[:3]}")
     # 3. 作业真题全可溯源 (source) 且为辽宁真题 (非生成)
     qids = [q["question_id"] for l in lessons for q in l["evidence_questions"]]
     no_src = sum(1 for l in lessons for q in l["evidence_questions"] if not q.get("source"))

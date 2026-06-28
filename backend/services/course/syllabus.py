@@ -27,47 +27,84 @@ def homework_for_point(con: duckdb.DuckDBPyConnection, dim: str, label: str, lim
     ).fetchall()
 
 
-def _alloc(themes: list[tuple[str, int]], n: int) -> list[int]:
-    """按频次比例把 n 节分配到各主题群 (每主题群 ≥1; 余数按最大余数法). 返回与 themes 同序的节数列表."""
-    if not themes:
-        return []
-    total = sum(f for _, f in themes) or 1
-    base = [max(1, int(n * f / total)) for _, f in themes]
-    # 调整到正好 n (多退少补, 改高频/低频项)
-    while sum(base) > n and any(b > 1 for b in base):
-        i = base.index(max(base)); base[i] -= 1
-    while sum(base) < n:
-        i = base.index(max(base)); base[i] += 1
+def _adjust(base: list[int], raw: list[float], n: int) -> list[int]:
+    """把 base 调到 sum==n: 缺额按小数余数降序补 (最大余数法); 超额(min=1地板致)从最大且>1项退回."""
+    deficit = n - sum(base)
+    if deficit > 0:
+        order = sorted(range(len(base)), key=lambda i: raw[i] - int(raw[i]), reverse=True)
+        for i in order[:deficit]:
+            base[i] += 1
+        return base
+    big = sorted(range(len(base)), key=lambda i: base[i], reverse=True)
+    k = 0
+    while deficit < 0 and k < len(big) * 20:
+        i = big[k % len(big)]
+        if base[i] > 1:
+            base[i] -= 1; deficit += 1
+        k += 1
     return base
 
 
+def _alloc(themes: list[tuple[str, int]], n: int) -> list[int]:
+    """按频次比例把 n 节分配到各主题群 (每主题群 ≥1; 名额按**最大余数法**, 非贪心 rich-get-richer)."""
+    if not themes:
+        return []
+    total = sum(f for _, f in themes) or 1
+    raw = [n * f / total for _, f in themes]
+    base = [max(1, int(r)) for r in raw]
+    return _adjust(base, raw, n)
+
+
+def _coverage_proof(con: duckdb.DuckDBPyConnection) -> dict:
+    """从 coverage_model 拉各轴覆盖证明 (高产出集/全集/长尾) — 北极星§4 '覆盖证明' 硬底气, 诚实标长尾非全覆盖."""
+    from backend.services.course.coverage import coverage_model
+    cov = coverage_model(con)
+    return {
+        "target_pct": cov["target_pct"],
+        "axes": {k: {"n_total": a["n_total"], "high_yield_n": a["high_yield_n"], "tail_n": a["tail_n"]}
+                 for k, a in cov["axes"].items()},
+        "note": "覆盖证明: 各可教轴达 target% 考查权重的最少考点数(高产出集)+长尾缺口; 词轴长尾大→结合小初高(75.7%基础阶)高中实攻~18% delta。诚实非字面全覆盖(§7)。",
+    }
+
+
 def syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int = 40) -> dict:
-    """教学提纲 framework: N 节按主题群频次分配 + 每节段级可溯源(考点焦点+作业真题, content=null)."""
+    """教学提纲 framework: N 节按主题群频次**最大余数法**分配 + 每节段级可溯源(考点焦点+作业真题, content=null).
+
+    课节分配维度 = theme_l2 主题群 (主组织轴); 题材/词/语法的覆盖见 coverage_proof, 其逐节映射待 Phase D 内容生成 (决策C)。
+    """
     themes = _ln_freq_by_point(con, "theme_l2")  # [(label, 频次)] 降序
     alloc = _alloc(themes, n_lessons)
+    theme_total_w = sum(f for _, f in themes) or 1
     lessons = []
     seq = 1
     for (theme, freq), k in zip(themes, alloc):
         pool = homework_for_point(con, "theme_l2", theme, limit=max(k * 2, 4))
+        lesson_w = round(freq / k, 1) if k else freq  # 坑12: 每节权重=该主题频次/节数(份额), 多节不重复计全额
         for i in range(k):
             hw = pool[i::k]  # 轮询切片, 每节分得该主题群一部分真题作业
             lessons.append({
-                "seq": seq, "focus": theme, "focus_dim": "theme_l2",
+                "seq": seq, "segment_id": f"seg-{seq:02d}", "course_id": seq,  # §3.2 schema: seq↔courses.course_id 1-40
+                "focus": theme, "focus_dim": "theme_l2",
                 "covers_exam_points": [f"exam_point:theme_l2:{theme}"],
                 "evidence_questions": [
                     {"question_id": q[0], "year": q[1], "question_type": q[2], "preview": q[3],
                      "source": f"{q[4]}#{q[5]}", "has_answer": bool(q[6])} for q in hw],
-                "trend_weight": freq,
+                "trend_weight": lesson_w,   # 本节命题权重份额 (该主题频次/节数; 跨本主题各节求和=主题频次, 不重复计)
+                "theme_total_weight": freq,  # 该主题群总频次 (供前端区分份额 vs 总额)
                 "content": None,  # Phase D (就绪门绿才生成)
             })
             seq += 1
-    covered_w = sum(f for _, f in themes)
     return {
         "n_lessons": len(lessons),
         "lessons": lessons,
-        "coverage": {"axis": "theme_l2", "themes_covered": len(themes),
-                     "theme_weight_covered_pct": 100.0 if themes else 0.0,
-                     "note": "40 节按主题群命题频次比例分配, 8 主题群全覆盖; 词/语法/题材覆盖见 /api/course/coverage"},
-        "schema": "course_segment: seq/focus/covers_exam_points/evidence_questions(作业真题溯源)/trend_weight/content(=null, Phase D)",
-        "note": "教学提纲=L2派生框架(决策C 不生成内容); 作业=辽宁真题非生成(坑14); 每段考点↔真题可溯源, 替裸题号。",
+        "coverage": {
+            "alloc_axis": "theme_l2",
+            "themes_total": len(themes),
+            "themes_allocated": len({l["focus"] for l in lessons}),
+            "theme_axis_covered_pct": round(100.0 * sum(f for t, f in themes if t in {l["focus"] for l in lessons}) / theme_total_w, 1),
+            "note": "课节按主题群命题频次最大余数法分配; 此 pct 仅 theme_l2 主题轴(每主题≥1节, 全分配)。题材/词/语法轴覆盖见 coverage_proof, 其逐节映射待 Phase D。非字面全考点覆盖(§7)。",
+        },
+        "coverage_proof": _coverage_proof(con),
+        "schema": "course_segment: seq/segment_id/course_id/focus/covers_exam_points/evidence_questions(作业真题溯源)/trend_weight(份额)/theme_total_weight/content(=null,Phase D)",
+        "note": "教学提纲=L2派生框架(决策C 不生成内容 content=null); 课节按主题群分配(主组织轴); 作业=辽宁真题非生成(坑14); 每段考点↔真题可溯源替裸题号。",
     }

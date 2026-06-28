@@ -62,7 +62,6 @@
   function filterBar() {
     const eraPill = (id, label) => `<button class="bk-pill ${state.era === id ? "on" : ""}" data-era="${id}">${label}</button>`;
     const dimOpt = Object.keys(DIM_LABEL).map(k => `<option value="${k}" ${state.dim === k ? "selected" : ""}>${DIM_LABEL[k]}</option>`).join("");
-    const eras = state.dist ? state.dist.eras : [ERA_NEW, ERA_OLD];
     // 样本充足性: 后端审计#5 — genre/theme 是篇章级维度, 样本量按该(era,维度)篇章数(by_era_dim),
     // 非 era 子题池(142会虚高~4.5x 且掩盖 theme_l2 n=19<30 的不足)。service 已算 distribution_eligible, 前端不重判 (Rule1)。
     const _sf = (state.dist && state.dist.sufficiency) || {};
