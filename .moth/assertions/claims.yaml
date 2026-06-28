@@ -622,6 +622,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services import k12;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=k12.tested_word_stage_distribution(c);c.close();print('OK' if d['total']>0 and d['foundation_pct']>d['senior_pct'] and d['unclassified_pct']<30 else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: liaoning-browse-prefix-safe
+    claim: "真题库浏览(/api/exam/liaoning_browse) province 前缀匹配 坑7-safe: total==DB辽宁前缀count, 且前缀<子串(证明'%辽宁%'会误纳含'辽宁'子串的非辽宁行[2010-2014自主命题], 本端点用前缀'辽宁%'避开)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.api.routes.exam import api_liaoning_browse;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);pre=c.execute(\"SELECT COUNT(*) FROM exam_questions WHERE province LIKE '辽宁%'\").fetchone()[0];sub=c.execute(\"SELECT COUNT(*) FROM exam_questions WHERE province LIKE '%辽宁%'\").fetchone()[0];c.close();t=api_liaoning_browse({})['total'];print('OK' if t==pre and pre<sub else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
   - id: rc1-frontend-quality
     claim: "RC1前端质量锁: live前端无emoji(内联SVG图标) + echarts图表全有role=img读屏文字替代 + 无off-token旧红/旧蓝(单红accent+数据色对齐令牌族; category-config数据色源豁免)。防回归: 新增前端勿引emoji/旧调色板, 新图必带role=img+aria-label。"
     type: shell

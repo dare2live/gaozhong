@@ -118,10 +118,10 @@
           desc: "外研社版 + 人教版 (辽宁主用) 单元 / 词表 / 课文, 按学习序列浏览。" },
         { title: "考试词典 (考纲词汇)", icon: IC.words, status: "ready", href: "#/dict",
           desc: "考纲词汇释义 + 辽宁高考命中 / 必教标记 (三源溯源)。" },
-        { title: "真题库", icon: IC.paper, phase: "Phase B",
-          desc: "辽宁高考真题按年/题型/考点浏览, 每题可溯源到原卷 — 作为课程作业的题源 (Phase B)。" },
-        { title: "课标库", icon: IC.std, phase: "Phase B",
-          desc: "普通高中英语课程标准 (主题群 / 词汇 / 语法) 结构化浏览 (Phase B)。" },
+        { title: "真题库", icon: IC.paper, status: "ready", href: "#/tiku",
+          desc: "辽宁卷高考真题按年/题型浏览, 每题溯源到原卷 — 课程作业的题源。" },
+        { title: "课标库", icon: IC.std, status: "ready", href: "#/kebiao",
+          desc: "普通高中英语课程标准: 主题群 / 语法体系 / 词汇 (按学段) 结构化浏览。" },
       ],
     });
   });

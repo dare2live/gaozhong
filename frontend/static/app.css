@@ -279,6 +279,29 @@
 .sc-tk-body .tk-senior { color: var(--accent); }
 .sc-tk-caveat { font-size: 12px; line-height: 1.55; color: var(--ink-3); margin: 0; }
 
+/* 基础库浏览 (真题库 tiku + 课标库 kebiao) */
+.tk-types { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+.tk-tchip { font-size: 12px; color: var(--ink-2); background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 3px 9px; }
+.tk-tchip b { font-family: var(--num); color: var(--ink); margin-left: 2px; }
+.tk-filter { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; color: var(--ink-3); }
+.tk-filter select { padding: 5px 8px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--card); font: inherit; color: var(--ink); }
+.tk-year { margin-bottom: 18px; }
+.tk-year-h { font-size: 15px; font-weight: 650; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid var(--line); }
+.tk-year-n { font-family: var(--num); font-size: 12px; font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+.tk-qlist { list-style: none; margin: 0; padding: 0; }
+.tk-q { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+.tk-qtype { flex: 0 0 92px; font-weight: 600; color: var(--accent-ink); font-size: 12px; }
+.tk-qprev { flex: 1; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tk-qmeta { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.tk-ans { font-size: 11px; color: var(--good); border: 1px solid #CFE6D9; border-radius: var(--r-xs); padding: 0 5px; }
+.tk-src { font-family: var(--num); font-size: 11px; color: var(--ink-3); }
+.kb-list { display: flex; flex-direction: column; }
+.kb-row { display: flex; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+.kb-row-h { flex: 0 0 150px; font-weight: 600; color: var(--ink); font-size: 14px; }
+.kb-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.kb-pill { font-size: 12px; color: var(--ink-2); background: var(--sunken); border-radius: var(--r-sm); padding: 2px 8px; }
+.kb-dim { font-size: 12px; color: var(--ink-3); }
+
 /* ===== 打印样式 (Phase 7.2) ===== */
 .print-btn {
   display: inline-flex; align-items: center; gap: 0.3rem;
