@@ -65,13 +65,16 @@ def tested_word_stage_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         return {"stages": [], "total": 0, "foundation_pct": 0.0, "senior_pct": 0.0, "unclassified_pct": 0.0}
     pct = lambda n: round(100.0 * n / total, 1)
     order = _STAGE_ORDER + ["未分类"]
-    stages = [{"stage": s, "n": counts[s], "pct": pct(counts[s])} for s in order if counts.get(s)]
+    # "义务教育" 残档 = 义务课标词但未细分到小学/初中 (如 april/analyse); 非与小初重叠, 显式标"未细分"避混淆 (用户反馈)
+    disp = {"义务教育": "义务·未细分(小初)"}
+    stages = [{"stage": disp.get(s, s), "raw_stage": s, "n": counts[s], "pct": pct(counts[s])} for s in order if counts.get(s)]
     grp = lambda ks: pct(sum(counts.get(k, 0) for k in ks))
     return {
         "stages": stages, "total": total,
-        "foundation_pct": grp(["小学", "初中", "义务教育"]),
+        "foundation_pct": grp(["小学", "初中", "义务教育"]),  # 义务教育阶段 = 小学+初中+义务未细分 (≤初中, 入高中前已学)
         "senior_pct": grp(["高中必修", "高中选修"]),
         "unclassified_pct": pct(counts.get("未分类", 0)),
+        "stage_note": "小学/初中/义务·未细分 同属义务教育阶段(入高中前已学); '义务·未细分'=义务课标词未细分到小初的残档, 非重叠。foundation=三者合计。",
     }
 
 

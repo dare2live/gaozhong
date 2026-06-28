@@ -254,6 +254,22 @@
 .zt-mv-delta.down { color: var(--down); }
 .zt-taolu { font-size: 13px; color: var(--ink-2); }
 .zt-taolu strong { color: var(--accent-ink); font-weight: 650; }
+/* 设问思维讲解 (N3) */
+.zt-cog-exp { margin: 0 0 10px; }
+.zt-cog-exp > summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent-ink); padding: 4px 0; }
+.zt-cog-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.zt-cog { display: grid; grid-template-columns: 96px 1fr 1.2fr; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+.zt-cog-s { font-weight: 650; color: var(--accent-ink); }
+.zt-cog-w { color: var(--ink); }
+.zt-cog-h { color: var(--ink-3); font-size: 11.5px; }
+/* 语法考点条 (N2) */
+.zt-gramlist { display: flex; flex-direction: column; gap: 10px; }
+.zt-gram { display: grid; grid-template-columns: 120px 1fr 88px; grid-template-rows: auto auto; gap: 2px 10px; align-items: center; }
+.zt-gram-c { font-size: 13px; font-weight: 600; color: var(--ink); grid-row: 1; }
+.zt-gram-bar { height: 12px; background: var(--sunken); border-radius: 6px; overflow: hidden; grid-row: 1; }
+.zt-gram-fill { display: block; height: 100%; background: var(--down); border-radius: 6px; }
+.zt-gram-n { font-family: var(--num); font-size: 11.5px; color: var(--ink-3); text-align: right; grid-row: 1; }
+.zt-gram-top { grid-column: 2 / 4; grid-row: 2; font-size: 11px; color: var(--ink-3); }
 /* 命题研判 · 结论先行 banner */
 .bk-verdict { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: var(--r); padding: 11px 16px; margin: 0 0 14px; }
 .bk-verdict-h { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; color: var(--accent); margin-bottom: 4px; }

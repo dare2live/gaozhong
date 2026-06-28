@@ -637,6 +637,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.course.syllabus import syllabus;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=syllabus(c);c.close();L=s['lessons'];ok=len(L)>0 and all(l['content'] is None for l in L) and all(q.get('source') for l in L for q in l['evidence_questions']);print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: grammar-stats-honest-sourced
+    claim: "语法/搭配统计(exam_grammar_stats 真题特点扩展): 语法考查=tests_grammar辽宁真值(锚课标第二级子类不杜撰, total==独立SQL) + 教材搭配/句型/表达库=phrases(出现非考查, 诚实分层不冒充考查频次)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_grammar_stats import expression_stats;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=expression_stats(c);g=s['grammar_exam'];i=c.execute(\"SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) JOIN grammar_items gi ON gi.grammar_item_id=SUBSTR(e.dst_id,LENGTH('grammar:')+1) WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'\").fetchone()[0];c.close();print('OK' if g['total']==i and sum(x['n'] for x in g['by_category'])==g['total'] and '出现非考查' in s['textbook_expr']['note'] else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
   - id: rc1-frontend-quality
     claim: "RC1前端质量锁: live前端无emoji(内联SVG图标) + echarts图表全有role=img读屏文字替代 + 无off-token旧红/旧蓝(单红accent+数据色对齐令牌族; category-config数据色源豁免)。防回归: 新增前端勿引emoji/旧调色板, 新图必带role=img+aria-label。"
     type: shell

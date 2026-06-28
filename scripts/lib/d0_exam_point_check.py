@@ -96,6 +96,23 @@ def _check_no_theme_l3(con: duckdb.DuckDBPyConnection, check) -> None:
     check("无 theme depth2 叶节点 (杜撰子主题命名空间已废)", n_l3_node == 0, f"{n_l3_node} 残留")
 
 
+def check_grammar_stats(con: duckdb.DuckDBPyConnection, check) -> None:
+    """语法/搭配统计 correctness (北极星 真题特点扩展). 跨源: 语法考查 total==独立SQL(tests_grammar∧辽宁);
+    各类求和==total; 教材搭配库 total==phrases表; 语法类别全锚 grammar_items(不杜撰)。"""
+    print("\n=== (35) 语法考查 + 教材搭配统计 correctness (exam_grammar_stats 跨源) ===")
+    from backend.services.exam_grammar_stats import expression_stats
+    s = expression_stats(con)
+    ge = s["grammar_exam"]
+    indep = con.execute(
+        "SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) "
+        "JOIN grammar_items gi ON gi.grammar_item_id=SUBSTR(e.dst_id,LENGTH('grammar:')+1) "
+        "WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'").fetchone()[0]
+    check("语法考查 total==独立SQL(tests_grammar∧辽宁∧有grammar_items, as-served)", ge["total"] == indep, f"svc={ge['total']} sql={indep}")
+    check("语法各类频次求和==total (无丢)", sum(c["n"] for c in ge["by_category"]) == ge["total"], "sum≠total")
+    nph = con.execute("SELECT COUNT(*) FROM phrases").fetchone()[0]
+    check("教材搭配库 total==phrases表 (as-served)", s["textbook_expr"]["total"] == nph, f"svc={s['textbook_expr']['total']} db={nph}")
+
+
 def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:
     """L3 覆盖模型 correctness (北极星 Phase C). 跨源核验: service 各轴权重 == 独立SQL重算 (as-served, 非同源重言);
     高产出集 ≤ 全集 (单调); 词轴非空 (考查词存在)。防覆盖口径漂移 (如丢省份/边类型)。"""

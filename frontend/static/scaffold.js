@@ -56,7 +56,7 @@
     const el = document.querySelector("#zt-stage");
     if (!el) return;
     const cats = d.stages.map(s => s.stage);
-    const data = d.stages.map(s => ({ value: s.pct, itemStyle: { color: STAGE_COLOR[s.stage] || "#B4B2A9" } }));
+    const data = d.stages.map(s => ({ value: s.pct, itemStyle: { color: STAGE_COLOR[s.raw_stage || s.stage] || "#B4B2A9" } }));
     const inst = initChart(el);
     inst.setOption({
       grid: { left: 70, right: 56, top: 10, bottom: 24 },
@@ -97,16 +97,50 @@
   }
   const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
+  // N3: 设问思维讲解 — 什么是设问思维 + 怎么通过高考题体现 (认知技能=真值; 设问信号=教学归纳)
+  const _COG_EXPLAIN = [
+    { skill: "推断", what: "据字面信息推未明说的言外之意/作者态度/隐含结论", how: "设问含 infer / suggest / imply / probably / most likely / learn from" },
+    { skill: "理解主旨要义", what: "抓全文中心、标题、段落大意", how: "设问含 main idea / best title / mainly about / purpose of the text" },
+    { skill: "理解具体信息", what: "定位某处细节事实 (时间/原因/数字/做法)", how: "设问含 according to / what / when / why / how many · 定位题干关键词回原文" },
+    { skill: "理解词汇", what: "据上下文猜词义/指代", how: "设问含 the word/phrase X means / refers to / closest in meaning" },
+  ];
+  function _cogExplainPanel() {
+    const rows = _COG_EXPLAIN.map(c =>
+      `<div class="zt-cog"><span class="zt-cog-s">${esc(c.skill)}</span><span class="zt-cog-w">${esc(c.what)}</span><span class="zt-cog-h">${esc(c.how)}</span></div>`).join("");
+    return `<details class="zt-cog-exp"><summary>什么是"设问思维"? 怎么通过高考题体现? (点开)</summary>
+      <p class="kb-dim" style="margin:6px 0;">设问思维 = 题目要你<strong>怎么想</strong>(认知技能), 不只是考什么内容。同一篇文章, 设问换个思维就是另一道题。高考阅读主要考下面 4 种 (数据真值=教研显式标签); "怎么体现"=该思维的典型设问信号 (教学归纳):</p>
+      <div class="zt-cog-list">${rows}</div></details>`;
+  }
+
+  // N2: 语法考点卡 (tests_grammar 课标第二级子类 辽宁考查频次热点)
+  function _grammarCard(ge) {
+    if (!ge || !ge.by_category || !ge.by_category.length) return '<p class="kb-dim">语法考查数据不足。</p>';
+    const max = ge.by_category[0].n || 1;
+    return ge.by_category.map(c => {
+      const w = Math.round(100 * c.n / max);
+      const tops = (c.top || []).map(t => esc(t.label.length > 16 ? t.label.slice(0, 16) + "…" : t.label)).join(" · ");
+      return `<div class="zt-gram"><span class="zt-gram-c">${esc(c.category)}</span><span class="zt-gram-bar"><span class="zt-gram-fill" style="width:${w}%"></span></span><span class="zt-gram-n">${c.n}题 ${c.pct}%</span><div class="zt-gram-top">${tops}</div></div>`;
+    }).join("");
+  }
+  // N2: 教材搭配/句型/表达库卡 (phrases, 出现非考查)
+  function _phraseCard(te) {
+    if (!te || !te.by_group) return "";
+    return te.by_group.map(g => `<span class="tk-tchip">${esc(g.group)} <b>${g.n}</b></span>`).join("");
+  }
+
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const [d, distG, distT, cbc] = await Promise.all([
+    const [d, distG, distT, cbc, gram] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
       fetchSafe("/api/exam_point/distribution?dimension=genre"),
       fetchSafe("/api/exam_point/distribution?dimension=theme_l2"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
+      fetchSafe("/api/grammar/stats"),
     ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
+    const gramHTML = (!isErr(gram)) ? _grammarCard(gram.grammar_exam) : '<p class="kb-dim">语法考查数据加载失败。</p>';
+    const phraseHTML = (!isErr(gram)) ? _phraseCard(gram.textbook_expr) : "";
     const shiftByDim = {};  // 只取题材+主题群两 passage 维 (theme_context 与 theme_l2 冗余, 不重复)
     const _WANT = ["genre", "theme_l2"];
     [distG, distT].forEach(x => { if (!isErr(x) && x.shift && x.shift.by_dimension) _WANT.forEach(k => { if (x.shift.by_dimension[k]) shiftByDim[k] = x.shift.by_dimension[k]; }); });
@@ -121,7 +155,7 @@
       <div class="sc-takeaway">
         <div class="sc-tk-h">结论 · 用最少课程覆盖最大考点</div>
         <p class="sc-tk-body">辽宁高考<strong>离散考点题型</strong>(完形/语法填空/短改/单选)考查的词中, <strong class="tk-found">${d.foundation_pct}% 是小学 / 初中阶</strong>(学生入高中前已学), 真正属<strong class="tk-senior">高中新增的仅 ${d.senior_pct}%</strong>。→ 高中课程不必重教基础词, 主攻这 ${d.senior_pct}% 的高中 delta + 高频考点。</p>
-        <p class="sc-tk-caveat">${d.caveat || ""} · 共 ${d.total} 个去重考查词${d.unclassified_pct ? `; 未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算` : ""}。</p>
+        <p class="sc-tk-caveat">${d.caveat || ""} · 共 ${d.total} 个去重考查词${d.unclassified_pct ? `; 未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算` : ""}。${d.stage_note ? " " + d.stage_note : ""}</p>
       </div>
       <section class="bk-card">
         <div class="bk-h"><span>辽宁高考考查词 · 学段分布</span><span class="bk-src">/api/k12/tested_word_stage</span></div>
@@ -135,8 +169,19 @@
       </section>
       <section class="bk-card">
         <div class="bk-h"><span>命题套路 · 题材 × 设问思维</span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div>
+        ${_cogExplainPanel()}
         <div class="kb-list">${taoluHTML}</div>
         <p class="kb-dim" style="margin:8px 0 0;">"每类语篇主导哪种思维" = 命题套路 (设问思维=教研显式标签真值; 题材=双模型方向性; era 2015–20, 2021+ 桥缺)。</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法 (辽宁考查热点)</span><span class="bk-src">/api/grammar/stats</span></div>
+        <div class="zt-gramlist">${gramHTML}</div>
+        <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (tests_grammar 真值), 按课标第二级子类。"主从复合句(从句)"=最大热点。</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>教材 固定搭配 / 句型 / 表达方式 库</span><span class="bk-src">/api/grammar/stats · phrases</span></div>
+        <div class="tk-types">${phraseHTML}</div>
+        <p class="kb-dim" style="margin:8px 0 0;">教材提取的固定搭配/句型/功能意念表达库; <strong>出现非考查</strong> — 无短语级真题考查边, 不冒充考查频次 (诚实分层)。</p>
       </section>
     </section>`;
     if (await ensureECharts()) _renderStageChart(d);

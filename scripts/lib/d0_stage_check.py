@@ -62,5 +62,5 @@ def check_tested_word_stage(con: duckdb.DuckDBPyConnection, check) -> None:
     pct_sum = round(d["foundation_pct"] + d["senior_pct"] + d["unclassified_pct"], 0)
     check("foundation+senior+未分类 pct ≈ 100 (口径完整)", abs(pct_sum - 100) <= 1, f"{pct_sum}%")
     valid = {"小学", "初中", "义务教育", "高中必修", "高中选修", "未分类"}
-    check("学段标签全合法 (无污染)", all(s["stage"] in valid for s in d["stages"]), "有非法标签")
+    check("学段标签全合法 (无污染; 按 raw_stage 原始档)", all(s.get("raw_stage", s["stage"]) in valid for s in d["stages"]), "有非法标签")
     check("未分类率 <30% (at_stage join 未断; 断则全未分类→catch)", d["unclassified_pct"] < 30, f"{d['unclassified_pct']}%")
