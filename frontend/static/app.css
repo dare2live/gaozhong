@@ -242,6 +242,15 @@
 .kb-pills { display: flex; flex-wrap: wrap; gap: 6px; }
 .kb-pill { font-size: 12px; color: var(--ink-2); background: var(--sunken); border-radius: var(--r-sm); padding: 2px 8px; }
 .kb-dim { font-size: 12px; color: var(--ink-3); }
+/* 教材单元内容直出 DB (N4: 词表/课文, 替 PDF 链接) */
+.tb-content-body { padding: 6px 12px 10px 40px; background: var(--sunken); border-radius: var(--r-sm); margin: 2px 0 4px; }
+.tb-cg { margin: 6px 0; }
+.tb-cg-h { display: inline-block; font-size: 11.5px; font-weight: 650; color: var(--ink-3); margin-right: 8px; }
+.tb-sec { display: inline-block; font-size: 12.5px; color: var(--ink); margin: 2px 10px 2px 0; }
+.tb-words { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; }
+.tb-word { font-size: 12.5px; color: var(--ink-2); }
+.tb-word i { font-style: normal; font-size: 10.5px; color: var(--ink-3); margin-left: 2px; }
+.tb-word .tb-extra { color: var(--warn); font-size: 9px; margin-left: 1px; }
 /* 真题特点 · 命题迁移 + 套路 */
 .zt-mig { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px 24px; }
 .zt-mv-dim { min-width: 0; }

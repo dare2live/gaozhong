@@ -15,7 +15,7 @@
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">教材浏览 · STEP1 地基</h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">辽宁14地市只用2版本(外研10市 / 人教4市) · 78单元全册 · 教材PDF 真扫描原版(sha256锚定) · 跨版本同主题对照(宁缺毋滥) · service 单算点</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">辽宁14地市只用2版本(外研10市 / 人教4市) · 78单元全册 · 教材已解析入库, 单元词表/课文直出 DB · 跨版本同主题对照(宁缺毋滥) · service 单算点</p>
 <div class="bk-card" style="margin-bottom:12px;">
   <div class="bk-h"><span>辽宁地市 → 教材版本</span><span class="bk-src">/api/recommend/city_curriculum</span></div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;">
@@ -26,31 +26,50 @@
 <div id="tb-books"></div>`;
   }
 
-  // 一个册卡: publisher + volume + pages + 开PDF + 单元列表(默认折叠, 避免 14册×5-6=78行数据墙 #12)
+  // 一个册卡: publisher + volume + 单元数 + 单元列表(默认折叠); 单元内容直出 DB (词表/课文), 不链 PDF。
   function bookCard(bk, units) {
     const c = VER_C[bk.version_key] || "var(--ink-3)";
-    const pdfUrl = `/api/textbooks/${bk.version_key}/${bk.volume_key}/pdf`;
     const uList = units.map(u => {
       const cid = `unit:${u.version_key}/${u.volume_key}/U${u.unit_number}`;
-      const pg = (u.page_start != null) ? `${u.page_start}-${u.page_end}` : "—";
+      const dataAttr = `data-ver="${u.version_key}" data-vol="${u.volume_key}" data-unit="${u.unit_number}"`;
       return `<div class="tb-unit" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 6px;border-bottom:1px solid var(--line-soft);">
         <span style="min-width:34px;color:var(--ink-3);">U${u.unit_number}</span>
         <span style="flex:1;font-weight:500;">${(u.title_en || "").replace(/</g, "&lt;") || '<span class="muted">(无标题)</span>'}</span>
-        <span class="muted" style="font-size:11px;">p.${pg}</span>
-        <a href="${pdfUrl}#page=${u.page_start || 1}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent-ink);">开PDF</a>
+        <button class="tb-content bk-export" ${dataAttr} data-cid="${cid}" style="font-size:11px;padding:1px 7px;">查内容</button>
         <button class="tb-xver bk-export" data-unit="${cid}" style="font-size:11px;padding:1px 7px;">跨版本对照</button>
-      </div><div class="tb-xver-slot" data-for="${cid}"></div>`;
+      </div><div class="tb-content-slot" data-for="${cid}"></div><div class="tb-xver-slot" data-for="${cid}"></div>`;
     }).join("");
-    // #12: <details> 折叠单元列表(summary 显册名/页数/单元数), 默认折叠消除原始数据墙
     return `<section class="bk-card" style="margin-bottom:10px;">
       <details>
         <summary style="cursor:pointer;list-style:none;display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
           <span style="font-weight:600;"><span style="color:${c};">●</span> ${bk.publisher_label || bk.version_key} <small style="color:var(--ink-3);font-weight:400;">${bk.volume_key} · ${units.length} 单元</small></span>
-          <span class="bk-src">${bk.pdf_pages || "?"}页 · <a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent-ink);">开整册PDF</a></span>
+          <span class="bk-src">已解析入库 · 内容直出 DB</span>
         </summary>
         <div style="margin-top:8px;">${uList || '<p class="muted" style="font-size:12px;padding:6px;">该册无单元数据</p>'}</div>
       </details>
     </section>`;
+  }
+
+  // 单元内容直出 DB: 词表(unit_vocab_intro) + 课文段(sections), 不依赖 PDF (用户: 教材已入库直接排版)
+  async function showUnitContent(btn, slot) {
+    if (slot.dataset.open === "1") { slot.innerHTML = ""; slot.dataset.open = "0"; return; }
+    slot.dataset.open = "1";
+    slot.innerHTML = '<div class="muted" style="font-size:12px;padding:4px 40px;">载入单元内容…</div>';
+    const q = `version=${encodeURIComponent(btn.dataset.ver)}&volume=${encodeURIComponent(btn.dataset.vol)}&unit=${btn.dataset.unit}`;
+    const d = await G.fetchSafe("/api/unit/content?" + q);
+    if (G.isErr(d)) { slot.innerHTML = '<div style="font-size:12px;padding:4px 40px;color:var(--warn);">内容加载失败 (接口错误)</div>'; return; }
+    const esc = s => String(s == null ? "" : s).replace(/</g, "&lt;");
+    const secs = (d.sections || []).map(s => {
+      const tag = s.is_narrative ? "语篇" : (s.is_applied ? "应用文" : (s.is_listening ? "听力" : (s.kind || "段")));
+      return `<span class="tb-sec">${esc(s.title || s.kind || "段")} <span class="muted">[${tag}]</span></span>`;
+    }).join("");
+    const vocab = (d.vocab || []).map(v =>
+      `<span class="tb-word" title="${esc(v.zh_def)}">${esc(v.word)}${v.pos ? `<i>${esc(v.pos)}</i>` : ""}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}</span>`).join("");
+    slot.innerHTML = `<div class="tb-content-body">
+      <div class="tb-cg"><span class="tb-cg-h">课文段 (${d.sections_n})</span>${secs || '<span class="muted">无课文段</span>'}</div>
+      <div class="tb-cg"><span class="tb-cg-h">引入词 (${d.vocab_n})</span><div class="tb-words">${vocab || '<span class="muted">无词表</span>'}</div></div>
+      <p class="kb-dim" style="margin:4px 0 0;">${d.note || ""} (词带词性/中文释义 hover; "超"=校本超纲非课标)</p>
+    </div>`;
   }
 
   async function showCrossVersion(cid, slot) {
@@ -73,8 +92,14 @@
   function renderBooks(books, unitsByVol) {
     G.$("#tb-books").innerHTML = books.map(bk =>
       bookCard(bk, unitsByVol[`${bk.version_key}/${bk.volume_key}`] || [])).join("");
-    // 跨版本对照 委托(survive 重绘)
+    // 委托(survive 重绘): 查内容(DB) + 跨版本对照
     G.$("#tb-books").addEventListener("click", (e) => {
+      const cbtn = e.target.closest(".tb-content");
+      if (cbtn) {
+        const slot = G.$(`.tb-content-slot[data-for="${CSS.escape(cbtn.dataset.cid)}"]`);
+        if (slot) showUnitContent(cbtn, slot);
+        return;
+      }
       const btn = e.target.closest(".tb-xver");
       if (!btn) return;
       const cid = btn.getAttribute("data-unit");
