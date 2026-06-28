@@ -46,7 +46,8 @@
   function shell() {
     return `
 <h2 style="margin:0 0 2px;">命题研判 · 高考考什么 / 怎么考 / 怎么变 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button></h2>
-<p class="muted" style="margin:0 0 14px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上可单独导出 PNG</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上可单独导出 PNG</p>
+<div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
   <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的出现占比" style="height:300px;"></div></section>
@@ -327,17 +328,45 @@
     if (pb) pb.onclick = () => G.printWithCharts();   // RC1: 打印保图(echarts→PNG注入)
   }
 
+  // 结论先行: 从 live 数据蒸馏一句话研判 (考查词学段 + 主导设问思维 + 最大命题迁移); 样本量诚实, 缺数据优雅降级
+  function renderVerdict(dist, cog, stage) {
+    const el = G.$("#bk-verdict"); if (!el) return;
+    const parts = [];
+    if (stage && !G.isErr(stage) && stage.foundation_pct != null) {
+      parts.push(`考查词 <strong>${stage.foundation_pct}% 为小学/初中阶</strong>、高中新增仅 <strong>${stage.senior_pct}%</strong> → 课程主攻高中 delta`);
+    }
+    const byEra = (cog && cog.by_era) || {};
+    const newEraKey = Object.keys(byEra).find(k => /2021|新高考/.test(k)) || Object.keys(byEra)[0];
+    const skills = newEraKey ? byEra[newEraKey] : null;
+    if (Array.isArray(skills) && skills.length) {
+      const top = skills.slice().sort((a, b) => (b.pct || 0) - (a.pct || 0))[0];
+      if (top && top.label) parts.push(`设问思维以 <strong>${top.label}</strong> 为主 (${top.pct}%)`);
+    }
+    const sd = (dist && dist.shift && dist.shift.by_dimension) || {};
+    let mv = null;
+    ["genre", "theme_l2"].forEach(k => (sd[k] || []).forEach(m => { if (!mv || Math.abs(m.delta) > Math.abs(mv.delta)) mv = m; }));
+    if (mv && Math.abs(mv.delta) >= 1) {
+      parts.push(`近年最大题材/主题变化: <strong>${mv.label}</strong> ${mv.delta >= 0 ? "升" : "降"} ${Math.abs(mv.delta).toFixed(1)}pt`);
+    }
+    if (!parts.length) { el.style.display = "none"; return; }
+    el.innerHTML = `<div class="bk-verdict-h">研判结论 · 辽宁新高考 II 卷</div>`
+      + `<p class="bk-verdict-body">${parts.join("; ")}。</p>`
+      + `<p class="bk-verdict-foot">题材/主题为双模型推断 (方向性, 非真值); 按卷制 era 分层非全历史平均; 详见下方各图。</p>`;
+  }
+
   registerTab("beike", async () => {
     G.$("#content").innerHTML = shell();
     const echartsOk = await G.ensureECharts();   // RC1: 轮询等 echarts 就绪, 根治 load 竞态静默空白
-    const [dist, qt, heat, cog] = await Promise.all([
+    const [dist, qt, heat, cog, stage] = await Promise.all([
       // RC1/D0: distribution 是驾驶舱主数据, 失败必抛 → route() 显式错误态 (不冒充空壳掩盖后端故障)
       fetchJSON("/api/exam_point/distribution"),
       fetchJSON("/api/trend/question_type_presence").catch(() => ({ by_question_type: [] })),
       fetchJSON("/api/heatmap/vocab").catch(() => ({ letters: [], cells: {} })),
       fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),
+      G.fetchSafe("/api/k12/tested_word_stage"),  // 结论先行 banner 的考查词学段
     ]);
     state.dist = dist;
+    renderVerdict(dist, cog, stage);   // 结论先行: 顶部一句话数据研判 (北极星 ① 命题研判)
     wire();
     const cross = await loadCross(state.cross);
     if (echartsOk) {

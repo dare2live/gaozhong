@@ -313,6 +313,12 @@
 .zt-mv-delta.down { color: var(--down); }
 .zt-taolu { font-size: 13px; color: var(--ink-2); }
 .zt-taolu strong { color: var(--accent-ink); font-weight: 650; }
+/* 命题研判 · 结论先行 banner */
+.bk-verdict { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: var(--r); padding: 11px 16px; margin: 0 0 14px; }
+.bk-verdict-h { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; color: var(--accent); margin-bottom: 4px; }
+.bk-verdict-body { font-size: 14px; line-height: 1.6; color: var(--ink); margin: 0 0 4px; }
+.bk-verdict-body strong { font-weight: 660; color: var(--accent-ink); }
+.bk-verdict-foot { font-size: 11.5px; line-height: 1.5; color: var(--ink-3); margin: 0; }
 
 /* ===== 打印样式 (Phase 7.2) ===== */
 .print-btn {
