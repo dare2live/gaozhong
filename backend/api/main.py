@@ -104,6 +104,19 @@ class Handler(BaseHTTPRequestHandler):
             self._json(500, {"error": str(e), "type": type(e).__name__})
 
     # --- dispatch helpers ---
+    @staticmethod
+    def _resolve_under(base: Path, candidate: Path) -> Path | None:
+        """路径穿越收口 (安全审计 BLOCKER 修): resolve 后必须仍在 base 下, 否则 None.
+
+        防 ../ 与 URL 编码 %2F 逃逸 (unquote 后 '..' 会拼进 Path); 全部文件服务必经此收口。
+        """
+        try:
+            resolved = candidate.resolve()
+            resolved.relative_to(base.resolve())
+            return resolved
+        except (ValueError, OSError):
+            return None
+
     def _try_static(self, path: str) -> bool:
         # legacy 单一入口收敛: /teacher /legacy /index.html → 302 到主 SPA (功能已全移植)
         if path in self._REDIRECTS:
@@ -115,8 +128,12 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_file(FRONTEND_DIR / html, "text/html; charset=utf-8")
                 return True
         if path.startswith("/static/"):
-            self._send_file(FRONTEND_DIR / "static" / path[len("/static/"):],
-                            guess_mime(path))
+            static_dir = FRONTEND_DIR / "static"
+            safe = self._resolve_under(static_dir, static_dir / unquote(path[len("/static/"):]))
+            if safe is None:
+                self._json(403, {"error": "access denied"})
+                return True
+            self._send_file(safe, guess_mime(path))
             return True
         return False
 
@@ -125,9 +142,12 @@ class Handler(BaseHTTPRequestHandler):
         if not m:
             return False
         ver, vol = unquote(m.group(1)), unquote(m.group(2))
-        pdf = ROOT / "data" / "textbooks" / ver / f"{vol}.pdf"
-        if not pdf.exists():
-            self._json(404, {"error": "not found", "path": str(pdf)})
+        tb_dir = ROOT / "data" / "textbooks"
+        pdf = self._resolve_under(tb_dir, tb_dir / ver / f"{vol}.pdf")
+        if pdf is None:
+            self._json(403, {"error": "access denied"})
+        elif not pdf.exists():
+            self._json(404, {"error": "not found"})
         else:
             self._send_file(pdf, "application/pdf")
         return True
