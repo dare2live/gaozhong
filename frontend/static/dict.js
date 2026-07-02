@@ -26,7 +26,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">考试词典 · 金矿</h2>
+${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考纲词汇释义 + 辽宁高考命中标记 + 学段归属 — 三源可溯。")}
 <p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · <span style="border-bottom:1px dashed var(--line);">点词</span>查跨阶段多义 · service 单算点</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" aria-label="按词首字母前缀检索" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;">

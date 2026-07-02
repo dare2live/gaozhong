@@ -60,6 +60,7 @@
 | 34728 edges | links.py + links_extra | 100% | ✅ SQL 派生 |
 | 700 题库 (334 真题 + 275 合成) | loader.py + rule_synth_replacement | 100% | ✅ |
 | 12612 question_tags | autotag SQL | 100% | ✅ 直按词存在性打标 |
+| 教材 sections/section_text 219 段 | extract pdf.py (outline/regex_min) | 100% | D0 维度26 (边界≤25页/无截断/无书末污染) |
 
 ## 四、Audit 残余 (重归类: 不是 100% 违反, 是数据 OBS)
 
@@ -985,3 +986,14 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 (20 节点/88 边) + L3 桥(exam_point:theme_l3:子主题 → theme:L1/群/子主题, 20 桥, 4路追溯到最细)。
 **D0 (维度22 扩 _check_theme_l3)**: 边≥80 / 全辽宁卷(§7) / 全桥到教材theme。moth +2断言。
 **揭示(L2看不见的第三级迁移)**: 旧课标II 人际交往20%首位; 新高考II **环境污染治理 0→17.2% 暴增**并列首位。
+
+## 2026-07-02 / 坑17 补齐: k12 as-served + grammar_stats 口径 + section 文档
+
+**触发**: 侦察确认多处"已有 moth 但无 D0 校验"的 as-served 缺口 (坑17: 新数据必 moth AND D0 双门), 逐条补齐。
+**新增 D0 (维度37 + 追加断言)**:
+- `scripts/lib/d0_k12_served_check.py` (维度37, 新模块, 注册 `_LIB_CHECKS`): `k12.stage_unstaged_disclosure` 口径闭合 3 断言 (total_words==独立SQL word 节点计数 / staged+unstaged==total / by_reason 求和==unstaged) + `k12.blueprint` 2 断言 (pairs==deepens 边独立SQL 即 label JOIN 不丢对 / 每对 junior/senior label 非空)。
+- `scripts/lib/d0_zhongkao_check.py` 追加 `_check_distribution_served` 3 断言: `k12.zhongkao_distribution` by_question_type 求和==90 / 语篇填空考点 20 行 (基线 `zhongkao_kaodian` 入 d0_baselines.yaml) / `_kaodian_pivot` 逐空 reshape 不丢 (非空格==考点行数)。
+- `scripts/lib/d0_exam_point_check.py` check_grammar_stats 追加 3 断言: sum(by_group)==textbook total (防新 phrase_type 前缀漏匹配被静默丢) / by_category 全锚 grammar_items 官方项且无"其他"兜底 / n_questions==独立SQL 去重题数。
+**口径修正 (MINOR g)**: `backend/services/exam_grammar_stats.grammar_exam_stats` 返回值补 `n_questions`(COUNT DISTINCT src_id, 去重题数=12) + `n_edges`(=total, 边数=57, 一题可考多语法点), total 保留兼容; docstring 显式分离两口径。
+**文档**: §三 数据基石表追加 教材 sections/section_text 219 段行 (D0 维度26 已锁边界/截断/污染)。
+**验证**: D0 exit 0 (新增 11 断言全绿); 对抗验证 — 临时把 by_reason 闭合断言阈值改错 → D0 精确 FAIL → 还原回绿 (门有牙)。

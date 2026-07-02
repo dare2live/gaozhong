@@ -652,3 +652,8 @@ assertions:
     type: shell
     command: ["bash", "-c", "python3 scripts/lib/frontend_rc1_check.py >/dev/null 2>&1 && echo OK || echo FAIL"]
     expect: {op: regex, pattern: "OK"}
+  - id: endpoint-contracts-all-green
+    claim: "全部 ALL_ROUTES GET 端点 (75) 有 HTTP 契约且全绿 (endpoint_contracts.yaml 数据化 + 双向覆盖率自检: 新端点漏契约红/陈旧契约红; 审计 MAJOR '74%端点无断言' 修复; 同时挂 D0 维度38 双门=坑17)"
+    type: shell
+    command: ["python3", "scripts/lib/endpoint_contract_check.py", "--quiet"]
+    expect: {op: regex, pattern: "ALL PASS"}

@@ -1,0 +1,97 @@
+# 端点 HTTP 契约 (数据化真相源; 审计 MAJOR: 端点无契约断言 → 本文件收口)
+#
+# 消费者: scripts/lib/endpoint_contract_check.py — in-process 直调 ALL_ROUTES[path](params),
+# 不起 http server。断言: 不抛异常 / 顶层类型匹配 / required_keys 全在 / 无 error 键 (除非 allow_error)。
+# 覆盖率自检: ALL_ROUTES 出现新端点而本文件未写契约 → checker 红 (防"未断言维度永远绿")。
+#
+# 字段:
+#   params:        最小合法 query (parse_qs 形态 {k: [v]}, 值全是字符串; 与 main.py do_GET 一致)
+#   type:          dict | list — 顶层返回类型
+#   required_keys: dict 型响应必须含的 2-4 个语义关键键 (抽样语义键, 非全部键; list 型不填)
+#   allow_error:   true — 该调用允许返回 error 键 (仅两类: POST-body 端点的 GET 探测 / 已知数据缺口)
+#   note:          人读说明 (checker 不消费)
+#
+# 固定 id 参数说明 (来自稳定种子数据, init_db 重建后不变):
+#   t-li / sy-2024-001    域B 多租户种子 (teachers/classes/students)
+#   unit:waiyan/bixiu_1/*  KG unit 节点 (外研必修一; 沈阳主用版本)
+#   qb_id=1 / course id=1  题库与 40 节课程模板的最小 id
+contracts:
+  "/api/audit/findings": {params: {}, type: list}
+  "/api/cefr_vocab": {params: {}, type: list}
+  "/api/course/coverage": {params: {}, required_keys: [axes, scope, target_pct], type: dict}
+  "/api/course/list": {params: {}, required_keys: [count, courses], type: dict}
+  "/api/course/quiz": {params: {id: ["1"]}, required_keys: [course_id, questions, count], type: dict}
+  "/api/course/session": {params: {id: ["1"]}, required_keys: [course, materials], type: dict}
+  "/api/course/syllabus": {params: {}, required_keys: [lessons, n_lessons, coverage], type: dict}
+  "/api/curriculum/summary": {params: {}, required_keys: [vocab_total, grammar_total, themes_total], type: dict}
+  "/api/exam/liaoning_browse": {params: {}, required_keys: [total, years, type_counts], type: dict}
+  "/api/exam_dictionary": {params: {}, required_keys: [total, rows], type: dict}
+  "/api/exam_point/cognitive_by_content": {params: {}, required_keys: [by_content, by_dimension, province_scope], type: dict}
+  "/api/exam_point/cognitive_skill": {params: {}, required_keys: [by_era, dimension, n_total], type: dict}
+  "/api/exam_point/cooccurrence": {params: {}, required_keys: [by_era, min_co, province_scope], type: dict}
+  "/api/exam_point/distribution": {params: {}, required_keys: [distribution, eras, province_scope], type: dict}
+  "/api/exam_questions": {params: {}, type: list}
+  "/api/exercise/applied_templates": {params: {}, required_keys: [sections, samples, by_type], type: dict}
+  "/api/exercise/blueprint_practice": {params: {}, required_keys: [paper_id, questions, target_total], type: dict}
+  "/api/exercise/cloze": {params: {}, required_keys: [passage_with_blanks, questions, n_blanks], type: dict}
+  "/api/exercise/grammar_fill": {params: {}, required_keys: [passage_with_blanks, questions, n_blanks], type: dict}
+  "/api/exercise/l1": {params: {unit: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [unit_id, questions, actual_count], type: dict}
+  "/api/exercise/l2": {params: {volume: ["bixiu_1"]}, required_keys: [scope, questions, actual_count], type: dict}
+  "/api/exercise/l4": {params: {}, required_keys: [mix, questions, actual_count], type: dict}
+  "/api/exercise/narrative_passages": {params: {}, required_keys: [count, passages], type: dict}
+  "/api/grammar/stats": {params: {}, required_keys: [grammar_exam, textbook_expr, scope], type: dict}
+  "/api/grammar_items": {params: {}, type: list}
+  "/api/graph/neighbors": {params: {node: ["unit:waiyan/bixiu_1/U1"]}, type: list}
+  "/api/graph/popup": {params: {id: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [center, related, questions], type: dict}
+  "/api/graph/stats": {params: {}, required_keys: [nodes, edges, total_nodes], type: dict}
+  "/api/graph/subgraph": {params: {node: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [nodes, edges], type: dict}
+  "/api/heatmap/vocab": {params: {}, required_keys: [cells, letters, totals], type: dict}
+  "/api/heatmap/words_by_status": {params: {}, type: list}
+  "/api/k12/blueprint": {params: {}, required_keys: [pairs, basis, n], type: dict}
+  "/api/k12/stage_distribution": {params: {}, required_keys: [by_stage, coverage, scope], type: dict}
+  "/api/k12/tested_word_stage": {params: {}, required_keys: [stages, total, foundation_pct], type: dict}
+  "/api/lesson_plan": {params: {unit: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [unit_id, words, grammar, related_exams], type: dict}
+  "/api/liaoning/allowed_publishers": {params: {}, type: list}
+  "/api/liaoning/city_choice": {params: {}, type: list}
+  "/api/listening/detail": {params: {id: ["1"]}, required_keys: [], type: dict, allow_error: true,
+    note: "已知数据缺口: question_bank 现无 has_audio=true 行, 任何 id 都返 not found; 数据入库后本契约自动转真断言 (allow_error 只放行不强制 error)"}
+  "/api/listening/list": {params: {}, required_keys: [count, questions], type: dict}
+  "/api/paper/compose": {params: {}, required_keys: [paper_id, questions, target_total], type: dict}
+  "/api/placement/final_score": {params: {}, required_keys: [error], type: dict, allow_error: true,
+    note: "POST-body 端点 (main.py do_POST 走带 body 调用); GET 形态无 body 契约 = 确定性 error 提示"}
+  "/api/placement/followup": {params: {}, required_keys: [error], type: dict, allow_error: true,
+    note: "POST-body 端点; GET 形态无 body 契约 = 确定性 error 提示"}
+  "/api/placement/generate": {params: {grade: ["G1"]}, required_keys: [blocks, grade, total_actual], type: dict}
+  "/api/placement/score": {params: {grade: ["G1"]}, required_keys: [error], type: dict, allow_error: true,
+    note: "POST-body 端点; GET 形态无 body 契约 = 确定性 error 提示"}
+  "/api/placement/spec": {params: {}, required_keys: [specs, note], type: dict}
+  "/api/qb/browse": {params: {}, type: list}
+  "/api/qb/detail": {params: {id: ["1"]}, required_keys: [qb_id, stem, answer, tags], type: dict}
+  "/api/qb/stats": {params: {}, required_keys: [total, by_type, tags_total], type: dict}
+  "/api/qb/tags": {params: {}, type: list}
+  "/api/recommend/cities": {params: {}, type: list}
+  "/api/recommend/city_curriculum": {params: {}, required_keys: [city, publisher, units, version_key], type: dict}
+  "/api/recommend/cross_version_units": {params: {unit: ["unit:waiyan/bixiu_1/U6"]}, type: list}
+  "/api/recommend/top_exam_words": {params: {}, type: list}
+  "/api/recommend/unit_exam_alignment": {params: {unit: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [unit_id, intro_total, exam_overlap], type: dict}
+  "/api/stats": {params: {}, required_keys: [exam_questions, nodes, edges], type: dict}
+  "/api/students/classes": {params: {teacher_id: ["t-li"]}, required_keys: [classes, count, scoped_by_teacher], type: dict}
+  "/api/students/get": {params: {teacher_id: ["t-li"], id: ["sy-2024-001"]}, required_keys: [student, answers], type: dict}
+  "/api/students/list": {params: {teacher_id: ["t-li"]}, required_keys: [students, count, scoped_by_teacher], type: dict}
+  "/api/students/recommend": {params: {teacher_id: ["t-li"], id: ["sy-2024-001"]}, required_keys: [recommendations, count], type: dict}
+  "/api/students/teachers": {params: {}, required_keys: [teachers, count], type: dict}
+  "/api/students/weakness": {params: {teacher_id: ["t-li"], id: ["sy-2024-001"]}, required_keys: [weakness, count], type: dict}
+  "/api/textbooks": {params: {}, type: list}
+  "/api/theme_contexts": {params: {}, type: list}
+  "/api/trend/question_type_presence": {params: {}, required_keys: [by_question_type, eras, province_scope], type: dict}
+  "/api/trend/question_type_trend": {params: {}, type: list}
+  "/api/trend/rising_words": {params: {}, type: list}
+  "/api/trend/summary": {params: {}, required_keys: [type_distribution_by_era, top_words, years_covered], type: dict}
+  "/api/trend/top_words": {params: {}, type: list}
+  "/api/trend/vocab_growth": {params: {}, required_keys: [years, slope_per_year, reliable], type: dict}
+  "/api/unit/content": {params: {version: [waiyan], volume: [bixiu_1], unit: ["1"]}, required_keys: [knowledge, passages, version_key], type: dict}
+  "/api/units": {params: {}, type: list}
+  "/api/vocab/check": {params: {text: ["The boy runs fast"]}, required_keys: [ok, total_words, beyond_count], type: dict}
+  "/api/vocab/word_info": {params: {word: [abandon]}, required_keys: [found, word, layer], type: dict}
+  "/api/word_detail": {params: {word: [abandon]}, required_keys: [word, stages, provenance], type: dict}
+  "/api/zhongkao/distribution": {params: {}, required_keys: [by_question_type, years, province], type: dict}

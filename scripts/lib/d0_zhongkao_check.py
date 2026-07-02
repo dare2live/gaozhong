@@ -44,6 +44,22 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
         "SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='deepens' AND src_id LIKE 'grammar:jr:%'").fetchone()[0]
     check("全部初中语法点有跨阶段 deepens 衔接边 (无衔接孤儿; 别名补12时态/非谓语/定从)",
           n_jr_g == n_linked and n_jr_g == 71, f"{n_linked}/{n_jr_g} 衔接")
+    _check_distribution_served(con, check)
+
+
+def _check_distribution_served(con, check) -> None:
+    """zhongkao_distribution as-served (坑17): service 输出口径闭合 —
+    by_question_type 求和==90 全量 / 语篇填空考点 20 行 / _kaodian_pivot 逐空 reshape 不丢。"""
+    from backend.services import k12
+    d = k12.zhongkao_distribution(con)
+    n_bt = sum(x["n"] for x in d["by_question_type"])
+    check("中考分布 by_question_type 求和==90 (as-served 全量不丢)", n_bt == B('zhongkao_total'), f"{n_bt}")
+    kd = d["语篇填空考点"]
+    check("语篇填空逐空考点 20 行 (2年×10空, analysis 非空)", len(kd) == B('zhongkao_kaodian'), f"{len(kd)}")
+    pv = d["语篇填空_pivot"]
+    filled = sum(1 for r in pv["rows"] for y in pv["years"] if r["考点"].get(y))
+    check("_kaodian_pivot reshape 无丢 (非空格==考点行数)", filled == len(kd),
+          f"pivot填充{filled} vs 考点{len(kd)}")
 
 
 def _check_answer_fidelity(con, check) -> None:

@@ -21,7 +21,12 @@ _PHRASE_GROUP = (
 
 
 def grammar_exam_stats(con: duckdb.DuckDBPyConnection) -> dict:
-    """辽宁语法考查 按课标第二级子类 + 频次热点 + 每类 top 考点 (考查真值)."""
+    """辽宁语法考查 按课标第二级子类 + 频次热点 + 每类 top 考点 (考查真值).
+
+    口径 (D0 坑17): total/n_edges = tests_grammar∧辽宁 **边数** (一题可考多语法点, 频次口径);
+    n_questions = COUNT(DISTINCT src_id) **去重题数** (题级口径)。两口径显式分离, 不混用。
+    total 保留 = n_edges (兼容旧消费方)。
+    """
     rows = con.execute(
         "WITH tg AS ("
         "  SELECT SUBSTR(e.dst_id, LENGTH('grammar:')+1) AS gid "
@@ -39,10 +44,17 @@ def grammar_exam_stats(con: duckdb.DuckDBPyConnection) -> dict:
         c["n"] += int(n)
         c["items"].append({"label": item, "n": int(n)})
     total = sum(c["n"] for c in by_cat.values())
+    n_questions = con.execute(
+        "SELECT COUNT(DISTINCT e.src_id) FROM edges e "
+        "JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
+        "WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'"
+    ).fetchone()[0]
     pct = lambda n: round(100.0 * n / total, 1) if total else 0.0
     cats = sorted(by_cat.items(), key=lambda kv: kv[1]["n"], reverse=True)
     return {
-        "total": total,
+        "total": total,           # 兼容旧消费方; 语义 = n_edges (边数)
+        "n_edges": total,         # 边数口径 (一题可考多语法点)
+        "n_questions": int(n_questions),  # 去重题数口径 (tests_grammar∧辽宁 DISTINCT src_id)
         "by_category": [
             {"category": k, "n": v["n"], "pct": pct(v["n"]),
              "top": sorted(v["items"], key=lambda x: x["n"], reverse=True)[:4]}

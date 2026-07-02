@@ -108,20 +108,17 @@
 
 /* modal wider for enriched content */
 
-/* ===== 课后测验 Quiz mode (Phase 7.5) ===== */
-  text-align: center; padding: 0.8rem; background: var(--sunken);
-  border: 2px solid var(--accent); border-radius: 4px; font-size: 1.1em;
-}
 
 /* ===== 骨架 / hub 页 (scaffold.js — 北极星 Phase A: 真题特点/基础库/初中占位) ===== */
 .scaffold { max-width: 940px; margin: 0 auto; padding: 6px 2px 44px; }
-.sc-head { padding: 6px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
-.sc-badge {
-  display: inline-block; font-size: 11px; font-weight: 650; letter-spacing: .05em;
-  color: var(--accent); background: var(--accent-wash); padding: 3px 9px; border-radius: var(--r-xs); margin-bottom: 12px;
-}
-.sc-title { font-size: 27px; font-weight: 680; letter-spacing: -0.02em; margin: 0 0 8px; color: var(--ink); }
-.sc-lead { font-size: 14.5px; line-height: 1.65; color: var(--ink-2); max-width: 72ch; margin: 0; }
+/* 统一无色块 masthead (设计规范 §页头; 全站唯一页头形态, GZ.pageHead 单渲染点):
+ * kicker(纯文本, 前版药丸降级) + H1 学习者问题句 + lead + 右槽 + 红短横线叠通栏线。零背景色块。 */
+.sc-head { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding: 6px 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.sc-head::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 48px; height: 3px; background: var(--accent); }
+.sc-badge { font-size: 11px; font-weight: 650; letter-spacing: .08em; color: var(--accent-ink); margin-bottom: 7px; }
+.sc-title { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; color: var(--ink); text-wrap: balance; }
+.sc-lead { font-size: 14px; line-height: 1.6; color: var(--ink-3); max-width: 72ch; margin: 0; }
+.sc-right { flex: none; display: flex; gap: 8px; align-items: center; padding-bottom: 2px; }
 .sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 14px; }
 .sc-card {
   border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; background: var(--card);
@@ -148,6 +145,21 @@
 .sc-tk-body .tk-found { color: var(--down); }
 .sc-tk-body .tk-senior { color: var(--accent); }
 .sc-tk-caveat { font-size: 12px; line-height: 1.55; color: var(--ink-3); margin: 0; }
+
+/* ── 王牌视觉锤: 100% 学段带 + 巨号数字 (设计规范 §03; 纯 CSS, 打印友好) ── */
+.zt-hero-num { font-family: var(--num); font-size: 56px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.zt-hero-num .zt-hero-pct { font-size: 28px; color: var(--ink-3); font-weight: 500; }
+.zt-hero-line { font-size: 14px; color: var(--ink-2); margin: 4px 0 0; max-width: 72ch; }
+.zt-hero-line .zt-hero-sr { color: var(--accent-ink); }
+.zt-dna { display: flex; height: 44px; border-radius: var(--r-sm); overflow: hidden; margin: 14px 0 4px; }
+.zt-dna-seg { display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 600; white-space: nowrap; overflow: hidden; font-variant-numeric: tabular-nums; }
+.zt-brace { display: flex; font-size: 11.5px; color: var(--ink-3); margin-bottom: 12px; }
+.zt-brace-f { border-top: 2px solid var(--down); padding-top: 3px; text-align: center; font-weight: 600; color: var(--down); white-space: nowrap; }
+.zt-brace-s { border-top: 2px solid var(--accent-ink); padding-top: 3px; text-align: center; font-weight: 600; color: var(--accent-ink); white-space: nowrap; }
+.zt-stage-tbl { border-collapse: collapse; width: 100%; font-size: 12.5px; margin-top: 2px; }
+.zt-stage-tbl th { text-align: left; color: var(--ink-3); font-weight: 600; font-size: 11.5px; padding: 4px 8px 4px 0; }
+.zt-stage-tbl td { padding: 4px 8px 4px 0; border-top: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
+.zt-sq { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
 
 /* 基础库浏览 (真题库 tiku + 课标库 kebiao) */
 .tk-types { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }

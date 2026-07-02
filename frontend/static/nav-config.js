@@ -23,15 +23,19 @@ const _IC = {
   zhenti:  '<path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-4"/><path d="M13 16V8"/><path d="M18 16v-6"/>',
   jichu:   '<rect x="4" y="3" width="6" height="18" rx="1"/><rect x="14" y="3" width="6" height="18" rx="1"/><path d="M4 8h6"/><path d="M14 8h6"/>',
   kecheng: '<path d="M3 4h18"/><path d="M4 4v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4"/><path d="M12 15v4"/><path d="M9 19h6"/>',
+  guanlian:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8.2 7.1 15.6 8"/><path d="M7 8.3l2.2 7.3"/><path d="M16.4 10 11.6 16.4"/>',
 };
 
 window.GZ_NAV = [
-  // ── 高中 (北极星 Phase A/B/C; 数据最全, 先跑通) ──
-  { section: "senior", group: "高中 · 辽宁新高考 II 卷", tabs: [
-    { id: "beike",    label: "命题研判", icon: _IC.yanpan },              // ① 结论先行首页 (复用考点驾驶舱)
+  // ── 高中 (双工作流分组: 看懂高考=研判证据链 / 开始学习=课程与库; 设计规范 §06) ──
+  { section: "senior", group: "看懂高考 · 辽宁新高考 II 卷", tabs: [
+    { id: "beike",    label: "命题研判", icon: _IC.yanpan },              // ① 结论先行首页
     { id: "zhenti",   label: "真题特点", icon: _IC.zhenti },             // ② 统计/热力 + 小初高词占比 (Phase B)
-    { id: "jichu",    label: "基础库",   icon: _IC.jichu },             // ③ 教材库 / 真题库 / 课标库
+    { id: "graph",    label: "考点关联", icon: _IC.guanlian },           // KG 转正 (2026-07-02 用户拍板): 共现网络 = 命题套路证据
+  ]},
+  { section: "senior", group: "开始学习", tabs: [
     { id: "teaching", label: "40 节课程", icon: _IC.kecheng, count: "courses" }, // ④ L3 课程 (Phase C 框架)
+    { id: "jichu",    label: "基础库",   icon: _IC.jichu },             // ③ 教材库 / 真题库 / 课标库 / 词典
   ]},
   // ── 初中 (北极星 Phase E; 同结构镜像高中, 建设中) ──
   { section: "junior", group: "初中 · 沈阳中考 (建设中)", tabs: [

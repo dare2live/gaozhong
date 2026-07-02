@@ -1,10 +1,18 @@
-/* 设计令牌系统 — 备课驾驶舱 (2026-06-22 redesign-preserve; taste-skill + redesign-skill).
+/* 设计令牌系统 — 辽宁 K12 英语备考产品 (学习者版 design read, 2026-07 重设计; 前版=教师备课舱 2026-06-22).
  *
- * Design read: 辽宁 K12 教师备课数据仪表盘, trust-first 且 D0=100% 精度关键 → 克制 editorial-utilitarian。
- * 保留经济学人红 accent; 统一成单一暖灰中性系 + off-black(非纯黑) + tinted shadow + 一致圆角/焦点环。
- * 数据用 tabular-nums(数据为先); 系统 CJK 字体(教师工具受众, 原生渲染 + 零 web-font 成本)。
- * 单一 UI accent = 红; 图表里的蓝是数据编码(data series), 非 UI accent — 二者不冲突。
- * 本文件最后加载, 是配色/排版唯一真相源, 覆盖旧 style.css/app.css 的散落色值。
+ * 受众 = 高中生(初中镜像)。第一问题:「高考到底考什么、我该学什么」— 每页每图必须回答一个学习者
+ * 问题, 答不出的分区删或并。气质 = 严肃备考 · trust-first · 克制 editorial(经济学人血统): 结论先行、
+ * 数据为先、大数字小说明、零 emoji、内联 SVG 图标(Tabler stroke 1.6-1.7)。信任不靠工程徽章(API 路径/
+ * audit 字样/Phase 里程碑一律不进学习者 UI), 靠「数字→点击→真题原卷」可下钻链路 + D0 诚实标注的
+ * 学习者语言(三档: 试卷实证不标 / AI 标注·方向参考 / 样本少·只看方向 — 语义与数字一个不删)。
+ *
+ * 色彩纪律: 单一 UI accent = 红(--accent); 数据编码 = 蓝单色阶(--down/-2/-3/-4, 本文件唯一定义点,
+ * 图表代码禁 ad-hoc hex); 红族在数据图中仅一种语义 =「你该主攻的重点」, 每视图红色数据系列 ≤1;
+ * 灰(--data-gray)+ 斜纹 decal = 未分类/不估算。认识论编码: 实心 = 真值, 空心/虚线/降饱和 = 方向性
+ * (n<30 或双模型推断)。WCAG AA: 白字仅允许 --down/--down-2 底; 浅蓝/灰段标签用 --ink 或外置。
+ * 页头 = 无色块 masthead(蓝 hero 根因已根治于 style.css 裸 header 选择器, 禁再造 hero 色块)。
+ * 不变: 暖灰中性系 + off-black 侧栏 + tinted 暖阴影 + 圆角 3/5/8/12 + tabular-nums + 系统 CJK 字体 +
+ * 170ms 克制动效。Dial: VARIANCE 5 / MOTION 3 / DENSITY 4-5。本文件最后加载, 是配色/排版唯一真相源。
  */
 
 :root {
@@ -31,6 +39,11 @@
   --down: #1F5F94;   /* 下行/数据蓝 */
   --good: #2E7D54;
   --warn: #9A6A00;
+  /* 数据蓝单色阶 (设计规范 §02: 图表唯一合法数据色阶, 禁 ad-hoc hex; 白字仅 --down/--down-2 底) */
+  --down-2: #4A80AE;
+  --down-3: #8FAECB;
+  --down-4: #C3D4E3;
+  --data-gray: #B4B2A9;  /* 未分类/不估算 (配 echarts decal 斜纹) */
   /* tinted shadow — 暖, 非纯黑 */
   --shadow-sm: 0 1px 2px rgba(46,38,28,.05);
   --shadow: 0 1px 3px rgba(46,38,28,.06), 0 4px 14px rgba(46,38,28,.05);
@@ -142,7 +155,9 @@ body {
 .bk-src {
   font-family: var(--num); font-size: 10.5px; color: var(--ink-3);
   background: var(--sunken); padding: 2px 7px; border-radius: var(--r-xs);
+  display: none;   /* 工程徽章不进学习者 UI (设计规范 §05); ?debug=1 → body.gz-debug 时可见, 溯源保留 */
 }
+body.gz-debug .bk-src { display: inline-block; }
 
 /* ── filter bar / pills ───────────────────────────────── */
 .bk-pill {

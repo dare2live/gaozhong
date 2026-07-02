@@ -56,7 +56,8 @@
       const rows = Array.isArray(fnd) ? fnd : (fnd.findings || []);
       const fail = rows.filter(r => r.severity === "FAIL").length;
       const warn = rows.filter(r => r.severity === "WARN").length;
-      ax.textContent = (fail || warn) ? `${fail} FAIL · ${warn} WARN` : `0 FAIL audit`;
+      // 双态学习者文案 (设计规范 §05): 正常=信任语言; 异常=红字计数, 永不隐藏 (D0 异常必须可见)
+      ax.textContent = (fail || warn) ? `数据校验异常 ${fail + warn} 项` : "数据每日自动校验 · 全部通过";
       ax.style.color = fail ? "var(--accent-ink)" : (warn ? "var(--warn)" : "");
     }
   }
@@ -109,7 +110,11 @@
     document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  window.addEventListener("DOMContentLoaded", () => { renderSidebar(); movedBanner(); if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts(); });
+  window.addEventListener("DOMContentLoaded", () => {
+    // ?debug=1 = 开发者模式: 显示 API 路径徽章 (.bk-src) 等工程溯源标记 (学习者默认不见, 设计规范 §05)
+    if (new URLSearchParams(location.search).has("debug")) document.body.classList.add("gz-debug");
+    renderSidebar(); movedBanner(); if (!location.hash) location.hash = "#/beike"; route(); populateNavCounts();
+  });
 
 
   // ===================================================================
@@ -136,9 +141,8 @@
         <span class="ks-focus">考点焦点: ${_esc(l.focus)}</span>
         <span class="ks-w" title="本节命题权重份额 = 该主题群辽宁频次 ÷ 该主题节数">权重 ${l.trend_weight}</span>
         <span class="ks-hwn">作业 ${(l.evidence_questions || []).length} 真题</span>
-        <span class="ks-content">内容待生成 (Phase D)</span>
       </summary>
-      <div class="ks-body"><div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div><ul class="ks-hwlist">${hw || '<li class="ks-hw">该主题真题作业框架阶段待补 (Phase D 完善)</li>'}</ul></div>
+      <div class="ks-body"><div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div><ul class="ks-hwlist">${hw || '<li class="ks-hw">本节真题作业整理中</li>'}</ul></div>
     </details>`;
   }
   register("teaching", async () => {
@@ -146,15 +150,12 @@
     const [syl, cov] = await Promise.all([fetchSafe("/api/course/syllabus"), fetchSafe("/api/course/coverage")]);
     if (isErr(syl)) { CONTENT.innerHTML = '<div class="error-state"><div class="es-title">课程框架加载失败</div><div class="es-msg">后端未就绪 — 真实错误。</div></div>'; return; }
     CONTENT.innerHTML = `<section class="scaffold">
-      <header class="sc-head">
-        <div class="sc-badge">高中 · 40 节课程 (L3 框架)</div>
-        <h1 class="sc-title">40 节课程</h1>
-        <p class="sc-lead">北极星 L3 课程层 — 按命题频次把高产出考点分配到 ${syl.n_lessons} 节, 每节考点焦点 + 可溯源真题作业。<strong>当前是框架 (决策 C): 每段内容待生成 (Phase D, 需 L1/L2 就绪门)</strong>; 作业=辽宁真题非生成。</p>
-      </header>
+      ${GZ.pageHead("高中 · 40 节课程", `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
+      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>讲义制作中</b> — 每节已定考点焦点与真题作业, <b>作业现在就能做</b>; 可背诵正文上线前不占位不伪造。</span></div>
       <div class="sc-takeaway">
         <div class="sc-tk-h">覆盖模型 · 用最少课程覆盖最大考点</div>
         <p class="sc-tk-body">${isErr(cov) ? "覆盖数据加载失败。" : _esc(_covLine(cov))}。${syl.coverage ? _esc(syl.coverage.note) : ""}</p>
-        <p class="sc-tk-caveat">考点焦点↔真题作业全程可溯源 (替代旧版裸题号); 内容生成是 Phase D, 不在框架阶段产出。详见<a href="#/zhenti">真题特点</a>的小初高词占比与命题套路。</p>
+        <p class="sc-tk-caveat">考点焦点↔真题作业全程可溯源到原卷。详见<a href="#/zhenti">真题特点</a>的小初高词占比与命题套路。</p>
       </div>
       <div class="ks-list">${syl.lessons.map(_lessonCard).join("")}</div>
     </section>`;
@@ -302,8 +303,7 @@
       .map(([k, v]) => `${k} <b style="color:var(--ink)">${v}</b>`).join(" · ");
 
     CONTENT.innerHTML = `
-      <h2 style="margin:0 0 2px">知识图谱 · 考点关联网络</h2>
-      <p class="muted" style="margin:0 0 12px;font-size:13px">考点共现网络 = 同一道真题里共同出现的 <b>题材 / 主题 / 设问思维</b> · 边粗=同题共现次数(实测) · 题材/主题维度为<b>双模型推断标注</b>(非真值) · 共现=同题出现, <b>非因果</b> · <b>点任一考点</b>看其真题 · 拖拽/滚轮缩放</p>
+      ${GZ.pageHead("高中 · 考点关联", "哪些考点总是一起考", "共现 = 同一道真题里同时考到; 高频组合就是命题套路。点大 = 考查次数多 · 线粗 = 同题一起考 · 点任意考点看它的真题。")}
 
       <section class="bk-card" style="margin-bottom:14px">
         <div class="bk-h"><span>考点共现关联 <small id="graph-center" style="color:var(--accent-ink)">新高考II 2021+</small></span>

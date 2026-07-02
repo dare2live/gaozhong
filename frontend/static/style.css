@@ -7,24 +7,9 @@ body {
   color: #1a1a1a;
   line-height: 1.55;
 }
-header {
-  background: var(--down);
-  color: white;
-  padding: 18px 32px;
-  border-bottom: 3px solid var(--accent);
-}
-header h1 {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-header .subtitle { margin: 6px 0 0; opacity: 0.9; font-size: 13px; }
-header .nav-inline { font-family: -apple-system, sans-serif; font-size: 14px; font-weight: 400; opacity: 0.92; margin-left: 16px; }
-header .nav-inline a { color: white; text-decoration: none; margin: 0 4px; border-bottom: 2px solid transparent; padding-bottom: 2px; }
-header .nav-inline a.active { border-bottom-color: var(--accent); }
-header .nav-inline a:hover { opacity: 0.7; }
+/* 裸 header 块 2026-07-02 根治删除: 它是旧 index/teacher 顶栏样式 (蓝底白字), 那些页面已删;
+ * 但裸元素选择器泄漏命中 SPA 的 <header class="sc-head"> = "蓝 hero 三连" 根因 (设计规范 §01)。
+ * 页头规范 = 无色块 masthead (.sc-head, 见 app.css)。禁止再写裸元素大区块样式。 */
 .badge {
   display: inline-block;
   background: #f4a261;

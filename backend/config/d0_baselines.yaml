@@ -23,6 +23,7 @@ baselines:
   gaokao_liaoning:      {value: 190,  op: eq, note: "辽宁卷 新课标II §7 (182 B1去重 + 2026锦宏镜像8 group, 写作不入)"}
   zhongkao_total:       {value: 90,   op: eq, note: "中考 2024×45+2025×45"}
   zhongkao_per_year:    {value: 45,   op: eq, note: "中考每年45题"}
+  zhongkao_kaodian:     {value: 20,   op: eq, note: "语篇填空逐空考点行 (2年×10空, 2024/2025 省统一卷; k12.zhongkao_distribution as-served)"}
   # KG 维度 (d0_*.py)
   exam_dict_min:        {value: 3500, op: ge, note: "考试词典规模下界(课标∪教材真超纲)"}
   exam_dict_max:        {value: 5000, op: le, note: "考试词典规模上界(防CET/GRE注水)"}

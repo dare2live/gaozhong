@@ -27,11 +27,7 @@
     const yearOpts = ['<option value="">全部年份</option>'].concat(d.years.map(y => `<option value="${y}">${y}</option>`)).join("");
     const years = Object.keys(d.by_year).sort((a, b) => b - a);
     C.innerHTML = `<section class="scaffold">
-      <header class="sc-head">
-        <div class="sc-badge">基础库 · 真题库</div>
-        <h1 class="sc-title">真题库 · 辽宁卷</h1>
-        <p class="sc-lead">${esc(d.scope)} · 共 ${d.total} 题 (2015+ 新课标 II 卷)。每题可溯源到原卷, 作为课程作业的题源。</p>
-      </header>
+      ${pageHead("基础库 · 真题库", "历年辽宁卷真题", `${esc(d.scope)} · 共 ${d.total} 题 (2015+ 新课标 II 卷)。每题可溯源到原卷, 也是课程作业的题源。`)}
       <div class="tk-types">${typeChips}</div>
       <div class="tk-filter"><label for="tk-year">按年份</label><select id="tk-year" aria-label="按年份筛选真题">${yearOpts}</select></div>
       <div id="tk-body">${years.map(y => _tikuYear(y, d.by_year[y])).join("")}</div>
@@ -68,11 +64,7 @@
     const vocab = sum.vocab_by_level || {};
     const vChips = Object.entries(vocab).map(([lv, n]) => `<span class="tk-tchip">${esc(lv)} <b>${n}</b></span>`).join("");
     C.innerHTML = `<section class="scaffold">
-      <header class="sc-head">
-        <div class="sc-badge">基础库 · 课标库</div>
-        <h1 class="sc-title">课标库</h1>
-        <p class="sc-lead">${esc(sum.source)} — 主题群 ${sum.themes_total} · 语法 ${sum.grammar_total} 项 · 词汇 ${sum.vocab_total} (按学段)。课程对齐的第一手依据。</p>
-      </header>
+      ${pageHead("基础库 · 课标库", "官方课标里有什么", `${esc(sum.source)} — 主题群 ${sum.themes_total} · 语法 ${sum.grammar_total} 项 · 词汇 ${sum.vocab_total} (按学段)。高考命题与本产品课程对齐的第一手依据。`)}
       <section class="bk-card"><div class="bk-h"><span>主题语境 · 三大主题 → 子主题群</span><span class="bk-src">/api/theme_contexts</span></div><div class="kb-list">${_themeGroups(themes)}</div></section>
       <section class="bk-card"><div class="bk-h"><span>语法体系 · 课标层级</span><span class="bk-src">/api/grammar_items</span></div><div class="kb-list">${_grammarTop(grammar)}</div></section>
       <section class="bk-card"><div class="bk-h"><span>词汇 · 按学段</span><span class="bk-src">/api/curriculum/summary</span></div>

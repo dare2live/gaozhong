@@ -45,8 +45,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">命题研判 · 高考考什么 / 怎么考 / 怎么变 <button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button></h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">辽宁卷锚定 · 按卷制 era 分层(非历史平均) · 数据全来自 service 单一计算点, 前端不重算 · 各图右上可单独导出 PNG</p>
+${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考什么 · 怎么考 · 2021 新高考后怎么变 — 每个数字来自辽宁真题与课标原文的统计, 可以点开追到原卷。", `<button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button>`)}
 <div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">

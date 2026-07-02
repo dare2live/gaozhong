@@ -5,14 +5,13 @@
  * 不伪造图表/不甩原始题号。可用的子库 (教材库/考试词典) 直接链到现有 working tab。
  */
 (function () {
-  const { registerTab, fetchSafe, isErr, errorBox, ensureECharts, initChart } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, ensureECharts, initChart, pageHead } = window.GZ;
 
   // 通用骨架渲染: 标题 + Phase 徽章 + 引言 + 计划模块卡片
   function _scaffold({ title, badge, lead, cards }) {
     const cardHTML = (cards || []).map(c => {
-      const chip = c.status === "ready"
-        ? '<span class="sc-chip ready">现可用</span>'
-        : `<span class="sc-chip">${c.phase || "建设中"}</span>`;
+      // "现可用"徽章删 (设计规范 §05: 全 ready 时信息量为零, 真实计数即状态); 仅建设中标注
+      const chip = c.status === "ready" ? "" : `<span class="sc-chip">${c.phase || "建设中"}</span>`;
       const inner =
         `<div class="sc-card-h"><svg class="sc-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${c.icon || ""}</svg>`
         + `<span class="sc-card-t">${c.title}</span>${chip}</div>`
@@ -22,11 +21,7 @@
         : `<div class="sc-card">${inner}</div>`;
     }).join("");
     return `<section class="scaffold">
-      <header class="sc-head">
-        <div class="sc-badge">${badge}</div>
-        <h1 class="sc-title">${title}</h1>
-        <p class="sc-lead">${lead}</p>
-      </header>
+      ${pageHead(badge, title, lead)}
       <div class="sc-grid">${cardHTML}</div>
     </section>`;
   }
@@ -42,9 +37,15 @@
   };
 
   // ② 真题特点: 小初高词占比 (真实数据, 王牌实证) + 分布迁移/套路热力 (Phase B 占位)
-  const STAGE_COLOR = {
-    "小学": "#2E7D54", "初中": "#3C7AA6", "义务教育": "#6BA3C4",
-    "高中必修": "#BE3A2B", "高中选修": "#9C2C20", "未分类": "#B4B2A9",
+  // 学段→数据色 (设计规范 §02/§03: 义务三段=蓝阶深→浅, 高中两段=红族"你该主攻的重点", 未分类=灰+斜纹不估算;
+  // 白字仅 --down/--down-2/红段; --down-3 段用 --ink; 全部 design-system 令牌, 禁 ad-hoc hex)
+  const STAGE_SEG = {
+    "小学":     { bg: "var(--down)",       fg: "#fff" },
+    "初中":     { bg: "var(--down-2)",     fg: "#fff" },
+    "义务教育": { bg: "var(--down-3)",     fg: "var(--ink)" },
+    "高中必修": { bg: "var(--accent-ink)", fg: "#fff" },
+    "高中选修": { bg: "var(--accent)",     fg: "#fff" },
+    "未分类":   { bg: "repeating-linear-gradient(-45deg, var(--data-gray), var(--data-gray) 3px, #C9C7BF 3px, #C9C7BF 6px)" /* #C9C7BF = --data-gray 亮变体, decal 纹理专用 (非数据编码色) */, fg: "var(--ink)" },
   };
 
   function _stageSrTable(d) {
@@ -52,23 +53,23 @@
     return `<table class="sr-only"><caption>辽宁高考考查词学段分布</caption><thead><tr><th>学段</th><th>占比</th><th>词数</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
-  function _renderStageChart(d) {
-    const el = document.querySelector("#zt-stage");
-    if (!el) return;
-    const cats = d.stages.map(s => s.stage);
-    const data = d.stages.map(s => ({ value: s.pct, itemStyle: { color: STAGE_COLOR[s.raw_stage || s.stage] || "#B4B2A9" } }));
-    const inst = initChart(el);
-    inst.setOption({
-      grid: { left: 70, right: 56, top: 10, bottom: 24 },
-      xAxis: { type: "value", max: Math.ceil(Math.max(...d.stages.map(s => s.pct)) / 10) * 10, axisLabel: { formatter: "{value}%", fontSize: 11, color: "#76716A" }, splitLine: { lineStyle: { color: "#F0ECE4" } } },
-      yAxis: { type: "category", inverse: true, data: cats, axisLabel: { fontSize: 12, color: "#45413A" }, axisTick: { show: false } },
-      series: [{
-        type: "bar", data, barWidth: "58%",
-        label: { show: true, position: "right", formatter: p => `${d.stages[p.dataIndex].pct}% · ${d.stages[p.dataIndex].n}词`, fontSize: 11, color: "#76716A" },
-      }],
-    });
-    el.setAttribute("aria-label", `辽宁高考考查词学段分布条形图: ` + d.stages.map(s => `${s.stage} ${s.pct}%`).join(", "));
-    if (!el._wired) { window.addEventListener("resize", () => inst.resize()); el._wired = true; }
+  // 王牌视觉锤 (设计规范 §03): 巨号 75.7% + 单条 100% 学段带 + 花括号跨段注 + 明细表。纯 CSS (打印友好/零图表库开销)。
+  function _stageHero(d) {
+    const segs = d.stages.map(s => {
+      const c = STAGE_SEG[s.raw_stage || s.stage] || STAGE_SEG["未分类"];
+      const label = s.pct >= 8 ? `${esc(s.stage)} ${s.pct}%` : "";
+      return `<div class="zt-dna-seg" style="width:${s.pct}%;background:${c.bg};color:${c.fg}" title="${esc(s.stage)} ${s.pct}% · ${s.n}词">${label}</div>`;
+    }).join("");
+    const rows = d.stages.map(s => {
+      const c = STAGE_SEG[s.raw_stage || s.stage] || STAGE_SEG["未分类"];
+      return `<tr><td><span class="zt-sq" style="background:${c.bg}"></span>${esc(s.stage)}</td><td>${s.n}</td><td>${s.pct}%</td></tr>`;
+    }).join("");
+    return `
+      <div class="zt-hero-num">${d.foundation_pct}<span class="zt-hero-pct">%</span></div>
+      <p class="zt-hero-line"><b>你在初中前已学过的词, 占高考考查词的 ${d.foundation_pct}%</b> — 真正属于高中新增的只有 <b class="zt-hero-sr">${d.senior_pct}%</b>, 这就是课程主攻的 delta。</p>
+      <div class="zt-dna" role="img" aria-label="高考考查词学段构成: ${d.stages.map(s => `${s.stage} ${s.pct}%`).join(", ")}">${segs}</div>
+      <div class="zt-brace"><div class="zt-brace-f" style="width:${d.foundation_pct}%">${d.foundation_pct}% 入学前已学</div><div class="zt-brace-s" style="width:${d.senior_pct}%">${d.senior_pct}% 高中新增</div><div style="flex:1"></div></div>
+      <table class="zt-stage-tbl"><thead><tr><th>学段</th><th>词数</th><th>占比</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
   // 命题迁移卡: shift.by_dimension (2015-20 → 2021+) 蒸馏成 top movers delta 结论 (学习者向)
@@ -119,13 +120,19 @@
     return ge.by_category.map(c => {
       const w = Math.round(100 * c.n / max);
       const tops = (c.top || []).map(t => esc(t.label.length > 16 ? t.label.slice(0, 16) + "…" : t.label)).join(" · ");
-      return `<div class="zt-gram"><span class="zt-gram-c">${esc(c.category)}</span><span class="zt-gram-bar"><span class="zt-gram-fill" style="width:${w}%"></span></span><span class="zt-gram-n">${c.n}题 ${c.pct}%</span><div class="zt-gram-top">${tops}</div></div>`;
+      return `<div class="zt-gram"><span class="zt-gram-c">${esc(c.category)}</span><span class="zt-gram-bar"><span class="zt-gram-fill" style="width:${w}%"></span></span><span class="zt-gram-n">${c.n}次 ${c.pct}%</span><div class="zt-gram-top">${tops}</div></div>`;
     }).join("");
+  }
+  // 样本量诚实标注 (坑12: 分布可用但 n 透明; n=次数=考查边, 非题数 — 一题可考多个语法点)
+  function _grammarCaption(ge) {
+    if (!ge || ge.n_questions == null) return "";
+    return `共 ${ge.n_questions} 题 · ${ge.n_edges || ge.total} 条考查记录 (一题可考多个语法点) — 量不大, 排序可信、小数点别抠。`;
   }
   // N2: 教材搭配/句型/表达库卡 (phrases, 出现非考查)
   function _phraseCard(te) {
     if (!te || !te.by_group) return "";
-    return te.by_group.map(g => `<span class="tk-tchip">${esc(g.group)} <b>${g.n}</b></span>`).join("");
+    const chips = te.by_group.map(g => `<span class="tk-tchip">${esc(g.group)} <b>${g.n}</b></span>`).join("");
+    return `${chips}<span class="tk-tchip" style="border-style:dashed">合计 <b>${te.total}</b></span>`;
   }
 
   registerTab("zhenti", async () => {
@@ -147,20 +154,17 @@
     const migHTML = Object.keys(shiftByDim).length ? _migrationCard(shiftByDim) : '<p class="kb-dim">迁移数据加载失败。</p>';
     const taoluHTML = (!isErr(cbc)) ? _taoluCard(cbc) : '<p class="kb-dim">套路数据加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
-      <header class="sc-head">
-        <div class="sc-badge">高中 · 真题特点</div>
-        <h1 class="sc-title">真题特点</h1>
-        <p class="sc-lead">围绕辽宁高考真题 (新课标 II 卷) 的命题特点 — 用数据回答"高考考什么、怎么考、近年怎么变"。</p>
-      </header>
+      ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
       <div class="sc-takeaway">
         <div class="sc-tk-h">结论 · 用最少课程覆盖最大考点</div>
         <p class="sc-tk-body">辽宁高考<strong>离散考点题型</strong>(完形/语法填空/短改/单选)考查的词中, <strong class="tk-found">${d.foundation_pct}% 是小学 / 初中阶</strong>(学生入高中前已学), 真正属<strong class="tk-senior">高中新增的仅 ${d.senior_pct}%</strong>。→ 高中课程不必重教基础词, 主攻这 ${d.senior_pct}% 的高中 delta + 高频考点。</p>
         <p class="sc-tk-caveat">${d.caveat || ""} · 共 ${d.total} 个去重考查词${d.unclassified_pct ? `; 未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算` : ""}。${d.stage_note ? " " + d.stage_note : ""}</p>
       </div>
       <section class="bk-card">
-        <div class="bk-h"><span>辽宁高考考查词 · 学段分布</span><span class="bk-src">/api/k12/tested_word_stage</span></div>
-        <div id="zt-stage" role="img" aria-label="辽宁高考考查词学段分布条形图" style="height:300px;"></div>
+        <div class="bk-h"><span>辽宁高考考查词 · 哪个学段学的</span><span class="bk-src">/api/k12/tested_word_stage</span></div>
+        ${_stageHero(d)}
         ${_stageSrTable(d)}
+        <p class="kb-dim" style="margin:10px 0 0;">统计口径 = 真题里<b>真正考查</b>的词 (教材出现过 ≠ 高考考过), 共 ${d.total} 个去重词。<b>已学过 ≠ 都记得</b> — 义务段词仍是考查主体, 主攻 ${d.senior_pct}% 不等于放掉基础。未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算。</p>
       </section>
       <section class="bk-card">
         <div class="bk-h"><span>命题迁移 · 近年怎么变 (2015–20 → 2021+)</span><span class="bk-src">/api/exam_point/distribution · shift</span></div>
@@ -176,16 +180,14 @@
       <section class="bk-card">
         <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法 (辽宁考查热点)</span><span class="bk-src">/api/grammar/stats</span></div>
         <div class="zt-gramlist">${gramHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (tests_grammar 真值), 按课标第二级子类。"主从复合句(从句)"=最大热点。</p>
+        <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。前 4 类 (从句/被动/非谓语/时态) 合计约七成 — 语法主攻顺序即此。${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
       </section>
       <section class="bk-card">
         <div class="bk-h"><span>教材 固定搭配 / 句型 / 表达方式 库</span><span class="bk-src">/api/grammar/stats · phrases</span></div>
         <div class="tk-types">${phraseHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">教材提取的固定搭配/句型/功能意念表达库; <strong>出现非考查</strong> — 无短语级真题考查边, 不冒充考查频次 (诚实分层)。</p>
+        <p class="kb-dim" style="margin:8px 0 0;">${(!isErr(gram) && gram.textbook_expr && gram.textbook_expr.note) ? esc(gram.textbook_expr.note) : "教材提取的固定搭配/句型/表达库。"} <strong>教材里出现过 ≠ 高考考过</strong> — 这里是教材库存, 不冒充考查频次。</p>
       </section>
     </section>`;
-    if (await ensureECharts()) _renderStageChart(d);
-    else { const e = document.querySelector("#zt-stage"); if (e) window.GZ.chartLoadError(e); }
   });
 
   // ③ 基础库 hub: 教材库 / 真题库 / 课标库 (可用的直接链到现有 working tab)

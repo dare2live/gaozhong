@@ -365,9 +365,19 @@ window.GZ = (function () {
     try { window.print(); } finally { setTimeout(cleanup, 1500); }
   }
 
+  // 统一无色块 masthead (设计规范: 全站页头单渲染点, 防形态漂移; 样式 .sc-head 见 app.css)。
+  // kicker = 板块上下文(纯文本) / title = 学习者问题句 / lead = 这页回答什么 / right = 可选右槽 HTML(打印钮等)。
+  function pageHead(kicker, title, lead, right) {
+    return `<header class="sc-head"><div>` +
+      (kicker ? `<div class="sc-badge">${kicker}</div>` : "") +
+      `<h1 class="sc-title">${title}</h1>` +
+      (lead ? `<p class="sc-lead">${lead}</p>` : "") +
+      `</div>${right ? `<div class="sc-right">${right}</div>` : ""}</header>`;
+  }
+
   return {
     $, $$, fetchJSON, fetchSafe, isErr, errorBox, tagChip, renderTable, formToQs,
-    mountLayout, conceptLink, mdToHtml, NAV, icon,
+    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,
   };

@@ -109,8 +109,23 @@ def check_grammar_stats(con: duckdb.DuckDBPyConnection, check) -> None:
         "WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'").fetchone()[0]
     check("语法考查 total==独立SQL(tests_grammar∧辽宁∧有grammar_items, as-served)", ge["total"] == indep, f"svc={ge['total']} sql={indep}")
     check("语法各类频次求和==total (无丢)", sum(c["n"] for c in ge["by_category"]) == ge["total"], "sum≠total")
+    # 坑17 (g): n_questions(去重题数) vs n_edges(边数) 口径分离, 各锁独立SQL
+    nq_indep = con.execute(
+        "SELECT COUNT(DISTINCT e.src_id) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) "
+        "WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'").fetchone()[0]
+    check("语法考查 n_questions==独立SQL(去重题数; 与 n_edges 边数口径显式分离)",
+          ge.get("n_questions") == nq_indep and ge.get("n_edges") == ge["total"],
+          f"svc={ge.get('n_questions')} sql={nq_indep}")
+    # 坑17 (e): by_category 类别全锚 grammar_items 官方项, 无兜底'其他'(新 gid 前缀不匹配会落'其他'被静默吞)
+    g_labels = {r[0] for r in con.execute("SELECT label FROM grammar_items").fetchall()}
+    bad_cats = [c["category"] for c in ge["by_category"] if c["category"] == "其他" or c["category"] not in g_labels]
+    check("语法类别全锚 grammar_items 官方项 (无'其他'兜底/无杜撰类别)", not bad_cats, f"未锚: {bad_cats[:5]}")
     nph = con.execute("SELECT COUNT(*) FROM phrases").fetchone()[0]
     check("教材搭配库 total==phrases表 (as-served)", s["textbook_expr"]["total"] == nph, f"svc={s['textbook_expr']['total']} db={nph}")
+    # 坑17 (d): by_group 求和==total (新 phrase_type 前缀不匹配 _PHRASE_GROUP 会被静默丢出分组)
+    grp_sum = sum(g["n"] for g in s["textbook_expr"]["by_group"])
+    check("搭配库 sum(by_group)==total (无 phrase_type 前缀漏匹配被静默丢)",
+          grp_sum == s["textbook_expr"]["total"], f"sum={grp_sum} total={s['textbook_expr']['total']}")
 
 
 def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:
