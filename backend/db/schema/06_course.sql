@@ -45,17 +45,7 @@ CREATE TABLE IF NOT EXISTS course_materials (
 CREATE INDEX IF NOT EXISTS idx_cm_kind ON course_materials(kind);
 CREATE INDEX IF NOT EXISTS idx_cm_ref ON course_materials(ref_id);
 
--- 老师实际授课记录
-CREATE TABLE IF NOT EXISTS course_sessions (
-    session_id         VARCHAR PRIMARY KEY,
-    course_id          INTEGER NOT NULL,
-    class_id           VARCHAR,
-    teacher_id         VARCHAR,
-    taught_at          VARCHAR,
-    notes              VARCHAR                           -- 课后笔记
-);
-CREATE INDEX IF NOT EXISTS idx_cs_course ON course_sessions(course_id);
-CREATE INDEX IF NOT EXISTS idx_cs_class ON course_sessions(class_id);
+-- course_sessions (老师授课记录) 2026-07-02 删除: 教师工具下线, 0 行 0 写方 (坑17 死表处置)
 
 -- ====== 设计宪法 (模型驱动内容生成, 用户 2026-05-25 硬约束) ======
 

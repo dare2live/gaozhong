@@ -15,8 +15,8 @@ from pathlib import Path
 
 FE = Path(__file__).resolve().parents[2] / "frontend" / "static"
 LIVE_JS = ["common", "graph_popup", "nav-config", "category-config", "app_router",
-           "beike", "jiangke", "lesson", "textbook", "dict", "k12", "xisheng"]
-ECHARTS_JS = ["beike", "k12", "xisheng", "jiangke"]
+           "beike", "scaffold", "jichu_pages", "textbook", "dict", "k12"]
+ECHARTS_JS = ["beike", "k12", "scaffold"]
 NON_ECHARTS = [f for f in LIVE_JS if f not in ECHARTS_JS]
 LIVE_CSS = ["style", "app", "beike", "design-system"]
 OFF_EXEMPT = {"category-config"}   # 数据编码色单一来源 (design-system 自述与 UI accent 正交)

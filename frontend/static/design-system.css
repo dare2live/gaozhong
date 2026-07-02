@@ -125,7 +125,7 @@ body {
 .muted { color: var(--ink-3); }
 
 /* ── cards (elevation only where hierarchy needs it) ──── */
-.card, .bk-card, .layer-section {
+.card, .bk-card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
@@ -177,48 +177,6 @@ button, .btn {
 }
 button:active, .btn:active { transform: translateY(1px); }
 
-/* ── 工作台「今日态」落地页 ──────────────────────────── */
-.wb-head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 4px; }
-.wb-head h2 { margin: 0; }
-.wb-health {
-  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
-  font-variant-numeric: tabular-nums;
-}
-.wb-health.ok { color: var(--good); background: #EAF3EC; }
-.wb-health.bad { color: var(--accent-ink); background: var(--accent-wash); }
-.wb-sub { color: var(--ink-3); font-size: 13px; margin: 0 0 22px; }
-/* 资产规模 — 指标排版(非卡片): 大数字 + 小标签 + 细分隔 */
-.wb-metrics {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--card);
-  overflow: hidden; margin-bottom: 24px;
-}
-.wb-metric { padding: 16px 18px; border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
-.wb-metric .v { font-size: 25px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1.1; }
-.wb-metric .v .u { font-size: 13px; font-weight: 500; color: var(--ink-3); margin-left: 3px; }
-.wb-metric .k { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
-.wb-metric .k.demo { color: var(--warn); }
-.wb-metric a { color: inherit; text-decoration: none; display: block; }
-.wb-metric a:hover .v { color: var(--accent); }
-/* 命题研判头条 — 核心竞争力前置 */
-.wb-headline {
-  border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: var(--r);
-  background: linear-gradient(90deg, var(--accent-wash), var(--card) 60%);
-  padding: 14px 18px; margin-bottom: 24px;
-}
-.wb-headline .ey { font-size: 11px; font-weight: 650; letter-spacing: .06em; color: var(--accent-ink); }
-.wb-headline .big { font-size: 16px; font-weight: 600; color: var(--ink); margin: 4px 0 2px; letter-spacing: -0.01em; }
-.wb-headline .big b { color: var(--accent-ink); font-variant-numeric: tabular-nums; }
-.wb-headline .sub { font-size: 12.5px; color: var(--ink-3); }
-.wb-headline a { color: var(--accent-ink); text-decoration: none; font-weight: 500; }
-/* 审计异常行 */
-.wb-aud { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--card); overflow: hidden; }
-.wb-aud .row { display: flex; gap: 10px; align-items: baseline; padding: 9px 16px; border-top: 1px solid var(--line-soft); font-size: 13px; }
-.wb-aud .row:first-child { border-top: 0; }
-.wb-aud .sev { font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: var(--r-xs); flex: none; }
-.wb-aud .sev.FAIL { color: #fff; background: var(--accent); }
-.wb-aud .sev.WARN { color: var(--warn); background: #FaF3E0; }
-.wb-aud .row code { font-family: var(--num); font-size: 11.5px; color: var(--ink-2); }
 
 /* ── 空态/getting-started 引导 (学情 demo 诚实化, 坑4) ── */
 .empty-guide {
@@ -325,7 +283,7 @@ button:active, .btn:active { transform: translateY(1px); }
   .sidebar, .sidebar-foot, .bk-export, .es-retry, [data-print-hide] { display: none !important; }
   .app-shell { display: block; }
   .content { padding: 0; }
-  .card, .bk-card, .layer-section, .wb-metrics, .error-state { box-shadow: none; border-color: var(--line); break-inside: avoid; }
+  .card, .bk-card, .error-state { box-shadow: none; border-color: var(--line); break-inside: avoid; }
   body { background: #fff; }
   a[href]::after { content: ""; } /* 不打印 URL 尾注 */
 }

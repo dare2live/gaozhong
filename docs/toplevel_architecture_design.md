@@ -73,7 +73,7 @@
 - **② 派生**(可从①+config 完全重算, init_db 幂等重建): 命名 = nodes/edges/<entity>_<aspect>(exam_vocabulary/student_weakness). **铁律: 删库重建必须 bit-级可复现, 无链外手工步骤**.
 - **③ 审计/血缘**: audit_findings(run_all产) / file_manifest(sha锁) / source_versions(PIT版本).
 - **④ 学情 demo**(②③轨, 死红线): students/teachers/classes/student_answers 必空态 + demo banner, 不冒充真实.
-- **废表 sunset**(architect-controller 规则6: 长期未用=退役): `papers`/`paper_questions`/`course_handouts`/`course_sessions`/`scan_uploads` 5 表 0 行, 为未实现负载建的器官 → 标记 deprecated 或删(P2).
+- **废表 sunset**(architect-controller 规则6: 长期未用=退役): `papers`/`paper_questions`/`course_handouts` 3 表 0 行, 为未实现负载建的器官 → 标记 deprecated 或删(P2). (`course_sessions`/`scan_uploads` 2026-07-02 已删 — 教师工具下线兑现.)
 
 ### 1.3 配置层 — judgment + 扩展注册表
 - 28 个 yaml 已相当成熟(配置化做得好). 分两类:

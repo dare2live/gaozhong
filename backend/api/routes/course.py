@@ -4,7 +4,6 @@ endpoints:
   /api/course/list                 -> 40 节列表 (按 layer 分组)
   /api/course/session?id=N         -> 1 节详情 (含 materials)
   /api/course/handout?id=N         -> 1 节讲义 md + segments
-  /api/course/stats                -> 课程统计 (灌库后)
 """
 from __future__ import annotations
 
@@ -95,25 +94,6 @@ def api_course_session(qs: dict) -> dict:
         con.close()
 
 
-def api_course_stats(qs: dict) -> dict:
-    con = db_ro()
-    try:
-        layer_rows = con.execute(
-            "SELECT layer, COUNT(*) FROM courses GROUP BY layer ORDER BY 1"
-        ).fetchall()
-        kind_rows = con.execute(
-            "SELECT block_kind, COUNT(*) FROM courses GROUP BY block_kind ORDER BY 2 DESC"
-        ).fetchall()
-        mat_total = con.execute("SELECT COUNT(*) FROM course_materials").fetchone()[0]
-        return {
-            "by_layer": {r[0]: r[1] for r in layer_rows},
-            "by_block_kind": {r[0]: r[1] for r in kind_rows},
-            "total_courses": sum(r[1] for r in layer_rows),
-            "total_materials": mat_total,
-        }
-    finally:
-        con.close()
-
 
 def _course_id(qs: dict) -> int | None:
     raw = qs.get("id", [None])[0]
@@ -162,7 +142,6 @@ def api_course_quiz(qs: dict) -> dict:
 ROUTES = {
     "/api/course/list":     api_course_list,
     "/api/course/session":  api_course_session,
-    "/api/course/stats":    api_course_stats,
     "/api/course/quiz":     api_course_quiz,
     "/api/course/coverage": api_course_coverage,
     "/api/course/syllabus": api_course_syllabus,

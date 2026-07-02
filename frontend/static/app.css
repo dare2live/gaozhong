@@ -26,44 +26,8 @@
 }
 .tab-panel { display: block; }
 
-.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.7rem; margin: 1rem 0; }
-.course-card {
-  background: var(--card); padding: 0.7rem 1rem; border-radius: 4px;
-  border-left: 4px solid var(--ink-3); cursor: pointer; transition: transform 0.1s;
-  font-size: 0.9rem;
-}
-.course-card:hover { transform: translateX(2px); box-shadow: 0 1px 4px rgba(46,38,28,0.1); }
-.course-card.G1      { border-left-color: var(--good); }
-.course-card.G2      { border-left-color: var(--warn); }
-.course-card.G3      { border-left-color: var(--accent-ink); }
-.course-card.G_FINAL { border-left-color: var(--accent); }
-.course-card .cid { color: var(--ink-3); font-size: 0.85em; }
-.course-card .layer-badge {
-  display: inline-block; padding: 0 0.4rem; border-radius: 2px;
-  background: var(--nav); color: var(--card); font-size: 0.75em; margin-left: 0.4rem;
-}
-.course-card .block { color: var(--ink-3); font-size: 0.85em; margin-top: 0.2rem; }
 
-.layer-section { margin-bottom: 1.2rem; }
-.layer-section h3 {
-  margin: 0.5rem 0 0.3rem 0; padding-bottom: 0.2rem;
-  border-bottom: 1px solid var(--line); color: var(--nav);
-}
-.layer-section h3 .layer-meta { color: var(--ink-3); font-size: 0.7em; font-weight: 400; margin-left: 0.7rem; }
 
-/* RC1#1: #student-modal 此前 0 条 CSS(点学生卡不浮层); 与 #handout-modal 共享同一组模态规则 */
-#handout-modal, #student-modal {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(46,38,28,0.5); display: none; z-index: 100;
-  align-items: center; justify-content: center;
-}
-#handout-modal.open, #student-modal.open { display: flex; }
-#handout-modal .modal-body, #student-modal .modal-body {
-  background: var(--surface); max-width: 800px; max-height: 90vh;
-  width: 90%; padding: 1rem 1.5rem; overflow-y: auto; border-radius: var(--r);
-}
-#handout-modal pre { white-space: pre-wrap; font-family: 'Menlo', monospace; font-size: 0.85em; }
-#handout-modal .close-btn, #student-modal .close-btn { float: right; cursor: pointer; color: var(--ink-3); font-size: 1.3em; }
 
 /* ===== 全局图谱浮窗 (用户 2026-05-24) ===== */
 .gz-concept {
@@ -143,43 +107,8 @@
 .answer-body.open { display: block; }
 
 /* modal wider for enriched content */
-#handout-modal .modal-body { max-width: 900px; }
 
 /* ===== 课后测验 Quiz mode (Phase 7.5) ===== */
-.gz-quiz-btn {
-  padding: 0.5rem 1.5rem; background: var(--accent); color: var(--card);
-  border: none; border-radius: 4px; font-size: 0.95em;
-  cursor: pointer; font-weight: 600;
-}
-.gz-quiz-btn:hover { background: var(--accent-ink); }
-.gz-quiz { margin-top: 1rem; }
-.gz-quiz h3 { border-bottom: 2px solid var(--accent); padding-bottom: 0.3rem; }
-.gz-quiz-q {
-  background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--down);
-  border-radius: 4px; padding: 0.7rem 1rem; margin-bottom: 0.6rem;
-}
-.gz-quiz-type {
-  background: var(--nav); color: var(--card); padding: 1px 6px;
-  border-radius: 2px; font-size: 0.75em;
-}
-.gz-quiz-diff { color: var(--ink-3); font-size: 0.8em; margin-left: 0.3rem; }
-.gz-quiz-stem { margin: 0.4rem 0; line-height: 1.5; }
-.gz-quiz-opts { list-style: none; padding: 0; margin: 0.3rem 0; }
-.gz-quiz-opts li {
-  padding: 0.4rem 0.8rem; margin: 0.2rem 0; border: 1px solid var(--line);
-  border-radius: 3px; cursor: pointer; transition: background 0.1s;
-}
-.gz-quiz-opts li:hover { background: var(--sunken); }
-.gz-quiz-opts li.selected { background: #d6e9f7; border-color: var(--down); }
-.gz-quiz-input {
-  width: 60%; padding: 0.4rem 0.6rem; border: 1px solid var(--line);
-  border-radius: 3px; font-size: 0.9em;
-}
-.gz-quiz-feedback { margin: 0.3rem 0; padding: 0.3rem 0.6rem; border-radius: 3px; font-size: 0.9em; }
-.gz-quiz-feedback.correct { background: #e8f5e9; }
-.gz-quiz-feedback.wrong { background: #fde2e1; }
-.gz-quiz-analysis { color: var(--ink-2); font-size: 0.85em; margin-top: 0.3rem; border-top: 1px dashed var(--line); padding-top: 0.3rem; }
-.gz-quiz-result {
   text-align: center; padding: 0.8rem; background: var(--sunken);
   border: 2px solid var(--accent); border-radius: 4px; font-size: 1.1em;
 }
@@ -330,13 +259,7 @@
   .sidebar, .tabnav, .sidebar-foot { display: none !important; }
   .app-shell { display: block !important; }
   .content { padding: 0 !important; background: var(--card) !important; }
-  #handout-modal { position: static !important; display: block !important; background: none !important; }
-  #handout-modal .modal-body {
-    max-width: 100% !important; width: 100% !important;
-    max-height: none !important; overflow: visible !important;
-    box-shadow: none !important; padding: 0 !important;
-  }
-  #handout-modal .close-btn, .print-btn, .gz-audio-player, .gz-transcript-toggle,
+  .print-btn, .gz-audio-player, .gz-transcript-toggle,
   .answer-toggle, .bk-export, .bk-filter, #dict-q, #dict-stage,
   #dict-export, #bk-crosstoggle { display: none !important; }
   /* #5: 驾驶舱/词典/K12 分析卡整页打印 — 卡不跨页断 */
@@ -361,6 +284,4 @@
   .sidebar .tabnav a.active { border-bottom-color: var(--accent); border-left: 0; }
   .sidebar-foot { display: none; }
   .content { padding: 1rem; }
-  .course-grid { grid-template-columns: 1fr; }
-  #handout-modal .modal-body { width: 98%; padding: 0.7rem; max-height: 95vh; }
 }

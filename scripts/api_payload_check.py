@@ -89,12 +89,6 @@ def check_student_get(payload: Any, expected_student_id: str) -> str | None:
     return None
 
 
-def check_scan_list(payload: Any) -> str | None:
-    if not isinstance(payload, list):
-        return "scan list payload is not a list"
-    return None
-
-
 def run_named_check(
     base_url: str,
     label: str,
@@ -154,17 +148,6 @@ def main() -> int:
             failures.append(failure)
         else:
             print(f"[OK] api /api/students/get?id={sample_id} payload")
-
-    _, failure = run_named_check(
-        base_url,
-        "api /api/scan/list payload",
-        "/api/scan/list",
-        check_scan_list,
-    )
-    if failure:
-        failures.append(failure)
-    else:
-        print("[OK] api /api/scan/list payload")
 
     if failures:
         print("[FAIL] API payload gate failed", file=sys.stderr)

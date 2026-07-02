@@ -15,8 +15,8 @@ def api_stats(_qs: dict) -> dict:
             "exam_questions", "audit_findings",
             # 第二阶段 题库
             "question_bank", "tag_dictionary", "question_tags",
-            # 第五阶段 课程 / 学生
-            "courses", "course_materials", "course_sessions",
+            # 课程 / 学习者 (course_sessions/scan_uploads 已删 — 教师工具下线 2026-07-02)
+            "courses", "course_materials",
             "students", "classes", "student_weakness",
         ]:
             s[tbl] = con.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]

@@ -41,14 +41,4 @@ CREATE TABLE IF NOT EXISTS student_weakness (
     PRIMARY KEY (student_id, concept_id)
 );
 
--- 扫描原件 (留 raw 文件路径, OCR 任务 queue)
-CREATE TABLE IF NOT EXISTS scan_uploads (
-    upload_id      VARCHAR PRIMARY KEY,
-    student_id     VARCHAR,
-    file_rel_path  VARCHAR NOT NULL,
-    file_sha256    VARCHAR,
-    upload_kind    VARCHAR,                 -- "answer_sheet" | "homework" | "essay"
-    uploaded_at    VARCHAR,
-    ocr_status     VARCHAR,                 -- "pending" | "done" | "failed"
-    ocr_text_path  VARCHAR
-);
+-- scan_uploads (扫描OCR) 2026-07-02 删除: 教师工具下线, 0 行 0 消费 (toplevel sunset P2 兑现)

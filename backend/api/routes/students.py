@@ -9,13 +9,11 @@ endpoints (均需 ?teacher_id=):
   /api/students/classes             班级列表 (该老师)
   /api/students/weakness?id=        学生弱点 (owns 校验; 按 exam_point 真考点)
   /api/students/recommend?id=       弱点 → 推送课节 (owns 校验)
-  /api/students/import_csv          导入 (实现下沉 [[students_csv]], 租户绑定 + IDOR 防护)
 """
 from __future__ import annotations
 
-from backend.api.db import db_ro, db_write
+from backend.api.db import db_ro
 from backend.api.routes import _tenant
-from backend.api.routes.students_csv import do_csv_import
 from backend.services import recommend, weakness as weakness_svc
 
 
@@ -168,37 +166,10 @@ def _student_dict(r: tuple) -> dict:
             "city": r[3], "grade": r[4], "class_id": r[5], "enroll_year": r[6]}
 
 
-def api_students_weakness_recompute(qs: dict) -> dict:
-    """重算单生弱点 — 从 student_answers 真实数据算 (4.7.E); 必 owns 校验, 不开全局重算 API."""
-    sid = qs.get("id", [None])[0]
-    tid = _tenant.get_teacher(qs)
-    if not tid:
-        return _tenant.MISSING
-    if not sid:
-        return {"error": "missing ?id (按生重算; 全局重算属维护操作 init_db, 不经此 API)"}
-    with db_write() as con:
-        if not _tenant.owns_student(con, tid, sid):
-            return _tenant.DENIED
-        return weakness_svc.recompute_one(con, sid)
-
-
-def api_students_import_csv(qs: dict, body: bytes | None = None) -> dict:
-    """POST csv 导入学生 (4.7.D; 租户绑定 + IDOR 防护下沉 [[students_csv]])."""
-    tid = _tenant.get_teacher(qs)
-    if not tid:
-        return _tenant.MISSING
-    if not body:
-        return {"error": "POST 需要 csv body (Content-Type: text/csv)"}
-    text = body.decode("utf-8", errors="replace") if isinstance(body, bytes) else body
-    return do_csv_import(text, tid)
-
-
 ROUTES = {
     "/api/students/list":               api_students_list,
     "/api/students/get":                api_students_get,
     "/api/students/classes":            api_students_classes,
     "/api/students/weakness":           api_students_weakness,
-    "/api/students/weakness_recompute": api_students_weakness_recompute,
     "/api/students/recommend":          api_students_recommend,
-    "/api/students/import_csv":         api_students_import_csv,
 }

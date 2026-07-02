@@ -41,12 +41,10 @@
 | `/api/course/list` | 100% | 直读 courses |
 | `/api/course/session?id=` | 100% | course + materials JOIN |
 | `/api/course/handout?id=` | 100% | course_handouts md (init_db 持久化) |
-| `/api/course/stats` | 100% | GROUP BY layer/block_kind |
 | `/api/students/*` | 100% | students/classes/weakness/recommend |
 | `/api/graph/stats` | 100% | edges/nodes GROUP BY |
 | `/api/qb/*` | 100% | question_bank/tag_dictionary 直查 |
 | `/api/trend/*` | 100% | trend.model (numpy-free linreg) |
-| `/api/scan/list` | 100% | scan_uploads 直读 |
 | `/api/placement/followup` | 100% | 错题 tag → 抽追问题 (Codex Q6) |
 | `/api/placement/final_score` | 100% | 两阶段综合评分 (Codex Q6) |
 
@@ -965,7 +963,7 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 **待还耦合债 (备课整合前/后, 追踪)**:
 - 🟡 [整合前] 图遍历越层 (Rule3): `lesson_plan.py` + `api/routes/graph_popup.py` 内联 `SELECT edges JOIN nodes` 做 1-hop, 而 `services/graph.neighbors()` 是正版。备课浮窗必踩 → 先收口走 services/graph。
 - 🟡 [整合前] "单元词∩真题"双算 (Rule1): `recommend.unit_exam_alignment` + `lesson_plan._unit_words_with_trace` 各遍历一遍 → 抽 `services/` 单一函数两边调 (否则备课整合成第三套)。
-- 🟢 [整合后] `question_tags(word)` vs `edges(tests_word)` 双算 (Rule1, blast-radius 最大, 独立排期); schema.sql `phrases` 重复定义(第二版死定义) + `course_handouts` CREATE 散落 service → 收口 schema.sql 单一定义点; `units.theme_context_id` 死列 + `courses.themes_aux` JSON编码N:M(轻度Rule3) + `teachers`/`course_sessions` 死schema(M5规划未实装)。
+- 🟢 [整合后] `question_tags(word)` vs `edges(tests_word)` 双算 (Rule1, blast-radius 最大, 独立排期); schema.sql `phrases` 重复定义(第二版死定义) + `course_handouts` CREATE 散落 service → 收口 schema.sql 单一定义点; `units.theme_context_id` 死列 + `courses.themes_aux` JSON编码N:M(轻度Rule3) + `teachers` 死schema(M5规划未实装); `course_sessions`/`scan_uploads` 已删(2026-07-02 教师工具下线, 坑17死表处置)。
 **架构建议**: 备课整合**扩 lesson_plan.py** (fan-in=0 叶子, 已是迷你整合器, 4路桥已接), 不新建协调层(Occam); 接 trend/exam_point/course **只调函数不重写JOIN**; `trend.scope` fan-in=4 改前必 codegraph。
 
 ## 2026-06-16 / 考点颗粒度对齐课标第三级 (theme_l3 35子主题)

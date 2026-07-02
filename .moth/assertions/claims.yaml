@@ -139,9 +139,9 @@ assertions:
     command: ["python3", "-c", "import inspect; from backend.services import canonical, links, recommend; ok=(canonical.pub_to_short('外语教学与研究出版社')=='外研版' and canonical.VERSION_KEY_TO_SHORT.get('renjiao')=='人教版' and 'canonical.pub_to_short' in inspect.getsource(links.build_allowed_in_ln) and 'canonical.VERSION_KEY_TO_SHORT' in inspect.getsource(recommend)); print(0 if ok else 1)"]
     expect: {op: "==", value: "0"}
   - id: dim-label-single-point
-    claim: "exam_point 维度→课标标签收口 category-config.js GZ_CAT.dim 单点 (穷尽扫描: beike/teacher/jiangke 5处散落 + theme_context已漂移 → 收口归一); teacher.html 已加载 category-config.js"
+    claim: "exam_point 维度→课标标签收口 category-config.js GZ_CAT.dim 单点 (历史: beike/teacher/jiangke 5处散落收口归一; teacher/jiangke 死文件 2026-07-02 已删, 消费面=beike)"
     type: shell
-    command: ["bash", "-c", "grep -q 'dim:' frontend/static/category-config.js && grep -q 'theme_context: \"主题语境\"' frontend/static/category-config.js && grep -q 'category-config.js' frontend/teacher.html && grep -q 'GZ_CAT.dim' frontend/static/beike.js && echo 0 || echo 1"]
+    command: ["bash", "-c", "grep -q 'dim:' frontend/static/category-config.js && grep -q 'theme_context: \"主题语境\"' frontend/static/category-config.js && grep -q 'GZ_CAT.dim' frontend/static/beike.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
   - id: stage-label-single-point
     claim: "cefr_level→stage 展示标签收口 stage_labels.CEFR_LEVEL_STAGE 单点 (穷尽扫描: exam_dictionary/exam_coverage 各写一份); exam_coverage 本地扩展校本扩展/课标变形"
@@ -179,9 +179,9 @@ assertions:
     command: ["bash", "-c", "grep -q 'exportChartPNG' frontend/static/common.js && grep -q 'exportCSV' frontend/static/common.js && grep -q 'wireExports' frontend/static/beike.js && grep -q 'GZ.exportCSV\\|G.exportCSV' frontend/static/dict.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
   - id: exam-point-popup-entry-wired
-    claim: "考点浮窗入口在位(教研室#3): graph_popup 导出 GZ.openPopup; 共现图 click→popup 收口在 common.js renderCooccurNetwork 单点(铁律1, 图表标签非HTML无法走click委托故需图内绑定); jiangke C' + 图谱tab 均复用该单点渲染器; beike A区 click 调 G.openPopup"
+    claim: "考点浮窗入口在位(教研室#3): graph_popup 导出 GZ.openPopup; 共现图 click→popup 收口在 common.js renderCooccurNetwork 单点(铁律1, 图表标签非HTML无法走click委托故需图内绑定); 图谱tab 复用该单点渲染器 (jiangke 死文件 2026-07-02 已删); beike A区 click 调 G.openPopup"
     type: shell
-    command: ["bash", "-c", "grep -q 'GZ.openPopup = openPopup' frontend/static/graph_popup.js && grep -q 'window.GZ.openPopup' frontend/static/common.js && grep -q 'G.openPopup' frontend/static/beike.js && grep -q 'renderCooccurNetwork' frontend/static/jiangke.js && grep -q 'renderCooccurNetwork' frontend/static/app_router.js && echo 0 || echo 1"]
+    command: ["bash", "-c", "grep -q 'GZ.openPopup = openPopup' frontend/static/graph_popup.js && grep -q 'window.GZ.openPopup' frontend/static/common.js && grep -q 'G.openPopup' frontend/static/beike.js && grep -q 'renderCooccurNetwork' frontend/static/app_router.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
   - id: exam-point-popup-not-empty
     claim: "exam_point 浮窗真题不断链(教研室#2): genre考点显qbank真题 + cognitive_skill考点显2021+子题 + word回归; 防 relation IN 漏 tests_exam_point 再断链"
@@ -607,10 +607,10 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -qF 'renderPivot' frontend/static/k12.js && grep -qF '高中 ${p.senior' frontend/static/k12.js && grep -qF '非10维粗分' frontend/static/k12.js && echo OK || echo FAIL"]
     expect: {op: regex, pattern: "OK"}
-  - id: course-session-materials-in-spa
-    claim: "教研室#8: 课节modal接/api/course/session真值矿口(40节course_materials非空壳), 按reason分3层渲染(核心/真题/关联), 纯图谱结构节点stage/cefr_level滤掉(诚实分层: 管道≠本节内容)"
+  - id: course-session-materials-truth
+    claim: "课节 materials 真值矿口非空壳 (service 契约): /api/course/session 对 course_id=1 返回 course.title + materials≥1 且每条带 kind/ref_id/reason (前端教师modal 2026-07-02 删, 40节课程页 Phase D 按新设计接线; 数据契约在此锁住不随 UI 生死)"
     type: shell
-    command: ["bash", "-c", "grep -qF '/api/course/session' frontend/static/app_router.js && grep -qF '_SKIP_KIND = { stage: 1, cefr_level: 1 }' frontend/static/app_router.js && grep -qF '本节核心' frontend/static/app_router.js && echo OK || echo FAIL"]
+    command: ["python3", "-c", "import sys; sys.path.insert(0,'.'); from backend.api.routes.course import api_course_session as f; d=f({'id':['1']}); ms=d.get('materials') or []; ok=bool((d.get('course') or {}).get('title')) and len(ms)>=1 and all(m.get('kind') and m.get('ref_id') and 'reason' in m for m in ms); print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: multitenant-isolation-enforced
     claim: "审计BLOCK修: 跨租户读学生被路由拒(老师A取老师B学生→forbidden); 行为级非仅结构(坑21契约接执行点)"

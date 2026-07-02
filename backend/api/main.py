@@ -68,21 +68,13 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:
             self._json(500, {"error": str(e), "type": type(e).__name__})
 
-    def do_POST(self):  # noqa: N802 — 4.7 scan upload + 未来 paper save
+    def do_POST(self):  # noqa: N802 — placement 摸底 + vocab 批查 (学习者侧; scan/import_csv 教师件 2026-07-02 删)
         parsed = urlparse(self.path)
         path = parsed.path
         qs = parse_qs(parsed.query)
         try:
             length = int(self.headers.get("Content-Length", "0"))
             body = self.rfile.read(length) if length else b""
-            if path == "/api/scan/upload":
-                from backend.api.routes import scan_upload
-                self._json(*scan_upload.handle(qs, body, self.headers))
-                return
-            if path == "/api/students/import_csv":
-                from backend.api.routes import students as st
-                self._json(200, st.api_students_import_csv(qs, body))
-                return
             if path == "/api/placement/score":
                 from backend.api.routes import placement as pl
                 self._json(200, pl.api_placement_score(qs, body))
