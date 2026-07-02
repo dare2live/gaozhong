@@ -17,6 +17,14 @@ exam:
   # 全 5 年 markers 经 ≥2 独立源逐年核验 (DB真题/eol metadata/已验证mirror/独立web), 见 docs/truth_anchor_protocol §6.
   # 结论: DB 辽宁高考真题(182行)全是真辽宁新高考II卷 — 审计"省份污染红线"是假警报(根源 mirror 2021 单条误标甲卷)。
   anchors:
+    # 2015-2020 = 坑3 辽宁卷史"新课标全国II卷"期; DB 辽宁题源自 GAOKAO-Bench(provenance 推断非第一手辽宁标记)
+    # → no_anchor 诚实标未核验(UNKNOWN 不冒充), 待≥2源逐年核验后升 active。防坑1(无锚年份 ExamTruthChecker 静默不查)。
+    "2015:辽宁:gaokao": {year: 2015, province: 辽宁, lifecycle: no_anchor, provenance: "GAOKAO-Bench 推断(2015-20辽宁=新课标全国II, 坑3); 无第一手辽宁标记核验", markers: []}
+    "2016:辽宁:gaokao": {year: 2016, province: 辽宁, lifecycle: no_anchor, provenance: "GAOKAO-Bench 推断(新课标全国II, 坑3); 待第一手核验", markers: []}
+    "2017:辽宁:gaokao": {year: 2017, province: 辽宁, lifecycle: no_anchor, provenance: "GAOKAO-Bench 推断(新课标全国II, 坑3); 待第一手核验", markers: []}
+    "2018:辽宁:gaokao": {year: 2018, province: 辽宁, lifecycle: no_anchor, provenance: "GAOKAO-Bench 推断(新课标全国II, 坑3); 待第一手核验", markers: []}
+    "2019:辽宁:gaokao": {year: 2019, province: 辽宁, lifecycle: no_anchor, provenance: "GAOKAO-Bench 推断(新课标全国II, 坑3); 待第一手核验", markers: []}
+    "2020:辽宁:gaokao": {year: 2020, province: 辽宁, lifecycle: no_anchor, provenance: "GAOKAO-Bench 推断(新课标全国II, 坑3); 待第一手核验", markers: []}
     "2021:辽宁:gaokao":
       year: 2021
       province: 辽宁
@@ -47,6 +55,12 @@ exam:
       lifecycle: active
       provenance: "≥2源(DB local_pdf + web: Shrewsbury/Detrinidad在2025全国II卷)"
       markers: ["Shrewsbury", "Detrinidad"]
+    "2026:辽宁:gaokao":
+      year: 2026
+      province: 辽宁
+      lifecycle: no_anchor                               # 仅1源(jhgk官方重印), 未达≥2独立源 → UNKNOWN不冒充已验证(用户立法3)
+      provenance: "1源(DB local_pdf jhgk_reprint_official_key); 待≥2独立web源核验后升 active"
+      markers: ["Reisley", "Qomolangma", "MetroCharge"]   # 2026II卷候选标志篇章(no_anchor期不比对); 待第2源印证
 
 theme:
   provenance_note: |

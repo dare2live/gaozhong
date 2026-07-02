@@ -2,7 +2,7 @@
 
 > 配 `goal.md` 使用. 新 session 先读 **`docs/RESUME.md`** (断点续传) + goal.md + 本文件.
 
-沈阳/辽宁高中英语教学系统. 第五阶段 (40 节分层课程) + 第六阶段 (全局图谱浮窗 + D0 100% 准约束) 已完成.
+辽宁 K12 英语学习者产品 (2026-06-27 产品重置, 北极星 docs/product_master_plan.md). 三层: L1 数据 → L2 解析关联 → L3 课程框架. Phase A (前端IA) + Phase B (命题研判/真题特点/基础库) + Phase C (L3框架, content 待 Phase D 就绪门) 已完成; 教师工具已下线. 命名以 Phase A-E 为准 (旧"第五/六阶段"叙述已过时, 历史在 git).
 
 参考姊妹项目 `~/Documents/M/gaokao/` (辽宁高考真题研判) 的工程纪律, 部分原则继承.
 

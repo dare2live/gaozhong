@@ -50,7 +50,7 @@
 <div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
 <div id="bk-filter" class="bk-filter"></div>
 <div class="bk-grid">
-  <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的出现占比" style="height:300px;"></div></section>
+  <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的考查占比 (tests_exam_point 命题占比, 非词频出现)" style="height:300px;"></div></section>
   <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
   <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构演变矩阵: 各题型在两个卷制时期的在场情况" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
   <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>

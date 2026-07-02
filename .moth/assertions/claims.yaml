@@ -642,6 +642,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_grammar_stats import expression_stats;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=expression_stats(c);g=s['grammar_exam'];i=c.execute(\"SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) JOIN grammar_items gi ON gi.grammar_item_id=SUBSTR(e.dst_id,LENGTH('grammar:')+1) WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'\").fetchone()[0];c.close();print('OK' if g['total']==i and sum(x['n'] for x in g['by_category'])==g['total'] and '出现非考查' in s['textbook_expr']['note'] else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: every-liaoning-year-has-truth-anchor
+    claim: "坑1系统性: 每个辽宁高考年份(exam_questions)必在 truth_anchors.yaml 有锚条目(active验内容/no_anchor诚实UNKNOWN), 防新年份导入无锚→ExamTruthChecker只遍历已定义锚→2026等静默永远绿(坑17)"
+    type: shell
+    command: ["python3", "-c", "import duckdb,yaml;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);dby={r[0] for r in c.execute(\"SELECT DISTINCT year FROM exam_questions WHERE province LIKE '辽宁%'\").fetchall()};c.close();an={a['year'] for a in yaml.safe_load(open('backend/config/truth_anchors.yaml'))['exam']['anchors'].values() if 'year' in a};print('OK' if dby<=an else 'FAIL missing '+str(sorted(dby-an)))"]
+    expect: {op: regex, pattern: "OK"}
   - id: rc1-frontend-quality
     claim: "RC1前端质量锁: live前端无emoji(内联SVG图标) + echarts图表全有role=img读屏文字替代 + 无off-token旧红/旧蓝(单红accent+数据色对齐令牌族; category-config数据色源豁免)。防回归: 新增前端勿引emoji/旧调色板, 新图必带role=img+aria-label。"
     type: shell
