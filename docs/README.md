@@ -1,8 +1,10 @@
 # gaozhong 文档权威索引
 
-更新：2026-06-27（产品方向重置 + 文档大清理）
+更新：2026-07-03（教师子系统清理+KG转正 + 学习者版前端设计 P0-P2 + cognitive_skill 2024 真值补齐；`docs/RESUME.md` 有完整节点日志）
 
 本文件是当前文档入口。接手顺序：**先读 `docs/product_master_plan.md`(🧭 北极星·产品方向)** -> **invoke `gaozhong-ops` skill** -> `docs/RESUME.md`(断点续传) -> `moth assert --repo .` + `python3 -m scripts.tools.map doctor`(看 live 数字真值) -> `AGENTS.md` -> `agent.md` -> `goal.md` -> 本文件。
+
+> 🎨 **2026-07-03 前端进入学习者版设计规范**: 页头统一(`GZ.pageHead`)/数据蓝阶令牌(`--down-2/-3/-4`)/微缩带(`GZ.stageMiniBand`)/端点契约门(`backend/config/endpoint_contracts.yaml` + `scripts/lib/endpoint_contract_check.py`)已落地；教师工具(备课/学情/组卷/扫描)前端已删(后端服务按北极星保留)，知识图谱(考点关联)转正为正式导航项。
 
 > 🧭 **2026-06-27 产品方向重置**: 面向学习者的三层产品(L1 数据 / L2 解析关联 / **L3 课程=心脏**), 教师工具下线, 高中先跑通, L3 先建框架不生成内容。**最高产品设计 = `docs/product_master_plan.md`**。任何"建什么/先做什么"以北极星为准。
 >
@@ -32,6 +34,7 @@
 | `.moth/assertions/claims.yaml` | claims-vs-reality 弹仓(以 `moth assert` verdict 为准) |
 | `backend/config/m0_gates.yaml` | M0 真题真值 gate 顺序和期望状态 |
 | `scripts/tools/audit/project_architecture_audit.py` | 模块 / 数据 / 配置架构只读 gate(BLOCK) |
+| `backend/config/endpoint_contracts.yaml` + `scripts/lib/endpoint_contract_check.py` | 全端点 HTTP 契约(75个, 数据化) + 双向覆盖率自检(新端点漏契约/陈旧契约均红), 挂 D0+moth 双门 |
 
 ## Spec / design notes
 
