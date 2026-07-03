@@ -62,8 +62,11 @@
     const byType = {};
     for (const r of related) (byType[r.type] = byType[r.type] || []).push(r);
 
+    // 深链 (设计规范 P2-2): exam_point 类节点可跳考点关联网络看共现语境 (关闭浮窗 + 切 hash)
+    const _kgLink = center.type === "exam_point" || String(center.id).startsWith("exam_point:")
+      ? ` <a href="#/graph" class="gz-kg-link" onclick="document.getElementById('gz-popup').classList.remove('open')">在考点关联中查看 →</a>` : "";
     let h = `<h3 class="gz-center">
-      <span class="gz-type-${center.type}">[${center.type}]</span> ${center.label}
+      <span class="gz-type-${center.type}">[${center.type}]</span> ${center.label}${_kgLink}
       <small style="color:var(--ink-3)">${center.id}</small>
     </h3>`;
 

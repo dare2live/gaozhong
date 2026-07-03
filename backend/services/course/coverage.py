@@ -53,6 +53,22 @@ def _ln_grammar_freq(con: duckdb.DuckDBPyConnection) -> list[tuple[str, int]]:
     ).fetchall()
 
 
+def _grammar_top_labels(con: duckdb.DuckDBPyConnection, top: list[dict]) -> None:
+    """语法轴 top: 课标编码 → 人话标签 (P2-4). 纯查 grammar_items 单表 (真相源=课标 PDF 提取的官方层级),
+    不建映射 YAML (第一性原理: 能查表不建映射文件)。每项补 id=课标编码, label=官方人话;
+    查不到不杜撰 — label 保留编码 (D0 断言会抓悬挂)。"""
+    gids = [t["label"] for t in top]
+    if not gids:
+        return
+    qm = ",".join("?" * len(gids))
+    labels = dict(con.execute(
+        f"SELECT grammar_item_id, label FROM grammar_items WHERE grammar_item_id IN ({qm})",
+        gids).fetchall())
+    for t in top:
+        t["id"] = t["label"]
+        t["label"] = labels.get(t["id"], t["id"])
+
+
 def _axis_curve(rows: list[tuple[str, int]], target_pct: float) -> dict:
     """从 (label,freq) 降序列表算覆盖曲线: 累计覆盖% + 达 target 所需最少考点数 + 长尾."""
     total = sum(n for _, n in rows)
@@ -84,6 +100,7 @@ def coverage_model(con: duckdb.DuckDBPyConnection, target_pct: float = 90.0) -> 
         axes[key] = {"label": label, **_axis_curve(_ln_freq_by_point(con, key), target_pct)}
     axes["word"] = {"label": "高频考词 (离散考查)", **_axis_curve(_ln_word_freq(con), target_pct)}
     axes["grammar"] = {"label": "语法点", **_axis_curve(_ln_grammar_freq(con), target_pct)}
+    _grammar_top_labels(con, axes["grammar"]["top"])  # P2-4: 编码→课标人话标签 (单一计算点, 前端禁重查)
     return {
         "scope": "辽宁卷考点全集 (题材/主题群/高频考词/语法 可教轴); 权重=命题频次",
         "target_pct": target_pct,

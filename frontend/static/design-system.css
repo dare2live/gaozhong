@@ -282,6 +282,10 @@ button:active, .btn:active { transform: translateY(1px); }
 /* 内联 SVG 图标统一基线 (Tabler 风格, 替代 emoji; 复用 nav 图标规格) */
 .gz-ic { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; vertical-align: -2px; }
 
+/* ── 微缩学段 DNA 带 (GZ.stageMiniBand 单渲染点; ①④③ 三处回响) ── */
+.gz-miniband { display: inline-flex; width: 120px; height: 14px; border-radius: 3px; overflow: hidden; vertical-align: -2px; margin: 0 4px; }
+.gz-miniband > span { display: inline-block; height: 100%; }
+
 /* ── 屏幕阅读器专用 (echarts 图表数据表 fallback; 视觉隐藏不占位) ── */
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

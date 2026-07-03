@@ -199,10 +199,10 @@
   registerTab("jichu", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入基础库…</div>';
-    const [stats, browse, cur, dict, gram] = await Promise.all([
+    const [stats, browse, cur, dict, gram, stg] = await Promise.all([
       fetchSafe("/api/stats"), fetchSafe("/api/exam/liaoning_browse"),
       fetchSafe("/api/curriculum/summary"), fetchSafe("/api/exam_dictionary?prefix=zz&limit=1"),
-      fetchSafe("/api/grammar/stats"),
+      fetchSafe("/api/grammar/stats"), fetchSafe("/api/k12/tested_word_stage"),
     ]);
     // 计数 fetch 失败 → 显原描述不显假数字 (D0 诚实)
     const shelf = (title, icon, href, sub, fallback) =>
@@ -219,7 +219,7 @@
         ${shelf("真题库", IC.paper, "#/tiku",
           !isErr(browse) && browse.total ? `${browse.total} 题 · ${(browse.years || []).length ? Math.min(...browse.years) + "–" + Math.max(...browse.years) : ""} 辽宁卷 — 每题可溯源原卷` : "", "辽宁卷高考真题按年/题型浏览, 每题溯源到原卷。")}
         ${shelf("考试词典", IC.words, "#/dict",
-          !isErr(dict) && dict.total ? `${Number(dict.total).toLocaleString()} 词 · 辽宁高考命中标记 + 学段归属` : "", "考纲词汇释义 + 辽宁高考命中 / 学段标记。")}
+          !isErr(dict) && dict.total ? `${Number(dict.total).toLocaleString()} 词 · 辽宁高考命中标记 + 学段归属 ${!isErr(stg) ? window.GZ.stageMiniBand(stg) : ""}` : "", "考纲词汇释义 + 辽宁高考命中 / 学段标记。")}
         ${shelf("课标库", IC.std, "#/kebiao",
           !isErr(cur) && cur.vocab_total ? `${Number(cur.vocab_total).toLocaleString()} 词 · ${cur.grammar_total} 语法项 · 主题语境 ${cur.themes_total} 项` : "", "课程标准: 主题群 / 语法体系 / 词汇结构化浏览。")}
       </div>

@@ -14,8 +14,7 @@
 
   function shell() {
     return `
-<h2 style="margin:0 0 2px;">教材浏览 · STEP1 地基</h2>
-<p class="muted" style="margin:0 0 12px;font-size:13px;">辽宁14地市只用2版本(外研10市 / 人教4市) · 78单元全册 · 教材已解析入库, 单元词表/课文直出 DB · 跨版本同主题对照(宁缺毋滥) · service 单算点</p>
+${G.pageHead("基础库 · 教材库", "课本里有什么", "外研社 (辽宁 10 市) + 人教 (4 市) 全册 — 每单元的单词 / 短语 / 语法 / 课文直接看, 不用翻 PDF。")}
 <div class="bk-card" style="margin-bottom:12px;">
   <div class="bk-h"><span>辽宁地市 → 教材版本</span><span class="bk-src">/api/recommend/city_curriculum</span></div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;">
@@ -69,11 +68,27 @@
     ].filter(Boolean).join("");
     return parts || '<span class="muted" style="font-size:12px;">本单元暂无结构化知识点</span>';
   }
+  // PDF 提取文本的硬换行是排版工件非语义 (N7): 渲染层合并成段落流, 数据 raw_text 原样不动。
+  // 段界 = 空行 或 行首编号 (教材段号/活动指令号); 首行与标题重复则跳过。
+  function _reflowPassage(text, title) {
+    const lines = String(text || "").split("\n").map(l => l.trim());
+    const paras = [];
+    let cur = [];
+    const flush = () => { if (cur.length) { paras.push(cur.join(" ")); cur = []; } };
+    lines.forEach((l, i) => {
+      if (!l) { flush(); return; }
+      if (i === 0 && title && l.toLowerCase() === String(title).trim().toLowerCase()) return;  // 标题行已在卡头
+      if (/^\d+\s/.test(l)) flush();          // 行首编号 = 新段 (课文段号/活动指令号)
+      cur.push(l);
+    });
+    flush();
+    return paras.map(t => `<p>${_esc(t)}</p>`).join("");
+  }
   function _passagesHTML(passages) {
     if (!passages || !passages.length) return '<span class="muted" style="font-size:12px;">本单元正文未入库</span>';
     return passages.map(p => {
       const tag = p.is_narrative ? "语篇" : (p.is_applied ? "应用文" : (p.is_listening ? "听力" : (p.kind || "段")));
-      return `<div class="tb-passage"><div class="tb-passage-h">${_esc(p.title || p.kind || "段")} <span class="tb-passage-tag">${tag}</span></div><div class="tb-passage-t">${_esc(p.text)}</div></div>`;
+      return `<div class="tb-passage"><div class="tb-passage-h">${_esc(p.title || p.kind || "段")} <span class="tb-passage-tag">${tag}</span></div><div class="tb-passage-t">${_reflowPassage(p.text, p.title)}</div></div>`;
     }).join("");
   }
   // 单元内容直出 DB: 上半知识点(词/短语/句型/语法/表达) + 下半教材正文 (用户: 直接显示内容)

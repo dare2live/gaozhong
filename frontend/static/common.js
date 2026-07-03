@@ -327,9 +327,17 @@ window.GZ = (function () {
     document.body.appendChild(a); a.click(); a.remove();
   }
   // ECharts 图 → PNG 下载 (驾驶舱命题迁移图/词汇热力等研判图)
-  function exportChartPNG(chart, filename) {
+  // PNG 自包含 (设计规范 P2): 导出时临时注入 title (卡名) + subtext (来源/日期), 离开页面独立可读; 导出后还原。
+  function exportChartPNG(chart, filename, meta) {
     if (!chart || typeof chart.getDataURL !== "function") return false;
+    const title = meta && meta.title;
+    if (title) {
+      chart.setOption({ title: { text: title, subtext: (meta.sub || "辽宁 K12 英语 · 数据来自辽宁真题与课标"),
+        left: 4, top: 2, textStyle: { fontSize: 14, fontWeight: 650, color: "#1C1A17" },
+        subtextStyle: { fontSize: 10, color: "#76716A" } }, grid: { top: 64 } });
+    }
     _downloadURL(chart.getDataURL({ type: "png", pixelRatio: 2, backgroundColor: "#fff" }), filename || "chart.png");
+    if (title) chart.setOption({ title: { text: "", subtext: "" }, grid: { top: undefined } });
     return true;
   }
   // 表格 rows → CSV 下载 (词典词表/越纲清单带走; rows=对象数组, columns=[{key,label}]; BOM 兜 Excel 中文)
@@ -365,6 +373,19 @@ window.GZ = (function () {
     try { window.print(); } finally { setTimeout(cleanup, 1500); }
   }
 
+  // 微缩学段 DNA 带 (设计规范 P2-6, 单渲染点三处回响: ①结论卡/④覆盖旁/③词典卡)。
+  // d = /api/k12/tested_word_stage 响应; 120×14 纯 CSS, 无标签 (title 带全构成), 段色循 §02 规范。
+  const _MINI_SEG = { "小学": "var(--down)", "初中": "var(--down-2)", "义务教育": "var(--down-3)",
+    "高中必修": "var(--accent-ink)", "高中选修": "var(--accent)",
+    "未分类": "repeating-linear-gradient(-45deg, var(--data-gray), var(--data-gray) 2px, #C9C7BF 2px, #C9C7BF 4px)" };
+  function stageMiniBand(d) {
+    if (!d || !d.stages) return "";
+    const t = d.stages.map(s => `${s.stage} ${s.pct}%`).join(", ");
+    const segs = d.stages.map(s =>
+      `<span style="width:${s.pct}%;background:${_MINI_SEG[s.raw_stage || s.stage] || "var(--data-gray)"}"></span>`).join("");
+    return `<span class="gz-miniband" role="img" title="考查词学段构成: ${t}" aria-label="考查词学段构成: ${t}">${segs}</span>`;
+  }
+
   // 统一无色块 masthead (设计规范: 全站页头单渲染点, 防形态漂移; 样式 .sc-head 见 app.css)。
   // kicker = 板块上下文(纯文本) / title = 学习者问题句 / lead = 这页回答什么 / right = 可选右槽 HTML(打印钮等)。
   function pageHead(kicker, title, lead, right) {
@@ -377,7 +398,7 @@ window.GZ = (function () {
 
   return {
     $, $$, fetchJSON, fetchSafe, isErr, errorBox, tagChip, renderTable, formToQs,
-    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead,
+    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, stageMiniBand,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,
   };

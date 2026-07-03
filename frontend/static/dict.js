@@ -28,6 +28,7 @@
     return `
 ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考纲词汇释义 + 辽宁高考命中标记 + 学段归属 — 三源可溯。")}
 <p class="muted" style="margin:0 0 12px;font-size:13px;">共 <span id="dict-total">…</span> 词 · <span style="border-bottom:1px dashed var(--line);">点词</span>看跨学段多义与真题命中</p>
+<div class="dict-az" role="navigation" aria-label="按首字母浏览">${"abcdefghijklmnopqrstuvwxyz".split("").map(l => `<button type="button" class="dict-az-l" data-l="${l}">${l.toUpperCase()}</button>`).join("")}</div>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" aria-label="按词首字母前缀检索" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;">
   <select id="dict-stage" aria-label="按学段筛选" style="padding:7px;border:1px solid var(--line);border-radius:6px;">
@@ -127,6 +128,12 @@ ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考�
         : _renderSenseDetail(d);
     });
     G.$("#dict-q").oninput = () => { clearTimeout(t); t = setTimeout(load, 220); };
+    // A-Z 索引 (设计规范 P2-1: E 词汇热力的功能化转生 — 点字母直达该前缀词表)
+    document.querySelectorAll(".dict-az-l").forEach(b => b.onclick = () => {
+      G.$("#dict-q").value = b.dataset.l;
+      document.querySelectorAll(".dict-az-l").forEach(x => x.classList.toggle("on", x === b));
+      load();
+    });
     G.$("#dict-stage").onchange = load;
     G.$("#dict-exam").onchange = load;
     // #5: 导出当前筛选词表 CSV (词/释义/源/阶段/课标级/辽宁命中), 教研员备课发学生

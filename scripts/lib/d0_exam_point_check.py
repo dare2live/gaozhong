@@ -151,6 +151,11 @@ def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:
     check("词轴非空 (辽宁考查词存在)", ax["word"]["n_total"] > 0, f"{ax['word']['n_total']}")
     bad = [k for k, a in ax.items() if a["high_yield_n"] > a["n_total"]]
     check("各轴 高产出集 ≤ 全集 (覆盖单调, 无越界)", not bad, f"越界轴={bad}")
+    # P2-4 (坑17): 语法轴 top 编码→人话标签全锚 grammar_items 官方项 — id 可查 + label==官方 label 非空, 无杜撰
+    g_lbl = dict(con.execute("SELECT grammar_item_id, label FROM grammar_items").fetchall())
+    bad_lbl = [t.get("id") for t in ax["grammar"]["top"]
+               if not t.get("label") or g_lbl.get(t.get("id")) != t.get("label")]
+    check("语法轴 top 人话标签全锚 grammar_items (id可查+label==官方非空, 无杜撰)", not bad_lbl, f"未锚={bad_lbl[:3]}")
 
 
 def _check_syl_segments(con: duckdb.DuckDBPyConnection, lessons: list, check) -> None:

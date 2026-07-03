@@ -203,7 +203,9 @@
 .tb-passage { margin: 8px 0; }
 .tb-passage-h { font-size: 12.5px; font-weight: 600; color: var(--ink); }
 .tb-passage-tag { font-size: 10px; font-weight: 500; color: var(--accent-ink); background: var(--accent-wash); border-radius: var(--r-xs); padding: 0 5px; margin-left: 4px; }
-.tb-passage-t { font-size: 12.5px; line-height: 1.7; color: var(--ink-2); white-space: pre-wrap; margin-top: 2px; max-height: 360px; overflow-y: auto; padding: 4px 8px; background: var(--card); border-radius: var(--r-xs); border: 1px solid var(--line-soft); }
+.tb-passage-t { font-size: 14.5px; line-height: 1.75; color: var(--ink-2); margin-top: 4px; max-height: 480px; overflow-y: auto; padding: 10px 16px; background: var(--card); border-radius: var(--r-xs); border: 1px solid var(--line-soft); }
+.tb-passage-t p { margin: 0 0 10px; max-width: 72ch; }
+.tb-passage-t p:last-child { margin-bottom: 0; }
 /* 真题特点 · 命题迁移 + 套路 */
 .zt-mig { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px 24px; }
 .zt-mv-dim { min-width: 0; }
@@ -379,3 +381,28 @@
 .ks-foot-link { font-size: 13.5px; color: var(--ink-2); margin: 0 0 8px; }
 .ks-how > summary { cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
 .ks-how ul { margin: 8px 0 0; padding-left: 1.2rem; font-size: 12.5px; line-height: 1.7; color: var(--ink-3); }
+
+/* ══ P2: dict A-Z 索引 + popup 深链 ══ */
+.dict-az { display: flex; flex-wrap: wrap; gap: 3px; margin: 0 0 10px; }
+.dict-az-l { font-family: var(--num); font-size: 12px; width: 26px; height: 24px; padding: 0;
+  border: 1px solid var(--line); border-radius: var(--r-xs); background: var(--card); color: var(--ink-2); cursor: pointer; }
+.dict-az-l:hover { border-color: var(--accent); color: var(--accent-ink); }
+.dict-az-l.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.gz-kg-link { font-size: 12px; font-weight: 550; color: var(--accent-ink); text-decoration: none; margin-left: 8px; white-space: nowrap; }
+.gz-kg-link:hover { text-decoration: underline; }
+
+/* ══ N6: 考点关联页 结论chips + 精确读数列表 + 读图图例 ══ */
+.kg-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin: 4px 0 8px; }
+.kg-chip { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 13px; font-size: 13px; }
+.kg-chip b { display: block; color: var(--ink); font-size: 13.5px; margin-bottom: 2px; }
+.kg-chip-n { color: var(--ink-3); font-size: 12px; font-variant-numeric: tabular-nums; }
+.kg-chip-h { display: block; color: var(--accent-ink); font-size: 12px; margin-top: 3px; font-weight: 550; }
+.kg-legend { font-size: 12.5px; color: var(--ink-3); margin: 0 0 8px; padding: 7px 11px; background: var(--sunken); border-radius: var(--r-sm); }
+.kg-legend b { color: var(--ink-2); }
+.kg-row { display: grid; grid-template-columns: minmax(200px, 1fr) 2fr 90px; gap: 12px; align-items: center; padding: 7px 0; border-top: 1px solid var(--line-soft); font-size: 13px; }
+.kg-row:first-child { border-top: 0; }
+.kg-row-l { color: var(--ink-2); }
+.kg-x { color: var(--ink-3); font-size: 11px; margin: 0 2px; }
+.kg-row-bar { height: 10px; background: var(--sunken); border-radius: 2px; overflow: hidden; }
+.kg-row-bar > span { display: block; height: 100%; background: var(--down); border-radius: 2px; }
+.kg-row-n { font-family: var(--num); font-size: 12px; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }

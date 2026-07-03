@@ -133,7 +133,7 @@
     };
     return [part("genre", "题材"), part("theme_l2", "主题群"), part("word", "高频考词"), part("grammar", "语法")].filter(Boolean).join(" · ");
   }
-  // ④-1 覆盖证明 4 轴微条: 实色段 = 教的高产出考点集; 空心描边段 = 诚实长尾缺口。语法轴只出计数不列子项。
+  // ④-1 覆盖证明 4 轴微条: 实色段 = 教的高产出考点集; 空心描边段 = 诚实长尾缺口。语法轴 top 已有人话 label (P2-4 service 映射), 各轴微条 title 带最热 top3。
   const _COV_AXES = [["genre", "题材", "类"], ["theme_l2", "主题群", "组"], ["word", "高频考词", "词"], ["grammar", "语法", "项"]];
   function _covProof(cov) {
     const ax = (cov && cov.axes) || {};
@@ -144,9 +144,11 @@
       const wpct = Math.round(a.high_yield_pct != null ? a.high_yield_pct : cov.target_pct);
       const tail = a.tail_n != null ? a.tail_n : (a.n_total - a.high_yield_n);
       const gap = fill < 100 ? `<span class="ks-cov-gap" style="width:${100 - fill}%" title="长尾 ${tail} ${unit}: 低频考点, 明确不覆盖 (性价比低)"></span>` : "";
+      // 词轴 top 是 say/year/time 停用词级噪声 (方案书 rejected: "背 time"=负价值), 不展示; 其余轴 top3 人话
+      const top3 = k === "word" ? "" : (a.top || []).slice(0, 3).map(t => t.label).filter(Boolean).join(" / ");
       return `<div class="ks-cov-row">
         <span class="ks-cov-axis">${name}</span>
-        <span class="ks-cov-bar" role="img" aria-label="${name}: 教 ${a.high_yield_n}/${a.n_total} ${unit} = ${wpct}% 考查权重; 长尾 ${tail} ${unit}不教"><span class="ks-cov-fill" style="width:${fill}%"></span>${gap}</span>
+        <span class="ks-cov-bar" role="img" aria-label="${name}: 教 ${a.high_yield_n}/${a.n_total} ${unit} = ${wpct}% 考查权重; 长尾 ${tail} ${unit}不教"${top3 ? ` title="最热: ${_esc(top3)}"` : ""}><span class="ks-cov-fill" style="width:${fill}%"></span>${gap}</span>
         <span class="ks-cov-txt">教 <b>${a.high_yield_n}</b>/${a.n_total} ${unit} = <b>${wpct}%</b> 考查权重</span>
       </div>`;
     }).filter(Boolean).join("");
@@ -220,7 +222,7 @@
   }
   register("teaching", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入课程框架…</div>';
-    const [syl, cov] = await Promise.all([fetchSafe("/api/course/syllabus"), fetchSafe("/api/course/coverage")]);
+    const [syl, cov, stg] = await Promise.all([fetchSafe("/api/course/syllabus"), fetchSafe("/api/course/coverage"), fetchSafe("/api/k12/tested_word_stage")]);
     if (isErr(syl)) { CONTENT.innerHTML = '<div class="error-state"><div class="es-title">课程框架加载失败</div><div class="es-msg">后端未就绪 — 真实错误。</div></div>'; return; }
     const gs = _themeGroups(syl.lessons);
     const sumTtw = gs.reduce((a, g) => a + (g.ttw || 0), 0);
@@ -232,7 +234,7 @@
       <div class="sc-takeaway">
         <div class="sc-tk-h">覆盖证明 · 用最少的课覆盖最大考查权重</div>
         ${covOk ? _covProof(cov) : `<p class="sc-tk-body">${_esc(_covLine(syl.coverage_proof || {}) || "覆盖数据加载失败。")}</p>`}
-        <p class="sc-tk-caveat">实色段 = 课程教的高产出考点; 空心段 = 低频长尾, 明确标出不假装全覆盖。考点焦点↔真题作业全程可溯源到原卷。详见<a href="#/zhenti">真题特点</a>的小初高词占比与命题套路。</p>
+        <p class="sc-tk-caveat">实色段 = 课程教的高产出考点; 空心段 = 低频长尾, 明确标出不假装全覆盖。为什么主攻高中新增词? ${!isErr(stg) ? GZ.stageMiniBand(stg) : ""}考查词大头初中前已学 — 详见<a href="#/zhenti">真题特点</a>。</p>
       </div>
       <p class="ks-map-cap">课程地图 · ${syl.n_lessons} 节按主题群分段, 段宽 = 节数 · 点击跳到该章</p>
       ${_courseMap(gs)}
@@ -383,51 +385,66 @@
     if (!window.__rzGraph) { window.__rzGraph = 1; window.addEventListener("resize", () => window.__gGraphInst && window.__gGraphInst.resize()); }
   }
 
+  // N6 (用户: "没看明白有啥关联性"): 结论先行 — top3 共现对句子化成"命题套路"结论, 图退为证据;
+  // 精确读数走可见降序列表 (sr-only 表转正)。纯渲染层排序 (common.js:281 先例, 零后端)。
+  const _DIM_CN = { genre: "题材", theme_context: "主题", theme_l2: "主题群", cognitive_skill: "设问思维" };
+  function _coChips(pairs) {
+    const top = [...pairs].sort((x, y) => y.co_n - x.co_n).slice(0, 3);
+    return top.map(p => {
+      const hint = p.a_dim === "genre" ? ` — 见「${_esc(p.a_label)}」先想「${_esc(p.b_label)}」` : "";
+      return `<div class="kg-chip"><b>${_esc(p.a_label)} × ${_esc(p.b_label)}</b><span class="kg-chip-n">同一道题里一起考了 ${p.co_n} 次</span>${hint ? `<span class="kg-chip-h">${hint}</span>` : ""}</div>`;
+    }).join("");
+  }
+  function _coList(pairs) {
+    const sorted = [...pairs].sort((x, y) => y.co_n - x.co_n);
+    const max = sorted.length ? sorted[0].co_n : 1;
+    return sorted.map(p =>
+      `<div class="kg-row"><span class="kg-row-l">${_esc(p.a_label)} <span class="kg-x">×</span> ${_esc(p.b_label)}</span>
+        <span class="kg-row-bar"><span style="width:${Math.round(100 * p.co_n / max)}%"></span></span>
+        <span class="kg-row-n">同题 ${p.co_n} 次</span></div>`).join("");
+  }
   register("graph", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入知识图谱…</div>';
-    const [gstats, trend] = await Promise.all([
-      fetchJSON("/api/graph/stats"),  // RC1/D0: 图谱主数据, 失败必抛 → route() 错误态
-      fetchJSON("/api/trend/summary").catch(() => ({})),
-    ]);
-    const nodeKinds = gstats.nodes || gstats.by_node_type || {};
-    const relations = gstats.edges || gstats.by_relation || {};
-    const totN = gstats.total_nodes || Object.values(nodeKinds).reduce((a, v) => a + v, 0);
-    const totE = gstats.total_edges || Object.values(relations).reduce((a, v) => a + v, 0);
-    const topTypes = Object.entries(nodeKinds).sort((a, b) => b[1] - a[1]).slice(0, 6)
-      .map(([k, v]) => `${k} <b style="color:var(--ink)">${v}</b>`).join(" · ");
+    const co = await fetchJSON("/api/exam_point/cooccurrence");  // 主数据, 失败必抛 → route() 错误态
+    const eraPairs = ((co.by_era || {})["2021+_新高考II"] || {}).pairs || [];
 
     CONTENT.innerHTML = `
-      ${GZ.pageHead("高中 · 考点关联", "哪些考点总是一起考", "共现 = 同一道真题里同时考到; 高频组合就是命题套路。点大 = 考查次数多 · 线粗 = 同题一起考 · 点任意考点看它的真题。")}
+      ${GZ.pageHead("高中 · 考点关联", "哪些考点总是一起考", "共现 = 同一道真题里同时考到。高频组合就是命题套路: 先看下面的结论, 网络图是它的证据。")}
+
+      <div class="sc-takeaway">
+        <div class="sc-tk-h">命题套路 · 这些考点常绑着出题</div>
+        <div id="kg-chips" class="kg-chips">${_coChips(eraPairs)}</div>
+        <p class="sc-tk-caveat">口径: 2021+ 新高考II 卷实测计数, 共现 ≠ 因果; 题材/主题为 AI 标注 · 方向参考。</p>
+      </div>
 
       <section class="bk-card" style="margin-bottom:14px">
-        <div class="bk-h"><span>考点共现关联 <small id="graph-center" style="color:var(--accent-ink)">新高考II 2021+</small></span>
+        <div class="bk-h"><span>共现网络 · 证据图 <small id="graph-center" style="color:var(--accent-ink)">新高考II 2021+</small></span>
           <span class="bk-src">/api/exam_point/cooccurrence</span></div>
         <div style="margin:2px 0 8px;font-size:12px;color:var(--ink-3)">卷制:
           <button class="bk-pill gz-era on" data-era="2021+_新高考II" data-label="新高考II 2021+">2021+ 新高考II</button>
           <button class="bk-pill gz-era" data-era="2015-2020_旧课标II" data-label="旧课标II 2015–20">2015–2020 旧课标II</button>
         </div>
+        <p class="kg-legend">怎么读: <b>点越大</b> = 这个考点考得越多 · <b>线越粗</b> = 两个考点在同一道题里一起出现越多 · <b>点任意点</b>弹出它的真题</p>
         <div id="graph-viz" style="min-height:520px"></div>
         <div id="graph-sr" class="sr-only"></div>
       </section>
 
-      <div class="bk-grid">
-        <section class="bk-card"><div class="bk-h"><span>图谱规模 <small>底座资产</small></span><span class="bk-src">/api/graph/stats</span></div>
-          <div style="font-size:12.5px;color:var(--ink-2);line-height:1.9">共 <b style="color:var(--ink)">${totN.toLocaleString()}</b> 节点 / <b style="color:var(--ink)">${totE.toLocaleString()}</b> 边 · ${topTypes}</div>
-          <p class="muted" style="font-size:11px;margin:6px 0 0">单概念深入(某词/语法的 4 路追溯) → 「讲课调取」tab</p>
-        </section>
-        <section class="bk-card"><div class="bk-h"><span>命题趋势 · 题型分布(卷制era)</span><span class="bk-src">/api/trend/summary</span></div>
-          ${trend.trend_reliable === false ? `<div class="caveat-banner" style="margin:0 0 6px"><span class="cb-tag">样本不足</span><span>逐年样本不足不画斜率; 按卷制 era 看分布(跨 2021 断点不混算)</span></div>` : ""}
-          ${Object.entries(trend.type_distribution_by_era || {}).map(
-            ([era, types]) => `<div style="font-size:12.5px;margin:3px 0"><b>${era}</b>: ${Object.entries(types).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([t, n]) => `${t}(${n})`).join(" / ")}</div>`
-          ).join("") || '<p class="muted" style="font-size:12px">无趋势数据</p>'}
-          <p class="muted" style="font-size:11px;margin:6px 0 0">注 题量为真题**条目数**, 跨 source 粒度不一(2021/22 子题级, 其余年篇章级) → 仅看各 era 内题型相对构成, 不作跨 era 题量直接比较。题型存废真值见上"题型结构演变"(粒度无关)。</p>
-        </section>
-      </div>`;
+      <section class="bk-card">
+        <div class="bk-h"><span>全部共现组合 · 精确读数</span><small class="muted" id="kg-list-era">新高考II 2021+</small></div>
+        <div id="kg-list">${_coList(eraPairs)}</div>
+        <p class="muted" style="font-size:11.5px;margin:8px 0 0">按同题次数降序全量列出 (不截断); 次数小的组合只说明"出现过", 别过度解读。</p>
+      </section>
+      <p class="zt-nextlink">这些套路已编进课程 → <a href="#/teaching">40 节课程</a></p>`;
 
     CONTENT.querySelectorAll(".gz-era").forEach(b => b.onclick = () => {
       CONTENT.querySelectorAll(".gz-era").forEach(x => x.classList.remove("on"));
       b.classList.add("on");
       _renderCooccur(b.dataset.era, b.dataset.label);
+      // 结论 chips + 精确列表随 era 联动 (同一数据源, 单 fetch)
+      const ps = ((co.by_era || {})[b.dataset.era] || {}).pairs || [];
+      const chips = document.getElementById("kg-chips"); if (chips) chips.innerHTML = _coChips(ps);
+      const list = document.getElementById("kg-list"); if (list) list.innerHTML = _coList(ps);
+      const le = document.getElementById("kg-list-era"); if (le) le.textContent = b.dataset.label;
     });
     _renderCooccur("2021+_新高考II", "新高考II 2021+");
   });

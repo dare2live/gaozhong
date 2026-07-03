@@ -19,10 +19,11 @@
   const ERA_OLD = "2015-2020_旧课标II";
   const DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js (防 beike/teacher/jiangke 漂移)
   const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群" };
-  // 图表数据编码色 — 锚 design-system 令牌族值 (blue=--down / up=--accent-ink·--up / grey=--data-gray;
-  // echarts canvas 需 hex 故写值非 var, 跨图一致; 无新增 ad-hoc 色)
-  const C = { blue: "#1F5F94", up: "#9C2C20", upBg: "#FAECE7", downBg: "#E6F1FB", grey: "#B4B2A9" };
+  // 图表数据编码色 — 锚 design-system 令牌族值 (blue=--down / blue3=--down-3 / blue4=--down-4
+  // / up=--accent-ink·--up / grey=--data-gray; echarts canvas 需 hex 故写值非 var, 跨图一致; 无新增 ad-hoc 色)
+  const C = { blue: "#1F5F94", blue3: "#8FAECB", blue4: "#C3D4E3", up: "#9C2C20", upBg: "#FAECE7", downBg: "#E6F1FB", grey: "#B4B2A9" };
   const INK3 = "#76716A";   // 值锚 --ink-3 (canvas 标签用)
+  const PRES = { out: "#BE3A2B", in: "#2E7D54" };   // presence 语义色(原热力沿用): 红=退场(值锚 --accent) / 绿=登场
 
   let state = { era: ERA_NEW, dim: "theme_l2", dist: null, cross: "genre" };
   const charts = {};
@@ -62,7 +63,7 @@
 </section>`;
     const cardA = `<section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的考查占比 (真被考的占比, 非教材出现频次)" style="height:300px;"></div><p id="bk-distnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardB = `<section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+ · 变化最大的排最上</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift" role="img" aria-label="命题迁移哑铃图: 各类别在旧卷制与新卷制的考查占比变化"></div><p id="bk-shiftnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
-    const cardC = `<section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构演变矩阵: 各题型在两个卷制时期的在场情况" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardC = `<section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 存续时间带</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构存续时间带: 各题型在辽宁卷的存续区间与登场、退场事件" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardD = `<section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级 · 教研解析标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardF = `<section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     return `
@@ -287,48 +288,135 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
   }
 
   function renderTrend(p) {
-    // 题型×年份 presence 热力(结构真值, 粒度无关; v2: signal 由卷面结构config定, extraction_gap 淡色虚线诚实标)。
+    // C 卡「存续时间带」(P2-5, 方案书图表6 P4 形态; 2026-07-03 重写自 presence 热力, 语义平移不变):
+    // 每题型一行, 存续区间=连续横带; 事件端点=退场红点/登场绿点; 2021 era 竖虚线保留。
+    // 结构真值语义沿用原热力: signal 由卷面结构config定非数据; extraction_gap/未登记年=淡色虚线诚实标注
+    // (存续年仅样本, 不作首末考年信号)。认识论编码: 实心带·点=真值, 淡色虚线带·段·空心点=方向性。
     const items = (p && p.by_question_type) || [];
-    const SIG = { skeleton: { c: C.blue, t: "骨架·两卷制常驻" }, retired: { c: "#BE3A2B", t: "真退场·卷面取消" }, introduced: { c: "#2E7D54", t: "真登场·卷面新增" }, unregistered: { c: C.grey, t: "未登记结构" } };
+    const SIG = { skeleton: { t: "骨架·两卷制常驻" }, retired: { t: "真退场·卷面取消" }, introduced: { t: "真登场·卷面新增" }, unregistered: { t: "未登记结构" } };
     const ord = { skeleton: 0, retired: 1, introduced: 2, unregistered: 3 };
     const list = items.slice().sort((a, b) => (ord[a.signal] ?? 9) - (ord[b.signal] ?? 9));
     const all = items.flatMap(x => [...(x.old_years || []), ...(x.new_years || [])]);
     if (!all.length) { G.$("#bk-trend").innerHTML = "<p class='muted'>无题型数据</p>"; return; }
     const years = []; for (let y = Math.min(...all); y <= Math.max(...all); y++) years.push(y);
-    const qts = list.map(x => x.question_type + (x.extraction_gap ? " 注" : ""));
-    const data = [];
-    list.forEach((x, qi) => {
-      const pres = new Set([...(x.old_years || []), ...(x.new_years || [])]);
-      const sig = SIG[x.signal] || SIG.unregistered, gap = x.extraction_gap;
-      years.forEach((y, yi) => {
-        if (pres.has(y)) data.push({ value: [yi, qi, 1], itemStyle: { color: sig.c, opacity: gap ? 0.32 : 1, borderColor: gap ? "#888" : "#fff", borderWidth: 1, borderType: gap ? "dashed" : "solid" } });
-      });
+    const xi = {}; years.forEach((y, i) => { xi[y] = i; });
+    const REFORM = parseInt(ERA_NEW, 10);   // 2021 新高考改革年 (era 常量单一来源, 非另行 hardcode)
+    // 渲染层几何预算: 连续存续段 runs + 段间未登记 gap 年 (平移原热力空格语义 = 数据缺口, 非卷面取消)
+    const rows = list.map(x => {
+      const pres = [...new Set([...(x.old_years || []), ...(x.new_years || [])])].sort((a, b) => a - b);
+      const runs = [];
+      pres.forEach(y => { const r = runs[runs.length - 1]; if (r && y === r[1] + 1) r[1] = y; else runs.push([y, y]); });
+      const gaps = [];
+      for (let i = 1; i < runs.length; i++) gaps.push([runs[i - 1][1] + 1, runs[i][0] - 1]);
+      return { ...x, pres, runs, gaps };
     });
+    const fmtRuns = rs => rs.map(([a, b]) => a === b ? String(a) : a + "–" + b).join("、");
+    const qts = list.map(x => x.question_type + (x.extraction_gap ? " 注" : ""));
     G.$("#bk-relbadge").innerHTML = `<span class="bk-suff ok">结构真值·卷面config掩码</span>`;
-    charts.trend = G.initChart(G.$("#bk-trend"));
+    const el = G.$("#bk-trend");
+    el.style.height = (rows.length * 30 + 56) + "px";   // 行数驱动高度 (时间带每行 30px + 轴/era标签)
+    charts.trend = G.initChart(el);
+    if (!charts.trend) return;
+    charts.trend.resize();   // 容器高度改动后同步画布 (复用实例场景)
     charts.trend.setOption({
-      grid: { left: 4, right: 12, top: 10, bottom: 22, containLabel: true },
-      xAxis: { type: "category", data: years, splitArea: { show: true }, axisLabel: { fontSize: 10 } },
-      yAxis: { type: "category", data: qts, axisLabel: { fontSize: 10 } },
-      tooltip: { formatter: c => { const x = list[c.value[1]]; return `${x.question_type} · ${years[c.value[0]]}<br/>${(SIG[x.signal] || SIG.unregistered).t}${x.extraction_gap ? "<br/><b>注 提取不全·该年仅样本非首末考年</b>" : ""}`; } },
-      series: [{ type: "heatmap", data, label: { show: false } }],
+      grid: { left: 4, right: 16, top: 26, bottom: 22, containLabel: true },
+      xAxis: { type: "category", data: years, axisLabel: { fontSize: 10 }, axisTick: { alignWithLabel: true }, splitLine: { show: false } },
+      yAxis: { type: "category", data: qts, inverse: true, axisLabel: { fontSize: 10 }, axisTick: { show: false }, axisLine: { show: false } },
+      tooltip: {
+        confine: true,
+        formatter: c => {
+          const r = rows[c.dataIndex];
+          if (!r) return "";
+          const lines = [`<b>${escHtml(r.question_type)}</b> · ${(SIG[r.signal] || SIG.unregistered).t}`];
+          if (!r.pres.length) lines.push("无提取记录 (卷面旧制有, 本项目未抽到)");
+          else if (r.extraction_gap) lines.push(`记录年: ${fmtRuns(r.runs)} — <b>仅样本</b>, 卷面确有但未抽全, 不作首末考年`);
+          else lines.push(`存续: ${fmtRuns(r.runs)}`);
+          if (r.gaps.length && !r.extraction_gap) lines.push(`虚线段 ${fmtRuns(r.gaps)} = 该年未登记 (数据缺口, 非卷面取消)`);
+          if (r.signal === "retired") lines.push(`<b style="color:${PRES.out}">新高考取消</b> (${REFORM} 起卷面不再考)`);
+          if (r.signal === "introduced") lines.push(`<b style="color:${PRES.in}">新高考新增</b>${r.extraction_gap ? " (首考年未抽全, 登场年不可信)" : ""}`);
+          return lines.join("<br/>");
+        },
+      },
+      series: [{
+        type: "custom", clip: false,
+        renderItem: (params, api) => {
+          const r = rows[params.dataIndex];
+          const w = api.size([1, 0])[0];                                  // 单年像素宽
+          const rowY = api.coord([0, params.dataIndex])[1];               // 行中心 y
+          const px = y => api.coord([xi[y], params.dataIndex])[0];        // 年份中心 x
+          const cs = params.coordSys, bh = 10;
+          const kids = [];
+          // 2021 era 分界: 竖虚线 + 「新高考改革」标签 (只在第一行画一次, 跨全高)
+          if (params.dataIndex === 0 && xi[REFORM] != null && xi[REFORM - 1] != null) {
+            const bx = px(REFORM) - w / 2;
+            kids.push({ type: "line", silent: true, shape: { x1: bx, y1: cs.y, x2: bx, y2: cs.y + cs.height },
+              style: { stroke: INK3, lineWidth: 1, lineDash: [4, 3], opacity: 0.6 } });
+            kids.push({ type: "text", silent: true, style: { x: bx + 4, y: cs.y - 5, text: REFORM + " 新高考改革",
+              fill: INK3, font: "600 10px sans-serif", verticalAlign: "bottom" } });
+          }
+          // 存续带: 实心蓝=已抽全存续(真值) / 淡色虚线框带=提取不全(方向性, 年份仅样本) — 平移原热力 0.32 淡色格
+          r.runs.forEach(([a, b]) => {
+            const x0 = px(a) - w / 2 + 1, x1 = px(b) + w / 2 - 1;
+            kids.push(r.extraction_gap
+              ? { type: "rect", shape: { x: x0, y: rowY - bh / 2, width: x1 - x0, height: bh, r: 2 },
+                  style: { fill: C.blue4, stroke: C.blue3, lineWidth: 1, lineDash: [3, 2] } }
+              : { type: "rect", shape: { x: x0, y: rowY - bh / 2, width: x1 - x0, height: bh, r: 2 },
+                  style: { fill: C.blue } });
+          });
+          // 段间未登记年: 细虚线段 (诚实标注数据缺口, 不画成实带冒充存续)
+          r.gaps.forEach(([a, b]) => {
+            kids.push({ type: "line", shape: { x1: px(a) - w / 2 + 1, y1: rowY, x2: px(b) + w / 2 - 1, y2: rowY },
+              style: { stroke: C.blue3, lineWidth: 1.5, lineDash: [3, 3] } });
+          });
+          // 事件端点: 实心点=年份真值 / 空心虚线环=登退场年不可信(只作卷面级信号) — 同哑铃图认识论编码
+          const dot = (cx, col, solid) => ({ type: "circle", shape: { cx, cy: rowY, r: 4.5 },
+            style: solid ? { fill: col, stroke: "#fff", lineWidth: 1 } : { fill: "#fff", stroke: col, lineWidth: 1.6, lineDash: [2, 2] } });
+          const txt = (x, text, col, align) => ({ type: "text",
+            style: { x, y: rowY + 0.5, text, fill: col, align, verticalAlign: "middle", font: "600 10px sans-serif" } });
+          if (r.signal === "retired") {
+            if (r.pres.length) {
+              const cx = px(r.pres[r.pres.length - 1]) + w / 2 - 1;
+              // 取消年: 末考年真值时=末考年+1 (短文改错 2020+1=2021, 与改革年重合); 否则退回改革年(卷面级信号)
+              const yr = (!r.extraction_gap && r.last_year != null) ? r.last_year + 1 : REFORM;
+              kids.push(dot(cx, PRES.out, !r.extraction_gap));
+              kids.push(txt(cx + 7, yr + " 已取消", PRES.out, "left"));
+            } else {
+              // 0 提取记录 (书面表达): 灰字诚实占位, 空心红点挂 era 分界 (取消=卷面级信号, 非数据推得)
+              const bx = xi[REFORM] != null ? px(REFORM) - w / 2 : cs.x + cs.width;
+              kids.push({ type: "text", silent: true, style: { x: (cs.x + bx) / 2, y: rowY + 0.5, text: "卷面旧制有 · 未抽到记录",
+                fill: C.grey, align: "center", verticalAlign: "middle", font: "10px sans-serif" } });
+              kids.push(dot(bx, PRES.out, false));
+              kids.push(txt(bx + 7, REFORM + " 已取消", PRES.out, "left"));
+            }
+          }
+          if (r.signal === "introduced" && r.pres.length) {
+            const first = r.pres[0];
+            const cx = px(first) - w / 2 + 1;
+            const solid = !r.extraction_gap && r.first_year != null;
+            // 提取不全 → 登场年不可信 (续写/应用文写作), 只标卷面级「新高考新增」不标年
+            const label = solid ? first + " 新增" : "新高考新增";
+            kids.push(dot(cx, PRES.in, solid));
+            kids.push(xi[first] >= 2 ? txt(cx - 7, label, PRES.in, "right") : txt(cx + 7, label, PRES.in, "left"));
+          }
+          return { type: "group", children: kids };
+        },
+        data: rows.map((r, i) => [r.pres.length ? xi[r.pres[0]] : 0, i]),
+      }],
     }, true);
     const ret = items.filter(x => x.signal === "retired").map(x => x.question_type);
     const intro = items.filter(x => x.signal === "introduced").map(x => x.question_type);
     const gaps = items.filter(x => x.extraction_gap).map(x => x.question_type);
-    // a11y: 动态 aria-label(题型数+信号分类) + sr-only 表(题型→信号+在场年份) — 复用本函数 list/SIG/all
+    // a11y: 动态 aria-label(题型数+信号分类) + sr-only 表(题型→信号+存续年份) — 复用本函数 rows/SIG
     const skel = items.filter(x => x.signal === "skeleton").map(x => x.question_type);
     setAria("bk-trend",
-      `题型结构演变矩阵(辽宁卷 ${Math.min(...all)}–${Math.max(...all)} 年, 共 ${list.length} 题型): ` +
+      `题型结构存续时间带(辽宁卷 ${years[0]}–${years[years.length - 1]} 年, 共 ${list.length} 题型): ` +
       `骨架常驻 ${skel.length} 种, 真退场 ${ret.length} 种(${ret.join("、") || "无"}), 真登场 ${intro.length} 种(${intro.join("、") || "无"})`);
-    setSrTable("bk-trend", "题型结构演变 — 各题型在场年份 · 信号",
-      ["题型", "信号", "在场年份", "提取不全"], list.map(x => {
-        const yrs = [...new Set([...(x.old_years || []), ...(x.new_years || [])])].sort((a, b) => a - b);
-        return [x.question_type, (SIG[x.signal] || SIG.unregistered).t, yrs.join(" ") || "无", x.extraction_gap ? "是(年份仅样本)" : "否"];
-      }));
-    G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型 presence · signal 由<b>卷面结构</b>定非数据, 粒度无关): `
-      + `蓝=骨架两卷制常驻(<b>万变不离其宗</b>) · 红=<b>真退场</b>(${ret.join("、") || "无"}: 新高考取消) · 绿=<b>真登场</b>(${intro.join("、") || "无"}: 新高考新增)。`
-      + `<br><small class="muted">注 淡色虚线格=提取不全(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>presence年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信)。</small>`;
+    setSrTable("bk-trend", "题型结构演变 — 各题型存续年份 · 信号",
+      ["题型", "信号", "存续年份", "提取不全"], rows.map(x =>
+        [x.question_type, (SIG[x.signal] || SIG.unregistered).t, fmtRuns(x.runs) || "无", x.extraction_gap ? "是(年份仅样本)" : "否"]));
+    G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型存续时间带 · 登退场信号由<b>卷面结构</b>定非数据): `
+      + `蓝横带=存续区间(<b>万变不离其宗</b>: 骨架题型跨两卷制常驻) · <b style="color:${PRES.out}">红点=真退场</b>(${ret.join("、") || "无"}: 新高考取消) · <b style="color:${PRES.in}">绿点=真登场</b>(${intro.join("、") || "无"}: 新高考新增) · 竖虚线=${REFORM} 新高考改革。`
+      + `<br><small class="muted">注 淡色虚线带·段=提取不全或该年未登记(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>存续年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信); 空心点=登/退场年不可信, 只作卷面级信号。</small>`;
   }
 
   function renderCognitiveSkill(cs) {
@@ -464,10 +552,12 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
       if (!inst) return;
       const h = card.querySelector(".bk-h");
       if (!h) return;
-      const title = ((h.querySelector("span") || {}).textContent || "图").trim().split(" ")[0];
+      const full = ((h.querySelector("span") || {}).textContent || "图").trim();
+      const title = full.split(" ")[0];
       const btn = document.createElement("button");
       btn.className = "bk-export"; btn.innerHTML = G.icon("download") + " PNG"; btn.title = "导出本图 PNG";
-      btn.onclick = () => G.exportChartPNG(inst, `辽宁卷_${title}.png`);
+      // P2-3 PNG 自包含: 传卡名 meta, 导出图离开页面自带标题+来源脚注
+      btn.onclick = () => G.exportChartPNG(inst, `辽宁卷_${title}.png`, { title: `辽宁高考 · ${full}` });
       h.appendChild(btn);
     });
     const pb = G.$("#bk-print");
@@ -480,8 +570,10 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const items = [];
     // a. 考查词学段 → 主攻高中新增 (证据=真题特点页的词学段实证)
     if (stage && !G.isErr(stage) && stage.foundation_pct != null) {
+      // P2-6 微缩学段带: GZ.stageMiniBand 单渲染点 (common.js, 防多处分段实现漂移); 仅此一处, 结论卡微图 ≤1
+      const band = G.stageMiniBand ? G.stageMiniBand(stage) : "";
       items.push({
-        text: `考查词 <strong>${stage.foundation_pct}% 初中前已学</strong> → 词汇主攻高中新增的 <strong>${stage.senior_pct}%</strong>`,
+        text: `考查词 <strong>${stage.foundation_pct}% 初中前已学</strong>${band} → 词汇主攻高中新增的 <strong>${stage.senior_pct}%</strong>`,
         link: `<a class="bk-vlink" href="#/zhenti">看证据 → 真题特点</a>`,
       });
     }
