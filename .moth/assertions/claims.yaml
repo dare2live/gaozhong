@@ -268,9 +268,9 @@ assertions:
     command: ["python3", "-c", "import duckdb,json;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);rs={json.loads(l)['word']:json.loads(l)['refined_stage'] for l in open('data/junior_high/structured/stage_refined.jsonl') if l.strip()};real={w:s for w,s in rs.items() if s in {'小学','初中','义务教育','高中必修','高中选修'}};bad=sum(1 for w,s in real.items() if ('stage:'+s) not in {r[0] for r in c.execute(\"SELECT dst_id FROM edges WHERE relation='at_stage' AND src_id=?\",['word:'+w]).fetchall()});c.close();print('OK' if bad==0 and len(real)>=3000 else f'FAIL {bad}')"]
     expect: {op: regex, pattern: "OK"}
   - id: cognitive-skill-goldmine
-    claim: "设问类型金矿(KG-A1)跨era: cognitive_skill 100边(2015-20旧课标II 85六年全覆盖 + 2023新高考II 15; 真值锚剔2021甲卷§7); 命题哲学迁移真值=推断占比 新era(46.7%)>旧era(28.2%, 坑16新高考重推断), 新era n=15方向性诚实标; 全explicit_label+血缘"
+    claim: "设问类型金矿(KG-A1)跨era: cognitive_skill 113边(2015-20旧课标II 85六年全覆盖 + 新高考II 28[2023:15+2024:13新补]; 真值锚剔2021甲卷§7, 2024经Trost+Shakespeare双marker过锚); 命题哲学迁移真值=推断占比 新era(42.9%)>旧era(28.2%, 坑16新高考重推断), 新era n=28方向性诚实标; 全explicit_label+血缘"
     type: shell
-    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();tot=d['n_total'];g=lambda k:next((p['pct'] for e,pts in d['by_era'].items() if e.startswith(k) for p in pts if p['label']=='推断'),0);print('OK' if tot==100 and g('2021')>g('2015-2020')>0 else f'FAIL tot={tot} old={g(\"2015-2020\")} new={g(\"2021\")}')"]
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();tot=d['n_total'];g=lambda k:next((p['pct'] for e,pts in d['by_era'].items() if e.startswith(k) for p in pts if p['label']=='推断'),0);print('OK' if tot==113 and g('2021')>g('2015-2020')>0 else f'FAIL tot={tot} old={g(\"2015-2020\")} new={g(\"2021\")}')"]
     expect: {op: regex, pattern: "OK"}
   - id: cognitive-skill-by-content-cross
     claim: "设问技能×题材交叉(2015-20截面): join命中74(genre)/'question:'||passage_label对齐, era锁2015-20(2021+桥缺失不出迁移), 异质provenance分层(技能=explicit_label真值/题材=dual_model_agree模型推断非真值交叉); 结构真值=应用文100%理解具体信息(0推断)/说明文最考推断"

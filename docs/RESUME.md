@@ -23,7 +23,7 @@
 - **✅ PhaseB-1 小初高词占比王牌图 (commit 108cccb)**: `k12.tested_word_stage_distribution` + `/api/k12/tested_word_stage` + 真题特点页 结论先行 banner + echarts 图。**实证: 辽宁高考考查词 小初阶 75.7% / 高中新增仅 18.1% / 未分类 6.2%**。双门。
 - **✅ PhaseB-3 基础库真题库+课标库 (commit f874b38)**: 真题库 `/api/exam/liaoning_browse`(province 前缀坑7-safe, 按年/题型, 每题溯源 source_file#index) + 课标库(复用 theme_contexts/grammar_items + 新 `/api/curriculum/summary`) + 基础库hub四库全通; 新 `jichu_pages.js`; moth liaoning-browse-prefix-safe。
 - **✅ PhaseB-2 真题特点 迁移+套路 (commit 468ef8c)**: zhenti 两卡 → 命题迁移(shift delta 蒸馏 题材+主题群)+ 题材×思维套路(cognitive_by_content); 学习者向结论框架, 复用 endpoint。
-- **✅ PhaseB-4 命题研判 结论先行 (commit 67321da)**: beike 顶部 renderVerdict banner — live 蒸馏 3 结论(考查词75.7%小初阶/设问思维推断46.7%/最大迁移生活与学习降23.6pt), 样本量诚实。
+- **✅ PhaseB-4 命题研判 结论先行 (commit 67321da)**: beike 顶部 renderVerdict banner — live 蒸馏 3 结论(考查词75.7%小初阶/设问思维推断(2026-07-03 补2024数据后为42.9%, 详见 kg_layer_design.md)/最大迁移生活与学习降23.6pt), 样本量诚实。
 - **🎉 Phase B 全完成** (B-1/2/3/4)。四门全绿。
 - **✅ PhaseC-1 覆盖模型 (commit 23fc3e8)**: `course.coverage_model` + `/api/course/coverage` — 考点全集可教轴(题材6/主题群8/高频考词1166/语法22)+ 命题频次权重 + 覆盖曲线(题材90%需3/主题群需7/词需903但小初高filter后高中仅~18%delta/语法需17); 设问思维正确排除(套路非可教覆盖). 双门(D0 check33 跨源 + moth l3-coverage-model-sound)。
 - **✅ PhaseC-2 教学提纲+段级schema+作业+④前端 (commit b7da84c)**: `course.syllabus`(40节按主题群频次比例分配, 段级 course_segment schema content=null) + `homework_for_point`(考点→辽宁真题溯源 非生成) + `/api/course/syllabus` + 前端 ④40节课程重建(覆盖banner+考点焦点+作业真题友好溯源, **替裸题号 gb/...44 用户痛点**)。双门(D0 check34 + moth l3-syllabus)。

@@ -27,9 +27,9 @@ baselines:
   # KG 维度 (d0_*.py)
   exam_dict_min:        {value: 3500, op: ge, note: "考试词典规模下界(课标∪教材真超纲)"}
   exam_dict_max:        {value: 5000, op: le, note: "考试词典规模上界(防CET/GRE注水)"}
-  cognitive_skill:      {value: 100,  op: eq, note: "设问类型边跨era(2015-20旧课标II 85 + 2023新高考II 15; 真值锚剔2021甲卷)"}
+  cognitive_skill:      {value: 113,  op: eq, note: "设问类型边跨era(2015-20旧课标II 85 + 新高考II 28[2023:15+2024:13]; 真值锚剔2021甲卷)"}
   cognitive_skill_legacy: {value: 85, op: eq, note: "2015-20旧课标全国II reading子题(6年全覆盖, exam_questions refine省份门, 坑3; 模糊3变体诚实skip)"}
-  cognitive_skill_new:    {value: 15, op: eq, note: "2021+新高考全国II(subq jsonl真值锚门, 现仅2023)"}
+  cognitive_skill_new:    {value: 28, op: eq, note: "2021+新高考全国II(subq jsonl真值锚门; 2023原15 + 2024新补14题[Trost+Shakespeare双marker过锚]13分类+1'词义指代题'模糊变体诚实skip)"}
   cog_cross_genre:        {value: 74, op: eq, note: "技能×题材交叉join命中(2015-20; 'question:'||passage_label对齐, 防前缀回归静默漏行)"}
   cog_cross_theme_l2:     {value: 75, op: eq, note: "技能×主题群交叉join命中(2015-20; 11miss=有theme无genre真缺口非bug)"}
   cooccur_min:          {value: 10,   op: ge, note: "考点共现边下界(后端审计#8: 排除eol子题级膨胀源后篇章级实测11; 原19含2021/22子题5x膨胀=伪关联)"}

@@ -13,7 +13,7 @@
 > | B轨 跨年级分阶 (at_stage 边已细, verify-the-verifier) | ✅ 1d5d2de |
 > | **⚠ 矿口缺口**: 考试词典/word_sense **有API无前端** (teacher 页未接) | ❌ 收口冲刺第3步 |
 > | A2 语法考点 / A3 句型 / A4 表达 | ⏸ 真相源未成熟·候选池, 需标注 workflow, **真老师校验前别预建** |
-> | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地+跨era(explicit_label最强, **100边 2015-20旧课标II 85 + 2023新高考II 15**, 推断28→47%迁移; 原"exam_method待建"系误判, 见§6) |
+> | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地+跨era(explicit_label最强, **113边 2015-20旧课标II 85 + 新高考II 28[2023:15+2024:13]**, 推断28→43%迁移; 原"exam_method待建"系误判, 见§6) |
 > | A6 立体透视 stereo_query (stage×dim×era) | ⏸ 待 word_sense.stage 跨年级 + 真老师校验后再建 |
 >
 > **2026-06-27 产品重置后**: 本文是 **L2 解析关联层 (KG)** 的工程设计参考, 产品方向以北极星 `docs/product_master_plan.md` 为准 (L3 课程层是产品心脏)。下方"A2/A3/A6 待建"诸件按北极星就绪门推进, 不在数据未就绪时预建。
@@ -141,10 +141,10 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 >   7理解性技能, _SKILL_MAP), 强于双模型。坑16红线: 禁用设问句 dual_model inference 补第二轴。
 > - **evidence.cue(481条, 非586) 是"考什么/题材"(genre/theme passage描述), NOT"怎么考"** — 与第二轴正交, 别动它。
 >
-> **✅ v3 已落地(2026-06-22): 跨era设问演变解锁**。cognitive_skill 现 **100 边跨两卷制era**(改造 `cognitive_skill.py` 加第二真值源, 零新表):
+> **✅ v4 已落地(2026-07-03): 补 2024 本地未接入解析)**。cognitive_skill 现 **113 边跨两卷制era**(2024-07-03 从本地已有但未接入的 GAOKAO-Bench-Updates `2024_English_Reading_Comp.json` 补 15 阅读子题, Trost+Shakespeare 双marker过真值锚; 13 分类+1"词义指代题"模糊变体诚实skip; 详见 `scripts/lib/d0_cognitive_skill_check.py` 头注):
 > - **2015-20 旧课标全国II = 85子题(六年全覆盖)**: 从 `exam_questions.analysis` 抽 reading 子题前导题型(两格式 `_FA` 答案后可全角句号/`_FB` 【N题详解】)。真值门 = **refine后 province**(辽宁新课标II, 坑3 provenance-aware 单点真值 — 区别 subq jsonl 误标风险, 故不另设 anchor); 六年 ≥30 **分布可靠**。
-> - **2021+ 新高考全国II = 15子题**: 仅2023(2024/25 analysis 0前导题型→诚实空, 2021甲卷剔§7); n=15 **<30 方向性非精确**(reliability 每-era标记, 复用 scope.MIN_DISTRIBUTION_SAMPLE)。
-> - **命题哲学迁移真值**(显式标签拼出, 万变不离其宗): **推断 28.2%→46.7%**, 细节 54.1%→40.0% — 新高考重高阶推断。变体题型只映射明确同义(词义推测/标题概括), 模糊3子题(细节推理/写作意图/代词指代)诚实skip防臆造。
-> - **门**: D0 `d0_cognitive_skill_check`(100/85/15/源年集/迁移/explicit_label/血缘) + content gate `cognitive_skill_era_shift_truth` + moth `cognitive-skill-goldmine`(跨era改写)。前端 D面板 = 双era分组条形 + reliability诚实标注。
+> - **2021+ 新高考全国II = 28子题**: 2023(15) + 2024(13, 本地未接入数据补入); 2022/25/26 无本地/免费可核验逐题解析(2021甲卷剔§7; 2026-07-03 网络检索~15次确认: zhihu 403/学科网付费墙/新闻站宏观评析非逐题, 诚实标未补非流程缺陷); n=28 **<30 方向性非精确**(reliability 每-era标记, 复用 scope.MIN_DISTRIBUTION_SAMPLE)。
+> - **命题哲学迁移真值**(显式标签拼出, 万变不离其宗): **推断 28.2%→42.9%**, 细节 54.1%→46.4% — 新高考重高阶推断(方向不变, 样本扩大后幅度更保守可信)。变体题型只映射明确同义(词义推测/标题概括), 模糊子题(细节推理/写作意图/代词指代/词义指代)诚实skip防臆造。
+> - **门**: D0 `d0_cognitive_skill_check`(113/85/28/源年集/迁移/explicit_label/血缘) + content gate `cognitive_skill_era_shift_truth` + moth `cognitive-skill-goldmine`(跨era改写)。前端 D面板 = 双era分组条形 + reliability诚实标注。
 
 其余建模决策(子题=passage级可逆升级 / provenance底层细分+前端3档 / 句型表达诚实候选池)控制器已定, 不占决策位。
