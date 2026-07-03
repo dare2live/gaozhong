@@ -4,7 +4,7 @@
  * 课标库读 /api/curriculum/summary + /api/theme_contexts + /api/grammar_items。每条可溯源, 数据真值。
  */
 (function () {
-  const { registerTab, fetchSafe, isErr, errorBox } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, pageHead } = window.GZ;
   const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
   // ── ③-b 真题库: 辽宁卷真题按年/题型浏览, 每题溯源原卷 ──

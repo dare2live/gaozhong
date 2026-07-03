@@ -119,10 +119,12 @@
 
   // ===================================================================
   // B. 40 节课程 — L3 框架 (北极星 Phase C): 覆盖模型 + 教学提纲(考点焦点+作业真题溯源, content=null)
-  //    替代旧 course-grid+handout (旧生成内容已回滚; 内容生成是 Phase D, 需就绪门)。
+  //    替代旧 course-grid+handout (旧生成内容已回滚; 内容生成待就绪门)。
+  //    ④ 重构: 覆盖证明4轴微条 + 课程地图分段条 + 主题群章 + 课节timeline (数字全活取 API, 禁编造)。
   // ===================================================================
   const _esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   function _covLine(cov) {
+    // coverage fetch 失败时的文本 fallback (数据源 = syllabus 自带 coverage_proof)
     const ax = (cov && cov.axes) || {};
     const part = (k, name) => {
       if (!ax[k] || !ax[k].n_total) return "";
@@ -131,6 +133,75 @@
     };
     return [part("genre", "题材"), part("theme_l2", "主题群"), part("word", "高频考词"), part("grammar", "语法")].filter(Boolean).join(" · ");
   }
+  // ④-1 覆盖证明 4 轴微条: 实色段 = 教的高产出考点集; 空心描边段 = 诚实长尾缺口。语法轴只出计数不列子项。
+  const _COV_AXES = [["genre", "题材", "类"], ["theme_l2", "主题群", "组"], ["word", "高频考词", "词"], ["grammar", "语法", "项"]];
+  function _covProof(cov) {
+    const ax = (cov && cov.axes) || {};
+    const rows = _COV_AXES.map(([k, name, unit]) => {
+      const a = ax[k];
+      if (!a || !a.n_total) return "";
+      const fill = Math.round(100 * a.high_yield_n / a.n_total);
+      const wpct = Math.round(a.high_yield_pct != null ? a.high_yield_pct : cov.target_pct);
+      const tail = a.tail_n != null ? a.tail_n : (a.n_total - a.high_yield_n);
+      const gap = fill < 100 ? `<span class="ks-cov-gap" style="width:${100 - fill}%" title="长尾 ${tail} ${unit}: 低频考点, 明确不覆盖 (性价比低)"></span>` : "";
+      return `<div class="ks-cov-row">
+        <span class="ks-cov-axis">${name}</span>
+        <span class="ks-cov-bar" role="img" aria-label="${name}: 教 ${a.high_yield_n}/${a.n_total} ${unit} = ${wpct}% 考查权重; 长尾 ${tail} ${unit}不教"><span class="ks-cov-fill" style="width:${fill}%"></span>${gap}</span>
+        <span class="ks-cov-txt">教 <b>${a.high_yield_n}</b>/${a.n_total} ${unit} = <b>${wpct}%</b> 考查权重</span>
+      </div>`;
+    }).filter(Boolean).join("");
+    return rows ? `<div class="ks-cov">${rows}</div>` : "";
+  }
+  // ④-2 lessons 按 focus 连续分块 → 主题群 (顺序 = 后端命题频次分配序, 前端不重排不发明)
+  function _themeGroups(lessons) {
+    const gs = [];
+    for (const l of (lessons || [])) {
+      const last = gs[gs.length - 1];
+      if (!last || last.focus !== l.focus) gs.push({ focus: l.focus, ttw: l.theme_total_weight || 0, lessons: [] });
+      gs[gs.length - 1].lessons.push(l);
+    }
+    return gs;
+  }
+  // 段/章色循环 (设计规范 §02 蓝阶令牌, 相邻异色; 白字仅 --down/--down-2 底, --down-3 浅段标签用 --ink)
+  const _SEGC = [["var(--down)", "#fff"], ["var(--down-2)", "#fff"], ["var(--down-3)", "var(--ink)"]];
+  function _courseMap(gs) {
+    const segs = gs.map((g, i) => {
+      const [bg, fg] = _SEGC[i % _SEGC.length];
+      const t = `${g.focus} · ${g.lessons.length} 节`;
+      return `<button type="button" class="ks-map-seg" data-ch="ks-ch-${i}" style="flex:${g.lessons.length} 1 0;background:${bg};color:${fg}" title="${_esc(t)} — 点击跳到该章">${g.lessons.length >= 3 ? _esc(t) : ""}</button>`;
+    }).join("");
+    return `<div class="ks-map" role="navigation" aria-label="课程地图: ${gs.length} 个主题群分段, 段宽=节数, 点击跳到对应章">${segs}</div>`;
+  }
+  // ④-3 章头累计里程碑: coverage.theme_l2.top 按 label 匹配 cum_pct; 无 cum_pct 则 freq/weight_total 前端累加; 都不能算返回 null (省略句, 禁编造)
+  function _cumPct(theme, focus) {
+    let acc = 0;
+    for (const t of ((theme && theme.top) || [])) {
+      acc += t.freq || 0;
+      if (t.label === focus) {
+        if (t.cum_pct != null) return t.cum_pct;
+        return theme.weight_total ? Math.round(1000 * acc / theme.weight_total) / 10 : null;
+      }
+    }
+    return null;
+  }
+  function _chapter(g, i, sumTtw, theme) {
+    const [bg] = _SEGC[i % _SEGC.length];
+    const wpct = sumTtw ? Math.round(100 * g.ttw / sumTtw) : null;
+    const cum = _cumPct(theme, g.focus);
+    return `<section class="ks-chapter" id="ks-ch-${i}">
+      <header class="ks-ch-head">
+        <div class="ks-ch-row">
+          <span class="ks-ch-dot" style="background:${bg}"></span>
+          <h2 class="ks-ch-name">${_esc(g.focus)}</h2>
+          <span class="ks-ch-n">${g.lessons.length} 节</span>
+          ${wpct != null ? `<span class="ks-ch-wbar" title="本主题群占全部主题考查权重的 ${wpct}%"><span style="width:${wpct}%"></span></span><span class="ks-ch-wtxt">考查权重 ${wpct}%</span>` : ""}
+        </div>
+        ${cum != null ? `<p class="ks-ch-cum">学完本组已覆盖考试权重 ${cum}%</p>` : ""}
+      </header>
+      <div class="ks-tl">${g.lessons.map(l => `<div class="ks-tl-item">${_lessonCard(l)}</div>`).join("")}</div>
+    </section>`;
+  }
+  // ④-4 课节行: timeline 节点 + 「第 N 节 · 作业 N 道真题」(裸权重数字已上收章头); 展开 = 作业清单 + 正文状态
   function _lessonCard(l) {
     // 溯源友好化: 显示"年份 辽宁卷 · #题号", 原始 source_file#index 入 title (机器血缘); 不甩裸 gb/... 路径
     const _srcShort = q => `${q.year} 辽宁卷 · #${(q.source || "").split("#").pop()}`;
@@ -138,27 +209,50 @@
       `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${_esc(q.preview)}…</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
     return `<details class="ks-lesson"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
-        <span class="ks-focus">考点焦点: ${_esc(l.focus)}</span>
-        <span class="ks-w" title="本节命题权重份额 = 该主题群辽宁频次 ÷ 该主题节数">权重 ${l.trend_weight}</span>
-        <span class="ks-hwn">作业 ${(l.evidence_questions || []).length} 真题</span>
+        <span class="ks-hwn">· 作业 ${(l.evidence_questions || []).length} 道真题</span>
       </summary>
-      <div class="ks-body"><div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div><ul class="ks-hwlist">${hw || '<li class="ks-hw">本节真题作业整理中</li>'}</ul></div>
+      <div class="ks-body">
+        <div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div>
+        <ul class="ks-hwlist">${hw || '<li class="ks-hw">本节真题作业整理中</li>'}</ul>
+        <div class="ks-soon">正文即将上线</div>
+      </div>
     </details>`;
   }
   register("teaching", async () => {
-    CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入 40 节课程框架…</div>';
+    CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入课程框架…</div>';
     const [syl, cov] = await Promise.all([fetchSafe("/api/course/syllabus"), fetchSafe("/api/course/coverage")]);
     if (isErr(syl)) { CONTENT.innerHTML = '<div class="error-state"><div class="es-title">课程框架加载失败</div><div class="es-msg">后端未就绪 — 真实错误。</div></div>'; return; }
+    const gs = _themeGroups(syl.lessons);
+    const sumTtw = gs.reduce((a, g) => a + (g.ttw || 0), 0);
+    const covOk = !isErr(cov) && cov && cov.axes;
+    const theme = covOk ? cov.axes.theme_l2 : null;
     CONTENT.innerHTML = `<section class="scaffold">
-      ${GZ.pageHead("高中 · 40 节课程", `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
+      ${GZ.pageHead(`高中 · ${syl.n_lessons} 节课程`, `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
       <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>讲义制作中</b> — 每节已定考点焦点与真题作业, <b>作业现在就能做</b>; 可背诵正文上线前不占位不伪造。</span></div>
       <div class="sc-takeaway">
-        <div class="sc-tk-h">覆盖模型 · 用最少课程覆盖最大考点</div>
-        <p class="sc-tk-body">${isErr(cov) ? "覆盖数据加载失败。" : _esc(_covLine(cov))}。${syl.coverage ? _esc(syl.coverage.note) : ""}</p>
-        <p class="sc-tk-caveat">考点焦点↔真题作业全程可溯源到原卷。详见<a href="#/zhenti">真题特点</a>的小初高词占比与命题套路。</p>
+        <div class="sc-tk-h">覆盖证明 · 用最少的课覆盖最大考查权重</div>
+        ${covOk ? _covProof(cov) : `<p class="sc-tk-body">${_esc(_covLine(syl.coverage_proof || {}) || "覆盖数据加载失败。")}</p>`}
+        <p class="sc-tk-caveat">实色段 = 课程教的高产出考点; 空心段 = 低频长尾, 明确标出不假装全覆盖。考点焦点↔真题作业全程可溯源到原卷。详见<a href="#/zhenti">真题特点</a>的小初高词占比与命题套路。</p>
       </div>
-      <div class="ks-list">${syl.lessons.map(_lessonCard).join("")}</div>
+      <p class="ks-map-cap">课程地图 · ${syl.n_lessons} 节按主题群分段, 段宽 = 节数 · 点击跳到该章</p>
+      ${_courseMap(gs)}
+      ${gs.map((g, i) => _chapter(g, i, sumTtw, theme)).join("")}
+      <div class="ks-foot">
+        <p class="ks-foot-link">做作业遇到生词? 去 <a href="#/jichu">基础库</a> 查词和课本出处。</p>
+        <details class="ks-how"><summary>数据怎么来的?</summary>
+          <ul>
+            <li>作业 = 历年辽宁卷真题原题, 每道都标年份和题号, 可查回原卷 — 不是生成题, 不是押题。</li>
+            <li>考点焦点 = 按真题命题频次把 ${syl.n_lessons} 节课分给各主题群: 考得多的主题, 分到的课就多。</li>
+            <li>覆盖 = 课程教的考点占考试考查权重的比例; 低频长尾考点明确标出, 不假装全覆盖。</li>
+          </ul>
+        </details>
+      </div>
     </section>`;
+    // 课程地图段点击 → 平滑锚滚到对应章
+    CONTENT.querySelectorAll(".ks-map-seg").forEach(b => b.onclick = () => {
+      const el = document.getElementById(b.dataset.ch);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   });
 
 

@@ -1,11 +1,14 @@
-/* 备课工作流「考点驾驶舱」— A考点分布 / B命题迁移 / C命题趋势 / D设问类型 / E词汇热力 (第七阶段 viz 7.1).
+/* 备课工作流「考点驾驶舱」— ①命题研判页 (P1 三问分区重构 2026-07-02).
  *
- * 铁律1 单一计算点: 全部 fetch /api/* service 产物, 前端**只渲染**; 迁移(B)的 era 间做差也在
- *   service 算 (exam_point_shift, 审计HIGH#18 修; 前端只渲染 shift.by_dimension)。绝不在前端聚合/做差。
+ * 结构 = 学习者三问: 区1 考什么(A 考点分布·通栏 + 帕累托注记) / 区2 怎么变(B 命题迁移哑铃图 + C 题型结构)
+ *      / 区3 怎么考(D 设问类型 + F 题材×思维) + 顶部结论 3 行(带看证据锚点) + 页尾「数据怎么来的?」人话对照.
+ * 铁律1 单一计算点: 全部 fetch /api/* service 产物, 前端只渲染。B 的 era 间差值在 service 算
+ *   (shift.by_dimension), 前端仅按 |delta| 排序; A 的累计占比为纯渲染层注记(对 service 已算 pct 求和)。
  * 分层非平均: 按卷制 era 分段看, 不混历史均值。
- * 样本量诚实: 趋势读 service 的 reliable 旗, 不可信→灰显虚线 + "样本不足" banner, 不画实斜率。
- * 词数(按状态)≠考点: 词汇热力单元格=该首字母×exam_status 的**词数**(非语料词频, 非考点热), 标"词数(按状态)非考点"(坑12 澄清)。
- * ECharts 仅渲染层 (CDN), 数据仍 service 单算。
+ * 认识论编码: 实心=真值; 空心/虚线/降饱和=方向性(n<30 或 AI 标注)。红族=「你该主攻的重点」每视图≤1系列。
+ * 学习者语言: 工程术语(explicit_label/双模型/era/PIT)收进页尾「数据怎么来的?」details, 不进正文。
+ * E 词汇热力卡已撤(2026-07-02 P1: 词数按状态≠考点, 答不出页级三问; 词汇实证在 #/zhenti)。
+ * ECharts 仅渲染层, 数据仍 service 单算; B 图窄屏(≤820px)/echarts 缺失时降级回文本行实现。
  */
 (function () {
   const G = window.GZ;
@@ -16,13 +19,15 @@
   const ERA_OLD = "2015-2020_旧课标II";
   const DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js (防 beike/teacher/jiangke 漂移)
   const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群" };
-  // 图表数据编码色 — 锚 design-system 令牌族值 (--down/--accent-ink; echarts 需 hex 故写值非 var, 跨图一致)
-  const C = { blue: "#1F5F94", blueL: "#85B7EB", up: "#9C2C20", upBg: "#FAECE7", down: "#1F5F94", downBg: "#E6F1FB", grey: "#B4B2A9" };
-  const STATUS = (window.GZ_CAT && window.GZ_CAT.examStatus) || {};   // 考点状态色单一来源 category-config.js
+  // 图表数据编码色 — 锚 design-system 令牌族值 (blue=--down / up=--accent-ink·--up / grey=--data-gray;
+  // echarts canvas 需 hex 故写值非 var, 跨图一致; 无新增 ad-hoc 色)
+  const C = { blue: "#1F5F94", up: "#9C2C20", upBg: "#FAECE7", downBg: "#E6F1FB", grey: "#B4B2A9" };
+  const INK3 = "#76716A";   // 值锚 --ink-3 (canvas 标签用)
 
   let state = { era: ERA_NEW, dim: "theme_l2", dist: null, cross: "genre" };
   const charts = {};
   const crossCache = {};
+  const SHIFT_MQ = window.matchMedia ? window.matchMedia("(max-width: 820px)") : { matches: false };
 
   // ── a11y (RC1): 动态 aria-label + sr-only 数据表 fallback。复用各 render 已有的同一份 service 数据
   //    (单一计算点, 不重算/不 refetch); 仅追加读屏文字, 不动任何视觉 echarts option。
@@ -38,23 +43,47 @@
     const tbody = "<tbody>" + rows.map(r => "<tr>" + r.map(c => `<td>${escHtml(c)}</td>`).join("") + "</tr>").join("") + "</tbody>";
     sr.innerHTML = `<caption>${captionHtml}</caption>${thead}${tbody}`;
   }
+  function rmSrTable(chartId) {
+    const el = G.$("#" + chartId);
+    const sr = el && el.parentNode.querySelector(".bk-sr-" + chartId);
+    if (sr) sr.remove();
+  }
   function setAria(chartId, label) { const el = G.$("#" + chartId); if (el) el.setAttribute("aria-label", label); }
   // 设问技能堆叠色 (推断=强调红, 与 D 区一致); 固定堆叠顺序让"推断"锚左边便于跨题材比
   const SKILL_COLOR = (window.GZ_CAT && window.GZ_CAT.skill) || {};   // 设问技能色单一来源 category-config.js
   const CROSS_LBL = { genre: DC.genre, theme_l2: DC.theme_l2, theme_context: "课标" + DC.theme_context };
 
   function shell() {
+    const sect = (id, hid, t, sub, inner, links) => `
+<section class="bk-sect" id="${id}" aria-labelledby="${hid}">
+  <h3 class="bk-sect-h" id="${hid}">${t} <span class="bk-sect-sub">${sub}</span></h3>
+  ${inner}
+  ${links ? `<p class="bk-sect-links">${links}</p>` : ""}
+</section>`;
+    const cardA = `<section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的考查占比 (真被考的占比, 非教材出现频次)" style="height:300px;"></div><p id="bk-distnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardB = `<section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+ · 变化最大的排最上</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift" role="img" aria-label="命题迁移哑铃图: 各类别在旧卷制与新卷制的考查占比变化"></div><p id="bk-shiftnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardC = `<section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构演变矩阵: 各题型在两个卷制时期的在场情况" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardD = `<section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级 · 教研解析标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardF = `<section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     return `
-${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考什么 · 怎么考 · 2021 新高考后怎么变 — 每个数字来自辽宁真题与课标原文的统计, 可以点开追到原卷。", `<button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button>`)}
+${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考什么 · 怎么变 · 怎么考 — 每个数字来自辽宁真题与课标原文的统计, 可以点开追到原卷。", `<button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button>`)}
 <div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
 <div id="bk-filter" class="bk-filter"></div>
-<div class="bk-grid">
-  <section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的考查占比 (tests_exam_point 命题占比, 非词频出现)" style="height:300px;"></div></section>
-  <section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift"></div></section>
-  <section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 卷制presence</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构演变矩阵: 各题型在两个卷制时期的在场情况" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级·教研显式标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>E 词汇热力 <small>词数(按状态)非考点</small></span><span class="bk-src">/api/heatmap/vocab</span></div><div id="bk-heat" role="img" aria-label="词汇热力图: 首字母 × 词汇状态 的词数分布(非考点热)" style="height:300px;"></div></section>
+${sect("bk-sect-what", "bk-h-what", "考什么", "— 真被考的主题与体裁, 按考查占比排", cardA,
+    `这些考点不是孤立出的 — <a href="#/graph">考点怎么绑着出题 → 考点关联</a>`)}
+${sect("bk-sect-change", "bk-h-change", "怎么变", "— 2021 换卷后, 命题重心挪去了哪", cardB + cardC, "")}
+${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在考哪种思维", `<div class="bk-grid">${cardD}${cardF}</div>`,
+    `<a href="#/zhenti">完整套路 → 真题特点</a>`)}
+<div class="bk-foot">
+  <p class="bk-next">下一步: <a href="#/zhenti">看词从哪来的实证 → 真题特点</a></p>
+  <details class="bk-method"><summary>数据怎么来的?</summary>
+    <ul>
+      <li><b>出现 ≠ 考查</b> — 教材里出现过 ≠ 高考考过, 本页只统计真被考的。</li>
+      <li><b>卷制 era 分层</b> — 新高考(2021 起)和老高考分开统计, 不混着平均。</li>
+      <li><b>双模型标注</b> — 题材/主题类标签由两个 AI 独立标注且结论一致才计入(方向性参考)。</li>
+      <li><b>explicit_label(教研显式标签)</b> — 设问类型的题型标签直接来自教研解析, 不靠 AI 猜。</li>
+    </ul>
+  </details>
 </div>`;
   }
 
@@ -76,30 +105,55 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
 <span class="bk-suff ${ok ? "ok" : "warn"}">${ok ? "分布可用 · " + n + unit : "样本不足(方向性) · " + n + unit}</span>`;
   }
 
+  // era+dim 的样本充足旗 (service 已算 distribution_eligible, 前端只读 — Rule1)
+  function distEligible(era, dim) {
+    const byEraDim = ((state.dist && state.dist.sufficiency) || {}).by_era_dim || {};
+    const s = (byEraDim[era] || {})[dim];
+    return !s || s.distribution_eligible !== false;   // 缺省视为可用; 仅显式 false 才降级
+  }
+
   function renderDist() {
-    const rows = (state.dist.distribution[state.era][state.dim] || []).slice().reverse();
+    const desc = (state.dist.distribution[state.era][state.dim] || []);   // service 已按占比降序
+    const rows = desc.slice().reverse();                                  // echarts 横条自下而上
+    // 帕累托注记 (#3): 累计占比 = 纯渲染层对 service 已算 pct 求和 (排序累计, 不重算占比本身)
+    let cum = 0;
+    const cums = desc.map(r => { cum += r.pct; return +cum.toFixed(1); });
+    let pN = desc.length;
+    for (let i = 0; i < desc.length; i++) if (cums[i] >= 70) { pN = i + 1; break; }
     G.$("#bk-dimname").textContent = DIM_LABEL[state.dim];
     charts.dist = G.initChart(G.$("#bk-dist"));
     charts.dist.setOption({
-      grid: { left: 4, right: 44, top: 8, bottom: 8, containLabel: true },
+      grid: { left: 4, right: 96, top: 8, bottom: 8, containLabel: true },
       xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct)) * 1.15, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
       yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
-      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n}` },
+      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n} · 累计前${desc.length - p[0].dataIndex}类 ${cums[desc.length - 1 - p[0].dataIndex]}%` },
       series: [{
         type: "bar", data: rows.map(r => r.pct), barWidth: "62%",
         itemStyle: { color: C.blue, borderRadius: [0, 4, 4, 0] },
-        label: { show: true, position: "right", formatter: p => `${p.value}% · n=${rows[p.dataIndex].n}`, fontSize: 11, color: "#888" },
+        label: {
+          show: true, position: "right", fontSize: 11, color: INK3,
+          formatter: p => {
+            const i = desc.length - 1 - p.dataIndex;   // 还原降序位次
+            const base = `${p.value}% · n=${rows[p.dataIndex].n}`;
+            return i > 0 ? `${base} {c|▸累计${cums[i]}%}` : base;
+          },
+          rich: { c: { color: C.grey, fontSize: 10 } },   // 条尾灰字=累计占比 (锚 --data-gray)
+        },
       }],
     });
+    const elig = distEligible(state.era, state.dim);
+    G.$("#bk-distnote").innerHTML = desc.length > 1
+      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。`
+      : "";
     // a11y: 动态 aria-label(图名+维度+era+前几项实值) + sr-only 数据表 — 复用本函数已用的 rows(原序非 reverse)
-    const ariaRows = rows.slice().reverse();   // rows 已 reverse 给 echarts(自下而上); 读屏按占比大→小线性读
     const dimName = DIM_LABEL[state.dim];
     setAria("bk-dist",
       `考点分布条形图(${dimName} · ${state.era} 辽宁卷): ` +
-      (ariaRows.slice(0, 4).map(r => `${r.label} ${r.pct}%`).join(", ") || "无数据") +
-      (ariaRows.length > 4 ? ` 等共 ${ariaRows.length} 项` : ""));
+      (desc.slice(0, 4).map(r => `${r.label} ${r.pct}%`).join(", ") || "无数据") +
+      (desc.length > 4 ? ` 等共 ${desc.length} 项` : "") +
+      (desc.length > 1 ? `; 前 ${pN} 类合计 ${cums[pN - 1]}%` : ""));
     setSrTable("bk-dist", `考点分布 — ${escHtml(dimName)} · ${escHtml(state.era)} 辽宁卷`,
-      ["类别", "占比", "题数"], ariaRows.map(r => [r.label, r.pct + "%", "n=" + r.n]));
+      ["类别", "占比", "题数", "累计占比"], desc.map((r, i) => [r.label, r.pct + "%", "n=" + r.n, cums[i] + "%"]));
     charts.dist.off("click");
     // #3: 点考点条 → 弹该考点浮窗(关联+真题, 复用#2修好的 exam_point 真题); fallback sendPrompt 下钻
     charts.dist.on("click", p => {
@@ -109,15 +163,127 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
     });
   }
 
+  // ── B 命题迁移: 宽屏=echarts custom 哑铃图 / 窄屏(≤820px)·无 echarts=文本行降级 (#1)
   function renderShift() {
-    // 命题迁移在 service 算一次 (Rule1); 前端只渲染 state.dist.shift.by_dimension[dim]
-    const rows = ((state.dist.shift || {}).by_dimension || {})[state.dim] || [];
-    G.$("#bk-shift").innerHTML = rows.map(r => {
-      const up = r.delta >= 0, col = up ? C.up : C.down, bg = up ? C.upBg : C.downBg;
-      return `<div class="bk-shift-row"><span class="bk-shift-k">${r.label}</span>
+    const el = G.$("#bk-shift");
+    if (!el || !state.dist) return;
+    const raw = ((state.dist.shift || {}).by_dimension || {})[state.dim] || [];
+    const rows = raw.slice().sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));   // 渲染层按 |delta| 降序 (差值本身 service 已算)
+    if (!rows.length) {
+      const inst0 = window.echarts && window.echarts.getInstanceByDom(el);
+      if (inst0) { inst0.dispose(); delete charts.shift; }
+      el.removeAttribute("role"); el.style.height = "";
+      el.innerHTML = '<p class="muted">无迁移数据</p>';
+      const note0 = G.$("#bk-shiftnote"); if (note0) note0.textContent = "";
+      rmSrTable("bk-shift");
+      return;
+    }
+    if (SHIFT_MQ.matches || !window.echarts) renderShiftText(rows, el);
+    else renderShiftDumbbell(rows, el);
+  }
+
+  // 窄屏降级路径: 保留原文本行实现 (行序同哑铃图 = |delta| 降序)
+  function renderShiftText(rows, el) {
+    const inst = window.echarts && window.echarts.getInstanceByDom(el);
+    if (inst) { inst.dispose(); delete charts.shift; }
+    el.removeAttribute("role"); el.removeAttribute("aria-label"); el.style.height = "";
+    rmSrTable("bk-shift");   // 文本行本身可读, 移除图模式残留的 sr 表防重复朗读
+    el.innerHTML = rows.map(r => {
+      const up = r.delta >= 0, col = up ? C.up : C.blue, bg = up ? C.upBg : C.downBg;
+      return `<div class="bk-shift-row"><span class="bk-shift-k">${escHtml(r.label)}</span>
         <span class="bk-shift-v">${r.then_pct}% → <b>${r.now_pct}%</b></span>
         <span class="bk-delta" style="color:${col};background:${bg};">${up ? "↑" : "↓"} ${Math.abs(r.delta)}pt</span></div>`;
     }).join("");
+    renderShiftNote(rows);
+  }
+
+  function renderShiftDumbbell(rows, el) {
+    // 端点 n 查 service 已算的 distribution[era][dim] (渲染层查表, 不重算 — Rule1)
+    const nOfEra = (era, label) => {
+      const a = ((state.dist.distribution || {})[era] || {})[state.dim] || [];
+      const x = a.find(v => v.label === label);
+      return x ? x.n : null;
+    };
+    const solidNew = distEligible(ERA_NEW, state.dim);   // 认识论: 新era n<30 → 空心虚线环+虚连线 = 方向性
+    el.style.height = (rows.length * 38 + 46) + "px";
+    el.setAttribute("role", "img");
+    let inst = window.echarts.getInstanceByDom(el);
+    if (!inst) { el.innerHTML = ""; inst = G.initChart(el); }
+    else inst.resize();   // 行数随维度变 → 容器高度变
+    if (!inst) return;
+    charts.shift = inst;
+    const maxV = Math.max(...rows.flatMap(r => [r.then_pct, r.now_pct]));
+    inst.setOption({
+      grid: { left: 4, right: 84, top: 26, bottom: 8, containLabel: true },
+      xAxis: {
+        type: "value", min: 0, max: Math.ceil(maxV * 1.15),
+        axisLabel: { formatter: "{value}%", fontSize: 10 },
+        splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } },
+      },
+      yAxis: { type: "category", data: rows.map(r => r.label), inverse: true, axisTick: { show: false }, axisLine: { show: false }, axisLabel: { fontSize: 11 } },
+      tooltip: {
+        trigger: "item", confine: true,
+        formatter: p => {
+          const r = rows[p.dataIndex];
+          if (!r) return "";
+          const n0 = nOfEra(ERA_OLD, r.label), n1 = nOfEra(ERA_NEW, r.label);
+          return `<b>${escHtml(r.label)}</b><br/>2015–20 旧课标II: ${r.then_pct}%${n0 != null ? " · n=" + n0 : ""}<br/>`
+            + `2021+ 新高考II: ${r.now_pct}%${n1 != null ? " · n=" + n1 : ""}<br/>`
+            + `${r.delta >= 0 ? "↑ 升" : "↓ 降"} ${Math.abs(r.delta)}pt · AI 标注 · 看方向`;
+        },
+      },
+      series: [{
+        type: "custom", clip: false,
+        renderItem: (params, api) => {
+          const r = rows[params.dataIndex];
+          const p0 = api.coord([r.then_pct, params.dataIndex]);
+          const p1 = api.coord([r.now_pct, params.dataIndex]);
+          const up = r.delta >= 0;
+          const lineCol = up ? C.up : C.blue;                                // 连线色=方向: 升=--accent-ink / 降=--down
+          const lw = Math.min(3, Math.max(1.5, Math.abs(r.delta) / 8));      // 粗细∝|delta|, clamp 1.5–3px
+          const cs = params.coordSys;
+          const pillX = cs.x + cs.width + 10, pillW = 62, pillH = 18;        // 行尾 delta pill (canvas 版 .bk-delta 同色系)
+          return { type: "group", children: [
+            { type: "line", shape: { x1: p0[0], y1: p0[1], x2: p1[0], y2: p1[1] },
+              style: { stroke: lineCol, lineWidth: lw, lineDash: solidNew ? null : [4, 3] } },
+            { type: "circle", shape: { cx: p0[0], cy: p0[1], r: 5 },          // 旧era端点: 灰描边白填充空心 (--data-gray)
+              style: { fill: "#fff", stroke: C.grey, lineWidth: 1.6 } },
+            solidNew
+              ? { type: "circle", shape: { cx: p1[0], cy: p1[1], r: 5.5 },    // 新era端点: 实心 --down
+                  style: { fill: C.blue, stroke: "#fff", lineWidth: 1 } }
+              : { type: "circle", shape: { cx: p1[0], cy: p1[1], r: 5.5 },    // 样本不足: 空心虚线环 = 方向性
+                  style: { fill: "#fff", stroke: C.blue, lineWidth: 1.6, lineDash: [3, 2] } },
+            { type: "rect", shape: { x: pillX, y: p1[1] - pillH / 2, width: pillW, height: pillH, r: 9 },
+              style: { fill: up ? C.upBg : C.downBg } },
+            { type: "text", style: {
+                x: pillX + pillW / 2, y: p1[1] + 0.5, text: `${up ? "↑" : "↓"} ${Math.abs(r.delta)}pt`,
+                fill: up ? C.up : C.blue, align: "center", verticalAlign: "middle", font: "600 11px sans-serif" } },
+          ] };
+        },
+        data: rows.map(r => [r.then_pct, r.now_pct]),
+      }],
+    }, true);
+    renderShiftNote(rows, solidNew);
+    // a11y: 图模式补读屏 (文本模式行本身可读, 不加)
+    const top3 = rows.slice(0, 3).map(r => `${r.label} ${r.delta >= 0 ? "升" : "降"} ${Math.abs(r.delta)}pt`).join(", ");
+    setAria("bk-shift", `命题迁移哑铃图(${DIM_LABEL[state.dim]} · 2015–20 → 2021+ 辽宁卷, 按变化幅度降序): ${top3}${rows.length > 3 ? ` 等共 ${rows.length} 项` : ""}`);
+    setSrTable("bk-shift", `命题迁移 — ${escHtml(DIM_LABEL[state.dim])} · 2015–20 → 2021+ 辽宁卷`,
+      ["类别", "2015–20 占比", "2021+ 占比", "变化"],
+      rows.map(r => [r.label, r.then_pct + "%", r.now_pct + "%", (r.delta >= 0 ? "升 " : "降 ") + Math.abs(r.delta) + "pt"]));
+  }
+
+  function renderShiftNote(rows, solidNew) {
+    const note = G.$("#bk-shiftnote");
+    if (!note) return;
+    const isChart = !(SHIFT_MQ.matches || !window.echarts);
+    const legend = isChart
+      ? `读法: <span style="color:${C.grey}">○</span> 2015–20 起点 · <span style="color:${C.blue}">●</span> 2021+ 现状; <span style="color:${C.up}">红线=升温</span> · <span style="color:${C.blue}">蓝线=降温</span>, 线越粗变化越大。`
+      : `读法: <span style="color:${C.up}">↑红=升温</span> · <span style="color:${C.blue}">↓蓝=降温</span>, 按变化幅度排。`;
+    const suffNew = (((state.dist.sufficiency || {}).by_era_dim || {})[ERA_NEW] || {})[state.dim] || {};
+    const caveat = (isChart && solidNew === false)
+      ? `<br><small class="muted">2021+ 该维度样本${suffNew.n_total != null ? " n=" + suffNew.n_total + "篇" : ""}不足 30 → 空心虚线 = 方向性参考, 非精确分布。</small>`
+      : "";
+    note.innerHTML = legend + ` <small class="muted">题材/主题为 AI 标注, 看方向。</small>` + caveat;
   }
 
   function renderTrend(p) {
@@ -166,7 +332,9 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
   }
 
   function renderCognitiveSkill(cs) {
-    // 设问类型「怎么想」跨era演变 (单一计算点: service 已算 by_era + reliability, 前端只渲染双era迁移)。
+    // 设问类型「怎么想」跨era演变 (单一计算点: service 已算 by_era + reliability, 前端只渲染)。
+    // #5 降维: 旧era(n=85 分布可靠)=实心条(真值, 推断行=本图唯一红=你该主攻); 新era(n<30
+    // distribution_reliable=false)=空心 scatter 目标刻度(描边 --down)=方向性, 不再画等宽第二组条冒充可信精度。
     const byEra = (cs && cs.by_era) || {};
     const oldRows = byEra[ERA_OLD] || [], newRows = byEra[ERA_NEW] || [];
     if (!oldRows.length && !newRows.length) { G.$("#bk-cog").innerHTML = '<p class="muted">暂无设问类型数据</p>'; return; }
@@ -175,38 +343,45 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
     const pctOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.pct : 0; };
     const nOf = (rs, label) => { const x = rs.find(r => r.label === label); return x ? x.n : 0; };
     const cats = skills.slice().reverse();
-    const lbl = { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: "#76716A" };
-    // #11: 新era reliability — distribution_reliable=false(n<30)时不可把单年噪声渲成可信精度(死线3诚实分层)
     const relNew = (cs && cs.reliability && cs.reliability[ERA_NEW]) || {};
     const newOK = relNew.distribution_reliable !== false;   // 缺省视为可信; 仅显式 false 才降级
+    const maxNew = Math.max(...newRows.map(r => r.pct), 0);
     charts.cog = G.initChart(G.$("#bk-cog"));
     charts.cog.setOption({
-      grid: { left: 4, right: 48, top: 26, bottom: 8, containLabel: true },
+      grid: { left: 4, right: 56, top: 26, bottom: 8, containLabel: true },
       legend: { top: 0, right: 0, textStyle: { fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
       xAxis: { type: "value", axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
       yAxis: { type: "category", data: cats, axisTick: { show: false }, axisLine: { show: false } },
       tooltip: {
         trigger: "axis", axisPointer: { type: "shadow" },
-        formatter: ps => `${ps[0].name}<br/>` + ps.map(p =>
-          `${p.marker}${p.seriesName}: ${p.value}% · n=${(p.seriesIndex === 0 ? nOf(oldRows, p.name) : nOf(newRows, p.name))}`).join("<br/>"),
+        formatter: ps => `${ps[0].name}<br/>` + ps.map(p => {
+          const v = Array.isArray(p.value) ? p.value[0] : p.value;
+          const n = p.seriesIndex === 0 ? nOf(oldRows, p.name) : nOf(newRows, p.name);
+          const tag = p.seriesIndex === 1 && !newOK ? " · 方向性" : "";
+          return `${p.marker}${p.seriesName}: ${v}% · n=${n}${tag}`;
+        }).join("<br/>"),
       },
       series: [
-        { name: "旧课标II 15–20", type: "bar", barGap: "10%", data: cats.map(s => pctOf(oldRows, s)),
-          itemStyle: { color: C.grey, borderRadius: [0, 3, 3, 0] }, label: lbl },
-        { name: newOK ? "新高考II 21+" : "新高考II 21+ (样本不足)", type: "bar", data: cats.map(s => ({ value: pctOf(newRows, s),
-          itemStyle: {
-            color: !newOK ? "#C9C4B8" : (s === "推断" ? C.up : C.blue),   // #11 不可信→灰, 推断不抢眼防误读为可信精度
-            opacity: newOK ? 1 : 0.5,
-            borderColor: newOK ? "#fff" : "#76716A", borderWidth: 1, borderType: newOK ? "solid" : "dashed",
-            borderRadius: [0, 3, 3, 0],
-          } })), label: lbl },
+        { name: "旧课标II 15–20", type: "bar", barWidth: "52%", data: cats.map(s => ({ value: pctOf(oldRows, s),
+          // 实心=真值; 推断=--up (本图唯一红=主攻重点), 其余=--down
+          itemStyle: { color: s === "推断" ? C.up : C.blue, borderRadius: [0, 3, 3, 0] } })),
+          label: { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: INK3 } },
+        newOK
+          ? { name: "新高考II 21+", type: "bar", data: cats.map(s => pctOf(newRows, s)),
+              itemStyle: { color: C.blue, borderRadius: [0, 3, 3, 0] },
+              label: { show: true, position: "right", formatter: p => p.value ? `${p.value}%` : "", fontSize: 10, color: INK3 } }
+          : { name: "2021+ 方向 (n<30)", type: "scatter", z: 3, symbol: "circle", symbolSize: 12,
+              data: cats.map(s => [pctOf(newRows, s), s]),
+              itemStyle: { color: "#fff", borderColor: C.blue, borderWidth: 2 },   // 空心目标刻度=方向性 (描边 --down)
+              label: { show: true, position: "top", distance: 3, fontSize: 10, color: C.blue,
+                formatter: p => { const v = p.value[0]; return (v === maxNew ? "2021+ 方向 " : "") + "▸" + v + "%"; } } },
       ],
-    });
+    }, true);
     const oInf = pctOf(oldRows, "推断"), nInf = pctOf(newRows, "推断");
     // a11y: 动态 aria-label(双era推断迁移概览) + sr-only 表(技能×双era占比/题数) — 复用 skills/pctOf/nOf/newOK
     const ariaSkills = skills.slice();   // skills 原序; cats 是其 reverse 仅供 echarts 自下而上
     setAria("bk-cog",
-      `设问类型分布对比(辽宁卷, 旧课标II 2015–20 vs 新高考II 21+${newOK ? "" : " 样本不足"}): ` +
+      `设问类型分布对比(辽宁卷, 旧课标II 2015–20 实心条 vs 新高考II 21+${newOK ? "" : " 空心方向标记·样本不足"}): ` +
       `推断占比 旧 ${oInf}% → 新 ${nInf}%; 共 ${ariaSkills.length} 类认知技能`);
     setSrTable("bk-cog", `设问类型「怎么想」 — 旧课标II vs 新高考II${newOK ? "" : "(新era样本不足, 方向性信号)"}`,
       ["认知技能", "旧课标II 占比", "旧 题数", "新高考II 占比", "新 题数"],
@@ -214,7 +389,7 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
     const rel = (cs && cs.reliability) || {};
     const nNew = (rel[ERA_NEW] || {}).n || newRows.reduce((a, r) => a + r.n, 0);
     const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
-    // #11: 诚实叙事 — 新era不可信时 banner 显著(非12px灰) + 把"迁移真值"降级为"方向性信号"(critic: n=15单年不作趋势结论)
+    // 诚实叙事 — 新era不可信时 banner 显著 + 把"迁移真值"降级为"方向性信号"(n<30 单年不作趋势结论)
     const banner = !newOK
       ? `<div class="caveat-banner"><span class="cb-tag">样本不足</span><span>新高考II 仅 2023 单年 n=${nNew}(&lt;30) = <b>方向性信号, 非精确分布/趋势结论</b>; 待补 2022/2024/2025 真辽宁设问标注确认。</span></div>`
       : "";
@@ -222,8 +397,8 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
       ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(2023) ${nInf}%`
       : `命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断`;
     G.$("#bk-cognote").innerHTML = banner
-      + `真相源=教研解析<b>显式标签</b>(强于双模型)。${inf}。`
-      + `<br><small class="muted">旧课标II ${nOld}子题(2015–20六年, 分布可靠) vs 新高考II 仅2023 n=${nNew}。2021源=全国甲卷已剔(§7)。</small>`;
+      + `题型标签直接来自教研解析, 不靠 AI 猜(详见页尾「数据怎么来的?」)。${inf}。`
+      + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅2023 n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`;
   }
 
   async function loadCross(by) {
@@ -267,46 +442,19 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
     setSrTable("bk-cross", `题材 × 思维 — ${escHtml(CROSS_LBL[state.cross])} · 仅旧课标II 2015–20截面`,
       ["语篇题材", "子题数", ...skills], ariaCats.map(c => [c, "n=" + bc[c].total, ...skills.map(sk => pctOf(c, sk) + "%")]));
     // #14: era 锁醒目徽章 (F卡是唯一旧era截面卡, 防夹在双era视图里被误读为新高考结论)
-    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:var(--accent-wash);color:var(--accent-ink);padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+桥缺失</span>`;
+    G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:var(--accent-wash);color:var(--accent-ink);padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+数据尚不足</span>`;
     G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
-      + `<br><small class="muted">注 技能侧=<b>教研显式标签(真值)</b> · 题材侧=<b>模型推断(dual_model_agree, 非真值交叉)</b>。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; era锁2015–20(2021+桥缺失); n&lt;10格注仅参考。</small>`;
-  }
-
-  function renderHeat(heat) {
-    const sts = ["core", "standard", "HV_extra", "LV_extra"];
-    const data = [];
-    heat.letters.forEach((L, xi) => sts.forEach((s, yi) => data.push([xi, yi, (heat.cells[L] || {})[s] || 0])));
-    const maxv = Math.max(...data.map(d => d[2]));
-    charts.heat = G.initChart(G.$("#bk-heat"));
-    charts.heat.setOption({
-      grid: { left: 60, right: 8, top: 8, bottom: 40, containLabel: false },
-      xAxis: { type: "category", data: heat.letters, splitArea: { show: true }, axisLabel: { fontSize: 9 } },
-      yAxis: { type: "category", data: sts.map(s => STATUS[s][0]), splitArea: { show: true } },
-      visualMap: { min: 0, max: maxv, calculable: true, orient: "horizontal", left: "center", bottom: 0, inRange: { color: ["#F1EFE8", "#85B7EB", "#1F5F94"] }, textStyle: { fontSize: 10 } },
-      tooltip: { formatter: p => `${heat.letters[p.data[0]]} · ${STATUS[sts[p.data[1]]][0]}<br/>${p.data[2]} 词` },
-      series: [{ type: "heatmap", data, label: { show: false }, itemStyle: { borderColor: "rgba(255,255,255,0.4)", borderWidth: 1 } }],
-    });
-    // a11y: 动态 aria-label(各词汇状态总词数) + sr-only 表(字母×状态词数) — 复用 heat.letters/heat.cells/sts/STATUS
-    const statusName = s => (STATUS[s] && STATUS[s][0]) || s;
-    const statusTotal = s => heat.letters.reduce((a, L) => a + ((heat.cells[L] || {})[s] || 0), 0);
-    setAria("bk-heat",
-      `词汇热力图(词数按状态·非考点 · 首字母 × 词汇状态): ` +
-      sts.map(s => `${statusName(s)} ${statusTotal(s)} 词`).join(", "));
-    setSrTable("bk-heat", "词汇热力 — 字母 × 词汇状态 词数(按状态·非考点)",
-      ["字母", ...sts.map(statusName)],
-      heat.letters.map(L => [L, ...sts.map(s => (heat.cells[L] || {})[s] || 0)]));
-    charts.heat.off("click");
-    charts.heat.on("click", p => G.sendPrompt ? G.sendPrompt(`列出 ${STATUS[sts[p.data[1]]][0]} 类 ${heat.letters[p.data[0]]} 开头的词`) : null);
+      + `<br><small class="muted">注 技能侧=教研解析标签(真值) · 题材侧=AI 标注(两个 AI 一致才计入, 看方向)。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; 时间范围锁 2015–20(2021+ 数据尚不足); n&lt;10格注仅参考。</small>`;
   }
 
   function wire() {
     G.$("#bk-filter").innerHTML = filterBar();
     G.$$("#bk-filter [data-era]").forEach(b => b.onclick = () => { state.era = b.dataset.era; G.$("#bk-filter").innerHTML = filterBar(); wire(); renderDist(); renderShift(); });
     const sel = G.$("#bk-dim");
-    if (sel) sel.onchange = () => { state.dim = sel.value; renderDist(); renderShift(); };
+    if (sel) sel.onchange = () => { state.dim = sel.value; G.$("#bk-filter").innerHTML = filterBar(); wire(); renderDist(); renderShift(); };
   }
 
-  // #5: 给每张含 echarts 实例的卡追加 PNG 导出按钮 (getInstanceByDom 自动跳过非图卡如B区HTML)
+  // #5: 给每张含 echarts 实例的卡追加 PNG 导出按钮 (getInstanceByDom 自动跳过非图卡)
   function wireExports() {
     if (!window.echarts) return;
     G.$$(".bk-card").forEach(card => {
@@ -326,55 +474,78 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
     if (pb) pb.onclick = () => G.printWithCharts();   // RC1: 打印保图(echarts→PNG注入)
   }
 
-  // 结论先行: 从 live 数据蒸馏一句话研判 (考查词学段 + 主导设问思维 + 最大命题迁移); 样本量诚实, 缺数据优雅降级
+  // 结论先行 (#6): 3 行结构化 — 每行 = 数据判断(全部取自已 fetch 的 service 数据, 零 hardcode) + 看证据锚点。
   function renderVerdict(dist, cog, stage) {
     const el = G.$("#bk-verdict"); if (!el) return;
-    const parts = [];
+    const items = [];
+    // a. 考查词学段 → 主攻高中新增 (证据=真题特点页的词学段实证)
     if (stage && !G.isErr(stage) && stage.foundation_pct != null) {
-      parts.push(`考查词 <strong>${stage.foundation_pct}% 为小学/初中阶</strong>、高中新增仅 <strong>${stage.senior_pct}%</strong> → 课程主攻高中 delta`);
+      items.push({
+        text: `考查词 <strong>${stage.foundation_pct}% 初中前已学</strong> → 词汇主攻高中新增的 <strong>${stage.senior_pct}%</strong>`,
+        link: `<a class="bk-vlink" href="#/zhenti">看证据 → 真题特点</a>`,
+      });
     }
+    // b. 主导设问思维 → 练怎么想 (锚区「怎么考」; 样本量诚实: n<30 带 n+方向性标注)
     const byEra = (cog && cog.by_era) || {};
     const newEraKey = Object.keys(byEra).find(k => /2021|新高考/.test(k)) || Object.keys(byEra)[0];
     const skills = newEraKey ? byEra[newEraKey] : null;
     if (Array.isArray(skills) && skills.length) {
       const top = skills.slice().sort((a, b) => (b.pct || 0) - (a.pct || 0))[0];
-      if (top && top.label) parts.push(`设问思维以 <strong>${top.label}</strong> 为主 (${top.pct}%)`);
+      const rel = ((cog || {}).reliability || {})[newEraKey] || {};
+      const relTag = rel.distribution_reliable === false ? ` · n=${rel.n} 方向性` : "";
+      if (top && top.label) items.push({
+        text: `设问以 <strong>${top.label}</strong> 为主 (${top.pct}%${relTag}) → 备课重心=练「怎么想」`,
+        link: `<button type="button" class="bk-vlink" data-goto="bk-sect-how">看证据 ↓</button>`,
+      });
     }
+    // c. 最大命题迁移 (锚区「怎么变」; 扫 genre+theme_l2 细粒度维度, theme_context 3 大类过粗不参与)
     const sd = (dist && dist.shift && dist.shift.by_dimension) || {};
     let mv = null;
     ["genre", "theme_l2"].forEach(k => (sd[k] || []).forEach(m => { if (!mv || Math.abs(m.delta) > Math.abs(mv.delta)) mv = m; }));
     if (mv && Math.abs(mv.delta) >= 1) {
-      parts.push(`近年最大题材/主题变化: <strong>${mv.label}</strong> ${mv.delta >= 0 ? "升" : "降"} ${Math.abs(mv.delta).toFixed(1)}pt`);
+      items.push({
+        text: `最大命题迁移: <strong>${mv.label}</strong> ${mv.delta >= 0 ? "升" : "降"} ${Math.abs(mv.delta).toFixed(1)}pt`,
+        link: `<button type="button" class="bk-vlink" data-goto="bk-sect-change">看证据 ↓</button>`,
+      });
     }
-    if (!parts.length) { el.style.display = "none"; return; }
+    if (!items.length) { el.style.display = "none"; return; }
     el.innerHTML = `<div class="bk-verdict-h">研判结论 · 辽宁新高考 II 卷</div>`
-      + `<p class="bk-verdict-body">${parts.join("; ")}。</p>`
-      + `<p class="bk-verdict-foot">题材/主题为双模型推断 (方向性, 非真值); 按卷制 era 分层非全历史平均; 详见下方各图。</p>`;
+      + `<ul class="bk-verdict-list">` + items.map(i => `<li>${i.text} ${i.link}</li>`).join("") + `</ul>`
+      + `<p class="bk-verdict-foot">题材/主题由 AI 标注(看方向, 非官方真值); 新老卷制分开统计不混平均 — 详见页尾「数据怎么来的?」。</p>`;
+    G.$$("#bk-verdict [data-goto]").forEach(b => b.onclick = () => {
+      const t = document.getElementById(b.dataset.goto);
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   registerTab("beike", async () => {
     G.$("#content").innerHTML = shell();
     const echartsOk = await G.ensureECharts();   // RC1: 轮询等 echarts 就绪, 根治 load 竞态静默空白
-    const [dist, qt, heat, cog, stage] = await Promise.all([
+    const [dist, qt, cog, stage] = await Promise.all([
       // RC1/D0: distribution 是驾驶舱主数据, 失败必抛 → route() 显式错误态 (不冒充空壳掩盖后端故障)
       fetchJSON("/api/exam_point/distribution"),
       fetchJSON("/api/trend/question_type_presence").catch(() => ({ by_question_type: [] })),
-      fetchJSON("/api/heatmap/vocab").catch(() => ({ letters: [], cells: {} })),
       fetchJSON("/api/exam_point/cognitive_skill").catch(() => ({ by_era: {} })),
-      G.fetchSafe("/api/k12/tested_word_stage"),  // 结论先行 banner 的考查词学段
+      G.fetchSafe("/api/k12/tested_word_stage"),  // 结论行 a 的考查词学段
     ]);
     state.dist = dist;
-    renderVerdict(dist, cog, stage);   // 结论先行: 顶部一句话数据研判 (北极星 ① 命题研判)
+    renderVerdict(dist, cog, stage);   // 结论先行: 顶部 3 行数据研判 + 看证据锚点 (北极星 ① 命题研判)
     wire();
     const cross = await loadCross(state.cross);
     if (echartsOk) {
-      renderDist(); renderTrend(qt); renderHeat(heat); renderCognitiveSkill(cog);
+      renderDist(); renderTrend(qt); renderCognitiveSkill(cog);
       renderCrossToggle(); renderCogCross(cross);
     } else {
       G.chartLoadError(G.$("#bk-dist"));   // D0诚实: echarts 真失败显式报错, 不冒充空白
     }
-    renderShift();
+    renderShift();   // B 图自带降级: 宽屏=哑铃图 / 窄屏·无 echarts=文本行
     wireExports();   // #5: 图卡追加 PNG 导出 + 打印按钮接线
     if (!window.__rzBeike) { window.__rzBeike = 1; window.addEventListener("resize", () => Object.values(charts).forEach(c => c && c.resize())); }  // RC1: 只绑一次防切tab累积泄漏
+    if (!window.__mqBeike) {   // 跨 820px 断点时 B 图在哑铃图/文本行间切换 (只绑一次)
+      window.__mqBeike = 1;
+      const onMq = () => { if (G.$("#bk-shift") && state.dist) renderShift(); };
+      if (SHIFT_MQ.addEventListener) SHIFT_MQ.addEventListener("change", onMq);
+      else if (SHIFT_MQ.addListener) SHIFT_MQ.addListener(onMq);
+    }
   });
 })();

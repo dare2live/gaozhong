@@ -72,45 +72,33 @@
       <table class="zt-stage-tbl"><thead><tr><th>学段</th><th>词数</th><th>占比</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
-  // 命题迁移卡: shift.by_dimension (2015-20 → 2021+) 蒸馏成 top movers delta 结论 (学习者向)
-  const _DIM_LABEL = { genre: "题材 · 体裁", theme_l2: "主题群 (课标)", cognitive_skill: "设问思维" };
-  function _migrationCard(shiftByDim) {
-    const blocks = Object.keys(shiftByDim).map(dim => {
-      const movers = (shiftByDim[dim] || []).filter(m => Math.abs(m.delta) >= 0.05)
-        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, 4);
-      if (!movers.length) return "";
-      const rows = movers.map(m => {
-        const up = m.delta >= 0;
-        return `<div class="zt-mv"><span class="zt-mv-l">${esc(m.label)}</span><span class="zt-mv-d">${m.then_pct}% → ${m.now_pct}%</span><span class="zt-mv-delta ${up ? "up" : "down"}">${up ? "▲" : "▼"} ${Math.abs(m.delta).toFixed(1)}pt</span></div>`;
-      }).join("");
-      return `<div class="zt-mv-dim"><div class="zt-mv-h">${_DIM_LABEL[dim] || dim}</div>${rows}</div>`;
-    }).filter(Boolean).join("");
-    return blocks || '<p class="kb-dim">迁移数据不足。</p>';
-  }
-  // 题材×设问思维 套路卡: cognitive_by_content 每题材主导技能 (era 2015-20, dual_model 方向性)
+  // 题材×设问思维 套路卡: cognitive_by_content 每题材主导技能 (era 2015-20, dual_model 方向性)。
+  // thin 题材不静默丢 (D0 数字一个不删): 照渲但整行降透明 + 「样本薄」尾缀; 厚样本行在前 (稳定序)。
   function _taoluCard(cbc) {
     const bc = cbc.by_content || {};
-    const rows = Object.keys(bc).filter(g => !bc[g].thin && bc[g].skills && bc[g].skills.length).map(g => {
-      const top = bc[g].skills[0];
-      return `<div class="kb-row"><span class="kb-row-h">${esc(g)}</span><span class="zt-taolu">主导 <strong>${esc(top.label)}</strong> ${top.pct}%<span class="kb-dim"> · ${bc[g].total}子题</span></span></div>`;
+    const keys = Object.keys(bc).filter(g => bc[g].skills && bc[g].skills.length);
+    keys.sort((a, b) => (bc[a].thin ? 1 : 0) - (bc[b].thin ? 1 : 0));
+    const rows = keys.map(g => {
+      const top = bc[g].skills[0], thin = !!bc[g].thin;
+      return `<div class="kb-row${thin ? " zt-thinrow" : ""}"><span class="kb-row-h">${esc(g)}</span><span class="zt-taolu">主导 <strong>${esc(top.label)}</strong> ${top.pct}%<span class="kb-dim"> · ${bc[g].total}子题</span>${thin ? '<span class="zt-thin-tag">样本薄</span>' : ""}</span></div>`;
     }).join("");
     return rows || '<p class="kb-dim">题材×思维数据不足。</p>';
   }
-  const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-  // N3: 设问思维讲解 — 什么是设问思维 + 怎么通过高考题体现 (认知技能=真值; 设问信号=教学归纳)
+  // N3: 设问思维 4 技能 — 2×2 常显卡 (学习者最可迁移的知识不折叠; ≤820px 降 1 列)。
+  // 技能名与分布 = 教研显式标签真值; 「怎么想」与信号词 = 教学归纳。
   const _COG_EXPLAIN = [
-    { skill: "推断", what: "据字面信息推未明说的言外之意/作者态度/隐含结论", how: "设问含 infer / suggest / imply / probably / most likely / learn from" },
-    { skill: "理解主旨要义", what: "抓全文中心、标题、段落大意", how: "设问含 main idea / best title / mainly about / purpose of the text" },
-    { skill: "理解具体信息", what: "定位某处细节事实 (时间/原因/数字/做法)", how: "设问含 according to / what / when / why / how many · 定位题干关键词回原文" },
-    { skill: "理解词汇", what: "据上下文猜词义/指代", how: "设问含 the word/phrase X means / refers to / closest in meaning" },
+    { skill: "推断", what: "据字面信息推未明说的言外之意、作者态度、隐含结论。", sig: ["infer", "suggest", "imply", "probably", "most likely", "learn from"] },
+    { skill: "理解主旨要义", what: "抓全文中心、标题、段落大意。", sig: ["main idea", "best title", "mainly about", "purpose of the text"] },
+    { skill: "理解具体信息", what: "定位某处细节事实 (时间/原因/数字/做法) — 拿题干关键词回原文找。", sig: ["according to", "what", "when", "why", "how many"] },
+    { skill: "理解词汇", what: "据上下文猜词义、猜指代, 不背也能推。", sig: ["the word X means", "refers to", "closest in meaning"] },
   ];
   function _cogExplainPanel() {
-    const rows = _COG_EXPLAIN.map(c =>
-      `<div class="zt-cog"><span class="zt-cog-s">${esc(c.skill)}</span><span class="zt-cog-w">${esc(c.what)}</span><span class="zt-cog-h">${esc(c.how)}</span></div>`).join("");
-    return `<details class="zt-cog-exp"><summary>什么是"设问思维"? 怎么通过高考题体现? (点开)</summary>
-      <p class="kb-dim" style="margin:6px 0;">设问思维 = 题目要你<strong>怎么想</strong>(认知技能), 不只是考什么内容。同一篇文章, 设问换个思维就是另一道题。高考阅读主要考下面 4 种 (数据真值=教研显式标签); "怎么体现"=该思维的典型设问信号 (教学归纳):</p>
-      <div class="zt-cog-list">${rows}</div></details>`;
+    const cards = _COG_EXPLAIN.map(c =>
+      `<div class="zt-cogcard"><div class="zt-cogcard-s">${esc(c.skill)}</div><p class="zt-cogcard-w">${esc(c.what)}</p><div class="zt-cogcard-sig">${c.sig.map(x => `<span class="zt-sig">${esc(x)}</span>`).join("")}</div></div>`).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;">设问思维 = 题目要你<strong>怎么想</strong>, 不只是考什么。同一篇文章, 设问换个思维就是另一道题。高考阅读主要考这 4 种 — 看到卡里的设问信号词, 就知道该用哪种思维:</p>
+      <div class="zt-cog-grid">${cards}</div>`;
   }
 
   // N2: 语法考点卡 (tests_grammar 课标第二级子类 辽宁考查频次热点)
@@ -138,27 +126,20 @@
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const [d, distG, distT, cbc, gram] = await Promise.all([
+    const [d, cbc, gram] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
-      fetchSafe("/api/exam_point/distribution?dimension=genre"),
-      fetchSafe("/api/exam_point/distribution?dimension=theme_l2"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
       fetchSafe("/api/grammar/stats"),
     ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
     const gramHTML = (!isErr(gram)) ? _grammarCard(gram.grammar_exam) : '<p class="kb-dim">语法考查数据加载失败。</p>';
-    const phraseHTML = (!isErr(gram)) ? _phraseCard(gram.textbook_expr) : "";
-    const shiftByDim = {};  // 只取题材+主题群两 passage 维 (theme_context 与 theme_l2 冗余, 不重复)
-    const _WANT = ["genre", "theme_l2"];
-    [distG, distT].forEach(x => { if (!isErr(x) && x.shift && x.shift.by_dimension) _WANT.forEach(k => { if (x.shift.by_dimension[k]) shiftByDim[k] = x.shift.by_dimension[k]; }); });
-    const migHTML = Object.keys(shiftByDim).length ? _migrationCard(shiftByDim) : '<p class="kb-dim">迁移数据加载失败。</p>';
     const taoluHTML = (!isErr(cbc)) ? _taoluCard(cbc) : '<p class="kb-dim">套路数据加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
       ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
       <div class="sc-takeaway">
         <div class="sc-tk-h">结论 · 用最少课程覆盖最大考点</div>
         <p class="sc-tk-body">辽宁高考<strong>离散考点题型</strong>(完形/语法填空/短改/单选)考查的词中, <strong class="tk-found">${d.foundation_pct}% 是小学 / 初中阶</strong>(学生入高中前已学), 真正属<strong class="tk-senior">高中新增的仅 ${d.senior_pct}%</strong>。→ 高中课程不必重教基础词, 主攻这 ${d.senior_pct}% 的高中 delta + 高频考点。</p>
-        <p class="sc-tk-caveat">${d.caveat || ""} · 共 ${d.total} 个去重考查词${d.unclassified_pct ? `; 未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算` : ""}。${d.stage_note ? " " + d.stage_note : ""}</p>
+        <p class="sc-tk-caveat">口径: 只统计真题里<b>真正考过</b>的词 (教材出现过 ≠ 高考考过), 共 ${d.total} 个去重词; 详细口径见页尾「数据怎么来的?」。</p>
       </div>
       <section class="bk-card">
         <div class="bk-h"><span>辽宁高考考查词 · 哪个学段学的</span><span class="bk-src">/api/k12/tested_word_stage</span></div>
@@ -166,11 +147,7 @@
         ${_stageSrTable(d)}
         <p class="kb-dim" style="margin:10px 0 0;">统计口径 = 真题里<b>真正考查</b>的词 (教材出现过 ≠ 高考考过), 共 ${d.total} 个去重词。<b>已学过 ≠ 都记得</b> — 义务段词仍是考查主体, 主攻 ${d.senior_pct}% 不等于放掉基础。未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算。</p>
       </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>命题迁移 · 近年怎么变 (2015–20 → 2021+)</span><span class="bk-src">/api/exam_point/distribution · shift</span></div>
-        <div class="zt-mig">${migHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">题材/主题为双模型推断 (方向性, 非真值); 按卷制 era 分层非全历史平均。完整交互图见<a href="#/beike">命题研判</a>。</p>
-      </section>
+      <p class="zt-nextlink">近年考什么在变? 完整迁移图 → <a href="#/beike">命题研判</a></p>
       <section class="bk-card">
         <div class="bk-h"><span>命题套路 · 题材 × 设问思维</span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div>
         ${_cogExplainPanel()}
@@ -182,31 +159,84 @@
         <div class="zt-gramlist">${gramHTML}</div>
         <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。前 4 类 (从句/被动/非谓语/时态) 合计约七成 — 语法主攻顺序即此。${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
       </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>教材 固定搭配 / 句型 / 表达方式 库</span><span class="bk-src">/api/grammar/stats · phrases</span></div>
-        <div class="tk-types">${phraseHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">${(!isErr(gram) && gram.textbook_expr && gram.textbook_expr.note) ? esc(gram.textbook_expr.note) : "教材提取的固定搭配/句型/表达库。"} <strong>教材里出现过 ≠ 高考考过</strong> — 这里是教材库存, 不冒充考查频次。</p>
-      </section>
+      <p class="zt-nextlink">这些套路怎么变成课? → <a href="#/teaching">40 节课程</a> · 固定搭配/句型/表达库已移入 <a href="#/jichu">基础库</a></p>
+      <details class="zt-datahow"><summary>数据怎么来的?</summary>
+        <ul>
+          <li><b>「出现 ≠ 考查」</b>: 教材里出现过的词不算, 只统计真题里真正被考的词。</li>
+          <li><b>新老高考分开统计</b>: 2021 起辽宁用新高考 II 卷, 与 2015–2020 老卷分开算, 不混着平均。</li>
+          <li><b>设问思维是事实标签</b>: 题型标签直接来自教研解析原文, 不是 AI 猜的; 题材/主题由两个 AI 独立标注、结论一致才计入 (方向参考)。</li>
+          <li>原始口径: ${esc(d.caveat || "")}${d.stage_note ? " · " + esc(d.stage_note) : ""}</li>
+        </ul>
+      </details>
     </section>`;
   });
 
-  // ③ 基础库 hub: 教材库 / 真题库 / 课标库 (可用的直接链到现有 working tab)
+  // ③ 基础库 hub (设计规范 §06): 检索台首屏第一交互 + 四书架活取计数 + 教材短语收编 + 页脚数据凭证。
+  // 一切学习者可见计数 API 活取; 辽宁真题数一律 liaoning_browse total (190 口径, 禁 474 全库冒充)。
+  function _jichuSearchWire() {
+    const inp = document.querySelector("#jc-q"), box = document.querySelector("#jc-hits");
+    if (!inp || !box) return;
+    let t = null;
+    inp.oninput = () => {
+      clearTimeout(t);
+      const q = inp.value.trim();
+      if (!q) { box.innerHTML = ""; return; }
+      t = setTimeout(async () => {
+        const r = await fetchSafe(`/api/exam_dictionary?prefix=${encodeURIComponent(q)}&limit=8`);
+        if (isErr(r)) { box.innerHTML = '<p class="kb-dim">词典查询失败 — 后端未就绪。</p>'; return; }
+        const rows = r.rows || [];
+        if (!rows.length) { box.innerHTML = '<p class="kb-dim">没找到 — 只按词头检索, 试试更短的开头。</p>'; return; }
+        box.innerHTML = rows.map(w =>
+          `<button type="button" class="jc-hit" data-w="${esc(w.word)}">
+            <b>${esc(w.word)}</b><span class="jc-hit-g">${esc((w.gloss || "").slice(0, 26))}</span>
+            ${w.gaokao_hit_ln ? `<span class="jc-hit-ln">辽宁考过 ${w.gaokao_hit_ln} 次</span>` : '<span class="jc-hit-ln dim">未在辽宁卷命中</span>'}
+            <span class="jc-hit-st">${esc(w.stage || w.curriculum_level || "")}</span>
+          </button>`).join("");
+        box.querySelectorAll(".jc-hit").forEach(b => b.onclick = () => window.GZ.openPopup && window.GZ.openPopup("word:" + b.dataset.w));
+      }, 300);
+    };
+  }
   registerTab("jichu", async () => {
-    document.querySelector("#content").innerHTML = _scaffold({
-      badge: "高中 · 基础库",
-      title: "基础库",
-      lead: "教材、真题、课标三大第一手数据库 — 可查、可溯源 (每条能回溯原始 PDF / 真题)。这是 L1 基础数据层的浏览入口。",
-      cards: [
-        { title: "教材库", icon: IC.book, status: "ready", href: "#/textbook",
-          desc: "外研社版 + 人教版 (辽宁主用) 单元 / 词表 / 课文, 按学习序列浏览。" },
-        { title: "考试词典 (考纲词汇)", icon: IC.words, status: "ready", href: "#/dict",
-          desc: "考纲词汇释义 + 辽宁高考命中 / 必教标记 (三源溯源)。" },
-        { title: "真题库", icon: IC.paper, status: "ready", href: "#/tiku",
-          desc: "辽宁卷高考真题按年/题型浏览, 每题溯源到原卷 — 课程作业的题源。" },
-        { title: "课标库", icon: IC.std, status: "ready", href: "#/kebiao",
-          desc: "普通高中英语课程标准: 主题群 / 语法体系 / 词汇 (按学段) 结构化浏览。" },
-      ],
-    });
+    const C = document.querySelector("#content");
+    C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入基础库…</div>';
+    const [stats, browse, cur, dict, gram] = await Promise.all([
+      fetchSafe("/api/stats"), fetchSafe("/api/exam/liaoning_browse"),
+      fetchSafe("/api/curriculum/summary"), fetchSafe("/api/exam_dictionary?prefix=zz&limit=1"),
+      fetchSafe("/api/grammar/stats"),
+    ]);
+    // 计数 fetch 失败 → 显原描述不显假数字 (D0 诚实)
+    const shelf = (title, icon, href, sub, fallback) =>
+      `<a class="sc-card link" href="${href}"><div class="sc-card-h"><svg class="sc-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${icon}</svg><span class="sc-card-t">${title}</span></div><p class="sc-card-d">${sub || fallback}</p><span class="sc-go">进入 →</span></a>`;
+    C.innerHTML = `<section class="scaffold">
+      ${pageHead("高中 · 基础库", "去哪查、有多少", "教材 · 真题 · 课标 · 词典 — 每条数据可回溯原始 PDF 与真题原卷。")}
+      <div class="jc-search">
+        <input id="jc-q" type="search" placeholder="查一个词: 释义 · 学段 · 高考是否考过" aria-label="词典检索 (按词头)" autocomplete="off">
+        <div id="jc-hits" class="jc-hits" aria-live="polite"></div>
+      </div>
+      <div class="sc-grid">
+        ${shelf("教材库", IC.book, "#/textbook",
+          !isErr(stats) && stats.textbooks ? `${stats.textbooks} 册 · 外研社 + 人教 (辽宁主用) — 单元 / 词表 / 课文直读` : "", "外研社版 + 人教版单元 / 词表 / 课文, 按学习序列浏览。")}
+        ${shelf("真题库", IC.paper, "#/tiku",
+          !isErr(browse) && browse.total ? `${browse.total} 题 · ${(browse.years || []).length ? Math.min(...browse.years) + "–" + Math.max(...browse.years) : ""} 辽宁卷 — 每题可溯源原卷` : "", "辽宁卷高考真题按年/题型浏览, 每题溯源到原卷。")}
+        ${shelf("考试词典", IC.words, "#/dict",
+          !isErr(dict) && dict.total ? `${Number(dict.total).toLocaleString()} 词 · 辽宁高考命中标记 + 学段归属` : "", "考纲词汇释义 + 辽宁高考命中 / 学段标记。")}
+        ${shelf("课标库", IC.std, "#/kebiao",
+          !isErr(cur) && cur.vocab_total ? `${Number(cur.vocab_total).toLocaleString()} 词 · ${cur.grammar_total} 语法项 · 主题语境 ${cur.themes_total} 项` : "", "课程标准: 主题群 / 语法体系 / 词汇结构化浏览。")}
+      </div>
+      <section class="bk-card" style="margin-top:14px">
+        <div class="bk-h"><span>教材 固定搭配 / 句型 / 表达方式</span><span class="bk-src">/api/grammar/stats · phrases</span></div>
+        <div class="tk-types">${(!isErr(gram)) ? _phraseCard(gram.textbook_expr) : '<p class="kb-dim">加载失败。</p>'}</div>
+        <p class="kb-dim" style="margin:8px 0 0;"><strong>教材里出现过 ≠ 高考考过</strong> — 这里是教材库存, 不冒充考查频次。</p>
+      </section>
+      <p class="jc-cred">${!isErr(stats) ? `${Number(stats.nodes || 0).toLocaleString()} 个知识节点 · ${Number(stats.edges || 0).toLocaleString()} 条关联 · ` : ""}数据每日自动校验</p>
+      <details class="zt-datahow"><summary>数据怎么来的?</summary>
+        <ul>
+          <li>教材/课标 = 官方 PDF 解析入库, 每条可回溯页码; 真题 = 历年辽宁卷 (2021 起新高考 II 卷), 每题可回溯原卷。</li>
+          <li>词典「辽宁考过 N 次」= 该词在辽宁卷离散考点题型中被考查的次数 (出现 ≠ 考查)。</li>
+        </ul>
+      </details>
+    </section>`;
+    _jichuSearchWire();
   });
 
   // ── 初中板块 (Phase E 镜像建设中) — 四页共用占位 ──

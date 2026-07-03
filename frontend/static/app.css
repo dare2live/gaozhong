@@ -297,3 +297,85 @@
   .sidebar-foot { display: none; }
   .content { padding: 1rem; }
 }
+
+/* ══ P1-zhenti-jichu 锚区 (scaffold.js 域新样式只写这里) ══ */
+/* 设问思维 2×2 常显卡 */
+.zt-cog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 4px 0 12px; }
+.zt-cogcard { border: 1px solid var(--line); border-radius: var(--r); background: var(--sunken); padding: 11px 13px; }
+.zt-cogcard-s { font-size: 13.5px; font-weight: 650; color: var(--ink); margin-bottom: 3px; }
+.zt-cogcard-w { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; margin: 0 0 7px; }
+.zt-cogcard-sig { display: flex; flex-wrap: wrap; gap: 4px; }
+.zt-sig { font-family: var(--num); font-size: 10.5px; color: var(--down); background: var(--card); border: 1px solid var(--line); border-radius: var(--r-xs); padding: 1px 6px; }
+/* thin 题材行: 降透明不静默丢 (认识论编码) */
+.zt-thinrow { opacity: .45; }
+.zt-thin-tag { font-size: 10px; color: var(--warn); border: 1px solid var(--warn); border-radius: var(--r-xs); padding: 0 4px; margin-left: 6px; }
+/* 页尾下一步链 + 数据口径 details */
+.zt-nextlink { font-size: 13px; color: var(--ink-3); margin: 2px 0 14px; }
+.zt-nextlink a { color: var(--accent-ink); text-decoration: none; font-weight: 550; }
+.zt-datahow { margin: 18px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.zt-datahow summary { cursor: pointer; font-weight: 550; color: var(--ink-2); }
+.zt-datahow ul { margin: 8px 0 0; padding-left: 20px; line-height: 1.7; }
+/* 基础库检索台 */
+.jc-search { margin: 0 0 18px; }
+.jc-search input { width: 100%; padding: 11px 14px; font-size: 14.5px; font-family: var(--font); border: 1px solid var(--line); border-radius: var(--r); background: var(--card); color: var(--ink); }
+.jc-search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.jc-hits { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.jc-hit { display: flex; align-items: baseline; gap: 10px; text-align: left; padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; font-family: var(--font); font-size: 13px; }
+.jc-hit:hover { border-color: var(--accent); }
+.jc-hit b { font-size: 14px; color: var(--ink); }
+.jc-hit-g { color: var(--ink-3); flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.jc-hit-ln { font-size: 11.5px; color: var(--accent-ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.jc-hit-ln.dim { color: var(--ink-3); }
+.jc-hit-st { font-size: 11px; color: var(--ink-3); background: var(--sunken); border-radius: var(--r-xs); padding: 1px 6px; white-space: nowrap; }
+.jc-cred { font-size: 11.5px; color: var(--ink-3); margin: 16px 0 0; font-variant-numeric: tabular-nums; }
+@media (max-width: 820px) { .zt-cog-grid { grid-template-columns: 1fr; } }
+
+
+/* ══ P1-teaching 锚区 (app_router.js 域新样式只写这里) ══ */
+
+/* ④ 40节课程页重构 (纯 CSS, design-system 令牌; 白字仅 --down/--down-2 底, --down-3 段标签 --ink) */
+/* ④-1 覆盖证明 4 轴微条: 实色段 = 教的高产出集; 空心描边段 = 诚实长尾缺口 */
+.ks-cov { display: flex; flex-direction: column; gap: 7px; margin: 2px 0 10px; }
+.ks-cov-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.ks-cov-axis { flex: 0 0 72px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.ks-cov-bar { flex: 0 0 190px; display: flex; height: 10px; }
+.ks-cov-fill { display: block; height: 100%; background: var(--down); border-radius: 5px 0 0 5px; }
+.ks-cov-fill:last-child { border-radius: 5px; }
+.ks-cov-gap { display: block; height: 100%; box-sizing: border-box; border: 1px dashed var(--down-2); border-left: 0; border-radius: 0 5px 5px 0; }
+.ks-cov-txt { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ks-cov-txt b { font-family: var(--num); font-weight: 650; color: var(--ink); }
+
+/* ④-2 课程地图分段条: 段宽 ∝ 节数 (flex-grow), 蓝阶循环相邻异色, 点击跳章 */
+.ks-map-cap { font-size: 12px; color: var(--ink-3); margin: 14px 0 6px; }
+.ks-map { display: flex; height: 34px; border-radius: var(--r-sm); overflow: hidden; margin: 0 0 8px; }
+.ks-map-seg { border: 0; padding: 0 6px; font: inherit; font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; min-width: 0; transition: filter var(--dur) var(--ease); }
+.ks-map-seg:hover { filter: brightness(1.08); }
+
+/* ④-3 主题群章头: 名 + 权重微条 + 节数 + 累计覆盖里程碑 */
+.ks-chapter { scroll-margin-top: 12px; }
+.ks-ch-head { margin: 26px 0 10px; padding-bottom: 7px; border-bottom: 1px solid var(--line); }
+.ks-ch-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ks-ch-dot { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+.content .ks-ch-name { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; color: var(--ink); margin: 0; padding: 0; border-bottom: 0; }
+.ks-ch-n { font-family: var(--num); font-size: 12px; color: var(--ink-3); }
+.ks-ch-wbar { flex: 0 0 110px; height: 7px; background: var(--sunken); border-radius: 4px; overflow: hidden; }
+.ks-ch-wbar > span { display: block; height: 100%; background: var(--down); border-radius: 4px; }
+.ks-ch-wtxt { font-family: var(--num); font-size: 12px; color: var(--ink-2); }
+.ks-ch-cum { font-size: 12.5px; color: var(--ink-3); margin: 5px 0 0; }
+
+/* ④-4 课节 timeline: 左竖连接线 + 节点圆点 (纯 CSS); 行 = 第N节·作业N道真题 + 展开箭头 */
+.ks-tl { position: relative; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+.ks-tl::before { content: ""; position: absolute; left: 8px; top: 12px; bottom: 12px; width: 2px; border-radius: 1px; background: var(--down-4); }
+.ks-tl-item { position: relative; }
+.ks-tl-item::before { content: ""; position: absolute; left: -19px; top: 15px; width: 8px; height: 8px; box-sizing: border-box; border-radius: 50%; background: var(--card); border: 2px solid var(--down); }
+.ks-tl .ks-seq { flex: 0 0 auto; }
+.ks-tl .ks-hwn { flex: 1; }
+.ks-tl .ks-sum::after { content: ""; flex: none; width: 7px; height: 7px; border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3); transform: rotate(45deg); margin-top: -3px; transition: transform var(--dur) var(--ease); }
+.ks-tl .ks-lesson[open] .ks-sum::after { transform: rotate(225deg); margin-top: 3px; }
+.ks-soon { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--line-soft); font-size: 11.5px; color: var(--warn); }
+
+/* ④-5 页尾: 基础库入口 + 数据来源人话 */
+.ks-foot { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); }
+.ks-foot-link { font-size: 13.5px; color: var(--ink-2); margin: 0 0 8px; }
+.ks-how > summary { cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
+.ks-how ul { margin: 8px 0 0; padding-left: 1.2rem; font-size: 12.5px; line-height: 1.7; color: var(--ink-3); }

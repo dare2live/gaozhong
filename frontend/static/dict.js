@@ -27,7 +27,7 @@
   function shell() {
     return `
 ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考纲词汇释义 + 辽宁高考命中标记 + 学段归属 — 三源可溯。")}
-<p class="muted" style="margin:0 0 12px;font-size:13px;">exam_vocabulary <span id="dict-total">…</span> 词 (课标∪教材真超纲) · 释义三源溯源(教材→中考→COCA兜底) · 辽宁高考命中=真题边真值 · <span style="border-bottom:1px dashed var(--line);">点词</span>查跨阶段多义 · service 单算点</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">共 <span id="dict-total">…</span> 词 · <span style="border-bottom:1px dashed var(--line);">点词</span>看跨学段多义与真题命中</p>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" aria-label="按词首字母前缀检索" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;">
   <select id="dict-stage" aria-label="按学段筛选" style="padding:7px;border:1px solid var(--line);border-radius:6px;">
@@ -37,7 +37,14 @@ ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考�
   <button id="dict-export" class="bk-export" title="导出当前筛选词表 CSV (备课发学生)">${GZ.icon("download")} CSV</button>
   <span id="dict-n" class="muted" style="font-size:12px;"></span>
 </div>
-<div id="dict-list" style="max-height:62vh;overflow:auto;"></div>`;
+<div id="dict-list" style="max-height:62vh;overflow:auto;"></div>
+<details class="zt-datahow"><summary>数据怎么来的?</summary>
+  <ul>
+    <li>词表 = 考纲词汇 ∪ 教材词 (含超纲标记); 释义三源: 教材词表 → 中考词汇表 → 语料库兜底, 每条标来源。</li>
+    <li>「辽宁高考命中 N 次」= 该词在辽宁卷离散考点题型中真正被考的次数 (教材出现过 ≠ 高考考过)。</li>
+    <li>跨学段多义为 AI 标注 · 方向参考 (两个模型一致才计入), 非官方结论。</li>
+  </ul>
+</details>`;
   }
 
   // #10: 跨阶段多义详情渲染 (word_sense; provenance=dual_model → 必标方向性参考非真值, 守 J4 死亡红线)
