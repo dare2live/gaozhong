@@ -78,6 +78,28 @@ def _process_line(line: str, seen: set[str], source_tag: str) -> list[dict]:
     return rows
 
 
+def _merge_unclosed_parens(lines: list[str]) -> list[str]:
+    """跨行拼接括号未配平的行 (右栏/页尾宽度有限, 长括号变体列表被截断到下一行开头).
+
+    坑(2026-07-04 全数据审计): 'kilo (kilogramme,' + 下一行 'kilogram)' 这类跨行案例,
+    旧版逐行独立解析永远看不到下一行, kilogramme/kilogram 两个变体词静默丢失。只在
+    "拼接后确实配平"才采用, 防止真无续行时误吸下一个真词条(与 junior_high_curriculum.py
+    同款保守合并策略, 姊妹模块同坑同修)。"""
+    out: list[str] = []
+    i, n = 0, len(lines)
+    while i < n:
+        line = lines[i]
+        if i + 1 < n and line.count("(") > line.count(")"):
+            merged = line.rstrip() + " " + lines[i + 1].strip()
+            if merged.count("(") == merged.count(")"):
+                out.append(merged)
+                i += 2
+                continue
+        out.append(line)
+        i += 1
+    return out
+
+
 # 国家表段起锚 (附录标题行 '主要国家名称及相关信息（供教学参考）'): 真词表到此为止。
 # index 183(p184) 顶部是 yes..zoo 真词, 底部转国家表; 表内纯 ASCII 行(ADJECTIVES/Korea/
 # Korean) 不含中文 → _skip_line 漏过 → 误纳。内容锚定截断 (PIT 安全, 不 hardcode 页/行)。
@@ -93,13 +115,14 @@ def extract_cefr_vocab(reader: PdfReader, source_tag: str,
     # 184 含到 'y' 页止; index 183 国家表段经 _COUNTRY_TABLE_RE 内容截断 (不靠页号)。
     rows: list[dict] = []
     seen: set[str] = set()
+    flat: list[str] = []
     for pi in range(start_page - 1, end_page):
         if pi >= len(reader.pages): break
         text = reader.pages[pi].extract_text() or ""
-        for raw in text.split("\n"):
-            line = raw.strip()
-            if _COUNTRY_TABLE_RE.search(line):
-                return rows   # 国家表起始 → 词表终点 (其后纯 ASCII 国名/形容词会误纳)
-            if _skip_line(line): continue
-            rows.extend(_process_line(line, seen, source_tag))
+        flat.extend(raw.strip() for raw in text.split("\n"))
+    for line in _merge_unclosed_parens(flat):
+        if _COUNTRY_TABLE_RE.search(line):
+            return rows   # 国家表起始 → 词表终点 (其后纯 ASCII 国名/形容词会误纳)
+        if _skip_line(line): continue
+        rows.extend(_process_line(line, seen, source_tag))
     return rows

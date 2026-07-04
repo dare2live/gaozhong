@@ -56,7 +56,13 @@ def _check_2_vocab(con):
     n_cefr = con.execute("SELECT COUNT(*) FROM cefr_vocab").fetchone()[0]
     n_uvi = con.execute("SELECT COUNT(*) FROM unit_vocab_intro").fetchone()[0]
     lvls = {r[0] for r in con.execute("SELECT DISTINCT cefr_level FROM cefr_vocab").fetchall()}
-    check("cefr_vocab 3052", n_cefr == B('cefr_vocab'), f"{n_cefr}")  # 2986→3055→3052: 补 p182/183 漏抽页 + 截国家表 3 误纳
+    check("cefr_vocab 3054", n_cefr == B('cefr_vocab'), f"{n_cefr}")  # 2986→3055→3052→3054: 补 p182/183 漏抽页 + 截国家表 3 误纳 + kilogramme/kilogram 跨行续行合并
+    # 坑(2026-07-04): 'kilo (kilogramme,' 跨行截断到下一行'kilogram)', 旧版逐行独立解析丢失两变体词;
+    # scripts/lib/curriculum_vocab.py._merge_unclosed_parens 修. 锁具体词存在(非只锁总数, 防总数巧合对上但内容仍错)。
+    kilo_alts = {r[0] for r in con.execute(
+        "SELECT word FROM cefr_vocab WHERE word IN ('kilogramme','kilogram')").fetchall()}
+    check("cefr_vocab 含 kilogramme+kilogram (跨行续行合并防回归)",
+          kilo_alts == {"kilogramme", "kilogram"}, f"{kilo_alts}")
     # 4253→3982: 单一区段重写后 renjiao(2132→1957)+waiyan(2121→2025) 剔除 331+96 跨单元重复
     # /glossary 污染行 + renjiao 补回漏词。净降是去污结果(更准非更少), 下界防丢册回归。
     check("unit_vocab_intro ≥ 3900", n_uvi >= B('unit_vocab_min'), f"{n_uvi}")
@@ -80,6 +86,20 @@ def _check_2_vocab(con):
     """).fetchall()
     check("词无跨单元重复 (单一区段抽取锁, 全版本)", not xu_dup,
           "0 重复" if not xu_dup else f"{len(xu_dup)} 对: {[(r[0],r[1],r[2]) for r in xu_dup[:5]]}")
+    # 坑(2026-07-04 全数据审计): units 表(canonical)已知道哪些册有 Welcome Unit(unit_number=0),
+    # 但 vocab_renjiao.py 旧版与之脱节, 把 Welcome Unit 词条错并进 Unit 1(bixiu_1 曾 99 词
+    # vs 兄弟单元 45-62)。锁: 任一册在 units 表有 unit_number=0, unit_vocab_intro 必有对应
+    # unit_number=0 行(否则说明 vocab 抽取又与 units 表脱节, 词条会被错并进相邻数字单元)。
+    welcome_units = con.execute(
+        "SELECT version_key, volume_key FROM units WHERE unit_number=0").fetchall()
+    missing_welcome_vocab = [
+        (vk, vol) for vk, vol in welcome_units
+        if con.execute(
+            "SELECT COUNT(*) FROM unit_vocab_intro WHERE version_key=? AND volume_key=? AND unit_number=0",
+            [vk, vol]).fetchone()[0] == 0
+    ]
+    check("units 表 Welcome Unit(unit_number=0) 与 unit_vocab_intro 同步 (不脱节错并入相邻单元)",
+          not missing_welcome_vocab, f"units 表有Welcome Unit但vocab无对应行: {missing_welcome_vocab}")
 
 
 def _check_3_grammar(con):
@@ -290,6 +310,7 @@ _LIB_CHECKS = [
     ("d0_zhongkao_check", "check_zhongkao"),
     ("d0_tenant_check", "check_tenant_isolation"),
     ("d0_versions_check", "check_versions"),
+    ("d0_versions_check", "check_liaoning_official_data"),
     ("d0_cognitive_skill_check", "check_cognitive_skill"),
     ("d0_cognitive_skill_check", "check_cognitive_cross"),
     ("d0_phrases_check", "check_phrases"),
@@ -300,6 +321,10 @@ _LIB_CHECKS = [
     ("d0_word_sense_check", "check_word_sense"),
     ("d0_cooccur_check", "check_cooccur"),
     ("d0_theme_vocab_check", "check_theme_vocab"),
+    ("d0_theme_vocab_check", "check_theme_of_unit"),
+    ("d0_vocab_quality_check", "check_vocab_quality"),
+    ("d0_governance_check", "check_ocr_fix_dictionary"),
+    ("d0_governance_check", "check_student_answers_demo_transparency"),
     ("d0_k12_served_check", "check_k12_served"),
     ("endpoint_contract_check", "check_endpoint_contracts"),   # 维度38: 75端点 HTTP 契约 (endpoint_contracts.yaml, 审计MAJOR修)
 ]

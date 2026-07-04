@@ -35,6 +35,11 @@ _INLINE_UNIT_RE = re.compile(r"\(\d+\)\s*$")
 _TOTAL_LIST_MIN_INLINE = 10  # 一页 ≥10 行末 (N) = 字母序总表 (per-unit 段恒 0)
 
 _UNIT_HEAD_RE = re.compile(r"^\s*Unit\s+(\d+)\s*$")
+# 坑(2026-07-04 全数据审计): bixiu_1 含独立的非数字 'Welcome Unit' 标题(canonical units 表已
+# 正确存为 unit_number=0, 见 textbook.py:_classify_unit_header), 但本文件旧版只认数字 UNIT_HEAD_RE,
+# Welcome Unit 段内 41 个词条(current_unit=None)被 _backfill_first_unit 错误并入 Unit 1。
+# 与 units 表对齐: Welcome Unit → unit_number=0(不再依赖 backfill 猜第一个真实单元)。
+_WELCOME_HEAD_RE = re.compile(r"^\s*Welcome\s+Unit\s*$", re.I)
 # 词条头: 小写起首词/短语 + (可选英美变体标注) + /ipa/ + 行内余文 (pos/释义可能续行)。
 # A4 修(坑22同型): (a) 头词类含 '.' 收 p.m./a.m. 缩写; (b) 词与 /IPA/ 间允许可选 '(NAmE -ize)'/'(BrE ...)'
 # 变体标注 — 原版无此 → 'organise (NAmE -ize) /IPA/' 失配漏识为续行, organise 等 12 个变体拼写词被吸进
@@ -44,6 +49,13 @@ _ENTRY_HEAD_RE = re.compile(r"^\s*([a-z][a-z'.\- ]*?)\s+(?:\([^)]{1,25}\)\s+)?/[
 # 旧版无此识别→短语被当续行吸进前词(231条丢失 + zh_def污染)。护栏: 英文≥2词+起首中文,
 # 区别于释义续行(起首中文)和例句(常含大写/过长); dry实证216候选0假阳性(无大写无过长)。
 _PHRASE_HEAD_RE = re.compile(r"^\s*([a-z][a-z'’.\-]*(?:\s+[a-z][a-z'’.\-]+)+)\s+([一-鿿].*)$")
+# 坑(2026-07-04 全数据审计): 每单元词表后单列"专有名词"段(docstring 早已声明"无 pos, 不取"),
+# 但该段词条(San Francisco/Napa Valley/California...)结构上也是"词 /ipa/ 释义", 只是首字母
+# 大写 —— _ENTRY_HEAD_RE 要求小写起首不匹配, 于是被 _is_entry_continuation 误判"非新词条"
+# =续行, 整段专有名词被当作续行吸进前一个真词条(如'neat')的 zh_def, 产出 500+ 字符的污染
+# 义项(含IPA音标+多个地名人名)。识别专有名词头即 flush 已有 pending 且不新开词条(专有名词
+# 本身不取), 后续中文续行(如"n.粤语；广东人")因 pend=None 自然被丢弃, 不会误吸进下一个真词条。
+_PROPER_NOUN_HEAD_RE = re.compile(r"^\s*([A-Z][A-Za-z'.\- ]*?)\s+(?:\([^)]{1,25}\)\s+)?/[^/]+/")
 _POS_TOKEN_RE = re.compile(
     r"\b(?:n|vt|vi|adj|adv|prep|conj|pron|num|art|aux|modal|abbr|int)\.")
 # 段内非词条噪声行 (running header / 注释 / 页码)
@@ -92,10 +104,31 @@ def _section_pages(pdf) -> list[list[str]]:
     return pages
 
 
+def _merge_split_entry_heads(lines: list[str]) -> list[str]:
+    """坑(2026-07-04 全数据审计残留, zh_def污染32→6条里剩下的6条根因): 词条头(词+可选变体括号)
+    跨行分裂到 /ipa/(如 'commercialise (NAmE also –ize)' 换行到 '/ipa/ vt. 释义'), 该行缺
+    /ipa/ 匹配不到 _ENTRY_HEAD_RE, 被 _is_entry_continuation 误判续行吸进前一真词条 zh_def
+    (如 commercial 的 zh_def 混入 commercialise/commercialisation 两个派生词全文)。只在
+    "合并后确实变成合法词条头"才采用(不误吸不相关行), 与 _merge_unclosed_parens 同款保守策略。"""
+    out: list[str] = []
+    i, n = 0, len(lines)
+    while i < n:
+        line = lines[i]
+        if i + 1 < n and not _ENTRY_HEAD_RE.match(line) and not _PROPER_NOUN_HEAD_RE.match(line):
+            merged = line.rstrip() + " " + lines[i + 1].strip()
+            if _ENTRY_HEAD_RE.match(merged):
+                out.append(merged)
+                i += 2
+                continue
+        out.append(line)
+        i += 1
+    return out
+
+
 def _is_entry_continuation(line: str) -> bool:
-    """续行 = 非空、非 Unit 头、非新词条头、非噪声 (pos 续行 / 释义续行 / 短语行)."""
+    """续行 = 非空、非 Unit 头(含 Welcome Unit)、非新词条头、非噪声 (pos 续行 / 释义续行 / 短语行)."""
     s = line.strip()
-    if not s or _UNIT_HEAD_RE.match(line) or _NOISE_RE.match(line):
+    if not s or _UNIT_HEAD_RE.match(line) or _WELCOME_HEAD_RE.match(line) or _NOISE_RE.match(line):
         return False
     return _ENTRY_HEAD_RE.match(line) is None
 
@@ -135,13 +168,31 @@ def _start_pending(line: str) -> tuple[str, list[str], bool] | None:
 
 def _backfill_first_unit(raw: list[tuple]) -> list[tuple[int, dict]]:
     """首个 unit 头前的 (None, entry) 回填到**首个真实 unit**(双栏reflow把首单元词排到头前)。
-    派生首单元号(不硬编码 '1'); 无任何 unit 头(degenerate)兜底 1。"""
+    坑(2026-07-04): Welcome Unit 现由 _WELCOME_HEAD_RE 显式识别为 unit_number=0(不再落 None),
+    故本函数现只兜底"真无任何 unit 头"的 degenerate case(理论场景, 当前8册教材未见), 不再
+    承担"识别 Welcome Unit"这个已被上移到头识别层的职责。派生首单元号(不硬编码 '1')。"""
     first_unit = next((u for u, _ in raw if u is not None), 1)
     return [(u if u is not None else first_unit, e) for u, e in raw]
 
 
+_NO_UNIT_CHANGE = object()  # 哨兵: 该行是段边界(需flush)但不改 current_unit(专有名词段起点)
+
+
+def _boundary_unit(line: str) -> int | object | None:
+    """行是否是段边界(Unit头/Welcome头/专有名词头, 三者都要求先 flush 掉 pending 词条)?
+    返回新 current_unit(int) / _NO_UNIT_CHANGE(仅flush不改单元) / None(非边界行)。"""
+    uh = _UNIT_HEAD_RE.match(line)
+    if uh:
+        return int(uh.group(1))
+    if _WELCOME_HEAD_RE.match(line):
+        return 0
+    if _PROPER_NOUN_HEAD_RE.match(line):
+        return _NO_UNIT_CHANGE  # 专有名词段起点: 结清前一真词条, 不新开词条("无pos, 不取")
+    return None
+
+
 def _parse_section(pages: list[list[str]]) -> list[tuple[int, dict]]:
-    """段内逐行块解析 → [(unit_number, entry_dict), ...]; 'Unit N' 头锚当前单元(头前词条回填首单元)."""
+    """段内逐行块解析 → [(unit_number, entry_dict), ...]; 'Unit N'/'Welcome Unit' 头锚当前单元。"""
     raw: list[tuple] = []
     current_unit: int | None = None
     pend: tuple[str, list[str], bool] | None = None
@@ -154,12 +205,13 @@ def _parse_section(pages: list[list[str]]) -> list[tuple[int, dict]]:
                 raw.append((current_unit, entry))
         pend = None
 
-    for lines in pages:
-        for line in lines:
-            uh = _UNIT_HEAD_RE.match(line)
-            if uh:
+    for raw_lines in pages:
+        for line in _merge_split_entry_heads(raw_lines):
+            bu = _boundary_unit(line)
+            if bu is not None:
                 flush()
-                current_unit = int(uh.group(1))
+                if bu is not _NO_UNIT_CHANGE:
+                    current_unit = bu
                 continue
             started = _start_pending(line)
             if started:

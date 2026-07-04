@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import duckdb
 
+from backend.services.trend import scope
+
 # phrase_type → 展示分组 (前缀匹配 function_expression:*)
 _PHRASE_GROUP = (
     ("固定搭配 (动词短语)", "verb_phrase"),
@@ -24,53 +26,105 @@ PHRASE_LIB_NOTE = ("教材固定搭配/句型/表达方式库 (来自教材单�
                    "无短语级真题考查边, 不冒充考查频次(坑12); 短语级考查标注=未来任务。")
 
 
-def grammar_category_pct(con: duckdb.DuckDBPyConnection) -> dict[str, float]:
+def grammar_category_pct(con: duckdb.DuckDBPyConnection, era: str | None = None) -> dict[str, float]:
     """{课标第二级子类 label: 辽宁卷考查占比%} — 供教材单元视图给某语法点标"考察重点"用.
 
-    单一计算点: 复用 grammar_exam_stats 已算的 by_category (不重跑聚合 SQL, Rule 1)。
+    坑(2026-07-04 全数据审计坑12): 教材单元教的是**当前**课标, "考察重点"该反映当前卷制
+    (era=scope.ERA_NEW, 2021+新高考II)而非默认混入历史(2015-2020旧课标II)数据——旧版不分era,
+    当前全部tests_grammar辽宁边恰好100%来自2015-2020(build_tests_grammar对2021+英文答案桩
+    文本关键词匹配结构性失效, 见坑同源修复), 却在前端标"真值"无era限定, 会让人误以为是当前卷制占比。
+    era=None(默认)=当前卷制; 当前era暂无覆盖时返回空dict(前端诚实展示"暂无考查数据", 不冒用历史占比)。
+    单一计算点: 复用 grammar_exam_stats 已算的 by_era (不重跑聚合 SQL, Rule 1)。
     """
-    return {c["category"]: c["pct"] for c in grammar_exam_stats(con)["by_category"]}
+    era = era or scope.ERA_NEW
+    block = grammar_exam_stats(con)["by_era"].get(era)
+    return {c["category"]: c["pct"] for c in block["by_category"]} if block else {}
 
 
-def grammar_exam_stats(con: duckdb.DuckDBPyConnection) -> dict:
-    """辽宁语法考查 按课标第二级子类 + 频次热点 + 每类 top 考点 (考查真值).
-
-    口径 (D0 坑17): total/n_edges = tests_grammar∧辽宁 **边数** (一题可考多语法点, 频次口径);
-    n_questions = COUNT(DISTINCT src_id) **去重题数** (题级口径)。两口径显式分离, 不混用。
-    total 保留 = n_edges (兼容旧消费方)。
-    """
+def _grammar_stats_rows(con: duckdb.DuckDBPyConnection) -> tuple[list, dict]:
+    """建边层无关的独立查询(单一计算点抽出, 降 grammar_exam_stats CC): 逐题×era×课标类目
+    频次明细行 + era 去重题数。"""
     rows = con.execute(
-        "WITH tg AS ("
-        "  SELECT SUBSTR(e.dst_id, LENGTH('grammar:')+1) AS gid "
-        "  FROM edges e JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
-        "  WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%') "
-        "SELECT cat.label AS category, gi.label AS item, COUNT(*) AS n "
-        "FROM tg JOIN grammar_items gi ON gi.grammar_item_id = tg.gid "
-        "LEFT JOIN grammar_items cat ON cat.grammar_item_id = "
-        "  CASE WHEN instr(tg.gid,'/')>0 THEN split_part(tg.gid,'/',1)||'/'||split_part(tg.gid,'/',2) ELSE tg.gid END "
-        "GROUP BY 1, 2"
+        f"WITH tg AS ("
+        f"  SELECT SUBSTR(e.dst_id, LENGTH('grammar:')+1) AS gid, e.src_id AS qid, "
+        f"         {scope.era_sql('q.year')} AS era "
+        f"  FROM edges e JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
+        f"  WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%') "
+        f"SELECT tg.era, cat.label AS category, gi.label AS item, COUNT(*) AS n "
+        f"FROM tg JOIN grammar_items gi ON gi.grammar_item_id = tg.gid "
+        f"LEFT JOIN grammar_items cat ON cat.grammar_item_id = "
+        f"  CASE WHEN instr(tg.gid,'/')>0 THEN split_part(tg.gid,'/',1)||'/'||split_part(tg.gid,'/',2) ELSE tg.gid END "
+        f"GROUP BY 1, 2, 3"
     ).fetchall()
-    by_cat: dict[str, dict] = {}
-    for cat, item, n in rows:
-        c = by_cat.setdefault(cat or "其他", {"n": 0, "items": []})
-        c["n"] += int(n)
-        c["items"].append({"label": item, "n": int(n)})
-    total = sum(c["n"] for c in by_cat.values())
-    n_questions = con.execute(
-        "SELECT COUNT(DISTINCT e.src_id) FROM edges e "
-        "JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
-        "WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%'"
-    ).fetchone()[0]
+    n_q_by_era = dict(con.execute(
+        f"SELECT {scope.era_sql('q.year')} AS era, COUNT(DISTINCT e.src_id) "
+        f"FROM edges e JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
+        f"WHERE e.relation='tests_grammar' AND q.province LIKE '辽宁%' GROUP BY 1"
+    ).fetchall())
+    return rows, n_q_by_era
+
+
+def _grammar_stats_block(cats: dict[str, dict], n_questions: int) -> dict:
+    """一个 era(或跨era合并)切片 → {total,n_edges,n_questions,by_category}."""
+    total = sum(c["n"] for c in cats.values())
     pct = lambda n: round(100.0 * n / total, 1) if total else 0.0
-    cats = sorted(by_cat.items(), key=lambda kv: kv[1]["n"], reverse=True)
+    ranked = sorted(cats.items(), key=lambda kv: kv[1]["n"], reverse=True)
     return {
-        "total": total,           # 兼容旧消费方; 语义 = n_edges (边数)
-        "n_edges": total,         # 边数口径 (一题可考多语法点)
-        "n_questions": int(n_questions),  # 去重题数口径 (tests_grammar∧辽宁 DISTINCT src_id)
+        "total": total, "n_edges": total, "n_questions": int(n_questions),
         "by_category": [
             {"category": k, "n": v["n"], "pct": pct(v["n"]),
              "top": sorted(v["items"], key=lambda x: x["n"], reverse=True)[:4]}
-            for k, v in cats],
+            for k, v in ranked],
+    }
+
+
+def _grammar_stats_note(eras_covered: list[str], eras_missing: list[str]) -> str:
+    if not eras_missing:
+        return "全部卷制 era 均有覆盖。"
+    return (f"辽宁语法考查真值目前仅覆盖 {'、'.join(eras_covered) or '无'}; "
+            f"{'、'.join(eras_missing)} 暂无 tests_grammar 边(诚实标缺口, 非估算)。"
+            f"上方 total/by_category 是跨全部有数据 era 的合并参考量, 精确到具体卷制"
+            f"用 by_era 字段, 教材单元'考察重点'徽章按 grammar_category_pct(默认当前卷制) 取值。")
+
+
+def grammar_exam_stats(con: duckdb.DuckDBPyConnection) -> dict:
+    """辽宁语法考查 按卷制 era 分层 + 课标第二级子类 + 频次热点 + 每类 top 考点 (考查真值).
+
+    坑(2026-07-04 全数据审计坑12分析诚实红线): 旧版不分 era 聚合全历史, 当前全部
+    tests_grammar 辽宁边 100% 来自 2015-2020 era(2021+ 因 build_tests_grammar 对英文
+    答案核验桩文本关键词匹配结构性失效而缺席), 前端却展示不限 era 的"真值"百分比,
+    与本项目其它维度(cognitive_skill/exam_point 分布)已有的 era 分层+缺口披露标准不一致。
+    按 scope.era_sql() 分 era 各自算 total/by_category; 顶层字段(total/by_category等)是
+    **跨全部有数据的era合并**参考量(当前=仅2015-2020, 故与该era切片数值相同), 要精确到
+    具体卷制请用 by_era[era]; eras_missing 诚实列出暂无覆盖的卷制, 不静默吞掉这个事实。
+
+    口径 (D0 坑17): total/n_edges = tests_grammar∧辽宁 **边数** (一题可考多语法点, 频次口径);
+    n_questions = COUNT(DISTINCT src_id) **去重题数** (题级口径)。两口径显式分离, 不混用。
+    """
+    rows, n_q_by_era = _grammar_stats_rows(con)
+    by_era_raw: dict[str, dict[str, dict]] = {}
+    for era, cat, item, n in rows:
+        cats = by_era_raw.setdefault(era, {})
+        c = cats.setdefault(cat or "其他", {"n": 0, "items": []})
+        c["n"] += int(n)
+        c["items"].append({"label": item, "n": int(n)})
+
+    by_era = {era: _grammar_stats_block(cats, n_q_by_era.get(era, 0)) for era, cats in by_era_raw.items()}
+    eras_covered = sorted(by_era.keys())
+    eras_missing = [e for e in (scope.ERA_OLD, scope.ERA_NEW) if e not in eras_covered]
+    combined_cats: dict[str, dict] = {}
+    for cats in by_era_raw.values():
+        for cat, v in cats.items():
+            c = combined_cats.setdefault(cat, {"n": 0, "items": []})
+            c["n"] += v["n"]
+            c["items"].extend(v["items"])
+    combined = _grammar_stats_block(combined_cats, sum(n_q_by_era.values()))
+    return {
+        **combined,
+        "by_era": by_era,
+        "eras_covered": eras_covered,
+        "eras_missing": eras_missing,
+        "note": _grammar_stats_note(eras_covered, eras_missing),
     }
 
 

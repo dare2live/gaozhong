@@ -102,3 +102,12 @@ def _check_content_status(con, check) -> None:
     n_walled = con.execute(
         "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2024 AND content_status='stem_walled'").fetchone()[0]
     check("中考 2024 全 45 题题面诚实标 walled (免费源门控, 不伪造题面)", n_walled == 45, f"{n_walled}/45")
+    # 坑(2026-07-04 全数据审计): 2025 年 15 题(21-30完形填空+31-40语篇填空+41-45阅读表达/作文)
+    # 曾因 extract_zhongkao.py._set_stem 条件写反(旧版要求options非空, 开放题/完形填空
+    # 均不满足)被静默漏转录, 误标 stem_walled 冒充"题面门控"——实际 exam_ocr.txt 早有完整
+    # 原文(manifest.json/paper_structure.json 均自述 2025="题干完整"), 非源头不可得。
+    # 补 _parse_yupian_tiankong/_parse_wanxing 共享段落解析后, 2025 应=0 题 stem_walled
+    # (与 paper_structure.json 自述"2025=题干完整(无答案key)"一致, 不同于2024真实源头门控)。
+    n_walled_2025 = con.execute(
+        "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2025 AND content_status='stem_walled'").fetchone()[0]
+    check("中考 2025 题面0 stem_walled (题面本已采集到, 非2024式源头不可得)", n_walled_2025 == 0, f"{n_walled_2025}/45")

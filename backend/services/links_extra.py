@@ -103,8 +103,26 @@ def build_tests_word(con: duckdb.DuckDBPyConnection) -> int:
 _GRAMMAR_QTYPES = ("语法填空", "单选(语法/词汇)", "短文改错")
 
 
+def _most_specific_grammar_match(items: list[tuple], kw: str, blob: str) -> tuple[str, str] | None:
+    """kw 命中的候选(父+子共享同一 keyword 子串, 如"定语从句"同时命中父节点和限制性/非限制性
+    两个子节点)里, 只挑 blob 文本真正支持的最具体一个 (坑2026-07-04: 旧版子串命中就全挂,
+    18.9%~53.3%的边过度归因到文本根本没区分的子类目). 候选 label 本身(比 kw 更具体的
+    完整表述, 如"限制性定语从句")必须整串出现在 blob 才算命中; label==kw 的 umbrella
+    节点总是候选(它就是被命中的这个泛化 term 本身)。多个仍命中时取 label 最长(最具体)的。"""
+    matched = [(gid, label) for gid, label in items
+               if kw in (label or "") and (label == kw or label in blob)]
+    if not matched:
+        return None
+    return max(matched, key=lambda x: len(x[1]))
+
+
 def build_tests_grammar(con: duckdb.DuckDBPyConnection) -> int:
-    """question → grammar: 题面 / analysis 含中文语法术语即建 edge (仅离散语法题型, 见 _GRAMMAR_QTYPES)."""
+    """question → grammar: 题面 / analysis 含中文语法术语即建 edge (仅离散语法题型, 见 _GRAMMAR_QTYPES).
+
+    坑(2026-07-04 全数据审计, province无过滤修): 旧版无 province 过滤(88%非辽宁题的边混入
+    edges表), 现改按 §7 辽宁口径限定(与 audit/grammar_4q.py._terms_in_exam 同口径, 不
+    冒充辽宁语法考查); 父子过度归因见 _most_specific_grammar_match。
+    """
     items = con.execute(
         "SELECT grammar_item_id, label FROM grammar_items"
     ).fetchall()
@@ -112,16 +130,17 @@ def build_tests_grammar(con: duckdb.DuckDBPyConnection) -> int:
     qmarks = ",".join("?" * len(_GRAMMAR_QTYPES))
     for qid, qtext, anl in con.execute(
         f"SELECT question_id, raw_question, analysis FROM exam_questions "
-        f"WHERE question_type IN ({qmarks})", list(_GRAMMAR_QTYPES)
+        f"WHERE question_type IN ({qmarks}) AND province LIKE '辽宁%'", list(_GRAMMAR_QTYPES)
     ).fetchall():
         blob = (qtext or "") + " " + (anl or "")
         for term, kw in TERM_TO_LABEL_KEYWORD.items():
-            if term in blob:
-                for gid, label in items:
-                    if kw in (label or ""):
-                        rows.append((f"question:{qid}", f"grammar:{gid}",
-                                     1.0, json.dumps({"term": term},
-                                                      ensure_ascii=False)))
+            if term not in blob:
+                continue
+            hit = _most_specific_grammar_match(items, kw, blob)
+            if hit:
+                gid, _ = hit
+                rows.append((f"question:{qid}", f"grammar:{gid}",
+                             1.0, json.dumps({"term": term}, ensure_ascii=False)))
     # dedup (src, dst)
     dedup = {}
     for r in rows:
@@ -129,8 +148,19 @@ def build_tests_grammar(con: duckdb.DuckDBPyConnection) -> int:
     return _replace(con, "tests_grammar", list(dedup.values()))
 
 
+_SHORT_HINT_LEN = 4  # <此长度的关键词强制词边界匹配 (坑2026-07-04: "ART"子串命中"st-ART"/"e-ARTh")
+
+
+def _hint_matches(keyword: str, title_upper: str) -> bool:
+    """短关键词(<4字符, 易在别的单词里当子串命中)强制词边界匹配; 长关键词保留子串匹配
+    (故意的词干匹配, 如 TRAVEL 命中 TRAVELLING 是设计内行为, 词边界会打断这类合法匹配)."""
+    if len(keyword) < _SHORT_HINT_LEN:
+        return re.search(r"\b" + re.escape(keyword) + r"\b", title_upper) is not None
+    return keyword in title_upper
+
+
 def build_theme_of_unit(con: duckdb.DuckDBPyConnection) -> int:
-    """unit → theme: hardcoded UNIT_THEME_HINTS + title_en substring match."""
+    """unit → theme: hardcoded UNIT_THEME_HINTS + title_en substring match (短关键词词边界, 见 _hint_matches)."""
     units = con.execute(
         "SELECT version_key, volume_key, unit_number, title_en FROM units"
     ).fetchall()
@@ -138,7 +168,7 @@ def build_theme_of_unit(con: duckdb.DuckDBPyConnection) -> int:
     for ver, vol, un, title in units:
         title_upper = (title or "").upper()
         for keyword, theme_id in UNIT_THEME_HINTS.items():
-            if keyword in title_upper:
+            if _hint_matches(keyword, title_upper):
                 rows.append((
                     f"unit:{ver}/{vol}/U{un}", f"theme:{theme_id}", 1.0,
                     json.dumps({"matched_keyword": keyword,

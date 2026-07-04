@@ -56,13 +56,22 @@ def _fill_incoming(con, concept_id: str, out: list, seen: set, n: int) -> bool:
 
 
 def _fill_co_tested(con, concept_id: str, out: list, seen: set, n: int) -> bool:
+    """坑(2026-07-04 全数据审计): tests_word 边对整篇 raw_question 建边(含阅读/听力篇章内容词,
+    见 exam_vocab.py 根因A); 旧版此查询无 question_type 过滤, "co_tested" 这个关系名暗示
+    "同题被离散考查", 实际却可能只是两个词偶然同现在一篇不相关的阅读广告短文里(如
+    upwards/administration 仅因共现某阅读段落被判"相关", 无教学意义)。改与 exam_vocab.
+    TESTED_QTYPES 同口径, 只在离散语法/词汇题型内找共现, "co_tested"才名副其实。"""
+    from backend.services.exam_vocab import TESTED_QTYPES
+    qmarks = ",".join("?" * len(TESTED_QTYPES))
     for cid, ntype, label in con.execute(
-        "SELECT DISTINCT e2.dst_id, n.node_type, n.label "
-        "FROM edges e1 JOIN edges e2 ON e1.src_id = e2.src_id AND e2.relation = 'tests_word' "
-        "JOIN nodes n ON n.concept_id = e2.dst_id "
-        "WHERE e1.dst_id = ? AND e1.relation = 'tests_word' AND e2.dst_id <> e1.dst_id "
-        "LIMIT ?",
-        [concept_id, n * 3],
+        f"SELECT DISTINCT e2.dst_id, n.node_type, n.label "
+        f"FROM edges e1 JOIN edges e2 ON e1.src_id = e2.src_id AND e2.relation = 'tests_word' "
+        f"JOIN nodes n ON n.concept_id = e2.dst_id "
+        f"JOIN exam_questions q ON q.question_id = SUBSTR(e1.src_id, 10) "
+        f"WHERE e1.dst_id = ? AND e1.relation = 'tests_word' AND e2.dst_id <> e1.dst_id "
+        f"AND q.question_type IN ({qmarks}) "
+        f"LIMIT ?",
+        [concept_id, *TESTED_QTYPES, n * 3],
     ).fetchall():
         if cid in seen: continue
         seen.add(cid)

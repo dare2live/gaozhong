@@ -77,7 +77,13 @@ def check_cognitive_skill(con: duckdb.DuckDBPyConnection, check) -> None:
           len(smap) >= 9 and not bad_tgt, f"n={len(smap)} 越界={bad_tgt}")
 
 
-_OFFICIAL_SKILLS = {"推断", "理解具体信息", "理解主旨要义", "理解词汇", "理解结构", "理解观点", "理解意图"}
+"""坑(2026-07-04 全数据审计): 独立字面量本身抄错了3处(与 exam_point_taxonomy.yaml
+question_intent.labels 官方7项字面对比: 理解观点态度→曾抄'理解观点', 理解目的→曾抄'理解意图',
+理解文章结构类型→曾抄'理解结构'). 当前 DB 内 cognitive_skill 边实际只用到4个双方拼写一致的
+标签(理解具体信息/理解主旨要义/推断/理解词汇)故未曾触发可见故障, 但属于"抄错的独立副本"
+真bug非设计问题——verify-the-verifier 精神(不从 yaml 读取, 见上方注释)继续保留, 只订正字面量。"""
+_OFFICIAL_SKILLS = {"推断", "理解具体信息", "理解主旨要义", "理解词汇",
+                    "理解文章结构类型", "理解观点态度", "理解目的"}
 
 
 def check_cognitive_cross(con: duckdb.DuckDBPyConnection, check) -> None:

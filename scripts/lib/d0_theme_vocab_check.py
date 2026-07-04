@@ -39,3 +39,28 @@ def check_theme_vocab(con: duckdb.DuckDBPyConnection, check) -> None:
         "SELECT COUNT(*) FROM edges e JOIN nodes n ON n.concept_id=e.dst_id "
         "WHERE e.relation='characterizes_theme' AND e.src_id='word:plastic' AND n.label='环境保护'").fetchone()[0]
     check("plastic→环境保护 特征词样本 (辽宁命题模式)", s == 1, f"{s}")
+
+
+def check_theme_of_unit(con: duckdb.DuckDBPyConnection, check) -> None:
+    """D0 单元↔主题 theme_of_unit (坑17: 此关系此前 D0/moth 零覆盖, 全数据审计 2026-07-04 补).
+
+    锁: 两端有效(unit/theme 均存在) + 短关键词(<4字符)词边界匹配防子串误配
+    (links_extra.py._hint_matches; 实锤: 'ART'子串曾误命中'st-ART'/'e-ARTh')。
+    """
+    print("\n=== (37) 单元↔主题 theme_of_unit (unit→theme, 短关键词词边界防子串误配) ===")
+    bad = con.execute(
+        "SELECT COUNT(*) FROM edges e WHERE e.relation='theme_of_unit' AND ("
+        "NOT EXISTS (SELECT 1 FROM nodes WHERE concept_id=e.src_id AND node_type='unit') "
+        "OR NOT EXISTS (SELECT 1 FROM nodes WHERE concept_id=e.dst_id AND node_type='theme'))"
+    ).fetchone()[0]
+    check("theme_of_unit 两端 unit→theme (无悬挂)", bad == 0, f"{bad}")
+    false_positive_units = [
+        "unit:waiyan/bixiu_1/U1",   # "A new start" — 曾被 'ART' 子串误配 st-ART
+        "unit:waiyan/bixiu_2/U6",   # "Earth first" — 曾被 'ART' 子串误配 e-ARTh
+    ]
+    still_tagged = con.execute(
+        f"SELECT src_id FROM edges WHERE relation='theme_of_unit' AND src_id IN "
+        f"({','.join('?' * len(false_positive_units))}) AND dst_id LIKE '%文学、艺术与体育%'",
+        false_positive_units).fetchall()
+    check("已知'ART'子串误配单元不再挂'文学、艺术与体育' (防回归)",
+          not still_tagged, f"仍误配: {still_tagged}")

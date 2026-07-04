@@ -126,6 +126,26 @@ def check_grammar_stats(con: duckdb.DuckDBPyConnection, check) -> None:
     grp_sum = sum(g["n"] for g in s["textbook_expr"]["by_group"])
     check("搭配库 sum(by_group)==total (无 phrase_type 前缀漏匹配被静默丢)",
           grp_sum == s["textbook_expr"]["total"], f"sum={grp_sum} total={s['textbook_expr']['total']}")
+    # 坑(2026-07-04 全数据审计): build_tests_grammar 旧版无 province 过滤(88%非辽宁题的边混入
+    # edges表, 靠每个消费者各自 WHERE province LIKE '辽宁%' 打补丁); 现改为建边层本身就锁死
+    # 辽宁口径(单一计算点, Rule1), 锁 edges 表里 tests_grammar 关系压根不该有非辽宁行。
+    non_ln = con.execute(
+        "SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) "
+        "WHERE e.relation='tests_grammar' AND (q.province IS NULL OR q.province NOT LIKE '辽宁%')"
+    ).fetchone()[0]
+    check("tests_grammar 边表本身即辽宁口径 (建边层过滤, 非消费者各自打补丁)", non_ln == 0, f"{non_ln} 条非辽宁边")
+    # 坑同源: 父子节点共享同一关键词子串时(如"定语从句"同时命中限制性/非限制性子节点),
+    # 旧版子串命中就全挂, 68/360(18.9%)~192/360(53.3%)边过度归因; 现只挑blob文本真正支持的
+    # 最具体节点。锁: 若某父节点(如三/10/(3))和其任一子节点(三/10/(3)/a或/b)对**同一道题**
+    # 同时有边, 除非该题blob确实同时提到两个子类目的区分文本(理论上不该发生, 因_most_specific_
+    # grammar_match 设计为每题每term只挑1个最具体节点), 否则视为过度归因回归。
+    parent_child_dup = con.execute("""
+        SELECT e1.src_id FROM edges e1 JOIN edges e2
+          ON e1.src_id = e2.src_id AND e1.relation='tests_grammar' AND e2.relation='tests_grammar'
+        WHERE e2.dst_id LIKE e1.dst_id || '/%'
+    """).fetchall()
+    check("tests_grammar 无同题父子节点同时命中 (过度归因防回归)",
+          not parent_child_dup, f"{len(parent_child_dup)} 例: {parent_child_dup[:3]}")
 
 
 def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:

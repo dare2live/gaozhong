@@ -135,22 +135,48 @@ def extract_paren_words(pages=L3_AZ_PAGES) -> set[str]:
     return words
 
 
+def _merge_unclosed_parens(lines: list[str]) -> list[str]:
+    """跨列/跨页边界拼接括号未配平的行 (右栏宽度有限, 长括号变体列表被截断到下一列/页开头).
+
+    坑(2026-07-04 全数据审计): 原版逐行独立解析, 'kilometre(AmE kilometer' 这类右栏末行
+    因括号未配平, 续写内容(若存在)在下一列/页首行, 旧版从不看下一行, 静默丢失整个变体词。
+    只在"拼接后确实配平"才采用(而非见开括号就无脑吸下一行) — 防止真无续行时误把下一个
+    真词条(如 'geography'/'kind*') 吞并导致该词条自身丢失; 经验证多数场景无真续行故不并,
+    仅在真有续行(如 kilogramme/kilogram 跨行案例)时生效, 是保守/零回归的合并策略。"""
+    out: list[str] = []
+    i, n = 0, len(lines)
+    while i < n:
+        line = lines[i]
+        if i + 1 < n and line.count("(") > line.count(")"):
+            merged = line.rstrip() + " " + lines[i + 1].strip()
+            if merged.count("(") == merged.count(")"):
+                out.append(merged)
+                i += 2
+                continue
+        out.append(line)
+        i += 1
+    return out
+
+
 def extract_vocab(level: str, stage: str, pages, source_tag: str,
                   include_alts: bool = False) -> list[dict]:
     """抽一个词汇表段 (二级或三级 a-z 主表) → [{word, level, stage, source, starred?}].
 
     level/stage 由调用方传 (二级=小学; 三级表逐词 level/stage 在 emit 层按集合交分裂).
+    先跨列/跨页拉平成一条行流, 补括号截断续行, 再逐行解析(_merge_unclosed_parens 只在
+    确认能配平时合并, 不会误吸不相关的下一词条)。
     """
     rows: list[dict] = []
     seen: set[str] = set()
+    flat: list[str] = []
     with pdfplumber.open(PDF_PATH) as pdf:
         for idx in pages:
             if idx >= len(pdf.pages):
                 break
             for col in _crop_columns(pdf.pages[idx]):
-                for raw in col.split("\n"):
-                    rows.extend(_rows_from_line(raw.strip(), level, stage,
-                                                source_tag, include_alts, seen))
+                flat.extend(raw.strip() for raw in col.split("\n"))
+    for line in _merge_unclosed_parens(flat):
+        rows.extend(_rows_from_line(line, level, stage, source_tag, include_alts, seen))
     return rows
 
 
@@ -182,6 +208,46 @@ def _grammar_skip(line: str) -> bool:
     if "语法项目表" in line or line == "附 录":
         return True
     return False
+
+
+def _is_grammar_marker(line: str) -> bool:
+    s = _HEAD_PLUS_RE.sub("", line.strip())
+    return any(r.match(s) for r in (_G_L1, _G_L2, _G_L3))
+
+
+def _is_grammar_continuation(prev: str, nxt: str) -> bool:
+    """nxt 是 prev(marker行)的折行续写? 同 scripts/lib/curriculum_grammar.py._is_continuation
+    判据(该姊妹模块已修过此坑, 本文件此前未同步移植): 非marker + 含中文 + ASCII占比不过高(非例句)
+    + prev 不完整(括号未配平 或 无终止符)。"""
+    if not nxt or _is_grammar_marker(nxt):
+        return False
+    if not any("一" <= c <= "鿿" for c in nxt):
+        return False
+    if sum(c.isascii() and c.isalpha() for c in nxt) / max(1, len(nxt.replace(" ", ""))) > 0.6:
+        return False
+    op = prev.count("（") + prev.count("(")
+    cp = prev.count("）") + prev.count(")")
+    return op > cp or not re.search(r"[）)。\*]\s*$", prev)
+
+
+def _merge_grammar_continuations(lines: list[str]) -> list[str]:
+    """合并 marker 行的折行续写(语法项 label 跨页换行被截, 如'关系从句'条目 seq 丢失后半句).
+    字符级拼接(PDF 换行无空格); 必须在 _grammar_skip 过滤前做(续行含关系代词清单可能被误杀)。"""
+    out: list[str] = []
+    i, n = 0, len(lines)
+    while i < n:
+        line = lines[i]
+        if _is_grammar_marker(line):
+            j = i + 1
+            while j < n and _is_grammar_continuation(line, lines[j]):
+                line += lines[j]
+                j += 1
+            out.append(line)
+            i = j
+        else:
+            out.append(line)
+            i += 1
+    return out
 
 
 def _match_grammar(line: str, state: dict) -> dict | None:
@@ -221,8 +287,8 @@ def extract_grammar(pages=range(144, 149), source_tag: str = "yiwu_2022_grammar"
             if idx >= len(pdf.pages):
                 break
             text = pdf.pages[idx].extract_text() or ""
-            for raw in text.split("\n"):
-                line = raw.strip()
+            merged = _merge_grammar_continuations([raw.strip() for raw in text.split("\n")])
+            for line in merged:
                 if _grammar_skip(line):
                     continue
                 node = _match_grammar(line, state)

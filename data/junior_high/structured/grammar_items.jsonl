@@ -38,7 +38,7 @@
 {"item_id": "三", "depth": 1, "label": "句法", "parent": null, "level": "三级", "understand_only": false, "seq": 38, "source": "yiwu_2022_grammar"}
 {"item_id": "三/一", "depth": 2, "label": "句子种类", "parent": "三", "level": "三级", "understand_only": false, "seq": 39, "source": "yiwu_2022_grammar"}
 {"item_id": "三/一/1", "depth": 3, "label": "陈述句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 40, "source": "yiwu_2022_grammar"}
-{"item_id": "三/一/2", "depth": 3, "label": "疑问句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 41, "source": "yiwu_2022_grammar"}
+{"item_id": "三/一/2", "depth": 3, "label": "疑问句（1）一般疑问句（2）特殊疑问句（3）选择疑问句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 41, "source": "yiwu_2022_grammar"}
 {"item_id": "三/一/3", "depth": 3, "label": "祈使句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 42, "source": "yiwu_2022_grammar"}
 {"item_id": "三/一/4", "depth": 3, "label": "感叹句", "parent": "三/一", "level": "三级", "understand_only": false, "seq": 43, "source": "yiwu_2022_grammar"}
 {"item_id": "三/二", "depth": 2, "label": "简单句的基本句型", "parent": "三", "level": "三级", "understand_only": false, "seq": 44, "source": "yiwu_2022_grammar"}
@@ -67,5 +67,5 @@
 {"item_id": "三/七", "depth": 2, "label": "主从复合句", "parent": "三", "level": "三级", "understand_only": false, "seq": 67, "source": "yiwu_2022_grammar"}
 {"item_id": "三/七/1", "depth": 3, "label": "宾语从句", "parent": "三/七", "level": "三级", "understand_only": false, "seq": 68, "source": "yiwu_2022_grammar"}
 {"item_id": "三/七/2", "depth": 3, "label": "状语从句", "parent": "三/七", "level": "三级", "understand_only": false, "seq": 69, "source": "yiwu_2022_grammar"}
-{"item_id": "三/七/3", "depth": 3, "label": "关系从句（亦称\"定语从句\"，能辨认出由关系代词 that、", "parent": "三/七", "level": "三级", "understand_only": false, "seq": 70, "source": "yiwu_2022_grammar"}
+{"item_id": "三/七/3", "depth": 3, "label": "关系从句（亦称\"定语从句\"，能辨认出由关系代词 that、which、who 引导的限定性定语从句，并能理解句意）", "parent": "三/七", "level": "三级", "understand_only": false, "seq": 70, "source": "yiwu_2022_grammar"}
 {"item_id": "三/八", "depth": 2, "label": "主谓一致", "parent": "三", "level": "三级+", "understand_only": true, "seq": 71, "source": "yiwu_2022_grammar"}

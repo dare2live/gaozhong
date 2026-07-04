@@ -12,8 +12,16 @@ import json
 
 import duckdb
 
-_SQL = """
-WITH lnq AS (SELECT 'question:' || question_id AS qid FROM exam_questions WHERE province LIKE '辽宁%'),
+from backend.services.exam_vocab import TESTED_QTYPES
+
+# 坑(2026-07-04 全数据审计): 旧版 lnq 只锁 province, 未锁 question_type — tests_word 边对整篇
+# raw_question 建边(含阅读理解/听力等篇章内容词, exam_vocab.py 根因A), 导致"主题特征词"55.5%
+# 的共现计数其实来自阅读篇章"出现"而非真正"考查", 只约24.6%来自离散题型。与 vocab.py/k12.py
+# 已用的 TESTED_QTYPES 口径对齐(单一计算点, 不留这一处消费者漏过滤)。
+_QMARKS = ",".join("?" * len(TESTED_QTYPES))
+_SQL = f"""
+WITH lnq AS (SELECT 'question:' || question_id AS qid FROM exam_questions
+             WHERE province LIKE '辽宁%' AND question_type IN ({_QMARKS})),
 wt AS (SELECT tw.dst_id AS w, te.dst_id AS t, COUNT(DISTINCT tw.src_id) AS co
        FROM edges tw JOIN edges te ON tw.src_id = te.src_id AND te.relation = 'tests_exam_point'
        JOIN lnq ON lnq.qid = tw.src_id
@@ -32,7 +40,7 @@ def build_theme_vocabulary(con: duckdb.DuckDBPyConnection, min_co: int = 3,
                            min_dist: float = 0.6) -> dict:
     """主题特征词 → characterizes_theme 边 (辽宁区分度, 单一计算点)."""
     con.execute("DELETE FROM edges WHERE relation = 'characterizes_theme'")
-    rows = con.execute(_SQL, [min_co, min_dist]).fetchall()
+    rows = con.execute(_SQL, [*TESTED_QTYPES, min_co, min_dist]).fetchall()
     for w, t, co, dist in rows:
         con.execute(
             "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?, ?, ?, ?, ?)",

@@ -58,6 +58,12 @@ def _build_rows(year: int) -> list[dict]:
             continue
         qtype = QTYPE_MAP.get(d.get("question_type"))
         if not qtype:
+            # 坑(2026-07-04全数据审计, 潜伏实例, 非爆发): 已通过 import_ready+有answer 两道
+            # 前置过滤的行, 若 question_type 不在 QTYPE_MAP 覆盖范围会被静默跳过无诊断。
+            # 当前2021/2022两年核查未发现活跃实例(非常规类型行 decision_status 均='rescope'
+            # 已被上一行过滤器诚实拦截), 加非阻断print防未来新审核决策产生此缺口时无人察觉。
+            print(f"  ⚠ eol {year} obs={obs} question_type={d.get('question_type')!r} "
+                  f"不在 QTYPE_MAP, 已跳过(import_ready+有answer 但类型未登记, 请检查)")
             continue
         analysis = f"答案核验: {d.get('review_note', '')} [source_span: {d.get('source_span', '')}]"
         rows.append({

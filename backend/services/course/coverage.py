@@ -101,9 +101,19 @@ def coverage_model(con: duckdb.DuckDBPyConnection, target_pct: float = 90.0) -> 
     axes["word"] = {"label": "高频考词 (离散考查)", **_axis_curve(_ln_word_freq(con), target_pct)}
     axes["grammar"] = {"label": "语法点", **_axis_curve(_ln_grammar_freq(con), target_pct)}
     _grammar_top_labels(con, axes["grammar"]["top"])  # P2-4: 编码→课标人话标签 (单一计算点, 前端禁重查)
+    # 坑(2026-07-04 全数据审计坑12): 语法轴频次目前100%来自单一era(2015-2020旧课标II,
+    # build_tests_grammar对2021+英文答案桩文本关键词匹配缺席), 复用 exam_grammar_stats 已算的
+    # eras_missing(单一计算点, 不重跑聚合), 诚实标注这条轴的时代覆盖缺口, 不静默当"当前"数据。
+    from backend.services.exam_grammar_stats import grammar_exam_stats
+    g_stats = grammar_exam_stats(con)
+    if g_stats["eras_missing"]:
+        axes["grammar"]["eras_missing"] = g_stats["eras_missing"]
+        axes["grammar"]["era_note"] = (
+            f"频次数据仅覆盖 {'、'.join(g_stats['eras_covered']) or '无'}; "
+            f"{'、'.join(g_stats['eras_missing'])} 暂无 tests_grammar 边(诚实标缺口)。")
     return {
         "scope": "辽宁卷考点全集 (题材/主题群/高频考词/语法 可教轴); 权重=命题频次",
         "target_pct": target_pct,
         "axes": axes,
-        "note": "高产出集=覆盖该轴 ≥target% 考查权重的最少考点数; 长尾=低频考点 (性价比低, 诚实非全覆盖)。词轴'出现≠考查'(根因A)。",
+        "note": "高产出集=覆盖该轴 ≥target% 考查权重的最少考点数; 长尾=低频考点 (性价比低, 诚实非全覆盖)。词轴'出现≠考查'(根因A); 语法轴时代覆盖见 axes.grammar.era_note(如有)。",
     }

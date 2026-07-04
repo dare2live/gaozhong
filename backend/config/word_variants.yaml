@@ -34,6 +34,7 @@ variants:
   realise:      {canonical: realize,      category: spelling_variant}
   theatre:      {canonical: theater,      category: spelling_variant}
   kilometer:    {canonical: kilometre,    category: spelling_variant}
+  kilogramme:   {canonical: kilogram,     category: spelling_variant}  # 2026-07-04坑: 课标续行合并修复新恢复此变体词, 无独立gloss源, 走kilogram(有hujiao+中考词汇表gloss)继承
   maths:        {canonical: math,         category: spelling_variant}
   email:        {canonical: e-mail,       category: spelling_variant}
   # 冠词变体

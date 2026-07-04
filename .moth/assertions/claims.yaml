@@ -445,6 +445,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT (SELECT count(*) FROM word_glosses WHERE gloss IS NOT NULL AND TRIM(gloss)<>'' AND NOT regexp_matches(gloss,'[一-鿿]')) + (SELECT count(*) FROM exam_vocabulary WHERE gloss IS NOT NULL AND TRIM(gloss)<>'' AND NOT regexp_matches(gloss,'[一-鿿]'))"
     expect: {op: "==", value: 0}
+  - id: glosses-no-truncation-sentinel
+    claim: "释义内容门二(2026-07-04全数据审计坑): '真中文+垃圾截断后缀'复合污染(如'人人；…(文本层截断待补全)')能过glosses-have-chinese(前缀是真中文), 单独锁死word_glosses/exam_vocabulary无该哨兵残留; glossary.build_glossary 已改为剥离后缀而非精确比较==\"待OCR\""
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT (SELECT count(*) FROM word_glosses WHERE gloss LIKE '%文本层截断待补全%') + (SELECT count(*) FROM exam_vocabulary WHERE gloss LIKE '%文本层截断待补全%')"
+    expect: {op: "==", value: 0}
   - id: in-curriculum-truth-not-hardcoded
     claim: "unit_vocab_intro.in_curriculum = 词∈cefr_vocab 真值现算(run_vocab), 非硬编码True; 教材约47%越纲(教材本超课标), 全True=系统性谎报越纲违§1.2选材硬约束(theme_l3同模式假源列已修)"
     type: duckdb_sql
@@ -662,3 +668,47 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services import graph as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);r=g.degree_summary(c);c.close();ids={n['concept_id'] for n in r['nodes']};bad_lbl=[e for e in r['edges'] if e['relation'] in r['label_relations']];dangling=[e for e in r['edges'] if e['src'] not in ids or e['dst'] not in ids];print('OK' if r['nodes'] and r['edges'] and not bad_lbl and not dangling else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: cognitive-skill-official-labels-match-yaml
+    claim: "d0_cognitive_skill_check._OFFICIAL_SKILLS(独立verify-the-verifier字面量, 有意不从yaml读取)必须与exam_point_taxonomy.yaml question_intent.labels官方7项集合相等(2026-07-04坑: 曾抄错3处理解观点≠理解观点态度/理解意图≠理解目的/理解结构≠理解文章结构类型, 当前DB只用到4个双方一致的交集标签而未触发可见故障)"
+    type: shell
+    command: ["python3", "-c", "import yaml;from scripts.lib.d0_cognitive_skill_check import _OFFICIAL_SKILLS;y=yaml.safe_load(open('backend/config/exam_point_taxonomy.yaml'))['dimensions']['question_intent']['labels'];ys={l['id'] for l in y};print('OK' if ys==_OFFICIAL_SKILLS else f'FAIL diff={ys^_OFFICIAL_SKILLS}')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: tests-grammar-province-scoped-and-exclusive-match
+    claim: "build_tests_grammar(links_extra.py, 2026-07-04坑修): 建边层本身锁辽宁口径(旧版无province过滤, 88%非辽宁题边混入edges表), 且父子共享同一关键词术语时(如'定语从句'同时命中限制性/非限制性子节点)只挑blob文本真正支持的最具体节点(旧版子串命中就全挂, 53.3%边过度归因)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);non_ln=c.execute(\"SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) WHERE e.relation='tests_grammar' AND (q.province IS NULL OR q.province NOT LIKE '辽宁%')\").fetchone()[0];dup=c.execute(\"SELECT COUNT(*) FROM edges e1 JOIN edges e2 ON e1.src_id=e2.src_id AND e1.relation='tests_grammar' AND e2.relation='tests_grammar' WHERE e2.dst_id LIKE e1.dst_id || '/%'\").fetchone()[0];c.close();print('OK' if non_ln==0 and dup==0 else f'FAIL non_ln={non_ln} dup={dup}')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: grammar-category-pct-era-honest
+    claim: "grammar_category_pct(textbook_content.py教材单元'考察重点'徽章消费者)默认取当前卷制(scope.ERA_NEW); 现2021+暂无tests_grammar边(build对2021+英文答案桩文本关键词匹配缺席), 该函数诚实返回空dict(前端展示'暂无考查数据'), 不冒用2015-2020历史占比充当当前真值(2026-07-04坑12修)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_grammar_stats import grammar_exam_stats, grammar_category_pct;from backend.services.trend import scope;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=grammar_exam_stats(c);pct=grammar_category_pct(c);c.close();ok=(scope.ERA_NEW not in s['eras_covered'] and pct=={}) or (scope.ERA_NEW in s['eras_covered'] and pct!={});print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: zhongkao-2025-stem-not-walled
+    claim: "extract_zhongkao.py 2026-07-04坑修: 旧版_set_stem条件写反(要求options非空), 21-30完形填空(stem本为空只有options)+31-45(语篇填空/阅读表达/作文, options本为空只有stem)两类题被静默漏转录, 误标stem_walled冒充'题面门控'——实际exam_ocr.txt早有完整原文(manifest/paper_structure自述'2025=题干完整'); 补_parse_wanxing(完形填空共享段落)+_parse_yupian_tiankong(语篇填空共享段落)+_set_stem判据改stem或options任一非空; 2025全45题应0 stem_walled(区别于2024真实源头门控45/45)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2025 AND content_status='stem_walled'"
+    expect: {op: "==", value: 0}
+  - id: ocr-fix-dictionary-unreviewed-not-consumed
+    claim: "坑17(2026-07-04全数据审计补): ocr_fix_dictionary(1627行OCR纠错候选, 含'doing'→'dining'等高风险模糊匹配)此前D0/moth/audit_findings三处零覆盖; 表本身只读候选队列(无consumer写回), 锁reviewed_by非NULL行数应=0(未审阅候选不得被当已验证消费), 防未来接lookup时绕过审阅"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM ocr_fix_dictionary WHERE reviewed_by IS NOT NULL"
+    expect: {op: "==", value: 0}
+  - id: student-answers-source-domain-honest
+    claim: "坑17(2026-07-04全数据审计补): student_answers(920行, 坑4修复后100%demo数据)source字段值域此前D0零覆盖(仅moth间接验证join支撑); 锁source⊆{demo,real}且非NULL, 防未来混入真实作答但demo/real边界失守"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM student_answers WHERE source IS NULL OR source NOT IN ('demo', 'real')"
+    expect: {op: "==", value: 0}
+  - id: liaoning-official-textbook-data-locked
+    claim: "坑17(2026-07-04全数据审计补): liaoning_allowed_publishers(辽宁省教育厅2023目录官方8版本)+liaoning_city_textbook_choice(14地市, CLAUDE.md §4锚定10外研/4人教) 此前D0/moth零覆盖内容本身(moth原有断言只测聚合口径不漂移); 数据现查正确, 补行数+地市名单+publisher_short值域三重锁"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);npub=c.execute('SELECT COUNT(*) FROM liaoning_allowed_publishers').fetchone()[0];rows=c.execute('SELECT city,publisher_short FROM liaoning_city_textbook_choice').fetchall();c.close();wy={ci for ci,p in rows if p=='外研版'};rj={ci for ci,p in rows if p=='人教版'};ok=(npub==8 and len(rows)==14 and len({ci for ci,_ in rows})==14 and len(wy)==10 and rj=={'锦州','铁岭','朝阳','葫芦岛'});print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: renjiao-zh-def-pollution-bounded
+    claim: "unit_vocab_intro.zh_def 内容边界正确性(2026-07-04坑修): vocab_renjiao.py 旧版把专有名词段(San Francisco/Napa Valley...无pos)+跨行分裂的派生词条头(commercialise跨行到/ipa/)都误判'续行'吸入前一真词条zh_def, 产出500+字符污染义项; 加 _PROPER_NOUN_HEAD_RE(专有名词头flush不续)+_merge_split_entry_heads(词条头跨行安全合并)两处修复后, renjiao污染(zh_def>100字符)从32条降到4条(残留=专有名词无IPA/空IPA两类边缘case, 诚实标非追零), 锁上界≤10防回归"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM unit_vocab_intro WHERE version_key='renjiao' AND LENGTH(zh_def) > 100"
+    expect: {op: "<=", value: 10}

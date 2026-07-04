@@ -62,15 +62,27 @@ def _split_parts(text: str) -> dict:
     }
 
 
+def _warn_short_block(year: int, label: str, n: int, threshold: int) -> None:
+    """坑(2026-07-04全数据审计, 潜伏实例, 非爆发): 长度门槛判断失败时旧版无任何输出,
+    若未来年份PDF因OCR质量/版式差异导致某section长度恰好落阈值下, 会被整体静默剔除
+    (不产生question_id, 无警告)。加非阻断诊断print(参照 import_recent_exams.py._policy_check
+    "示警不静默"风格), 不改变现有阈值判断行为本身。"""
+    print(f"  ⚠ {year} {label} 长度={n} < 阈值{threshold}, 已跳过(若非预期请检查PDF版式/OCR质量)")
+
+
 def _parse_reading(part2: str, year: int) -> list[dict]:
     qs = []
     for label in ["A", "B", "C", "D"]:
         block = _extract_passage(part2, label)
         if block and len(block) > 100:
             qs.append(_make_section(year, "阅读理解", block, ord(label) - ord("A") + 1))
+        elif block:
+            _warn_short_block(year, f"阅读理解{label}篇", len(block), 100)
     qiwu = _extract_between(part2, "第二节", None) or ""
     if len(qiwu) > 100:
         qs.append(_make_section(year, "完形填空(七选五/语篇)", qiwu, 36))
+    elif qiwu:
+        _warn_short_block(year, "完形填空(七选五/语篇)", len(qiwu), 100)
     return qs
 
 
@@ -79,9 +91,13 @@ def _parse_language(part3: str, year: int) -> list[dict]:
     cloze = _extract_between(part3, "第一节", "第二节") or part3[:2000]
     if len(cloze) > 100:
         qs.append(_make_section(year, "完形填空", cloze, 41))
+    elif cloze:
+        _warn_short_block(year, "完形填空", len(cloze), 100)
     grammar = _extract_between(part3, "第二节", None) or ""
     if len(grammar) > 50:
         qs.append(_make_section(year, "语法填空", grammar, 56))
+    elif grammar:
+        _warn_short_block(year, "语法填空", len(grammar), 50)
     return qs
 
 
@@ -90,9 +106,13 @@ def _parse_writing(part4: str, year: int) -> list[dict]:
     applied = _extract_between(part4, "第一节", "第二节") or ""
     if len(applied) > 50:
         qs.append(_make_section(year, "应用文写作", applied, 46))
+    elif applied:
+        _warn_short_block(year, "应用文写作", len(applied), 50)
     narrative = _extract_between(part4, "第二节", None) or ""
     if len(narrative) > 50:
         qs.append(_make_section(year, "续写", narrative, 47))
+    elif narrative:
+        _warn_short_block(year, "续写", len(narrative), 50)
     return qs
 
 

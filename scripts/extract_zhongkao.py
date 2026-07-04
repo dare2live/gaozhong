@@ -95,6 +95,62 @@ def _parse_wuxuansi(lines: list[str]) -> dict[int, dict]:
     return {n: {"stem": "选句填空(共享段落,见原卷第二节)", "options": dict(bank)} for n in range(17, 21)}
 
 
+_YPTK_SKIP = ("阅读短文", "通顺、连贯")  # 段内说明文字行(含跨行续写"...使短文\n通顺、连贯。"), 非原文不进 raw_question
+
+
+def _find_section_bounds(lines: list[str], is_start, is_end) -> tuple[int, int] | None:
+    """定位段边界(start行索引+1 到 end行索引, 不含起止标记行本身); 找不到start返回None.
+    共用于完形填空(21-30)/语篇填空(31-40)两段的段落抽取(Rule5可复用, 同结构不同marker)。"""
+    try:
+        start = next(i for i, l in enumerate(lines) if is_start(l))
+    except StopIteration:
+        return None
+    end = next((i for i in range(start, len(lines)) if is_end(lines[i])), len(lines))
+    return start, end
+
+
+def _passage_from_bounds(lines: list[str], bounds: tuple[int, int] | None) -> str:
+    """段边界内的行拼成一段(去说明性文字_YPTK_SKIP, 去空行); 无边界/无内容返回空串."""
+    if not bounds:
+        return ""
+    start, end = bounds
+    return "\n".join(
+        l.strip() for l in lines[start + 1:end]
+        if l.strip() and not any(s in l for s in _YPTK_SKIP))
+
+
+def _parse_wanxing(lines: list[str], mcq: dict) -> None:
+    """完形填空(21-30, 同根因顺带补: 与31-40语篇填空同结构——连续短文+隐式空号内嵌如'the21',
+    旧版从未把共享段落接到stem, 21-30 的 raw_question 恒为空字符串, content_status 视图误标
+    'stem_walled', 实际A-D选项本身已被_parse_mcq正确抓取, 只缺passage上下文).
+    只原地补 stem 字段(mcq[n]['stem']), 不碰已有 options(避免用 dict.update() 整体替换
+    冲掉_parse_mcq已抓到的真实A-D选项)。段在'二、'后到首个题号'21.'行前。"""
+    bounds = _find_section_bounds(
+        lines, lambda l: l.strip().startswith("二、"),
+        lambda l: bool(re.match(r"^21[.．]", l.strip())))
+    passage = _passage_from_bounds(lines, bounds)
+    if not passage:
+        return
+    for n in range(21, 31):
+        if n in mcq:
+            mcq[n]["stem"] = passage
+
+
+def _parse_yupian_tiankong(lines: list[str]) -> dict[int, dict]:
+    """语篇填空(31-40, 坑2026-07-04全数据审计补: 旧版完全无此段解析, mcq[31..40]恒 None,
+    被 _set_stem 静默留空后被 content_status 误标"题面门控", 实为解析器缺口非源头不可得).
+    整段连续短文(非独立选项, 空号内嵌在词间如 'full31new'), 10个空共享同一篇 raw_question
+    (仿17-20五选四共享句库模式); 具体每空语法考点另由 paper_structure.json (_kaodian_map) 提供。
+    段在'三、语篇填空'标题后到'四、阅读与表达'前。"""
+    bounds = _find_section_bounds(
+        lines, lambda l: "语篇填空" in l and l.strip().startswith("三"),
+        lambda l: l.strip().startswith("四、") or "阅读与表达" in l)
+    passage = _passage_from_bounds(lines, bounds)
+    if not passage:
+        return {}
+    return {n: {"stem": passage, "options": {}} for n in range(31, 41)}
+
+
 def _kaodian_map(paper: dict) -> dict[int, str]:
     """统一语篇填空(31-40)考点 — 坑19 跨年异构: 2024=section三 grammar_points dict / 2025=list."""
     km: dict[int, str] = {}
@@ -108,14 +164,25 @@ def _kaodian_map(paper: dict) -> dict[int, str]:
 
 
 def _set_stem(rec: dict, n: int, mcq: dict, paper: dict) -> None:
-    """题面(2025): stem+options (四选一仅A-D, 挡五选四bank渗入 强验证Z1); 门控(2024): 标 walled."""
-    if n in mcq and mcq[n]["options"]:
+    """题面(2025): stem+options (四选一仅A-D, 挡五选四bank渗入 强验证Z1); 门控(2024): 标 walled.
+
+    坑(2026-07-04 全数据审计): 旧条件要求 options 非空才写入, 41-45(阅读与表达开放问答/
+    书面表达作文题, 本无选项)虽被 _parse_mcq 正确解析出 stem 却因 options={} 判 falsy
+    被整个跳过, 且 2025 非 stem_walled 年份故 elif 分支也不触发, 静默留 raw_question=None
+    (无任何 stem_status 标记, 比误标 walled 更差); 下游 zhongkao_questions 视图的
+    content_status CASE(raw_question IS NULL → 'stem_walled') 把它冒充成"题面门控",
+    实为解析器条件写反, 非源头不可得。改判据: stem 或 options 任一非空即写入(完形填空
+    21-30 反过来是 stem='' 但 options 非空, 只判 stem 会漏掉这类——两个字段各自可能为空,
+    只要有一个有内容就该落库, 不能要求两个同时非空/同时判其中一个)。"""
+    if n in mcq and (mcq[n].get("stem") or mcq[n]["options"]):
         opts = mcq[n]["options"]
         if 1 <= n <= 16:
             opts = {k: v for k, v in opts.items() if k in "ABCD"}
         rec["raw_question"], rec["options"] = mcq[n]["stem"], opts
     elif paper.get("stem_walled"):
         rec["stem_status"] = "walled(各免费源门控,仅官方答案可得)"
+    else:
+        rec["stem_status"] = "unparsed(exam_ocr.txt 未能解析出该题stem, 非源头不可得, 需修解析器)"
 
 
 def _set_answer(rec: dict, n: int, kmap: dict, akey: dict | None, paper: dict) -> None:
@@ -152,7 +219,9 @@ def _load_mcq(d: Path) -> dict[int, dict]:
     except StopIteration:
         pass
     mcq = _parse_mcq(lines)
-    mcq.update(_parse_wuxuansi(lines))     # 五选四(17-20)共享句库
+    mcq.update(_parse_wuxuansi(lines))          # 五选四(17-20)共享句库
+    mcq.update(_parse_yupian_tiankong(lines))   # 语篇填空(31-40)共享段落 (2026-07-04坑补)
+    _parse_wanxing(lines, mcq)                  # 完形填空(21-30)原地补stem, 不碰已有options (同坑同修)
     return mcq
 
 

@@ -64,3 +64,26 @@ def _check_cumulative_words(con: duckdb.DuckDBPyConnection, check) -> None:
             bad.append(f"{city}:末单元累计{cums[-1]}≠整版本distinct{tot}")
     check("cumulative_words_learned 跨册 running distinct (单调+末≈整版本; 防单册重置低估越纲误判)",
           not bad, f"{bad}")
+
+
+def check_liaoning_official_data(con: duckdb.DuckDBPyConnection, check) -> None:
+    """坑17(2026-07-04全数据审计补): liaoning_allowed_publishers(辽宁省教育厅官方教学用书目录)
+    + liaoning_city_textbook_choice(14地市选用版本对照, CLAUDE.md §4锚定) 此前D0/moth零覆盖
+    (moth对后者仅有'聚合口径不漂移'类断言, 不校验原始行内容)。数据本身经查正确, 补内容锁防
+    未来录入错误(如某市版本录反)无法被任何自动化门抓到。"""
+    print("\n=== (39) 辽宁官方教材数据 (allowed_publishers + city_textbook_choice) ===")
+    n_pub = con.execute("SELECT COUNT(*) FROM liaoning_allowed_publishers").fetchone()[0]
+    check("liaoning_allowed_publishers = 8 (辽宁省教育厅2023年目录官方8个版本)", n_pub == 8, f"{n_pub}")
+    cities = con.execute("SELECT city, publisher_short FROM liaoning_city_textbook_choice").fetchall()
+    n_city = len(cities)
+    check("liaoning_city_textbook_choice = 14 地市 (CLAUDE.md §4 锚定)", n_city == 14, f"{n_city}")
+    dup_or_missing = 14 - len({c for c, _ in cities})
+    check("14 地市不重不漏 (distinct city == 14)", dup_or_missing == 0, f"重复/缺失={dup_or_missing}")
+    bad_pub = [c for c, p in cities if p not in ("外研版", "人教版")]
+    check("publisher_short 只取 {外研版,人教版} (CLAUDE.md §4: 辽宁仅这两版本在用)",
+          not bad_pub, f"越界: {bad_pub}")
+    waiyan_cities = {c for c, p in cities if p == "外研版"}
+    renjiao_cities = {c for c, p in cities if p == "人教版"}
+    check("外研版10市/人教版4市 (CLAUDE.md §4 精确名单锁)",
+          len(waiyan_cities) == 10 and renjiao_cities == {"锦州", "铁岭", "朝阳", "葫芦岛"},
+          f"外研={sorted(waiyan_cities)} 人教={sorted(renjiao_cities)}")

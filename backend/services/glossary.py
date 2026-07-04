@@ -17,6 +17,14 @@ ROOT = Path(__file__).resolve().parents[2]
 _HUJIAO = ROOT / "data" / "junior_high" / "structured" / "hujiao_vocab.jsonl"
 _ZHONGKAO = ROOT / "data" / "structured" / "english-wordlists" / "中考英语词汇表.txt"
 
+# scripts/extract_hujiao_vocab.py 产的两种占位符: 全不可用(整条跳过) / 局部截断(去掉哨兵后缀,
+# 保留仍可用的前缀释义)。坑(2026-07-04 全数据审计发现): 旧版只按 == "待OCR" 精确比较过滤,
+# 漏了第二种"文本层截断待补全"后缀(字面不同), 导致78条(word_glosses)+44条(exam_vocabulary,
+# 下游 build_exam_dictionary 继承)垃圾释义入库, 且因整串更长在 _direct_gloss 的
+# LENGTH DESC 排序里冒充"更全"挤掉本有的干净释义。
+_HUJIAO_UNUSABLE = "待OCR"
+_HUJIAO_TRUNCATED_SUFFIX = "…(文本层截断待补全)"
+
 # 中考词汇表行: "ability [əˈbɪlɪtɪ] n. 能力;才能"  → word / pos / 中文释义
 _ZK_LINE = re.compile(r"^([a-zA-Z][a-zA-Z\s()/.'\-]*?)\s*\[[^\]]*\]\s*"
                       r"([a-z]+\.?(?:\s*&\s*[a-z]+\.?)?)?\s*(.+)$")
@@ -99,13 +107,17 @@ def build_glossary(con: duckdb.DuckDBPyConnection) -> dict:
         g = _clean_zh_def(zh)
         if g:
             rows.append((w.lower(), _volume_stage(vol), pos, g, vk))
-    # 初中: 沪教生词表 (待OCR 跳过)
+    # 初中: 沪教生词表 (待OCR 整条跳过; 截断哨兵后缀剥离, 保留仍可用的前缀释义)
     for ln in _HUJIAO.read_text(encoding="utf-8").splitlines():
         if not ln.strip():
             continue
         r = json.loads(ln)
-        if r.get("zh_def") and r["zh_def"] != "待OCR":
-            rows.append((r["word"].lower(), "初中", r.get("pos"), r["zh_def"], "hujiao"))
+        zh = r.get("zh_def")
+        if not zh or zh == _HUJIAO_UNUSABLE:
+            continue
+        zh = zh.replace(_HUJIAO_TRUNCATED_SUFFIX, "").strip()
+        if zh:
+            rows.append((r["word"].lower(), "初中", r.get("pos"), zh, "hujiao"))
     # 初中: 中考词汇表 (补基础词; 同清 OCR 污染, 无中文跳过)
     for w, pos, gloss in _parse_zhongkao():
         g = _clean_zh_def(gloss)

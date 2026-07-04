@@ -33,3 +33,8 @@ def check_glossary(con: duckdb.DuckDBPyConnection, check) -> None:
     # 释义非空 (来源诚实)
     empty = con.execute("SELECT COUNT(*) FROM word_glosses WHERE gloss IS NULL OR gloss=''").fetchone()[0]
     check("释义全非空 (教材/词表真相源, 不假填)", empty == 0, f"{empty} 空释义")
+    # 2026-07-04 全数据审计坑: 精确匹配 != '待OCR' 漏过第二种占位符后缀"文本层截断待补全"
+    # (glossary.build_glossary 已改为 strip 后缀而非精确比较); 锁死两张表都不再含该哨兵。
+    for tbl in ("word_glosses", "exam_vocabulary"):
+        n_bad = con.execute(f"SELECT COUNT(*) FROM {tbl} WHERE gloss LIKE '%文本层截断待补全%'").fetchone()[0]
+        check(f"{tbl} 无'文本层截断待补全'哨兵残留", n_bad == 0, f"{n_bad} 条")

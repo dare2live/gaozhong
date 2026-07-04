@@ -148,6 +148,15 @@ def _run_checks() -> int:
     _check_zhongkao()
     check("F6 语法项目=71 (含5理解项)", len(_words("grammar_items.jsonl")) == 71,
           f"{len(_words('grammar_items.jsonl'))}")
+    # 坑(2026-07-04 全数据审计): 官方PDF"关系从句"条目跨页换行, 旧版逐行处理无续行合并,
+    # label 被腰斩丢失后半句(仅剩"...能辨认出由关系代词 that、"); 现已在
+    # scripts/lib/junior_high_curriculum.py._merge_grammar_continuations 修. 锁: 该条目
+    # label 必须完整(含官方原文用词"限定性定语从句"——非"限制性", 不能悬空以顿号结尾)。
+    gram_items = {r["item_id"]: r["label"] for r in _words("grammar_items.jsonl")}
+    rel_clause_label = gram_items.get("三/七/3", "")
+    check("F10 语法项目 label 无跨页截断残留 (关系从句条目完整)",
+          rel_clause_label.rstrip().endswith("）") and "限定性定语从句" in rel_clause_label,
+          f"三/七/3={rel_clause_label!r}")
     cur_words = {r["word"] for r in cur} | {r["word"] for r in hj}
     orphan = [r for r in _words("stage_refined.jsonl")
               if r.get("refined_stage") in ("小学", "初中") and r["word"] not in cur_words]
