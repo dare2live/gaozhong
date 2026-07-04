@@ -215,11 +215,20 @@ def _is_grammar_marker(line: str) -> bool:
     return any(r.match(s) for r in (_G_L1, _G_L2, _G_L3))
 
 
+# 坑(2026-07-04 教研组验收发现, deepens 边 D0 校验揪出): "（1）一般疑问句" 这类阿拉伯数字
+# 全/半角圆括号子项枚举, 不落在 _G_L1/L2/L3 任一深度正则内(L2 只认中文数字"（一）", L3 只认
+# "1." 不认"（1）"), 被 _is_grammar_marker 判"非marker"后, 又因上一行("疑问句"未以收尾符结束)
+# 被误判成"续写"整句吞并 → "疑问句"错误吸收 3 个本应独立的子项("三/一/2"标签变成
+# "疑问句（1）一般疑问句（2）特殊疑问句（3）选择疑问句", 与高中侧 4 个独立语法节点脱节,
+# deepens 衔接边缺 1 条)。这类子项枚举行是明确的新分点标志, 不是续写, 排除在外。
+_SUBITEM_PAREN_RE = re.compile(r"^[（(]\d+[)）]")
+
+
 def _is_grammar_continuation(prev: str, nxt: str) -> bool:
     """nxt 是 prev(marker行)的折行续写? 同 scripts/lib/curriculum_grammar.py._is_continuation
     判据(该姊妹模块已修过此坑, 本文件此前未同步移植): 非marker + 含中文 + ASCII占比不过高(非例句)
     + prev 不完整(括号未配平 或 无终止符)。"""
-    if not nxt or _is_grammar_marker(nxt):
+    if not nxt or _is_grammar_marker(nxt) or _SUBITEM_PAREN_RE.match(nxt):
         return False
     if not any("一" <= c <= "鿿" for c in nxt):
         return False
