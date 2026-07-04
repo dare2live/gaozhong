@@ -112,9 +112,20 @@
     }).join("");
   }
   // 样本量诚实标注 (坑12: 分布可用但 n 透明; n=次数=考查边, 非题数 — 一题可考多个语法点)
+  // 坑(2026-07-04 全数据审计坑12): 旧版只写"直接来自历年试卷", 未披露当前 100% 数据来自
+  // 2015-2020 旧课标II(2021+新高考因build_tests_grammar对英文答案桩文本关键词匹配缺席), 会让
+  // 人误以为反映当前卷制。改读 eras_missing(单一计算点, 复用 grammar_exam_stats 已算字段)。
+  // era 内部 key(如 "2015-2020_旧课标II")→人话短标签, 只做展示层清洗不碰数据。
+  const _eraShort = era => (era || "").replace(/^[\d.+-]+_/, "").replace(/_/g, " ") || era;
   function _grammarCaption(ge) {
     if (!ge || ge.n_questions == null) return "";
-    return `共 ${ge.n_questions} 题 · ${ge.n_edges || ge.total} 条考查记录 (一题可考多个语法点) — 量不大, 排序可信、小数点别抠。`;
+    const base = `共 ${ge.n_questions} 题 · ${ge.n_edges || ge.total} 条考查记录 (一题可考多个语法点) — 量不大, 排序可信、小数点别抠。`;
+    if (ge.eras_missing && ge.eras_missing.length) {
+      const covered = (ge.eras_covered || []).map(_eraShort).join("、") || "历史";
+      const missing = ge.eras_missing.map(_eraShort).join("、");
+      return base + ` <span style="background:var(--accent-wash);color:var(--accent-ink);padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅 ${covered} 卷制 · ${missing} 暂无考查记录</span>`;
+    }
+    return base;
   }
   // N2: 教材搭配/句型/表达库卡 (phrases, 出现非考查)
   function _phraseCard(te) {

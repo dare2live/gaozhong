@@ -477,16 +477,21 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const rel = (cs && cs.reliability) || {};
     const nNew = (rel[ERA_NEW] || {}).n || newRows.reduce((a, r) => a + r.n, 0);
     const nOld = (rel[ERA_OLD] || {}).n || oldRows.reduce((a, r) => a + r.n, 0);
-    // 诚实叙事 — 新era不可信时 banner 显著 + 把"迁移真值"降级为"方向性信号"(n<30 单年不作趋势结论)
+    // 坑(2026-07-04 全数据审计): 旧版硬编码"仅2023单年", 后来2024数据接入(n=15→28)后文案未同步,
+    // 长期显示"仅2023单年n=28"这种自相矛盾的过时描述。改读后端真实年份列表(cognitive_skill.py
+    // reliability[era].years), 不再硬编码具体年份(单一计算点, 防再漂移)。
+    const newYears = (rel[ERA_NEW] || {}).years || [];
+    const newYearsLabel = newYears.length ? newYears.join("/") + "年" : "近年";
+    // 诚实叙事 — 新era不可信时 banner 显著 + 把"迁移真值"降级为"方向性信号"(样本不足不作趋势结论)
     const banner = !newOK
-      ? `<div class="caveat-banner"><span class="cb-tag">样本不足</span><span>新高考II 仅 2023 单年 n=${nNew}(&lt;30) = <b>方向性信号, 非精确分布/趋势结论</b>; 待补 2022/2024/2025 真辽宁设问标注确认。</span></div>`
+      ? `<div class="caveat-banner"><span class="cb-tag">样本不足</span><span>新高考II 仅 ${newYearsLabel} n=${nNew}(&lt;30) = <b>方向性信号, 非精确分布/趋势结论</b>; 其余年份暂无设问思维标注数据。</span></div>`
       : "";
     const inf = !newOK
-      ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(2023) ${nInf}%`
+      ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(${newYearsLabel}) ${nInf}%`
       : `命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断`;
     G.$("#bk-cognote").innerHTML = banner
       + `题型标签直接来自教研解析, 不靠 AI 猜(详见页尾「数据怎么来的?」)。${inf}。`
-      + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅2023 n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`;
+      + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅${newYearsLabel} n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`;
   }
 
   async function loadCross(by) {

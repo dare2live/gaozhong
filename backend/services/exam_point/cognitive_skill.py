@@ -165,9 +165,12 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         "WHERE e.relation='tests_exam_point' "
         "AND json_extract_string(e.evidence_json, '$.dimension') = ?", [DIMENSION]).fetchall()
     by_era: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    years_by_era: dict[str, set[int]] = defaultdict(set)
     for label, yr in rows:
         era = scope.segment(int(yr)) if yr else "unknown"
         by_era[era][label] += 1
+        if yr:
+            years_by_era[era].add(int(yr))
     out = {}
     reliability = {}
     for era, d in by_era.items():
@@ -176,7 +179,11 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
             [{"label": k, "n": v, "pct": round(100 * v / tot, 1)} for k, v in d.items()],
             key=lambda x: -x["n"])
         # 分布可靠性: 复用 scope 阈值(不 hardcode); 不足 → 方向性非精确(坑12 分布门, 防把单年当稳定分布)
+        # years: 坑(2026-07-04): 前端旧版硬编码"仅2023单年"描述该era样本构成, 后来2024数据接入
+        # (n=15→28)后文案未同步跟着变, 长期显示"仅2023单年n=28"这种自相矛盾的过时描述——
+        # 改为把真实年份列表吐给前端, 前端拼描述文字不再硬编码具体年份(单一计算点, 防再漂移)。
         reliability[era] = {"n": tot, "distribution_reliable": tot >= scope.MIN_DISTRIBUTION_SAMPLE,
+                            "years": sorted(years_by_era[era]),
                             "note": "分布可报占比" if tot >= scope.MIN_DISTRIBUTION_SAMPLE
                             else f"样本<{scope.MIN_DISTRIBUTION_SAMPLE}(仅方向性, 非精确分布)"}
     return {"dimension": DIMENSION, "province_scope": "辽宁卷",
