@@ -18,13 +18,39 @@ rules:
   - patterns: ["subject-verb agreement", "主谓一致"]
     grammar_item_id: "三/8"
     note: 主谓一致
+  # 坑29 (2026-07-04) 追加: 具体时态+被动组合须排在"passive voice"/"tense" 两个 umbrella 之前
+  # (有序匹配, 具体优先; 否则 "Present perfect passive" 会被泛 umbrella 提前吃掉)。
+  - patterns: ["present perfect passive", "现在完成时的被动语态"]
+    grammar_item_id: "三/6/(5)"
+    note: 现在完成时的被动语态
+  - patterns: ["present continuous passive", "现在进行时的被动语态"]
+    grammar_item_id: "三/6/(4)"
+    note: 现在进行时的被动语态
+  - patterns: ["past perfect passive", "过去完成时的被动语态"]
+    grammar_item_id: "三/6/(7)"
+    note: 过去完成时的被动语态
+  - patterns: ["past continuous passive", "过去进行时的被动语态"]
+    grammar_item_id: "三/6/(6)"
+    note: 过去进行时的被动语态
   - patterns: ["passive voice", "被动语态"]
     grammar_item_id: "三/6"
-    note: 被动语态
-  - patterns: ["-ing as attributive", "-ing form", "-ing 形式", "ing 形式"]
+    note: 被动语态 (umbrella)
+  - patterns: ["present perfect continuous", "现在完成进行"]
+    grammar_item_id: "三/5/(10)"
+    note: 现在完成进行
+  - patterns: ["past future", "过去将来"]
+    grammar_item_id: "三/5/(7)"
+    note: 过去将来
+  - patterns: ["future continuous", "将来进行"]
+    grammar_item_id: "三/5/(8)"
+    note: 将来进行
+  - patterns: ["past perfect", "过去完成"]
+    grammar_item_id: "三/5/(9)"
+    note: 过去完成
+  - patterns: ["-ing as attributive", "-ing as subject", "-ing form", "-ing 形式", "ing 形式"]
     grammar_item_id: "三/7/(2)"
     note: 动词的-ing形式
-  - patterns: ["-ed as adverbial", "-ed as attributive", "-ed form", "-ed 形式", "ed 形式"]
+  - patterns: ["-ed as adverbial", "-ed as attributive", "past participle", "-ed form", "-ed 形式", "ed 形式", "过去分词"]
     grammar_item_id: "三/7/(3)"
     note: 动词的-ed形式
   - patterns: ["infinitive", "动词不定式"]
@@ -33,15 +59,33 @@ rules:
   - patterns: ["non-finite", "非谓语"]
     grammar_item_id: "三/7"
     note: 动词的非谓语形式 (umbrella)
-  - patterns: ["attributive clause", "relative clause", "定语从句"]
+  - patterns: ["restrictive relative", "限制性定语从句"]
+    grammar_item_id: "三/10/(3)/a"
+    note: 限制性定语从句
+  - patterns: ["non-restrictive relative", "非限制性定语从句"]
+    grammar_item_id: "三/10/(3)/b"
+    note: 非限制性定语从句
+  - patterns: ["attributive clause", "relative clause", "relative pronoun", "定语从句"]
     grammar_item_id: "三/10/(3)"
-    note: 定语从句
+    note: 定语从句 (umbrella)
   - patterns: ["adverbial clause", "状语从句"]
     grammar_item_id: "三/10/(2)"
     note: 状语从句
+  - patterns: ["subject clause", "主语从句"]
+    grammar_item_id: "三/10/(4)"
+    note: 主语从句
+  - patterns: ["predicative clause", "表语从句"]
+    grammar_item_id: "三/10/(5)"
+    note: 表语从句
   - patterns: ["noun clause", "名词性从句"]
     grammar_item_id: "三/10/(1)"
     note: 名词性从句 (取代表项宾语从句; 复习课覆盖主/宾/表/同位语从句)
+  - patterns: ["ellipsis", "省略句", "省略"]
+    grammar_item_id: "三/11"
+    note: 省略
+  - patterns: ["tag question", "反义疑问句", "附加疑问句"]
+    grammar_item_id: "三/1/(2)/d"
+    note: 附加疑问句
   - patterns: ["tense", "时态"]
     grammar_item_id: "三/5"
-    note: 谓语动词的时态
+    note: 谓语动词的时态 (umbrella)

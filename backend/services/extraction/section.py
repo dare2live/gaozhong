@@ -132,14 +132,19 @@ def _scan_unit(reader: PdfReader, page_start: int, page_end: int,
                ) -> list[tuple[int, str, str]]:
     """Return [(page, anchor, title), ...] within [start, end] (1-indexed).
 
-    pass-1 (页首) 不动 working 单元; pass-2 仅当 pass-1 整单元零命中时兜底整页扫多词锚点
-    (修 10 waiyan 单元页首是练习正文)。限"零命中"刻意收窄 blast-radius (narrow-enough-to-verify)。
+    pass-1 (页首前3行) 找单词/多词锚点; pass-2 整页扫多词锚点补漏(题干占页首时标题在页中)。
+    坑29 (2026-07-04) 修复: pass-2 曾被"仅当 pass-1 整单元零命中"的旧条件锁住(commit 2ad0899) ——
+    多数单元 pass-1 会误命中 1 个单词锚点(如页首练习指令行"Writing a story..."匹配到"Writing"),
+    这单个误命中就让"零命中"条件为假, 导致 pass-2 全单元跳过、真正的多词 section 标题
+    (Understanding ideas/Using language/Developing ideas 等) 永不被扫到。
+    pass-2 靠 seen 去重只补 pass-1 漏掉的锚点, 对已命中的锚点是纯**加法**不改写 ——
+    故总跑安全 (dry-run 78 单元实测 0 回归, sections 219→499, 66 单元改善)。
     """
     out: list[tuple[int, str, str]] = []
     seen: dict[str, int] = {}
     pages = list(range(page_start - 1, min(page_end, len(reader.pages))))
     _scan_head(reader, pages, anchor_re, seen, out)
-    if distinctive_re is not None and not out:
+    if distinctive_re is not None:
         _scan_distinctive(reader, pages, distinctive_re, seen, out)
     out.sort(key=lambda r: r[0])
     return out

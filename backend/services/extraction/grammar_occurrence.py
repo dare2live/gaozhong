@@ -47,7 +47,10 @@ def extract_grammar_occurrences(con: duckdb.DuckDBPyConnection) -> dict:
     out: list[tuple] = []
     seen: set = set()
     for ver, vol, un, txt in rows:
-        head = " ".join((txt or "").split())[:160]
+        # 坑29 (2026-07-04): 匹配窗口 160→300 字 — 部分教材(如外研"Using language")的
+        # 语法主题名(如 "Attributive clauses")排在页首指令语之后, 160 字会截断掉主题名本身。
+        # example_sentence 展示仍用前 120 字(够看例句), 不影响匹配。
+        head = " ".join((txt or "").split())[:300]
         gid = _match_topic(head, rules)
         if not gid or gid not in valid_ids:
             continue  # 诚实跳过: 歧义交际指令 / 无清晰术语 / 映射目标无效

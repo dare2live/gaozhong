@@ -19,6 +19,18 @@ _PHRASE_GROUP = (
     ("表达方式 (功能意念)", "function_expression"),
 )
 
+# 单一计算点 (Rule 5 可复用): 教材库出现非考查的诚实标注, phrase_library_stats + 教材单元视图共用同一句话。
+PHRASE_LIB_NOTE = ("教材固定搭配/句型/表达方式库 (来自教材单元提取); **出现非考查** — "
+                   "无短语级真题考查边, 不冒充考查频次(坑12); 短语级考查标注=未来任务。")
+
+
+def grammar_category_pct(con: duckdb.DuckDBPyConnection) -> dict[str, float]:
+    """{课标第二级子类 label: 辽宁卷考查占比%} — 供教材单元视图给某语法点标"考察重点"用.
+
+    单一计算点: 复用 grammar_exam_stats 已算的 by_category (不重跑聚合 SQL, Rule 1)。
+    """
+    return {c["category"]: c["pct"] for c in grammar_exam_stats(con)["by_category"]}
+
 
 def grammar_exam_stats(con: duckdb.DuckDBPyConnection) -> dict:
     """辽宁语法考查 按课标第二级子类 + 频次热点 + 每类 top 考点 (考查真值).
@@ -73,7 +85,7 @@ def phrase_library_stats(con: duckdb.DuckDBPyConnection) -> dict:
     return {
         "total": sum(raw.values()),
         "by_group": groups,
-        "note": "教材固定搭配/句型/表达方式库 (来自教材单元提取); **出现非考查** — 无短语级真题考查边, 不冒充考查频次(坑12); 短语级考查标注=未来任务。",
+        "note": PHRASE_LIB_NOTE,
     }
 
 

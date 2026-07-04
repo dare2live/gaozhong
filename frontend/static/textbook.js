@@ -52,20 +52,32 @@ ${G.pageHead("基础库 · 教材库", "课本里有什么", "外研社 (辽宁 
   const _esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   // 知识点小节 (有则渲, 无则跳)
   function _kgroup(title, n, inner) { return n ? `<div class="tb-kg"><span class="tb-kg-h">${title} <b>${n}</b></span>${inner}</div>` : ""; }
+  // 考察重点可视化 (用户: "该在指出考察重点后可视化列出" — 只用已有真实数据, 不臆测):
+  // 词 = exam_vocabulary.gaokao_hit_ln 辽宁真题命中次数; 语法 = 该类目辽宁卷考查占比(exam_grammar_stats)。
   function _knowledgeHTML(k) {
-    const words = (k.vocab || []).map(v =>
-      `<span class="tb-word" title="${_esc(v.zh_def)}">${_esc(v.word)}${v.pos ? `<i>${_esc(v.pos)}</i>` : ""}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}</span>`).join("");
+    const words = (k.vocab || []).map(v => {
+      const hit = v.gaokao_hit_ln || 0;
+      const badge = hit > 0 ? `<sup class="tb-hit" title="辽宁高考命中 ${hit} 次(真题真值)">${hit}</sup>` : "";
+      return `<span class="tb-word${hit > 0 ? " tb-word-tested" : ""}" title="${_esc(v.zh_def)}">${_esc(v.word)}${v.pos ? `<i>${_esc(v.pos)}</i>` : ""}${badge}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}</span>`;
+    }).join("");
     const chips = arr => (arr || []).map(x => `<span class="tb-chip">${_esc(x)}</span>`).join("");
     const exprs = (k.expression || []).map(e => `<span class="tb-chip">${_esc(e.text)}${e.intent ? `<i>${_esc(e.intent)}</i>` : ""}</span>`).join("");
-    const gram = (k.grammar || []).map(g =>
-      `<div class="tb-gram-row"><span class="tb-gram-l">${_esc(g.label || "?")}</span>${g.example ? `<span class="tb-gram-ex">e.g. ${_esc(g.example)}</span>` : ""}</div>`).join("");
+    const gram = (k.grammar || []).map(g => {
+      const pct = g.category_pct;
+      const badge = pct != null
+        ? `<span class="tb-gram-pct" title="「${_esc(g.category)}」类辽宁卷考查占比(真值)">${_esc(g.category)} · 辽宁 ${pct}%</span>`
+        : `<span class="tb-gram-pct tb-gram-pct-none" title="该类目辽宁卷暂无考查真题边(诚实标, 非0)">暂无考查数据</span>`;
+      return `<div class="tb-gram-row"><span class="tb-gram-l">${_esc(g.label || "?")}</span>${badge}${g.example ? `<span class="tb-gram-ex">e.g. ${_esc(g.example)}</span>` : ""}</div>`;
+    }).join("");
+    const phraseNote = k.phrase_note ? `<p class="tb-phrase-note">${_esc(k.phrase_note)}</p>` : "";
+    const hasPhrases = (k.collocation || []).length || (k.sentence_pattern || []).length || (k.expression || []).length;
     const parts = [
-      _kgroup("单词", k.vocab_n, `<div class="tb-words">${words}</div>`),
+      _kgroup("单词", k.vocab_n, `<div class="tb-words">${words}</div><p class="tb-legend">右上角数字 = 该词辽宁高考命中次数(真题真值)</p>`),
       _kgroup("固定搭配", (k.collocation || []).length, `<div class="tb-chips">${chips(k.collocation)}</div>`),
       _kgroup("句型", (k.sentence_pattern || []).length, `<div class="tb-chips">${chips(k.sentence_pattern)}</div>`),
       _kgroup("语法", (k.grammar || []).length, `<div>${gram}</div>`),
       _kgroup("表达方式", (k.expression || []).length, `<div class="tb-chips">${exprs}</div>`),
-    ].filter(Boolean).join("");
+    ].filter(Boolean).join("") + (hasPhrases ? phraseNote : "");
     return parts || '<span class="muted" style="font-size:12px;">本单元暂无结构化知识点</span>';
   }
   // PDF 提取文本的硬换行是排版工件非语义 (N7): 渲染层合并成段落流, 数据 raw_text 原样不动。
