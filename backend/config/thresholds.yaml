@@ -72,3 +72,12 @@ extraction:
   section_text_max_chars: 5000  # 有效 section 最大字符数
   cloze_text_min_chars: 800     # 完形原文最低字符数
   applied_preview_chars: 400    # 应用文预览截断
+
+# ===== 全景知识图谱 (全量 nodes/edges 浏览器, 2026-07-04 用户提议+judge panel方案B) =====
+graph_atlas:
+  full_display_max_count: 200   # node_type 总数 <= 此值全展示 (小规模不会形成毛球)
+  default_top_n_per_type: 40    # 超过阈值的大类型(word/question/word_sense等)默认按degree取Top-N
+  label_relations: ["at_stage", "cefr_level"]  # fan-out=1"标签"关系: 转node属性颜色编码不进骨架边
+    # 实测度分布(kg-atlas-design workflow, 2026-07-04): cefr_level 4个dst节点均吸附790条边/
+    # at_stage 5个dst节点均吸附655条边 — 原样渲染成边会把力导向图拉成放射状伪中心(方案A实测坑),
+    # 故排除在骨架边外, 仅作 node.labels 供前端颜色编码 (不是数据缺失, 只是渲染层降级为属性)。

@@ -53,8 +53,24 @@ def api_graph_subgraph(qs: dict) -> dict:
         con.close()
 
 
+def api_graph_atlas(qs: dict) -> dict:
+    """全景图谱骨架 (全库 nodes/edges 分层浏览, 见 gsvc.degree_summary)."""
+    nt = qs.get("node_type", [None])
+    node_types = nt if nt != [None] and nt else None
+    try:
+        top_n = min(int(qs.get("top_n", ["40"])[0]), 200)
+    except ValueError:
+        top_n = 40
+    con = db_ro()
+    try:
+        return gsvc.degree_summary(con, node_types=node_types, top_n_per_type=top_n)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/graph/stats": api_graph_stats,
     "/api/graph/neighbors": api_graph_neighbors,
     "/api/graph/subgraph": api_graph_subgraph,
+    "/api/graph/atlas": api_graph_atlas,
 }

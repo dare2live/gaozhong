@@ -298,6 +298,72 @@ window.GZ = (function () {
     return inst;
   }
 
+  // ===== 全景图谱骨架 单一渲染口径 (2026-07-04, 用户提议+judge panel方案B: 分层Top-N+点击展开) =====
+  // node_type→{标签,色}: 教研语义类型各一色, 未列出的元数据类型(城市/册次/年份/出版社/学科等)共用中性灰。
+  const ATLAS_TYPE_META = {
+    exam_point: { label: "考点",      color: "#BE3A2B" },
+    theme:      { label: "主题",      color: "#9C2C20" },
+    grammar:    { label: "语法点",    color: "#9A6A00" },
+    phrase:     { label: "短语/句型", color: "#C98A2B" },
+    qtype:      { label: "题型",      color: "#4A80AE" },
+    unit:       { label: "教材单元",  color: "#2E7D54" },
+    question:   { label: "真题",      color: "#1F5F94" },
+    word:       { label: "单词",      color: "#8FAECB" },
+    word_sense: { label: "词义",      color: "#C3D4E3" },
+  };
+  const _ATLAS_DEFAULT_META = { label: "其他/元数据", color: "#B4B2A9" };
+  const _atlasMeta = t => ATLAS_TYPE_META[t] || _ATLAS_DEFAULT_META;
+  // 渲染全景图谱骨架(全库 nodes/edges 分层浏览, 非"考点关联"共现证据图 — 数据来自 /api/graph/atlas)。
+  // data={nodes:[{concept_id,node_type,label,attrs,degree,labels?}], edges:[{src,dst,relation,weight}]}。
+  // 学段(stage)/课标级别(cefr_level) 本身不画成图节点(它们的边被后端排除以防伪中心, 画成孤立点也无意义);
+  // 相关信息已挂在 word.labels 里, hover tooltip 直接显示。点节点 → GZ.openPopup 真题/关联下钻(与共现网络同一深链机制)。
+  function renderAtlasGraph(el, data, opts) {
+    opts = opts || {};
+    if (!el || !window.echarts || !data || !data.nodes || !data.nodes.length) return null;
+    const skip = new Set(["stage", "cefr_level"]);
+    const nodes = data.nodes.filter(n => !skip.has(n.node_type));
+    const nodeIds = new Set(nodes.map(n => n.concept_id));
+    const edges = (data.edges || []).filter(e => nodeIds.has(e.src) && nodeIds.has(e.dst));
+    // 按"展示标签"去重分类 (非按原始 node_type) — 多个冷门 node_type(city/volume/exam_year/...)
+    // 共用同一个"其他/元数据"兜底标签时必须合并成 1 个 category, 否则图例里会重复出现同名条目。
+    const catLabels = [...new Set(nodes.map(n => _atlasMeta(n.node_type).label))];
+    const catColorOf = label => (Object.values(ATLAS_TYPE_META).find(m => m.label === label) || _ATLAS_DEFAULT_META).color;
+    const inst = initChart(el);
+    inst.setOption({
+      tooltip: {
+        formatter: p => {
+          if (p.dataType === "edge") return `${p.data.relation}<br/><span style="color:#76716A">权重 ${p.data.value}</span>`;
+          const n = p.data.raw || {};
+          const lbl = n.labels
+            ? Object.entries(n.labels).map(([k, v]) => `${k === "at_stage" ? "学段" : "课标级别"}: ${v}`).join(" · ")
+            : "";
+          return `${p.data.name}<br/><span style="color:#76716A;font-size:11px">${_atlasMeta(n.node_type).label} · 连接数 ${p.data.value}${lbl ? "<br/>" + lbl : ""}</span>`;
+        },
+      },
+      legend: [{ data: catLabels, bottom: 0, textStyle: { fontSize: 11 }, icon: "circle", itemWidth: 10, itemHeight: 10, type: "scroll" }],
+      series: [{
+        type: "graph", layout: "force", roam: true, draggable: true,
+        categories: catLabels.map(l => ({ name: l, itemStyle: { color: catColorOf(l) } })),
+        force: { repulsion: 220, edgeLength: [40, 130], gravity: 0.08, friction: 0.4 },
+        label: { show: false },
+        lineStyle: { color: "#CFC9BD", curveness: 0.03, opacity: 0.5, width: 1 },
+        emphasis: { focus: "adjacency", label: { show: true, fontSize: 11, color: "#1C1A17" }, lineStyle: { color: "#BE3A2B" } },
+        data: nodes.map(n => ({
+          id: n.concept_id, name: n.label, value: n.degree || 0, raw: n,
+          category: catLabels.indexOf(_atlasMeta(n.node_type).label),
+          symbolSize: Math.min(6 + Math.sqrt(n.degree || 1) * 2.2, 42),
+        })),
+        links: edges.map(e => ({ source: e.src, target: e.dst, value: e.weight, relation: e.relation })),
+      }],
+    });
+    inst.off("click");
+    inst.on("click", p => { if (p.dataType === "node" && window.GZ && window.GZ.openPopup) window.GZ.openPopup(p.data.id); });
+    setTimeout(() => inst.resize(), 60);
+    el.setAttribute("role", "img");
+    el.setAttribute("aria-label", `全景知识图谱骨架: ${nodes.length}节点/${edges.length}条真实关系边, 覆盖${catLabels.join("、")}。按类型分层展示头部高连接节点(大类型截断, 小类型全展示), 学段/课标级别作为词条属性(hover查看)不单独画点。`);
+    return inst;
+  }
+
   // 图表载入失败时在容器显式报错 (取代静默空白)。
   function chartLoadError(el) {
     if (el) el.innerHTML = '<div class="error-state" style="margin:0"><div class="es-title">图表组件未能载入</div>'
@@ -401,5 +467,6 @@ window.GZ = (function () {
     mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, stageMiniBand,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,
+    renderAtlasGraph,
   };
 })();

@@ -657,3 +657,8 @@ assertions:
     type: shell
     command: ["python3", "scripts/lib/endpoint_contract_check.py", "--quiet"]
     expect: {op: regex, pattern: "ALL PASS"}
+  - id: graph-atlas-no-label-hairball
+    claim: "全景知识图谱(graph.degree_summary, 2026-07-04 用户提议+judge panel方案B): label_relations(at_stage/cefr_level, fan-out=1伪边实测吸附650-800条/节点)不进骨架边只作node属性; 骨架边两端全在骨架节点内(闭合无悬挂); type_meta.total与nodes表实测一致(非估算); 同时挂D0维度19双门=坑17"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services import graph as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);r=g.degree_summary(c);c.close();ids={n['concept_id'] for n in r['nodes']};bad_lbl=[e for e in r['edges'] if e['relation'] in r['label_relations']];dangling=[e for e in r['edges'] if e['src'] not in ids or e['dst'] not in ids];print('OK' if r['nodes'] and r['edges'] and not bad_lbl and not dangling else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}

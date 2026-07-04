@@ -10,6 +10,8 @@ from typing import Optional
 
 import duckdb
 
+from backend.services.thresholds import get_threshold
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 
 
@@ -113,3 +115,111 @@ def stats(con: duckdb.DuckDBPyConnection) -> dict:
     by_rel = dict(con.execute("SELECT relation, COUNT(*) FROM edges GROUP BY relation ORDER BY COUNT(*) DESC").fetchall())
     return {"nodes": by_type, "edges": by_rel,
             "total_nodes": sum(by_type.values()), "total_edges": sum(by_rel.values())}
+
+
+def _ranked_skeleton(con, types: list[str], label_rels: list[str], full_max: int, top_n: int) -> list[tuple]:
+    """按 node_type 分层排名: 类型总数<=full_max 全入选, 否则按真实 degree(排除 label_rels) 取 Top-N."""
+    lr_ph = ",".join(["?"] * len(label_rels)) if label_rels else "NULL"
+    type_ph = ",".join(["?"] * len(types))
+    return con.execute(
+        f"""
+        WITH deg AS (
+            SELECT concept_id, SUM(d) AS degree FROM (
+                SELECT src_id AS concept_id, COUNT(*) AS d FROM edges
+                    WHERE relation NOT IN ({lr_ph}) GROUP BY src_id
+                UNION ALL
+                SELECT dst_id AS concept_id, COUNT(*) AS d FROM edges
+                    WHERE relation NOT IN ({lr_ph}) GROUP BY dst_id
+            ) x GROUP BY concept_id
+        ),
+        totals AS (SELECT node_type, COUNT(*) AS total FROM nodes GROUP BY node_type),
+        ranked AS (
+            SELECT n.concept_id, n.node_type, n.label, n.attrs_json,
+                   COALESCE(deg.degree, 0) AS degree, t.total,
+                   ROW_NUMBER() OVER (PARTITION BY n.node_type
+                                      ORDER BY COALESCE(deg.degree, 0) DESC, n.concept_id) AS rn
+            FROM nodes n
+            LEFT JOIN deg ON deg.concept_id = n.concept_id
+            JOIN totals t ON t.node_type = n.node_type
+            WHERE n.node_type IN ({type_ph})
+        )
+        SELECT concept_id, node_type, label, attrs_json, degree, total
+        FROM ranked WHERE total <= ? OR rn <= ?
+        """,
+        [*label_rels, *label_rels, *types, full_max, top_n],
+    ).fetchall()
+
+
+def _skeleton_edges(con, ids: list[str], label_rels: list[str]) -> list[dict]:
+    """两端均在骨架内、且非 label_rels 的边 (骨架的真实关系边)."""
+    id_ph = ",".join(["?"] * len(ids))
+    lr_ph = ",".join(["?"] * len(label_rels)) if label_rels else "NULL"
+    return [
+        {"src": r[0], "dst": r[1], "relation": r[2], "weight": r[3]}
+        for r in con.execute(
+            f"""SELECT src_id, dst_id, relation, weight FROM edges
+                WHERE src_id IN ({id_ph}) AND dst_id IN ({id_ph}) AND relation NOT IN ({lr_ph})""",
+            [*ids, *ids, *label_rels],
+        ).fetchall()
+    ]
+
+
+def _word_labels(con, word_ids: list[str], label_rels: list[str]) -> dict[str, dict]:
+    """word 节点的标签属性 (stage/cefr_level), 只查骨架内节点, 不碰全表 3277/3160 行."""
+    if not word_ids or not label_rels:
+        return {}
+    wp = ",".join(["?"] * len(word_ids))
+    rp = ",".join(["?"] * len(label_rels))
+    by_node: dict[str, dict] = {}
+    for src_id, relation, dst_label in con.execute(
+        f"""SELECT e.src_id, e.relation, n.label FROM edges e JOIN nodes n ON n.concept_id = e.dst_id
+            WHERE e.src_id IN ({wp}) AND e.relation IN ({rp})""",
+        [*word_ids, *label_rels],
+    ).fetchall():
+        by_node.setdefault(src_id, {})[relation] = dst_label
+    return by_node
+
+
+def degree_summary(
+    con: duckdb.DuckDBPyConnection,
+    node_types: Optional[list[str]] = None,
+    top_n_per_type: Optional[int] = None,
+) -> dict:
+    """全景图谱骨架: 按 node_type 分层取全部/degree Top-N 节点 + 两端均入选的骨架边.
+
+    单一计算点: 复用 nodes/edges 两表 (与 neighbors/expand 同源, Rule1)。node_type 总数
+    <= graph_atlas.full_display_max_count 的类型全展示 (小规模不会形成毛球); 超过的按
+    真实连接数 (排除 label_relations) 取 Top-N, 避免 word/question 这类大类型淹没骨架。
+
+    label_relations (at_stage/cefr_level, 见 thresholds.yaml graph_atlas 注释) 是
+    fan-out=1 的"标签"边非真实 N:M 关系 — 实测这两类关系的 dst 侧各只有 4-5 个节点却各
+    吸附 650-800 条边, 原样画成边会把力导向图拉成放射状伪中心, 故排除在骨架边外, 只挂
+    node["labels"] 供前端做颜色编码 (数据仍是真值, 只是渲染层从"边"降级为"属性")。
+    """
+    label_rels: list[str] = get_threshold("graph_atlas.label_relations", []) or []
+    full_max = get_threshold("graph_atlas.full_display_max_count", 200)
+    top_n = top_n_per_type or get_threshold("graph_atlas.default_top_n_per_type", 40)
+    types = node_types or [r[0] for r in con.execute("SELECT DISTINCT node_type FROM nodes").fetchall()]
+
+    ranked = _ranked_skeleton(con, types, label_rels, full_max, top_n)
+    nodes_out = [{"concept_id": r[0], "node_type": r[1], "label": r[2], "attrs": r[3], "degree": r[4]} for r in ranked]
+    if not nodes_out:
+        return {"nodes": [], "edges": [], "type_meta": {}, "label_relations": label_rels}
+
+    type_meta: dict[str, dict] = {}
+    for r in ranked:
+        m = type_meta.setdefault(r[1], {"total": r[5], "shown": 0})
+        m["shown"] += 1
+    for m in type_meta.values():
+        m["capped"] = m["shown"] < m["total"]
+
+    ids = [n["concept_id"] for n in nodes_out]
+    edges_out = _skeleton_edges(con, ids, label_rels)
+
+    word_ids = [n["concept_id"] for n in nodes_out if n["node_type"] == "word"]
+    by_node = _word_labels(con, word_ids, label_rels)
+    for n in nodes_out:
+        if n["concept_id"] in by_node:
+            n["labels"] = by_node[n["concept_id"]]
+
+    return {"nodes": nodes_out, "edges": edges_out, "type_meta": type_meta, "label_relations": label_rels}

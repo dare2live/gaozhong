@@ -282,6 +282,7 @@ _LIB_CHECKS = [
     ("d0_exam_point_check", "check_coverage"),
     ("d0_exam_point_check", "check_syllabus"),
     ("d0_exam_point_check", "check_grammar_stats"),
+    ("d0_graph_qbank_check", "check_atlas"),
     ("d0_trend_distribution_check", "check_trend_distribution"),
     ("d0_lesson_plan_check", "check_lesson_plan"),
     ("d0_exam_status_check", "check_exam_status"),

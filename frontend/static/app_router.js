@@ -403,6 +403,33 @@
         <span class="kg-row-bar"><span style="width:${Math.round(100 * p.co_n / max)}%"></span></span>
         <span class="kg-row-n">同题 ${p.co_n} 次</span></div>`).join("");
   }
+
+  // 全景图谱骨架 (2026-07-04 用户提议: 词/教材年级/短语句型/语法 跟课标考纲的全量关系可视化).
+  // 与上面"共现网络"是两回事: 共现网络=21个考点间的命题套路证据; 这里=全库 word/question/grammar/
+  // unit/phrase/exam_point/theme 等实体的全量关系骨架(judge panel方案B: 分层Top-N+点击展开)。
+  async function _renderAtlas() {
+    const box = document.getElementById("atlas-viz");
+    if (!box) return;
+    box.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入全景图谱…</div>';
+    let data;
+    try { data = await fetchJSON("/api/graph/atlas"); }
+    catch (e) { box.innerHTML = `<div class="error-state" style="margin:0"><div class="es-title">全景图谱载入失败</div><div class="es-msg">${e.message}</div></div>`; return; }
+    if (!data.nodes || !data.nodes.length) { box.innerHTML = '<p class="muted" style="padding:16px">暂无图谱数据</p>'; return; }
+    if (!(await GZ.ensureECharts())) { GZ.chartLoadError(box); return; }
+    box.innerHTML = '<div id="atlas-viz-c" style="height:560px"></div>';
+    if (window.__gAtlasInst) { try { window.__gAtlasInst.dispose(); } catch (e) { /* 已游离 */ } }
+    window.__gAtlasInst = GZ.renderAtlasGraph(document.getElementById("atlas-viz-c"), data);
+    if (!window.__rzAtlas) { window.__rzAtlas = 1; window.addEventListener("resize", () => window.__gAtlasInst && window.__gAtlasInst.resize()); }
+    const tm = document.getElementById("atlas-meta");
+    if (tm) {
+      const drawn = data.nodes.filter(n => n.node_type !== "stage" && n.node_type !== "cefr_level").length;
+      const rows = Object.entries(data.type_meta || {})
+        .sort((a, b) => b[1].total - a[1].total)
+        .map(([t, m]) => `${t}${m.capped ? ` 取Top${m.shown}/${m.total}` : ` 全展示${m.total}`}`).join(" · ");
+      tm.textContent = `${drawn} 节点画图 / ${data.edges.length} 条关系边 (另 学段+课标级别 ${data.nodes.length - drawn} 个仅作词条属性不画点) — ${rows}`;
+    }
+  }
+
   register("graph", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入知识图谱…</div>';
     const co = await fetchJSON("/api/exam_point/cooccurrence");  // 主数据, 失败必抛 → route() 错误态
@@ -434,6 +461,15 @@
         <div id="kg-list">${_coList(eraPairs)}</div>
         <p class="muted" style="font-size:11.5px;margin:8px 0 0">按同题次数降序全量列出 (不截断); 次数小的组合只说明"出现过", 别过度解读。</p>
       </section>
+
+      <section class="bk-card" style="margin-top:14px">
+        <div class="bk-h"><span>全景图谱 · 全库浏览</span><span class="bk-src">/api/graph/atlas</span></div>
+        <p class="kg-legend">这是全库骨架 — 单词/真题/语法点/短语句型/教材单元/考点/主题/题型 之间的真实关系(不是上面那张考点共现图)。
+          <b>数量少的类型全展示, 单词/真题这类数量大的类型只显示连接最多的头部</b>, 点节点可下钻真题/详情; 图例可点选只看某一类。
+          学段/课标级别(义务教育/必修/选必等)不单独画点, 放在词条 hover 里看。</p>
+        <div id="atlas-viz" style="min-height:560px"></div>
+        <p class="muted" id="atlas-meta" style="font-size:11px;margin:6px 0 0"></p>
+      </section>
       <p class="zt-nextlink">这些套路已编进课程 → <a href="#/teaching">40 节课程</a></p>`;
 
     CONTENT.querySelectorAll(".gz-era").forEach(b => b.onclick = () => {
@@ -447,6 +483,7 @@
       const le = document.getElementById("kg-list-era"); if (le) le.textContent = b.dataset.label;
     });
     _renderCooccur("2021+_新高考II", "新高考II 2021+");
+    _renderAtlas();
   });
 
 })();

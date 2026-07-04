@@ -23,6 +23,25 @@ def check_graph_refs(con: duckdb.DuckDBPyConnection, check) -> None:
     check("孤立 critical node = 0", n_iso == 0, f"iso={n_iso}")
 
 
+def check_atlas(con: duckdb.DuckDBPyConnection, check) -> None:
+    """全景图谱骨架 (degree_summary, 2026-07-04 新增): label_relations 不冒充边 + 骨架闭合 + type_meta 真值."""
+    print("\n=== (19) 全景图谱骨架 degree_summary ===")
+    from backend.services import graph as gsvc
+    r = gsvc.degree_summary(con)
+    check("骨架非空 (nodes/edges 都有)", len(r["nodes"]) > 0 and len(r["edges"]) > 0,
+          f"nodes={len(r['nodes'])} edges={len(r['edges'])}")
+    bad_label_edge = [e for e in r["edges"] if e["relation"] in r["label_relations"]]
+    check("label_relations(at_stage/cefr_level) 不进骨架边 (只作node属性)", len(bad_label_edge) == 0,
+          f"混入={len(bad_label_edge)}")
+    ids = {n["concept_id"] for n in r["nodes"]}
+    dangling = [e for e in r["edges"] if e["src"] not in ids or e["dst"] not in ids]
+    check("骨架边两端全在骨架节点内 (闭合, 无悬挂)", len(dangling) == 0, f"悬挂={len(dangling)}")
+    live_totals = dict(con.execute("SELECT node_type, COUNT(*) FROM nodes GROUP BY node_type").fetchall())
+    bad_meta = [t for t, m in r["type_meta"].items()
+                if m["total"] != live_totals.get(t) or m["shown"] > m["total"]]
+    check("type_meta.total 与 nodes 表实测一致 (非估算)", len(bad_meta) == 0, f"不符={bad_meta}")
+
+
 def check_xref(con: duckdb.DuckDBPyConnection, check) -> None:
     print("\n=== (15) units/exam/course_materials ↔ nodes 一致 ===")
     miss_u = con.execute("""

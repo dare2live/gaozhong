@@ -41,6 +41,7 @@ contracts:
   "/api/exercise/narrative_passages": {params: {}, required_keys: [count, passages], type: dict}
   "/api/grammar/stats": {params: {}, required_keys: [grammar_exam, textbook_expr, scope], type: dict}
   "/api/grammar_items": {params: {}, type: list}
+  "/api/graph/atlas": {params: {}, required_keys: [nodes, edges, type_meta], type: dict}
   "/api/graph/neighbors": {params: {node: ["unit:waiyan/bixiu_1/U1"]}, type: list}
   "/api/graph/popup": {params: {id: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [center, related, questions], type: dict}
   "/api/graph/stats": {params: {}, required_keys: [nodes, edges, total_nodes], type: dict}
