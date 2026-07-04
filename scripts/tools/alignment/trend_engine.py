@@ -58,7 +58,7 @@ POINT_KEYWORDS = {
 }
 
 
-from backend.services.constitution import year_weights, year_weight_default  # G1: 单点真相源 year_weights.yaml
+from backend.services.year_weights import year_weights, year_weight_default  # G1: 单点真相源 year_weights.yaml
 
 YEAR_WEIGHTS = year_weights()
 YEAR_WEIGHT_OLD = year_weight_default()

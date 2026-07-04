@@ -62,19 +62,7 @@ CREATE TABLE IF NOT EXISTS classes (
     created_at     VARCHAR
 );
 
--- 试卷 (组卷器输出)
-CREATE TABLE IF NOT EXISTS papers (
-    paper_id       VARCHAR PRIMARY KEY,
-    teacher_id     VARCHAR,
-    class_id       VARCHAR,
-    title          VARCHAR,
-    spec_json      VARCHAR,                    -- 组卷条件
-    created_at     VARCHAR
-);
-CREATE TABLE IF NOT EXISTS paper_questions (
-    paper_id       VARCHAR NOT NULL,
-    seq            INTEGER NOT NULL,
-    qb_id          BIGINT NOT NULL,
-    score          DOUBLE DEFAULT 1.0,
-    PRIMARY KEY (paper_id, seq)
-);
+-- papers / paper_questions (试卷持久化) 2026-07-04 删除: save_paper() 从未有路由调用(0 wired,
+-- 从创建起 docstring 就写"待建 /api/paper/save"从未兑现), 两表恒 0 行; 组卷器现有两个存活入口
+-- (/api/paper/compose、/api/exercise/blueprint_practice) 均只读连接直出 JSON 不持久化, 死代码审计
+-- 确认按坑8清理(docs/toplevel_architecture_design.md 已独立标注同一 sunset 建议, 互相印证)。

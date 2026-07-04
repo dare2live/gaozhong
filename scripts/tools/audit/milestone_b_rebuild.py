@@ -23,7 +23,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))  # G1: 模块级 import backend.services 需先入 path
 import duckdb  # noqa: E402
-from backend.services.constitution import year_weights  # noqa: E402  G1: 单点真相源 year_weights.yaml
+from backend.services.year_weights import year_weights  # noqa: E402  G1: 单点真相源 year_weights.yaml
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 REPORT_DIR = ROOT / "data" / "reports"

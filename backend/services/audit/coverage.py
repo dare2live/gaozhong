@@ -10,7 +10,8 @@ from ._common import finding
 _TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z'\-]{1,}")
 
 # 实测 baseline (2026-05-24): 教材实际 67% 课标, 不强求 3000
-# 每册阈值 (含 vocab_total 章节合并后)
+# 坑(2026-07-04): 原注释称阈值"含 vocab_total 章节合并后"——该合并从未实际发生(vocab_total.py
+# 从创建起 0 wired, 已按坑8删除); 下列阈值实为 unit_vocab_intro 现有数据的实测基线, 与该模块无关。
 PER_VOL_MIN = 80      # 每册 ≥ 80 unique words (xuanze 选必册下限)
 CUMUL_TARGETS = {     # 高三末累计目标 (基于实测 baseline + 20% headroom)
     "waiyan": 1900,

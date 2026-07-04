@@ -213,7 +213,7 @@ config_contracts:
     owns: Question type taxonomy.
   thresholds:
     path: backend/config/thresholds.yaml
-    owner_module: backend.services.constitution
+    owner_module: backend.services.thresholds
     owns: Data accuracy and quality thresholds.
 
 documentation_authority:

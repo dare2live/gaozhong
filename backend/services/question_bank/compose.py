@@ -9,7 +9,7 @@ spec:
   seed:          int
 
 输出:
-  paper_id (内存生成, 不入库; 入库走 /api/paper/save)
+  paper_id (内存生成, 不入库 — 前端直接渲染/打印, 不持久化)
   questions: [{qb_id, qtype, stem, options, answer, analysis, tags}]
 """
 from __future__ import annotations
@@ -106,18 +106,7 @@ def compose(con: duckdb.DuckDBPyConnection, spec: dict) -> dict:
     }
 
 
-def save_paper(con: duckdb.DuckDBPyConnection, paper: dict,
-                teacher_id: str | None = None, class_id: str | None = None,
-                title: str | None = None) -> str:
-    pid = paper["paper_id"]
-    con.execute("""
-        INSERT INTO papers VALUES (?, ?, ?, ?, ?, ?)
-    """, [pid, teacher_id, class_id, title or "untitled",
-          json.dumps(paper.get("spec", {}), ensure_ascii=False),
-          paper["created_at"]])
-    for q in paper["questions"]:
-        con.execute(
-            "INSERT INTO paper_questions VALUES (?, ?, ?, 1.0)",
-            [pid, q["seq"], q["qb_id"]],
-        )
-    return pid
+# 坑(2026-07-04 死代码审计): 原有 save_paper(con, paper, ...) 写 papers/paper_questions 表, 但
+# /api/paper/save 路由从未建过(docstring 从创建起就写"入库走 /api/paper/save", 是从未兑现的规划)。
+# 两个真实存活的组卷入口(/api/paper/compose、/api/exercise/blueprint_practice)都用只读连接直接
+# 返回 JSON, 不持久化, 产品需求上不需要服务端存卷。papers/paper_questions 两表已从 schema 删除。

@@ -264,6 +264,18 @@ DB 重建 < 3 秒, audit 全跑, 出 audit_findings 表. 任何 FAIL 应在 comm
 
 **教训**: 每写一条宪法规则, 必须同时写一个检查它的 audit 函数. 文档和代码必须原子提交.
 
+**解决 (2026-07-04, 死代码审计)**: 6 周后复查, 这条"7个模块0个检查"的差距从未被补上——真正的 40 节课程生成
+流水线(`backend/services/course/{homework,materials,syllabus}.py`)自始至终没调过 `check_compliance()`/
+`enforce_before_generation()`; 唯一调用 `enforce_before_generation()` 的 `scripts/tools/generation/
+question_generator.py` 本身是 0 调用方的孤立 CLI 脚本。同期(2026-06) Phase C 架构决策已把课程生成改为
+"框架不生成内容"(content=null 骨架, 见 docs/product_master_plan.md), 大幅收窄了这条宪法原本想防的"自由生成
+内容偏离设计原则"的问题面。按坑8"非模块化死残留"原则选择**删除**而非补线: constitution 表 + `seed()`/
+`load_all()`/`check_compliance()`/`enforce_before_generation()`/`ConstitutionViolation` 连同已 0 调用方的
+`question_generator.py` 一并移除; 唯一有真实消费者的 `year_weights()`/`year_weight_default()` 独立拆到
+`backend/services/year_weights.py` 保留。这条教训闭环方式是"停止做不到的声明", 不是"终于补上检查"——诚实
+降级优于继续背一个 6 周未兑现的承诺。若未来课程生成重新走向自由生成散文(Phase 7 式), 需重新评估是否要
+重建等价的生成前置门, 但应直接接进真实调用点, 不再是声明式表。
+
 ---
 
 ## L-2026-05-25-N · 真题 paper_type 错标 — 2021/2022/2023 数据污染

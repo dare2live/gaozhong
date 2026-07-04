@@ -20,9 +20,11 @@ sys.path.insert(0, str(ROOT))
 import duckdb
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
-# 独立宪法镜像 (verify-the-verifier, 坑1): **故意保留字面量**, 镜像 constitution.py:33-35 散文铁律 P1。
-# 不从 year_weights.yaml 取 — 否则审计变成 yaml↔yaml 自比恒真, 抓不住"yaml 偏离宪法"。
-# 此审计 (_check_weight_compliance) = 操作型 yaml 与本宪法字面对账门。
+# 独立宪法镜像 (verify-the-verifier, 坑1): **故意保留字面量**, 镜像铁律 P1 散文原文
+# "2025(权重5)>2024(4)>2023(3)>2022(2)>2021(1.5)>旧(0.5)"(原载 backend/services/constitution.py,
+# 2026-07-04 死代码审计已删该模块 — 铁律字面量本就该独立于操作代码存在, 迁移不影响本对账门)。
+# 不从 year_weights.yaml 取 — 否则审计变成 yaml↔yaml 自比恒真, 抓不住"yaml 偏离铁律"。
+# 此审计 (_check_weight_compliance) = 操作型 yaml 与本铁律字面对账门。
 CONSTITUTION_WEIGHTS = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
 
 
@@ -65,8 +67,8 @@ def _check_data_completeness(con) -> dict:
 
 
 def _check_weight_compliance() -> dict:
-    """审计: 操作型 year_weights.yaml 是否与宪法字面铁律一致 (G1 收口后 = yaml↔宪法对账)."""
-    from backend.services.constitution import year_weights
+    """审计: 操作型 year_weights.yaml 是否与铁律字面(CONSTITUTION_WEIGHTS)一致 (G1 收口后对账)."""
+    from backend.services.year_weights import year_weights
     operational = year_weights()  # yaml 单点真相源 (5 消费者共用)
     mismatches = []
     for y, expected in CONSTITUTION_WEIGHTS.items():

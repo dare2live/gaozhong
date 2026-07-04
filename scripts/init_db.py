@@ -163,16 +163,6 @@ def main() -> None:
     ofd = extract.run_ocr_fix_dict(con)
     print(f"  ocr fixes: {ofd['fixes_built']}/{ofd['unknown_tokens']}, examples: {ofd['examples'][:4]}")
 
-    print("\n=== Layer 4c: 宪法合规检查 (P4: 生成前强制) ===")
-    from datetime import datetime, timezone
-    now_str = datetime.now(timezone.utc).isoformat()
-    try:
-        from backend.services.constitution import check_compliance
-        compliance = check_compliance()
-        print(f"  宪法 P4 合规: year_weights={list(compliance['year_weights'].keys())}, audit_required={compliance['audit_required']}")
-    except Exception as e:
-        print(f"  宪法检查跳过 (首次建库): {e}")
-
     # 2026-06-15 Phase 7 生成层回滚: 续写/应用文/听力/阅读练习均为生成范文,
     # 教材基石不完整前不入库 (项目 §1.1). question_bank 只保留已核验真题.
     print(f"\n  qb total (仅真题): {con.execute('SELECT COUNT(*) FROM question_bank').fetchone()[0]}")
@@ -189,11 +179,6 @@ def main() -> None:
     print(f"  {students_seed.seed_demo(con)}")
 
     # (Layer 4g 2024/2025 local_pdf 导入已前移到 Layer 2a3 — 必须早于 Layer 3 边构建, 见上)
-
-    print("\n=== Layer 4h: 设计宪法入库 (constitution) ===")
-    from backend.services import constitution
-    cs = constitution.seed(con)
-    print(f"  constitution: {cs['total']} 条 ({cs['principles']} 原则 + {cs['iron_laws']} 铁律 + {cs['violations']} 违宪)")
 
     print("\n=== Layer 4i: 考点 canonical 维度 (件2: genre/theme 双模型标注 → edges) ===")
     from backend.services.exam_point import (load_exam_points, bridge_exam_point_themes,
