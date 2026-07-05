@@ -12,12 +12,19 @@ from __future__ import annotations
 import duckdb
 
 from backend.services.course.coverage import _ln_freq_by_point
+from backend.services.extraction.example_text import clean_preview
+
+# 坑(2026-07-05 根因审计): 原 SUBSTR(...,1,120) 定长截断可能截在词中间; 现 SQL 端宽窗取原文
+# (给干净断句留余量), Python 端 clean_preview 裁到最近句末标点 + 需要时补省略号 (与 lesson
+# 卡片实际展示宽度一致, 不改变消费方 q[3] 索引).
+_PREVIEW_FETCH_WINDOW = 400
+_PREVIEW_DISPLAY_LEN = 130
 
 
 def homework_for_point(con: duckdb.DuckDBPyConnection, dim: str, label: str, limit: int = 12) -> list[dict]:
     """考点 (dim:label) → 辽宁真题作业 (反向 tests_exam_point ∧ 辽宁前缀坑7-safe, 每题溯源, 非生成)."""
-    return con.execute(
-        "SELECT q.question_id, q.year, q.question_type, SUBSTR(q.raw_question,1,120) AS preview, "
+    rows = con.execute(
+        f"SELECT q.question_id, q.year, q.question_type, SUBSTR(q.raw_question,1,{_PREVIEW_FETCH_WINDOW}) AS preview, "
         "q.source_file, q.source_index, "
         "CASE WHEN q.answer IS NOT NULL AND q.answer<>'' THEN 1 ELSE 0 END AS has_answer "
         "FROM edges e JOIN exam_questions q ON q.question_id = SUBSTR(e.src_id,10) "
@@ -25,6 +32,8 @@ def homework_for_point(con: duckdb.DuckDBPyConnection, dim: str, label: str, lim
         "ORDER BY q.year DESC, q.question_id LIMIT ?",
         [f"exam_point:{dim}:{label}", limit],
     ).fetchall()
+    return [(qid, yr, qtype, clean_preview(prev, _PREVIEW_DISPLAY_LEN), sf, si, ha)
+            for qid, yr, qtype, prev, sf, si, ha in rows]
 
 
 def _adjust(base: list[int], raw: list[float], n: int) -> list[int]:

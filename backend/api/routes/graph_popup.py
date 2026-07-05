@@ -15,9 +15,13 @@ import json
 
 from backend.api.db import db_ro
 from backend.services import graph
+from backend.services.extraction.example_text import clean_preview
 
 LIMIT_RELATED = 12
 LIMIT_QUESTIONS = 8
+# 坑(2026-07-05 根因审计): 原 (stem or "")[:120] 是与 question_bank.py/syllabus.py 各自独立的
+# 第三份截断长度(120), 前端还额外拼"...", 收口到共享 clean_preview (弹窗空间比列表宽松, 给150).
+_STEM_PREVIEW_LEN = 150
 
 
 def api_graph_popup(qs: dict) -> dict:
@@ -113,7 +117,7 @@ def _fetch_questions(con, cid: str) -> list[dict]:
             "concept_id": qcid,
             "qb_id": qb_id,
             "question_type": qtype,
-            "stem_preview": (stem or "")[:120],
+            "stem_preview": clean_preview(stem, _STEM_PREVIEW_LEN),
             "year": (year_node or "").replace("exam_year:", "") if year_node else None,
         })
     if len(out) < LIMIT_QUESTIONS:

@@ -210,9 +210,10 @@
     // 坑(2026-07-05 教师视角审计): preview 有时是原文段落, 有时是子题设问句本身(如"32. What does
     // Levine want to explain..."), 卡片外观统一当"原文预览"展示, 后者读起来像截断的乱码而非
     // 有意义的设问。加"设问:"前缀区分, 不改数据(内容本身是真实来源, 只是展示层加了归类标签)。
-    const _isSubq = txt => /^\s*\d+[.．]\s/.test(txt || "");
+    // 坑(2026-07-05 根因审计): 判断已抽共享 GZ.isSubqPreview(≥3处需要, Rule5); preview 现由后端
+    // clean_preview 统一裁边界+按需补省略号, 前端不再无条件追加"…"。
     const hw = (l.evidence_questions || []).map(q =>
-      `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${_isSubq(q.preview) ? "设问: " : ""}${_esc(q.preview)}…</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
+      `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${GZ.isSubqPreview(q.preview) ? "设问: " : ""}${_esc(q.preview)}</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
     return `<details class="ks-lesson"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-hwn">· 作业 ${(l.evidence_questions || []).length} 道真题</span>
@@ -277,10 +278,9 @@
     // #6: 默认 type_mix 用库内真实题型动态生成 (去掉 legacy 硬编码的库内不存在题型; 阅读多, 其余各2)
     const defMix = types.slice(0, 4).map(([k]) => `${k}:${k.includes("阅读") ? 4 : 2}`).join(",") || "阅读理解:4";
     let qtype = null;
-    const d = st.by_difficulty || {};
     CONTENT.innerHTML = `
       <h2>题库 + 组卷 <span class="muted" style="font-size:14px;font-weight:400">${totalN} 题 · 仅已核验真题 (无押题)</span></h2>
-      <p class="muted" style="margin:2px 0 10px;font-size:12.5px">按题型筛选浏览; 或一键生成蓝图练习卷(题面均历年真题, 结构对齐非预测)。题面篇幅(字数估·非难度) 长 ${d.hard || 0} · 中 ${d.mid || 0} · 短 ${d.easy || 0}。</p>
+      <p class="muted" style="margin:2px 0 10px;font-size:12.5px">按题型筛选浏览; 或一键生成蓝图练习卷(题面均历年真题, 结构对齐非预测)。<span id="qb-difftext"></span>。</p>
       <div class="bk-filter" id="qb-blueprint" style="margin-bottom:10px;">
         <span class="bk-flabel">蓝图练习卷</span>
         <label style="font-size:12px;color:var(--ink-3);">题量 <input id="qb-bp-total" type="number" value="30" min="5" max="60" style="width:54px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
@@ -290,7 +290,7 @@
       <details id="qb-compose" style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:var(--accent-ink);">${GZ.icon("gear")} 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
         <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
           <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
-          <label>必含标签 <input id="qb-c-req" placeholder="word:abandon,unit:waiyan/bixiu_1/U1" style="width:200px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
+          <label>必含标签 <input id="qb-c-req" placeholder="如: word:abandon(必含此词) 或 unit:waiyan/bixiu_1/U1(必含此单元)" title="按词或单元筛选, 格式: word:词 或 unit:册次/单元, 多个用逗号分隔" style="width:260px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>题面篇幅 <select id="qb-c-diff" aria-label="组卷题面篇幅筛选(字数估, 非难度)" style="padding:3px;border:1px solid var(--line);border-radius:6px;"><option value="">混合</option><option value="easy">短</option><option value="mid">中</option><option value="hard">长</option></select></label>
           <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
@@ -303,13 +303,26 @@
         ${types.map(([k, n]) => `<button class="bk-pill" data-qt="${k}">${k} ${n}</button>`).join("")}
       </div>
       <div id="qb-list"><p class="muted">载入中...</p></div>`;
+    // 坑(2026-07-05 根因审计): "长/中/短"篇幅分布原只从全库 st.by_difficulty 算一次, 筛题型后不
+    // 跟着更新, 但那行提示文字仍挂在筛选区上方(误导成"当前筛选口径")。改成按当前 list 现算, 并
+    // 显式标注口径(全库 vs 当前筛选), 消歧义。
+    const diffLine = document.querySelector("#qb-difftext");
+    const renderDiffLine = (rowsForCount, scopeLabel) => {
+      if (!diffLine) return;
+      const cnt = { hard: 0, mid: 0, easy: 0 };
+      rowsForCount.forEach(r => { if (cnt[r.difficulty] != null) cnt[r.difficulty]++; });
+      diffLine.textContent = `题面篇幅(字数估·非难度, ${scopeLabel}) 长 ${cnt.hard} · 中 ${cnt.mid} · 短 ${cnt.easy}`;
+    };
+    renderDiffLine([], "全库口径"); // 占位, loadList 首轮会用当前筛选覆盖
     const loadList = async () => {
       const url = "/api/qb/browse?limit=80" + (qtype ? "&type=" + encodeURIComponent(qtype) : "");
       const rows = await fetchJSON(url).catch(() => []);
       const list = Array.isArray(rows) ? rows : (rows.rows || []);
+      renderDiffLine(list, qtype ? `当前筛选「${qtype}」` : "全库, 未筛选");
       $("#qb-list").innerHTML = list.length ? `<div class="qb-list">${list.map(r => {
         const df = DIFF[r.difficulty] || ["", "var(--ink-3)"];
-        return `<div class="qb-row"><span class="qb-tb">${r.question_type || ""}</span><span class="qb-stem">${(r.stem_preview || "").replace(/</g, "&lt;").slice(0, 90)}</span><span class="qb-ans">${r.answer || ""}</span><span class="qb-diff" style="color:${df[1]}">${df[0]}</span></div>`;
+        const stem = (r.stem_preview || "").replace(/</g, "&lt;");
+        return `<div class="qb-row"><span class="qb-tb">${r.question_type || ""}</span><span class="qb-stem">${GZ.isSubqPreview(stem) ? "设问: " : ""}${stem}</span><span class="qb-ans">${r.answer || ""}</span><span class="qb-diff" style="color:${df[1]}">${df[0]}</span></div>`;
       }).join("")}</div>` : '<p class="muted">该题型无题</p>';
     };
     $$("#qb-filters [data-qt]").forEach(b => b.onclick = () => {
@@ -322,7 +335,12 @@
     const paperHTML = (p, title, basisHtml) => {
       const sf = p.shortfalls;
       const hasSf = Array.isArray(sf) ? sf.length : (sf && Object.values(sf).some(v => v > 0));
-      const shortf = hasSf ? `<p class="muted" style="color:var(--warn);font-size:12px;margin:4px 0;">注 部分题型库存不足: ${esc(JSON.stringify(sf))}（诚实披露, 不补押题）</p>` : "";
+      // 坑(2026-07-05 根因审计): 原 JSON.stringify(sf) 把大括号/引号/冒号这类内部数据结构语法直接
+      // 甩进老师可读的提示段落, 改成自然语言列举。
+      const sfText = hasSf
+        ? (Array.isArray(sf) ? sf.join("、") : Object.entries(sf).filter(([, v]) => v > 0).map(([k, v]) => `${k} 缺${v}题`).join("、"))
+        : "";
+      const shortf = hasSf ? `<p class="muted" style="color:var(--warn);font-size:12px;margin:4px 0;">注 部分题型库存不足: ${esc(sfText)}（诚实披露, 不补押题）</p>` : "";
       return `<div class="bk-card" style="margin:6px 0 12px;">
         <div class="bk-h"><span>${title} <small>${p.actual_total}/${p.target_total} 题</small></span>
           <button id="qb-paper-print" class="bk-export">${GZ.icon("printer")} 打印此卷</button></div>

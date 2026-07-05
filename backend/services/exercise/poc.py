@@ -17,6 +17,8 @@ from pathlib import Path
 
 import duckdb
 
+from backend.services.extraction.example_text import clean_preview
+
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 
@@ -95,10 +97,12 @@ def generate_l4_paper(con: duckdb.DuckDBPyConnection, province: str = "辽宁",
         pool = by_type.get(qtype, [])[:]
         rng.shuffle(pool)
         for r in pool[:want]:
+            # 坑(2026-07-05 根因审计, LOW): 原定长 [:N] 无边界意识; 本函数取全列(未 SQL 截断),
+            # 直接 clean_preview 裁到句末标点, 不需要额外拓宽 SQL 窗口。
             picked.append({
                 "question_id": r[0], "year": r[1], "province": r[2],
-                "question_type": r[3], "stem": (r[4] or "")[:1200],
-                "answer": (r[5] or "")[:600], "analysis": (r[6] or "")[:600],
+                "question_type": r[3], "stem": clean_preview(r[4], 1200),
+                "answer": clean_preview(r[5], 600), "analysis": clean_preview(r[6], 600),
             })
     rng.shuffle(picked)
     for i, p in enumerate(picked):

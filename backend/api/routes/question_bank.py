@@ -4,6 +4,12 @@ from __future__ import annotations
 import json
 
 from backend.api.db import db_ro, rows_to_dicts
+from backend.services.extraction.example_text import clean_preview
+
+# 坑(2026-07-05 根因审计): 原 SUBSTR(...,1,200) 之后前端又 .slice(0,90) 二次截断且不加省略号,
+# 双重截断+零视觉信号。现 SQL 宽窗 + Python 端一次性裁到组卷列表实际展示宽度, 前端只渲染不重算。
+_PREVIEW_FETCH_WINDOW = 400
+_PREVIEW_DISPLAY_LEN = 110
 
 
 def api_qb_stats(_qs: dict) -> dict:
@@ -51,13 +57,16 @@ def api_qb_browse(qs: dict) -> list[dict]:
                      "WHERE qt.qb_id = qb.qb_id AND qt.tag_id = ?)")
         args.append(tag_id)
     sql = ("SELECT qb_id, origin, question_type, "
-           "SUBSTR(stem, 1, 200) AS stem_preview, answer, difficulty "
+           f"SUBSTR(stem, 1, {_PREVIEW_FETCH_WINDOW}) AS stem_preview, answer, difficulty "
            "FROM question_bank qb WHERE " + " AND ".join(where)
            + " ORDER BY qb_id DESC LIMIT ?")
     args.append(limit)
     con = db_ro()
     try:
-        return rows_to_dicts(con.execute(sql, args))
+        rows = rows_to_dicts(con.execute(sql, args))
+        for r in rows:
+            r["stem_preview"] = clean_preview(r["stem_preview"], _PREVIEW_DISPLAY_LEN)
+        return rows
     finally:
         con.close()
 

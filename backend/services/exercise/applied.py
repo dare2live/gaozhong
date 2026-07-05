@@ -5,6 +5,7 @@ import re
 
 import duckdb
 
+from backend.services.extraction.example_text import clean_preview
 from backend.services.thresholds import get_threshold   # 预览截断长度单点 (extraction 块, 接孤儿key)
 
 
@@ -46,9 +47,11 @@ def list_applied_templates(con: duckdb.DuckDBPyConnection) -> dict:
 def list_narrative_passages(con: duckdb.DuckDBPyConnection) -> dict:
     # 预览截断长度读 extraction.applied_preview_chars (注: 该key名含applied, 实际唯一消费点是此 narrative 预览; 值不变)
     _prev = get_threshold("extraction.applied_preview_chars", 400)
+    # 坑(2026-07-05 根因审计, LOW): 原定长 SUBSTR 无边界意识; SQL 端多留 200 字缓冲, clean_preview
+    # 裁到 _prev 内最近句末标点(此端点当前无存活前端调用方, 仍按 Rule5 补齐一致性, 不留技术债).
     rows = con.execute(f"""
         SELECT s.version_key, s.volume_key, s.unit_number, s.seq, st.n_chars,
-               SUBSTR(st.raw_text, 1, {_prev}) AS preview
+               SUBSTR(st.raw_text, 1, {_prev + 200}) AS preview
         FROM sections s INNER JOIN section_text st
           USING (version_key, volume_key, unit_number, seq)
         WHERE s.is_narrative = TRUE
@@ -56,4 +59,4 @@ def list_narrative_passages(con: duckdb.DuckDBPyConnection) -> dict:
     """).fetchall()
     return {"count": len(rows),
             "passages": [{"source": f"unit:{r[0]}/{r[1]}/U{r[2]}/sec_{r[3]}",
-                           "n_chars": r[4], "preview": r[5]} for r in rows]}
+                           "n_chars": r[4], "preview": clean_preview(r[5], _prev)} for r in rows]}

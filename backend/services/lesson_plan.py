@@ -16,6 +16,7 @@ import json
 import duckdb
 
 from backend.services import vocab
+from backend.services.extraction.example_text import clean_example
 from backend.services.trend import scope
 
 
@@ -125,7 +126,9 @@ def _unit_grammar_with_trace(con: duckdb.DuckDBPyConnection, ver: str, vol: str,
     ).fetchall()
     return [{
         "grammar_item_id": gid, "label": label, "category": cat,
-        "example": (ex or "")[:120],
+        # 坑(2026-07-05 根因审计): 原 (ex or "")[:120] 是与 textbook_content.py._grammar 重复的
+        # 独立硬截逻辑, 收口到共享 clean_example (无 a/b/c 例句模式则诚实返回 None, 不假填).
+        "example": clean_example(ex),
         "recent_exam_trace": _grammar_exam_trace(con, gid, recent_n=recent_n),
     } for gid, label, cat, ex in rows]
 

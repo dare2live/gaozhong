@@ -15,7 +15,9 @@ function pickCity(b) {
   b.classList.add("active");
   const pub = b.dataset.pub;
   activeVersion = CITY_TO_VER[pub] || "waiyan";
-  $("#cur-version").textContent = `${pub} (${activeVersion})`;
+  // 坑(2026-07-05 根因审计): 原 `${pub} (${activeVersion})` 把内部教材版本 key(waiyan/renjiao) 冗余
+  // 拼在已翻译好的中文出版社名旁边(如"外研版 (waiyan)"), 对学生/老师零信息增量。
+  $("#cur-version").textContent = pub;
   loadUnits();
 }
 async function loadUnits() {

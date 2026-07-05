@@ -17,10 +17,15 @@
   };
   const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (防 k12/dict 漂移)
 
-  function srcBadge(s) {
+  // 坑(2026-07-05 根因审计): 原 srcBadge 屏显翻译("coca"→"通用释义")与 CSV 导出各写一份, CSV
+  // 导出那份漏了翻译直接导出原始 gloss_source。抽单一 _lookupSrc 两处复用 (Rule5)。
+  function _lookupSrc(s) {
     const k = (s || "").toLowerCase();
     const hit = Object.keys(SRC).find(x => k.includes(x.toLowerCase()));
-    const [t, c] = hit ? SRC[hit] : [s || "—", "#B4B2A9"];
+    return hit ? SRC[hit] : [s || "—", "#B4B2A9"];
+  }
+  function srcBadge(s) {
+    const [t, c] = _lookupSrc(s);
     return `<span style="font-size:10px;padding:1px 6px;border-radius:8px;background:${c}22;color:${c};white-space:nowrap;">${t}</span>`;
   }
 
@@ -139,7 +144,9 @@ ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考�
     // #5: 导出当前筛选词表 CSV (词/释义/源/阶段/课标级/辽宁命中), 教研员备课发学生
     G.$("#dict-export").onclick = () => {
       if (!lastRows.length) return;
-      G.exportCSV(lastRows, [
+      // 导出前把 gloss_source 转成屏显同款人话标签 (rows 各自附一份, 不改 lastRows 原字段)
+      const exportRows = lastRows.map(r => ({ ...r, gloss_source: _lookupSrc(r.gloss_source)[0] }));
+      G.exportCSV(exportRows, [
         { key: "word", label: "词" }, { key: "gloss", label: "释义" },
         { key: "gloss_source", label: "释义源" }, { key: "stage", label: "阶段" },
         { key: "curriculum_level", label: "课标级" }, { key: "gaokao_hit_ln", label: "辽宁高考命中" },

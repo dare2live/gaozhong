@@ -455,6 +455,11 @@ window.GZ = (function () {
     return `<span class="gz-miniband" role="img" title="考查词学段构成: ${t}" aria-label="考查词学段构成: ${t}">${segs}</span>`;
   }
 
+  // 坑(2026-07-05 根因审计): 真题预览片段(question_bank.stem/exam_questions.raw_question)有时是
+  // 原文段落, 有时是子题设问句本身(如"32. What does Levine want to explain by mentioning...")。
+  // ≥3 处(40节课程卡/组卷列表/真题库/图谱浮窗)各自需要判断+加"设问:"前缀, 抽共享单一实现 (Rule5)。
+  const isSubqPreview = txt => /^\s*\d+[.．]\s/.test(txt || "");
+
   // 统一无色块 masthead (设计规范: 全站页头单渲染点, 防形态漂移; 样式 .sc-head 见 app.css)。
   // kicker = 板块上下文(纯文本) / title = 学习者问题句 / lead = 这页回答什么 / right = 可选右槽 HTML(打印钮等)。
   function pageHead(kicker, title, lead, right) {
@@ -467,7 +472,7 @@ window.GZ = (function () {
 
   return {
     $, $$, fetchJSON, fetchSafe, isErr, errorBox, tagChip, renderTable, formToQs,
-    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, stageMiniBand,
+    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, stageMiniBand, isSubqPreview,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,
     renderAtlasGraph,

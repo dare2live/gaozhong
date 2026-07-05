@@ -6,7 +6,7 @@
    挂载: app.html 末尾 <script src=...> 自动绑定全局 click.
 */
 (function () {
-  const { fetchJSON } = window.GZ;
+  const { fetchJSON, isSubqPreview } = window.GZ;
 
   // 事件委托 — 全局监听
   document.addEventListener("click", async (ev) => {
@@ -108,10 +108,14 @@
       h += `<ul class="gz-qlist">`;
       for (const q of questions) {
         const yr = q.year ? ` <span class="gz-year">${q.year}</span>` : "";
+        // 坑(2026-07-05 根因审计): qb_id 为空(2021+子题级考点, 不在qbank)时曾兜底显示原始
+        // concept_id(内部节点标识, 如"question:xxx"), 改显示已有的人话 stem_preview 本身
+        // 开头信息(年份+子题), 不再泄漏内部 key。
         const qb = q.qb_id != null
           ? `<a href="#" class="gz-concept gz-qlink" data-concept="${q.concept_id}">#${q.qb_id}</a>`
-          : `<span class="gz-qlink">${q.concept_id}</span>`;
-        h += `<li>${qb} <em>[${q.question_type}]</em>${yr}<br><small>${escapeHtml(q.stem_preview)}...</small></li>`;
+          : `<span class="gz-qlink">${q.year ? "辽宁" + q.year + "子题" : "子题级"}</span>`;
+        // stem_preview 现由后端 clean_preview 统一裁边界+按需补省略号, 前端不再无条件追加"..."。
+        h += `<li>${qb} <em>[${q.question_type}]</em>${yr}<br><small>${isSubqPreview(q.stem_preview) ? "设问: " : ""}${escapeHtml(q.stem_preview)}</small></li>`;
       }
       h += `</ul>`;
     }

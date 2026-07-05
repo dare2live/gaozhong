@@ -17,6 +17,10 @@
 
   const ERA_NEW = "2021+_新高考II";
   const ERA_OLD = "2015-2020_旧课标II";
+  // 坑(2026-07-05 根因审计): state.era 是下划线拼接的内部 key(给 lookup 用), 3处(157/161/168行)
+  // 曾直接把这个原始 key 拼进屏幕阅读器 aria-label / sr-only 表标题 / sendPrompt 下钻文案, 同文件
+  // eraPill 按钮早已各自手写人话标签, 这里补一份单一映射复用, 不再漏 raw key。
+  const ERA_LABEL = { [ERA_NEW]: "2021+ 新高考II", [ERA_OLD]: "2015–2020 旧课标II" };
   const DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js (防 beike/teacher/jiangke 漂移)
   const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群" };
   // 图表数据编码色 — 锚 design-system 令牌族值 (blue=--down / blue3=--down-3 / blue4=--down-4
@@ -154,18 +158,18 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     // a11y: 动态 aria-label(图名+维度+era+前几项实值) + sr-only 数据表 — 复用本函数已用的 rows(原序非 reverse)
     const dimName = DIM_LABEL[state.dim];
     setAria("bk-dist",
-      `考点分布条形图(${dimName} · ${state.era} 辽宁卷): ` +
+      `考点分布条形图(${dimName} · ${ERA_LABEL[state.era] || state.era} 辽宁卷): ` +
       (desc.slice(0, 4).map(r => `${r.label} ${r.pct}%`).join(", ") || "无数据") +
       (desc.length > 4 ? ` 等共 ${desc.length} 项` : "") +
       (desc.length > 1 ? `; 前 ${pN} 类合计 ${cums[pN - 1]}%` : ""));
-    setSrTable("bk-dist", `考点分布 — ${escHtml(dimName)} · ${escHtml(state.era)} 辽宁卷`,
+    setSrTable("bk-dist", `考点分布 — ${escHtml(dimName)} · ${escHtml(ERA_LABEL[state.era] || state.era)} 辽宁卷`,
       ["类别", "占比", "题数", "累计占比"], desc.map((r, i) => [r.label, r.pct + "%", "n=" + r.n, cums[i] + "%"]));
     charts.dist.off("click");
     // #3: 点考点条 → 弹该考点浮窗(关联+真题, 复用#2修好的 exam_point 真题); fallback sendPrompt 下钻
     charts.dist.on("click", p => {
       const cid = `exam_point:${state.dim}:${p.name}`;
       if (G.openPopup) G.openPopup(cid);
-      else if (G.sendPrompt) G.sendPrompt(`下钻 ${state.era} 辽宁卷 ${DIM_LABEL[state.dim]}「${p.name}」的真题清单`);
+      else if (G.sendPrompt) G.sendPrompt(`下钻 ${ERA_LABEL[state.era] || state.era} 辽宁卷 ${DIM_LABEL[state.dim]}「${p.name}」的真题清单`);
     });
   }
 
@@ -547,7 +551,15 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
       ["语篇题材", "子题数", ...skills], ariaCats.map(c => [c, "n=" + bc[c].total, ...skills.map(sk => pctOf(c, sk) + "%")]));
     // #14: era 锁醒目徽章 (F卡是唯一旧era截面卡, 防夹在双era视图里被误读为新高考结论)
     G.$("#bk-crosslbl").innerHTML = `${CROSS_LBL[state.cross]} <span style="background:var(--accent-wash);color:var(--accent-ink);padding:0 6px;border-radius:8px;font-size:10px;white-space:nowrap;">仅旧课标II 2015–20截面 · 2021+数据尚不足</span>`;
-    G.$("#bk-crossnote").innerHTML = `老师分流: 哪类语篇考哪种思维。<b>应用文/文学艺术 ≈ 纯找信息(0推断)</b>, <b style="color:${C.up}">说明文/记叙文最考推断</b> → 精读分流训练重心。`
+    // 坑(2026-07-05 根因审计): 原硬编码"应用文/文学艺术≈纯找信息(0推断), 说明文/记叙文最考推断"
+    // 是字面写死的类别名+断言, 用户切换 renderCrossToggle(题材/主题群/主题语境)后图表已换数据, 这
+    // 句文案不跟着变(与已修的语法考点caption同一bug)。改成从 bc/ordered/pctOf(本函数已有, 43行上方
+    // aria-label 已这样动态算)现算最低/最高推断占比类别, 跟随 state.cross 当前维度。
+    const byInfer = ordered.map(c => ({ c, v: pctOf(c, "推断") })).sort((a, b) => b.v - a.v);
+    const highest = byInfer[0], lowest = byInfer[byInfer.length - 1];
+    G.$("#bk-crossnote").innerHTML = (highest && lowest && highest.c !== lowest.c
+      ? `老师分流: 哪类${CROSS_LBL[state.cross]}考哪种思维。<b>${lowest.c} ≈ 纯找信息(${lowest.v}%推断)</b>, <b style="color:${C.up}">${highest.c}最考推断(${highest.v}%)</b> → 精读分流训练重心。`
+      : `老师分流: 哪类${CROSS_LBL[state.cross]}考哪种思维, 见下方堆叠条各类推断占比 → 精读分流训练重心。`)
       + `<br><small class="muted">注 技能侧=教研解析标签(真值) · 题材侧=AI 标注(两个 AI 一致才计入, 看方向)。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; 时间范围锁 2015–20(2021+ 数据尚不足); n&lt;10格注仅参考。</small>`;
   }
 

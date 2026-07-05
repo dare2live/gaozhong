@@ -4,14 +4,16 @@
  * 课标库读 /api/curriculum/summary + /api/theme_contexts + /api/grammar_items。每条可溯源, 数据真值。
  */
 (function () {
-  const { registerTab, fetchSafe, isErr, errorBox, pageHead } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, pageHead, isSubqPreview } = window.GZ;
   const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
   // ── ③-b 真题库: 辽宁卷真题按年/题型浏览, 每题溯源原卷 ──
+  // 坑(2026-07-05 根因审计): preview 24% 是子题设问句(如"32. What does...")非原文段落, 加"设问:"
+  // 前缀标注(GZ.isSubqPreview 共享判断, Rule5); preview 现由后端 clean_preview 按需补省略号, 不再无条件追加"…"。
   function _tikuQ(q) {
     return `<li class="tk-q">
       <span class="tk-qtype">${esc(q.question_type)}</span>
-      <span class="tk-qprev">${esc(q.preview)}…</span>
+      <span class="tk-qprev">${isSubqPreview(q.preview) ? "设问: " : ""}${esc(q.preview)}</span>
       <span class="tk-qmeta">${q.has_answer ? '<span class="tk-ans">含答案</span>' : ""}<span class="tk-src" title="溯源原卷">${esc(q.source_file)}#${q.source_index}</span></span>
     </li>`;
   }
