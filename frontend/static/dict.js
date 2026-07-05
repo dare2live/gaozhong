@@ -27,7 +27,7 @@
   function shell() {
     return `
 ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考纲词汇释义 + 辽宁高考命中标记 + 学段归属 — 三源可溯。")}
-<p class="muted" style="margin:0 0 12px;font-size:13px;">共 <span id="dict-total">…</span> 词 · <span style="border-bottom:1px dashed var(--line);">点词</span>看跨学段多义与真题命中</p>
+<p class="muted" style="margin:0 0 12px;font-size:13px;">词典库共 <span id="dict-total">…</span> 词(不随下方筛选变化) · <span style="border-bottom:1px dashed var(--line);">点词</span>看跨学段多义与真题命中</p>
 <div class="dict-az" role="navigation" aria-label="按首字母浏览">${"abcdefghijklmnopqrstuvwxyz".split("").map(l => `<button type="button" class="dict-az-l" data-l="${l}">${l.toUpperCase()}</button>`).join("")}</div>
 <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
   <input id="dict-q" placeholder="输入词首字母前缀检索…" aria-label="按词首字母前缀检索" style="flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;">
@@ -84,7 +84,7 @@ ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考�
   function render(rows) {
     lastRows = rows;
     const el = G.$("#dict-list");
-    G.$("#dict-n").textContent = `${rows.length} 词` + (rows.length >= 300 ? " (前300, 缩小前缀)" : "");
+    G.$("#dict-n").textContent = `当前筛选 ${rows.length} 词` + (rows.length >= 300 ? " (前300, 缩小前缀)" : "");
     if (!rows.length) { el.innerHTML = '<p class="muted" style="padding:16px;">无匹配词 — 试试其它前缀</p>'; return; }
     el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;">
       <thead><tr style="position:sticky;top:0;background:#faf9f5;text-align:left;border-bottom:2px solid var(--line);">

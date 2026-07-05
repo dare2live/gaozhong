@@ -117,6 +117,16 @@
   // 人误以为反映当前卷制。改读 eras_missing(单一计算点, 复用 grammar_exam_stats 已算字段)。
   // era 内部 key(如 "2015-2020_旧课标II")→人话短标签, 只做展示层清洗不碰数据。
   const _eraShort = era => (era || "").replace(/^[\d.+-]+_/, "").replace(/_/g, " ") || era;
+  // 坑(2026-07-05 教师视角审计): 原171行硬编码"前4类(从句/被动/非谓语/时态)合计约七成"——与上方
+  // 图表实际数据(主从复合句/省略/句子种类/时态, 合计83.3%; 被动语态实际排最后; 非谓语不在数据里)
+  // 矛盾, 会误导老师排语法复习顺序。改为从 ge.by_category(已按 n 降序)动态算前4类名+累计pct。
+  function _grammarTopNote(ge) {
+    if (!ge || !ge.by_category || !ge.by_category.length) return "";
+    const top = ge.by_category.slice(0, 4);
+    const names = top.map(c => c.category).join("/");
+    const cum = Math.round(top.reduce((s, c) => s + (c.pct || 0), 0));
+    return `前 ${top.length} 类 (${names}) 合计约 ${cum}% — 语法主攻顺序即此。`;
+  }
   function _grammarCaption(ge) {
     if (!ge || ge.n_questions == null) return "";
     const base = `共 ${ge.n_questions} 题 · ${ge.n_edges || ge.total} 条考查记录 (一题可考多个语法点) — 量不大, 排序可信、小数点别抠。`;
@@ -168,7 +178,7 @@
       <section class="bk-card">
         <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法 (辽宁考查热点)</span><span class="bk-src">/api/grammar/stats</span></div>
         <div class="zt-gramlist">${gramHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。前 4 类 (从句/被动/非谓语/时态) 合计约七成 — 语法主攻顺序即此。${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
+        <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。${(!isErr(gram)) ? _grammarTopNote(gram.grammar_exam) : ""} ${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
       </section>
       <p class="zt-nextlink">这些套路怎么变成课? → <a href="#/teaching">40 节课程</a> · 固定搭配/句型/表达库已移入 <a href="#/jichu">基础库</a></p>
       <details class="zt-datahow"><summary>数据怎么来的?</summary>

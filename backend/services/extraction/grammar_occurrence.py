@@ -49,7 +49,12 @@ def extract_grammar_occurrences(con: duckdb.DuckDBPyConnection) -> dict:
     for ver, vol, un, txt in rows:
         # 坑29 (2026-07-04): 匹配窗口 160→300 字 — 部分教材(如外研"Using language")的
         # 语法主题名(如 "Attributive clauses")排在页首指令语之后, 160 字会截断掉主题名本身。
-        # example_sentence 展示仍用前 120 字(够看例句), 不影响匹配。
+        # 坑(2026-07-05 教师视角审计): example_sentence 原只存前 120 字, 但多数单元的指令语
+        # ("Look at the sentences..."/"Match the..."/"Decide which...")本身就占 100+ 字,
+        # 120 字常常截在指令语中间、真正的例句(a.../b...字母标记句)还没出现就被切掉。改存整个
+        # 已抓的 300 字窗口(复用同一次 fetch, 零额外成本), 让真例句有机会露出来; 仍全是指令语、
+        # 300 字内也没有例句的单元, 由 backend/services/textbook_content.py._is_practice_instruction
+        # 诊断降级(不展示), 不臆造边界。
         head = " ".join((txt or "").split())[:300]
         gid = _match_topic(head, rules)
         if not gid or gid not in valid_ids:
@@ -58,7 +63,7 @@ def extract_grammar_occurrences(con: duckdb.DuckDBPyConnection) -> dict:
         if key in seen:
             continue
         seen.add(key)
-        out.append((ver, vol, un, gid, head[:120]))
+        out.append((ver, vol, un, gid, head))
     con.executemany(
         "INSERT INTO grammar_occurrences VALUES (?, ?, ?, ?, ?, ?)",
         [(i + 1, *r) for i, r in enumerate(out)],

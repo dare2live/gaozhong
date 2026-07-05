@@ -24,6 +24,7 @@ const _IC = {
   jichu:   '<rect x="4" y="3" width="6" height="18" rx="1"/><rect x="14" y="3" width="6" height="18" rx="1"/><path d="M4 8h6"/><path d="M14 8h6"/>',
   kecheng: '<path d="M3 4h18"/><path d="M4 4v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4"/><path d="M12 15v4"/><path d="M9 19h6"/>',
   guanlian:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8.2 7.1 15.6 8"/><path d="M7 8.3l2.2 7.3"/><path d="M16.4 10 11.6 16.4"/>',
+  zujuan:  '<path d="M6 3h9l3 3v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="m9 12 2 2 4-4"/>',
 };
 
 window.GZ_NAV = [
@@ -36,6 +37,9 @@ window.GZ_NAV = [
   { section: "senior", group: "开始学习", tabs: [
     { id: "teaching", label: "40 节课程", icon: _IC.kecheng, count: "courses" }, // ④ L3 课程 (Phase C 框架)
     { id: "jichu",    label: "基础库",   icon: _IC.jichu },             // ③ 教材库 / 真题库 / 课标库 / 词典
+    // 坑(2026-07-05 教师视角审计): register("qbank",...)(app_router.js)一直是完整可用功能(题型筛选/
+    // 蓝图练习卷/自定义组卷), 但重构导航时漏加了入口, 只能靠直接改URL到达。补这一条。
+    { id: "qbank",    label: "组卷练习", icon: _IC.zujuan },
   ]},
   // ── 初中 (北极星 Phase E; 同结构镜像高中, 建设中) ──
   { section: "junior", group: "初中 · 沈阳中考 (建设中)", tabs: [

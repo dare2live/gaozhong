@@ -12,6 +12,8 @@
 """
 from __future__ import annotations
 
+import re
+
 import duckdb
 
 from backend.api.db import rows_to_dicts
@@ -43,6 +45,27 @@ def _phrases(con, v, vol, u):
     return out
 
 
+# 坑(2026-07-05 教师视角审计): grammar_occurrences.example_sentence 抓的是 Grammar section 原始
+# 页首文本, 常以"Review: tenses 1 Look at the sentences from the reading passage..."这类练习
+# 指令开头, 真正的例句(教材惯用 a/b/c 字母编号短句, 如 "a He was friendly. b The exam made me
+# quite nervous.")有的排在指令之后、有的整段就是纯指令没有例句。展示成"e.g."若截在指令中间会
+# 显得破碎误导(坑: 词被切一半)。改用正向信号判断: 找不到 a/b/c 字母编号例句模式就不展示"e.g."
+# (诊断不出真例句就不展示, 好过展示错的/纯指令冒充例句, 同一套哲学见 exam_grammar_stats.PHRASE_LIB_NOTE)。
+_EXAMPLE_LETTER_RE = re.compile(r"\b[a-e]\b[^a-zA-Z]{0,3}[A-Z]")
+_EXAMPLE_DISPLAY_MAX = 200
+
+
+def _clean_example(text: str | None) -> str | None:
+    """无 a/b/c 字母编号例句模式 → 不展示(纯指令, 诚实降级); 有则裁到最近的句末标点(不截词中间)."""
+    if not text or not _EXAMPLE_LETTER_RE.search(text):
+        return None
+    if len(text) <= _EXAMPLE_DISPLAY_MAX:
+        return text
+    clip = text[:_EXAMPLE_DISPLAY_MAX]
+    end = max(clip.rfind("."), clip.rfind("!"), clip.rfind("?"))
+    return clip[:end + 1] if end > 0 else clip
+
+
 def _grammar(con, v, vol, u, cat_pct):
     """语法点 (grammar_occurrences join grammar_items 取人话标签 + 例句 + 课标第二级类目辽宁考查占比).
 
@@ -60,6 +83,7 @@ def _grammar(con, v, vol, u, cat_pct):
         "WHERE go.version_key=? AND go.volume_key=? AND go.unit_number=? ORDER BY go.occ_id", [v, vol, u]))
     for r in rows:
         r["category_pct"] = cat_pct.get(r.get("category"))  # None = 该类目辽宁卷暂无考查边 (诚实, 非0)
+        r["example"] = _clean_example(r.get("example"))
     return rows
 
 

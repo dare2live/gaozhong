@@ -127,7 +127,10 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
       grid: { left: 4, right: 96, top: 8, bottom: 8, containLabel: true },
       // 坑(2026-07-05 数据可视化审计): 无 rows 时 Math.max(...[]) = -Infinity(轴崩); 姊妹图 cog 图(下方
       // renderCognitiveSkill)已用 ,0 兜底, 此处补齐同款防御(现无数据会触发, 补上防未来 dim/era 组合为空)。
-      xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct), 0) * 1.15, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+      // 坑(2026-07-05 教师视角审计): 未取整的浮点乘法(如31.6*1.15)会产生 36.339999999999996 这类原始
+      // 浮点噪声直接喂给 echarts 当轴上限刻度; 姊妹图 renderShiftDumbbell(下方)已用 Math.ceil(...*1.15)
+      // 处理过同一模式, 此处补齐同款取整。
+      xAxis: { type: "value", max: Math.ceil(Math.max(...rows.map(r => r.pct), 0) * 1.15), axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
       yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
       tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n} · 累计前${desc.length - p[0].dataIndex}类 ${cums[desc.length - 1 - p[0].dataIndex]}%` },
       series: [{
