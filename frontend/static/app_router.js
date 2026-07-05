@@ -207,8 +207,12 @@
   function _lessonCard(l) {
     // 溯源友好化: 显示"年份 辽宁卷 · #题号", 原始 source_file#index 入 title (机器血缘); 不甩裸 gb/... 路径
     const _srcShort = q => `${q.year} 辽宁卷 · #${(q.source || "").split("#").pop()}`;
+    // 坑(2026-07-05 教师视角审计): preview 有时是原文段落, 有时是子题设问句本身(如"32. What does
+    // Levine want to explain..."), 卡片外观统一当"原文预览"展示, 后者读起来像截断的乱码而非
+    // 有意义的设问。加"设问:"前缀区分, 不改数据(内容本身是真实来源, 只是展示层加了归类标签)。
+    const _isSubq = txt => /^\s*\d+[.．]\s/.test(txt || "");
     const hw = (l.evidence_questions || []).map(q =>
-      `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${_esc(q.preview)}…</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
+      `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${_isSubq(q.preview) ? "设问: " : ""}${_esc(q.preview)}…</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
     return `<details class="ks-lesson"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-hwn">· 作业 ${(l.evidence_questions || []).length} 道真题</span>

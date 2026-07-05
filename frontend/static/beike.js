@@ -590,7 +590,11 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
       const band = G.stageMiniBand ? G.stageMiniBand(stage) : "";
       items.push({
         text: `考查词 <strong>${stage.foundation_pct}% 初中前已学</strong>${band} → 词汇主攻高中新增的 <strong>${stage.senior_pct}%</strong>`,
-        link: `<a class="bk-vlink" href="#/zhenti">看证据 → 真题特点</a>`,
+        // 坑(2026-07-05 教师视角审计): 本条"看证据"跳去另一页(真题特点), b/c两条"看证据↓"是
+        // 页内滚动——同一"看证据"字样+相似箭头容易让人以为3条行为一致。改用 ↗(离开当前页
+        // 的通用符号)区别于 ↓(页内滚动), 不改变既有配色/无下划线的链接风格(与全站其它跳页
+        // 链接一致, 如.zt-nextlink)。
+        link: `<a class="bk-vlink" href="#/zhenti">看证据 ↗ 真题特点</a>`,
       });
     }
     // b. 主导设问思维 → 练怎么想 (锚区「怎么考」; 样本量诚实: n<30 带 n+方向性标注)
