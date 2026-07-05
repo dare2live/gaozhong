@@ -9,6 +9,13 @@ from __future__ import annotations
 import json
 
 from backend.api.db import db_ro
+from backend.services.extraction.example_text import clean_preview
+
+# 坑(2026-07-05 根因审计复核): 用户追问"深层根因是否真修完"后复扫发现的漏网实例 — 本文件读
+# question_bank.stem 时仍是原始 SUBSTR(...,1,80) 无边界截断, 与已收口的 example_text.py 不一致
+# (第 8 处独立截断)。当前 has_audio=true 行数=0(听力数据尚未入库, 见契约 allow_error 注记),
+# 现无实际影响, 但补齐防数据到位后复现同一 bug 类。
+_STEM_PREVIEW_LEN = 80
 
 
 def api_listening_list(qs: dict) -> dict:
@@ -16,7 +23,7 @@ def api_listening_list(qs: dict) -> dict:
     con = db_ro()
     try:
         sql = ("SELECT qb_id, question_type, difficulty, "
-               "SUBSTR(stem, 1, 80) AS stem_preview, "
+               f"SUBSTR(stem, 1, {_STEM_PREVIEW_LEN + 100}) AS stem_preview, "
                "audio_id, audio_duration, origin_ref "
                "FROM question_bank WHERE has_audio = true")
         args: list = []
@@ -30,7 +37,7 @@ def api_listening_list(qs: dict) -> dict:
         return {
             "questions": [
                 {"qb_id": r[0], "question_type": r[1], "difficulty": r[2],
-                 "stem_preview": r[3], "audio_id": r[4],
+                 "stem_preview": clean_preview(r[3], _STEM_PREVIEW_LEN), "audio_id": r[4],
                  "audio_duration": r[5], "origin_ref": r[6]}
                 for r in rows
             ],
