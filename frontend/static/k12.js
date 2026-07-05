@@ -39,15 +39,23 @@
       covEl.innerHTML = `词分阶覆盖 ${cov.staged}/${cov.total_words} · 未分阶 ${cov.unstaged}（校本超纲 ${r["校本超纲"] || 0} + 课标变形 ${r["课标变形"] || 0}, 无标准阶段）`;
     }
     chS = G.initChart(G.$("#k12-stage"));
+    // 坑(2026-07-05 数据可视化审计): 词(126-1409)与语法(0-71, 71 全部集中在"初中"一个 stage)
+    // 量级差 1-2 个数量级且语义不同维度, 原用 stack:"t" 堆进同一根柱: 语法段在"初中"柱里只占
+    // 4.8%长度(几不可见), 其余4个stage因语法=0干脆不显示棕色段, 但图例"语法"常显, 造成"语法在
+    // 多数阶段可忽略"的错误整体印象, 掩盖了"初中集中承载全部语法点"这一关键结构信息。改双X轴
+    // 分组柱(各自独立刻度, 不再堆叠): 语法在其自身 0-71 量级刻度下能画出真实可读的柱长。
     chS.setOption({
       legend: { data: ["词", "语法"], bottom: 0, textStyle: { fontSize: 11 } },
       grid: { left: 4, right: 40, top: 8, bottom: 28, containLabel: true },
       tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-      xAxis: { type: "value", splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+      xAxis: [
+        { type: "value", position: "bottom", axisLabel: { fontSize: 10 }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+        { type: "value", position: "top", axisLabel: { fontSize: 10, color: "#9A6A00" }, splitLine: { show: false } },
+      ],
       yAxis: { type: "category", data: stages, axisTick: { show: false }, axisLine: { show: false } },
       series: [
-        { name: "词", type: "bar", stack: "t", data: words.map((v, i) => ({ value: v, itemStyle: { color: STAGE_C[stages[i]] || "#888" } })), label: { show: true, position: "insideRight", fontSize: 10, color: "#fff" } },
-        { name: "语法", type: "bar", stack: "t", data: grams, itemStyle: { color: "#9A6A00" }, label: { show: true, fontSize: 10 } },
+        { name: "词", type: "bar", xAxisIndex: 0, data: words.map((v, i) => ({ value: v, itemStyle: { color: STAGE_C[stages[i]] || "#888" } })), label: { show: true, position: "right", fontSize: 10, color: "#76716A" } },
+        { name: "语法", type: "bar", xAxisIndex: 1, data: grams, itemStyle: { color: "#9A6A00" }, label: { show: true, position: "right", fontSize: 10, color: "#9A6A00" } },
       ],
     });
     // a11y: 动态 aria-label + sr-only 数据表 (复用已算 stages/words/grams, 不重算)

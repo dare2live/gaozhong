@@ -320,7 +320,10 @@ window.GZ = (function () {
   function renderAtlasGraph(el, data, opts) {
     opts = opts || {};
     if (!el || !window.echarts || !data || !data.nodes || !data.nodes.length) return null;
-    const skip = new Set(["stage", "cefr_level"]);
+    // 坑(2026-07-05 数据可视化审计): 排除集合原写死 {"stage","cefr_level"}, 与 API 已回传的
+    // attribute_only_node_types(单一计算点, backend/services/graph.py _label_relation_dst_types
+    // 从 dst 侧真实查出, 不是靠 relation 名字猜 node_type 名) 各自维护一份, 违反 Rule1。
+    const skip = new Set(data.attribute_only_node_types || []);
     const nodes = data.nodes.filter(n => !skip.has(n.node_type));
     const nodeIds = new Set(nodes.map(n => n.concept_id));
     const edges = (data.edges || []).filter(e => nodeIds.has(e.src) && nodeIds.has(e.dst));

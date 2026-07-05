@@ -125,7 +125,9 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     charts.dist = G.initChart(G.$("#bk-dist"));
     charts.dist.setOption({
       grid: { left: 4, right: 96, top: 8, bottom: 8, containLabel: true },
-      xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct)) * 1.15, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+      // 坑(2026-07-05 数据可视化审计): 无 rows 时 Math.max(...[]) = -Infinity(轴崩); 姊妹图 cog 图(下方
+      // renderCognitiveSkill)已用 ,0 兜底, 此处补齐同款防御(现无数据会触发, 补上防未来 dim/era 组合为空)。
+      xAxis: { type: "value", max: Math.max(...rows.map(r => r.pct), 0) * 1.15, axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
       yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
       tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n} · 累计前${desc.length - p[0].dataIndex}类 ${cums[desc.length - 1 - p[0].dataIndex]}%` },
       series: [{
@@ -277,8 +279,12 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const note = G.$("#bk-shiftnote");
     if (!note) return;
     const isChart = !(SHIFT_MQ.matches || !window.echarts);
+    // 坑(2026-07-05 数据可视化审计): 图例圆点符号原写死实心●, 但 solidNew=false 时渲染层(见上方
+    // renderShiftDumbbell)实际画的是空心虚线圈——图例与图不符(默认维度 theme_l2 现时 n=19<30 即触发)。
+    // 圆点符号跟渲染层同一个 solidNew 判据, 不再写死。
+    const newDot = isChart && solidNew === false ? "○" : "●";
     const legend = isChart
-      ? `读法: <span style="color:${C.grey}">○</span> 2015–20 起点 · <span style="color:${C.blue}">●</span> 2021+ 现状; <span style="color:${C.up}">红线=升温</span> · <span style="color:${C.blue}">蓝线=降温</span>, 线越粗变化越大。`
+      ? `读法: <span style="color:${C.grey}">○</span> 2015–20 起点 · <span style="color:${C.blue}">${newDot}</span> 2021+ 现状; <span style="color:${C.up}">红线=升温</span> · <span style="color:${C.blue}">蓝线=降温</span>, 线越粗变化越大。`
       : `读法: <span style="color:${C.up}">↑红=升温</span> · <span style="color:${C.blue}">↓蓝=降温</span>, 按变化幅度排。`;
     const suffNew = (((state.dist.sufficiency || {}).by_era_dim || {})[ERA_NEW] || {})[state.dim] || {};
     const caveat = (isChart && solidNew === false)

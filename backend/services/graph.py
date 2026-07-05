@@ -180,6 +180,19 @@ def _word_labels(con, word_ids: list[str], label_rels: list[str]) -> dict[str, d
     return by_node
 
 
+def _label_relation_dst_types(con: duckdb.DuckDBPyConnection, label_rels: list[str]) -> list[str]:
+    """label_relations(边关系名)的 dst 侧真实 node_type 集合 (单一计算点; 前端不猜名字对应关系)."""
+    if not label_rels:
+        return []
+    rp = ",".join("?" * len(label_rels))
+    rows = con.execute(
+        f"""SELECT DISTINCT n.node_type FROM edges e JOIN nodes n ON n.concept_id = e.dst_id
+            WHERE e.relation IN ({rp})""",
+        label_rels,
+    ).fetchall()
+    return sorted(r[0] for r in rows)
+
+
 def degree_summary(
     con: duckdb.DuckDBPyConnection,
     node_types: Optional[list[str]] = None,
@@ -200,11 +213,17 @@ def degree_summary(
     full_max = get_threshold("graph_atlas.full_display_max_count", 200)
     top_n = top_n_per_type or get_threshold("graph_atlas.default_top_n_per_type", 40)
     types = node_types or [r[0] for r in con.execute("SELECT DISTINCT node_type FROM nodes").fetchall()]
+    # 坑(2026-07-05 数据可视化审计): label_relations 是"边关系名"(at_stage/cefr_level), 不等于
+    # "node_type 名"(at_stage 的 dst node_type 实为 "stage", 只 cefr_level 恰好同名) — 前端此前
+    # 各自硬编码 {"stage","cefr_level"} 两份猜测 dst 侧 node_type, 违反单一计算点。此处直接查 dst 侧
+    # 真实 node_type 一次算出, API 显式回传, 前端只读不猜。
+    attribute_only_types: list[str] = _label_relation_dst_types(con, label_rels)
 
     ranked = _ranked_skeleton(con, types, label_rels, full_max, top_n)
     nodes_out = [{"concept_id": r[0], "node_type": r[1], "label": r[2], "attrs": r[3], "degree": r[4]} for r in ranked]
     if not nodes_out:
-        return {"nodes": [], "edges": [], "type_meta": {}, "label_relations": label_rels}
+        return {"nodes": [], "edges": [], "type_meta": {}, "label_relations": label_rels,
+                "attribute_only_node_types": attribute_only_types}
 
     type_meta: dict[str, dict] = {}
     for r in ranked:
@@ -222,4 +241,5 @@ def degree_summary(
         if n["concept_id"] in by_node:
             n["labels"] = by_node[n["concept_id"]]
 
-    return {"nodes": nodes_out, "edges": edges_out, "type_meta": type_meta, "label_relations": label_rels}
+    return {"nodes": nodes_out, "edges": edges_out, "type_meta": type_meta, "label_relations": label_rels,
+            "attribute_only_node_types": attribute_only_types}

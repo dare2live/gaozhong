@@ -366,7 +366,9 @@
   // ===================================================================
   // F. 知识图谱 (本tab: stats概览 + 高频考点词入口; 力导向SVG探索仍在 /legacy, 见 needs_user_decision UI收敛)
   // ===================================================================
-  // 渲染考点共现网络 — 复用 GZ.renderCooccurNetwork 单一口径(与「讲课调取」C' 同源同配色, 防漂移)。
+  // 渲染考点共现网络 — 复用 GZ.renderCooccurNetwork 单一口径。
+  // (坑 2026-07-05 数据可视化审计: 原注释称"与「讲课调取」C' 同源同配色", jiangke.js 已在
+  // 2026-07-02 教师工具下线 commit 8fffd70 整体删除, 现渲染函数唯一调用方就是本 tab — 文档漂移已清)
   // 弃旧通用 subgraph (会暴露教材版本/城市行政结构 + 问题星形噪声); 只渲真正有教研意义的考点关联。
   async function _renderCooccur(era, eraLabel) {
     const box = document.getElementById("graph-viz");
@@ -422,7 +424,11 @@
     if (!window.__rzAtlas) { window.__rzAtlas = 1; window.addEventListener("resize", () => window.__gAtlasInst && window.__gAtlasInst.resize()); }
     const tm = document.getElementById("atlas-meta");
     if (tm) {
-      const drawn = data.nodes.filter(n => n.node_type !== "stage" && n.node_type !== "cefr_level").length;
+      // 坑(2026-07-05 数据可视化审计): 原写死 !=="stage" && !=="cefr_level", 与 common.js
+      // renderAtlasGraph 内部的排除集合各自维护一份硬编码, 现改读 API 单点回传的
+      // attribute_only_node_types(与图表内部排除逻辑同一份真相源, 防止两处计数将来悄悄分叉)。
+      const attrOnly = new Set(data.attribute_only_node_types || []);
+      const drawn = data.nodes.filter(n => !attrOnly.has(n.node_type)).length;
       const rows = Object.entries(data.type_meta || {})
         .sort((a, b) => b[1].total - a[1].total)
         .map(([t, m]) => `${t}${m.capped ? ` 取Top${m.shown}/${m.total}` : ` 全展示${m.total}`}`).join(" · ");
