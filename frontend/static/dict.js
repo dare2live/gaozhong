@@ -13,7 +13,7 @@
   const SRC = (window.GZ_CAT && window.GZ_CAT.glossSource) || {
     renjiao: ["教材", "#2E7D54"], waiyan: ["教材", "#2E7D54"], hujiao: ["教材", "#2E7D54"],
     "中考": ["中考", "#378ADD"], exam: ["真题", "#1F5F94"],
-    variant: ["变体继承", "#9A6A00"], coca: ["COCA兜底", "#B4B2A9"],
+    variant: ["变体继承", "#9A6A00"], coca: ["通用释义", "#B4B2A9"],
   };
   const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (防 k12/dict 漂移)
 

@@ -73,7 +73,7 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
 ${sect("bk-sect-what", "bk-h-what", "考什么", "— 真被考的主题与体裁, 按考查占比排", cardA,
     `这些考点不是孤立出的 — <a href="#/graph">考点怎么绑着出题 → 考点关联</a>`)}
 ${sect("bk-sect-change", "bk-h-change", "怎么变", "— 2021 换卷后, 命题重心挪去了哪", cardB + cardC, "")}
-${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在考哪种思维", `<div class="bk-grid">${cardD}${cardF}</div>`,
+${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在考哪种思维 (下方两图跨度不同: D含新老两卷对比, F仅2015–20旧卷截面)", `<div class="bk-grid">${cardD}${cardF}</div>`,
     `<a href="#/zhenti">完整套路 → 真题特点</a>`)}
 <div class="bk-foot">
   <p class="bk-next">下一步: <a href="#/zhenti">看词从哪来的实证 → 真题特点</a></p>
@@ -498,7 +498,9 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const inf = !newOK
       ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(${newYearsLabel}) ${nInf}%`
       : `命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断`;
-    G.$("#bk-cognote").innerHTML = banner
+    // 坑(2026-07-05 教师视角审计): 推断/理解具体信息/理解主旨要义/理解词汇 4个术语在本页首次
+    // 出现无解释; 真题特点页已有完整讲解卡片, 此处加一句跳转链接而非重复整套讲解。
+    G.$("#bk-cognote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">这4种"怎么想"是什么意思? →</a><br>` + banner
       + `题型标签直接来自教研解析, 不靠 AI 猜(详见页尾「数据怎么来的?」)。${inf}。`
       + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅${newYearsLabel} n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`;
   }
@@ -594,13 +596,23 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     // b. 主导设问思维 → 练怎么想 (锚区「怎么考」; 样本量诚实: n<30 带 n+方向性标注)
     const byEra = (cog && cog.by_era) || {};
     const newEraKey = Object.keys(byEra).find(k => /2021|新高考/.test(k)) || Object.keys(byEra)[0];
+    const oldEraKey = Object.keys(byEra).find(k => k !== newEraKey);
     const skills = newEraKey ? byEra[newEraKey] : null;
     if (Array.isArray(skills) && skills.length) {
       const top = skills.slice().sort((a, b) => (b.pct || 0) - (a.pct || 0))[0];
       const rel = ((cog || {}).reliability || {})[newEraKey] || {};
       const relTag = rel.distribution_reliable === false ? ` · n=${rel.n} 方向性` : "";
+      // 坑(2026-07-05 教师视角审计): 结论条原只报"占比最高的技能", 但下方D图始终把"推断"
+      // 标红当"主攻重点"(该项跨era涨幅最大, 见 renderCognitiveSkill 的 s==="推断" 判断) ——
+      // 当占比最高的技能不是推断时, 结论条与图表视觉强调的技能不一致。此时把推断的涨幅一并
+      // 说清楚, 结论与图表对齐, 不再各说各话。
+      const infer = skills.find(s => s.label === "推断");
+      const inferOld = oldEraKey ? (byEra[oldEraKey] || []).find(s => s.label === "推断") : null;
+      const risingNote = (infer && top.label !== "推断" && inferOld)
+        ? ` · <strong>推断</strong>题增长快(${inferOld.pct}%→${infer.pct}%), 最值得针对性练`
+        : "";
       if (top && top.label) items.push({
-        text: `设问以 <strong>${top.label}</strong> 为主 (${top.pct}%${relTag}) → 备课重心=练「怎么想」`,
+        text: `设问以 <strong>${top.label}</strong> 为主 (${top.pct}%${relTag})${risingNote} → 备课重心=练「怎么想」`,
         link: `<button type="button" class="bk-vlink" data-goto="bk-sect-how">看证据 ↓</button>`,
       });
     }

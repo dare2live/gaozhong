@@ -392,9 +392,15 @@
   const _DIM_CN = { genre: "题材", theme_context: "主题", theme_l2: "主题群", cognitive_skill: "设问思维" };
   function _coChips(pairs) {
     const top = [...pairs].sort((x, y) => y.co_n - x.co_n).slice(0, 3);
+    // 坑(2026-07-05 教师视角审计): chip 原只报"一起考了 N 次", 没有分母, 老师看不出这是
+    // 该类目大部分场合都这么配(真规律)还是小样本巧合。用同一份 pairs 数据算该 a_label
+    // 参与的全部已收录共现次数之和作分母(不发新请求, 复用已有响应), 诚实披露占比。
+    const totalFor = label => pairs.reduce((s, p) => s + ((p.a_label === label || p.b_label === label) ? p.co_n : 0), 0);
     return top.map(p => {
       const hint = p.a_dim === "genre" ? ` — 见「${_esc(p.a_label)}」先想「${_esc(p.b_label)}」` : "";
-      return `<div class="kg-chip"><b>${_esc(p.a_label)} × ${_esc(p.b_label)}</b><span class="kg-chip-n">同一道题里一起考了 ${p.co_n} 次</span>${hint ? `<span class="kg-chip-h">${hint}</span>` : ""}</div>`;
+      const denom = totalFor(p.a_label);
+      const denomNote = denom > p.co_n ? ` (占「${_esc(p.a_label)}」已收录共现的 ${p.co_n}/${denom})` : "";
+      return `<div class="kg-chip"><b>${_esc(p.a_label)} × ${_esc(p.b_label)}</b><span class="kg-chip-n">同一道题里一起考了 ${p.co_n} 次${denomNote}</span>${hint ? `<span class="kg-chip-h">${hint}</span>` : ""}</div>`;
     }).join("");
   }
   function _coList(pairs) {
@@ -429,10 +435,14 @@
       // attribute_only_node_types(与图表内部排除逻辑同一份真相源, 防止两处计数将来悄悄分叉)。
       const attrOnly = new Set(data.attribute_only_node_types || []);
       const drawn = data.nodes.filter(n => !attrOnly.has(n.node_type)).length;
+      // 坑(2026-07-05 教师视角审计): 原一次性展示16项"类型:展示数/总数"流水账, 读起来像工程
+      // 审计日志。改一句人话结论常显 + 明细收进折叠details(默认收起, 想看再展开)。
       const rows = Object.entries(data.type_meta || {})
         .sort((a, b) => b[1].total - a[1].total)
         .map(([t, m]) => `${t}${m.capped ? ` 取Top${m.shown}/${m.total}` : ` 全展示${m.total}`}`).join(" · ");
-      tm.textContent = `${drawn} 节点画图 / ${data.edges.length} 条关系边 (另 学段+课标级别 ${data.nodes.length - drawn} 个仅作词条属性不画点) — ${rows}`;
+      tm.innerHTML = `图上是连接最多的词/句子; 其余类型全部展示。共 ${drawn} 节点 / ${data.edges.length} 条关系边`
+        + `(另 学段+课标级别 ${data.nodes.length - drawn} 个仅作词条属性不画点)。`
+        + `<details style="display:inline;margin-left:4px;"><summary style="display:inline;cursor:pointer;">按类型展开明细</summary><div style="margin-top:4px;">${rows}</div></details>`;
     }
   }
 
@@ -468,6 +478,8 @@
         <p class="muted" style="font-size:11.5px;margin:8px 0 0">按同题次数降序全量列出 (不截断); 次数小的组合只说明"出现过", 别过度解读。</p>
       </section>
 
+      <p class="zt-nextlink">这些套路已编进课程 → <a href="#/teaching">40 节课程</a></p>
+
       <section class="bk-card" style="margin-top:14px">
         <div class="bk-h"><span>全景图谱 · 全库浏览</span><span class="bk-src">/api/graph/atlas</span></div>
         <p class="kg-legend">这是全库骨架 — 单词/真题/语法点/短语句型/教材单元/考点/主题/题型 之间的真实关系(不是上面那张考点共现图)。
@@ -475,8 +487,7 @@
           学段/课标级别(义务教育/必修/选必等)不单独画点, 放在词条 hover 里看。</p>
         <div id="atlas-viz" style="min-height:560px"></div>
         <p class="muted" id="atlas-meta" style="font-size:11px;margin:6px 0 0"></p>
-      </section>
-      <p class="zt-nextlink">这些套路已编进课程 → <a href="#/teaching">40 节课程</a></p>`;
+      </section>`;
 
     CONTENT.querySelectorAll(".gz-era").forEach(b => b.onclick = () => {
       CONTENT.querySelectorAll(".gz-era").forEach(x => x.classList.remove("on"));
