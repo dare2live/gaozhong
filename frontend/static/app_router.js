@@ -439,13 +439,32 @@
       return `<div class="kg-chip"><b>${_esc(p.a_label)} × ${_esc(p.b_label)}</b><span class="kg-chip-n">同一道题里一起考了 ${p.co_n} 次${denomNote}</span>${hint ? `<span class="kg-chip-h">${hint}</span>` : ""}</div>`;
     }).join("");
   }
+  // 坑(2026-07-06 数据关联设计审查): 共现网络规模小(9-13节点)时力导向布局收敛的认知成本可能
+  // 大于探索价值——"全部共现组合·精确读数"表格早已并列存在(非本次新增), 缺的是表格行↔图节点
+  // 的hover联动。data-a/data-b挂考点concept_id, 供下方事件委托调echarts highlight action。
   function _coList(pairs) {
     const sorted = [...pairs].sort((x, y) => y.co_n - x.co_n);
     const max = sorted.length ? sorted[0].co_n : 1;
     return sorted.map(p =>
-      `<div class="kg-row"><span class="kg-row-l">${_esc(p.a_label)} <span class="kg-x">×</span> ${_esc(p.b_label)}</span>
+      `<div class="kg-row" data-a="exam_point:${_esc(p.a_dim)}:${_esc(p.a_label)}" data-b="exam_point:${_esc(p.b_dim)}:${_esc(p.b_label)}"><span class="kg-row-l">${_esc(p.a_label)} <span class="kg-x">×</span> ${_esc(p.b_label)}</span>
         <span class="kg-row-bar"><span style="width:${Math.round(100 * p.co_n / max)}%"></span></span>
         <span class="kg-row-n">同题 ${p.co_n} 次</span></div>`).join("");
+  }
+  // 表格行 hover → 高亮共现网络里对应的两个节点(及其邻边, emphasis.focus:'adjacency'已配置);
+  // 事件委托挂容器一次, 存活于_coList因era切换的重绘(不用每次重渲后重新绑定)。
+  function _wireCoListHover() {
+    const box = document.getElementById("kg-list");
+    if (!box || box.dataset.hoverWired) return;
+    box.dataset.hoverWired = "1";
+    const inst = () => window.__gGraphInst;
+    box.addEventListener("mouseover", e => {
+      const row = e.target.closest(".kg-row"); if (!row || !inst()) return;
+      ["a", "b"].forEach(k => inst().dispatchAction({ type: "highlight", seriesIndex: 0, dataType: "node", name: row.dataset[k] && row.dataset[k].split(":").pop() }));
+    });
+    box.addEventListener("mouseout", e => {
+      const row = e.target.closest(".kg-row"); if (!row || !inst()) return;
+      inst().dispatchAction({ type: "downplay", seriesIndex: 0 });
+    });
   }
 
   // 全景图谱骨架 (2026-07-04 用户提议: 词/教材年级/短语句型/语法 跟课标考纲的全量关系可视化).
@@ -501,11 +520,35 @@
     return `${eraRows}${missing}<p style="margin:6px 0 0;"><a href="#/zhenti" class="bk-vlink" style="font-size:12px;">完整语法考点卡(时态/从句/句型/词法) → 真题特点</a></p>`;
   }
 
+  // 坑(2026-07-06 数据关联设计审查): "查单个考点关联"这个高频任务原要等两张力导向图(每张>500px)
+  // 渲染完才有popup入口, 默认era下cognitive_skill维度考点在共现图里甚至根本不是可点节点(不在
+  // exam_point:genre/theme_context/theme_l2 三维之外)。复用已有 /api/exam_point/distribution
+  // (无需新端点, 该数据已含全部21个考点+人话label), 前端flatten去重成索引, 点击直达popup。
+  function _examPointIndex(dist) {
+    const dimLabel = (window.GZ_CAT && window.GZ_CAT.dim) || {};
+    const seen = new Set();
+    const items = [];
+    Object.values((dist && dist.distribution) || {}).forEach(byDim => {
+      Object.entries(byDim || {}).forEach(([dim, rows]) => (rows || []).forEach(r => {
+        const cid = `exam_point:${dim}:${r.label}`;
+        if (seen.has(cid)) return;
+        seen.add(cid);
+        items.push({ cid, label: r.label, dim, dimLabel: dimLabel[dim] || dim });
+      }));
+    });
+    items.sort((a, b) => a.dim.localeCompare(b.dim) || a.label.localeCompare(b.label));
+    if (!items.length) return "";
+    return `<details class="zt-datahow" style="margin-bottom:14px;"><summary>全部考点索引 (${items.length}个, 点击直达详情, 不必等下方力导向图)</summary>
+      <div class="kg-idx">${items.map(it => `<button type="button" class="bk-pill kg-idx-p" data-cid="${_esc(it.cid)}" title="${_esc(it.dimLabel)}">${_esc(it.label)}</button>`).join("")}</div>
+    </details>`;
+  }
+
   register("graph", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入知识图谱…</div>';
-    const [co, gram] = await Promise.all([
+    const [co, gram, dist] = await Promise.all([
       fetchJSON("/api/exam_point/cooccurrence"),   // 主数据, 失败必抛 → route() 错误态
       fetchSafe("/api/grammar/stats"),             // 语法关联小节 (零后端改动, 已有端点)
+      fetchSafe("/api/exam_point/distribution"),   // 考点索引 (零后端改动, 复用已有端点)
     ]);
     const eraPairs = ((co.by_era || {})["2021+_新高考II"] || {}).pairs || [];
 
@@ -517,6 +560,8 @@
         <div id="kg-chips" class="kg-chips">${_coChips(eraPairs)}</div>
         <p class="sc-tk-caveat">口径: 2021+ 新高考II 卷实测计数, 共现 ≠ 因果; 题材/主题为 AI 标注 · 方向参考。</p>
       </div>
+
+      ${_examPointIndex((!isErr(dist)) ? dist : null)}
 
       <section class="bk-card" style="margin-bottom:14px">
         <div class="bk-h"><span>共现网络 · 证据图 <small id="graph-center" style="color:var(--accent-ink)">新高考II 2021+</small></span>
@@ -564,7 +609,9 @@
       const le = document.getElementById("kg-list-era"); if (le) le.textContent = b.dataset.label;
     });
     _renderCooccur("2021+_新高考II", "新高考II 2021+");
+    _wireCoListHover();
     _renderAtlas();
+    CONTENT.querySelectorAll(".kg-idx-p").forEach(b => b.onclick = () => { if (GZ.openPopup) GZ.openPopup(b.dataset.cid); });
   });
 
 })();

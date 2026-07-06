@@ -65,11 +65,11 @@
   ${inner}
   ${links ? `<p class="bk-sect-links">${links}</p>` : ""}
 </section>`;
-    const cardA = `<section class="bk-card"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的考查占比 (真被考的占比, 非教材出现频次)" style="height:300px;"></div><p id="bk-distnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardA = `<section class="bk-card" id="bk-card-a"><div class="bk-h"><span>A 考点分布 <small id="bk-dimname">主题群</small></span><span class="bk-src">/api/exam_point/distribution</span></div><div id="bk-dist" role="img" aria-label="考点分布条形图: 各课标主题群在辽宁卷的考查占比 (真被考的占比, 非教材出现频次)" style="height:300px;"></div><p id="bk-distnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardB = `<section class="bk-card"><div class="bk-h"><span>B 命题迁移 <small>2015–20 → 2021+ · 变化最大的排最上</small></span><span class="bk-src">/api/exam_point/distribution · shift</span></div><div id="bk-shift" role="img" aria-label="命题迁移哑铃图: 各类别在旧卷制与新卷制的考查占比变化"></div><p id="bk-shiftnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardC = `<section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 存续时间带</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构存续时间带: 各题型在辽宁卷的存续区间与登场、退场事件" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardD = `<section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级 · 教研解析标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
-    const cardF = `<section class="bk-card"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardF = `<section class="bk-card" id="bk-card-f"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     return `
 ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考什么 · 怎么变 · 怎么考 — 每个数字来自辽宁真题与课标原文的统计, 可以点开追到原卷。", `<button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button>`)}
 <div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
@@ -120,9 +120,13 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
   function renderDist() {
     const desc = (state.dist.distribution[state.era][state.dim] || []);   // service 已按占比降序
     const rows = desc.slice().reverse();                                  // echarts 横条自下而上
+    // 坑(2026-07-06 数据关联设计审查): 小样本(如n=19分7类, 单类n=1)下累计占比原精确到小数点1位,
+    // 与旁边"样本不足(方向性)"警示语气冲突, 给人虚假精确感。distEligible=false 时累计占比降级为
+    // 整数(tooltip/label/note/aria-label/sr表 5处输出全部读同一份cums, 一处降级全部生效)。
+    const elig = distEligible(state.era, state.dim);
     // 帕累托注记 (#3): 累计占比 = 纯渲染层对 service 已算 pct 求和 (排序累计, 不重算占比本身)
     let cum = 0;
-    const cums = desc.map(r => { cum += r.pct; return +cum.toFixed(1); });
+    const cums = desc.map(r => { cum += r.pct; return elig ? +cum.toFixed(1) : Math.round(cum); });
     let pN = desc.length;
     for (let i = 0; i < desc.length; i++) if (cums[i] >= 70) { pN = i + 1; break; }
     G.$("#bk-dimname").textContent = DIM_LABEL[state.dim];
@@ -151,10 +155,20 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
         },
       }],
     });
-    const elig = distEligible(state.era, state.dim);
+    // 坑(2026-07-06 数据关联设计审查): A卡切到"体裁"维度时6个体裁分类与F卡(题材×思维)完全重叠
+    // (同一份底层真题池, 只是A是passage粒度/F是子题粒度), 但两卡分属"考什么"/"怎么考"两个区块,
+    // 中间隔着整个"怎么变"区, 无任何呼应——补一条跳转提示, 不做echarts跨图高亮(复杂度/收益不对等)。
+    // 坑: 页面本身就是 #/beike 路由, 用 <a href="#bk-card-f"> 会把hash改成"bk-card-f"触发SPA路由
+    // 误判为未知页面——沿用本文件已有的 data-goto + scrollIntoView 模式(非真正hash跳转)。
+    const xlink = state.dim === "genre"
+      ? `<br><button type="button" class="bk-vlink" data-goto="bk-card-f" style="font-size:11.5px;">同一批真题按题材看"怎么想"(推断占比) → F卡</button>` : "";
     G.$("#bk-distnote").innerHTML = desc.length > 1
-      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。`
+      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${xlink}`
       : "";
+    G.$$("#bk-distnote [data-goto]").forEach(b => b.onclick = () => {
+      const t = document.getElementById(b.dataset.goto);
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     // a11y: 动态 aria-label(图名+维度+era+前几项实值) + sr-only 数据表 — 复用本函数已用的 rows(原序非 reverse)
     const dimName = DIM_LABEL[state.dim];
     setAria("bk-dist",
@@ -557,7 +571,10 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     // aria-label 已这样动态算)现算最低/最高推断占比类别, 跟随 state.cross 当前维度。
     const byInfer = ordered.map(c => ({ c, v: pctOf(c, "推断") })).sort((a, b) => b.v - a.v);
     const highest = byInfer[0], lowest = byInfer[byInfer.length - 1];
-    G.$("#bk-crossnote").innerHTML = (highest && lowest && highest.c !== lowest.c
+    // 坑(2026-07-06 数据关联设计审查): D卡已有卡内联行链接解释设问技能术语, F卡同一组术语首现
+    // 在图例/tooltip里, 只靠区块级公共链接兜底, 位置不对等——补一份同款卡内联行链接, 与D卡一致。
+    G.$("#bk-crossnote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">这4种"怎么想"是什么意思? →</a><br>`
+      + (highest && lowest && highest.c !== lowest.c
       ? `老师分流: 哪类${CROSS_LBL[state.cross]}考哪种思维。<b>${lowest.c} ≈ 纯找信息(${lowest.v}%推断)</b>, <b style="color:${C.up}">${highest.c}最考推断(${highest.v}%)</b> → 精读分流训练重心。`
       : `老师分流: 哪类${CROSS_LBL[state.cross]}考哪种思维, 见下方堆叠条各类推断占比 → 精读分流训练重心。`)
       + `<br><small class="muted">注 技能侧=教研解析标签(真值) · 题材侧=AI 标注(两个 AI 一致才计入, 看方向)。粒度=子题数(同语篇题材重复计入), 覆盖 ${cov}; 时间范围锁 2015–20(2021+ 数据尚不足); n&lt;10格注仅参考。</small>`;
@@ -627,9 +644,12 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
       const risingNote = (infer && top.label !== "推断" && inferOld)
         ? ` · <strong>推断</strong>题增长快(${inferOld.pct}%→${infer.pct}%), 最值得针对性练`
         : "";
+      // 坑(2026-07-06 数据关联设计审查): D图内部已用实心/空心区分置信度, 但结论卡把n<30方向性
+      // 推断与真值统计视觉权重拉平——weak标记复用同一份rel.distribution_reliable判断, 不新增计算。
       if (top && top.label) items.push({
         text: `设问以 <strong>${top.label}</strong> 为主 (${top.pct}%${relTag})${risingNote} → 备课重心=练「怎么想」`,
         link: `<button type="button" class="bk-vlink" data-goto="bk-sect-how">看证据 ↓</button>`,
+        weak: rel.distribution_reliable === false,
       });
     }
     // c. 最大命题迁移 (锚区「怎么变」; 扫 genre+theme_l2 细粒度维度, theme_context 3 大类过粗不参与)
@@ -637,14 +657,20 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     let mv = null;
     ["genre", "theme_l2"].forEach(k => (sd[k] || []).forEach(m => { if (!mv || Math.abs(m.delta) > Math.abs(mv.delta)) mv = m; }));
     if (mv && Math.abs(mv.delta) >= 1) {
+      // 坑(2026-07-06 数据关联设计审查): 原c条完全不显示样本量, 比b条(有n+方向性标注)更不透明——
+      // 复核发现c条引用样本可能比b条更小却毫无提示。exam_point_shift已补n_new/n_old(同era分布
+      // 口径, 30与MIN_DISTRIBUTION_SAMPLE同一约定), 现补上并按同阈值弱化标记。
+      const MIN_SAMPLE = 30;
+      const nNew = mv.n_new || 0;
       items.push({
-        text: `最大命题迁移: <strong>${mv.label}</strong> ${mv.delta >= 0 ? "升" : "降"} ${Math.abs(mv.delta).toFixed(1)}pt`,
+        text: `最大命题迁移: <strong>${mv.label}</strong> ${mv.delta >= 0 ? "升" : "降"} ${Math.abs(mv.delta).toFixed(1)}pt (n=${nNew}${nNew < MIN_SAMPLE ? " 方向性" : ""})`,
         link: `<button type="button" class="bk-vlink" data-goto="bk-sect-change">看证据 ↓</button>`,
+        weak: nNew < MIN_SAMPLE,
       });
     }
     if (!items.length) { el.style.display = "none"; return; }
     el.innerHTML = `<div class="bk-verdict-h">研判结论 · 辽宁新高考 II 卷</div>`
-      + `<ul class="bk-verdict-list">` + items.map(i => `<li>${i.text} ${i.link}</li>`).join("") + `</ul>`
+      + `<ul class="bk-verdict-list">` + items.map(i => `<li${i.weak ? ' class="bk-verdict-weak"' : ""}>${i.text} ${i.link}</li>`).join("") + `</ul>`
       + `<p class="bk-verdict-foot">题材/主题由 AI 标注(看方向, 非官方真值); 新老卷制分开统计不混平均 — 详见页尾「数据怎么来的?」。</p>`;
     G.$$("#bk-verdict [data-goto]").forEach(b => b.onclick = () => {
       const t = document.getElementById(b.dataset.goto);

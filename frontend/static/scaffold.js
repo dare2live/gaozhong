@@ -173,7 +173,7 @@
         <div class="bk-h"><span>命题套路 · 题材 × 设问思维</span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div>
         ${_cogExplainPanel()}
         <div class="kb-list">${taoluHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">"每类语篇主导哪种思维" = 命题套路 (设问思维=教研显式标签真值; 题材=双模型方向性; era 2015–20, 2021+ 桥缺)。</p>
+        <p class="kb-dim" style="margin:8px 0 0;">"每类语篇主导哪种思维" = 命题套路 (设问思维=教研显式标签真值; 题材=双模型方向性; era 2015–20, 2021+ 桥缺)。这里只看体裁维度的主导技能摘要; 想看完整占比构成、切主题群/主题语境维度 → <a href="#/beike">命题研判</a> F卡。</p>
       </section>
       <section class="bk-card">
         <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法 (辽宁考查热点)</span><span class="bk-src">/api/grammar/stats</span></div>

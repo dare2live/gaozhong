@@ -255,6 +255,10 @@
 .bk-verdict-body { font-size: 14px; line-height: 1.6; color: var(--ink); margin: 0 0 4px; }
 .bk-verdict-body strong { font-weight: 660; color: var(--accent-ink); }
 .bk-verdict-foot { font-size: 11.5px; line-height: 1.5; color: var(--ink-3); margin: 0; }
+/* 坑(2026-07-06 数据关联设计审查): 结论卡引用n<30方向性数据的条目弱化视觉权重, 不与真值结论
+   同等强调(D图内部已有的实心/空心置信度分层, 在结论卡这个更高曝光位置不该被抹平) */
+.bk-verdict-list li.bk-verdict-weak { color: var(--ink-2); }
+.bk-verdict-list li.bk-verdict-weak strong { font-weight: 600; color: var(--ink-2); }
 /* 40 节课程 L3 框架 (kecheng) */
 .ks-list { display: flex; flex-direction: column; gap: 6px; }
 .ks-lesson { border: 1px solid var(--line); border-radius: var(--r); background: var(--card); overflow: hidden; }
@@ -416,8 +420,12 @@
 .kg-chip-h { display: block; color: var(--accent-ink); font-size: 12px; margin-top: 3px; font-weight: 550; }
 .kg-legend { font-size: 12.5px; color: var(--ink-3); margin: 0 0 8px; padding: 7px 11px; background: var(--sunken); border-radius: var(--r-sm); }
 .kg-legend b { color: var(--ink-2); }
+/* 坑(2026-07-06 数据关联设计审查): 全部考点索引(点击直达popup, 不必等力导向图渲染完) */
+.kg-idx { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .kg-row { display: grid; grid-template-columns: minmax(200px, 1fr) 2fr 90px; gap: 12px; align-items: center; padding: 7px 0; border-top: 1px solid var(--line-soft); font-size: 13px; }
 .kg-row:first-child { border-top: 0; }
+/* 坑(2026-07-06 数据关联设计审查): hover高亮共现网络图对应节点(见 app_router.js _wireCoListHover) */
+.kg-row:hover { background: var(--sunken); }
 .kg-row-l { color: var(--ink-2); }
 .kg-x { color: var(--ink-3); font-size: 11px; margin: 0 2px; }
 .kg-row-bar { height: 10px; background: var(--sunken); border-radius: 2px; overflow: hidden; }
