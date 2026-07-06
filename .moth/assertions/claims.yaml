@@ -277,6 +277,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_by_content as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c,'genre');c.close();yw=d['by_content'].get('应用文',{}).get('skills',[]);top=yw[0]['label'] if yw else '?';ok=d['n_matched']==75 and d['era']=='2015-2020_旧课标II' and 'dual_model_agree' in d['content_provenance'] and top=='理解具体信息' and len(yw)==1;print('OK' if ok else f'FAIL match={d[\"n_matched\"]} era={d[\"era\"]} 应用文top={top}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: joint-attribution-word-skill
+    claim: "语篇级联合归因(2026-07-06方法论落地, attribution.py): 词汇学段×设问思维对齐24篇语篇(2015-20, cognitive_skill∩tests_word交集), 语法维度已实测排除(question_type不相交, 不返回grammar_cefr_mix字段防误导); 每篇foundation+senior+unclassified≈100%自洽; 推断题主导语篇(n=6)平均高中新词占比11.5%, 理解具体信息主导语篇(n=16)平均12.3% — 未见推断题语篇词汇显著更难, 支持'推断是独立于词汇的技能维度'"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import joint_attribution_by_passage as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();ok=d['n_passages']==24 and d['era']=='2015-2020_旧课标II' and 'grammar_cefr_mix' not in str(d['passages'][:1]) and all(abs(p['word_stage_mix']['foundation_pct']+p['word_stage_mix']['senior_pct']+p['word_stage_mix']['unclassified_pct']-100)<0.5 for p in d['passages'] if p['word_stage_mix']);print('OK' if ok else f'FAIL n={d[\"n_passages\"]} era={d[\"era\"]}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: l4-paper-liaoning-only
     claim: "L4模拟卷 province 前缀锚(坑7/§7, A3修): generate_l4_paper 用 LIKE '辽宁%' 前缀非 '%辽宁%' 子串(子串会命中'非辽宁'标签混全国卷); 实测出卷全部 province 以'辽宁'起"
     type: shell

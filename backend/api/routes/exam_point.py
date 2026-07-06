@@ -9,7 +9,7 @@ from __future__ import annotations
 from backend.api.db import db_ro
 from backend.services.exam_point import (cognitive_skill_by_content, cognitive_skill_distribution,
                                           exam_point_cooccurrence, exam_point_distribution,
-                                          exam_point_shift)
+                                          exam_point_shift, joint_attribution_by_passage)
 from backend.services.trend import scope
 
 
@@ -87,9 +87,19 @@ def api_exam_point_cognitive_by_content(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_joint_attribution(qs: dict) -> dict:
+    """语篇级联合归因(词汇学段×设问思维), 2015-20截面; 回答"推断题多的文章是否词汇也更难"。"""
+    con = db_ro()
+    try:
+        return joint_attribution_by_passage(con)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/exam_point/distribution": api_exam_point_distribution,
     "/api/exam_point/cooccurrence": api_exam_point_cooccurrence,
     "/api/exam_point/cognitive_skill": api_exam_point_cognitive_skill,
     "/api/exam_point/cognitive_by_content": api_exam_point_cognitive_by_content,  # 技能×题材交叉(2015-20)
+    "/api/exam_point/joint_attribution": api_exam_point_joint_attribution,  # 词汇×设问思维语篇级联合归因
 }

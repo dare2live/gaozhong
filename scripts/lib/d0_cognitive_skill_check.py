@@ -123,3 +123,37 @@ def check_cognitive_cross(con: duckdb.DuckDBPyConnection, check) -> None:
     bad_sum = [c for d in (g, t) for c, cell in d["by_content"].items()
                if sum(s["n"] for s in cell["skills"]) != cell["total"]]
     check("每题材格 total == 各技能 n 之和 (内部自洽)", not bad_sum, f"不自洽={bad_sum[:3]}")
+
+
+def check_joint_attribution(con: duckdb.DuckDBPyConnection, check) -> None:
+    """语篇级联合归因 D0 (2026-07-06 方法论落地; backend/services/exam_point/attribution.py).
+
+    颗粒度边界锁: 只做语篇级(passage), 不假装子题级(词汇边挂语篇/设问思维边挂子题, 见模块docstring)。
+    语法维度已实测排除(tests_grammar/cognitive_skill question_type不相交), 锁"确实不返回该字段"防回归。
+    """
+    print("\n=== (32) 语篇级联合归因 (词汇学段×设问思维, 2015-20截面, KG-A1衍生) ===")
+    from backend.services.exam_point import joint_attribution_by_passage
+    d = joint_attribution_by_passage(con)
+
+    check("联合归因语篇数 == 24 (cognitive_skill覆盖语篇∩tests_word覆盖语篇)",
+          d["n_passages"] == B('joint_attribution_passages'), f"{d['n_passages']}")
+    check("era 锁 2015-2020 (2021+ passage_label非全局唯一, 无法桥接tests_word, 已实测)",
+          d["era"] == "2015-2020_旧课标II", d["era"])
+    check("语法维度已诚实排除 (excluded_dimension_note存在, 不返回必空的grammar_cefr_mix字段)",
+          "excluded_dimension_note" in d and "grammar_cefr_mix" not in str(d["passages"][:1]),
+          f"note={'excluded_dimension_note' in d}")
+
+    # 每篇 word_stage_mix 内部自洽: foundation+senior+unclassified ≈ 100% (四舍五入容差0.2)
+    bad_pct = [p["passage_id"] for p in d["passages"] if p["word_stage_mix"] and
+               abs(p["word_stage_mix"]["foundation_pct"] + p["word_stage_mix"]["senior_pct"]
+                   + p["word_stage_mix"]["unclassified_pct"] - 100.0) > 0.2]
+    check("每篇 foundation+senior+unclassified ≈ 100% (内部自洽)", not bad_pct, f"不自洽={bad_pct[:3]}")
+
+    # 无臆造技能泄漏 (skill ∈ 官方7理解性技能, 同 check_cognitive_cross 复用同一独立字面量)
+    bad_skill = [(p["passage_id"], s) for p in d["passages"] for s in p["skill_dist"]
+                 if s not in _OFFICIAL_SKILLS]
+    check("联合归因技能 ∈ 官方7理解性技能 (无臆造类目泄漏)", not bad_skill, f"越界={bad_skill[:3]}")
+
+    # 每篇 skill_dist 之和 == n_subq (计数单位诚实, 坑12)
+    bad_n = [p["passage_id"] for p in d["passages"] if sum(p["skill_dist"].values()) != p["n_subq"]]
+    check("每篇 n_subq == skill_dist 之和 (计数单位自洽)", not bad_n, f"不自洽={bad_n[:3]}")
