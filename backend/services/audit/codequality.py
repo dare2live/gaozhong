@@ -67,7 +67,7 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 17  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13.
+SIZE_BIG_BASELINE = 19  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13.
 # 2026-07-04 全数据审计12+21问题按根因修复: vocab_renjiao.py(Welcome Unit+专有名词头识别+
 # 跨行词条头合并 3 处真bug修复, 220→270行) + junior_high_curriculum.py(语法/词汇续行合并
 # 2 处真bug修复, 233→298行) 跨过250行门槛, huge 仍=0(均<400, 非god-module), baseline 13→15.
@@ -76,6 +76,11 @@ SIZE_BIG_BASELINE = 17  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 
 # 2026-07-06 数据关联设计审查批次2: graph.py(全景图谱Top-N排序改relation加权度数+两级
 # signal_degree排序, 修复tests_grammar边骨架生存率0/18的架构级bug, 227→277行)跨过250行
 # 门槛, huge 仍=0(远低于400, 非god-module), baseline 16→17.
+# 2026-07-06 复杂度债务两轮修复(commit 9673fdd/8f40868): extract-method 拆12+25个CC>15/
+# CC11-14函数为命名辅助函数, 多个文件自然跨过250行门槛(graph.py 277→305, source_
+# contracts.py→280, eol_review_backlog.py→291, eol_review_decisions.py→334[已拆god-
+# module分流一半到contract_check.py仍334]等), huge 仍=0(最高399, 远低于400 god-module
+# 硬阈), 新增文件跨门槛的都是CC降复杂度的正向重构副产物非债务, baseline 17→19.
 
 
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:

@@ -50,8 +50,16 @@ CEFR_LEVELS_PER_LAYER = {
 }
 
 
-def allowed_words_for(con: duckdb.DuckDBPyConnection, layer: str) -> set[str]:
-    """R5 词集 = 初中基础词 ∪ unit_vocab_intro (按 volume → year) ∪ cefr_vocab (按 cefr_level)."""
+@lru_cache(maxsize=16)
+def allowed_words_for(con: duckdb.DuckDBPyConnection, layer: str) -> frozenset[str]:
+    """R5 词集 = 初中基础词 ∪ unit_vocab_intro (按 volume → year) ∪ cefr_vocab (按 cefr_level).
+
+    lru_cache: layer 只有 4 种取值, 但调用方 (audit_course_lexical_layer 等) 会对
+    40 节课程逐节调用, 同一 (con, layer) 组合重复算 SQL 完全相同的结果 — 缓存避免
+    unit_vocab_intro/cefr_vocab 重复查询. con 在单进程/单连接生命周期内数据不变
+    (只读连接, 无并发写), 缓存安全; 需要拿新数据时调用 reload_all() 式的
+    allowed_words_for.cache_clear() (见 loader.reload_all 同款模式)。
+    """
     if layer not in ("G1", "G2", "G3", "G_FINAL"):
         raise ValueError(f"bad layer {layer}")
     words: set[str] = set()
@@ -76,7 +84,7 @@ def allowed_words_for(con: duckdb.DuckDBPyConnection, layer: str) -> set[str]:
             cefr_levels,
         ).fetchall()
         words.update(r[0] for r in rows)
-    return words
+    return frozenset(words)
 
 
 @lru_cache(maxsize=1)

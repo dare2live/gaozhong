@@ -5,23 +5,44 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
-    "path": "backend/api/routes/graph_popup.py",
-    "line": 53,
+    "path": "backend/api/routes/exam.py",
+    "line": 104,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/api/routes/graph_popup.py",
-    "line": 66,
+    "path": "backend/api/routes/exam_point.py",
+    "line": 28,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/api/routes/exam_point.py",
+    "line": 29,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/api/routes/question_bank.py",
+    "line": 91,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/api/routes/stats.py",
@@ -29,63 +50,71 @@
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/api/routes/students.py",
-    "line": 181,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/api/routes/students.py",
-    "line": 185,
+    "path": "backend/orchestrator/extract.py",
+    "line": 50,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/api/routes/students.py",
-    "line": 197,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/orchestrator/load.py",
-    "line": 72,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/orchestrator/load.py",
-    "line": 74,
+    "path": "backend/orchestrator/extract.py",
+    "line": 58,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/orchestrator/load.py",
-    "line": 74,
+    "line": 95,
     "severity": "high",
     "kind": "sort-in-loop",
     "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
   },
   {
     "path": "backend/orchestrator/load.py",
-    "line": 93,
+    "line": 97,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/orchestrator/load.py",
+    "line": 97,
+    "severity": "high",
+    "kind": "sort-in-loop",
+    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/orchestrator/load.py",
+    "line": 122,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/codequality.py",
+    "line": 29,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/codequality.py",
@@ -93,7 +122,44 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/codequality.py",
+    "line": 91,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/course.py",
+    "line": 93,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/course.py",
+    "line": 112,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/course.py",
+    "line": 117,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/course.py",
@@ -101,7 +167,8 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/course.py",
@@ -109,7 +176,8 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/course.py",
@@ -117,79 +185,152 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/coverage.py",
-    "line": 39,
+    "line": 40,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/coverage.py",
-    "line": 59,
+    "line": 60,
     "severity": "high",
     "kind": "sort-in-loop",
     "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/coverage.py",
-    "line": 75,
+    "line": 68,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/coverage.py",
-    "line": 76,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/audit/exam_coverage.py",
-    "line": 25,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/audit/exam_coverage.py",
-    "line": 27,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/audit/extracurricular.py",
-    "line": 45,
+    "line": 69,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/audit/extracurricular.py",
-    "line": 50,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/audit/extracurricular.py",
-    "line": 65,
+    "path": "backend/services/audit/coverage.py",
+    "line": 80,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/coverage.py",
+    "line": 81,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/cross_source.py",
+    "line": 10,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/eol_review_backlog.py",
+    "line": 163,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/eol_review_backlog.py",
+    "line": 223,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/eol_review_backlog.py",
+    "line": 224,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/eol_review_worksheet.py",
+    "line": 16,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/exam_contracts.py",
+    "line": 131,
+    "severity": "high",
+    "kind": "sort-in-loop",
+    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/exam_coverage.py",
+    "line": 43,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/exam_coverage.py",
+    "line": 53,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/exam_coverage.py",
+    "line": 103,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/extracurricular.py",
+    "line": 28,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/frontend_dupe.py",
@@ -197,7 +338,8 @@
     "severity": "high",
     "kind": "sort-in-loop",
     "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/frontend_dupe.py",
@@ -205,7 +347,8 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/frontend_dupe.py",
@@ -213,7 +356,8 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/frontend_dupe.py",
@@ -221,79 +365,251 @@
     "severity": "high",
     "kind": "sort-in-loop",
     "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/grammar_4q.py",
-    "line": 59,
+    "line": 61,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/grammar_4q.py",
-    "line": 69,
+    "line": 71,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/grammar_4q.py",
-    "line": 98,
+    "line": 100,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/audit/graph.py",
-    "line": 135,
+    "line": 126,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/graph.py",
+    "line": 146,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/project_architecture_checks.py",
+    "line": 46,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/project_architecture_checks.py",
+    "line": 150,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/project_architecture_checks.py",
+    "line": 226,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/publisher.py",
+    "line": 23,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/publisher.py",
+    "line": 27,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/publisher.py",
+    "line": 31,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/publisher.py",
+    "line": 32,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/source_contracts.py",
+    "line": 138,
+    "severity": "high",
+    "kind": "sort-in-loop",
+    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/source_contracts.py",
+    "line": 199,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/source_contracts.py",
+    "line": 199,
+    "severity": "high",
+    "kind": "sort-in-loop",
+    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/audit/source_contracts.py",
+    "line": 217,
+    "severity": "high",
+    "kind": "sort-in-loop",
+    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/canonical.py",
-    "line": 70,
+    "line": 55,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/constitution.py",
-    "line": 104,
+    "path": "backend/services/canonical.py",
+    "line": 64,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/constitution.py",
-    "line": 110,
+    "path": "backend/services/canonical.py",
+    "line": 74,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/constitution.py",
-    "line": 116,
+    "path": "backend/services/canonical.py",
+    "line": 81,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/course/handout.py",
-    "line": 134,
+    "path": "backend/services/canonical.py",
+    "line": 91,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/canonical.py",
+    "line": 100,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/canonical.py",
+    "line": 118,
+    "severity": "high",
+    "kind": "io-or-query-in-loop",
+    "message": "Potential database/API/file operation inside a loop.",
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/contracts/eol_review_decision_contract_check.py",
+    "line": 37,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/contracts/source_crosscheck.py",
+    "line": 26,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/contracts/source_crosscheck.py",
+    "line": 65,
+    "severity": "high",
+    "kind": "nested-loop",
+    "message": "Nested loop may create O(n^2) or worse behavior.",
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
+  },
+  {
+    "path": "backend/services/contracts/source_state.py",
+    "line": 34,
+    "severity": "high",
+    "kind": "sort-in-loop",
+    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
+    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/init_courses.py",
@@ -301,39 +617,35 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/course/init_courses.py",
-    "line": 52,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/lexicon_filter.py",
-    "line": 89,
+    "line": 97,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/lexicon_filter.py",
-    "line": 190,
+    "line": 198,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/lexicon_filter.py",
-    "line": 192,
+    "line": 200,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/materials.py",
@@ -341,7 +653,8 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/relations.py",
@@ -349,7 +662,8 @@
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/relations.py",
@@ -357,23 +671,26 @@
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/relations.py",
-    "line": 59,
+    "line": 66,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/relations.py",
-    "line": 80,
+    "line": 89,
     "severity": "high",
     "kind": "io-or-query-in-loop",
     "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
+    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling.",
+    "confidence": "high"
   },
   {
     "path": "backend/services/course/scenarios.py",
@@ -381,262 +698,25 @@
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/derive.py",
-    "line": 25,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/services/derive.py",
-    "line": 61,
+    "path": "backend/services/course/syllabus.py",
+    "line": 92,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   },
   {
-    "path": "backend/services/derive.py",
-    "line": 62,
+    "path": "backend/services/course/syllabus.py",
+    "line": 98,
     "severity": "high",
     "kind": "nested-loop",
     "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/exercise/applied.py",
-    "line": 37,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/exercise/grammar_fill.py",
-    "line": 58,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/services/exercise/poc.py",
-    "line": 93,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/exercise/poc.py",
-    "line": 125,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/exam.py",
-    "line": 155,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/exam.py",
-    "line": 162,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/exam_province.py",
-    "line": 30,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/phrases.py",
-    "line": 87,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/phrases.py",
-    "line": 94,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/phrases.py",
-    "line": 100,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/phrases.py",
-    "line": 115,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/phrases.py",
-    "line": 120,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/section.py",
-    "line": 85,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/section.py",
-    "line": 145,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/section_flags.py",
-    "line": 59,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/section_text.py",
-    "line": 46,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/section_text.py",
-    "line": 51,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/textbook.py",
-    "line": 69,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/services/extraction/textbook.py",
-    "line": 161,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/services/extraction/textbook.py",
-    "line": 163,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/textbook.py",
-    "line": 163,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/services/extraction/textbook.py",
-    "line": 175,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/unit_title_fix.py",
-    "line": 62,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/unit_title_fix.py",
-    "line": 122,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/unit_title_fix.py",
-    "line": 128,
-    "severity": "high",
-    "kind": "io-or-query-in-loop",
-    "message": "Potential database/API/file operation inside a loop.",
-    "suggestion": "Look for N+1 behavior; batch or preload while preserving auth, filters, ordering, and error handling."
-  },
-  {
-    "path": "backend/services/extraction/vocab.py",
-    "line": 100,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/vocab.py",
-    "line": 156,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
-  },
-  {
-    "path": "backend/services/extraction/vocab.py",
-    "line": 185,
-    "severity": "high",
-    "kind": "sort-in-loop",
-    "message": "Sorting inside a loop is often avoidable repeated O(n log n) work.",
-    "suggestion": "Sort once outside the loop, maintain a heap, or use binary search/insertion if intermediate ordering is required."
-  },
-  {
-    "path": "backend/services/extraction/vocab.py",
-    "line": 190,
-    "severity": "high",
-    "kind": "nested-loop",
-    "message": "Nested loop may create O(n^2) or worse behavior.",
-    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan."
+    "suggestion": "Check whether a map/set index, sort+two-pointer pass, grouping, or batching can replace the inner scan.",
+    "confidence": "high"
   }
 ]
