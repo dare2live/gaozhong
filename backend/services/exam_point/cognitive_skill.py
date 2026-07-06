@@ -28,7 +28,8 @@ DIMENSION = "cognitive_skill"
 
 @lru_cache(maxsize=1)
 def _load_skill_map() -> dict[str, str]:
-    """教研解析题型名 → 教育部考试中心《中国高考评价体系》7理解性技能 (官方真相源映射)。
+    """教研解析题型名 → 官方阅读理解7理解性技能 (陈康等2019《中国考试》教育部考试中心命题团队
+    解读文章转述, 见 exam_point_taxonomy.yaml question_intent.curriculum_ref; 非白皮书原文电子版)。
     单点真相源 = exam_point_taxonomy.yaml question_intent.analysis_label_aliases (G4 去硬编码)。
     仅明确同义入 yaml; 模糊题型不列 → _skill_of 返 None skip (坑16 不臆测)。"""
     qi = (yaml.safe_load(_TAXONOMY.read_text(encoding="utf-8")) or {})["dimensions"]["question_intent"]
@@ -188,7 +189,7 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
                             else f"样本<{scope.MIN_DISTRIBUTION_SAMPLE}(仅方向性, 非精确分布)"}
     return {"dimension": DIMENSION, "province_scope": "辽宁卷",
             "provenance": "explicit_label (教研解析显式标签, 强于双模型)",
-            "official_ref": "教育部考试中心《中国高考评价体系》7理解性技能",
+            "official_ref": "陈康等《基于高考评价体系的英语科考试内容改革实施路径》,《中国考试》2019年第12期(教育部考试中心命题团队解读, 阅读理解7理解性技能)",
             "n_total": len(rows), "by_era": out, "reliability": reliability,
             "eras_ordered": sorted(by_era.keys())}
 
