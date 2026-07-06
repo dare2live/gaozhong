@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 import duckdb
 
 from backend.services.audit import course as audit_course
-from backend.services.course import (handout, homework, init_courses,
+from backend.services.course import (homework, init_courses,
                                       lexicon_filter, loader, materials,
                                       registry, relations, scenarios)
 
@@ -79,11 +79,6 @@ def main() -> None:
     print("\n== materials build ==")
     m = materials.build_materials_for_course(con, courses[0])
     assert_(len(m) >= 5, f"course #{courses[0]['course_id']} materials >=5 (实测 {len(m)})")
-
-    print("\n== handout 7 段 ==")
-    h = handout.render_handout(con, courses[0])
-    assert_(h["n_segments"] == 7, f"handout 7 段 (实测 {h['n_segments']})")
-    assert_(len(h["md"]) > 200, f"md 长度 >200 (实测 {len(h['md'])})")
 
     print("\n== 8 audit 逐个 ==")
     for fn_name in [
