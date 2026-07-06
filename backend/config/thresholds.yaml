@@ -81,3 +81,12 @@ graph_atlas:
     # 实测度分布(kg-atlas-design workflow, 2026-07-04): cefr_level 4个dst节点均吸附790条边/
     # at_stage 5个dst节点均吸附655条边 — 原样渲染成边会把力导向图拉成放射状伪中心(方案A实测坑),
     # 故排除在骨架边外, 仅作 node.labels 供前端颜色编码 (不是数据缺失, 只是渲染层降级为属性)。
+  relation_weights:  # Top-N排名按加权degree(坑2026-07-06数据关联设计审查: 原无差别SUM(COUNT(*))
+    # 求和, tests_word噪声边压倒性主导排名, tests_grammar(18条边)骨架生存率0/18 — 与
+    # graph_popup.py::_REL_RANK 已验证的"真考点优先, 词噪声降权"思路矛盾, 此处对齐同一套排序哲学)。
+    # 未列出的relation默认权重1.0。
+    tests_exam_point: 4.0
+    tests_grammar: 2.0
+    in_year: 2.0
+    question_type: 2.0
+    tests_word: 0.5

@@ -117,19 +117,49 @@ def stats(con: duckdb.DuckDBPyConnection) -> dict:
             "total_nodes": sum(by_type.values()), "total_edges": sum(by_rel.values())}
 
 
-def _ranked_skeleton(con, types: list[str], label_rels: list[str], full_max: int, top_n: int) -> list[tuple]:
-    """按 node_type 分层排名: 类型总数<=full_max 全入选, 否则按真实 degree(排除 label_rels) 取 Top-N."""
+def _relation_weight_case(weights: dict[str, float]) -> tuple[str, list]:
+    """构造 CASE WHEN relation=? THEN ? ... ELSE 1.0 END (参数化防注入; 未列出的relation默认权重1.0)."""
+    if not weights:
+        return "1.0", []
+    parts, args = [], []
+    for rel, w in weights.items():
+        parts.append("WHEN relation = ? THEN ?")
+        args.extend([rel, float(w)])
+    return f"CASE {' '.join(parts)} ELSE 1.0 END", args
+
+
+def _ranked_skeleton(con, types: list[str], label_rels: list[str], full_max: int, top_n: int,
+                      relation_weights: dict[str, float] | None = None) -> list[tuple]:
+    """按 node_type 分层排名: 类型总数<=full_max 全入选, 否则按relation加权degree(排除label_rels)取Top-N.
+
+    坑(2026-07-06 数据关联设计审查): 原对所有relation无差别SUM(COUNT(*))求和, tests_word这类词
+    噪声边(边总数占比最大)压倒性主导排名, tests_grammar(仅18条边)在Top-40骨架里生存率0/18——
+    与 graph_popup.py::_REL_RANK 已验证的"真考点优先, 词噪声降权"思路自相矛盾(同项目两套排序
+    逻辑各说各话, 违反Rule1单一计算点)。权重表数据化进 thresholds.yaml graph_atlas.relation_weights
+    (不hardcode, 呼应CLAUDE.md §3.5), 未列出的relation默认权重1.0。
+
+    坑(对抗验证发现纯加权求和不够): 仅做 SUM(d*w) 混合排序时, 一个阅读理解passage仍可能有
+    上百条 tests_word 边(即便×0.5降权), 总分依然碾压只有几条 tests_grammar/tests_exam_point
+    边(即便×2/×4加权)的语法/改错类小题——权重倍数在这种量级差距下不够, 排名结果不变(实测
+    grammar边生存率仍0/18)。故改成两级排序: 先按"高价值关系(weight>1)的加权量"排, 打平才看
+    总加权度数——只要摸到任意一条真考点/语法边, 就不会被词频量淹没, 而不是指望权重系数硬扛。
+    """
+    relation_weights = relation_weights or {}
+    w_case, w_args = _relation_weight_case(relation_weights)
     lr_ph = ",".join(["?"] * len(label_rels)) if label_rels else "NULL"
     type_ph = ",".join(["?"] * len(types))
     return con.execute(
         f"""
         WITH deg AS (
-            SELECT concept_id, SUM(d) AS degree FROM (
-                SELECT src_id AS concept_id, COUNT(*) AS d FROM edges
-                    WHERE relation NOT IN ({lr_ph}) GROUP BY src_id
+            SELECT concept_id,
+                   SUM(d * w) AS degree,
+                   SUM(CASE WHEN w > 1.0 THEN d * w ELSE 0 END) AS signal_degree
+            FROM (
+                SELECT src_id AS concept_id, COUNT(*) AS d, {w_case} AS w FROM edges
+                    WHERE relation NOT IN ({lr_ph}) GROUP BY src_id, relation
                 UNION ALL
-                SELECT dst_id AS concept_id, COUNT(*) AS d FROM edges
-                    WHERE relation NOT IN ({lr_ph}) GROUP BY dst_id
+                SELECT dst_id AS concept_id, COUNT(*) AS d, {w_case} AS w FROM edges
+                    WHERE relation NOT IN ({lr_ph}) GROUP BY dst_id, relation
             ) x GROUP BY concept_id
         ),
         totals AS (SELECT node_type, COUNT(*) AS total FROM nodes GROUP BY node_type),
@@ -137,7 +167,8 @@ def _ranked_skeleton(con, types: list[str], label_rels: list[str], full_max: int
             SELECT n.concept_id, n.node_type, n.label, n.attrs_json,
                    COALESCE(deg.degree, 0) AS degree, t.total,
                    ROW_NUMBER() OVER (PARTITION BY n.node_type
-                                      ORDER BY COALESCE(deg.degree, 0) DESC, n.concept_id) AS rn
+                                      ORDER BY COALESCE(deg.signal_degree, 0) DESC,
+                                               COALESCE(deg.degree, 0) DESC, n.concept_id) AS rn
             FROM nodes n
             LEFT JOIN deg ON deg.concept_id = n.concept_id
             JOIN totals t ON t.node_type = n.node_type
@@ -146,7 +177,7 @@ def _ranked_skeleton(con, types: list[str], label_rels: list[str], full_max: int
         SELECT concept_id, node_type, label, attrs_json, degree, total
         FROM ranked WHERE total <= ? OR rn <= ?
         """,
-        [*label_rels, *label_rels, *types, full_max, top_n],
+        [*w_args, *label_rels, *w_args, *label_rels, *types, full_max, top_n],
     ).fetchall()
 
 
@@ -212,6 +243,7 @@ def degree_summary(
     label_rels: list[str] = get_threshold("graph_atlas.label_relations", []) or []
     full_max = get_threshold("graph_atlas.full_display_max_count", 200)
     top_n = top_n_per_type or get_threshold("graph_atlas.default_top_n_per_type", 40)
+    relation_weights: dict = get_threshold("graph_atlas.relation_weights", {}) or {}
     types = node_types or [r[0] for r in con.execute("SELECT DISTINCT node_type FROM nodes").fetchall()]
     # 坑(2026-07-05 数据可视化审计): label_relations 是"边关系名"(at_stage/cefr_level), 不等于
     # "node_type 名"(at_stage 的 dst node_type 实为 "stage", 只 cefr_level 恰好同名) — 前端此前
@@ -219,7 +251,7 @@ def degree_summary(
     # 真实 node_type 一次算出, API 显式回传, 前端只读不猜。
     attribute_only_types: list[str] = _label_relation_dst_types(con, label_rels)
 
-    ranked = _ranked_skeleton(con, types, label_rels, full_max, top_n)
+    ranked = _ranked_skeleton(con, types, label_rels, full_max, top_n, relation_weights)
     nodes_out = [{"concept_id": r[0], "node_type": r[1], "label": r[2], "attrs": r[3], "degree": r[4]} for r in ranked]
     if not nodes_out:
         return {"nodes": [], "edges": [], "type_meta": {}, "label_relations": label_rels,
