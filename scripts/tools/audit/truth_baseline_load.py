@@ -156,38 +156,51 @@ def load_verified_jsonl() -> list[dict[str, Any]]:
     return items
 
 
+def _resolve_row_qid(row: dict[str, Any]) -> str:
+    qid = row.get("item_id") or ""
+    if not qid:
+        qid = f"{row.get('source_file')}/{row.get('year')}/{row.get('question_type')}/{row.get('source_index')}"
+    return qid
+
+
+def _row_to_insert_tuple(qid: str, row: dict[str, Any]) -> tuple:
+    return (
+        qid,
+        int(row["year"]),
+        row.get("province") or scope.LIAONING_XGKII_2021,   # G3: 收口 scope 单点
+        row.get("paper_type") or scope.PAPER_XGKII,
+        row.get("question_type") or "阅读理解",
+        row.get("raw_question") or "",
+        row.get("answer") or "",
+        row.get("analysis") or "",
+        row.get("source_file") or STRUCTURE_PATH.name,
+        row.get("source_index"),
+        row.get("source_repo") or "gaokao_structured_xgkii",
+    )
+
+
+def _insert_exam_questions_all(con, to_insert: list[tuple]) -> None:
+    con.executemany(
+        """
+        INSERT INTO exam_questions_all (question_id, year, province, paper_type, question_type,
+          raw_question, answer, analysis, source_file, source_index, source_repo)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        to_insert
+    )
+
+
 def import_truth_rows(con, rows: list[dict[str, Any]]) -> list[str]:
     inserted_ids: list[str] = []
     existing = {r[0] for r in con.execute("SELECT question_id FROM exam_questions").fetchall()}
     to_insert = []
     for row in rows:
-        qid = row.get("item_id") or ""
-        if not qid:
-            qid = f"{row.get('source_file')}/{row.get('year')}/{row.get('question_type')}/{row.get('source_index')}"
+        qid = _resolve_row_qid(row)
         if qid in existing:
             continue
-        to_insert.append((
-            qid,
-            int(row["year"]),
-            row.get("province") or scope.LIAONING_XGKII_2021,   # G3: 收口 scope 单点
-            row.get("paper_type") or scope.PAPER_XGKII,
-            row.get("question_type") or "阅读理解",
-            row.get("raw_question") or "",
-            row.get("answer") or "",
-            row.get("analysis") or "",
-            row.get("source_file") or STRUCTURE_PATH.name,
-            row.get("source_index"),
-            row.get("source_repo") or "gaokao_structured_xgkii",
-        ))
+        to_insert.append(_row_to_insert_tuple(qid, row))
 
     if to_insert:
-        con.executemany(
-            """
-            INSERT INTO exam_questions_all (question_id, year, province, paper_type, question_type,
-              raw_question, answer, analysis, source_file, source_index, source_repo)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            to_insert
-        )
+        _insert_exam_questions_all(con, to_insert)
         inserted_ids = [r[0] for r in to_insert]
     return inserted_ids

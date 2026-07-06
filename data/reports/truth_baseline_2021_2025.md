@@ -1,7 +1,7 @@
 # Truth Baseline Audit 2021-2025
 
-- Generated at: `2026-06-21T08:42:04+00:00`
-- Run ID: `93772c32c8ac5817`
+- Generated at: `2026-07-06T10:56:35+00:00`
+- Run ID: `e97e3209fa5e733a`
 - Status: `FAIL`
 - DB: `/Users/dp/Documents/M/gaozhong/data/db/gaozhong.duckdb`
 - Structured truth source: `/Users/dp/Documents/M/gaozhong/data/external/gaokao_xgkii_2021_2025_mirror.jsonl`
@@ -14,8 +14,8 @@
 | 2021 | 65 | 19 | 1 | 64 | 18 | 65 | 55 | 36 |
 | 2022 | 45 | 0 | 0 | 45 | 0 | 45 | 55 | 55 |
 | 2023 | 6 | 23 | 6 | 0 | 17 | 6 |  |  |
-| 2024 | 9 | 23 | 6 | 3 | 17 | 0 |  |  |
-| 2025 | 9 | 0 | 0 | 9 | 0 | 0 |  |  |
+| 2024 | 9 | 23 | 6 | 3 | 17 | 9 |  |  |
+| 2025 | 9 | 0 | 0 | 9 | 0 | 9 |  |  |
 
 ## Findings
 
@@ -23,7 +23,7 @@
 - Truth-source target gaps: `2`
 - Truth-only rows: `52`
 - Pollution candidates: `109`
-- Missing question_bank real mappings: `18`
+- Missing question_bank real mappings: `0`
 
 ## Interpretation
 

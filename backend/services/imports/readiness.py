@@ -73,29 +73,37 @@ def _missing_required_fields(row: dict[str, Any], required: list[str], nullable:
     return missing
 
 
-def _assess_row(row: dict[str, Any], index: int, policy: dict[str, Any]) -> list[RowFinding]:
-    row_id = _row_id(row, index)
-    findings: list[RowFinding] = []
-
+def _check_required_fields(row_id: str, row: dict[str, Any], policy: dict[str, Any]) -> list[RowFinding]:
     missing = _missing_required_fields(
         row,
         list(policy.get("require_source_fields") or []),
         list(policy.get("nullable_source_fields") or []),
     )
     if missing:
-        findings.append(RowFinding(row_id, "missing_required_fields", "BLOCK", ",".join(missing)))
+        return [RowFinding(row_id, "missing_required_fields", "BLOCK", ",".join(missing))]
+    return []
 
+
+def _check_stem(row_id: str, row: dict[str, Any]) -> list[RowFinding]:
+    findings: list[RowFinding] = []
     stem = _text(row, "stem", "stem_preview", "source_span", "raw_question")
     if not stem.strip():
         findings.append(RowFinding(row_id, "missing_stem_preview", "BLOCK", "stem/stem_preview/raw_question is empty"))
     if "参考答案" in stem:
         findings.append(RowFinding(row_id, "answer_section_contamination", "BLOCK", "stem contains reference-answer marker"))
+    return findings
 
-    review_status = str(row.get("review_status") or row.get("status") or "")
+
+def _check_review_status(row_id: str, review_status: str) -> list[RowFinding]:
     if "not_import_ready" in review_status or review_status.startswith("draft_"):
-        findings.append(RowFinding(row_id, "review_status_not_import_ready", "BLOCK", review_status))
+        return [RowFinding(row_id, "review_status_not_import_ready", "BLOCK", review_status)]
+    return []
 
-    source_state = str(row.get("source_state") or row.get("source_status") or "")
+
+def _check_source_state(
+    row_id: str, source_state: str, review_status: str, policy: dict[str, Any]
+) -> list[RowFinding]:
+    findings: list[RowFinding] = []
     required_state = str(policy.get("required_source_state") or "")
     if required_state and not source_state_satisfies(source_state, required_state):
         actual_state = match_source_state(source_state)
@@ -109,25 +117,45 @@ def _assess_row(row: dict[str, Any], index: int, policy: dict[str, Any]) -> list
         )
     if "candidate" in source_state or "candidate" in review_status:
         findings.append(RowFinding(row_id, "candidate_only_source", "BLOCK", source_state or review_status))
+    return findings
 
+
+def _check_numbering_shift(row_id: str, row: dict[str, Any], review_status: str) -> list[RowFinding]:
     observed = row.get("observed_question_number")
     reference = row.get("reference_answer_number")
     if observed is not None and reference is not None and observed != reference:
         explanation = str(row.get("numbering_explanation") or review_status)
         if "number_shift" not in explanation and "shift" not in explanation:
-            findings.append(
+            return [
                 RowFinding(
                     row_id,
                     "shifted_numbering_unexplained",
                     "BLOCK",
                     f"observed={observed}, reference={reference}",
                 )
-            )
+            ]
+    return []
 
+
+def _check_paper_type(row_id: str, row: dict[str, Any]) -> list[RowFinding]:
     paper_type = str(row.get("paper_type") or "")
     if not paper_type or paper_type == "未知":
-        findings.append(RowFinding(row_id, "unknown_paper_type", "BLOCK", paper_type or "missing"))
+        return [RowFinding(row_id, "unknown_paper_type", "BLOCK", paper_type or "missing")]
+    return []
 
+
+def _assess_row(row: dict[str, Any], index: int, policy: dict[str, Any]) -> list[RowFinding]:
+    row_id = _row_id(row, index)
+    review_status = str(row.get("review_status") or row.get("status") or "")
+    source_state = str(row.get("source_state") or row.get("source_status") or "")
+
+    findings: list[RowFinding] = []
+    findings.extend(_check_required_fields(row_id, row, policy))
+    findings.extend(_check_stem(row_id, row))
+    findings.extend(_check_review_status(row_id, review_status))
+    findings.extend(_check_source_state(row_id, source_state, review_status, policy))
+    findings.extend(_check_numbering_shift(row_id, row, review_status))
+    findings.extend(_check_paper_type(row_id, row))
     return findings
 
 

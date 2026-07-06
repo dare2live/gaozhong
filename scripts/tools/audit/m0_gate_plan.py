@@ -26,10 +26,7 @@ def load_gates(config_path: Path = DEFAULT_CONFIG) -> list[dict[str, Any]]:
     return gates
 
 
-def validate_gates(gates: list[dict[str, Any]]) -> None:
-    if not gates:
-        raise ValueError("m0 gate config has no gates")
-
+def _check_orders_contiguous(gates: list[dict[str, Any]]) -> None:
     # order 连续无缺无重; 允许 0-indexed (order 0 = 控制面门) 或 1-indexed, 二者皆契约合法
     orders = [int(gate.get("order", 0)) for gate in gates]
     start = orders[0] if orders else 0
@@ -37,25 +34,47 @@ def validate_gates(gates: list[dict[str, Any]]) -> None:
     if start not in (0, 1) or orders != expected_orders:
         raise ValueError(f"m0 gate orders 必须从 0 或 1 起连续: actual={orders}, expected={expected_orders}")
 
+
+def _check_no_duplicate_names(gates: list[dict[str, Any]]) -> None:
     names = [str(gate.get("name") or "") for gate in gates]
     duplicate_names = sorted({name for name in names if names.count(name) > 1})
     if duplicate_names:
         raise ValueError(f"duplicate m0 gate names: {duplicate_names}")
 
+
+def _check_required_fields(gate: dict[str, Any]) -> None:
     required_fields = ("name", "command", "purpose", "expected_current_status", "failure_action")
+    missing = [field for field in required_fields if not str(gate.get(field) or "").strip()]
+    if missing:
+        raise ValueError(f"m0 gate {gate.get('order')} missing required fields: {missing}")
+
+
+def _check_boolean_flags(gate: dict[str, Any]) -> None:
+    for flag in ("writes_artifacts", "writes_db", "executes_external_fetch"):
+        if not isinstance(gate.get(flag), bool):
+            raise ValueError(f"m0 gate {gate.get('order')} field {flag} must be boolean")
+
+
+def _check_external_fetch_flag_consistency(gate: dict[str, Any]) -> None:
+    command = str(gate.get("command") or "")
+    if "acquire_external_source.py" in command and "--reuse-existing" not in command and not gate["executes_external_fetch"]:
+        raise ValueError(
+            f"m0 gate {gate.get('order')} runs source acquisition without --reuse-existing "
+            "but executes_external_fetch is false"
+        )
+
+
+def validate_gates(gates: list[dict[str, Any]]) -> None:
+    if not gates:
+        raise ValueError("m0 gate config has no gates")
+
+    _check_orders_contiguous(gates)
+    _check_no_duplicate_names(gates)
+
     for gate in gates:
-        missing = [field for field in required_fields if not str(gate.get(field) or "").strip()]
-        if missing:
-            raise ValueError(f"m0 gate {gate.get('order')} missing required fields: {missing}")
-        for flag in ("writes_artifacts", "writes_db", "executes_external_fetch"):
-            if not isinstance(gate.get(flag), bool):
-                raise ValueError(f"m0 gate {gate.get('order')} field {flag} must be boolean")
-        command = str(gate.get("command") or "")
-        if "acquire_external_source.py" in command and "--reuse-existing" not in command and not gate["executes_external_fetch"]:
-            raise ValueError(
-                f"m0 gate {gate.get('order')} runs source acquisition without --reuse-existing "
-                "but executes_external_fetch is false"
-            )
+        _check_required_fields(gate)
+        _check_boolean_flags(gate)
+        _check_external_fetch_flag_consistency(gate)
 
 
 def _markdown(gates: list[dict[str, Any]]) -> str:

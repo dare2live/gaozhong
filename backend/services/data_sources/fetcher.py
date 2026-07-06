@@ -44,21 +44,26 @@ def _extract_docx_text(source: Path, target: Path) -> None:
     target.write_bytes(result.stdout)
 
 
-def _verify_attachment(spec: AttachmentSpec, *, reuse_existing: bool) -> dict[str, Any]:
+def _missing_attachment_result(spec: AttachmentSpec, findings: list[str]) -> dict[str, Any]:
+    return {
+        "kind": spec.kind,
+        "local_path": str(spec.local_path),
+        "url": spec.url,
+        "status": "fail",
+        "action": "missing",
+        "findings": findings,
+    }
+
+
+def _ensure_local_file(spec: AttachmentSpec, *, reuse_existing: bool) -> tuple[str, list[str]]:
+    """Download or reuse the local attachment file. Returns (action, findings)."""
     findings: list[str] = []
     action = "reused"
     if not spec.local_path.exists():
         if not spec.url:
             findings.append("missing_local_file")
             findings.append("no_download_url")
-            return {
-                "kind": spec.kind,
-                "local_path": str(spec.local_path),
-                "url": spec.url,
-                "status": "fail",
-                "action": "missing",
-                "findings": findings,
-            }
+            return "missing", findings
         _download(spec.url, spec.local_path)
         action = "downloaded"
     elif not reuse_existing and spec.url:
@@ -66,6 +71,37 @@ def _verify_attachment(spec: AttachmentSpec, *, reuse_existing: bool) -> dict[st
         action = "downloaded"
     elif not reuse_existing and not spec.url:
         action = "local_only_reused"
+    return action, findings
+
+
+def _check_size_and_hash(spec: AttachmentSpec, findings: list[str]) -> tuple[int, str]:
+    size = spec.local_path.stat().st_size
+    digest = _sha256(spec.local_path)
+    if size < spec.min_bytes:
+        findings.append(f"too_small:{size}<{spec.min_bytes}")
+    if spec.expected_sha256 and digest != spec.expected_sha256:
+        findings.append("sha256_mismatch")
+    return size, digest
+
+
+def _check_text_extract(spec: AttachmentSpec, findings: list[str], *, reuse_existing: bool) -> int | None:
+    text_chars = None
+    if spec.text_path:
+        if spec.transform == "docx_to_txt" and (not spec.text_path.exists() or not reuse_existing):
+            _extract_docx_text(spec.local_path, spec.text_path)
+        if spec.text_path.exists():
+            text_chars = len(spec.text_path.read_text(encoding="utf-8", errors="ignore"))
+            if text_chars < spec.min_text_chars:
+                findings.append(f"text_too_short:{text_chars}<{spec.min_text_chars}")
+        else:
+            findings.append("missing_text_extract")
+    return text_chars
+
+
+def _verify_attachment(spec: AttachmentSpec, *, reuse_existing: bool) -> dict[str, Any]:
+    action, findings = _ensure_local_file(spec, reuse_existing=reuse_existing)
+    if action == "missing":
+        return _missing_attachment_result(spec, findings)
 
     if not spec.local_path.exists():
         findings.append("missing_local_file")
@@ -78,23 +114,8 @@ def _verify_attachment(spec: AttachmentSpec, *, reuse_existing: bool) -> dict[st
             "findings": findings,
         }
 
-    size = spec.local_path.stat().st_size
-    digest = _sha256(spec.local_path)
-    if size < spec.min_bytes:
-        findings.append(f"too_small:{size}<{spec.min_bytes}")
-    if spec.expected_sha256 and digest != spec.expected_sha256:
-        findings.append("sha256_mismatch")
-
-    text_chars = None
-    if spec.text_path:
-        if spec.transform == "docx_to_txt" and (not spec.text_path.exists() or not reuse_existing):
-            _extract_docx_text(spec.local_path, spec.text_path)
-        if spec.text_path.exists():
-            text_chars = len(spec.text_path.read_text(encoding="utf-8", errors="ignore"))
-            if text_chars < spec.min_text_chars:
-                findings.append(f"text_too_short:{text_chars}<{spec.min_text_chars}")
-        else:
-            findings.append("missing_text_extract")
+    size, digest = _check_size_and_hash(spec, findings)
+    text_chars = _check_text_extract(spec, findings, reuse_existing=reuse_existing)
 
     return {
         "kind": spec.kind,

@@ -157,15 +157,7 @@ def build_theme_coverage(rows: list[dict[str, Any]], themes: list[str]) -> dict[
     }
 
 
-def build_graph_connectivity(con) -> dict[str, Any]:
-    nodes = [r[0] for r in con.execute("SELECT concept_id, node_type FROM nodes").fetchall()]
-    node_type_map = {k: t for (k, t) in con.execute("SELECT concept_id, node_type FROM nodes").fetchall()}
-    node_set = set(nodes)
-
-    rels = con.execute("SELECT relation, COUNT(*) FROM edges GROUP BY relation ORDER BY 2 DESC").fetchall()
-    relation_counts = {r: int(c) for r, c in rels}
-    edge_rows = con.execute("SELECT src_id, dst_id FROM edges").fetchall()
-
+def _build_adjacency(edge_rows: list[tuple[str, str]], node_set: set[str]) -> tuple[dict[str, set[str]], int, int]:
     adj: dict[str, set[str]] = {n: set() for n in node_set}
     missing_src = 0
     missing_dst = 0
@@ -177,7 +169,10 @@ def build_graph_connectivity(con) -> dict[str, Any]:
         if s in node_set and d in node_set:
             adj[s].add(d)
             adj[d].add(s)
+    return adj, missing_src, missing_dst
 
+
+def _connected_components(node_set: set[str], adj: dict[str, set[str]]) -> list[list[str]]:
     visited: set[str] = set()
     components = []
     for n in node_set:
@@ -194,22 +189,26 @@ def build_graph_connectivity(con) -> dict[str, Any]:
                     visited.add(nxt)
                     q.append(nxt)
         components.append(comp)
+    return components
 
-    components_sizes = [len(c) for c in components]
-    components_sizes.sort(reverse=True)
-    total_nodes = len(node_set)
-    largest = components_sizes[0] if components_sizes else 0
 
+def _missing_exam_question_nodes(con, node_set: set[str]) -> tuple[list[str], list[str]]:
     exam_question_nodes = [f"question:{qid}" for (qid,) in con.execute("SELECT question_id FROM exam_questions ORDER BY question_id").fetchall()]
     missing_exam = [n for n in exam_question_nodes if n not in node_set]
+    return exam_question_nodes, missing_exam
 
+
+def _count_critical_isolated_nodes(node_set: set[str], node_type_map: dict[str, str], adj: dict[str, set[str]]) -> int:
     iso_critical = 0
     critical_types = {"word", "grammar", "question", "phrase", "unit"}
     for n in node_set:
         t = node_type_map.get(n)
         if t in critical_types and not adj.get(n):
             iso_critical += 1
+    return iso_critical
 
+
+def _course_materials_stats(con, node_set: set[str]) -> dict[str, Any]:
     materials_missing_ref = 0
     materials_by_kind = Counter()
     rows = con.execute("SELECT kind, ref_id FROM course_materials").fetchall()
@@ -217,6 +216,36 @@ def build_graph_connectivity(con) -> dict[str, Any]:
         materials_by_kind[kind] += 1
         if ref_id not in node_set:
             materials_missing_ref += 1
+    return {
+        "total": sum(materials_by_kind.values()),
+        "missing_ref": materials_missing_ref,
+        "by_kind": dict(materials_by_kind),
+    }
+
+
+def build_graph_connectivity(con) -> dict[str, Any]:
+    nodes = [r[0] for r in con.execute("SELECT concept_id, node_type FROM nodes").fetchall()]
+    node_type_map = {k: t for (k, t) in con.execute("SELECT concept_id, node_type FROM nodes").fetchall()}
+    node_set = set(nodes)
+
+    rels = con.execute("SELECT relation, COUNT(*) FROM edges GROUP BY relation ORDER BY 2 DESC").fetchall()
+    relation_counts = {r: int(c) for r, c in rels}
+    edge_rows = con.execute("SELECT src_id, dst_id FROM edges").fetchall()
+
+    adj, missing_src, missing_dst = _build_adjacency(edge_rows, node_set)
+
+    components = _connected_components(node_set, adj)
+
+    components_sizes = [len(c) for c in components]
+    components_sizes.sort(reverse=True)
+    total_nodes = len(node_set)
+    largest = components_sizes[0] if components_sizes else 0
+
+    exam_question_nodes, missing_exam = _missing_exam_question_nodes(con, node_set)
+
+    iso_critical = _count_critical_isolated_nodes(node_set, node_type_map, adj)
+
+    course_materials = _course_materials_stats(con, node_set)
 
     return {
         "node_count": total_nodes,
@@ -232,11 +261,7 @@ def build_graph_connectivity(con) -> dict[str, Any]:
         "exam_question_nodes_missing": len(missing_exam),
         "exam_question_nodes_total": len(exam_question_nodes),
         "critical_isolated_count": iso_critical,
-        "course_materials": {
-            "total": sum(materials_by_kind.values()),
-            "missing_ref": materials_missing_ref,
-            "by_kind": dict(materials_by_kind),
-        },
+        "course_materials": course_materials,
     }
 
 

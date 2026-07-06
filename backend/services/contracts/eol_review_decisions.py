@@ -86,96 +86,6 @@ def decision_key(row: dict[str, Any], contract: dict[str, Any] | None = None) ->
     return tuple(values)
 
 
-def validate_decision_contract(path: Path | None = None) -> list[dict[str, str]]:
-    rules = load_eol_review_decision_contract(path)
-    findings: list[dict[str, str]] = []
-    required_lists = [
-        "key_fields",
-        "required_fields",
-        "worksheet_required_fields",
-        "materializer_priority_issue_codes",
-        "allowed_decision_source_families",
-        "allowed_decision_statuses",
-        "import_ready_required_fields",
-        "non_import_ready_required_fields",
-        "overlay_fields",
-    ]
-    if not rules:
-        return [{
-            "code": "eol_review_decision_contract_missing",
-            "target": "eol_review_decisions",
-            "detail": "backend/config/eol_review_decisions.yaml must define eol_review_decisions",
-        }]
-    for field in required_lists:
-        values = rules.get(field) or []
-        if not isinstance(values, list) or not values:
-            findings.append({
-                "code": "eol_review_decision_contract_list_missing",
-                "target": field,
-                "detail": "required decision contract list is missing or empty",
-            })
-            continue
-        for index, value in enumerate(values):
-            if not str(value).strip():
-                findings.append({
-                    "code": "eol_review_decision_contract_empty_token",
-                    "target": f"{field}[{index}]",
-                    "detail": "tokens cannot be empty",
-                })
-    if not str(rules.get("decision_dir") or "").strip():
-        findings.append({
-            "code": "eol_review_decision_dir_missing",
-            "target": "decision_dir",
-            "detail": "decision_dir must be configured",
-        })
-    if not str(rules.get("decision_file_template") or "").strip():
-        findings.append({
-            "code": "eol_review_decision_file_template_missing",
-            "target": "decision_file_template",
-            "detail": "decision_file_template must be configured",
-        })
-    key_fields = {str(field) for field in rules.get("key_fields") or []}
-    fallback_rules = rules.get("key_field_fallbacks") or {}
-    if not isinstance(fallback_rules, dict):
-        findings.append({
-            "code": "eol_review_decision_key_fallbacks_invalid",
-            "target": "key_field_fallbacks",
-            "detail": "key_field_fallbacks must be a mapping",
-        })
-    else:
-        for field, question_type_map in fallback_rules.items():
-            field_name = str(field).strip()
-            if field_name not in key_fields:
-                findings.append({
-                    "code": "eol_review_decision_key_fallback_field_unknown",
-                    "target": field_name,
-                    "detail": "fallback field must be listed in key_fields",
-                })
-            if not isinstance(question_type_map, dict) or not question_type_map:
-                findings.append({
-                    "code": "eol_review_decision_key_fallback_map_missing",
-                    "target": field_name,
-                    "detail": "fallback field must define question_type -> fallback key values",
-                })
-                continue
-            for question_type, fallback_value in question_type_map.items():
-                if not str(question_type).strip() or not str(fallback_value).strip():
-                    findings.append({
-                        "code": "eol_review_decision_key_fallback_empty",
-                        "target": f"{field_name}.{question_type}",
-                        "detail": "fallback question_type and value must be non-empty",
-                    })
-    for code in rules.get("materializer_priority_issue_codes") or []:
-        issue_code = str(code).strip()
-        if issue_code and issue_code not in KNOWN_MATERIALIZER_ISSUE_CODES:
-            findings.append({
-                "code": "eol_review_decision_materializer_issue_unknown",
-                "target": issue_code,
-                "detail": "materializer priority issue code is not emitted by decision materialization",
-            })
-    return findings
-
-
 def validate_worksheet_rows(
     worksheet_rows: list[dict[str, Any]],
     *,
@@ -211,83 +121,159 @@ def validate_worksheet_rows(
     return findings
 
 
+def _check_duplicate_decision_key(
+    row: dict[str, Any],
+    line: Any,
+    key: tuple[str, ...],
+    seen: dict[tuple[str, ...], int],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    if key in seen:
+        findings.append({
+            "code": "duplicate_review_decision_key",
+            "line": line,
+            "detail": f"duplicates line {seen[key]}",
+        })
+    else:
+        seen[key] = int(line)
+    return findings
+
+
+def _check_decision_required_fields(
+    row: dict[str, Any],
+    line: Any,
+    required_fields: list[str],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    for field in required_fields:
+        if _empty(row.get(field)):
+            findings.append({
+                "code": "review_decision_required_field_missing",
+                "line": line,
+                "detail": field,
+            })
+    return findings
+
+
+def _check_decision_status(row: dict[str, Any], line: Any, allowed_statuses: set[str]) -> list[dict[str, Any]]:
+    status = str(row.get("decision_status") or "").strip()
+    if status not in allowed_statuses:
+        return [{
+            "code": "review_decision_status_unknown",
+            "line": line,
+            "detail": status or "<empty>",
+        }]
+    return []
+
+
+def _check_decision_source(
+    row: dict[str, Any],
+    line: Any,
+    source_registry: Any,
+    allowed_source_families: set[str],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    source_id = str(row.get("source_id") or "").strip()
+    if not source_id:
+        return findings
+    try:
+        source = source_registry.get(source_id)
+    except KeyError:
+        findings.append({
+            "code": "review_decision_source_unknown",
+            "line": line,
+            "detail": source_id,
+        })
+    else:
+        if source.family not in allowed_source_families:
+            findings.append({
+                "code": "review_decision_source_family_disallowed",
+                "line": line,
+                "detail": f"{source_id}:{source.family}",
+            })
+    return findings
+
+
+def _check_decision_status_required_fields(
+    row: dict[str, Any],
+    line: Any,
+    status: str,
+    allowed_statuses: set[str],
+    import_ready_required: list[str],
+    non_import_ready_required: list[str],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    if status == "import_ready":
+        for field in import_ready_required:
+            if _empty(row.get(field)):
+                findings.append({
+                    "code": "review_decision_import_ready_field_missing",
+                    "line": line,
+                    "detail": field,
+                })
+    elif status in allowed_statuses:
+        for field in non_import_ready_required:
+            if _empty(row.get(field)):
+                findings.append({
+                    "code": "review_decision_non_import_ready_field_missing",
+                    "line": line,
+                    "detail": field,
+                })
+    return findings
+
+
+def _load_decision_validation_settings(rules: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "allowed_statuses": {str(item) for item in rules.get("allowed_decision_statuses") or []},
+        "allowed_source_families": {str(item) for item in rules.get("allowed_decision_source_families") or []},
+        "required_fields": [str(item) for item in rules.get("required_fields") or []],
+        "import_ready_required": [str(item) for item in rules.get("import_ready_required_fields") or []],
+        "non_import_ready_required": [str(item) for item in rules.get("non_import_ready_required_fields") or []],
+        "source_registry": load_registry(),
+    }
+
+
+def _validate_decision_row(
+    row: dict[str, Any],
+    line: Any,
+    rules: dict[str, Any],
+    settings: dict[str, Any],
+    seen: dict[tuple[str, ...], int],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    key = decision_key(row, rules)
+    findings.extend(_check_duplicate_decision_key(row, line, key, seen))
+    findings.extend(_check_decision_required_fields(row, line, settings["required_fields"]))
+
+    status = str(row.get("decision_status") or "").strip()
+    findings.extend(_check_decision_status(row, line, settings["allowed_statuses"]))
+    findings.extend(_check_decision_source(
+        row, line, settings["source_registry"], settings["allowed_source_families"]
+    ))
+    findings.extend(_check_decision_status_required_fields(
+        row,
+        line,
+        status,
+        settings["allowed_statuses"],
+        settings["import_ready_required"],
+        settings["non_import_ready_required"],
+    ))
+    return findings
+
+
 def validate_decisions(
     decisions: list[dict[str, Any]],
     *,
     contract: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     rules = contract or load_eol_review_decision_contract()
+    settings = _load_decision_validation_settings(rules)
     findings: list[dict[str, Any]] = []
-    allowed_statuses = {str(item) for item in rules.get("allowed_decision_statuses") or []}
-    allowed_source_families = {str(item) for item in rules.get("allowed_decision_source_families") or []}
-    required_fields = [str(item) for item in rules.get("required_fields") or []]
-    import_ready_required = [str(item) for item in rules.get("import_ready_required_fields") or []]
-    non_import_ready_required = [str(item) for item in rules.get("non_import_ready_required_fields") or []]
-    source_registry = load_registry()
     seen: dict[tuple[str, ...], int] = {}
 
     for index, row in enumerate(decisions, start=1):
         line = row.get("_decision_line_number") or index
-        key = decision_key(row, rules)
-        if key in seen:
-            findings.append({
-                "code": "duplicate_review_decision_key",
-                "line": line,
-                "detail": f"duplicates line {seen[key]}",
-            })
-        else:
-            seen[key] = int(line)
-
-        for field in required_fields:
-            if _empty(row.get(field)):
-                findings.append({
-                    "code": "review_decision_required_field_missing",
-                    "line": line,
-                    "detail": field,
-                })
-
-        status = str(row.get("decision_status") or "").strip()
-        if status not in allowed_statuses:
-            findings.append({
-                "code": "review_decision_status_unknown",
-                "line": line,
-                "detail": status or "<empty>",
-            })
-
-        source_id = str(row.get("source_id") or "").strip()
-        if source_id:
-            try:
-                source = source_registry.get(source_id)
-            except KeyError:
-                findings.append({
-                    "code": "review_decision_source_unknown",
-                    "line": line,
-                    "detail": source_id,
-                })
-            else:
-                if source.family not in allowed_source_families:
-                    findings.append({
-                        "code": "review_decision_source_family_disallowed",
-                        "line": line,
-                        "detail": f"{source_id}:{source.family}",
-                    })
-
-        if status == "import_ready":
-            for field in import_ready_required:
-                if _empty(row.get(field)):
-                    findings.append({
-                        "code": "review_decision_import_ready_field_missing",
-                        "line": line,
-                        "detail": field,
-                    })
-        elif status in allowed_statuses:
-            for field in non_import_ready_required:
-                if _empty(row.get(field)):
-                    findings.append({
-                        "code": "review_decision_non_import_ready_field_missing",
-                        "line": line,
-                        "detail": field,
-                    })
+        findings.extend(_validate_decision_row(row, line, rules, settings, seen))
 
     return findings
 

@@ -1,12 +1,12 @@
 {
-  "run_id": "93772c32c8ac5817",
+  "run_id": "e97e3209fa5e733a",
   "manifest": {
     "db": {
       "path": "/Users/dp/Documents/M/gaozhong/data/db/gaozhong.duckdb",
       "exists": true,
-      "size": 47460352,
-      "mtime_ns": 1782030824662410410,
-      "signature": "c63d900b382f279757d267a0d0e65143042acf9a"
+      "size": 49557504,
+      "mtime_ns": 1783327238959332391,
+      "signature": "242d64b01eeb92e5c9e4d7df0e44c200ccf6bd53"
     },
     "structured": {
       "path": "/Users/dp/Documents/M/gaozhong/data/external/gaokao_xgkii_2021_2025_mirror.jsonl",
@@ -75,8 +75,8 @@
       "truth_source_file": "2024_English_Fill_in_Blanks.json",
       "truth_row": "EN-XGKII-2024-062",
       "question_type": "完形填空",
-      "question_bank_mapped": false,
-      "signature": "8c5028c96df10617f179371624c23b0e30524cec",
+      "question_bank_mapped": true,
+      "signature": "e049fc7781be0d2df574b2973e23bae8e1d9fb41",
       "match_score": 1.0
     },
     {
@@ -88,7 +88,7 @@
       "truth_source_file": "2024_English_Cloze_Test.json",
       "truth_row": "EN-XGKII-2024-063",
       "question_type": "完形填空(七选五/语篇)",
-      "question_bank_mapped": false,
+      "question_bank_mapped": true,
       "signature": "809533689e23b4c48f2b90763a1a6c5dd7a01d0e",
       "match_score": 0.982
     },
@@ -153,8 +153,8 @@
       "truth_source_file": "gaokao_verified_xgkii_2023_2024.jsonl",
       "truth_row": "gaokao_verified_xgkii_2023_2024.jsonl:GAOKAO-Bench-Updates/2024_English_Reading_Comp.json:2024:8",
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "d176a18638f140cdaab68e30adb6450eb33987fe",
+      "question_bank_mapped": true,
+      "signature": "978f3949f4f9e759bcbdc5bdfafc5e943b6b40b6",
       "match_score": 1.0
     },
     {
@@ -166,8 +166,8 @@
       "truth_source_file": "gaokao_verified_xgkii_2023_2024.jsonl",
       "truth_row": "gaokao_verified_xgkii_2023_2024.jsonl:GAOKAO-Bench-Updates/2024_English_Reading_Comp.json:2024:9",
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "4bda5d134110192d2b4a989e6cc7b489fda23b7c",
+      "question_bank_mapped": true,
+      "signature": "242c43cb87e1454c0082b6238e0650e5713d73ba",
       "match_score": 0.989
     },
     {
@@ -179,8 +179,8 @@
       "truth_source_file": "gaokao_verified_xgkii_2023_2024.jsonl",
       "truth_row": "gaokao_verified_xgkii_2023_2024.jsonl:GAOKAO-Bench-Updates/2024_English_Reading_Comp.json:2024:10",
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "b691415b27ab683953b9c7f609902f6c10b5f789",
+      "question_bank_mapped": true,
+      "signature": "e70e14aaa44561bf19bad18656c4b8ce3fefa8e7",
       "match_score": 1.0
     },
     {
@@ -192,8 +192,8 @@
       "truth_source_file": "gaokao_verified_xgkii_2023_2024.jsonl",
       "truth_row": "gaokao_verified_xgkii_2023_2024.jsonl:GAOKAO-Bench-Updates/2024_English_Reading_Comp.json:2024:11",
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "ec8ce549f549cdd0b86e1f6293e567e1b6b5aa72",
+      "question_bank_mapped": true,
+      "signature": "081982908dfa3311a345532c5d4d9ea906a6b8d5",
       "match_score": 1.0
     },
     {
@@ -1622,7 +1622,7 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "应用文写作",
-      "question_bank_mapped": false,
+      "question_bank_mapped": true,
       "signature": "bb5cd103ee57b6ced3ad9ada2d608bc1d57b7f05",
       "note": "缺少可复核结构化样本"
     },
@@ -1635,8 +1635,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "续写",
-      "question_bank_mapped": false,
-      "signature": "4e70e141f74256984eb70e08ead49c88d65d7d57",
+      "question_bank_mapped": true,
+      "signature": "133b2924ac35a0f0025d25da73b017e7eb69adc8",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1648,8 +1648,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "语法填空",
-      "question_bank_mapped": false,
-      "signature": "4d952a089bef4b4064d29ddf857cfc85f4e64975",
+      "question_bank_mapped": true,
+      "signature": "efe080c2c8ac7932ffb514a17c2c2c5c58cd4ef9",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1661,8 +1661,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "完形填空(七选五/语篇)",
-      "question_bank_mapped": false,
-      "signature": "e66af55deea983bb2929f614ed8d76d1fe33e7f6",
+      "question_bank_mapped": true,
+      "signature": "5939e13eace68887da3a890c2119b1d16bcd8890",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1674,8 +1674,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "完形填空",
-      "question_bank_mapped": false,
-      "signature": "ef5da992cd3adf12879f925d14fa000cb74f4ec4",
+      "question_bank_mapped": true,
+      "signature": "ce4793a6d925a9808e2c50cb817b079031495351",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1687,7 +1687,7 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "应用文写作",
-      "question_bank_mapped": false,
+      "question_bank_mapped": true,
       "signature": "c0a96505f24001223860ffc11060e3a107e6141f",
       "note": "缺少可复核结构化样本"
     },
@@ -1700,8 +1700,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "续写",
-      "question_bank_mapped": false,
-      "signature": "c47acde73809b7fc575e6be8d9f440d18a41a0d4",
+      "question_bank_mapped": true,
+      "signature": "0ba6d8e7240d62823333c21d7e41b19ef580e8eb",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1713,8 +1713,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "语法填空",
-      "question_bank_mapped": false,
-      "signature": "04b9a3508d5a7ec3e17164ecc979aadea628bc2c",
+      "question_bank_mapped": true,
+      "signature": "b03ef375e6e0576c77c58cd861ebcf65c93dd728",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1726,8 +1726,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "7e6f204ac43b247f4dbd4dd464d1ee7730474624",
+      "question_bank_mapped": true,
+      "signature": "f9faded5950d43ddb5f1a542651882b3c2d309cd",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1739,8 +1739,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "34e2e5f27b659932c03fc82139474726e1d486e0",
+      "question_bank_mapped": true,
+      "signature": "668e3e7f07b460b04805ea11020ed98c1491fdba",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1752,8 +1752,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "ef062ea8cc49d0b2d3df3e585e91ad7619f31315",
+      "question_bank_mapped": true,
+      "signature": "fe51eb60bd23d0897fde361f66ed24fc5d4723b6",
       "note": "缺少可复核结构化样本"
     },
     {
@@ -1765,8 +1765,8 @@
       "truth_source_file": null,
       "truth_row": null,
       "question_type": "阅读理解",
-      "question_bank_mapped": false,
-      "signature": "f2e9f7c327fbd977febc18823819ea34eedb9e35",
+      "question_bank_mapped": true,
+      "signature": "bb3de92add5be0d1e3e2b06f82a6b9b97006c060",
       "note": "缺少可复核结构化样本"
     },
     {

@@ -116,34 +116,24 @@ def _row_issues(row: dict[str, Any], rules: dict[str, Any]) -> list[dict[str, st
     return issues
 
 
-def build_eol_review_backlog(
-    year: int,
-    draft_path: Path | None = None,
-    decision_path: Path | None = None,
-) -> dict[str, Any]:
-    path = draft_path or default_draft_path(year)
-    rules = load_review_rules()
-    decision_contract = load_eol_review_decision_contract()
-    decisions_path = decision_path or default_decision_path(year, decision_contract)
-    rows = read_jsonl(path)
-    decisions = read_decisions(decisions_path)
-    decision_findings = validate_decisions(decisions, contract=decision_contract)
-    decision_map = decisions_by_key(decisions, decision_contract)
+def _draft_missing_backlog_entry(year: int, path: Path) -> dict[str, Any]:
+    return {
+        "identity": {"year": year, "draft_path": str(path)},
+        "issues": [{"code": "draft_missing", "detail": str(path)}],
+    }
+
+
+def _process_draft_rows(
+    rows: list[dict[str, Any]],
+    decision_map: dict[tuple[str, ...], dict[str, Any]],
+    decision_contract: dict[str, Any],
+    rules: dict[str, Any],
+    issue_counts: Counter[str],
+    type_counts: Counter[str],
+) -> tuple[list[dict[str, Any]], int, set[tuple[str, ...]]]:
+    backlog_items: list[dict[str, Any]] = []
     applied_decision_count = 0
     matched_decision_keys: set[tuple[str, ...]] = set()
-    backlog = []
-    issue_counts: Counter[str] = Counter()
-    type_counts: Counter[str] = Counter()
-    priority = list(rules.get("priority_issue_codes") or [])
-
-    if not path.exists():
-        issue_counts["draft_missing"] += 1
-        backlog.append(
-            {
-                "identity": {"year": year, "draft_path": str(path)},
-                "issues": [{"code": "draft_missing", "detail": str(path)}],
-            }
-        )
 
     for row in rows:
         row_key = decision_key(row, decision_contract)
@@ -158,13 +148,24 @@ def build_eol_review_backlog(
         for issue in issues:
             issue_counts[issue["code"]] += 1
         type_counts[str(effective_row.get("question_type") or "unknown")] += 1
-        backlog.append({"identity": _row_identity(effective_row), "issues": issues})
+        backlog_items.append({"identity": _row_identity(effective_row), "issues": issues})
 
+    return backlog_items, applied_decision_count, matched_decision_keys
+
+
+def _unmatched_decision_backlog_entries(
+    decision_map: dict[tuple[str, ...], dict[str, Any]],
+    matched_decision_keys: set[tuple[str, ...]],
+    year: int,
+    decisions_path: Path,
+    issue_counts: Counter[str],
+) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
     for key, decision in decision_map.items():
         if key in matched_decision_keys:
             continue
         issue_counts["unmatched_review_decision_key"] += 1
-        backlog.append({
+        entries.append({
             "identity": {
                 "year": year,
                 "decision_path": str(decisions_path),
@@ -176,10 +177,19 @@ def build_eol_review_backlog(
                 "detail": "review decision key does not match any current draft row",
             }],
         })
+    return entries
 
+
+def _decision_finding_backlog_entries(
+    decision_findings: list[dict[str, Any]],
+    year: int,
+    decisions_path: Path,
+    issue_counts: Counter[str],
+) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
     for finding in decision_findings:
         issue_counts[finding["code"]] += 1
-        backlog.append({
+        entries.append({
             "identity": {
                 "year": year,
                 "decision_path": str(decisions_path),
@@ -187,12 +197,58 @@ def build_eol_review_backlog(
             },
             "issues": [{"code": finding["code"], "detail": finding["detail"]}],
         })
+    return entries
 
+
+def _bucket_backlog_by_priority(
+    backlog: list[dict[str, Any]], priority: list[str]
+) -> dict[str, list[dict[str, Any]]]:
     by_priority: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in backlog:
         item_codes = {issue["code"] for issue in item["issues"]}
         matched = next((code for code in priority if code in item_codes), "other")
         by_priority[matched].append(item)
+    return by_priority
+
+
+def build_eol_review_backlog(
+    year: int,
+    draft_path: Path | None = None,
+    decision_path: Path | None = None,
+) -> dict[str, Any]:
+    path = draft_path or default_draft_path(year)
+    rules = load_review_rules()
+    decision_contract = load_eol_review_decision_contract()
+    decisions_path = decision_path or default_decision_path(year, decision_contract)
+    rows = read_jsonl(path)
+    decisions = read_decisions(decisions_path)
+    decision_findings = validate_decisions(decisions, contract=decision_contract)
+    decision_map = decisions_by_key(decisions, decision_contract)
+    backlog = []
+    issue_counts: Counter[str] = Counter()
+    type_counts: Counter[str] = Counter()
+    priority = list(rules.get("priority_issue_codes") or [])
+
+    if not path.exists():
+        issue_counts["draft_missing"] += 1
+        backlog.append(_draft_missing_backlog_entry(year, path))
+
+    row_backlog_items, applied_decision_count, matched_decision_keys = _process_draft_rows(
+        rows, decision_map, decision_contract, rules, issue_counts, type_counts
+    )
+    backlog.extend(row_backlog_items)
+
+    backlog.extend(
+        _unmatched_decision_backlog_entries(
+            decision_map, matched_decision_keys, year, decisions_path, issue_counts
+        )
+    )
+
+    backlog.extend(
+        _decision_finding_backlog_entries(decision_findings, year, decisions_path, issue_counts)
+    )
+
+    by_priority = _bucket_backlog_by_priority(backlog, priority)
 
     return {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),

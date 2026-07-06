@@ -40,6 +40,66 @@ def html_identity_required_groups(source_id: str, path: Path | None = None) -> d
     return groups
 
 
+def _add_finding(findings: list[dict[str, str]], code: str, target: str, detail: str) -> None:
+    findings.append({"code": code, "target": target, "detail": detail})
+
+
+def _check_html_identity_groups(
+    findings: list[dict[str, str]], target: str, raw_groups: dict[str, Any]
+) -> None:
+    if not isinstance(raw_groups, dict):
+        _add_finding(findings, "html_identity_groups_not_mapping", target, "required_groups must be a mapping")
+        return
+    for group, tokens in raw_groups.items():
+        group_name = str(group).strip()
+        if not group_name:
+            _add_finding(findings, "html_identity_group_name_empty", target, "group name cannot be empty")
+        normalized = _normalize_groups({str(group): tokens}).get(str(group), [])
+        if not normalized:
+            _add_finding(
+                findings,
+                "html_identity_group_has_no_tokens",
+                f"{target}:{group}",
+                "group must define at least one token",
+            )
+        for token in normalized:
+            if not token.strip():
+                _add_finding(
+                    findings, "html_identity_group_has_empty_token", f"{target}:{group}", "tokens cannot be empty"
+                )
+
+
+def _validate_html_identity_source_rule(
+    findings: list[dict[str, str]],
+    source_id: Any,
+    raw_source_rules: Any,
+    known_source_ids: set[str] | None,
+) -> None:
+    source_key = str(source_id).strip()
+    if not source_key:
+        _add_finding(findings, "html_identity_source_id_empty", "html_identity.sources", "source id cannot be empty")
+        return
+    if known_source_ids is not None and source_key not in known_source_ids:
+        _add_finding(
+            findings,
+            "html_identity_rule_unknown_source",
+            source_key,
+            "rule references a source id not present in sources.yaml",
+        )
+    if not isinstance(raw_source_rules, dict):
+        _add_finding(findings, "html_identity_source_rule_not_mapping", source_key, "source rule must be a mapping")
+        return
+    if "required_groups" not in raw_source_rules:
+        _add_finding(
+            findings,
+            "html_identity_source_rule_missing_required_groups",
+            source_key,
+            "source rule must define required_groups",
+        )
+        return
+    _check_html_identity_groups(findings, source_key, raw_source_rules.get("required_groups") or {})
+
+
 def validate_html_identity_rules(
     *,
     known_source_ids: set[str] | None = None,
@@ -48,44 +108,14 @@ def validate_html_identity_rules(
     rules = load_source_crosscheck_rules(path).get("html_identity") or {}
     findings: list[dict[str, str]] = []
 
-    def add(code: str, target: str, detail: str) -> None:
-        findings.append({"code": code, "target": target, "detail": detail})
-
-    def check_groups(target: str, raw_groups: dict[str, Any]) -> None:
-        if not isinstance(raw_groups, dict):
-            add("html_identity_groups_not_mapping", target, "required_groups must be a mapping")
-            return
-        for group, tokens in raw_groups.items():
-            group_name = str(group).strip()
-            if not group_name:
-                add("html_identity_group_name_empty", target, "group name cannot be empty")
-            normalized = _normalize_groups({str(group): tokens}).get(str(group), [])
-            if not normalized:
-                add("html_identity_group_has_no_tokens", f"{target}:{group}", "group must define at least one token")
-            for token in normalized:
-                if not token.strip():
-                    add("html_identity_group_has_empty_token", f"{target}:{group}", "tokens cannot be empty")
-
-    check_groups("default_required_groups", rules.get("default_required_groups") or {})
+    _check_html_identity_groups(findings, "default_required_groups", rules.get("default_required_groups") or {})
 
     source_rules = rules.get("sources") or {}
     if not isinstance(source_rules, dict):
-        add("html_identity_sources_not_mapping", "html_identity.sources", "sources must be a mapping")
+        _add_finding(findings, "html_identity_sources_not_mapping", "html_identity.sources", "sources must be a mapping")
         return findings
 
     for source_id, raw_source_rules in source_rules.items():
-        source_key = str(source_id).strip()
-        if not source_key:
-            add("html_identity_source_id_empty", "html_identity.sources", "source id cannot be empty")
-            continue
-        if known_source_ids is not None and source_key not in known_source_ids:
-            add("html_identity_rule_unknown_source", source_key, "rule references a source id not present in sources.yaml")
-        if not isinstance(raw_source_rules, dict):
-            add("html_identity_source_rule_not_mapping", source_key, "source rule must be a mapping")
-            continue
-        if "required_groups" not in raw_source_rules:
-            add("html_identity_source_rule_missing_required_groups", source_key, "source rule must define required_groups")
-            continue
-        check_groups(source_key, raw_source_rules.get("required_groups") or {})
+        _validate_html_identity_source_rule(findings, source_id, raw_source_rules, known_source_ids)
 
     return findings

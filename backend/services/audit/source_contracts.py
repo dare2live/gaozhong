@@ -10,7 +10,7 @@ from typing import Any
 import yaml
 
 from backend.services.contracts import known_source_state_tokens, match_source_state
-from backend.services.contracts.eol_review_decisions import validate_decision_contract
+from backend.services.contracts.eol_review_decision_contract_check import validate_decision_contract
 from backend.services.contracts.eol_review import validate_eol_review_rules
 from backend.services.contracts.source_crosscheck import (
     html_identity_required_groups,
@@ -113,15 +113,8 @@ def _contract_source_ids(contract: dict[str, Any]) -> set[str]:
     return ids
 
 
-def audit_source_contracts() -> dict[str, Any]:
-    registry = load_registry()
-    contracts = _load_contracts()
-    state_tokens = known_source_state_tokens()
-    source_ids = set(registry.list_ids())
-    quarantined_source_ids = _load_quarantined_source_ids()
-    referenced_ids: set[str] = set()
-    findings: list[SourceContractFinding] = []
-    source_states = [
+def _build_source_states(registry: Any) -> list[dict[str, Any]]:
+    return [
         {
             "source_id": source.source_id,
             "status": _source_status(source),
@@ -131,98 +124,136 @@ def audit_source_contracts() -> dict[str, Any]:
         for source in registry.list_sources()
     ]
 
-    for source in registry.list_sources():
-        findings.extend(_audit_source_shape(source, state_tokens))
 
-    for source_id in sorted(source_ids & quarantined_source_ids):
-        findings.append(
-            SourceContractFinding(
-                "source_id_active_and_quarantined",
-                "BLOCK",
-                source_id,
-                "source id cannot be present in both active exam_sources and quarantined_exam_sources",
-            )
+def _check_active_and_quarantined(
+    source_ids: set[str], quarantined_source_ids: set[str]
+) -> list[SourceContractFinding]:
+    return [
+        SourceContractFinding(
+            "source_id_active_and_quarantined",
+            "BLOCK",
+            source_id,
+            "source id cannot be present in both active exam_sources and quarantined_exam_sources",
         )
+        for source_id in sorted(source_ids & quarantined_source_ids)
+    ]
 
-    for finding in validate_html_identity_rules(known_source_ids=source_ids):
-        findings.append(
-            SourceContractFinding(
-                finding["code"],
-                "BLOCK",
-                finding["target"],
-                finding["detail"],
-            )
+
+def _findings_from_validator(validator_output: list[dict[str, str]]) -> list[SourceContractFinding]:
+    return [
+        SourceContractFinding(
+            finding["code"],
+            "BLOCK",
+            finding["target"],
+            finding["detail"],
         )
+        for finding in validator_output
+    ]
 
-    for finding in validate_eol_review_rules():
-        findings.append(
-            SourceContractFinding(
-                finding["code"],
-                "BLOCK",
-                finding["target"],
-                finding["detail"],
-            )
+
+def _check_contract_source(
+    contract_name: str,
+    source_id: str,
+    *,
+    registry: Any,
+    source_ids: set[str],
+    quarantined_source_ids: set[str],
+) -> SourceContractFinding | None:
+    if source_id in quarantined_source_ids:
+        return SourceContractFinding(
+            "contract_references_quarantined_source",
+            "BLOCK",
+            contract_name,
+            source_id,
         )
-
-    for finding in validate_decision_contract():
-        findings.append(
-            SourceContractFinding(
-                finding["code"],
-                "BLOCK",
-                finding["target"],
-                finding["detail"],
-            )
+    if source_id not in source_ids:
+        return SourceContractFinding(
+            "contract_references_unknown_source",
+            "BLOCK",
+            contract_name,
+            source_id,
         )
+    source = registry.get(source_id)
+    if _is_risky_source(source):
+        return SourceContractFinding(
+            "contract_references_risky_source",
+            "WARN",
+            contract_name,
+            f"{source_id}:{_source_status(source)}",
+        )
+    return None
 
+
+def _check_contracts(
+    contracts: dict[str, Any],
+    *,
+    registry: Any,
+    source_ids: set[str],
+    quarantined_source_ids: set[str],
+) -> tuple[list[SourceContractFinding], set[str]]:
+    findings: list[SourceContractFinding] = []
+    referenced_ids: set[str] = set()
     for contract_name, contract in contracts.items():
         contract_ids = _contract_source_ids(contract)
         referenced_ids.update(contract_ids)
         for source_id in sorted(contract_ids):
-            if source_id in quarantined_source_ids:
-                findings.append(
-                    SourceContractFinding(
-                        "contract_references_quarantined_source",
-                        "BLOCK",
-                        contract_name,
-                        source_id,
-                    )
-                )
-                continue
-            if source_id not in source_ids:
-                findings.append(
-                    SourceContractFinding(
-                        "contract_references_unknown_source",
-                        "BLOCK",
-                        contract_name,
-                        source_id,
-                    )
-                )
-                continue
-            source = registry.get(source_id)
-            if _is_risky_source(source):
-                findings.append(
-                    SourceContractFinding(
-                        "contract_references_risky_source",
-                        "WARN",
-                        contract_name,
-                        f"{source_id}:{_source_status(source)}",
-                    )
-                )
+            finding = _check_contract_source(
+                contract_name,
+                source_id,
+                registry=registry,
+                source_ids=source_ids,
+                quarantined_source_ids=quarantined_source_ids,
+            )
+            if finding is not None:
+                findings.append(finding)
+    return findings, referenced_ids
 
+
+def _check_unreferenced_exam_sources(
+    registry: Any, source_ids: set[str], referenced_ids: set[str]
+) -> list[SourceContractFinding]:
     unreferenced_exam_sources = [
         source_id
         for source_id in sorted(source_ids - referenced_ids)
         if "exam" in registry.get(source_id).family or "listening" in registry.get(source_id).family
     ]
-    for source_id in unreferenced_exam_sources:
-        findings.append(
-            SourceContractFinding(
-                "exam_source_not_referenced_by_contract",
-                "WARN",
-                source_id,
-                registry.get(source_id).family,
-            )
+    return [
+        SourceContractFinding(
+            "exam_source_not_referenced_by_contract",
+            "WARN",
+            source_id,
+            registry.get(source_id).family,
         )
+        for source_id in unreferenced_exam_sources
+    ]
+
+
+def audit_source_contracts() -> dict[str, Any]:
+    registry = load_registry()
+    contracts = _load_contracts()
+    state_tokens = known_source_state_tokens()
+    source_ids = set(registry.list_ids())
+    quarantined_source_ids = _load_quarantined_source_ids()
+    findings: list[SourceContractFinding] = []
+    source_states = _build_source_states(registry)
+
+    for source in registry.list_sources():
+        findings.extend(_audit_source_shape(source, state_tokens))
+
+    findings.extend(_check_active_and_quarantined(source_ids, quarantined_source_ids))
+    findings.extend(_findings_from_validator(validate_html_identity_rules(known_source_ids=source_ids)))
+    findings.extend(_findings_from_validator(validate_eol_review_rules()))
+    findings.extend(_findings_from_validator(validate_decision_contract()))
+
+    contract_findings, referenced_ids = _check_contracts(
+        contracts,
+        registry=registry,
+        source_ids=source_ids,
+        quarantined_source_ids=quarantined_source_ids,
+    )
+    findings.extend(contract_findings)
+
+    findings.extend(_check_unreferenced_exam_sources(registry, source_ids, referenced_ids))
 
     blocked = [finding for finding in findings if finding.severity == "BLOCK"]
     warns = [finding for finding in findings if finding.severity == "WARN"]
