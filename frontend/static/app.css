@@ -211,6 +211,8 @@
 .tb-gram-l { font-weight: 600; color: var(--ink); }
 .tb-gram-pct { font-size: 11px; font-weight: 600; color: var(--accent-ink); background: var(--accent-wash); border-radius: var(--r-xs); padding: 1px 6px; font-variant-numeric: tabular-nums; }
 .tb-gram-pct-none { color: var(--ink-3); background: var(--sunken); font-weight: 500; }
+/* 坑(2026-07-06 数据关联设计审查): 历史卷制兜底占比(非当前卷制真值), 虚线边框区分实心真值徽章 */
+.tb-gram-pct-hist { background: transparent; border: 1px dashed var(--ink-3); color: var(--ink-3); }
 .tb-gram-ex { color: var(--ink-3); font-size: 11.5px; font-style: italic; flex-basis: 100%; }
 .tb-phrase-note { font-size: 11px; color: var(--ink-3); margin: 6px 0 0; padding-top: 6px; border-top: 1px dashed var(--line); }
 .tb-passage { margin: 8px 0; }

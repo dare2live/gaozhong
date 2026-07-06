@@ -468,9 +468,31 @@
     }
   }
 
+  // 坑(2026-07-06 数据关联设计审查): "某语法点历年怎么考"这条链在导航内完全查不到——考点关联页
+  // 两块图(共现网络/全景图谱)都不能回答, tests_grammar 边从不参与共现网络的计算, 全景图谱也没有
+  // "历年"时间维度; 真正的语法频次数据在 /api/grammar/stats(已就绪, 零后端改动), 只是没接到这页。
+  // 轻量摘要(非重复真题特点页的完整语法卡), 只回答"这条链查得到吗", 详情跳转真题特点。
+  function _grammarLinkSection(ge) {
+    if (!ge) return "";
+    const eras = ge.eras_covered || [];
+    if (!eras.length) return '<p class="muted" style="font-size:12px;">语法考查数据暂无(诚实标, 非0)。</p>';
+    const eraRows = eras.map(era => {
+      const block = (ge.by_era || {})[era] || {};
+      const top = (block.by_category || []).slice(0, 4);
+      const items = top.map(c => `<span class="tk-tchip">${_esc(c.category)} <b>${c.pct}%</b></span>`).join("");
+      return `<div style="margin:4px 0;"><b style="font-size:12px;">${_esc(era.replace(/^[\d.+-]+_/, ""))}</b> (n=${block.n_questions || 0}题): ${items || '<span class="muted">无数据</span>'}</div>`;
+    }).join("");
+    const missing = (ge.eras_missing || []).length
+      ? `<p class="muted" style="font-size:11px;margin-top:4px;">${(ge.eras_missing || []).map(e => e.replace(/^[\d.+-]+_/, "")).join("、")} 暂无 tests_grammar 边覆盖(诚实标缺口, 非估算)。</p>` : "";
+    return `${eraRows}${missing}<p style="margin:6px 0 0;"><a href="#/zhenti" class="bk-vlink" style="font-size:12px;">完整语法考点卡(时态/从句/句型/词法) → 真题特点</a></p>`;
+  }
+
   register("graph", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入知识图谱…</div>';
-    const co = await fetchJSON("/api/exam_point/cooccurrence");  // 主数据, 失败必抛 → route() 错误态
+    const [co, gram] = await Promise.all([
+      fetchJSON("/api/exam_point/cooccurrence"),   // 主数据, 失败必抛 → route() 错误态
+      fetchSafe("/api/grammar/stats"),             // 语法关联小节 (零后端改动, 已有端点)
+    ]);
     const eraPairs = ((co.by_era || {})["2021+_新高考II"] || {}).pairs || [];
 
     CONTENT.innerHTML = `
@@ -498,6 +520,12 @@
         <div class="bk-h"><span>全部共现组合 · 精确读数</span><small class="muted" id="kg-list-era">新高考II 2021+</small></div>
         <div id="kg-list">${_coList(eraPairs)}</div>
         <p class="muted" style="font-size:11.5px;margin:8px 0 0">按同题次数降序全量列出 (不截断); 次数小的组合只说明"出现过", 别过度解读。</p>
+      </section>
+
+      <section class="bk-card" style="margin-top:14px">
+        <div class="bk-h"><span>语法关联 · 历年怎么考</span><span class="bk-src">/api/grammar/stats</span></div>
+        <p class="kg-legend">上面两张图只覆盖 genre/theme/cognitive_skill 等考点维度, 不含语法点 — 语法频次单独在这里查, 按课标第二级子类分卷制展示。</p>
+        <div id="graph-grammar">${_grammarLinkSection((!isErr(gram)) ? gram.grammar_exam : null)}</div>
       </section>
 
       <p class="zt-nextlink">这些套路已编进课程 → <a href="#/teaching">40 节课程</a></p>

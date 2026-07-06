@@ -65,11 +65,14 @@ ${G.pageHead("基础库 · 教材库", "课本里有什么", "外研社 (辽宁 
     }).join("");
     const chips = arr => (arr || []).map(x => `<span class="tb-chip">${_esc(x)}</span>`).join("");
     const exprs = (k.expression || []).map(e => `<span class="tb-chip">${_esc(e.text)}${e.intent ? `<i>${_esc(e.intent)}</i>` : ""}</span>`).join("");
+    // 坑(2026-07-06 数据关联设计审查): 原只看当前卷制(ERA_NEW)占比, 但现存tests_grammar边100%
+    // 来自旧课标II, 导致几乎全部语法条目显示"暂无考查数据"。category_pct_era 非空=历史兜底数据
+    // (后端已标注来源, 不冒充当前卷制真值), 徽章文案/颜色区分, 不混同。
     const gram = (k.grammar || []).map(g => {
-      const pct = g.category_pct;
+      const pct = g.category_pct, isHist = !!g.category_pct_era;
       const badge = pct != null
-        ? `<span class="tb-gram-pct" title="「${_esc(g.category)}」类辽宁卷考查占比(真值)">${_esc(g.category)} · 辽宁 ${pct}%</span>`
-        : `<span class="tb-gram-pct tb-gram-pct-none" title="该类目辽宁卷暂无考查真题边(诚实标, 非0)">暂无考查数据</span>`;
+        ? `<span class="tb-gram-pct${isHist ? " tb-gram-pct-hist" : ""}" title="「${_esc(g.category)}」类辽宁卷考查占比${isHist ? "(" + _esc(g.category_pct_era) + ")" : "(真值)"}">${_esc(g.category)} · 辽宁 ${pct}%${isHist ? " (历史)" : ""}</span>`
+        : `<span class="tb-gram-pct tb-gram-pct-none" title="该类目辽宁卷(含历史卷制)暂无考查真题边(诚实标, 非0)">暂无考查数据</span>`;
       const label = g.grammar_item_id ? GZ.conceptLink("grammar:" + g.grammar_item_id, g.label || "?") : `<span class="tb-gram-l">${_esc(g.label || "?")}</span>`;
       return `<div class="tb-gram-row"><span class="tb-gram-l">${label}</span>${badge}${g.example ? `<span class="tb-gram-ex">e.g. ${_esc(g.example)}</span>` : ""}</div>`;
     }).join("");
