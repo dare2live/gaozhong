@@ -35,6 +35,16 @@ def _score_narrative(text: str) -> int:
     return hits + ed_count
 
 
+def _classify_row(kind: str, text: str) -> tuple[bool, bool]:
+    """判断单个 section 是否 is_applied / is_narrative."""
+    # 应用文: Writing kind 或任何 kind 含 ≥ 2 应用文 markers
+    applied_hits = sum(1 for m in APPLIED_MARKERS if m in text)
+    is_app = (kind in {"Writing", "Integrated"} and applied_hits >= 1) or applied_hits >= 2
+    # 叙事: Reading kind 阈值 ≥ 1 (从 2 放松)
+    is_nar = kind in {"Reading", "Integrated"} and _score_narrative(text) >= 1
+    return is_app, is_nar
+
+
 def flag_sections(con: duckdb.DuckDBPyConnection) -> dict:
     # listening (kind-based) — broaden: 任何含 Listening kind
     con.execute("UPDATE sections SET is_listening = (kind = 'Listening')")
@@ -46,15 +56,9 @@ def flag_sections(con: duckdb.DuckDBPyConnection) -> dict:
     """).fetchall()
     n_applied = n_narrative = 0
     for ver, vol, un, seq, kind, text in rows:
-        text = text or ""
-        is_app = False; is_nar = False
-        # 应用文: Writing kind 或任何 kind 含 ≥ 2 应用文 markers
-        applied_hits = sum(1 for m in APPLIED_MARKERS if m in text)
-        if (kind in {"Writing", "Integrated"} and applied_hits >= 1) or applied_hits >= 2:
-            is_app = True; n_applied += 1
-        # 叙事: Reading kind 阈值 ≥ 1 (从 2 放松)
-        if kind in {"Reading", "Integrated"} and _score_narrative(text) >= 1:
-            is_nar = True; n_narrative += 1
+        is_app, is_nar = _classify_row(kind, text or "")
+        n_applied += int(is_app)
+        n_narrative += int(is_nar)
         if is_app or is_nar:
             con.execute("""
                 UPDATE sections SET is_applied=?, is_narrative=?

@@ -129,6 +129,28 @@ _QTYPE_ZH = {"reading_comprehension": "阅读理解", "cloze": "完形填空",
              "grammar_filling": "语法填空", "writing": "写作"}
 
 
+def _parse_subquestion_attrs(attrs: str | None) -> dict:
+    """JSON 解析 nodes.attrs_json, 解析失败诚实退化为空 dict (不静默吞例外后继续用坏数据)。"""
+    try:
+        return json.loads(attrs or "{}")
+    except (json.JSONDecodeError, TypeError):
+        return {}
+
+
+def _render_subquestion(ccid: str, attrs: str | None) -> dict:
+    """把一行 (concept_id, attrs_json) 渲成浮窗展示 dict — year/篇/题号/题型均来自 attrs。"""
+    a = _parse_subquestion_attrs(attrs)
+    yr, pl, qn = a.get("year"), a.get("passage_label"), a.get("question_number")
+    loc = f"{pl}篇第{qn}题" if pl and qn else "子题"
+    return {
+        "concept_id": ccid,
+        "qb_id": None,
+        "question_type": _QTYPE_ZH.get(a.get("question_type"), a.get("question_type") or "子题"),
+        "stem_preview": f"辽宁{yr or ''} {loc} · 子题级标注(2021+新高考II, 无完整题面)",
+        "year": str(yr) if yr else None,
+    }
+
+
 def _fetch_exam_point_subquestions(con, cid: str, limit: int) -> list[dict]:
     """cognitive_skill 等考点的 2021+ 新高考II 辽宁子题 (attrs.subquestion=true, 不在 qbank)。
     诚实: 子题级标注无完整题面, 从 attrs 渲 year/篇/题号/题型; subquestion=true 过滤排除外省整题。"""
@@ -144,22 +166,7 @@ def _fetch_exam_point_subquestions(con, cid: str, limit: int) -> list[dict]:
         "ORDER BY n.concept_id LIMIT ?",
         [cid, limit],
     ).fetchall()
-    out: list[dict] = []
-    for ccid, attrs in rows:
-        try:
-            a = json.loads(attrs or "{}")
-        except (json.JSONDecodeError, TypeError):
-            a = {}
-        yr, pl, qn = a.get("year"), a.get("passage_label"), a.get("question_number")
-        loc = f"{pl}篇第{qn}题" if pl and qn else "子题"
-        out.append({
-            "concept_id": ccid,
-            "qb_id": None,
-            "question_type": _QTYPE_ZH.get(a.get("question_type"), a.get("question_type") or "子题"),
-            "stem_preview": f"辽宁{yr or ''} {loc} · 子题级标注(2021+新高考II, 无完整题面)",
-            "year": str(yr) if yr else None,
-        })
-    return out
+    return [_render_subquestion(ccid, attrs) for ccid, attrs in rows]
 
 
 ROUTES = {"/api/graph/popup": api_graph_popup}

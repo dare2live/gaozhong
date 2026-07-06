@@ -171,29 +171,61 @@ def _check_item(qid, qtype, question_text, pdf_words) -> dict:
             "total_words": len(q_words), "sample_words": q_words[:5]}
 
 
-def verify_year(year: int, con=None) -> dict:
-    """核对一个年份: 结构化数据的关键文本是否在 PDF 原文中出现."""
+def _skip_result(year: int, reason: str, pdf_source_id: str | None = None) -> dict:
+    result = {"year": year, "status": "skip", "reason": reason}
+    if pdf_source_id is not None:
+        result["pdf_source_id"] = pdf_source_id
+    return result
+
+
+def _load_pdf_text_for_year(year: int):
+    """定位年份 PDF 源并抽取文本; 不可用/不适用时返回 skip 结果字典.
+
+    返回 (skip_result, None, None, None) 或 (None, pdf_source_id, pdf_path, pdf_text).
+    """
     pdf_source = _pdf_source_for_year(year)
     if not pdf_source:
-        return {"year": year, "status": "skip", "reason": "PDF source not registered"}
+        return _skip_result(year, "PDF source not registered"), None, None, None
     pdf_source_id, pdf_path = pdf_source
     if not pdf_path.exists():
-        return {"year": year, "status": "skip", "reason": f"PDF not found: {pdf_path}", "pdf_source_id": pdf_source_id}
+        return (_skip_result(year, f"PDF not found: {pdf_path}", pdf_source_id),
+                None, None, None)
     try:
         pdf_text = extract_pdf_text(pdf_path)
     except PdfUnreadableError as e:
         # 损坏/非PDF源 → skip (不崩 init_db, 不假过): 该年真题数据另有可信源 (如 Updates JSON)
-        return {"year": year, "status": "skip", "reason": str(e), "pdf_source_id": pdf_source_id}
+        return _skip_result(year, str(e), pdf_source_id), None, None, None
     if len((pdf_text or "").strip()) < 200:
         # 扫描图 PDF (无文字层, 如 2026 锦宏镜像): PDF-text 交叉验证不适用 (无文字可比), 不假过 →
         # 题面真值 = 双通道 ocrmac×视觉裁决转录 (.txt, 见 sources.yaml); 该年另由 D0/moth 断言守门 (避坑1绿门假绿)。
-        return {"year": year, "status": "skip", "pdf_source_id": pdf_source_id,
-                "reason": "scanned PDF (no text layer); 题面 verified via dual-channel transcript, gated by D0/moth"}
+        reason = "scanned PDF (no text layer); 题面 verified via dual-channel transcript, gated by D0/moth"
+        return _skip_result(year, reason, pdf_source_id), None, None, None
+    return None, pdf_source_id, pdf_path, pdf_text
+
+
+def _run_checks(year: int, con, pdf_text: str) -> tuple[list, list, list]:
+    """跑结构化条目 vs PDF 关键词核对, 返回 (checks, rows, jsonl_entries)."""
     pdf_words = set(re.findall(r"[a-zA-Z]{4,}", pdf_text.lower()))
     rows, jsonl_entries = _load_structured(year, con)
     sources = list(rows) + [(e.get("source", ""), e.get("question_type", ""),
                               e.get("question", ""), e.get("answer", "")) for e in jsonl_entries]
     checks = [_check_item(s[0], s[1], s[2], pdf_words) for s in sources]
+    return checks, rows, jsonl_entries
+
+
+def _write_report(year: int, result: dict) -> None:
+    out_path = REPORT_DIR / f"cross_verify_{year}.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def verify_year(year: int, con=None) -> dict:
+    """核对一个年份: 结构化数据的关键文本是否在 PDF 原文中出现."""
+    skip_result, pdf_source_id, pdf_path, pdf_text = _load_pdf_text_for_year(year)
+    if skip_result is not None:
+        return skip_result
+    pdf_words = set(re.findall(r"[a-zA-Z]{4,}", pdf_text.lower()))
+    checks, rows, jsonl_entries = _run_checks(year, con, pdf_text)
     summary = {k: sum(1 for c in checks if c["match"] == k) for k in ("pass", "warn", "fail", "skip")}
     html_checks = _html_identity_checks(year)
     html_summary = {k: sum(1 for c in html_checks if c["match"] == k) for k in ("pass", "fail")}
@@ -208,20 +240,47 @@ def verify_year(year: int, con=None) -> dict:
         "html_summary": html_summary,
         "overall": overall,
     }
-    out_path = REPORT_DIR / f"cross_verify_{year}.json"
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    _write_report(year, result)
     return result
 
 
-def main():
+def _parse_args():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--year", type=int)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--strict", action="store_true",
                         help="Return non-zero when any requested year fails or skips.")
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def _print_year_checks(result: dict) -> None:
+    s = result.get("summary", {})
+    print(f"   DB entries: {result['structured_entries']}, JSONL: {result['jsonl_entries']}")
+    print(f"   PDF: {result['pdf_chars']} chars, {result['pdf_unique_words']} unique words")
+    print(f"   Checks: {s.get('pass',0)} pass, {s.get('warn',0)} warn, {s.get('fail',0)} fail, {s.get('skip',0)} skip")
+    hs = result.get("html_summary", {})
+    print(f"   HTML identity: {hs.get('pass',0)} pass, {hs.get('fail',0)} fail")
+    for c in result["checks"]:
+        if c["match"] in ("fail", "warn"):
+            print(f"   ⚠️ {c['qid']} [{c['type']}]: match={c['match_rate']:.0%} words={c.get('sample_words',[][:3])}")
+
+
+def _print_year_result(result: dict) -> bool:
+    """打印单年结果, 返回该年是否应计入 failed."""
+    status = result.get("overall", "?")
+    failed = result.get("status") == "skip" or status == "FAIL"
+    icon = "✅" if status == "PASS" else ("⚠️" if status == "skip" else "❌")
+    print(f"\n{icon} {result.get('year')}: {status}")
+    if "checks" in result:
+        _print_year_checks(result)
+    else:
+        print(f"   {result.get('reason', '')}")
+    return failed
+
+
+def main():
+    args = _parse_args()
 
     years = _all_pdf_years() if args.all else ([args.year] if args.year else [])
     if not years:
@@ -231,23 +290,8 @@ def main():
     failed = False
     for year in years:
         result = verify_year(year)
-        s = result.get("summary", {})
-        status = result.get("overall", "?")
-        if result.get("status") == "skip" or status == "FAIL":
+        if _print_year_result(result):
             failed = True
-        icon = "✅" if status == "PASS" else ("⚠️" if status == "skip" else "❌")
-        print(f"\n{icon} {year}: {status}")
-        if "checks" in result:
-            print(f"   DB entries: {result['structured_entries']}, JSONL: {result['jsonl_entries']}")
-            print(f"   PDF: {result['pdf_chars']} chars, {result['pdf_unique_words']} unique words")
-            print(f"   Checks: {s.get('pass',0)} pass, {s.get('warn',0)} warn, {s.get('fail',0)} fail, {s.get('skip',0)} skip")
-            hs = result.get("html_summary", {})
-            print(f"   HTML identity: {hs.get('pass',0)} pass, {hs.get('fail',0)} fail")
-            for c in result["checks"]:
-                if c["match"] in ("fail", "warn"):
-                    print(f"   ⚠️ {c['qid']} [{c['type']}]: match={c['match_rate']:.0%} words={c.get('sample_words',[][:3])}")
-        else:
-            print(f"   {result.get('reason', '')}")
     return 1 if args.strict and failed else 0
 
 

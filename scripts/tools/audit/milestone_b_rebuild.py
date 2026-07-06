@@ -75,13 +75,11 @@ def load_exam_rows(con, year_min: int, year_max: int, province_like: str) -> lis
     ]
 
 
-def load_theme_pool(path: Path) -> list[str]:
+def _parse_theme_pool_lines(lines: list[str]) -> list[str]:
     themes: list[str] = []
-    if not path.exists():
-        return themes
     collecting = False
     buf = ""
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
+    for raw_line in lines:
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
@@ -102,6 +100,12 @@ def load_theme_pool(path: Path) -> list[str]:
                 items = buf.split("]", 1)[0]
                 themes.extend(_split_theme_list(items))
                 buf = ""
+    return themes
+
+def load_theme_pool(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    themes = _parse_theme_pool_lines(path.read_text(encoding="utf-8").splitlines())
     # keep unique, stable order
     seen: set[str] = set()
     uniq = []
@@ -117,12 +121,9 @@ def _split_theme_list(raw: str) -> list[str]:
     parts = [p.strip() for p in raw.split(",") if p.strip()]
     return [p.strip('"\'" ') for p in parts]
 
-
-def build_theme_coverage(rows: list[dict[str, Any]], themes: list[str]) -> dict[str, Any]:
+def _scan_theme_hits(rows: list[dict[str, Any]], themes: list[str]) -> tuple[dict[str, int], list[dict[str, Any]]]:
     theme_stats: dict[str, int] = {t: 0 for t in themes}
     no_theme_rows: list[dict[str, Any]] = []
-    total_rows = len(rows)
-
     for row in rows:
         text = f"{row['raw_question']} {row['answer']} {row['analysis']}".lower()
         hit = []
@@ -132,7 +133,12 @@ def build_theme_coverage(rows: list[dict[str, Any]], themes: list[str]) -> dict[
                 hit.append(t)
         if not hit:
             no_theme_rows.append(row)
+    return theme_stats, no_theme_rows
 
+
+def build_theme_coverage(rows: list[dict[str, Any]], themes: list[str]) -> dict[str, Any]:
+    total_rows = len(rows)
+    theme_stats, no_theme_rows = _scan_theme_hits(rows, themes)
     covered = sum(1 for v in theme_stats.values() if v > 0)
     total = len(theme_stats)
     score = round(100 * covered / total, 2) if total else 0.0

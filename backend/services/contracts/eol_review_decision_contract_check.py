@@ -61,6 +61,41 @@ def _check_decision_path_config(rules: dict[str, Any]) -> list[dict[str, str]]:
     return findings
 
 
+def _check_key_field_fallback_entries(
+    field_name: str, question_type_map: dict[str, Any]
+) -> list[dict[str, str]]:
+    findings: list[dict[str, str]] = []
+    for question_type, fallback_value in question_type_map.items():
+        if not str(question_type).strip() or not str(fallback_value).strip():
+            findings.append({
+                "code": "eol_review_decision_key_fallback_empty",
+                "target": f"{field_name}.{question_type}",
+                "detail": "fallback question_type and value must be non-empty",
+            })
+    return findings
+
+
+def _check_key_field_fallback_field(
+    field_name: str, question_type_map: Any, key_fields: set[str]
+) -> list[dict[str, str]]:
+    findings: list[dict[str, str]] = []
+    if field_name not in key_fields:
+        findings.append({
+            "code": "eol_review_decision_key_fallback_field_unknown",
+            "target": field_name,
+            "detail": "fallback field must be listed in key_fields",
+        })
+    if not isinstance(question_type_map, dict) or not question_type_map:
+        findings.append({
+            "code": "eol_review_decision_key_fallback_map_missing",
+            "target": field_name,
+            "detail": "fallback field must define question_type -> fallback key values",
+        })
+        return findings
+    findings.extend(_check_key_field_fallback_entries(field_name, question_type_map))
+    return findings
+
+
 def _check_key_field_fallbacks(rules: dict[str, Any]) -> list[dict[str, str]]:
     findings: list[dict[str, str]] = []
     key_fields = {str(field) for field in rules.get("key_fields") or []}
@@ -74,26 +109,9 @@ def _check_key_field_fallbacks(rules: dict[str, Any]) -> list[dict[str, str]]:
         return findings
     for field, question_type_map in fallback_rules.items():
         field_name = str(field).strip()
-        if field_name not in key_fields:
-            findings.append({
-                "code": "eol_review_decision_key_fallback_field_unknown",
-                "target": field_name,
-                "detail": "fallback field must be listed in key_fields",
-            })
-        if not isinstance(question_type_map, dict) or not question_type_map:
-            findings.append({
-                "code": "eol_review_decision_key_fallback_map_missing",
-                "target": field_name,
-                "detail": "fallback field must define question_type -> fallback key values",
-            })
-            continue
-        for question_type, fallback_value in question_type_map.items():
-            if not str(question_type).strip() or not str(fallback_value).strip():
-                findings.append({
-                    "code": "eol_review_decision_key_fallback_empty",
-                    "target": f"{field_name}.{question_type}",
-                    "detail": "fallback question_type and value must be non-empty",
-                })
+        findings.extend(
+            _check_key_field_fallback_field(field_name, question_type_map, key_fields)
+        )
     return findings
 
 

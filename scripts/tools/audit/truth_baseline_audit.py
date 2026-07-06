@@ -56,6 +56,23 @@ from scripts.tools.audit.truth_baseline_report import (  # noqa: E402,F401  re-e
 )
 
 
+def _find_best_db_match(
+    bucket: list[dict[str, Any]], truth: dict[str, Any], used_db_ids: set[str]
+) -> tuple[dict[str, Any] | None, float]:
+    best = None
+    best_score = 0.0
+    for db in bucket:
+        if db["item_id"] in used_db_ids:
+            continue
+        score = _overlap_score(db["token_set"], truth["token_set"])
+        if score > best_score:
+            best_score = score
+            best = db
+        if score >= 0.35:
+            break
+    return best, best_score
+
+
 def build_reconciliation(db_rows: list[dict[str, Any]], truth_rows: list[dict[str, Any]]) -> dict[str, Any]:
     by_qtype = defaultdict(list)
     for row in db_rows:
@@ -68,17 +85,7 @@ def build_reconciliation(db_rows: list[dict[str, Any]], truth_rows: list[dict[st
 
     for truth in truth_rows:
         bucket = by_qtype.get((truth["year"], truth["question_type"]), [])
-        best = None
-        best_score = 0.0
-        for db in bucket:
-            if db["item_id"] in used_db_ids:
-                continue
-            score = _overlap_score(db["token_set"], truth["token_set"])
-            if score > best_score:
-                best_score = score
-                best = db
-            if score >= 0.35:
-                break
+        best, best_score = _find_best_db_match(bucket, truth, used_db_ids)
         if best and best_score >= 0.2:
             used_db_ids.add(best["item_id"])
             matched_rows.append({"status": "matched", "year": truth["year"], "db": best, "truth": truth, "match_score": round(best_score, 3)})

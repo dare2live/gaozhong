@@ -57,6 +57,27 @@ def _any_rows(con: duckdb.DuckDBPyConnection, year: int) -> int:
     ).fetchone()[0]
 
 
+def _year_findings(
+    *,
+    expected: int,
+    matching: int,
+    any_rows: int,
+    current_status: str,
+) -> list[str]:
+    findings: list[str] = []
+
+    if matching < expected:
+        findings.append(f"db_contract_gap:{expected - matching}")
+    if any_rows and not matching:
+        findings.append("year_rows_exist_but_no_contract_paper_match")
+    if any_rows < expected:
+        findings.append(f"db_any_paper_gap:{expected - any_rows}")
+    if any(token in current_status for token in ("not_", "partial", "suspicious", "candidate")):
+        findings.append(f"contract_status_not_closed:{current_status}")
+
+    return findings
+
+
 def _year_result(
     con: duckdb.DuckDBPyConnection,
     *,
@@ -68,16 +89,12 @@ def _year_result(
     matching = _paper_rows(con, year, paper_aliases)
     any_rows = _any_rows(con, year)
     current_status = str(year_contract.get("current_status") or "unknown")
-    findings: list[str] = []
-
-    if matching < expected:
-        findings.append(f"db_contract_gap:{expected - matching}")
-    if any_rows and not matching:
-        findings.append("year_rows_exist_but_no_contract_paper_match")
-    if any_rows < expected:
-        findings.append(f"db_any_paper_gap:{expected - any_rows}")
-    if any(token in current_status for token in ("not_", "partial", "suspicious", "candidate")):
-        findings.append(f"contract_status_not_closed:{current_status}")
+    findings = _year_findings(
+        expected=expected,
+        matching=matching,
+        any_rows=any_rows,
+        current_status=current_status,
+    )
 
     status = "fail" if findings else "pass"
     return YearContractResult(

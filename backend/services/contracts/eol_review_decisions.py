@@ -86,6 +86,43 @@ def decision_key(row: dict[str, Any], contract: dict[str, Any] | None = None) ->
     return tuple(values)
 
 
+def _check_worksheet_required_fields(
+    row: dict[str, Any],
+    line: Any,
+    required_fields: list[str],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    for field in required_fields:
+        if _empty(row.get(field)):
+            findings.append({
+                "code": "review_worksheet_required_field_missing",
+                "line": line,
+                "detail": field,
+            })
+    return findings
+
+
+def _check_worksheet_kind(row: dict[str, Any], line: Any) -> list[dict[str, Any]]:
+    kind = str(row.get("worksheet_kind") or "").strip()
+    if kind and kind != "eol_review_decision_template":
+        return [{
+            "code": "review_worksheet_kind_unknown",
+            "line": line,
+            "detail": kind,
+        }]
+    return []
+
+
+def _check_worksheet_year(row: dict[str, Any], line: Any, expected_year: int | None) -> list[dict[str, Any]]:
+    if expected_year is not None and str(row.get("year") or "").strip() != str(expected_year):
+        return [{
+            "code": "review_worksheet_year_mismatch",
+            "line": line,
+            "detail": f"expected {expected_year}, got {row.get('year')}",
+        }]
+    return []
+
+
 def validate_worksheet_rows(
     worksheet_rows: list[dict[str, Any]],
     *,
@@ -98,26 +135,9 @@ def validate_worksheet_rows(
 
     for index, row in enumerate(worksheet_rows, start=1):
         line = row.get("_worksheet_line_number") or index
-        for field in required_fields:
-            if _empty(row.get(field)):
-                findings.append({
-                    "code": "review_worksheet_required_field_missing",
-                    "line": line,
-                    "detail": field,
-                })
-        kind = str(row.get("worksheet_kind") or "").strip()
-        if kind and kind != "eol_review_decision_template":
-            findings.append({
-                "code": "review_worksheet_kind_unknown",
-                "line": line,
-                "detail": kind,
-            })
-        if expected_year is not None and str(row.get("year") or "").strip() != str(expected_year):
-            findings.append({
-                "code": "review_worksheet_year_mismatch",
-                "line": line,
-                "detail": f"expected {expected_year}, got {row.get('year')}",
-            })
+        findings.extend(_check_worksheet_required_fields(row, line, required_fields))
+        findings.extend(_check_worksheet_kind(row, line))
+        findings.extend(_check_worksheet_year(row, line, expected_year))
     return findings
 
 
@@ -222,13 +242,21 @@ def _check_decision_status_required_fields(
     return findings
 
 
+def _str_list(rules: dict[str, Any], key: str) -> list[str]:
+    return [str(item) for item in rules.get(key) or []]
+
+
+def _str_set(rules: dict[str, Any], key: str) -> set[str]:
+    return {str(item) for item in rules.get(key) or []}
+
+
 def _load_decision_validation_settings(rules: dict[str, Any]) -> dict[str, Any]:
     return {
-        "allowed_statuses": {str(item) for item in rules.get("allowed_decision_statuses") or []},
-        "allowed_source_families": {str(item) for item in rules.get("allowed_decision_source_families") or []},
-        "required_fields": [str(item) for item in rules.get("required_fields") or []],
-        "import_ready_required": [str(item) for item in rules.get("import_ready_required_fields") or []],
-        "non_import_ready_required": [str(item) for item in rules.get("non_import_ready_required_fields") or []],
+        "allowed_statuses": _str_set(rules, "allowed_decision_statuses"),
+        "allowed_source_families": _str_set(rules, "allowed_decision_source_families"),
+        "required_fields": _str_list(rules, "required_fields"),
+        "import_ready_required": _str_list(rules, "import_ready_required_fields"),
+        "non_import_ready_required": _str_list(rules, "non_import_ready_required_fields"),
         "source_registry": load_registry(),
     }
 

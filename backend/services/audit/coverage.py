@@ -63,14 +63,18 @@ def _stem(w: str) -> str:
     return w
 
 
-def audit_exam_token_coverage(con: duckdb.DuckDBPyConnection) -> list[dict]:
-    """真题词汇覆盖 — 多次过滤: 排除单现 token (OCR 噪音) + 排除疑似专名."""
-    from collections import Counter
+def _load_learnable_vocab(con: duckdb.DuckDBPyConnection) -> tuple[set, set]:
+    """汇总 cefr + textbook 可学词表, 附带 stem 归一集合."""
     cefr = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     textbook = {r[0] for r in con.execute("SELECT DISTINCT word FROM unit_vocab_intro").fetchall()}
     learnable = cefr | textbook
     learnable_stems = {_stem(w) for w in learnable}
-    # token freq + 大写形 (专名识别)
+    return learnable, learnable_stems
+
+
+def _tokenize_exam_questions(con: duckdb.DuckDBPyConnection):
+    """扫真题原文, 统计 token 频次 + 记录首字母大写形 (专名识别用)."""
+    from collections import Counter
     freq: Counter = Counter()
     capitalized = set()
     for (q,) in con.execute("SELECT raw_question FROM exam_questions").fetchall():
@@ -80,11 +84,24 @@ def audit_exam_token_coverage(con: duckdb.DuckDBPyConnection) -> list[dict]:
             freq[tl] += 1
             if t[0].isupper():
                 capitalized.add(tl)
+    return freq, capitalized
+
+
+def _classify_candidates(candidates: set, learnable: set, learnable_stems: set) -> tuple[set, set]:
+    """候选词按 direct/stem 命中拆分."""
+    direct_hit = candidates & learnable
+    stem_hit = {w for w in candidates - direct_hit if _stem(w) in learnable_stems}
+    return direct_hit, stem_hit
+
+
+def audit_exam_token_coverage(con: duckdb.DuckDBPyConnection) -> list[dict]:
+    """真题词汇覆盖 — 多次过滤: 排除单现 token (OCR 噪音) + 排除疑似专名."""
+    learnable, learnable_stems = _load_learnable_vocab(con)
+    freq, capitalized = _tokenize_exam_questions(con)
     # 过滤: 至少出现 2 次 (排除 OCR 噪音 + 偶然词)
     candidates = {w for w, c in freq.items() if c >= 2}
     # 不算 OCR fix 自动注入 (用户 2026-05-24: 规则 OCR 修复成功率不高, 改"教师 review 候选")
-    direct_hit = candidates & learnable
-    stem_hit = {w for w in candidates - direct_hit if _stem(w) in learnable_stems}
+    direct_hit, stem_hit = _classify_candidates(candidates, learnable, learnable_stems)
     covered = direct_hit | stem_hit
     ratio = len(covered) / max(1, len(candidates))
     # 阈值降到 0.40 (老实数据, 接受教材覆盖 < 课标 + 真题含 OCR 噪音/专名)

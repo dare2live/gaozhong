@@ -64,50 +64,100 @@ def load_bank_ids(con) -> set[str]:
     return {r[0] for r in rows}
 
 
+def _parse_jsonl_payload(line: str) -> dict[str, Any] | None:
+    """空行/JSON 解析失败返回 None, 母函数据此 skip."""
+    if not line.strip():
+        return None
+    try:
+        return json.loads(line)
+    except json.JSONDecodeError:
+        return None
+
+
+def _parse_target_year(payload: dict[str, Any]) -> int | None:
+    """year 字段缺失/非法/不在 TARGET_YEARS 内返回 None."""
+    year = payload.get("year")
+    try:
+        year = int(year)
+    except Exception:
+        return None
+    if year not in TARGET_YEARS:
+        return None
+    return year
+
+
+def _build_structured_item(payload: dict[str, Any], year: int, idx: int) -> dict[str, Any] | None:
+    qtype = _map_qtype(payload.get("question_type", ""))
+    stem = (payload.get("stem") or "").strip()
+    if not stem:
+        return None
+    options = _flatten_options(payload.get("options", {}))
+    answer_text = _textify(payload.get("answer", ""))
+    qtext = f"{stem}\n{options}" if options else stem
+    item_id = payload.get("id") or f"structured-xgkii-{year}-{idx:03d}"
+    return {
+        "item_id": str(item_id),
+        "year": year,
+        "question_type": qtype,
+        "raw_question": qtext,
+        "answer": payload.get("answer", "") or "",
+        "analysis": payload.get("analysis", "") or "",
+        "source_file": payload.get("source_file", STRUCTURE_PATH.name),
+        "source_repo": payload.get("source", "gaokao_structured_xgkii"),
+        "source_index": payload.get("question_number"),
+        "province": payload.get("province", "辽宁"),
+        "paper_type": payload.get("paper_type", scope.PAPER_XGKII),
+        "signature": signature(year, qtype, qtext, answer_text),
+        "token_set": _token_set(f"{qtext} {answer_text}"),
+        "row_source": "structured_xgkii_jsonl",
+        "source_order": idx,
+    }
+
+
 def load_structured_records() -> list[dict[str, Any]]:
     if not STRUCTURE_PATH.exists():
         return []
     items: list[dict[str, Any]] = []
     for idx, line in enumerate(STRUCTURE_PATH.read_text(encoding="utf-8").splitlines()):
-        if not line.strip():
+        payload = _parse_jsonl_payload(line)
+        if payload is None:
             continue
-        try:
-            payload = json.loads(line)
-        except json.JSONDecodeError:
+        year = _parse_target_year(payload)
+        if year is None:
             continue
-        year = payload.get("year")
-        try:
-            year = int(year)
-        except Exception:
+        item = _build_structured_item(payload, year, idx)
+        if item is None:
             continue
-        if year not in TARGET_YEARS:
-            continue
-        qtype = _map_qtype(payload.get("question_type", ""))
-        stem = (payload.get("stem") or "").strip()
-        if not stem:
-            continue
-        options = _flatten_options(payload.get("options", {}))
-        answer_text = _textify(payload.get("answer", ""))
-        qtext = f"{stem}\n{options}" if options else stem
-        item_id = payload.get("id") or f"structured-xgkii-{year}-{idx:03d}"
-        items.append({
-            "item_id": str(item_id),
-            "year": year,
-            "question_type": qtype,
-            "raw_question": qtext,
-            "answer": payload.get("answer", "") or "",
-            "analysis": payload.get("analysis", "") or "",
-            "source_file": payload.get("source_file", STRUCTURE_PATH.name),
-            "source_repo": payload.get("source", "gaokao_structured_xgkii"),
-            "source_index": payload.get("question_number"),
-            "province": payload.get("province", "辽宁"),
-            "paper_type": payload.get("paper_type", scope.PAPER_XGKII),
-            "signature": signature(year, qtype, qtext, answer_text),
-            "token_set": _token_set(f"{qtext} {answer_text}"),
-            "row_source": "structured_xgkii_jsonl",
-            "source_order": idx,
-        })
+        items.append(item)
     return items
+
+
+def _build_verified_item(payload: dict[str, Any], year: int, idx: int) -> dict[str, Any] | None:
+    qtype = payload.get("question_type", "")
+    stem = (payload.get("question") or "").strip()
+    if not stem:
+        return None
+    answer_text = _textify(payload.get("answer", ""))
+    source = payload.get("source", "gaokao_verified")
+    source_file = payload.get("source_file", "gaokao_verified_xgkii_2023_2024.jsonl")
+    item_id = f"{source_file}:{source}:{year}:{idx}"
+    return {
+        "item_id": item_id,
+        "year": year,
+        "question_type": qtype,
+        "raw_question": stem,
+        "answer": payload.get("answer", "") or "",
+        "analysis": payload.get("analysis", "") or "",
+        "source_file": source_file,
+        "source_repo": source,
+        "source_index": payload.get("index"),
+        "province": payload.get("province", "辽宁"),
+        "paper_type": payload.get("paper_type", scope.PAPER_XGKII),
+        "signature": signature(year, qtype, stem, answer_text),
+        "token_set": _token_set(f"{stem} {answer_text}"),
+        "row_source": "gaokao_verified_jsonl",
+        "source_order": idx,
+    }
 
 
 def load_verified_jsonl() -> list[dict[str, Any]]:
@@ -115,44 +165,16 @@ def load_verified_jsonl() -> list[dict[str, Any]]:
         return []
     items: list[dict[str, Any]] = []
     for idx, line in enumerate(VERIFIED_JSONL.read_text(encoding="utf-8").splitlines()):
-        if not line.strip():
+        payload = _parse_jsonl_payload(line)
+        if payload is None:
             continue
-        try:
-            payload = json.loads(line)
-        except json.JSONDecodeError:
+        year = _parse_target_year(payload)
+        if year is None:
             continue
-        year = payload.get("year")
-        try:
-            year = int(year)
-        except Exception:
+        item = _build_verified_item(payload, year, idx)
+        if item is None:
             continue
-        if year not in TARGET_YEARS:
-            continue
-        qtype = payload.get("question_type", "")
-        stem = (payload.get("question") or "").strip()
-        if not stem:
-            continue
-        answer_text = _textify(payload.get("answer", ""))
-        source = payload.get("source", "gaokao_verified")
-        source_file = payload.get("source_file", "gaokao_verified_xgkii_2023_2024.jsonl")
-        item_id = f"{source_file}:{source}:{year}:{idx}"
-        items.append({
-            "item_id": item_id,
-            "year": year,
-            "question_type": qtype,
-            "raw_question": stem,
-            "answer": payload.get("answer", "") or "",
-            "analysis": payload.get("analysis", "") or "",
-            "source_file": source_file,
-            "source_repo": source,
-            "source_index": payload.get("index"),
-            "province": payload.get("province", "辽宁"),
-            "paper_type": payload.get("paper_type", scope.PAPER_XGKII),
-            "signature": signature(year, qtype, stem, answer_text),
-            "token_set": _token_set(f"{stem} {answer_text}"),
-            "row_source": "gaokao_verified_jsonl",
-            "source_order": idx,
-        })
+        items.append(item)
     return items
 
 

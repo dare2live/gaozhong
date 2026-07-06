@@ -24,6 +24,28 @@ def _key_set(rows: list[dict[str, Any]], contract: dict[str, Any]) -> set[tuple[
     return {decision_key(row, contract) for row in rows}
 
 
+def _build_findings(
+    decision_path_exists: bool,
+    decisions_file: Path,
+    decision_findings: list[dict[str, Any]],
+    unmatched_decision_keys: list[tuple[str, ...]],
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    if not decision_path_exists:
+        findings.append({
+            "code": "review_decision_file_missing",
+            "detail": str(decisions_file),
+        })
+    for finding in decision_findings:
+        findings.append({"code": finding["code"], "detail": finding.get("detail"), "line": finding.get("line")})
+    for key in unmatched_decision_keys:
+        findings.append({
+            "code": "unmatched_review_decision_key",
+            "detail": list(key),
+        })
+    return findings
+
+
 def build_eol_review_decision_coverage(
     year: int,
     draft_path: Path | None = None,
@@ -44,19 +66,9 @@ def build_eol_review_decision_coverage(
     undecided_draft_keys = sorted(draft_keys - decision_keys)
     backlog_report = build_eol_review_backlog(year, draft, decisions_file)
 
-    findings: list[dict[str, Any]] = []
-    if not decision_path_exists:
-        findings.append({
-            "code": "review_decision_file_missing",
-            "detail": str(decisions_file),
-        })
-    for finding in decision_findings:
-        findings.append({"code": finding["code"], "detail": finding.get("detail"), "line": finding.get("line")})
-    for key in unmatched_decision_keys:
-        findings.append({
-            "code": "unmatched_review_decision_key",
-            "detail": list(key),
-        })
+    findings = _build_findings(
+        decision_path_exists, decisions_file, decision_findings, unmatched_decision_keys
+    )
 
     return {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),

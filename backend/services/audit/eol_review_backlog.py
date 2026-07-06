@@ -84,8 +84,27 @@ def _row_identity(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _row_issues(row: dict[str, Any], rules: dict[str, Any]) -> list[dict[str, str]]:
+def _required_field_issues(row: dict[str, Any], required_fields: list[str]) -> list[dict[str, str]]:
     issues: list[dict[str, str]] = []
+    for field in required_fields:
+        if _empty(row.get(field)):
+            issues.append({"code": "required_field_missing", "detail": field})
+    return issues
+
+
+def _answer_missing_issue(
+    qtype: str, answer_required: bool, answer_allowed_empty: bool, answer: Any
+) -> dict[str, str] | None:
+    if not (answer_required and _empty(answer)):
+        return None
+    if "listening" in qtype:
+        return {"code": "listening_answer_missing", "detail": qtype}
+    if not answer_allowed_empty:
+        return {"code": "answer_required_but_missing", "detail": qtype}
+    return None
+
+
+def _row_issues(row: dict[str, Any], rules: dict[str, Any]) -> list[dict[str, str]]:
     required_fields = [str(field) for field in rules.get("required_fields") or []]
     blocking_status_tokens = _as_tokens(rules.get("blocking_review_status_tokens") or [])
     answer_required_tokens = _as_tokens(rules.get("answer_required_question_type_tokens") or [])
@@ -95,9 +114,7 @@ def _row_issues(row: dict[str, Any], rules: dict[str, Any]) -> list[dict[str, st
     answer = row.get("answer")
     review_status = _text(row, "review_status").lower()
 
-    for field in required_fields:
-        if _empty(row.get(field)):
-            issues.append({"code": "required_field_missing", "detail": field})
+    issues: list[dict[str, str]] = _required_field_issues(row, required_fields)
 
     if _contains_any(review_status, blocking_status_tokens):
         issues.append({"code": "review_status_blocked", "detail": review_status})
@@ -107,11 +124,9 @@ def _row_issues(row: dict[str, Any], rules: dict[str, Any]) -> list[dict[str, st
 
     answer_required = _contains_any(qtype, answer_required_tokens)
     answer_allowed_empty = _contains_any(qtype, allowed_empty_answer_tokens)
-    if answer_required and _empty(answer):
-        if "listening" in qtype:
-            issues.append({"code": "listening_answer_missing", "detail": qtype})
-        elif not answer_allowed_empty:
-            issues.append({"code": "answer_required_but_missing", "detail": qtype})
+    answer_issue = _answer_missing_issue(qtype, answer_required, answer_allowed_empty, answer)
+    if answer_issue:
+        issues.append(answer_issue)
 
     return issues
 

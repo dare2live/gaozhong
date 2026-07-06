@@ -59,16 +59,8 @@ def extract_theme_contexts(_reader: PdfReader) -> list[dict]:
     return rows
 
 
-def main() -> None:
-    if not PDF_PATH.exists():
-        raise FileNotFoundError(PDF_PATH)
-    reader = PdfReader(PDF_PATH)
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    vocab = extract_cefr_vocab(reader)
-    grammar = extract_grammar_items(reader)
-    themes = extract_theme_contexts(reader)
-
+def _write_jsonl_outputs(vocab: list[dict], grammar: list[dict], themes: list[dict]) -> None:
+    """把三个抽取结果各写一个 jsonl, 并打印行数摘要."""
     paths = {
         "cefr_vocab.jsonl": vocab,
         "grammar_items.jsonl": grammar,
@@ -81,7 +73,9 @@ def main() -> None:
                 fh.write(json.dumps(r, ensure_ascii=False) + "\n")
         print(f"wrote {len(rows):5d} rows -> {p.relative_to(ROOT)}")
 
-    # 显式校验, 不静默吃异常
+
+def _validate_vocab_breakdown(vocab: list[dict]) -> None:
+    """显式校验词汇表总量 + 必修/选必占比, 不静默吃异常."""
     vocab_n = len(vocab)
     bixiu = sum(1 for r in vocab if r["cefr_level"] == "必修")
     xuanbi = sum(1 for r in vocab if r["cefr_level"] == "选必")
@@ -93,6 +87,20 @@ def main() -> None:
         print(f"  WARN: 必修 (*) 数 {bixiu} 偏离课标声明 500 ±200")
     if xuanbi < 700 or xuanbi > 1300:
         print(f"  WARN: 选必 (**) 数 {xuanbi} 偏离课标声明 1000 ±300")
+
+
+def main() -> None:
+    if not PDF_PATH.exists():
+        raise FileNotFoundError(PDF_PATH)
+    reader = PdfReader(PDF_PATH)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    vocab = extract_cefr_vocab(reader)
+    grammar = extract_grammar_items(reader)
+    themes = extract_theme_contexts(reader)
+
+    _write_jsonl_outputs(vocab, grammar, themes)
+    _validate_vocab_breakdown(vocab)
 
 
 if __name__ == "__main__":

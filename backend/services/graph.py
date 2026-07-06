@@ -50,6 +50,40 @@ def neighbors(
     return [dict(zip(cols, r)) for r in cur.fetchall()]
 
 
+def _incident_edges(con, cid: str, rel_filter: str, relation_whitelist: Optional[list[str]]) -> list[tuple]:
+    """一个节点的全部关联边 (出+入), 按 rel_filter 过滤 (供 expand BFS 单步用)."""
+    args = [cid, cid]
+    if rel_filter:
+        args.extend(relation_whitelist)
+        args.extend(relation_whitelist)
+    cur = con.execute(
+        f"""
+        SELECT src_id, dst_id, relation, weight FROM edges
+        WHERE (src_id = ? OR dst_id = ?){rel_filter}
+        """,
+        args,
+    )
+    return cur.fetchall()
+
+
+def _expand_step(
+    con, cid: str, depth: int, rel_filter: str, relation_whitelist: Optional[list[str]],
+    seen: set[str], out_edges: list[dict], out_nodes: list[dict], max_nodes: int,
+) -> list[tuple[str, int]]:
+    """BFS 单步: 拉一个节点的关联边, 记边, 未见过的邻居入队 (mutates seen/out_edges/out_nodes)."""
+    next_queue_items: list[tuple[str, int]] = []
+    for src_id, dst_id, rel, w in _incident_edges(con, cid, rel_filter, relation_whitelist):
+        other = dst_id if src_id == cid else src_id
+        out_edges.append({"src": src_id, "dst": dst_id, "relation": rel, "weight": w})
+        if other not in seen and len(seen) < max_nodes:
+            seen.add(other)
+            n = _node(con, other)
+            if n:
+                out_nodes.append(n)
+            next_queue_items.append((other, depth + 1))
+    return next_queue_items
+
+
 def expand(
     con: duckdb.DuckDBPyConnection,
     start: str,
@@ -77,26 +111,9 @@ def expand(
         cid, depth = queue.popleft()
         if depth >= max_depth:
             continue
-        args = [cid, cid]
-        if rel_filter:
-            args.extend(relation_whitelist)
-            args.extend(relation_whitelist)
-        cur = con.execute(
-            f"""
-            SELECT src_id, dst_id, relation, weight FROM edges
-            WHERE (src_id = ? OR dst_id = ?){rel_filter}
-            """,
-            args,
-        )
-        for src_id, dst_id, rel, w in cur.fetchall():
-            other = dst_id if src_id == cid else src_id
-            out_edges.append({"src": src_id, "dst": dst_id, "relation": rel, "weight": w})
-            if other not in seen and len(seen) < max_nodes:
-                seen.add(other)
-                n = _node(con, other)
-                if n:
-                    out_nodes.append(n)
-                queue.append((other, depth + 1))
+        for item in _expand_step(con, cid, depth, rel_filter, relation_whitelist,
+                                  seen, out_edges, out_nodes, max_nodes):
+            queue.append(item)
     return {"nodes": out_nodes, "edges": out_edges}
 
 
@@ -224,6 +241,26 @@ def _label_relation_dst_types(con: duckdb.DuckDBPyConnection, label_rels: list[s
     return sorted(r[0] for r in rows)
 
 
+def _build_type_meta(ranked: list[tuple]) -> dict[str, dict]:
+    """按 node_type 汇总 shown/total/capped (ranked 行的 index 1=node_type, index 5=total)."""
+    type_meta: dict[str, dict] = {}
+    for r in ranked:
+        m = type_meta.setdefault(r[1], {"total": r[5], "shown": 0})
+        m["shown"] += 1
+    for m in type_meta.values():
+        m["capped"] = m["shown"] < m["total"]
+    return type_meta
+
+
+def _attach_word_labels(con, nodes_out: list[dict], label_rels: list[str]) -> None:
+    """word 节点挂 labels (stage/cefr_level 等属性), mutates nodes_out in place."""
+    word_ids = [n["concept_id"] for n in nodes_out if n["node_type"] == "word"]
+    by_node = _word_labels(con, word_ids, label_rels)
+    for n in nodes_out:
+        if n["concept_id"] in by_node:
+            n["labels"] = by_node[n["concept_id"]]
+
+
 def degree_summary(
     con: duckdb.DuckDBPyConnection,
     node_types: Optional[list[str]] = None,
@@ -257,21 +294,12 @@ def degree_summary(
         return {"nodes": [], "edges": [], "type_meta": {}, "label_relations": label_rels,
                 "attribute_only_node_types": attribute_only_types}
 
-    type_meta: dict[str, dict] = {}
-    for r in ranked:
-        m = type_meta.setdefault(r[1], {"total": r[5], "shown": 0})
-        m["shown"] += 1
-    for m in type_meta.values():
-        m["capped"] = m["shown"] < m["total"]
+    type_meta = _build_type_meta(ranked)
 
     ids = [n["concept_id"] for n in nodes_out]
     edges_out = _skeleton_edges(con, ids, label_rels)
 
-    word_ids = [n["concept_id"] for n in nodes_out if n["node_type"] == "word"]
-    by_node = _word_labels(con, word_ids, label_rels)
-    for n in nodes_out:
-        if n["concept_id"] in by_node:
-            n["labels"] = by_node[n["concept_id"]]
+    _attach_word_labels(con, nodes_out, label_rels)
 
     return {"nodes": nodes_out, "edges": edges_out, "type_meta": type_meta, "label_relations": label_rels,
             "attribute_only_node_types": attribute_only_types}

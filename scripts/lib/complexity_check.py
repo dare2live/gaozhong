@@ -75,7 +75,14 @@ def format_text(rows: list[dict], threshold: int = THRESHOLD) -> str:
     return "\n".join(lines)
 
 
-def main(argv: list[str]) -> int:
+def _collect_stdin_files(files: list[Path]) -> None:
+    for line in sys.stdin:
+        p = Path(line.strip())
+        if p.exists() and p.suffix == ".py":
+            files.append(p)
+
+
+def _parse_args(argv: list[str]) -> tuple[int, bool, list[Path]]:
     threshold = THRESHOLD
     out_json = False
     files: list[Path] = []
@@ -85,14 +92,16 @@ def main(argv: list[str]) -> int:
         elif a.startswith("--threshold="):
             threshold = int(a.split("=", 1)[1])
         elif a == "--stdin":
-            for line in sys.stdin:
-                p = Path(line.strip())
-                if p.exists() and p.suffix == ".py":
-                    files.append(p)
+            _collect_stdin_files(files)
         else:
             p = Path(a)
             if p.exists() and p.suffix == ".py":
                 files.append(p)
+    return threshold, out_json, files
+
+
+def main(argv: list[str]) -> int:
+    threshold, out_json, files = _parse_args(argv)
     if not files:
         print("no .py files given", file=sys.stderr)
         return 1

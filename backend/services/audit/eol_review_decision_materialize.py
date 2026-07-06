@@ -70,6 +70,80 @@ def _priority_buckets(findings: list[dict[str, Any]], priority: list[str]) -> di
     return buckets
 
 
+def _missing_worksheet_findings(worksheet_path: Path, worksheet_path_exists: bool) -> list[dict[str, Any]]:
+    if worksheet_path_exists:
+        return []
+    return [{
+        "code": "review_worksheet_file_missing",
+        "detail": str(worksheet_path),
+    }]
+
+
+def _partial_rows_and_findings(
+    worksheet_rows: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    partial_rows = [
+        row for row in worksheet_rows
+        if _partial_decision_without_status(row)
+    ]
+    partial_findings = [
+        {
+            "code": "review_worksheet_partial_decision_missing_status",
+            "line": row.get("_worksheet_line_number") or index,
+            "detail": "decision_status is required when reviewer fields are filled or answer/source fields changed",
+        }
+        for index, row in enumerate(partial_rows, start=1)
+    ]
+    return partial_rows, partial_findings
+
+
+def _completion_state_findings(
+    decisions: list[dict[str, Any]],
+    *,
+    allow_empty: bool,
+    output_path_exists: bool,
+    overwrite: bool,
+    output: Path,
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    if not decisions and not allow_empty:
+        findings.append({
+            "code": "no_completed_review_decisions",
+            "detail": "worksheet has no rows with decision_status",
+        })
+    if output_path_exists and not overwrite:
+        findings.append({
+            "code": "decision_output_exists",
+            "detail": str(output),
+        })
+    return findings
+
+
+def _materialize_summary(
+    *,
+    worksheet_path_exists: bool,
+    output_path_exists: bool,
+    worksheet_rows: list[dict[str, Any]],
+    worksheet_findings: list[dict[str, Any]],
+    partial_rows: list[dict[str, Any]],
+    completed_rows: list[dict[str, Any]],
+    decisions: list[dict[str, Any]],
+    findings: list[dict[str, Any]],
+    priority_buckets: dict[str, int],
+) -> dict[str, Any]:
+    return {
+        "worksheet_path_exists": worksheet_path_exists,
+        "output_path_exists": output_path_exists,
+        "worksheet_rows": len(worksheet_rows),
+        "worksheet_findings": len(worksheet_findings),
+        "partial_rows": len(partial_rows),
+        "completed_rows": len(completed_rows),
+        "decision_rows": len(decisions),
+        "findings": len(findings),
+        "priority_buckets": priority_buckets,
+    }
+
+
 def _decision_from_worksheet_row(row: dict[str, Any], contract: dict[str, Any]) -> dict[str, Any]:
     fields = []
     fields.extend(str(field) for field in contract.get("required_fields") or [])
@@ -97,41 +171,21 @@ def materialize_review_decisions(
     worksheet_path_exists = worksheet_path.exists()
     worksheet_rows = read_jsonl(worksheet_path)
     worksheet_findings = validate_worksheet_rows(worksheet_rows, contract=contract, expected_year=year)
-    missing_worksheet_findings = []
-    if not worksheet_path_exists:
-        missing_worksheet_findings.append({
-            "code": "review_worksheet_file_missing",
-            "detail": str(worksheet_path),
-        })
-    partial_rows = [
-        row for row in worksheet_rows
-        if _partial_decision_without_status(row)
-    ]
-    partial_findings = [
-        {
-            "code": "review_worksheet_partial_decision_missing_status",
-            "line": row.get("_worksheet_line_number") or index,
-            "detail": "decision_status is required when reviewer fields are filled or answer/source fields changed",
-        }
-        for index, row in enumerate(partial_rows, start=1)
-    ]
+    missing_worksheet_findings = _missing_worksheet_findings(worksheet_path, worksheet_path_exists)
+    partial_rows, partial_findings = _partial_rows_and_findings(worksheet_rows)
     completed_rows = [
         row for row in worksheet_rows
         if not _empty(row.get("decision_status"))
     ]
     decisions = [_decision_from_worksheet_row(row, contract) for row in completed_rows]
     findings = missing_worksheet_findings + worksheet_findings + partial_findings + validate_decisions(decisions, contract=contract)
-
-    if not decisions and not allow_empty:
-        findings.append({
-            "code": "no_completed_review_decisions",
-            "detail": "worksheet has no rows with decision_status",
-        })
-    if output_path_exists and not overwrite:
-        findings.append({
-            "code": "decision_output_exists",
-            "detail": str(output),
-        })
+    findings += _completion_state_findings(
+        decisions,
+        allow_empty=allow_empty,
+        output_path_exists=output_path_exists,
+        overwrite=overwrite,
+        output=output,
+    )
     priority = [str(code) for code in contract.get("materializer_priority_issue_codes") or []]
     priority_buckets = _priority_buckets(findings, priority)
 
@@ -142,17 +196,17 @@ def materialize_review_decisions(
         "worksheet_path": str(worksheet_path),
         "output_path": str(output),
         "status": "fail" if findings else "pass",
-        "summary": {
-            "worksheet_path_exists": worksheet_path_exists,
-            "output_path_exists": output_path_exists,
-            "worksheet_rows": len(worksheet_rows),
-            "worksheet_findings": len(worksheet_findings),
-            "partial_rows": len(partial_rows),
-            "completed_rows": len(completed_rows),
-            "decision_rows": len(decisions),
-            "findings": len(findings),
-            "priority_buckets": priority_buckets,
-        },
+        "summary": _materialize_summary(
+            worksheet_path_exists=worksheet_path_exists,
+            output_path_exists=output_path_exists,
+            worksheet_rows=worksheet_rows,
+            worksheet_findings=worksheet_findings,
+            partial_rows=partial_rows,
+            completed_rows=completed_rows,
+            decisions=decisions,
+            findings=findings,
+            priority_buckets=priority_buckets,
+        ),
         "findings": findings,
         "decisions": decisions,
     }

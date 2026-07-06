@@ -37,6 +37,43 @@ def _decision_contract_summary(contract: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _build_worksheet_row(
+    item: dict[str, Any],
+    draft_rows: dict[tuple[str, ...], dict[str, Any]],
+    key_fields: list[str],
+    contract_summary: dict[str, Any],
+) -> dict[str, Any] | None:
+    identity = item.get("identity") or {}
+    if "decision_path" in identity:
+        return None
+    source_row = draft_rows.get(_identity_key(identity, key_fields), {})
+    issue_codes = [issue["code"] for issue in item.get("issues") or []]
+    return {
+        "worksheet_kind": "eol_review_decision_template",
+        "year": identity.get("year"),
+        "paper_type": source_row.get("paper_type") or identity.get("paper_type"),
+        "observed_question_number": identity.get("observed_question_number"),
+        "question_type": identity.get("question_type"),
+        "backlog_issue_codes": issue_codes,
+        "backlog_issue_details": item.get("issues") or [],
+        "current_review_status": identity.get("review_status"),
+        "current_answer": source_row.get("answer"),
+        "current_source_id": source_row.get("source_id"),
+        "current_source_span": source_row.get("source_span"),
+        "stem_preview": source_row.get("stem_preview"),
+        "source_file": source_row.get("source_file"),
+        "decision_contract": contract_summary,
+        "decision_status": "",
+        "reviewer": "",
+        "reviewed_at": "",
+        "answer": source_row.get("answer") or "",
+        "source_id": source_row.get("source_id") or "",
+        "source_span": source_row.get("source_span") or "",
+        "review_status": "",
+        "review_note": "",
+    }
+
+
 def build_eol_review_worksheet(
     year: int,
     draft_path: Path | None = None,
@@ -52,37 +89,9 @@ def build_eol_review_worksheet(
 
     worksheet_rows: list[dict[str, Any]] = []
     for item in backlog_report["backlog"]:
-        identity = item.get("identity") or {}
-        if "decision_path" in identity:
-            continue
-        source_row = draft_rows.get(_identity_key(identity, key_fields), {})
-        issue_codes = [issue["code"] for issue in item.get("issues") or []]
-        worksheet_rows.append(
-            {
-                "worksheet_kind": "eol_review_decision_template",
-                "year": identity.get("year"),
-                "paper_type": source_row.get("paper_type") or identity.get("paper_type"),
-                "observed_question_number": identity.get("observed_question_number"),
-                "question_type": identity.get("question_type"),
-                "backlog_issue_codes": issue_codes,
-                "backlog_issue_details": item.get("issues") or [],
-                "current_review_status": identity.get("review_status"),
-                "current_answer": source_row.get("answer"),
-                "current_source_id": source_row.get("source_id"),
-                "current_source_span": source_row.get("source_span"),
-                "stem_preview": source_row.get("stem_preview"),
-                "source_file": source_row.get("source_file"),
-                "decision_contract": contract_summary,
-                "decision_status": "",
-                "reviewer": "",
-                "reviewed_at": "",
-                "answer": source_row.get("answer") or "",
-                "source_id": source_row.get("source_id") or "",
-                "source_span": source_row.get("source_span") or "",
-                "review_status": "",
-                "review_note": "",
-            }
-        )
+        row = _build_worksheet_row(item, draft_rows, key_fields, contract_summary)
+        if row is not None:
+            worksheet_rows.append(row)
 
     return {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),

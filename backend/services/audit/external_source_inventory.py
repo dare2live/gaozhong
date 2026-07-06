@@ -192,6 +192,52 @@ def _attachment_findings(source: SourceSpec, row: dict[str, Any]) -> list[dict[s
     return findings
 
 
+def _source_summary_row(source: SourceSpec, matched_state: str | None) -> dict[str, Any]:
+    return {
+        "source_id": source.source_id,
+        "name": source.name,
+        "family": source.family,
+        "org": source.org,
+        "year": source.year,
+        "paper_type": source.paper_type,
+        "status": source.status,
+        "matched_state": matched_state,
+        "publish_url": source.publish_url,
+        "attachment_count": len(source.attachments),
+    }
+
+
+def _collect_source_inventory(
+    source: SourceSpec,
+) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
+    matched_state = match_source_state(source.status)
+    source_rows = [_attachment_inventory(source, attachment) for attachment in source.attachments]
+
+    findings = list(_source_findings(source, matched_state))
+    for row in source_rows:
+        findings.extend(_attachment_findings(source, row))
+
+    return _source_summary_row(source, matched_state), source_rows, findings
+
+
+def _severity_counts(findings: list[dict[str, Any]]) -> dict[str, int]:
+    severity_counts = {"ERROR": 0, "WARN": 0}
+    for finding in findings:
+        severity = str(finding["severity"])
+        severity_counts[severity] = severity_counts.get(severity, 0) + 1
+    return severity_counts
+
+
+def _attachment_summary_counts(attachments: list[dict[str, Any]]) -> dict[str, int]:
+    return {
+        "total": len(attachments),
+        "in_project": sum(1 for row in attachments if row["in_project"]),
+        "outside_project": sum(1 for row in attachments if not row["in_project"]),
+        "missing": sum(1 for row in attachments if not row["exists"]),
+        "below_min_bytes": sum(1 for row in attachments if row["exists"] and not row["size_ok"]),
+    }
+
+
 def build_external_source_inventory() -> dict[str, Any]:
     registry = load_registry()
     sources = []
@@ -199,40 +245,13 @@ def build_external_source_inventory() -> dict[str, Any]:
     attachments: list[dict[str, Any]] = []
 
     for source in registry.list_sources():
-        matched_state = match_source_state(source.status)
-        source_rows = [_attachment_inventory(source, attachment) for attachment in source.attachments]
+        source_row, source_rows, source_findings = _collect_source_inventory(source)
         attachments.extend(source_rows)
-        findings.extend(_source_findings(source, matched_state))
-        for row in source_rows:
-            findings.extend(_attachment_findings(source, row))
+        findings.extend(source_findings)
+        sources.append(source_row)
 
-        sources.append(
-            {
-                "source_id": source.source_id,
-                "name": source.name,
-                "family": source.family,
-                "org": source.org,
-                "year": source.year,
-                "paper_type": source.paper_type,
-                "status": source.status,
-                "matched_state": matched_state,
-                "publish_url": source.publish_url,
-                "attachment_count": len(source.attachments),
-            }
-        )
-
-    severity_counts = {"ERROR": 0, "WARN": 0}
-    for finding in findings:
-        severity = str(finding["severity"])
-        severity_counts[severity] = severity_counts.get(severity, 0) + 1
-
-    attachment_counts = {
-        "total": len(attachments),
-        "in_project": sum(1 for row in attachments if row["in_project"]),
-        "outside_project": sum(1 for row in attachments if not row["in_project"]),
-        "missing": sum(1 for row in attachments if not row["exists"]),
-        "below_min_bytes": sum(1 for row in attachments if row["exists"] and not row["size_ok"]),
-    }
+    severity_counts = _severity_counts(findings)
+    attachment_counts = _attachment_summary_counts(attachments)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),

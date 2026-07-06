@@ -80,27 +80,37 @@ def find_fix(token: str, bucket: dict[tuple, list[str]],
     return best[1] if best else None
 
 
-def build_ocr_fix_dict(con: duckdb.DuckDBPyConnection) -> dict:
-    """Scan exam_questions tokens not in learnable, attempt fix, populate dict."""
+def _load_learnable_vocab(con: duckdb.DuckDBPyConnection) -> set[str]:
+    """Union of cefr_vocab + unit_vocab_intro words (已学 = 可信任 token)."""
     cefr = {r[0] for r in con.execute("SELECT word FROM cefr_vocab").fetchall()}
     textbook = {r[0] for r in con.execute("SELECT DISTINCT word FROM unit_vocab_intro").fetchall()}
-    learnable = cefr | textbook
-    bucket = _index_by_signature(learnable)
-    # all exam tokens with freq
+    return cefr | textbook
+
+
+def _build_token_freq(con: duckdb.DuckDBPyConnection):
+    """Tokenize all exam_questions.raw_question, lowercase, count frequency."""
     from collections import Counter
     freq: Counter = Counter()
     for (q,) in con.execute("SELECT raw_question FROM exam_questions").fetchall():
         for t in _TOKEN_RE.findall(q or ""):
             freq[t.lower()] += 1
-    # candidates: freq ≥ 2 and not in learnable
-    unknown = [w for w, c in freq.items() if c >= 2 and w not in learnable]
+    return freq
+
+
+def _build_fixes(unknown: list[str], bucket: dict[tuple, list[str]],
+                  learnable: set[str], freq) -> list[tuple[str, str, int, int]]:
+    """Attempt find_fix() for each unknown token, keep only successful ones."""
     fixes: list[tuple[str, str, int, int]] = []
     for tok in unknown:
         suggested = find_fix(tok, bucket, learnable)
         if suggested:
             d = levenshtein(tok, suggested, max_d=2)
             fixes.append((tok, suggested, d, freq[tok]))
-    # schema — 含 confidence + reviewed_by, 让教师手动 review
+    return fixes
+
+
+def _ensure_ocr_fix_table(con: duckdb.DuckDBPyConnection) -> None:
+    """Create (if absent) + truncate ocr_fix_dictionary — 含 confidence + reviewed_by, 让教师手动 review."""
     con.execute("""
         CREATE TABLE IF NOT EXISTS ocr_fix_dictionary (
             raw_token VARCHAR PRIMARY KEY,
@@ -113,15 +123,30 @@ def build_ocr_fix_dict(con: duckdb.DuckDBPyConnection) -> dict:
         )
     """)
     con.execute("DELETE FROM ocr_fix_dictionary")
+
+
+def _insert_fixes(con: duckdb.DuckDBPyConnection, fixes: list[tuple[str, str, int, int]]) -> None:
+    """Insert fixes rows. confidence: 距 1 + freq 低 → 'mid'; 距 2 → 'low'."""
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc).isoformat()
-    # confidence: 距 1 + freq 低 → 'mid'; 距 2 → 'low'
     con.executemany(
         "INSERT INTO ocr_fix_dictionary VALUES (?, ?, ?, ?, ?, NULL, ?)",
         [(t, s, d, f,
           "mid" if d == 1 else "low",
           now) for t, s, d, f in fixes],
     )
+
+
+def build_ocr_fix_dict(con: duckdb.DuckDBPyConnection) -> dict:
+    """Scan exam_questions tokens not in learnable, attempt fix, populate dict."""
+    learnable = _load_learnable_vocab(con)
+    bucket = _index_by_signature(learnable)
+    freq = _build_token_freq(con)
+    # candidates: freq ≥ 2 and not in learnable
+    unknown = [w for w, c in freq.items() if c >= 2 and w not in learnable]
+    fixes = _build_fixes(unknown, bucket, learnable, freq)
+    _ensure_ocr_fix_table(con)
+    _insert_fixes(con, fixes)
     return {
         "unknown_tokens": len(unknown),
         "fixes_built": len(fixes),
