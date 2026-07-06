@@ -67,12 +67,15 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 16  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13.
+SIZE_BIG_BASELINE = 17  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13.
 # 2026-07-04 全数据审计12+21问题按根因修复: vocab_renjiao.py(Welcome Unit+专有名词头识别+
 # 跨行词条头合并 3 处真bug修复, 220→270行) + junior_high_curriculum.py(语法/词汇续行合并
 # 2 处真bug修复, 233→298行) 跨过250行门槛, huge 仍=0(均<400, 非god-module), baseline 13→15.
 # 2026-07-04 教研组验收: section.py(锚点大小写归一+启发式行长门槛防误命中真bug修复,
 # 211→254行)跨过250行门槛, huge 仍=0, baseline 15→16.
+# 2026-07-06 数据关联设计审查批次2: graph.py(全景图谱Top-N排序改relation加权度数+两级
+# signal_degree排序, 修复tests_grammar边骨架生存率0/18的架构级bug, 227→277行)跨过250行
+# 门槛, huge 仍=0(远低于400, 非god-module), baseline 16→17.
 
 
 def audit_code_size(_con: duckdb.DuckDBPyConnection) -> list[dict]:

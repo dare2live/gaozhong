@@ -28,18 +28,26 @@ def _candidate_qids(con: duckdb.DuckDBPyConnection, qtype: str,
                      exclude_tags: list[str] | None,
                      difficulty: str | None,
                      year_in: list[int] | None) -> list[int]:
-    where = ["qb.question_type = ?"]
-    args: list = [qtype]
-    if difficulty and difficulty != "mixed":
-        where.append("qb.difficulty = ?"); args.append(difficulty)
-    sql = (
-        "SELECT DISTINCT qb.qb_id FROM question_bank qb"
-    )
+    """候选题ID (按 question_type + 可选 标签/难度/年份 过滤).
+
+    坑(2026-07-06 数据关联设计审查实测发现): 原实现 SQL 文本片段拼接顺序与 args 列表顺序不一致
+    (JOIN 的 tag_id 占位符先出现在拼出的文本里, 但 args 先塞 qtype/difficulty 后塞 require_tags) ——
+    DuckDB 按占位符在最终 SQL 文本里的先后位置绑定值, 顺序一错位, 参数就串位(qtype 的值绑给了
+    tag_id 占位符, 反之亦然), 导致 require_tags 实测**从未真正生效过**(老师填任何 word:/unit:/
+    exam_point: 标签都静默返回0结果, 不报错也无从察觉)。改成每追加一段 SQL 文本就同步追加对应
+    参数, 严格保证"文本出现顺序=绑定顺序", 不再靠人工分别维护两份顺序还要求它们碰巧一致。
+    """
+    sql = "SELECT DISTINCT qb.qb_id FROM question_bank qb"
+    args: list = []
     if require_tags:
         sql += (" INNER JOIN question_tags qt_r ON qt_r.qb_id = qb.qb_id "
                 "AND qt_r.tag_id IN (" + ",".join(["?"] * len(require_tags)) + ")")
         args += require_tags
-    sql += " WHERE " + " AND ".join(where)
+    sql += " WHERE qb.question_type = ?"
+    args.append(qtype)
+    if difficulty and difficulty != "mixed":
+        sql += " AND qb.difficulty = ?"
+        args.append(difficulty)
     if exclude_tags:
         sql += (" AND NOT EXISTS (SELECT 1 FROM question_tags qt_e "
                 "WHERE qt_e.qb_id = qb.qb_id AND qt_e.tag_id IN ("

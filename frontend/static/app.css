@@ -390,6 +390,8 @@
 .ks-tl .ks-sum::after { content: ""; flex: none; width: 7px; height: 7px; border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3); transform: rotate(45deg); margin-top: -3px; transition: transform var(--dur) var(--ease); }
 .ks-tl .ks-lesson[open] .ks-sum::after { transform: rotate(225deg); margin-top: 3px; }
 .ks-soon { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--line-soft); font-size: 11.5px; color: var(--warn); }
+.ks-hw-more { display: inline-block; margin-top: 6px; font-size: 11.5px; color: var(--accent-ink); }
+.ks-hw-more:hover { text-decoration: underline; }
 
 /* ④-5 页尾: 基础库入口 + 数据来源人话 */
 .ks-foot { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); }

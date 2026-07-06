@@ -69,9 +69,15 @@
 
 
   // -- router
+  // 坑(2026-07-06 数据关联设计审查): 原 hash 只解析第一段(page name), 无参数解析能力——
+  // "40节课程"课节的 covers_exam_points 后端已算好, 但没法带着跳去"组卷"预筛选, 只能手动
+  // 重新在组卷页里找。二级段(#/qbank/exam_point:theme_l2:XX)解析成 param 传给 mount(param),
+  // 无参数的旧 tab 不受影响(多余参数JS天然忽略, 无需逐个改签名)。
   function route() {
     const hash = (location.hash || "#/beike").slice(2);  // strip "#/" (命题研判=默认落地页)
-    const name = (hash.split("/")[0] || "beike").toLowerCase();
+    const parts = hash.split("/");
+    const name = (parts[0] || "beike").toLowerCase();
+    const param = parts.length > 1 ? decodeURIComponent(parts.slice(1).join("/")) : null;
     // 板块同步: 路由到的页若属另一板块 (含 hub 内链/直接 hash), 切板块并重渲侧栏
     const sec = _sectionOf(name);
     if (sec !== _section) { _section = sec; localStorage.setItem("gz_section", _section); renderSidebar(); populateNavCounts(); }
@@ -84,7 +90,7 @@
     if (mount) {
       // RC1: 即时加载占位 (不白等上一屏看似卡死)
       CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入中…</div>';
-      mount().catch(err => {
+      mount(param).catch(err => {
         // RC1 / D0 诚实: 加载失败=可见错误, 不冒充空数据 (后端未起/数据未就绪都该显式告知)
         CONTENT.innerHTML = '<div class="error-state">'
           + '<div class="es-title">该模块加载失败</div>'
@@ -214,6 +220,10 @@
     // clean_preview 统一裁边界+按需补省略号, 前端不再无条件追加"…"。
     const hw = (l.evidence_questions || []).map(q =>
       `<li class="ks-hw"><span class="ks-hw-t">${_esc(q.question_type)}</span><span class="ks-hw-p">${GZ.isSubqPreview(q.preview) ? "设问: " : ""}${_esc(q.preview)}</span><span class="ks-hw-s" title="原卷溯源: ${_esc(q.source)}">${_esc(_srcShort(q))}</span></li>`).join("");
+    // 坑(2026-07-06 数据关联设计审查): covers_exam_points 后端早算好但前端从未读取, 老师想给这节课
+    // 补充练习只能手动去组卷页重新找。带着考点焦点跳组卷预筛选(route()新支持二级hash参数)。
+    const focus = (l.covers_exam_points || [])[0];
+    const focusLink = focus ? `<a class="ks-hw-more" href="#/qbank/${encodeURIComponent(focus)}">按此考点补充练习 →</a>` : "";
     return `<details class="ks-lesson"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-hwn">· 作业 ${(l.evidence_questions || []).length} 道真题</span>
@@ -222,6 +232,7 @@
         <div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div>
         <ul class="ks-hwlist">${hw || '<li class="ks-hw">本节真题作业整理中</li>'}</ul>
         <div class="ks-soon">正文即将上线</div>
+        ${focusLink}
       </div>
     </details>`;
   }
@@ -266,8 +277,9 @@
   // ===================================================================
   // C. 题库 + 组卷
   // ===================================================================
-  register("qbank", async () => {
+  register("qbank", async (focusTag) => {
     // 题库浏览器: 按题型筛真题 (全 fetch /api/qb/* 单算点; 仅真题无押题)。
+    // focusTag: 从"40节课程"课节带来的考点焦点(如 exam_point:theme_l2:XX), route()二级hash参数解析。
     CONTENT.innerHTML = `<h2>题库 + 组卷</h2><p class="muted">载入中...</p>`;
     const st = await fetchJSON("/api/qb/stats").catch(() => ({ by_type: {}, by_difficulty: {} }));
     // 后端审计#7: difficulty 实为 len(题面) 篇幅档(非教研难度), 且跨 source 粒度混淆(2021子题短/2015篇章长)
@@ -287,10 +299,11 @@
         <button id="qb-bp-go" class="bk-pill on">${GZ.icon("grid")} 生成蓝图练习卷</button>
         <span class="muted" style="font-size:11px;">按考纲蓝图结构从真题加权抽样 · 非预测/非押题</span>
       </div>
-      <details id="qb-compose" style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:var(--accent-ink);">${GZ.icon("gear")} 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
+      <details id="qb-compose" ${focusTag ? "open" : ""} style="margin-bottom:10px;font-size:13px;"><summary style="cursor:pointer;color:var(--accent-ink);">${GZ.icon("gear")} 自定义组卷 (按题型/标签/难度/年份精确组卷, 收敛自 legacy)</summary>
+        ${focusTag ? `<p class="muted" style="font-size:11.5px;margin:4px 0 0;">从"40节课程"带来的考点焦点已自动填入下方"必含标签"并组卷。</p>` : ""}
         <div class="bk-filter" style="margin-top:8px;flex-wrap:wrap;">
           <label>题型分布 <input id="qb-c-mix" value="${defMix}" style="width:280px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
-          <label>必含标签 <input id="qb-c-req" placeholder="如: word:abandon(必含此词) 或 unit:waiyan/bixiu_1/U1(必含此单元)" title="按词或单元筛选, 格式: word:词 或 unit:册次/单元, 多个用逗号分隔" style="width:260px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
+          <label>必含标签 <input id="qb-c-req" value="${focusTag ? _esc(focusTag) : ""}" placeholder="如: word:abandon(必含此词) 或 unit:waiyan/bixiu_1/U1(必含此单元)" title="按词/单元/考点筛选, 格式: word:词 或 unit:册次/单元 或 exam_point:维度:标签, 多个用逗号分隔" style="width:260px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>题面篇幅 <select id="qb-c-diff" aria-label="组卷题面篇幅筛选(字数估, 非难度)" style="padding:3px;border:1px solid var(--line);border-radius:6px;"><option value="">混合</option><option value="easy">短</option><option value="mid">中</option><option value="hard">长</option></select></label>
           <label>年份 <input id="qb-c-year" placeholder="2021,2022,2023" style="width:120px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
           <label>种子 <input id="qb-c-seed" type="number" value="42" style="width:60px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;"></label>
@@ -380,6 +393,7 @@
       mountPaper(box, paperHTML(p, "自定义组卷", `<p class="muted" style="font-size:11px;margin:0 0 8px;">题面均历年真题(无押题); 缺额诚实披露。</p>`));
     };
     $("#qb-c-go").onclick = genCompose;
+    if (focusTag) genCompose();   // 带考点焦点跳转过来 → 自动组一次卷, 不用老师再点一次
     await loadList();
   });
 

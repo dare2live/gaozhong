@@ -191,6 +191,12 @@ def main() -> None:
     from backend.services.theme_vocab import build_theme_vocabulary
     print(f"  主题特征词汇关联性(characterizes_theme, 辽宁区分度): {build_theme_vocabulary(con)}")
 
+    # 坑(2026-07-06 全量重建实测发现): question_bank(Layer4)装载早于tests_exam_point边(Layer4i)
+    # 生成, _autotag()内的exam_point反查首次全量重建时0命中(边还不存在)——同Layer4j(weakness)
+    # 的依赖顺序模式, 在4i边就绪后单独回填。
+    from backend.services.question_bank import loader as qb_loader
+    print(f"  组卷考点标签回填(exam_point, 4i边就绪后): {qb_loader.backfill_exam_point_tags(con)}")
+
     print("\n=== Layer 4j: 学情薄弱环节重算 (4i 考点边就绪后, 错题→真考点→薄弱; 取代Layer4e的token派生) ===")
     from backend.services import weakness
     print(f"  {weakness.recompute_all(con)}")
