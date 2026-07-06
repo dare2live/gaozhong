@@ -76,8 +76,12 @@ ${G.pageHead("基础库 · 考试词典", "查一个词, 看它考不考", "考�
   function row(w) {
     const stage = w.stage || "—", sc = STAGE_C[stage] || "var(--ink-3)";
     const hit = w.gaokao_hit_ln ? `<b style="color:#9C2C20;">${w.gaokao_hit_ln}</b>` : '<span class="muted">—</span>';
+    // 坑(2026-07-06 数据关联设计审查): 老师看到"辽宁高考命中N次"却点不进去看是哪N道题——
+    // GZ.conceptLink/openPopup 深链机制已在基础库首页搜索框等处用对, 这里补上(与.dict-word
+    // 展开跨阶段多义是不同选择器的独立事件委托, 互不冲突, 可先看命中真题再展开多义)。
     return `<tr style="border-bottom:1px solid var(--line-soft);">
-      <td style="padding:6px 8px;font-weight:600;"><span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed var(--line);">${w.word}</span></td>
+      <td style="padding:6px 8px;font-weight:600;">${GZ.conceptLink("word:" + w.word, w.word)}
+        <span class="dict-word" role="button" tabindex="0" data-word="${w.word}" title="查跨阶段多义" style="cursor:pointer;border-bottom:1px dashed var(--line);font-size:11px;color:var(--ink-3);">(多义)</span></td>
       <td style="padding:6px 8px;color:var(--ink-2);">${w.gloss || '<span class="muted">(无释义)</span>'} ${srcBadge(w.gloss_source)}</td>
       <td style="padding:6px 8px;"><span style="color:${sc};font-size:12px;">${stage}</span></td>
       <td style="padding:6px 8px;font-size:12px;color:var(--ink-3);">${w.curriculum_level || "—"}</td>

@@ -171,10 +171,16 @@
 .tk-year-h { font-size: 15px; font-weight: 650; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid var(--line); }
 .tk-year-n { font-family: var(--num); font-size: 12px; font-weight: 400; color: var(--ink-3); margin-left: 6px; }
 .tk-qlist { list-style: none; margin: 0; padding: 0; }
-.tk-q { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+.tk-q { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
 .tk-qtype { flex: 0 0 92px; font-weight: 600; color: var(--accent-ink); font-size: 12px; }
 .tk-qprev { flex: 1; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tk-qmeta { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+/* 坑(2026-07-06 数据关联设计审查): 真题库每题命中的语法点/考点chip, 独占一行(flex-basis:100%
+   强制换行, 不挤占题干预览的单行省略布局) */
+.tk-qtags { flex: 0 0 100%; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.tk-qtags .tk-tag { font-size: 11px; }
+.tk-qtags .gz-concept { background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-xs); padding: 1px 7px; border-bottom: none; }
+.tk-qtags .gz-concept:hover { background: var(--accent-wash); color: var(--accent); }
 .tk-ans { font-size: 11px; color: var(--good); border: 1px solid #CFE6D9; border-radius: var(--r-xs); padding: 0 5px; }
 .tk-src { font-family: var(--num); font-size: 11px; color: var(--ink-3); }
 .kb-list { display: flex; flex-direction: column; }

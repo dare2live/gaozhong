@@ -4,17 +4,22 @@
  * 课标库读 /api/curriculum/summary + /api/theme_contexts + /api/grammar_items。每条可溯源, 数据真值。
  */
 (function () {
-  const { registerTab, fetchSafe, isErr, errorBox, pageHead, isSubqPreview } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, pageHead, isSubqPreview, conceptLink } = window.GZ;
   const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
   // ── ③-b 真题库: 辽宁卷真题按年/题型浏览, 每题溯源原卷 ──
   // 坑(2026-07-05 根因审计): preview 24% 是子题设问句(如"32. What does...")非原文段落, 加"设问:"
   // 前缀标注(GZ.isSubqPreview 共享判断, Rule5); preview 现由后端 clean_preview 按需补省略号, 不再无条件追加"…"。
+  // 坑(2026-07-06 数据关联设计审查): 真题库曾是基础库四子页里唯一的数据孤岛(不展示每题命中的语法点
+  // /考点), 后端 exam.py::_question_tags 已补上 tags 字段(反查 tests_grammar/tests_exam_point 边),
+  // 这里渲成可点chip深链到教材语法/考点关联(复用 GZ.conceptLink, 不新建机制)。
   function _tikuQ(q) {
+    const tagChips = (q.tags || []).map(t => `<span class="tk-tag">${conceptLink(t.concept_id, t.label)}</span>`).join("");
     return `<li class="tk-q">
       <span class="tk-qtype">${esc(q.question_type)}</span>
       <span class="tk-qprev">${isSubqPreview(q.preview) ? "设问: " : ""}${esc(q.preview)}</span>
       <span class="tk-qmeta">${q.has_answer ? '<span class="tk-ans">含答案</span>' : ""}<span class="tk-src" title="溯源原卷">${esc(q.source_file)}#${q.source_index}</span></span>
+      ${tagChips ? `<span class="tk-qtags">${tagChips}</span>` : ""}
     </li>`;
   }
   function _tikuYear(year, qs) {
@@ -50,10 +55,12 @@
       return `<div class="kb-row"><span class="kb-row-h">${esc(l1)}</span><div class="kb-pills">${items || '<span class="kb-dim">主题</span>'}</div></div>`;
     }).join("");
   }
+  // 坑(2026-07-06 数据关联设计审查): 课标库语法体系与教材库语法occurrence共用同一张grammar_items表
+  // 同一套label, grammar_item_id已在响应里却从未生成过链接, 两处互不相通。补GZ.conceptLink深链。
   function _grammarTop(grammar) {
     const tops = grammar.filter(g => g.depth === 1);
     const childCount = p => grammar.filter(g => g.parent_id === p).length;
-    return tops.map(g => `<div class="kb-row"><span class="kb-row-h">${esc(g.label)}</span><span class="kb-dim">${childCount(g.grammar_item_id)} 子项</span></div>`).join("")
+    return tops.map(g => `<div class="kb-row"><span class="kb-row-h">${window.GZ.conceptLink("grammar:" + g.grammar_item_id, g.label)}</span><span class="kb-dim">${childCount(g.grammar_item_id)} 子项</span></div>`).join("")
       || '<div class="kb-dim">语法体系</div>';
   }
   registerTab("kebiao", async () => {

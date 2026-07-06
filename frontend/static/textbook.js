@@ -55,10 +55,13 @@ ${G.pageHead("基础库 · 教材库", "课本里有什么", "外研社 (辽宁 
   // 考察重点可视化 (用户: "该在指出考察重点后可视化列出" — 只用已有真实数据, 不臆测):
   // 词 = exam_vocabulary.gaokao_hit_ln 辽宁真题命中次数; 语法 = 该类目辽宁卷考查占比(exam_grammar_stats)。
   function _knowledgeHTML(k) {
+    // 坑(2026-07-06 数据关联设计审查): 单词/语法条目"辽宁高考命中N次"/"考查占比"徽章标榜"真值"
+    // 却点不进去看具体是哪些真题——GZ.conceptLink 深链机制已在别处用对, 这里补上(word:.../grammar:...)。
     const words = (k.vocab || []).map(v => {
       const hit = v.gaokao_hit_ln || 0;
-      const badge = hit > 0 ? `<sup class="tb-hit" title="辽宁高考命中 ${hit} 次(真题真值)">${hit}</sup>` : "";
-      return `<span class="tb-word${hit > 0 ? " tb-word-tested" : ""}" title="${_esc(v.zh_def)}">${_esc(v.word)}${v.pos ? `<i>${_esc(v.pos)}</i>` : ""}${badge}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}</span>`;
+      const badge = hit > 0 ? `<sup class="tb-hit" title="辽宁高考命中 ${hit} 次(真题真值, 点词查看)">${hit}</sup>` : "";
+      const content = `${_esc(v.word)}${v.pos ? `<i>${_esc(v.pos)}</i>` : ""}${badge}${v.in_curriculum ? "" : '<sup class="tb-extra" title="校本超纲(非课标)">超</sup>'}`;
+      return `<a class="gz-concept tb-word${hit > 0 ? " tb-word-tested" : ""}" data-concept="word:${_esc(v.word)}" title="${_esc(v.zh_def)}">${content}</a>`;
     }).join("");
     const chips = arr => (arr || []).map(x => `<span class="tb-chip">${_esc(x)}</span>`).join("");
     const exprs = (k.expression || []).map(e => `<span class="tb-chip">${_esc(e.text)}${e.intent ? `<i>${_esc(e.intent)}</i>` : ""}</span>`).join("");
@@ -67,7 +70,8 @@ ${G.pageHead("基础库 · 教材库", "课本里有什么", "外研社 (辽宁 
       const badge = pct != null
         ? `<span class="tb-gram-pct" title="「${_esc(g.category)}」类辽宁卷考查占比(真值)">${_esc(g.category)} · 辽宁 ${pct}%</span>`
         : `<span class="tb-gram-pct tb-gram-pct-none" title="该类目辽宁卷暂无考查真题边(诚实标, 非0)">暂无考查数据</span>`;
-      return `<div class="tb-gram-row"><span class="tb-gram-l">${_esc(g.label || "?")}</span>${badge}${g.example ? `<span class="tb-gram-ex">e.g. ${_esc(g.example)}</span>` : ""}</div>`;
+      const label = g.grammar_item_id ? GZ.conceptLink("grammar:" + g.grammar_item_id, g.label || "?") : `<span class="tb-gram-l">${_esc(g.label || "?")}</span>`;
+      return `<div class="tb-gram-row"><span class="tb-gram-l">${label}</span>${badge}${g.example ? `<span class="tb-gram-ex">e.g. ${_esc(g.example)}</span>` : ""}</div>`;
     }).join("");
     const phraseNote = k.phrase_note ? `<p class="tb-phrase-note">${_esc(k.phrase_note)}</p>` : "";
     const hasPhrases = (k.collocation || []).length || (k.sentence_pattern || []).length || (k.expression || []).length;

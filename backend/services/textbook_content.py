@@ -61,7 +61,7 @@ def _grammar(con, v, vol, u, cat_pct):
     单一计算点一致, 不重派生新口径); cat_pct 由调用方传入 (整单元只需算一次真实占比 map)。
     """
     rows = rows_to_dicts(con.execute(
-        "SELECT gi.label AS label, go.example_sentence AS example, "
+        "SELECT go.grammar_item_id AS grammar_item_id, gi.label AS label, go.example_sentence AS example, "
         "cat.label AS category "
         "FROM grammar_occurrences go LEFT JOIN grammar_items gi ON gi.grammar_item_id = go.grammar_item_id "
         "LEFT JOIN grammar_items cat ON cat.grammar_item_id = "
