@@ -76,6 +76,8 @@ contracts:
   "/api/recommend/top_exam_words": {params: {}, type: list}
   "/api/recommend/unit_exam_alignment": {params: {unit: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [unit_id, intro_total, exam_overlap], type: dict}
   "/api/stats": {params: {}, required_keys: [exam_questions, nodes, edges], type: dict}
+  "/api/student_answers": {params: {}, required_keys: [error], type: dict, allow_error: true,
+    note: "POST-body 端点(学生端最小闭环写入); GET 形态无 body 契约 = 确定性 error 提示, 同 /api/placement/score 契约模式"}
   "/api/students/classes": {params: {teacher_id: ["t-li"]}, required_keys: [classes, count, scoped_by_teacher], type: dict}
   "/api/students/get": {params: {teacher_id: ["t-li"], id: ["sy-2024-001"]}, required_keys: [student, answers], type: dict}
   "/api/students/list": {params: {teacher_id: ["t-li"]}, required_keys: [students, count, scoped_by_teacher], type: dict}

@@ -91,6 +91,10 @@ class Handler(BaseHTTPRequestHandler):
                 from backend.api.routes import vocab_guard as vg
                 self._json(200, vg.api_vocab_batch_check(qs, body))
                 return
+            if path == "/api/student_answers":
+                from backend.api.routes import student_answers as sa
+                self._json(200, sa.api_submit_student_answers(qs, body))
+                return
             self._json(404, {"error": "no POST route", "path": path})
         except Exception as e:
             self._json(500, {"error": str(e), "type": type(e).__name__})

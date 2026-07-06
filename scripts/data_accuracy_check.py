@@ -325,6 +325,7 @@ _LIB_CHECKS = [
     ("d0_vocab_quality_check", "check_vocab_quality"),
     ("d0_governance_check", "check_ocr_fix_dictionary"),
     ("d0_governance_check", "check_student_answers_demo_transparency"),
+    ("d0_governance_check", "check_real_student_isolation"),
     ("d0_k12_served_check", "check_k12_served"),
     ("endpoint_contract_check", "check_endpoint_contracts"),   # 维度38: 75端点 HTTP 契约 (endpoint_contracts.yaml, 审计MAJOR修)
 ]

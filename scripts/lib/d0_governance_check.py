@@ -32,3 +32,24 @@ def check_student_answers_demo_transparency(con: duckdb.DuckDBPyConnection, chec
     ).fetchone()[0]
     check("student_answers.source ⊆ {demo,real} 且非NULL (demo/real边界透明, 防未来混淆)",
           bad == 0, f"{bad} 行 source 越界或缺失")
+
+
+def check_real_student_isolation(con: duckdb.DuckDBPyConnection, check) -> None:
+    """学生端最小闭环(2026-07-06数据关联设计审查批次6): real学生走独立student_id
+    ('real-'前缀, 前端localStorage生成), 不复用既有5个demo学生(sy-2024-*) — demo数据的
+    哈希确定性正确率不能被真实答题污染。锁两条: (a) students.source∈{demo,real}(与
+    student_answers同款契约, 此前零覆盖); (b) source='real'的student_id不与source='demo'
+    的重名(物理隔离, 防未来学生端身份生成逻辑改动误撞demo命名空间)。
+    """
+    print("\n=== (42) real学生身份隔离 (学生端最小闭环, source/命名空间双重防混淆) ===")
+    bad_src = con.execute(
+        "SELECT COUNT(*) FROM students WHERE source IS NULL OR source NOT IN ('demo', 'real')"
+    ).fetchone()[0]
+    check("students.source ⊆ {demo,real} 且非NULL", bad_src == 0, f"{bad_src} 行 source 越界或缺失")
+    collide = con.execute(
+        "SELECT COUNT(*) FROM ("
+        "  SELECT student_id FROM students WHERE source='real' "
+        "  INTERSECT SELECT student_id FROM students WHERE source='demo'"
+        ")"
+    ).fetchone()[0]
+    check("real学生student_id与demo学生无重名碰撞(物理隔离)", collide == 0, f"{collide} 个碰撞ID")

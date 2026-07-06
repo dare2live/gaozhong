@@ -701,6 +701,12 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT COUNT(*) FROM student_answers WHERE source IS NULL OR source NOT IN ('demo', 'real')"
     expect: {op: "==", value: 0}
+  - id: real-student-isolation-from-demo
+    claim: "学生端最小闭环(2026-07-06数据关联设计审查批次6, 用户选定方案): 新增POST /api/student_answers让学生答题真正写库(此前100%demo数据, weakness画像吃不到真实作答); real学生走独立'real-'前缀student_id(前端localStorage生成), 不复用既有5个demo学生(sy-2024-*) — demo数据的哈希确定性正确率不能被真实答题污染。锁students.source⊆{demo,real}且非NULL(此前零覆盖) + real/demo两组student_id无重名碰撞(物理隔离)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT (SELECT COUNT(*) FROM students WHERE source IS NULL OR source NOT IN ('demo','real')) + (SELECT COUNT(*) FROM (SELECT student_id FROM students WHERE source='real' INTERSECT SELECT student_id FROM students WHERE source='demo'))"
+    expect: {op: "==", value: 0}
   - id: liaoning-official-textbook-data-locked
     claim: "坑17(2026-07-04全数据审计补): liaoning_allowed_publishers(辽宁省教育厅2023目录官方8版本)+liaoning_city_textbook_choice(14地市, CLAUDE.md §4锚定10外研/4人教) 此前D0/moth零覆盖内容本身(moth原有断言只测聚合口径不漂移); 数据现查正确, 补行数+地市名单+publisher_short值域三重锁"
     type: shell

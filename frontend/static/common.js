@@ -14,16 +14,19 @@ window.GZ = (function () {
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return [...(root || document).querySelectorAll(sel)]; }
 
-  async function fetchJSON(path) {
-    const r = await fetch(path);
+  // init: 可选 fetch() 第二参(method/headers/body), 默认GET不传——坑(2026-07-06 学生端最小闭环
+  // 批次6): 原来两个helper只支持GET, 新增POST写入端点(/api/student_answers)时需要, 加个可选参数
+  // 比在调用方重写一份fetch+错误处理更省(Rule5), 现有GET调用方不传第二参不受影响(向后兼容)。
+  async function fetchJSON(path, init) {
+    const r = await fetch(path, init);
     if (!r.ok) throw new Error(`HTTP ${r.status} on ${path}`);
     return r.json();
   }
 
   // ===== D0 诚实取数: 区分"真无数据"与"接口失败" (RC1 根因#2: 根治 .catch(()=>空) 把 500/断网冒充无数据) =====
   // fetchSafe: 失败返回 {__err} 哨兵 (不再静默吞成 []/{}); 调用方 isErr() 判, 用 errorBox() 渲可见错误态。
-  async function fetchSafe(path) {
-    try { return await fetchJSON(path); }
+  async function fetchSafe(path, init) {
+    try { return await fetchJSON(path, init); }
     catch (e) { return { __err: String((e && e.message) || e), __path: path }; }
   }
   function isErr(v) { return !!(v && v.__err); }
