@@ -35,6 +35,7 @@ contracts:
   "/api/exam_point/grammar_structural_coverage": {params: {}, required_keys: [n_grammar_items_confirmed, confirmed_items, sample_size_note, report_as], type: dict}
   "/api/exam_point/phrase_pattern_relevance": {params: {}, required_keys: [scope_note, n_senior_phrases_total, n_matched_in_exam_text, phrase_stage_breakdown, caveat], type: dict}
   "/api/exam_point/cloze_collocation_subset": {params: {}, required_keys: [structural_flags, human_transcribed, n_blanks_total], type: dict}
+  "/api/exam_point/k12_grammar_bridge": {params: {}, required_keys: [records, summary, scope_note, anchor_dimension], type: dict}
   "/api/exam_questions": {params: {}, type: list}
   "/api/exercise/applied_templates": {params: {}, required_keys: [sections, samples, by_type], type: dict}
   "/api/exercise/blueprint_practice": {params: {}, required_keys: [paper_id, questions, target_total], type: dict}

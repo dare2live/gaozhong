@@ -47,10 +47,11 @@
 - **✅ 初中短语基线补齐 + 完形填空双层判断分离 (2026-07-07)**: 用户指出"短语初中基线不存在"的调研结论有误 —— `data/junior_high/textbooks/hujiao/{7a..9b}.pdf` 教材原文本地其实已有, 只是此前调研没盘点全 `textbooks/` 目录, 是文件盘点疏漏非数据真不存在。新增 `scripts/extract_hujiao_phrases.py`(复用高中 `_scan_text` 同一套规则, 颗粒度对齐) + 加载模块 `junior/phrases.py`(写入既有 `phrases` 表 version_key='hujiao', 接入 init_db.py) 抽取初中50个短语。重写 `phrase_pattern_exam_relevance`: 高中93个短语对齐后44个初中已学/49个高中新学, 真题命中37个里17个已学/20个新学。同时给 `cloze_collocation_structural_subset` 加官方解析"考查XX"标签转录统计(133空: 词义辨析90/篇章衔接33/搭配10), 与结构规则下限物理隔离成2个独立顶层key(不混同一置信度)。四门验证全绿+全量init_db重建验证可复现。
 - **🚀 [GOAL] Phase E 初中板块全深度复刻启动 (用户2026-07-07拍板"全深度复刻,按高中顺序推进")**: 以中考为结果, 用小学/初中教材·课标·考纲(比照高考侧方法论)辅导初中生, 最后用deepens式连续视图打通初中→高中。现状差距(高中↔初中): exam_questions 190(2015-2026) vs zhongkao_questions 90(仅2024-2025); tests_word 27805/tests_grammar 88/exam_point 608 边 vs 初中0; sections 470 vs 初中(修复前)0; courses 40 vs 初中0。拆5个子任务(E1-E5), 按高中当初顺序(L1地基→L2关联→L3课程→打通串联):
   - **✅ E1 初中教材课文结构化(units/sections/section_text)完成**: 新增 `scripts/extract_hujiao_sections.py`(页眉"Module N/Unit N"边界检测, 抽取46个unit+416个section, 10类kind) + 加载器 `junior/sections.py`(补textbooks行+volume:/unit:节点+in_volume边完整链条)。开发中修复3处真bug: ①粗体渲染字符加倍/顺序颠倒漏检2个unit-opener(加兜底扫描) ②末单元page_end误吞30+页附录(加Appendices边界收口) ③units缺图谱节点触发"孤立critical node"D0门(补节点+边)。`extract_hujiao_phrases.py`顺势收口改读section_text(单一计算点)。textbooks D0基线14→20。四门+全量init_db重建验证。
-  - **⏳ E2 中考真题年份扩充**(待办): 现仅2024/2025两年(90题), 需研究沈阳/辽宁历年中考英语公开可得性。
-  - **⏳ E3 初中关联层**(待办): 仿建tests_word/tests_grammar/exam_point, 对zhongkao_questions建考查边(目前0条)。
-  - **⏳ E4 初中40节课程框架**(待办): 依赖E3, 仿course.coverage_model+syllabus。
-  - **⏳ E5 K12打通串联**(待办): 复用deepens边(语法71条已有)+word/phrase共享节点stage, 做"初中学的→中考怎么考→高考怎么深化"连续视图(前端+API)。
+  - **✅ E3a 初中tests_word/tests_grammar完成 (2026-07-07, commit af7a913)**: 直接查库核实纠正此前"90题几乎全部walled仅20题可用"的过度悲观结论——真实边界是: **2024年45题全walled(仅答案), 2025年45题raw_question全真实(6种题型全有题面), 但仅语篇填空10题的answer非空, 其余35题官方判分答案未获取**。落地: `junior/qbank.py`(45条2025真题面题→question_bank, 复用question_bank.loader.autotag/insert_question/difficulty[已去下划线转公开, Rule5]+新增exam_type标签机制; tests_word边1846条复用exam_vocab._lemma_tokens) + `junior/grammar.py::link_zhongkao_grammar`(20题语篇填空analysis字段→tests_grammar边19条, 复用grammar_4q.match_ids_for_term精确匹配, "名词复数"/"宾格"2类术语库内无对应节点诚实标unmatched)。question:ZK-%节点按有边覆盖动态剪枝至52个(防伪完整感孤儿, 同E1 unit:节点先例)。D0(48)+moth新断言。
+  - **⏳ E3b 初中exam_point仿建**(推迟, task#98): 需类似load_exam_points的题材/主题dual-model分类pipeline, 独立于tests_word/tests_grammar, 未来单独排期。
+  - **✅ E2 中考真题扩充调研完成 (2026-07-07, 结论=现有2024/2025是当前免费可得上限, 不建议再投时间)**: workflow研究agent实测得出3项关键结论, 写入此处防重复调研: ①2025年35题(除语篇填空)缺答案是**获取缺口非处理缺口**——当年获取渠道(Scribd 8页图)本身只覆盖题面, 从未包含答案页, 本地无遗漏材料可补; ②系统性搜索(manifest已有域名复检+新域名, ~10组query)未找到任何真正免费/不登录/不付费/不扫码关注的2025官方答案渠道(zhongkao.com需微信关注/51jiaoxi.com滑块验证码同2024/圣才付费且货不对板/51test.net 403); ③**关键新发现: 辽宁中考英语2024年才统一命题, 2021-2023年是14地市各自主命题**(无"辽宁卷"单一实体), 若要扩充这些年份需先决定"以哪个地市代表辽宁"(类比高考侧"以辽宁卷为锚"的先例), 这是范围界定问题, 未经用户拍板不擅自选代表市；2026年已考(6月21-23日)但答案聚合站通常滞后~1个月才收录, 建议1个月后再查。不应做/不再重试: jyt.ln.gov.cn/lnzsks.com(结构性事实——中国省级中考官方从不公布逐题答案key, 非临时性失败)、manifest.json已记录的5个2024失败渠道、知乎(坑26环境级403)。
+  - **✅ E5 K12打通串联完成 (2026-07-07, 语法点维度, commit待推送)**: `backend/services/exam_point/k12_bridge.py::junior_senior_grammar_bridge` 只读聚合已有边(deepens 71条100%覆盖无孤儿 + tests_grammar 19条 + grammar_4q.exam_status), 不重算(Rule1)。锚点=语法点(唯一有完整闭环数据的维度, 词汇/短语维度各自已有k12.tested_word_stage_distribution/senior_knowledge.phrase_pattern_exam_relevance, 分层不混算)。真实产出: 71个初中语法点全部deepens到高中(20个→高考core必考, 51个→standard), 10个初中语法点(对应17道中考真题)已被中考语篇填空真题印证(9个core+1个standard, 前端chip逐条标注避免笼统声称"全是必考")。API `/api/exam_point/k12_grammar_bridge` + 前端`zhenti`tab新卡片"再深一层:初中学的语法,高考怎么深化考?"(scaffold.js `_k12BridgeCard`), 均已浏览器实测验证(preview_eval读取渲染文本核对与DB独立查询一致)。D0(49)+moth新断言。
+  - **⏳ E4 初中40节课程框架**(待办): 依赖E3(现E3a已给tests_word/tests_grammar基础, E3b exam_point仍缺), 仿course.coverage_model+syllabus。
 - **下一步 (待用户决策, 非 loop 自动)**: Phase D (L3 内容生成) 需 **就绪门**(北极星§5)绿 + 用户拍板; 或 Phase E (初中板块)。**不自动进 Phase D**(决策C)。已知待办(非阻塞): 坑16 genre/theme 显式真相源交叉验证(GenreTruthChecker, Phase D 前置, 现维持方向性标注); 固定搭配/表达的短语级真题考查标注(现 phrases 是教材库出现非考查); DesignSync 同步设计系统组件到 claude.ai/design 需用户先跑 `/design-login`(本环境无交互终端拿不到 OAuth); cognitive_skill 2022/2025/2026 仍无可得解析源(诚实标待补, 见 `scripts/lib/d0_cognitive_skill_check.py` 头注); "理解观点态度/理解文章结构类型"2官方桶仍0样本(待有更多真题解析数据出现); 语言/策略诊断分支需用户拍板(可行性存疑, 已知瓶颈=无法区分"单词不认识"vs"认识但推不出", 现有样本量下不建议做); 课标→学业质量标准→真题考查范围解析链未建模(STEP2/3新待办, 非考纲缺口)。
 - **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
 
@@ -74,10 +75,11 @@
 - **根因D 门重言式**: 新增门均跨第一手源/as-served 公式(非同源自证) + moth AND D0 双门。
 - **判 over-engineering 不建**(mio 质疑需求+verify-the-verifier): exam_questions_norm view(各 grain 消费方语义正交, 无统一消费方) + placement 阅读 cognitive 弱点(qb 篇章级 JOIN 子题节点 0 命中, grain 不匹配)。仅当未来有"需 grain 归一计数"的新消费方才值得建。
 
-## 初中 / 中考子系统 (Phase E, 现状)
-- 产物: `data/junior_high/structured/{curriculum_vocab,grammar_items,hujiao_vocab,stage_refined}.jsonl`; 中考 2024+2025 省统一卷已结构化。**尚无独立 D0 门接 stop_gate**(待补)。
-- 实证发现: 中考语篇填空 = 10 维语法蓝图 ≈ 高考语法填空考点全集(N=2, 2024/2025); 跨阶段 `deepens` 边已验证种子。
-- 定位: 沈阳本市, 沪教牛津版 + 义务课标 2022。北极星 Phase E 同结构镜像高中后再深建。
+## 初中 / 中考子系统 (Phase E, 现状 2026-07-07)
+- 产物: `data/junior_high/structured/{curriculum_vocab,grammar_items,hujiao_vocab,stage_refined,hujiao_units,hujiao_sections,hujiao_section_text,hujiao_phrases}.jsonl`; 中考 2024+2025 省统一卷已结构化(90题, exam_type='中考'区分)。**D0 已接 stop_gate**: `scripts/lib/d0_zhongkao_check.py` 覆盖(27)基础入库+(48)qbank/tests_word/tests_grammar+(49)K12衔接视图三段。
+- 实证发现: 中考语篇填空 = 10 维语法蓝图 ≈ 高考语法填空考点全集(N=2, 2024/2025); 跨阶段 `deepens` 边71条100%覆盖(59精确匹配+12别名); tests_grammar边19条(20题语篇填空里17题精确匹配到语法点)。
+- 数据边界(直接查库核实, 见上E2/E3a条目): 2024年45题全部只有答案(walled无题面), 2025年45题全部有真实题面但仅语篇填空10题有官方答案。
+- 定位: 沈阳本市, 沪教牛津版 + 义务课标 2022。北极星 Phase E 同结构镜像高中, E1/E3a/E5已完成, E2已研穿(现有数据是当前上限), E3b/E4待办。
 
 ## 真相源 / 门 (live, 不引文档旧数字)
 - D0: `python3 scripts/data_accuracy_check.py` (exit0)

@@ -149,3 +149,29 @@ def check_qbank_grammar_link(con: duckdb.DuckDBPyConnection, check) -> None:
     ).fetchone()[0]
     check("45题全打exam_type:中考标签 (供组卷/学情按学段过滤, 不与高考题混淆)",
           exam_type_tags == 45, f"{exam_type_tags}/45")
+
+
+def check_k12_grammar_bridge(con: duckdb.DuckDBPyConnection, check) -> None:
+    """Phase E5(2026-07-07) K12衔接视图: 初中语法点→高中deepens→高考exam_status+中考印证.
+
+    只读聚合已有边(deepens/tests_grammar)+已有attrs(exam_status), 本检查验output结构闭合
+    (records逐条字段齐全+summary计数与records重新聚合一致), 不重复验底层边正确性(那些已由
+    check_zhongkao自身的deepens/tests_grammar断言覆盖)。
+    """
+    print("\n=== (49) K12衔接视图 junior_senior_grammar_bridge (Phase E5) ===")
+    from backend.services.exam_point import junior_senior_grammar_bridge
+    r = junior_senior_grammar_bridge(con)
+    recs = r["records"]
+    check("records覆盖全部71个初中语法点 (无衔接孤儿, 同check_zhongkao已锁的71)",
+          len(recs) == 71, f"{len(recs)}")
+    bad = [x for x in recs if not x.get("senior_grammar_id")]
+    check("records全部有senior_grammar_id (deepens 100%覆盖, 无衔接孤儿)", not bad, f"{len(bad)}条缺失")
+    n_verified_recompute = sum(1 for x in recs if x["zhongkao_verified"])
+    check("summary.n_junior_items_with_zhongkao_verification 与records重新聚合一致",
+          r["summary"]["n_junior_items_with_zhongkao_verification"] == n_verified_recompute,
+          f"summary={r['summary']['n_junior_items_with_zhongkao_verification']} recompute={n_verified_recompute}")
+    check("summary.report_as='absolute_count_not_percentage' (样本量薄不报占比, 同坑12)",
+          r["summary"].get("report_as") == "absolute_count_not_percentage", f"{r['summary'].get('report_as')}")
+    check("scope_note含zhongkao_coverage_limit+dimension_isolation两项诚实声明",
+          set(r["scope_note"].keys()) == {"zhongkao_coverage_limit", "dimension_isolation"},
+          f"{list(r['scope_note'].keys())}")

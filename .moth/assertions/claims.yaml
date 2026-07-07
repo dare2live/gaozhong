@@ -756,3 +756,13 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);qb=c.execute(\"SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%'\").fetchone()[0];tg=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_grammar' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];tw=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];orphan=c.execute(\"SELECT COUNT(*) FROM nodes n WHERE concept_id LIKE 'question:ZK-%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)\").fetchone()[0];c.close();print('OK' if (qb==45 and tg>=15 and tw>0 and orphan==0) else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: k12-grammar-bridge-e5
+    claim: "Phase E5(2026-07-07): backend/services/exam_point/k12_bridge.py::
+      junior_senior_grammar_bridge 只读聚合已有边(deepens/tests_grammar)+已有attrs
+      (grammar_4q.exam_status), 不重算(Rule1); /api/exam_point/k12_grammar_bridge 路由
+      已注册+endpoint_contracts已登记; 71个初中语法点全部有senior_grammar_id(deepens
+      100%覆盖无孤儿, 同check_zhongkao已锁的71); summary.report_as=
+      absolute_count_not_percentage(20题语篇填空样本薄不报占比, 同坑12)"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.exam_point import junior_senior_grammar_bridge; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_senior_grammar_bridge(c); ok=(len(r['records'])==71 and all(x.get('senior_grammar_id') for x in r['records']) and r['summary'].get('report_as')=='absolute_count_not_percentage' and '/api/exam_point/k12_grammar_bridge' in open('backend/api/routes/exam_point.py').read() and '/api/exam_point/k12_grammar_bridge' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}

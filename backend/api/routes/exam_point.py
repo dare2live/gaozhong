@@ -11,7 +11,8 @@ from backend.services.exam_point import (cloze_answer_word_stage, cloze_collocat
                                           cognitive_skill_by_content, cognitive_skill_distribution,
                                           exam_point_cooccurrence, exam_point_distribution,
                                           exam_point_shift, grammar_structural_coverage,
-                                          joint_attribution_by_passage, phrase_pattern_exam_relevance)
+                                          joint_attribution_by_passage, junior_senior_grammar_bridge,
+                                          phrase_pattern_exam_relevance)
 from backend.services.trend import scope
 
 
@@ -134,6 +135,15 @@ def api_exam_point_cloze_collocation_subset(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_k12_grammar_bridge(qs: dict) -> dict:
+    """初中语法点→高中深化(deepens)→高考exam_status+中考真题印证情况 (Phase E5 K12衔接视图)。"""
+    con = db_ro()
+    try:
+        return junior_senior_grammar_bridge(con)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/exam_point/distribution": api_exam_point_distribution,
     "/api/exam_point/cooccurrence": api_exam_point_cooccurrence,
@@ -144,4 +154,5 @@ ROUTES = {
     "/api/exam_point/grammar_structural_coverage": api_exam_point_grammar_structural_coverage,  # 高中语法知识点覆盖
     "/api/exam_point/phrase_pattern_relevance": api_exam_point_phrase_pattern_relevance,  # 短语句型真题共现
     "/api/exam_point/cloze_collocation_subset": api_exam_point_cloze_collocation_subset,  # 完形搭配结构下限
+    "/api/exam_point/k12_grammar_bridge": api_exam_point_k12_grammar_bridge,  # 初中→高中语法衔接+中考印证
 }

@@ -213,10 +213,23 @@
       <p class="kb-dim" style="margin:8px 0 0;">${esc(ht.coverage_note)}</p>`;
   }
 
+  // 2026-07-07 Phase E5: K12衔接视图(初中语法点→高中deepens→高考exam_status+中考真题印证)。
+  function _k12BridgeCard(kb) {
+    if (!kb || !kb.records) return '<p class="kb-dim">K12衔接数据不足。</p>';
+    const verified = kb.records.filter(r => r.zhongkao_verified);
+    const chips = verified.map(r => {
+      const tag = r.exam_status === "core" ? '<span class="tk-found">高考必考+中考印证</span>' : '<span class="tk-senior">课标内+中考印证</span>';
+      return `<span class="tk-tchip">${esc(r.junior_label)} ${tag}</span>`;
+    }).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;">初中71个语法点<b>全部(100%)</b>能深化衔接到高中对应语法(${kb.summary.n_deepens_to_core_gaokao_grammar}个衔接到高考必考语法, ${kb.summary.n_deepens_to_standard_gaokao_grammar}个课标内但近年真题未直接出现); 其中 <b>${verified.length}</b> 个初中语法点(对应${kb.summary.n_zhongkao_questions_involved}道中考真题)已被中考真题印证过(不区分是否高考必考, 每个chip标注该语法点在高考侧的实际状态):</p>
+      <div class="tk-types">${chips}</div>
+      <p class="kb-dim" style="margin:8px 0 0;">${esc(kb.scope_note.zhongkao_coverage_limit)}</p>`;
+  }
+
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const [d, cbc, gram, cw, ja, gsc, ppr, ccs] = await Promise.all([
+    const [d, cbc, gram, cw, ja, gsc, ppr, ccs, kb] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
       fetchSafe("/api/grammar/stats"),
@@ -225,6 +238,7 @@
       fetchSafe("/api/exam_point/grammar_structural_coverage"),
       fetchSafe("/api/exam_point/phrase_pattern_relevance"),
       fetchSafe("/api/exam_point/cloze_collocation_subset"),
+      fetchSafe("/api/exam_point/k12_grammar_bridge"),
     ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
     const gramHTML = (!isErr(gram)) ? _grammarCard(gram.grammar_exam) : '<p class="kb-dim">语法考查数据加载失败。</p>';
@@ -234,6 +248,7 @@
     const gscHTML = (!isErr(gsc)) ? _grammarStructuralCard(gsc) : '<p class="kb-dim">语法结构覆盖加载失败。</p>';
     const pprHTML = (!isErr(ppr)) ? _phraseRelevanceCard(ppr) : '<p class="kb-dim">短语共现加载失败。</p>';
     const ccsHTML = (!isErr(ccs)) ? _cozeCollocationCard(ccs) : '<p class="kb-dim">搭配结构数据加载失败。</p>';
+    const kbHTML = (!isErr(kb)) ? _k12BridgeCard(kb) : '<p class="kb-dim">K12衔接数据加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
       ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
       <div class="sc-takeaway">
@@ -265,6 +280,11 @@
         ${gscHTML}
         <div style="margin:10px 0 8px;border-top:1px solid var(--line);padding-top:10px;">${pprHTML}</div>
         <div style="margin:10px 0 0;border-top:1px solid var(--line);padding-top:10px;">${ccsHTML}</div>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>再深一层: 初中学的语法, 高考怎么深化考?</span><span class="bk-src">/api/exam_point/k12_grammar_bridge</span></div>
+        <p class="kb-dim" style="margin:0 0 8px;">初中71个课标语法点里, 哪些会在高中深化(更多用法/时态/被动等), 又已经在辽宁中考真题里被印证过:</p>
+        ${kbHTML}
       </section>
       <p class="zt-nextlink">近年考什么在变? 完整迁移图 → <a href="#/beike">命题研判</a></p>
       <section class="bk-card">
