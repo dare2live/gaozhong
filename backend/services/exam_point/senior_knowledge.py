@@ -8,7 +8,7 @@
 
 1. grammar_structural_coverage(): 语法填空+短文改错(题型定义即排除语义辨析, 零主观判断
    成本) — 108个课标语法点辽宁真题精确印证覆盖, 只报绝对数量+名单, 不报占比(35题 vs 108
-   语法点不是同一统计总体的抽样关系)。复用 grammar_4q.py 坑25 修复后的精确匹配逻辑。
+   语法点不是同一统计总体的抽样关系)。复用 grammar_4q.py 坑31 修复后的精确匹配逻辑。
 2. phrase_pattern_exam_relevance(): 短语/句型/表达(phrases表, 高中教材来源) 与辽宁真题
    文本的共现关联 —— 不做初高中对比(见下方"明确拒绝"), 只做"高中教材短语库有哪些在真题
    出现"这一单向查询, 明确标"出现≠考查"(复用既有 PHRASE_LIB_NOTE)。
@@ -64,7 +64,7 @@ def grammar_structural_coverage(con: duckdb.DuckDBPyConnection) -> dict:
     题型的知识类型判定不涉及主观语义判断; 完形填空的判定需人工/LLM辅助, 见
     cloze_collocation_structural_subset (只报结构规则能确认的下限, 不报知识类型占比)。
 
-    匹配复用 grammar_4q.py 坑25 修复后的精确匹配(match_ids_for_term), 不重写算法。
+    匹配复用 grammar_4q.py 坑31 修复后的精确匹配(match_ids_for_term), 不重写算法。
     样本量诚实(坑12): 35题 vs 108课标语法点不是同一统计总体的抽样关系, 只报绝对数量+
     具体名单, 不报"N/108=XX%"这类无统计学意义的比例。
     """
@@ -96,7 +96,7 @@ def grammar_structural_coverage(con: duckdb.DuckDBPyConnection) -> dict:
         "n_grammar_items_total": len(items),
         "n_grammar_items_confirmed": len(ordered),
         "confirmed_items": [{"grammar_item_id": gid, "label": label_map[gid]} for gid in ordered],
-        "match_method": "exact_label_match_post_fix (坑25, grammar_4q.match_ids_for_term)",
+        "match_method": "exact_label_match_post_fix (坑31, grammar_4q.match_ids_for_term)",
         "report_as": "absolute_count_and_list_not_percentage",
         "sample_size_note": (
             f"{len(rows)}题(语法填空+短文改错) vs {len(items)}个课标语法点不是同一统计总体的"
