@@ -155,10 +155,33 @@ def load_cognitive_skill(con: duckdb.DuckDBPyConnection) -> dict:
             "skipped(非阅读技能/未映射变体)": skipped, "skipped(真值锚未过=源误标甲卷)": skip_mislabel}
 
 
+def _official_skill_labels() -> list[str]:
+    """官方7理解性技能全集 (单点读 yaml, 不硬编码第二份; 见 _load_skill_map 同一真相源)."""
+    qi = (yaml.safe_load(_TAXONOMY.read_text(encoding="utf-8")) or {})["dimensions"]["question_intent"]
+    return [l["id"] for l in qi["labels"]]
+
+
+def _coverage_gap(by_era: dict[str, dict[str, int]]) -> dict:
+    """官方7项理解性技能 vs 实际覆盖 diff (坑: 别让消费方把已覆盖几项误当官方全集)."""
+    official = _official_skill_labels()
+    covered = sorted({label for d in by_era.values() for label in d})
+    missing = [s for s in official if s not in covered]
+    note = (f"官方定义{len(official)}项理解性技能, 当前真题解析数据覆盖{len(covered)}项; "
+            f"{missing}这{len(missing)}项当前无可得教研解析显式标注真题样本(非估算不补, 见坑16)"
+            if missing else f"官方{len(official)}项理解性技能已全覆盖")
+    return {"official_categories": official, "covered_categories": covered,
+            "missing_categories": missing, "coverage_note": note}
+
+
 def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
     """设问类型分布 (单一计算点; 子题级 cognitive_skill 边按卷制 era 分层, 辽宁).
 
     子题 node 不 join exam_questions → era 从边 lineage.source_year 取(scope.segment); 全辽宁(标注源即辽宁§7)。
+
+    2026-07-07 诚实披露官方7项技能覆盖缺口(用户"知识点颗粒度到什么程度"追问后新增):
+    此前 API 只吐已覆盖的技能桶, 容易让消费方误以为"看到的几项就是官方全集"——现返回
+    official_categories(官方7项全集)+ covered_categories(实际有数据的)+
+    missing_categories(0数据覆盖, 非估算补齐, 见 docs/RESUME.md 方法论调研)。
     """
     rows = con.execute(
         "SELECT n.label, json_extract_string(e.evidence_json, '$.lineage.source_year') "
@@ -191,7 +214,7 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
             "provenance": "explicit_label (教研解析显式标签, 强于双模型)",
             "official_ref": "陈康等《基于高考评价体系的英语科考试内容改革实施路径》,《中国考试》2019年第12期(教育部考试中心命题团队解读, 阅读理解7理解性技能)",
             "n_total": len(rows), "by_era": out, "reliability": reliability,
-            "eras_ordered": sorted(by_era.keys())}
+            "eras_ordered": sorted(by_era.keys()), **_coverage_gap(by_era)}
 
 
 _CROSS_DIMS = {"genre", "theme_l2", "theme_context"}

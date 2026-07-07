@@ -516,11 +516,19 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const inf = !newOK
       ? `方向性参考(非趋势结论): 推断占比 旧课标II ${oInf}% → 新高考II(${newYearsLabel}) ${nInf}%`
       : `命题哲学迁移: <b style="color:${C.up}">推断 ${oInf}% → ${nInf}%</b>(细节下行)——新高考重高阶推断`;
-    // 坑(2026-07-05 教师视角审计): 推断/理解具体信息/理解主旨要义/理解词汇 4个术语在本页首次
+    // 坑(2026-07-05 教师视角审计): 推断/理解具体信息/理解主旨要义/理解词汇 术语在本页首次
     // 出现无解释; 真题特点页已有完整讲解卡片, 此处加一句跳转链接而非重复整套讲解。
-    G.$("#bk-cognote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">这4种"怎么想"是什么意思? →</a><br>` + banner
+    // 坑(2026-07-07 知识点颗粒度追问): 此前硬编码"这4种", 理解目的接入后实际是5种未同步跟着改
+    // (同坑16的"仅2023单年"教训); 改读 skills.length 动态拼, 并显式披露官方7项里还缺几项
+    // (cognitive_skill_distribution 新增 missing_categories 字段, 单一计算点)。
+    const missing = (cs && cs.missing_categories) || [];
+    const missingNote = missing.length
+      ? `<br><small class="muted">官方定义7项理解性技能, 当前真题解析数据覆盖${skills.length}项; ${missing.join("/")}这${missing.length}项当前无可得教研解析显式标注真题样本(不臆测补齐)。</small>`
+      : "";
+    G.$("#bk-cognote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">这${skills.length}种"怎么想"是什么意思? →</a><br>` + banner
       + `题型标签直接来自教研解析, 不靠 AI 猜(详见页尾「数据怎么来的?」)。${inf}。`
-      + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅${newYearsLabel} n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`;
+      + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅${newYearsLabel} n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`
+      + missingNote;
   }
 
   async function loadCross(by) {
