@@ -27,6 +27,8 @@ tests_exam_point dimension=cognitive_skill 同 cognitive_skill_by_content 的 pa
 """
 from __future__ import annotations
 
+import re
+
 import duckdb
 
 from backend.services.trend import scope
@@ -137,4 +139,154 @@ def joint_attribution_by_passage(con: duckdb.DuckDBPyConnection) -> dict:
         ),
         "by_dominant_skill": _by_dominant_skill(passages),
         "passages": passages,
+    }
+
+
+# ---- 完形填空"得分点词"学段分布 (2026-07-07, 用户追问"得分点是高中词汇还是初中词汇") ----
+# 上面 joint_attribution_by_passage 答的是"整篇词汇难度 × 设问思维"; 这里答字面版本:
+# "每空唯一正确答案词"本身的难度, 与同批语篇全篇词汇难度基线对比, 是否系统性更难。
+
+_CLOZE_OPT_LINE = re.compile(
+    r"\d+\.\s*A\.\s*(.*?)\s*B\.\s*(.*?)\s*C\.\s*(.*?)\s*D\.\s*(.*?)(?=\s*\d+\.\s*A\.|\s*$)",
+    re.DOTALL,
+)
+_ANS_LETTER_RE = re.compile(r"[A-D]")
+
+
+def _parse_cloze_options(raw: str) -> list[tuple[str, str, str, str]]:
+    """完形填空 raw_question 选项内联在题面文本里(非 options_json 字段), 逐空解析 A/B/C/D。"""
+    m0 = re.search(r"\d+\.\s*A\.", raw or "")
+    if not m0:
+        return []
+    return _CLOZE_OPT_LINE.findall(raw[m0.start():])
+
+
+def _qualifying_cloze_rows(con: duckdb.DuckDBPyConnection) -> list[tuple[str, int, list, list[str]]]:
+    """辽宁完形填空里"选项文本完整内联 + 可与 answer 字母数对齐"的整篇行。
+
+    结构性排除 eol/2021,2022/xgkii(15题×2年=30行): 逐空拆行存储, 选项文本未完整/一致内联各行
+    (30行仅3行意外含本空选项且其一有卷尾section边界污染风险), 不是本次遗漏, 是已知数据结构天花板
+    (同 grammar_4q.py TERM_TO_LABEL_KEYWORD 注释里"2021/2022 EOL 答案核验机械占位"同一根因)。
+    """
+    out: list[tuple[str, int, list, list[str]]] = []
+    rows = con.execute(
+        "SELECT question_id, year, raw_question, answer FROM exam_questions "
+        "WHERE question_type='完形填空' AND province LIKE '辽宁%'"
+    ).fetchall()
+    for qid, year, raw, ans in rows:
+        letters = _ANS_LETTER_RE.findall(ans or "")
+        opts = _parse_cloze_options(raw)
+        if len(opts) == len(letters) and len(letters) >= 10:
+            out.append((qid, year, opts, letters))
+    return out
+
+
+def _word_stage_map(con: duckdb.DuckDBPyConnection) -> dict[str, str]:
+    """word: 节点 at_stage 学段表, 同 k12.tested_word_stage_distribution 口径。"""
+    rows = con.execute(
+        "SELECT src_id, dst_id FROM edges WHERE relation='at_stage' AND src_id LIKE 'word:%'"
+    ).fetchall()
+    return {src[5:]: dst[6:] for src, dst in rows}
+
+
+def _classify_answer_word(text: str, lemm, stage_map: dict[str, str]) -> str | None:
+    """得分点词(可能多词短语)学段判定: 短语内任一实词命中高中档即判 senior(卡最难成分),
+    否则任一命中基础档判 foundation, 都不命中判 None。
+
+    WordNetLemmatizer 只处理屈折形态(单复数/时态), 不处理派生形态(painful/completely 这类),
+    与 links_extra.build_tests_word 用的 _lemma_tokens 同一限制, 非本函数新引入的缺口。
+    """
+    stages = []
+    for w in re.split(r"\s+", text.strip()):
+        w = w.strip(".,;:").lower()
+        if not w:
+            continue
+        for cand in (w, lemm.lemmatize(w, "v"), lemm.lemmatize(lemm.lemmatize(w, "v"), "n")):
+            if cand in stage_map:
+                stages.append(stage_map[cand])
+                break
+    if not stages:
+        return None
+    if any(s in _SENIOR_STAGES for s in stages):
+        return "senior"
+    if any(s in _FOUNDATION_STAGES for s in stages):
+        return "foundation"
+    return "other"
+
+
+def _whole_passage_stage_pct(con: duckdb.DuckDBPyConnection, qids: list[str]) -> dict | None:
+    """同一批语篇的全篇词汇学段占比(tests_word 边), 作为得分点词的对比基线。"""
+    if not qids:
+        return None
+    qmarks = ",".join(["?"] * len(qids))
+    rows = con.execute(
+        f"SELECT COALESCE(SUBSTR(es.dst_id,7),'未分类') AS stage "
+        "FROM edges e LEFT JOIN edges es ON es.src_id = e.dst_id AND es.relation='at_stage' "
+        f"WHERE e.relation='tests_word' AND e.src_id IN ({qmarks})",
+        [f"question:{q}" for q in qids],
+    ).fetchall()
+    tot = len(rows)
+    if not tot:
+        return None
+    f = sum(1 for (s,) in rows if s in _FOUNDATION_STAGES)
+    sr = sum(1 for (s,) in rows if s in _SENIOR_STAGES)
+    return {"n_words": tot, "foundation_pct": round(100 * f / tot, 1), "senior_pct": round(100 * sr / tot, 1)}
+
+
+def _era_answer_word_summary(con: duckdb.DuckDBPyConnection, lemm, stage_map: dict[str, str],
+                              rows_for_era: list) -> dict:
+    """单个 era 内: 得分点词学段占比 + 同批语篇全篇基线对比 (坑12 分层不取平均, 不跨 era 合并)。"""
+    blanks: list[str | None] = []
+    for _qid, _year, opts, letters in rows_for_era:
+        for i, opt4 in enumerate(opts):
+            text = opt4[ord(letters[i]) - ord("A")].strip()
+            blanks.append(_classify_answer_word(text, lemm, stage_map))
+    n_senior = sum(1 for b in blanks if b == "senior")
+    n_found = sum(1 for b in blanks if b == "foundation")
+    n_classified = n_senior + n_found
+    qids = [qid for qid, *_ in rows_for_era]
+    return {
+        "n_passages": len(rows_for_era),
+        "n_blanks_total": len(blanks),
+        "n_blanks_classified": n_classified,
+        "answer_word_senior_pct": round(100 * n_senior / n_classified, 1) if n_classified else None,
+        "answer_word_foundation_pct": round(100 * n_found / n_classified, 1) if n_classified else None,
+        "whole_passage_baseline": _whole_passage_stage_pct(con, qids),
+    }
+
+
+def cloze_answer_word_stage(con: duckdb.DuckDBPyConnection) -> dict:
+    """完形填空"得分点词"(每空唯一正确答案词)学段分布, 对比同批语篇全篇词汇学段基线。
+
+    回答用户"75%词汇是初中及以前, 但得分点是不是靠高中词汇"的字面版本: 得分点=正确答案词本身
+    的难度(非整篇混合词汇难度)。范围限定(诚实, 见 _qualifying_cloze_rows docstring): 仅 10 篇
+    "选项文本完整内联"完形填空(2015-2020 旧课标II 6篇 + 2023/2024/2025/2026 新高考II 4篇);
+    eol/2021,2022/xgkii 结构性排除(逐空拆行存储, 选项文本未完整/一致内联, 已知数据结构天花板)。
+
+    分层不取平均(坑12): 按 scope.segment(year) 分 era 各自算 by_era, 不跨 era 合并百分比。
+    """
+    from nltk.stem import WordNetLemmatizer
+
+    lemm = WordNetLemmatizer()
+    stage_map = _word_stage_map(con)
+    rows = _qualifying_cloze_rows(con)
+
+    by_era: dict[str, dict] = {}
+    for era in sorted({scope.segment(year) for _, year, _, _ in rows}):
+        rows_for_era = [r for r in rows if scope.segment(r[1]) == era]
+        by_era[era] = _era_answer_word_summary(con, lemm, stage_map, rows_for_era)
+
+    return {
+        "province_scope": "辽宁卷",
+        "question_type": "完形填空",
+        "n_passages": len(rows),
+        "excluded_source_note": (
+            "eol/2021,2022/xgkii(15题×2年=30行)结构性排除: 逐空拆行存储, 选项文本未完整/一致内联"
+            "(30行仅3行意外含本空选项且其一有section边界污染风险), 非本次遗漏, 是已知数据结构天花板"
+        ),
+        "coverage_note": (
+            "WordNetLemmatizer 只处理屈折形态(单复数/时态), 不处理派生形态(painful/completely 类), "
+            "与 links_extra.build_tests_word 同一限制; 各 era n_blanks_total-n_blanks_classified 即未分类数"
+        ),
+        "by_era": by_era,
     }

@@ -157,3 +157,30 @@ def check_joint_attribution(con: duckdb.DuckDBPyConnection, check) -> None:
     # 每篇 skill_dist 之和 == n_subq (计数单位诚实, 坑12)
     bad_n = [p["passage_id"] for p in d["passages"] if sum(p["skill_dist"].values()) != p["n_subq"]]
     check("每篇 n_subq == skill_dist 之和 (计数单位自洽)", not bad_n, f"不自洽={bad_n[:3]}")
+
+
+def check_cloze_answer_word_stage(con: duckdb.DuckDBPyConnection, check) -> None:
+    """完形填空得分点词学段分布 D0 (2026-07-07; backend/services/exam_point/attribution.py)。
+
+    范围锁: 10 篇"选项文本完整内联"完形填空(eol/2021,2022/xgkii 结构性排除, 见模块 docstring),
+    分 era 不跨 era 合并(坑12 分层不取平均)。
+    """
+    print("\n=== (33) 完形填空得分点词学段分布 (对比全篇基线, 2026-07-07) ===")
+    from backend.services.exam_point.attribution import cloze_answer_word_stage
+    d = cloze_answer_word_stage(con)
+
+    check("得分点分析篇数 == 10 (2015-2020旧课标II 6 + 2023-2026新高考II 4)",
+          d["n_passages"] == B('cloze_answer_word_passages'), f"{d['n_passages']}")
+    check("排除说明字段存在 (eol/2021,2022诚实排除, 非静默丢弃)",
+          "excluded_source_note" in d and "eol" in d["excluded_source_note"], "")
+    check("era 集合 ⊆ {2015-2020旧课标II, 2021+新高考II} (无臆造 era 泄漏)",
+          set(d["by_era"]) <= {"2015-2020_旧课标II", "2021+_新高考II"}, f"{sorted(d['by_era'])}")
+
+    bad = [era for era, cell in d["by_era"].items()
+           if cell["n_blanks_classified"] > cell["n_blanks_total"]]
+    check("各 era 已分类空数 ≤ 总空数 (计数自洽)", not bad, f"不自洽={bad}")
+
+    bad_pct = [era for era, cell in d["by_era"].items()
+               if cell["answer_word_senior_pct"] is not None and
+               abs(cell["answer_word_senior_pct"] + cell["answer_word_foundation_pct"] - 100.0) > 0.2]
+    check("各 era senior_pct+foundation_pct ≈ 100% (内部自洽)", not bad_pct, f"不自洽={bad_pct}")

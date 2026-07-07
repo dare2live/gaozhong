@@ -282,6 +282,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import joint_attribution_by_passage as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();ok=d['n_passages']==24 and d['era']=='2015-2020_旧课标II' and 'grammar_cefr_mix' not in str(d['passages'][:1]) and all(abs(p['word_stage_mix']['foundation_pct']+p['word_stage_mix']['senior_pct']+p['word_stage_mix']['unclassified_pct']-100)<0.5 for p in d['passages'] if p['word_stage_mix']);print('OK' if ok else f'FAIL n={d[\"n_passages\"]} era={d[\"era\"]}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: cloze-answer-word-stage
+    claim: "完形填空得分点词学段分布(2026-07-07, attribution.py cloze_answer_word_stage): 覆盖10篇选项文本完整内联的辽宁完形填空(2015-2020旧课标II 6篇+2023-2026新高考II 4篇; eol/2021,2022/xgkii逐空拆行结构性排除, 非遗漏); 旧课标II得分点词高中占比12.4%≈同批全篇基线12.3%(几乎无差), 新高考II得分点词高中占比25.0% vs 全篇基线15.2%(高出9.8pp, 但n=4篇较薄仅方向性) — 不支持'得分点系统性靠高中词汇'的强版本假设, 旧卷制下得分点难度与全篇持平"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cloze_answer_word_stage as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();ok=d['n_passages']==10 and 'excluded_source_note' in d and set(d['by_era'])<={'2015-2020_旧课标II','2021+_新高考II'};print('OK' if ok else f'FAIL n={d[\"n_passages\"]} eras={sorted(d[\"by_era\"])}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: l4-paper-liaoning-only
     claim: "L4模拟卷 province 前缀锚(坑7/§7, A3修): generate_l4_paper 用 LIKE '辽宁%' 前缀非 '%辽宁%' 子串(子串会命中'非辽宁'标签混全国卷); 实测出卷全部 province 以'辽宁'起"
     type: shell

@@ -31,6 +31,7 @@ contracts:
   "/api/exam_point/cooccurrence": {params: {}, required_keys: [by_era, min_co, province_scope], type: dict}
   "/api/exam_point/distribution": {params: {}, required_keys: [distribution, eras, province_scope], type: dict}
   "/api/exam_point/joint_attribution": {params: {}, required_keys: [passages, n_passages, era, province_scope], type: dict}
+  "/api/exam_point/cloze_answer_word_stage": {params: {}, required_keys: [by_era, n_passages, province_scope, excluded_source_note], type: dict}
   "/api/exam_questions": {params: {}, type: list}
   "/api/exercise/applied_templates": {params: {}, required_keys: [sections, samples, by_type], type: dict}
   "/api/exercise/blueprint_practice": {params: {}, required_keys: [paper_id, questions, target_total], type: dict}

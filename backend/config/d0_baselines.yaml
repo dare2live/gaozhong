@@ -32,6 +32,7 @@ baselines:
   cognitive_skill_new:    {value: 29, op: eq, note: "2021+新高考全国II(subq jsonl真值锚门; 2023:15+2024:13[13分类+1'词义指代题'模糊skip]+2026-07-06补'目的意图题'→理解目的1边)"}
   cog_cross_genre:        {value: 75, op: eq, note: "技能×题材交叉join命中(2015-20; 'question:'||passage_label对齐, 防前缀回归静默漏行; 2026-07-06随理解目的新边+1)"}
   joint_attribution_passages: {value: 24, op: eq, note: "语篇级词汇×设问思维联合归因(2015-20, attribution.py); 24篇=cognitive_skill覆盖语篇中同时有tests_word数据的交集(实测85.7%重叠)"}
+  cloze_answer_word_passages: {value: 10, op: eq, note: "2026-07-07完形填空得分点词学段分布(attribution.py cloze_answer_word_stage); 10篇=选项文本完整内联(2015-2020旧课标II 6+2023-2026新高考II 4), eol/2021,2022/xgkii逐空拆行结构性排除"}
   cog_cross_theme_l2:     {value: 76, op: eq, note: "技能×主题群交叉join命中(2015-20; 11miss=有theme无genre真缺口非bug; 2026-07-06随理解目的新边+1)"}
   cooccur_min:          {value: 10,   op: ge, note: "考点共现边下界(后端审计#8: 排除eol子题级膨胀源后篇章级实测11; 原19含2021/22子题5x膨胀=伪关联)"}
   exam_point_min:       {value: 300,  op: ge, note: "tests_exam_point 边下界"}

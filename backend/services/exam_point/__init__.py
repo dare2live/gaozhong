@@ -7,4 +7,4 @@ from .loader import (load_exam_points, exam_point_distribution, exam_point_shift
 from .cooccur import exam_point_cooccurrence, materialize_cooccurrence
 from .cognitive_skill import (load_cognitive_skill, cognitive_skill_distribution,
                               cognitive_skill_by_content)
-from .attribution import joint_attribution_by_passage
+from .attribution import joint_attribution_by_passage, cloze_answer_word_stage

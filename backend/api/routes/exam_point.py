@@ -8,8 +8,9 @@ from __future__ import annotations
 
 from backend.api.db import db_ro
 from backend.services.exam_point import (cognitive_skill_by_content, cognitive_skill_distribution,
-                                          exam_point_cooccurrence, exam_point_distribution,
-                                          exam_point_shift, joint_attribution_by_passage)
+                                          cloze_answer_word_stage, exam_point_cooccurrence,
+                                          exam_point_distribution, exam_point_shift,
+                                          joint_attribution_by_passage)
 from backend.services.trend import scope
 
 
@@ -96,10 +97,20 @@ def api_exam_point_joint_attribution(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_cloze_answer_word_stage(qs: dict) -> dict:
+    """完形填空得分点词学段分布, 分era对比全篇基线; 回答"得分点是初中词汇还是高中词汇"。"""
+    con = db_ro()
+    try:
+        return cloze_answer_word_stage(con)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/exam_point/distribution": api_exam_point_distribution,
     "/api/exam_point/cooccurrence": api_exam_point_cooccurrence,
     "/api/exam_point/cognitive_skill": api_exam_point_cognitive_skill,
     "/api/exam_point/cognitive_by_content": api_exam_point_cognitive_by_content,  # 技能×题材交叉(2015-20)
     "/api/exam_point/joint_attribution": api_exam_point_joint_attribution,  # 词汇×设问思维语篇级联合归因
+    "/api/exam_point/cloze_answer_word_stage": api_exam_point_cloze_answer_word_stage,  # 完形得分点词学段
 }
