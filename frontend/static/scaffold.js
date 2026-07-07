@@ -192,15 +192,25 @@
       <p class="kb-dim" style="margin:4px 0 0;">背景: 108个课标语法点里 <b>${g.junior_high_deepens_edge_count}</b> 个初中已学(高中深化), <b>${g.senior_only_grammar_item_count}</b> 个初中课标无对应内容(真实课标范围差异)。</p>`;
   }
   function _phraseRelevanceCard(p) {
-    if (!p || p.n_phrases_total == null) return '<p class="kb-dim">短语共现数据不足。</p>';
-    return `<p class="kb-dim" style="margin:0 0 8px;">高中教材短语/句型/表达库共 <b>${p.n_phrases_total}</b> 个, 其中 <b>${p.n_matched_in_exam_text}</b> 个能在辽宁真题原文/解析文本里找到:</p>
-      <div class="tk-types">${p.matched_examples.slice(0, 15).map(m => `<span class="tk-tchip">${esc(m.canonical)}</span>`).join("")}</div>
+    if (!p || p.n_senior_phrases_total == null) return '<p class="kb-dim">短语共现数据不足。</p>';
+    const chips = p.matched_examples.slice(0, 15).map(m => {
+      const tag = m.stage === "junior_known" ? '<span class="tk-found">初中已学</span>' : '<span class="tk-senior">高中新学</span>';
+      return `<span class="tk-tchip">${esc(m.canonical)} ${tag}</span>`;
+    }).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;">高中教材短语/句型/表达库共 <b>${p.n_senior_phrases_total}</b> 个(对齐初中沪教牛津库 <b>${p.n_junior_phrases_total}</b> 个后): <b class="tk-found">${p.n_overlap_junior_known}</b> 个初中已学(高中复现巩固), <b class="tk-senior">${p.n_senior_only}</b> 个高中新学。其中 <b>${p.n_matched_in_exam_text}</b> 个能在辽宁真题原文/解析文本里找到(${p.matched_by_stage.junior_known}个已学 / ${p.matched_by_stage.senior_only}个新学):</p>
+      <div class="tk-types">${chips}</div>
       <p class="kb-dim" style="margin:8px 0 0;">${esc(p.caveat)}</p>`;
   }
   function _cozeCollocationCard(c) {
     if (!c || c.n_blanks_total == null) return '<p class="kb-dim">搭配结构数据不足。</p>';
-    return `<p class="kb-dim" style="margin:0 0 8px;">同上10篇完形填空180空里, <b>${c.n_structurally_flagged}</b> 空(${c.structurally_flagged_pct}%)结构上可客观确认"像固定搭配"(如 ${c.flagged_examples[0] ? esc(c.flagged_examples[0].options.join(" / ")) : ""}):</p>
-      <p class="kb-dim" style="margin:0;">${esc(c.explicit_ceiling_caveat)}</p>`;
+    const sf = c.structural_flags, ht = c.human_transcribed;
+    const htChips = Object.entries(ht.by_category || {}).map(([k, v]) =>
+      `<span class="tk-tchip">${esc(ht.category_meaning[k] ? ht.category_meaning[k].split(" — ")[1] || k : k)} <b>${v}</b></span>`).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;">同上10篇完形填空180空里, <b>${sf.n_structurally_flagged}</b> 空(${sf.structurally_flagged_pct}%)结构上可客观确认"像固定搭配"(如 ${sf.flagged_examples[0] ? esc(sf.flagged_examples[0].options.join(" / ")) : ""}):</p>
+      <p class="kb-dim" style="margin:0 0 10px;">${esc(sf.explicit_ceiling_caveat)}</p>
+      <p class="kb-dim" style="margin:0 0 6px;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">未独立验证</span>另一层参考: 官方解析文本"考查XX"标签转录统计(<b>${ht.n_labels_extracted}</b> 空有标签):</p>
+      <div class="tk-types">${htChips}</div>
+      <p class="kb-dim" style="margin:8px 0 0;">${esc(ht.coverage_note)}</p>`;
   }
 
   registerTab("zhenti", async () => {
@@ -253,14 +263,8 @@
         <div class="bk-h"><span>再深一层: 考查的是高中"知识点"(语法/短语/句式)吗?</span><span class="bk-src">/api/exam_point/grammar_structural_coverage</span></div>
         <p class="kb-dim" style="margin:0 0 8px;">词汇难度之外, 完形填空/语法填空很多时候考的是<b>短语搭配/语法结构</b>本身, 不是单词认不认识。分三层看:</p>
         ${gscHTML}
-        <p class="kb-dim" style="margin:10px 0 8px;border-top:1px solid var(--line);padding-top:10px;">${pprHTML}</p>
-        <p class="kb-dim" style="margin:10px 0 0;border-top:1px solid var(--line);padding-top:10px;">${ccsHTML}</p>
-        <p class="kb-dim" style="margin:10px 0 0;background:var(--sunken);padding:8px 10px;border-radius:var(--r-sm);">
-          <b>做不到的部分, 明说</b>: "短语/搭配/句式初中已学 vs 高中新学"这个区分现在做不了 —
-          高中教材短语库(93个)全部来自高中教材, 零初中来源; 义务教育课标(2022版)官方文件本身
-          没有可提取的短语/词块清单(只有教学理念叙述); 初中已结构化的18条多词词条与高中短语库
-          仅1条重合。不拿单词学段冒充短语学段(那是偷换概念) — 这是数据采集缺口, 不是能力缺口。
-        </p>
+        <div style="margin:10px 0 8px;border-top:1px solid var(--line);padding-top:10px;">${pprHTML}</div>
+        <div style="margin:10px 0 0;border-top:1px solid var(--line);padding-top:10px;">${ccsHTML}</div>
       </section>
       <p class="zt-nextlink">近年考什么在变? 完整迁移图 → <a href="#/beike">命题研判</a></p>
       <section class="bk-card">

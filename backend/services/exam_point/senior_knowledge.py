@@ -8,28 +8,25 @@
 
 1. grammar_structural_coverage(): 语法填空+短文改错(题型定义即排除语义辨析, 零主观判断
    成本) — 108个课标语法点辽宁真题精确印证覆盖, 只报绝对数量+名单, 不报占比(35题 vs 108
-   语法点不是同一统计总体的抽样关系)。复用 grammar_4q.py 坑31 修复后的精确匹配逻辑。
-2. phrase_pattern_exam_relevance(): 短语/句型/表达(phrases表, 高中教材来源) 与辽宁真题
-   文本的共现关联 —— 不做初高中对比(见下方"明确拒绝"), 只做"高中教材短语库有哪些在真题
-   出现"这一单向查询, 明确标"出现≠考查"(复用既有 PHRASE_LIB_NOTE)。
+   语法点不是同一统计总体的抽样关系, 24是关键词匹配抠出的**下限**非精确测量值)。复用
+   grammar_4q.py 坑31 修复后的精确匹配逻辑。
+2. phrase_pattern_exam_relevance(): 短语/句型/表达(phrases表)与辽宁真题文本的共现关联,
+   分"初中已学(junior_known) vs 高中新学(senior_only)"。历史记录(2026-07-07 首次调研):
+   曾误判"初中基线不存在"(调研1只查了 data/junior_high/structured/*.jsonl 结构化产物,
+   没查到 data/junior_high/textbooks/hujiao/{7a..9b}.pdf 教材原文其实本地已有)——用户
+   指出后核实原文确在, 用 scripts/extract_hujiao_phrases.py 复用高中同一套
+   _scan_text 规则(颗粒度对齐, 非另起标准)抽取, 补上了这条线(初中50个短语, 高中93个
+   里44个初中已学/49个高中新学)。
 3. cloze_collocation_structural_subset(): 完形填空180空(10篇, 同 attribution.py 范围
-   限定)里, 结构规则(≥2个多词选项共享token, 如"put up with/stand up for"共享"up")可
-   客观确认的"像固定搭配"子集 —— 明确标"下限, 非真实占比"(规则会漏判表层不同根但语义
-   仍是固定搭配的空, 如"harmful to/mixed with/different from/applied to")。
-
-明确拒绝(调研1实证, 不做假替代): "初中已学 vs 高中新学"的短语/搭配/句型区分做不了 ——
-phrases 表(743行)100%来自高中教材(renjiao/waiyan, version_key×volume_key交叉核实), 零
-初中来源; 义务教育英语课程标准(2022版)官方PDF本身只有5个附录(核心素养/语音/词汇/语法/
-教学案例), 无"词块/固定搭配表"这类可枚举的官方列表, 短语相关表述只是教学理念叙述; 初中4个
-结构化jsonl(curriculum_vocab/hujiao_vocab/grammar_items/stage_refined)里仅18条巧合式多词
-词条(教材生词表原始收录形式, 非系统性短语抽取), 与高中93个短语canonical仅1条重合
-("instead of")。不拿单词学段替代短语学段(范畴错误, 偷换概念) —— word:节点与phrase:节点
-是两套独立实体, at_stage边只挂在word:节点上。真正缺口: 需要初中教材课文原文 + 复用现有
-phrases.py 抽取模式思路做初中版短语提取, 是独立的STEP1数据采集任务, 不在本次范围内。
+   限定)里两层判断并存不混淆(坑16对称: 客观规则 vs 转录人工标注不能装进同一个"客观"桶):
+   (a) 结构规则(≥2个多词选项共享token)可客观确认的"像固定搭配"子集, 明确标"下限,
+   非真实占比"; (b) 官方解析文本"考查XX"标签转录统计(词义辨析/搭配/篇章衔接三分桶),
+   明确标 provenance=human_transcribed(未独立验证, 不当D0客观事实)。
 
 单一计算点(Rule1): 语法维度复用 grammar_4q.py 的 TERM_TO_LABEL_KEYWORD/match_ids_for_term
 (不重写匹配算法); 完形填空维度复用 attribution.py 的 qualifying_cloze_rows/parse_cloze_options
-(不重新解析选项); 短语维度复用 exam_grammar_stats.py 的 PHRASE_LIB_NOTE(不重写"出现非考查"caveat)。
+(不重新解析选项); 短语维度复用 exam_grammar_stats.py 的 PHRASE_LIB_NOTE(不重写"出现非考查"
+caveat) + backend.services.extraction.phrases._scan_text(初高中同一套抽取规则)。
 """
 from __future__ import annotations
 
@@ -114,40 +111,78 @@ def grammar_structural_coverage(con: duckdb.DuckDBPyConnection) -> dict:
     }
 
 
-def phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection) -> dict:
-    """短语/句型/表达(phrases表, 高中教材来源)与辽宁真题文本的共现关联.
+_JUNIOR_VERSION = "hujiao"
 
-    明确拒绝"初中已学vs高中新学"对比(STEP1数据缺口, 见本模块 docstring); 只做"高中教材
-    短语库有哪些能在辽宁真题原文/解析文本里找到"这一单向、不需要初中数据的关联查询。
+
+def _phrase_stage(canonical: str, junior_set: set[str]) -> str:
+    return "junior_known" if canonical.strip().lower() in junior_set else "senior_only"
+
+
+def _phrase_exam_match(senior: list[tuple], junior_set: set[str], blob_all: str) -> dict:
+    """遍历高中短语库, 按学段分组统计 + 找真题文本命中. 拆出降 phrase_pattern_exam_relevance CC."""
+    by_type: dict[str, int] = {}
+    by_stage: dict[str, int] = {"junior_known": 0, "senior_only": 0}
+    matched: list[dict] = []
+    matched_by_stage: dict[str, int] = {"junior_known": 0, "senior_only": 0}
+    for canonical, ptype in senior:
+        group = ptype.split(":", 1)[0] if ptype else "unknown"
+        by_type[group] = by_type.get(group, 0) + 1
+        stage = _phrase_stage(canonical, junior_set)
+        by_stage[stage] += 1
+        if canonical and canonical.strip() and canonical.strip() in blob_all:
+            matched.append({"canonical": canonical.strip(), "phrase_type": ptype, "stage": stage})
+            matched_by_stage[stage] += 1
+    return {"by_type": by_type, "by_stage": by_stage, "matched": matched, "matched_by_stage": matched_by_stage}
+
+
+def phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection) -> dict:
+    """短语/句型/表达(phrases表)与辽宁真题文本的共现关联, 分"初中已学 vs 高中新学".
+
+    2026-07-07 补 STEP1 缺口: 此前(见本模块 docstring 历史记录)因未找全本地 hujiao 教材
+    PDF 原文, 误判"初中基线不存在"。现已用 scripts/extract_hujiao_phrases.py 复用高中
+    同一套 _scan_text 规则(颗粒度对齐, 非另起一套判断标准)抽取 6 册沪教牛津教材短语/句型/
+    表达, 写入同一张 phrases 表(version_key='hujiao')。"初中已学"= canonical 同时出现在
+    hujiao 版; "高中新学"= 只出现在 renjiao/waiyan 版。
     """
-    phrases = con.execute("SELECT DISTINCT canonical, phrase_type FROM phrases").fetchall()
+    junior_set = {c.strip().lower() for (c,) in con.execute(
+        "SELECT DISTINCT canonical FROM phrases WHERE version_key = ?", [_JUNIOR_VERSION]
+    ).fetchall()}
+    senior = con.execute(
+        "SELECT DISTINCT canonical, phrase_type FROM phrases WHERE version_key != ?",
+        [_JUNIOR_VERSION],
+    ).fetchall()
+    senior_canonicals = {c.strip().lower() for c, _t in senior}
+
     exam_rows = con.execute(
         "SELECT raw_question, analysis FROM exam_questions WHERE province LIKE '辽宁%'"
     ).fetchall()
     blob_all = " ".join((q or "") + " " + (a or "") for q, a in exam_rows)
 
-    by_type: dict[str, int] = {}
-    matched = []
-    for canonical, ptype in phrases:
-        group = ptype.split(":", 1)[0] if ptype else "unknown"
-        by_type[group] = by_type.get(group, 0) + 1
-        if canonical and canonical.strip() and canonical.strip() in blob_all:
-            matched.append({"canonical": canonical.strip(), "phrase_type": ptype})
+    agg = _phrase_exam_match(senior, junior_set, blob_all)
+    by_type, by_stage = agg["by_type"], agg["by_stage"]
+    matched, matched_by_stage = agg["matched"], agg["matched_by_stage"]
 
     return {
         "scope_note": (
-            "不回答'初中已学vs高中新学'(STEP1数据缺口, 短语/搭配/句式现无初中基线, 已核实"
-            "官方义务教育课标2022版无可提取的短语/词块枚举列表, 仅教学理念叙述, 见本模块"
-            "docstring); 只回答'phrases表(高中教材来源)有哪些能在辽宁真题原文/解析里找到'"
+            "高中教材短语/句型/表达库(93个, renjiao/waiyan) 与初中沪教牛津库(50个, hujiao)"
+            "对齐后分层: junior_known=初中已出现(高中复现巩固), senior_only=只在高中教材"
+            "出现(真正新学)。两库均用同一套规则(backend.services.extraction.phrases."
+            "_scan_text)抽取, 颗粒度一致, 非各自发明标准。"
         ),
+        "n_junior_phrases_total": len(junior_set),
+        "n_senior_phrases_total": len(senior_canonicals),
+        "n_overlap_junior_known": len(senior_canonicals & junior_set),
+        "n_senior_only": len(senior_canonicals - junior_set),
         "phrase_type_breakdown": by_type,
-        "n_phrases_total": len(phrases),
+        "phrase_stage_breakdown": by_stage,
         "n_matched_in_exam_text": len(matched),
+        "matched_by_stage": matched_by_stage,
         "match_method": "exact_substring_of_canonical_phrase",
         "matched_examples": matched[:20],
         "caveat": PHRASE_LIB_NOTE + " 本函数额外核实: 无 tests_phrase 边(已确认不存在, phrases"
                   "表只有 introduces_phrase 教材边), 此为教材短语库与真题文本的文本共现证据,"
-                  "非考查关系的结构性证据。",
+                  "非考查关系的结构性证据。junior_known/senior_only 是教材库层面的学段对齐,"
+                  "不是'这道真题的这个短语按学段考查'的逐题归因(同 word 学段口径的颗粒度边界)。",
     }
 
 
@@ -162,17 +197,7 @@ def _shares_multiword_token(texts: list[str]) -> bool:
     return False
 
 
-def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
-    """完形填空(10篇, 同 attribution.qualifying_cloze_rows 范围) 结构规则可确认的
-    "像固定搭配"子集 — 下限, 非真实占比估计.
-
-    规则(透明, 零语义判断): 一空的4个选项里, 若存在≥2个多词选项(含空格)共享至少1个token
-    (如"put up with"/"stand up for"共享"up"), 判定为"结构上像固定搭配"。此规则**只能确认
-    表层token重叠的情况**, 会漏判表层完全不同根但语义仍是固定搭配的空(如"harmful to/
-    mixed with/different from/applied to"这类每个选项用词都不同但仍是介词短语固定搭配
-    辨析) —— 故本函数产出是**规则能确认的下限**, 不代表"搭配题真实占比"。
-    """
-    rows = qualifying_cloze_rows(con)
+def _structural_flags(rows: list[tuple]) -> tuple[int, list[dict]]:
     total = 0
     flagged = []
     for qid, year, opts, _letters in rows:
@@ -181,24 +206,89 @@ def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
             texts = [o.strip() for o in opt4]
             if _shares_multiword_token(texts):
                 flagged.append({"qid": qid, "year": year, "options": texts})
+    return total, flagged
+
+
+_ANALYSIS_LABEL_RE = re.compile(r"考查([^.．。\n]{2,25})[.．。]")
+
+
+def _classify_analysis_label(label: str) -> str:
+    label = label.strip()
+    if "短语" in label or "搭配" in label or "固定" in label:
+        return "collocation"
+    if "语境" in label or "串联" in label or "衔接" in label or "呼应" in label or "语篇" in label:
+        return "context_cohesion"
+    if "辨析" in label:
+        return "word_meaning"
+    return "other"
+
+
+def _human_transcribed_breakdown(con: duckdb.DuckDBPyConnection, qids: list[str]) -> dict:
+    """从官方解析文本里逐空抠"考查XX"标签, 按语义分3桶. provenance=human_transcribed:
+    这是转录解析作者的人工判断, 不是我方独立验证的客观事实(同坑16对称: dual-model一致
+    不代表对, 转录单一人工来源同样不能升格成D0客观事实), 物理隔离在独立字段, 不与
+    structural_flags(零语义判断的规则输出)混进同一个"客观"桶。
+    """
+    if not qids:
+        return {"n_labels_extracted": 0, "by_category": {}, "coverage_note": "无可解析题目"}
+    qmarks = ",".join(["?"] * len(qids))
+    rows = con.execute(
+        f"SELECT analysis FROM exam_questions WHERE question_id IN ({qmarks})", qids
+    ).fetchall()
+    by_cat: dict[str, int] = {}
+    for (a,) in rows:
+        if not a:
+            continue
+        for label in _ANALYSIS_LABEL_RE.findall(a):
+            cat = _classify_analysis_label(label)
+            by_cat[cat] = by_cat.get(cat, 0) + 1
+    n = sum(by_cat.values())
+    return {
+        "provenance": "human_transcribed_from_official_analysis",
+        "confidence": "secondary_source_not_independently_verified",
+        "n_labels_extracted": n,
+        "by_category": by_cat,
+        "category_meaning": {
+            "word_meaning": "解析标'XX词义辨析/XX的辨析' — 纯词义/词性辨析",
+            "collocation": "解析标'短语/搭配/固定X' — 搭配知识",
+            "context_cohesion": "解析标'语境理解/上下文串联/衔接/呼应' — 篇章衔接非词汇本身",
+        },
+        "coverage_note": (
+            f"{n} 个空有可读'考查XX'标签(源: 7/10篇有完整逐空解析, 另3篇无解析文本或为占位);"
+            " 这是解析作者的人工判断转录, 不是我方独立验证的客观事实, 不作为D0数据入库"
+        ),
+    }
+
+
+def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
+    """完形填空(10篇, 同 attribution.qualifying_cloze_rows 范围) 两层判断并存不混淆:
+
+    (1) structural_flags: 结构规则(≥2个多词选项共享token, 如"put up with"/"stand up for"
+        共享"up")可客观确认的"像固定搭配"子集 — 零语义判断, 但只是**规则能抓到的下限**
+        (会漏判"harmful to/mixed with/different from/applied to"这类表层不同根但语义
+        仍是固定搭配的空), 不代表"搭配题真实占比"。
+    (2) human_transcribed: 官方解析文本"考查XX"标签转录统计(词义辨析/搭配/篇章衔接三桶)。
+        **物理隔离成独立字段**(坑16对称: 转录人工标注≠我方独立验证的客观事实), 不与(1)
+        的规则输出混进同一个"客观"桶, 防止读者把两种不同置信度的数字当同等可信。
+    """
+    rows = qualifying_cloze_rows(con)
+    total, flagged = _structural_flags(rows)
+    qids = [r[0] for r in rows]
 
     return {
         "province_scope": "辽宁卷",
         "n_passages": len(rows),
         "n_blanks_total": total,
-        "n_structurally_flagged": len(flagged),
-        "structurally_flagged_pct": round(100 * len(flagged) / total, 1) if total else None,
-        "flag_method": "shared_token_across_multiword_options (共享token, 非语义判断, 零LLM介入)",
-        "explicit_ceiling_caveat": (
-            "这是规则能抓到的下限, 不是搭配题真实占比。规则只能识别表层token重叠的多词选项组"
-            "(如 put up with/stand up for 共享 up); 表层不同根但语义仍是固定搭配的空"
-            "(如 harmful to/mixed with/different from/applied to) 规则漏判, 计入未分类。"
-        ),
-        "unclassified_count": total - len(flagged),
-        "unclassified_note": (
-            "未被规则标记≠一定是纯词义辨析, 只是结构规则确认不了; 如需更细分类需人工/LLM"
-            "辅助读官方解析文本的'考查XX'标签(provenance=human_transcribed, 未独立验证,"
-            "不作为D0客观事实入库)"
-        ),
-        "flagged_examples": flagged,
+        "structural_flags": {
+            "n_structurally_flagged": len(flagged),
+            "structurally_flagged_pct": round(100 * len(flagged) / total, 1) if total else None,
+            "flag_method": "shared_token_across_multiword_options (共享token, 非语义判断, 零LLM介入)",
+            "explicit_ceiling_caveat": (
+                "这是规则能抓到的下限, 不是搭配题真实占比。规则只能识别表层token重叠的多词"
+                "选项组; 表层不同根但语义仍是固定搭配的空规则漏判, 计入未分类。"
+            ),
+            "unclassified_count": total - len(flagged),
+            "flagged_examples": flagged,
+        },
+        "human_transcribed": _human_transcribed_breakdown(con, qids),
     }

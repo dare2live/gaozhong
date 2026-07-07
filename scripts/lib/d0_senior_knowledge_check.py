@@ -28,33 +28,51 @@ def check_grammar_structural_coverage(con: duckdb.DuckDBPyConnection, check) -> 
 
 
 def check_phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection, check) -> None:
-    print("\n=== (45) 短语/句型/表达 真题文本共现 (出现≠考查, 无初中基线诚实标) ===")
+    print("\n=== (45) 短语/句型/表达 真题文本共现 (初中已学/高中新学分层, 坑hujiao短语补齐后) ===")
     from backend.services.exam_point.senior_knowledge import phrase_pattern_exam_relevance
     d = phrase_pattern_exam_relevance(con)
 
-    check("scope_note 显式声明不做初中对比(STEP1缺口诚实披露)",
-          "初中" in d["scope_note"] and "STEP1" in d["scope_note"], "")
-    check("n_matched_in_exam_text <= n_phrases_total (无越界)",
-          d["n_matched_in_exam_text"] <= d["n_phrases_total"],
-          f"{d['n_matched_in_exam_text']}/{d['n_phrases_total']}")
-    check("phrase_type_breakdown 分组求和 == n_phrases_total (计数自洽)",
-          sum(d["phrase_type_breakdown"].values()) == d["n_phrases_total"],
-          f"{sum(d['phrase_type_breakdown'].values())} vs {d['n_phrases_total']}")
+    check("scope_note 显式声明初中已学vs高中新学分层依据(颗粒度对齐说明)",
+          "junior_known" in d["scope_note"] and "senior_only" in d["scope_note"], "")
+    check("n_matched_in_exam_text <= n_senior_phrases_total (无越界)",
+          d["n_matched_in_exam_text"] <= d["n_senior_phrases_total"],
+          f"{d['n_matched_in_exam_text']}/{d['n_senior_phrases_total']}")
+    check("phrase_type_breakdown 分组求和 == n_senior_phrases_total (计数自洽)",
+          sum(d["phrase_type_breakdown"].values()) == d["n_senior_phrases_total"],
+          f"{sum(d['phrase_type_breakdown'].values())} vs {d['n_senior_phrases_total']}")
+    check("phrase_stage_breakdown 求和 == n_senior_phrases_total (计数自洽)",
+          sum(d["phrase_stage_breakdown"].values()) == d["n_senior_phrases_total"],
+          f"{sum(d['phrase_stage_breakdown'].values())} vs {d['n_senior_phrases_total']}")
+    check("n_overlap_junior_known + n_senior_only == n_senior_phrases_total (对账)",
+          d["n_overlap_junior_known"] + d["n_senior_only"] == d["n_senior_phrases_total"],
+          f"{d['n_overlap_junior_known']}+{d['n_senior_only']}")
+    check("matched_by_stage 求和 == n_matched_in_exam_text (计数自洽)",
+          sum(d["matched_by_stage"].values()) == d["n_matched_in_exam_text"],
+          f"{sum(d['matched_by_stage'].values())} vs {d['n_matched_in_exam_text']}")
     check("caveat 含'出现非考查'诚实披露(复用既有PHRASE_LIB_NOTE)",
           "出现非考查" in d["caveat"] or "出现≠考查" in d["caveat"], "")
 
 
 def check_cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection, check) -> None:
-    print("\n=== (46) 完形填空搭配结构性子集 (下限非真实占比, 与cloze_answer_word_stage同源10篇) ===")
+    print("\n=== (46) 完形填空搭配 结构性子集+人工转录分桶 (两层物理隔离不混淆) ===")
     from backend.services.exam_point.senior_knowledge import cloze_collocation_structural_subset
     d = cloze_collocation_structural_subset(con)
+    sf, ht = d["structural_flags"], d["human_transcribed"]
 
     check("n_passages == 10 (同 cloze_answer_word_stage 范围限定, 单一计算点)",
           d["n_passages"] == 10, f"{d['n_passages']}")
-    check("n_structurally_flagged + unclassified_count == n_blanks_total (计数自洽)",
-          d["n_structurally_flagged"] + d["unclassified_count"] == d["n_blanks_total"],
-          f"{d['n_structurally_flagged']}+{d['unclassified_count']} vs {d['n_blanks_total']}")
-    check("explicit_ceiling_caveat 声明'下限'非'真实占比' (防误读)",
-          "下限" in d["explicit_ceiling_caveat"], "")
-    check("flagged_examples 长度 == n_structurally_flagged (无隐藏丢弃)",
-          len(d["flagged_examples"]) == d["n_structurally_flagged"], f"{len(d['flagged_examples'])}")
+    check("structural_flags: n_structurally_flagged + unclassified_count == n_blanks_total (计数自洽)",
+          sf["n_structurally_flagged"] + sf["unclassified_count"] == d["n_blanks_total"],
+          f"{sf['n_structurally_flagged']}+{sf['unclassified_count']} vs {d['n_blanks_total']}")
+    check("structural_flags: explicit_ceiling_caveat 声明'下限'非'真实占比' (防误读)",
+          "下限" in sf["explicit_ceiling_caveat"], "")
+    check("structural_flags: flagged_examples 长度 == n_structurally_flagged (无隐藏丢弃)",
+          len(sf["flagged_examples"]) == sf["n_structurally_flagged"], f"{len(sf['flagged_examples'])}")
+    check("human_transcribed: provenance 显式标 human_transcribed (物理隔离不当D0客观事实)",
+          ht.get("provenance") == "human_transcribed_from_official_analysis", str(ht.get("provenance")))
+    check("human_transcribed: by_category 求和 == n_labels_extracted (计数自洽)",
+          sum(ht["by_category"].values()) == ht["n_labels_extracted"],
+          f"{sum(ht['by_category'].values())} vs {ht['n_labels_extracted']}")
+    check("两层物理隔离: structural_flags 与 human_transcribed 是不同顶层key (不混进同一'客观'桶)",
+          "structural_flags" in d and "human_transcribed" in d and
+          "n_structurally_flagged" not in d and "by_category" not in d, "")

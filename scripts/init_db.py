@@ -140,12 +140,14 @@ def main() -> None:
     print("\n=== Layer 3x: 初中节点 (域A; word/grammar, stage 标注; inc2; 在全部高中word节点建完后跑计数才准) ===")
     from backend.services.data_sources.extract.junior import (
         vocab as junior_vocab, grammar as junior_grammar, stage_link as junior_stage_link,
-        stage_backfill as junior_stage_backfill, blueprint as junior_blueprint)
+        stage_backfill as junior_stage_backfill, blueprint as junior_blueprint,
+        phrases as junior_phrases)
     print(f"  {junior_vocab.load(con)}")
     print(f"  {junior_grammar.load(con)}")
     print(f"  {junior_stage_link.load(con)}")
     print(f"  {junior_stage_backfill.load(con)}")   # inc3: 高中词 stage 回填
     print(f"  {junior_blueprint.load(con)}")          # inc3: 10维 deepens 边
+    print(f"  {junior_phrases.load(con)}")            # 2026-07-07: 初中短语/句型/表达(须在Layer2高中phrases之后, 避免被其blanket DELETE清空)
 
     print("\n=== Layer 3y: 考试词典 (Canonical 词本体; 课标∪教材真超纲, 真题作旗) ===")
     from backend.services.exam_dictionary import build_exam_dictionary
