@@ -111,3 +111,41 @@ def _check_content_status(con, check) -> None:
     n_walled_2025 = con.execute(
         "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2025 AND content_status='stem_walled'").fetchone()[0]
     check("中考 2025 题面0 stem_walled (题面本已采集到, 非2024式源头不可得)", n_walled_2025 == 0, f"{n_walled_2025}/45")
+
+
+def check_qbank_grammar_link(con: duckdb.DuckDBPyConnection, check) -> None:
+    """Phase E3 中考关联层(2026-07-07): question_bank镶入 + tests_word/tests_grammar边.
+
+    直接查库核实(非委托agent臆测)纠正此前"仅20题可用"的过度悲观结论: 2025年45题(全6题型)
+    raw_question真实(非walled), 只是仅语篇填空10题answer非空——故45题(非20题)可入
+    question_bank+建tests_word边; tests_grammar仅20题语篇填空(答案+考点齐全, 2024/2025各10)
+    可建, 样本量薄只报绝对数量不报占比。question:ZK-%节点须剪至有边覆盖(防孤儿)。
+    """
+    print("\n=== (48) 中考关联层 question_bank/tests_word/tests_grammar (Phase E3) ===")
+    n_qb = con.execute("SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%'").fetchone()[0]
+    check("2025年45题(全部真题面, 2024全walled不入库) → question_bank", n_qb == 45, f"{n_qb}")
+    bad_stem = con.execute(
+        "SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%' AND stem LIKE '%walled%'"
+    ).fetchone()[0]
+    check("question_bank无walled占位符冒充题面 (D0诚实)", bad_stem == 0, f"{bad_stem}")
+    n_tw = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'"
+    ).fetchone()[0]
+    check("中考tests_word边>0 (45题题面驱动, 复用exam_vocab._lemma_tokens同口径)", n_tw > 0, f"{n_tw}")
+    n_tg = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_grammar' AND src_id LIKE 'question:ZK-%'"
+    ).fetchone()[0]
+    check("中考tests_grammar边>=15 (20题语篇填空样本薄, 精确匹配后17/20题命中, 部分1题→2边)",
+          n_tg >= 15, f"{n_tg}")
+    n_orphan = con.execute(
+        "SELECT COUNT(*) FROM nodes n WHERE concept_id LIKE 'question:ZK-%' "
+        "AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)"
+    ).fetchone()[0]
+    check("question:ZK-%节点无孤儿 (剪除38题无文本/语法信号的题, 防伪完整感, 同E1 unit:节点先例)",
+          n_orphan == 0, f"{n_orphan}")
+    exam_type_tags = con.execute(
+        "SELECT COUNT(*) FROM question_tags qt JOIN question_bank qb ON qt.qb_id=qb.qb_id "
+        "WHERE qb.origin_ref LIKE 'ZK-%' AND qt.tag_id='exam_type:中考'"
+    ).fetchone()[0]
+    check("45题全打exam_type:中考标签 (供组卷/学情按学段过滤, 不与高考题混淆)",
+          exam_type_tags == 45, f"{exam_type_tags}/45")

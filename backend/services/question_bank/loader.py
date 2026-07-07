@@ -29,10 +29,11 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _difficulty(text: str) -> str:
+def difficulty(text: str) -> str:
     """**题面篇幅档**(len(题面)), 非教研验证难度 (后端审计#7: 无真难度源, 此为字数代理)。
     字段名保留 difficulty(schema/compose/placement 内部码), 但教师面据实标"篇幅(长/中/短)"不冒充难度;
-    且跨 source 粒度混淆(eol子题短/篇章源长), 仅作篇幅档参考。阈值读 thresholds.yaml question_bank 块。"""
+    且跨 source 粒度混淆(eol子题短/篇章源长), 仅作篇幅档参考。阈值读 thresholds.yaml question_bank 块。
+    (Rule5 2026-07-07: 原 _difficulty, 初中 qbank.py 新增第2个消费者后去下划线转公开。)"""
     n = len(text or "")
     if n < get_threshold("question_bank.difficulty_easy_threshold", 100): return "easy"
     if n < get_threshold("question_bank.difficulty_char_threshold", 400): return "mid"
@@ -48,17 +49,18 @@ def _tag_question(con: duckdb.DuckDBPyConnection, qb_id: int, tag_id: str, weigh
                 [qb_id, tag_id, weight])
 
 
-def _insert_question(con: duckdb.DuckDBPyConnection, origin: str, origin_ref: str | None,
-                      qtype: str, stem: str, options_json: str | None,
-                      answer: str | None, analysis: str | None,
-                      difficulty: str = "mid") -> int:
+def insert_question(con: duckdb.DuckDBPyConnection, origin: str, origin_ref: str | None,
+                     qtype: str, stem: str, options_json: str | None,
+                     answer: str | None, analysis: str | None,
+                     diff: str = "mid") -> int:
+    """(Rule5 2026-07-07: 原 _insert_question, 初中 qbank.py 新增第2个消费者后去下划线转公开。)"""
     row = con.execute(
         "INSERT INTO question_bank "
         "(qb_id, origin, origin_ref, question_type, stem, options_json, answer, analysis, "
         " difficulty, reviewed_by, created_at) "
         "VALUES (nextval('qb_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?) "
         "RETURNING qb_id",
-        [origin, origin_ref, qtype, stem, options_json, answer, analysis, difficulty, _now()],
+        [origin, origin_ref, qtype, stem, options_json, answer, analysis, diff, _now()],
     ).fetchone()
     return row[0]
 
@@ -96,10 +98,19 @@ def _unit_tags(con: duckdb.DuckDBPyConnection, words: list[str]) -> list[str]:
     ).fetchall()]
 
 
-def _autotag(con: duckdb.DuckDBPyConnection, qb_id: int, stem: str,
-              year: int | None, qtype: str, cefr: set[str], origin_ref: str | None = None) -> int:
-    """Auto-tag a question; return tag count attached."""
+def autotag(con: duckdb.DuckDBPyConnection, qb_id: int, stem: str,
+            year: int | None, qtype: str, cefr: set[str], origin_ref: str | None = None,
+            exam_type: str = "高考") -> int:
+    """Auto-tag a question; return tag count attached.
+
+    (Rule5 2026-07-07: 原 _autotag, 初中 qbank.py 新增第2个消费者后去下划线转公开, 加 exam_type
+    参数区分高考/中考(默认高考, 老调用点不用改) — 供组卷/学情等消费者按学段过滤, 不新建列(§3.5
+    可扩展: 走既有 tag_dictionary/question_tags 机制, 不动 question_bank schema)。"""
     n = 0
+    # exam_type (高考/中考 — 供消费者按学段过滤, 不与 question_type 混淆)
+    tid = f"exam_type:{exam_type}"
+    _ensure_tag(con, tid, "exam_type", exam_type)
+    _tag_question(con, qb_id, tid); n += 1
     # type
     tid = f"question_type:{qtype}"
     _ensure_tag(con, tid, "question_type", qtype)
@@ -126,7 +137,7 @@ def _autotag(con: duckdb.DuckDBPyConnection, qb_id: int, stem: str,
         _ensure_tag(con, tid, "unit", tid.split(":", 1)[-1])
         _tag_question(con, qb_id, tid); n += 1
     # difficulty
-    diff = _difficulty(stem)
+    diff = difficulty(stem)
     tid = f"difficulty:{diff}"
     _ensure_tag(con, tid, "difficulty", diff)
     _tag_question(con, qb_id, tid); n += 1
@@ -137,7 +148,7 @@ def backfill_exam_point_tags(con: duckdb.DuckDBPyConnection) -> dict:
     """Layer 4i(考点 tests_exam_point 边就绪)后补打 exam_point 标签.
 
     坑(2026-07-06 全量重建实测发现): question_bank 装载在 Layer 4, 早于 tests_exam_point 边
-    生成的 Layer 4i(load_exam_points/load_cognitive_skill) — _autotag() 里的 exam_point 反查
+    生成的 Layer 4i(load_exam_points/load_cognitive_skill) — autotag() 里的 exam_point 反查
     在首次全量重建时因边还不存在而 0 命中(实测: 单独重跑load_real_questions时因边已存在于旧库
     而误判"成功", 全新重建才暴露顺序依赖)。此函数复用同一份 _exam_point_tags() 反查逻辑,
     在 Layer 4i 之后单独回填, 与 Layer 4j(weakness 重算同理由推迟到 4i 后)是同一套依赖顺序模式。
@@ -168,10 +179,10 @@ def load_real_questions(con: duckdb.DuckDBPyConnection) -> dict:
     for qid, yr, qtype, stem, ans, anl in rows:
         if not stem:
             continue
-        diff = _difficulty(stem)
-        qb_id = _insert_question(con, "real", qid, qtype or "未知",
-                                   stem, None, ans, anl, diff)
-        tags += _autotag(con, qb_id, stem, yr, qtype or "未知", cefr, origin_ref=qid)
+        diff = difficulty(stem)
+        qb_id = insert_question(con, "real", qid, qtype or "未知",
+                                  stem, None, ans, anl, diff)
+        tags += autotag(con, qb_id, stem, yr, qtype or "未知", cefr, origin_ref=qid)
         inserted += 1
     return {"inserted": inserted, "tags_attached": tags}
 

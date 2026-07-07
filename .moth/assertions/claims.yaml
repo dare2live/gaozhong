@@ -151,7 +151,7 @@ assertions:
   - id: orphan-thresholds-wired
     claim: "thresholds.yaml 孤儿key(vocab容差/question_bank难度/extraction字符边界/text ngram)已接活消费 (坑21: 声明却零消费→接线); get_threshold 抽中立 leaf backend/services/thresholds.py (避层级倒置)"
     type: shell
-    command: ["python3", "-c", "import inspect; from backend.services import thresholds; from backend.services.audit import curriculum; from backend.services.question_bank import loader as ql; from backend.services.course import scenarios; from backend.services.exercise import cloze; ok=(thresholds.get_threshold('extraction.section_text_max_chars')==5000 and thresholds.get_threshold('vocab.level_tolerance')==100 and 'get_threshold' in inspect.getsource(curriculum._level_sev) and 'difficulty_char_threshold' in inspect.getsource(ql._difficulty) and 'section_text_max_chars' in inspect.getsource(cloze) and scenarios.NGRAM_N==10); print(0 if ok else 1)"]
+    command: ["python3", "-c", "import inspect; from backend.services import thresholds; from backend.services.audit import curriculum; from backend.services.question_bank import loader as ql; from backend.services.course import scenarios; from backend.services.exercise import cloze; ok=(thresholds.get_threshold('extraction.section_text_max_chars')==5000 and thresholds.get_threshold('vocab.level_tolerance')==100 and 'get_threshold' in inspect.getsource(curriculum._level_sev) and 'difficulty_char_threshold' in inspect.getsource(ql.difficulty) and 'section_text_max_chars' in inspect.getsource(cloze) and scenarios.NGRAM_N==10); print(0 if ok else 1)"]
     expect: {op: "==", value: "0"}
   - id: cog-newera-honest-downgrade
     claim: "D区设问技能新era不可信(n=15<30)视觉降级(教研室#11 死线3诚实分层): beike 读 distribution_reliable, false时灰降级+'⚠样本不足'banner+叙事'方向性参考(非趋势结论)'(critic谄媚死flag修; C区结构presence的'万变不离其宗'是合法structural_truth不在此列)"
@@ -743,3 +743,16 @@ assertions:
     database: data/db/gaozhong.duckdb
     query: "SELECT COUNT(*) FROM unit_vocab_intro WHERE version_key='renjiao' AND LENGTH(zh_def) > 100"
     expect: {op: "<=", value: 10}
+  - id: zhongkao-qbank-grammar-link-e3
+    claim: "Phase E3(2026-07-07, 直接查库核实非委托agent臆测发现45条2025真题面题+20条语篇填空
+      有真实answer/analysis, 纠正此前'仅20题可用'的过度悲观结论): junior/qbank.py 镶入45条
+      2025真题面题(2024全walled不入库, NOT NULL stem+D0诚实两重约束) → question_bank(打
+      exam_type=中考标签, Rule5复用question_bank.loader.autotag/insert_question/difficulty,
+      不重写打标逻辑) + tests_word边(复用exam_vocab._lemma_tokens同口径); junior/grammar.py
+      对语篇填空(语法填空)20题(analysis=answer+类别拼接) → tests_grammar边(复用
+      grammar_4q.match_ids_for_term精确匹配, 20题样本量只报绝对数量不报占比, 2类术语
+      [名词复数/宾格]库内无对应节点诚实标unmatched不强凑); question:ZK-%节点剪至有边覆盖
+      的52个(90题里38题无文本/语法信号暂不建节点, 防伪完整感孤儿节点)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);qb=c.execute(\"SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%'\").fetchone()[0];tg=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_grammar' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];tw=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];orphan=c.execute(\"SELECT COUNT(*) FROM nodes n WHERE concept_id LIKE 'question:ZK-%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)\").fetchone()[0];c.close();print('OK' if (qb==45 and tg>=15 and tw>0 and orphan==0) else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}

@@ -1,7 +1,7 @@
 """停用词加载 (单一来源, Rule 5 共享) — autotag / tests_word 边构建剔除功能词.
 
 规则数据化在 backend/config/stopwords.yaml (项目 §3.5), 本模块只读不 hardcode.
-被 question_bank.loader._autotag 与 links_extra.build_tests_word 复用.
+被 question_bank.loader.autotag 与 links_extra.build_tests_word 复用.
 """
 from __future__ import annotations
 

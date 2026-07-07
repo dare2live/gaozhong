@@ -172,6 +172,15 @@ def main() -> None:
     print(f"  tags total: {con.execute('SELECT COUNT(*) FROM tag_dictionary').fetchone()[0]}")
     print(f"  question_tags: {con.execute('SELECT COUNT(*) FROM question_tags').fetchone()[0]}")
 
+    print("\n=== Layer 4a2: 中考真题→question_bank镶入 + tests_grammar边 (Phase E3, 须在本Layer4"
+          "\n              load_real_questions之后调, 否则被其blanket DELETE清空question_bank) ===")
+    from backend.services.data_sources.extract.junior import qbank as junior_qbank
+    from backend.services.data_sources.extract.junior import grammar as junior_grammar
+    print(f"  {junior_qbank.load(con)}")
+    print(f"  {junior_qbank.link_tests_word(con)}")
+    print(f"  {junior_grammar.link_zhongkao_grammar(con)}")
+    print(f"  {junior_qbank.prune_orphan_question_nodes(con)}")
+
     print("\n=== Layer 4c: 40 节课程灌库 (5.5 init_courses 用户 2026-05-24) ===")
     from backend.services.course import init_courses
     cs = init_courses.run(con)
@@ -195,7 +204,7 @@ def main() -> None:
     print(f"  主题特征词汇关联性(characterizes_theme, 辽宁区分度): {build_theme_vocabulary(con)}")
 
     # 坑(2026-07-06 全量重建实测发现): question_bank(Layer4)装载早于tests_exam_point边(Layer4i)
-    # 生成, _autotag()内的exam_point反查首次全量重建时0命中(边还不存在)——同Layer4j(weakness)
+    # 生成, autotag()内的exam_point反查首次全量重建时0命中(边还不存在)——同Layer4j(weakness)
     # 的依赖顺序模式, 在4i边就绪后单独回填。
     from backend.services.question_bank import loader as qb_loader
     print(f"  组卷考点标签回填(exam_point, 4i边就绪后): {qb_loader.backfill_exam_point_tags(con)}")

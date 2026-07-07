@@ -308,6 +308,7 @@ _LIB_CHECKS = [
     ("d0_exam_status_check", "check_exam_status"),
     ("d0_textbook_sections_check", "check_textbook_sections"),
     ("d0_zhongkao_check", "check_zhongkao"),
+    ("d0_zhongkao_check", "check_qbank_grammar_link"),
     ("d0_tenant_check", "check_tenant_isolation"),
     ("d0_versions_check", "check_versions"),
     ("d0_versions_check", "check_liaoning_official_data"),
