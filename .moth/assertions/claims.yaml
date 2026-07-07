@@ -683,6 +683,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);non_ln=c.execute(\"SELECT COUNT(*) FROM edges e JOIN exam_questions q ON q.question_id=SUBSTR(e.src_id,10) WHERE e.relation='tests_grammar' AND (q.province IS NULL OR q.province NOT LIKE '辽宁%')\").fetchone()[0];dup=c.execute(\"SELECT COUNT(*) FROM edges e1 JOIN edges e2 ON e1.src_id=e2.src_id AND e1.relation='tests_grammar' AND e2.relation='tests_grammar' WHERE e2.dst_id LIKE e1.dst_id || '/%'\").fetchone()[0];c.close();print('OK' if non_ln==0 and dup==0 else f'FAIL non_ln={non_ln} dup={dup}')"]
     expect: {op: regex, pattern: "OK"}
+  - id: tests-grammar-keyword-coverage-expanded
+    claim: "2026-07-07知识点颗粒度审查缺口2b: 25条辽宁离散语法题型(语法填空/短文改错)未匹配题逐条核实, 23条是2021/22 EOL答案核验机械占位文本+2024/25/26空analysis(已知真解析文本缺失天花板, 见grammar-category-pct-era-honest), 仅2条(短文改错)有真解析但命中不了旧26词表; 补10词(冠词/介词/连词/名词/形容词/副词/序数词/情态动词/人称代词/一般过去, 均实测真文本命中+grammar_items有label完全相等对应行)后 tests_grammar 边18→84, 覆盖官方108项语法8→22项"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_grammar'\").fetchone()[0];ni=c.execute(\"SELECT COUNT(DISTINCT dst_id) FROM edges WHERE relation='tests_grammar'\").fetchone()[0];c.close();print('OK' if n>=84 and ni>=22 else f'FAIL n={n} ni={ni}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: grammar-category-pct-era-honest
     claim: "grammar_category_pct(textbook_content.py教材单元'考察重点'徽章消费者)默认取当前卷制(scope.ERA_NEW); 现2021+暂无tests_grammar边(build对2021+英文答案桩文本关键词匹配缺席), 该函数诚实返回空dict(前端展示'暂无考查数据'), 不冒用2015-2020历史占比充当当前真值(2026-07-04坑12修)"
     type: shell

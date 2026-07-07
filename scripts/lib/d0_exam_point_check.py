@@ -38,6 +38,19 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_passage_dim_granularity(con, check)
     _check_evidence_json_valid(con, check)
     _check_grammar_qtype(con, check)
+    _check_grammar_coverage_floor(con, check)
+
+
+def _check_grammar_coverage_floor(con: duckdb.DuckDBPyConnection, check) -> None:
+    """2026-07-07 知识点颗粒度审查缺口2b: TERM_TO_LABEL_KEYWORD 从26词扩到36词(补冠词/介词/
+    连词/名词/形容词/副词/序数词/情态动词/人称代词/一般过去, 均实测真解析文本命中+grammar_items
+    有label完全相等对应行), tests_grammar 边 18→84, 覆盖官方108项语法从8→22项。锁新地板防
+    未来误删这些词条静默回退(坑17新数据落地必入D0强校验)。"""
+    n = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_grammar'").fetchone()[0]
+    check("tests_grammar 边 ≥ 84 (2026-07-07 补10词后地板)", n >= B('tests_grammar_min'), f"{n}")
+    n_items = con.execute(
+        "SELECT COUNT(DISTINCT dst_id) FROM edges WHERE relation='tests_grammar'").fetchone()[0]
+    check("tests_grammar 覆盖官方108项语法 ≥ 22项", n_items >= B('tests_grammar_items_min'), f"{n_items}")
 
 
 def _check_grammar_qtype(con: duckdb.DuckDBPyConnection, check) -> None:

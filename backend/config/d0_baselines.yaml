@@ -35,6 +35,8 @@ baselines:
   cog_cross_theme_l2:     {value: 76, op: eq, note: "技能×主题群交叉join命中(2015-20; 11miss=有theme无genre真缺口非bug; 2026-07-06随理解目的新边+1)"}
   cooccur_min:          {value: 10,   op: ge, note: "考点共现边下界(后端审计#8: 排除eol子题级膨胀源后篇章级实测11; 原19含2021/22子题5x膨胀=伪关联)"}
   exam_point_min:       {value: 300,  op: ge, note: "tests_exam_point 边下界"}
+  tests_grammar_min:       {value: 84, op: ge, note: "2026-07-07知识点颗粒度审查缺口2b: TERM_TO_LABEL_KEYWORD 26→36词(补冠词/介词/连词/名词/形容词/副词/序数词/情态动词/人称代词/一般过去), 18→84边"}
+  tests_grammar_items_min: {value: 22, op: ge, note: "同上, 覆盖官方108项语法从8→22项"}
   word_glosses_min:     {value: 5000, op: ge, note: "释义词典规模下界(教材+中考)"}
   word_sense_cross_min: {value: 300,  op: ge, note: "跨阶段word_sense候选下界"}
   theme_vocab_min:      {value: 30,   op: ge, note: "characterizes_theme 主题特征词边下界"}
