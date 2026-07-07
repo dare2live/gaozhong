@@ -118,7 +118,7 @@ def _descendants_of(items: list[tuple], gid: str) -> set[str]:
     return out
 
 
-def _match_ids_for_term(items: list[tuple], term: str, kw: str) -> set[str]:
+def match_ids_for_term(items: list[tuple], term: str, kw: str) -> set[str]:
     """term → grammar_item_id 精确匹配 (替代旧版全局 kw-in-label 子串, 坑25)。
 
     优先级: (1) 子串枚举例外(比较级/最高级复合节点) (2) 前缀例外(不定式) (3) 精确相等,
@@ -139,7 +139,7 @@ def _match_ids_for_term(items: list[tuple], term: str, kw: str) -> set[str]:
 
 def _match_sets(items: list[tuple], hits: dict[str, int]) -> dict[str, set[str]]:
     """单一计算点: 每 term 各自匹配的 gid 集合, 供 core_ids 与逐 gid 命中计数复用同一份匹配结果。"""
-    return {term: _match_ids_for_term(items, term, TERM_TO_LABEL_KEYWORD[term]) for term in hits}
+    return {term: match_ids_for_term(items, term, TERM_TO_LABEL_KEYWORD[term]) for term in hits}
 
 
 def _collect_core_ids(match_sets: dict[str, set[str]]) -> set[str]:

@@ -32,6 +32,9 @@ contracts:
   "/api/exam_point/distribution": {params: {}, required_keys: [distribution, eras, province_scope], type: dict}
   "/api/exam_point/joint_attribution": {params: {}, required_keys: [passages, n_passages, era, province_scope], type: dict}
   "/api/exam_point/cloze_answer_word_stage": {params: {}, required_keys: [by_era, n_passages, province_scope, excluded_source_note], type: dict}
+  "/api/exam_point/grammar_structural_coverage": {params: {}, required_keys: [n_grammar_items_confirmed, confirmed_items, sample_size_note, report_as], type: dict}
+  "/api/exam_point/phrase_pattern_relevance": {params: {}, required_keys: [scope_note, n_phrases_total, n_matched_in_exam_text, caveat], type: dict}
+  "/api/exam_point/cloze_collocation_subset": {params: {}, required_keys: [n_structurally_flagged, explicit_ceiling_caveat, unclassified_count], type: dict}
   "/api/exam_questions": {params: {}, type: list}
   "/api/exercise/applied_templates": {params: {}, required_keys: [sections, samples, by_type], type: dict}
   "/api/exercise/blueprint_practice": {params: {}, required_keys: [paper_id, questions, target_total], type: dict}

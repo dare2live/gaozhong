@@ -7,10 +7,11 @@
 from __future__ import annotations
 
 from backend.api.db import db_ro
-from backend.services.exam_point import (cognitive_skill_by_content, cognitive_skill_distribution,
-                                          cloze_answer_word_stage, exam_point_cooccurrence,
-                                          exam_point_distribution, exam_point_shift,
-                                          joint_attribution_by_passage)
+from backend.services.exam_point import (cloze_answer_word_stage, cloze_collocation_structural_subset,
+                                          cognitive_skill_by_content, cognitive_skill_distribution,
+                                          exam_point_cooccurrence, exam_point_distribution,
+                                          exam_point_shift, grammar_structural_coverage,
+                                          joint_attribution_by_passage, phrase_pattern_exam_relevance)
 from backend.services.trend import scope
 
 
@@ -106,6 +107,33 @@ def api_exam_point_cloze_answer_word_stage(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_grammar_structural_coverage(qs: dict) -> dict:
+    """语法填空+短文改错 结构性(零主观判断成本)语法点覆盖; 回答"考查的高中知识点(语法)占比"。"""
+    con = db_ro()
+    try:
+        return grammar_structural_coverage(con)
+    finally:
+        con.close()
+
+
+def api_exam_point_phrase_pattern_relevance(qs: dict) -> dict:
+    """短语/句型/表达(高中教材)与辽宁真题文本共现; 不做初高中对比(STEP1缺口, 见服务层docstring)。"""
+    con = db_ro()
+    try:
+        return phrase_pattern_exam_relevance(con)
+    finally:
+        con.close()
+
+
+def api_exam_point_cloze_collocation_subset(qs: dict) -> dict:
+    """完形填空 结构规则可确认的"像固定搭配"子集(下限, 非真实占比)。"""
+    con = db_ro()
+    try:
+        return cloze_collocation_structural_subset(con)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/exam_point/distribution": api_exam_point_distribution,
     "/api/exam_point/cooccurrence": api_exam_point_cooccurrence,
@@ -113,4 +141,7 @@ ROUTES = {
     "/api/exam_point/cognitive_by_content": api_exam_point_cognitive_by_content,  # 技能×题材交叉(2015-20)
     "/api/exam_point/joint_attribution": api_exam_point_joint_attribution,  # 词汇×设问思维语篇级联合归因
     "/api/exam_point/cloze_answer_word_stage": api_exam_point_cloze_answer_word_stage,  # 完形得分点词学段
+    "/api/exam_point/grammar_structural_coverage": api_exam_point_grammar_structural_coverage,  # 高中语法知识点覆盖
+    "/api/exam_point/phrase_pattern_relevance": api_exam_point_phrase_pattern_relevance,  # 短语句型真题共现
+    "/api/exam_point/cloze_collocation_subset": api_exam_point_cloze_collocation_subset,  # 完形搭配结构下限
 }

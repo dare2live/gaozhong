@@ -153,7 +153,7 @@ _CLOZE_OPT_LINE = re.compile(
 _ANS_LETTER_RE = re.compile(r"[A-D]")
 
 
-def _parse_cloze_options(raw: str) -> list[tuple[str, str, str, str]]:
+def parse_cloze_options(raw: str) -> list[tuple[str, str, str, str]]:
     """完形填空 raw_question 选项内联在题面文本里(非 options_json 字段), 逐空解析 A/B/C/D。"""
     m0 = re.search(r"\d+\.\s*A\.", raw or "")
     if not m0:
@@ -161,7 +161,7 @@ def _parse_cloze_options(raw: str) -> list[tuple[str, str, str, str]]:
     return _CLOZE_OPT_LINE.findall(raw[m0.start():])
 
 
-def _qualifying_cloze_rows(con: duckdb.DuckDBPyConnection) -> list[tuple[str, int, list, list[str]]]:
+def qualifying_cloze_rows(con: duckdb.DuckDBPyConnection) -> list[tuple[str, int, list, list[str]]]:
     """辽宁完形填空里"选项文本完整内联 + 可与 answer 字母数对齐"的整篇行。
 
     结构性排除 eol/2021,2022/xgkii(15题×2年=30行): 逐空拆行存储, 选项文本未完整/一致内联各行
@@ -175,7 +175,7 @@ def _qualifying_cloze_rows(con: duckdb.DuckDBPyConnection) -> list[tuple[str, in
     ).fetchall()
     for qid, year, raw, ans in rows:
         letters = _ANS_LETTER_RE.findall(ans or "")
-        opts = _parse_cloze_options(raw)
+        opts = parse_cloze_options(raw)
         if len(opts) == len(letters) and len(letters) >= 10:
             out.append((qid, year, opts, letters))
     return out
@@ -259,7 +259,7 @@ def cloze_answer_word_stage(con: duckdb.DuckDBPyConnection) -> dict:
     """完形填空"得分点词"(每空唯一正确答案词)学段分布, 对比同批语篇全篇词汇学段基线。
 
     回答用户"75%词汇是初中及以前, 但得分点是不是靠高中词汇"的字面版本: 得分点=正确答案词本身
-    的难度(非整篇混合词汇难度)。范围限定(诚实, 见 _qualifying_cloze_rows docstring): 仅 10 篇
+    的难度(非整篇混合词汇难度)。范围限定(诚实, 见 qualifying_cloze_rows docstring): 仅 10 篇
     "选项文本完整内联"完形填空(2015-2020 旧课标II 6篇 + 2023/2024/2025/2026 新高考II 4篇);
     eol/2021,2022/xgkii 结构性排除(逐空拆行存储, 选项文本未完整/一致内联, 已知数据结构天花板)。
 
@@ -269,7 +269,7 @@ def cloze_answer_word_stage(con: duckdb.DuckDBPyConnection) -> dict:
 
     lemm = WordNetLemmatizer()
     stage_map = _word_stage_map(con)
-    rows = _qualifying_cloze_rows(con)
+    rows = qualifying_cloze_rows(con)
 
     by_era: dict[str, dict] = {}
     for era in sorted({scope.segment(year) for _, year, _, _ in rows}):

@@ -179,21 +179,51 @@
     ).join("");
   }
 
+  // 2026-07-07: 用户质疑"得分点词汇分析不够本质, 应看考查的高中知识点(语法/短语/句式)占比"。
+  // 三项交付(workflow并行调研+对抗设计评审): 语法结构覆盖(可行) / 短语句式真题共现(可行但
+  // 明确不做初高中对比) / 完形搭配结构性下限(可行但只是下限)。
+  function _grammarStructuralCard(g) {
+    if (!g || !g.confirmed_items) return '<p class="kb-dim">语法结构覆盖数据不足。</p>';
+    const chips = g.confirmed_items.map(it =>
+      `<span class="tk-tchip">${esc(it.label.length > 12 ? it.label.slice(0, 12) + "…" : it.label)}</span>`).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;">${g.question_types.join("+")}(${g.n_questions}题, 题型定义即排除语义辨析, 零主观判断成本) 精确印证了 <b>${g.n_grammar_items_confirmed}</b> 个课标语法点(共${g.n_grammar_items_total}个):</p>
+      <div class="tk-types">${chips}</div>
+      <p class="kb-dim" style="margin:8px 0 0;">${esc(g.sample_size_note)}</p>
+      <p class="kb-dim" style="margin:4px 0 0;">背景: 108个课标语法点里 <b>${g.junior_high_deepens_edge_count}</b> 个初中已学(高中深化), <b>${g.senior_only_grammar_item_count}</b> 个初中课标无对应内容(真实课标范围差异)。</p>`;
+  }
+  function _phraseRelevanceCard(p) {
+    if (!p || p.n_phrases_total == null) return '<p class="kb-dim">短语共现数据不足。</p>';
+    return `<p class="kb-dim" style="margin:0 0 8px;">高中教材短语/句型/表达库共 <b>${p.n_phrases_total}</b> 个, 其中 <b>${p.n_matched_in_exam_text}</b> 个能在辽宁真题原文/解析文本里找到:</p>
+      <div class="tk-types">${p.matched_examples.slice(0, 15).map(m => `<span class="tk-tchip">${esc(m.canonical)}</span>`).join("")}</div>
+      <p class="kb-dim" style="margin:8px 0 0;">${esc(p.caveat)}</p>`;
+  }
+  function _cozeCollocationCard(c) {
+    if (!c || c.n_blanks_total == null) return '<p class="kb-dim">搭配结构数据不足。</p>';
+    return `<p class="kb-dim" style="margin:0 0 8px;">同上10篇完形填空180空里, <b>${c.n_structurally_flagged}</b> 空(${c.structurally_flagged_pct}%)结构上可客观确认"像固定搭配"(如 ${c.flagged_examples[0] ? esc(c.flagged_examples[0].options.join(" / ")) : ""}):</p>
+      <p class="kb-dim" style="margin:0;">${esc(c.explicit_ceiling_caveat)}</p>`;
+  }
+
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const [d, cbc, gram, cw, ja] = await Promise.all([
+    const [d, cbc, gram, cw, ja, gsc, ppr, ccs] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
       fetchSafe("/api/grammar/stats"),
       fetchSafe("/api/exam_point/cloze_answer_word_stage"),
       fetchSafe("/api/exam_point/joint_attribution"),
+      fetchSafe("/api/exam_point/grammar_structural_coverage"),
+      fetchSafe("/api/exam_point/phrase_pattern_relevance"),
+      fetchSafe("/api/exam_point/cloze_collocation_subset"),
     ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
     const gramHTML = (!isErr(gram)) ? _grammarCard(gram.grammar_exam) : '<p class="kb-dim">语法考查数据加载失败。</p>';
     const taoluHTML = (!isErr(cbc)) ? _taoluCard(cbc) : '<p class="kb-dim">套路数据加载失败。</p>';
     const scoreptHTML = (!isErr(cw)) ? _scoreptCard(cw) : '<p class="kb-dim">得分点数据加载失败。</p>';
     const jointAttrHTML = (!isErr(ja)) ? _jointAttrCard(ja) : '<p class="kb-dim">联合归因数据加载失败。</p>';
+    const gscHTML = (!isErr(gsc)) ? _grammarStructuralCard(gsc) : '<p class="kb-dim">语法结构覆盖加载失败。</p>';
+    const pprHTML = (!isErr(ppr)) ? _phraseRelevanceCard(ppr) : '<p class="kb-dim">短语共现加载失败。</p>';
+    const ccsHTML = (!isErr(ccs)) ? _cozeCollocationCard(ccs) : '<p class="kb-dim">搭配结构数据加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
       ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
       <div class="sc-takeaway">
@@ -218,6 +248,19 @@
         <p class="kb-dim" style="margin:0 0 8px;">把同一批文章的"设问思维"和"词汇难度"对齐: 按每篇文章<b>出题最多的设问思维</b>分组, 看该组文章的平均高中新词占比。</p>
         ${jointAttrHTML}
         <p class="kb-dim" style="margin:0;">口径: 2015–2020 旧课标II 共 ${ja && ja.n_passages_with_word_data != null ? ja.n_passages_with_word_data : "24"} 篇 (2021+ 子题编号非全局唯一, 无法与词汇边对齐, 该维度仅覆盖旧课标)。</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>再深一层: 考查的是高中"知识点"(语法/短语/句式)吗?</span><span class="bk-src">/api/exam_point/grammar_structural_coverage</span></div>
+        <p class="kb-dim" style="margin:0 0 8px;">词汇难度之外, 完形填空/语法填空很多时候考的是<b>短语搭配/语法结构</b>本身, 不是单词认不认识。分三层看:</p>
+        ${gscHTML}
+        <p class="kb-dim" style="margin:10px 0 8px;border-top:1px solid var(--line);padding-top:10px;">${pprHTML}</p>
+        <p class="kb-dim" style="margin:10px 0 0;border-top:1px solid var(--line);padding-top:10px;">${ccsHTML}</p>
+        <p class="kb-dim" style="margin:10px 0 0;background:var(--sunken);padding:8px 10px;border-radius:var(--r-sm);">
+          <b>做不到的部分, 明说</b>: "短语/搭配/句式初中已学 vs 高中新学"这个区分现在做不了 —
+          高中教材短语库(93个)全部来自高中教材, 零初中来源; 义务教育课标(2022版)官方文件本身
+          没有可提取的短语/词块清单(只有教学理念叙述); 初中已结构化的18条多词词条与高中短语库
+          仅1条重合。不拿单词学段冒充短语学段(那是偷换概念) — 这是数据采集缺口, 不是能力缺口。
+        </p>
       </section>
       <p class="zt-nextlink">近年考什么在变? 完整迁移图 → <a href="#/beike">命题研判</a></p>
       <section class="bk-card">
