@@ -175,3 +175,34 @@ def check_k12_grammar_bridge(con: duckdb.DuckDBPyConnection, check) -> None:
     check("scope_note含zhongkao_coverage_limit+dimension_isolation两项诚实声明",
           set(r["scope_note"].keys()) == {"zhongkao_coverage_limit", "dimension_isolation"},
           f"{list(r['scope_note'].keys())}")
+
+
+def check_junior_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
+    """Phase E3b(2026-07-07): 中考genre/theme分类 → exam_point节点+tests_exam_point边.
+
+    数据源: 2025年8篇真实文章双独立视角分类, 只保留genre+theme完全一致的7篇(40题); 1篇
+    (养老院唱歌故事)theme判断不一致诚实排除标needs_review。样本量薄(40/90题), 不报占比。
+    """
+    print("\n=== (50) 中考genre/theme分类 exam_point (Phase E3b) ===")
+    n_ep = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'"
+    ).fetchone()[0]
+    check("中考tests_exam_point边==120 (40题×3维度genre/theme/theme_l2, 7篇一致文章)",
+          n_ep == 120, f"{n_ep}")
+    n_qids = con.execute(
+        "SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' "
+        "AND src_id LIKE 'question:ZK-%'"
+    ).fetchone()[0]
+    check("覆盖40道题(7篇一致文章, 90题库里样本量薄不报占比)", n_qids == 40, f"{n_qids}")
+    bad_genre = con.execute(
+        "SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'exam_point:genre:%' "
+        "AND label NOT IN ('议论文','应用文','书评介绍','新闻报道','记叙文','说明文')"
+    ).fetchone()[0]
+    check("genre值域未越界(复用高中6值域, 未发明新词)", bad_genre == 0, f"{bad_genre}")
+    bad_l2 = con.execute(
+        "SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'exam_point:theme_l2:%' "
+        "AND label NOT IN ('生活与学习','做人与做事','社会服务与人际沟通','文学、艺术与体育',"
+        "'历史、社会与文化','科学与技术','自然生态','环境保护','灾害防范','宇宙探索')"
+    ).fetchone()[0]
+    check("theme_l2值域未越界(义务教育课标2022官方10主题群, PDF p.21逐字核实, 未发明)",
+          bad_l2 == 0, f"{bad_l2}")

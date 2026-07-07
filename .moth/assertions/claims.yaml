@@ -766,3 +766,14 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb; from backend.services.exam_point import junior_senior_grammar_bridge; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_senior_grammar_bridge(c); ok=(len(r['records'])==71 and all(x.get('senior_grammar_id') for x in r['records']) and r['summary'].get('report_as')=='absolute_count_not_percentage' and '/api/exam_point/k12_grammar_bridge' in open('backend/api/routes/exam_point.py').read() and '/api/exam_point/k12_grammar_bridge' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: junior-exam-point-e3b
+    claim: "Phase E3b(2026-07-07): 2025年8篇真实中考文章双独立视角(classify-lens-A/B)分类
+      genre+theme, 只保留完全一致的7篇(养老院唱歌故事1篇theme判断不一致[社会服务与人际沟通
+      vs 做人与做事]诚实排除needs_review); junior/exam_point.py 复用高中
+      exam_point/loader.py::load_exam_points(Rule5参数化labels_path/theme_l2_path后的
+      第2消费者, 不重写落边逻辑), 40题×3维度(genre/theme_l1/theme_l2)=120条tests_exam_point
+      边; genre值域复用高中6值(未发明), theme_l2值域=义务教育课标2022官方10主题群(PDF p.21
+      逐字核实, 见data/junior_high/structured/theme_taxonomy_hardcoded.json, 未发明子分类)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];nq=c.execute(\"SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];c.close();print('OK' if (n==120 and nq==40) else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}

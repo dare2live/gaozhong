@@ -29,20 +29,20 @@ _DIMENSIONS = (("genre", "genre_prov", "genre"),
                ("theme", "theme_prov", "theme_context"))
 
 
-def _point_node_id(dimension: str, label: str) -> str:
+def point_node_id(dimension: str, label: str) -> str:
     return f"exam_point:{dimension}:{label}"
 
 
-def _read_jsonl(path: Path) -> list[dict]:
+def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
             if line.strip()]
 
 
-def _ensure_point_node(con: duckdb.DuckDBPyConnection, dimension: str, label: str) -> bool:
+def ensure_point_node(con: duckdb.DuckDBPyConnection, dimension: str, label: str) -> bool:
     """懒建 exam_point 节点 (只为实际出现的考点); 返回是否新建."""
-    nid = _point_node_id(dimension, label)
+    nid = point_node_id(dimension, label)
     if con.execute("SELECT 1 FROM nodes WHERE concept_id = ?", [nid]).fetchone():
         return False
     con.execute("INSERT INTO nodes VALUES (?, ?, ?, ?)",
@@ -50,15 +50,15 @@ def _ensure_point_node(con: duckdb.DuckDBPyConnection, dimension: str, label: st
     return True
 
 
-def _add_point_edge(con: duckdb.DuckDBPyConnection, qnode: str, dimension: str,
+def add_point_edge(con: duckdb.DuckDBPyConnection, qnode: str, dimension: str,
                     label, prov, cue) -> tuple[int, int, int]:
     """落一条 question→exam_point 边 (只 dual_model_agree 非 NA). 返回 (nodes+, edges+, skipped)."""
     if label == "NA" or not label:
         return (0, 0, 0)
     if prov != "dual_model_agree":
         return (0, 0, 1)
-    nm = int(_ensure_point_node(con, dimension, label))
-    pnode = _point_node_id(dimension, label)
+    nm = int(ensure_point_node(con, dimension, label))
+    pnode = point_node_id(dimension, label)
     if con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=? AND relation='tests_exam_point'",
                    [qnode, pnode]).fetchone():
         return (nm, 0, 0)
@@ -70,33 +70,36 @@ def _add_point_edge(con: duckdb.DuckDBPyConnection, qnode: str, dimension: str,
     return (nm, 1, 0)
 
 
-def _node_exists(con: duckdb.DuckDBPyConnection, concept_id: str) -> bool:
+def node_exists(con: duckdb.DuckDBPyConnection, concept_id: str) -> bool:
     return bool(con.execute("SELECT 1 FROM nodes WHERE concept_id = ?", [concept_id]).fetchone())
 
 
-def load_exam_points(con: duckdb.DuckDBPyConnection) -> dict:
+def load_exam_points(con: duckdb.DuckDBPyConnection, labels_path: Path = LABELS_PATH,
+                     theme_l2_path: Path = THEME_L2_PATH) -> dict:
     """读标注 artifact → 落 exam_point 节点 + tests_exam_point 边 (只 dual_model_agree, 非 NA).
 
     两源: genre_theme_labels(genre + theme L1 3大主题) + theme_l2_labels(课标官方10主题群)。
+    (Rule5 2026-07-07: labels_path/theme_l2_path 参数化, 供 junior/exam_point.py 第2消费者
+    传初中artifact路径复用同一套逻辑, 默认值保持高中原调用点不变。)
     """
     nodes_made = edges_made = skipped = 0
-    for row in _read_jsonl(LABELS_PATH):
+    for row in read_jsonl(labels_path):
         qnode = f"question:{row['question_id']}"
-        if not _node_exists(con, qnode):
+        if not node_exists(con, qnode):
             continue
         for label_key, prov_key, dimension in _DIMENSIONS:
-            nm, em, sk = _add_point_edge(con, qnode, dimension,
-                                         row.get(label_key), row.get(prov_key), row.get("evidence"))
+            nm, em, sk = add_point_edge(con, qnode, dimension,
+                                        row.get(label_key), row.get(prov_key), row.get("evidence"))
             nodes_made += nm; edges_made += em; skipped += sk
-    l2_rows = _read_jsonl(THEME_L2_PATH)
+    l2_rows = read_jsonl(theme_l2_path)
     for row in l2_rows:
         qnode = f"question:{row['question_id']}"
-        if not _node_exists(con, qnode):
+        if not node_exists(con, qnode):
             continue
-        nm, em, sk = _add_point_edge(con, qnode, "theme_l2",
-                                     row.get("theme_l2"), row.get("prov"), row.get("evidence"))
+        nm, em, sk = add_point_edge(con, qnode, "theme_l2",
+                                    row.get("theme_l2"), row.get("prov"), row.get("evidence"))
         nodes_made += nm; edges_made += em; skipped += sk
-    return {"labels": len(_read_jsonl(LABELS_PATH)), "theme_l2_labels": len(l2_rows),
+    return {"labels": len(read_jsonl(labels_path)), "theme_l2_labels": len(l2_rows),
             "nodes_made": nodes_made, "edges_made": edges_made, "skipped_needs_review": skipped}
 
 

@@ -176,9 +176,11 @@ def main() -> None:
           "\n              load_real_questions之后调, 否则被其blanket DELETE清空question_bank) ===")
     from backend.services.data_sources.extract.junior import qbank as junior_qbank
     from backend.services.data_sources.extract.junior import grammar as junior_grammar
+    from backend.services.data_sources.extract.junior import exam_point as junior_exam_point
     print(f"  {junior_qbank.load(con)}")
     print(f"  {junior_qbank.link_tests_word(con)}")
     print(f"  {junior_grammar.link_zhongkao_grammar(con)}")
+    print(f"  {junior_exam_point.load(con)}")
     print(f"  {junior_qbank.prune_orphan_question_nodes(con)}")
 
     print("\n=== Layer 4c: 40 节课程灌库 (5.5 init_courses 用户 2026-05-24) ===")
