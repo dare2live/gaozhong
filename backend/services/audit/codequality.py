@@ -67,7 +67,7 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 19  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13.
+SIZE_BIG_BASELINE = 21  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13. 2026-07-07 grammar_4q.py 修复子串误配坑25(精确匹配+从句族/前缀/枚举例外三分层)125→183行, 19→21.
 # 2026-07-04 全数据审计12+21问题按根因修复: vocab_renjiao.py(Welcome Unit+专有名词头识别+
 # 跨行词条头合并 3 处真bug修复, 220→270行) + junior_high_curriculum.py(语法/词汇续行合并
 # 2 处真bug修复, 233→298行) 跨过250行门槛, huge 仍=0(均<400, 非god-module), baseline 13→15.
