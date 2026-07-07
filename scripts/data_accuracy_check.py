@@ -47,7 +47,7 @@ def _check_1_manifest(con):
     n_tb = con.execute("SELECT COUNT(*) FROM textbooks").fetchone()[0]
     n_no_sha = con.execute("SELECT COUNT(*) FROM textbooks WHERE pdf_sha256 IS NULL OR pdf_sha256=''").fetchone()[0]
     check("manifest 行 ≥ 14", n_mani >= B('manifest_min'), f"{n_mani}")
-    check("textbooks == 14", n_tb == B('textbooks'), f"{n_tb}")
+    check("textbooks == 20 (高中14+初中hujiao6)", n_tb == B('textbooks'), f"{n_tb}")
     check("每教材 PDF sha 锁", n_no_sha == 0, "textbooks.pdf_sha256 全非空")
 
 
@@ -318,6 +318,7 @@ _LIB_CHECKS = [
     ("d0_senior_knowledge_check", "check_grammar_structural_coverage"),
     ("d0_senior_knowledge_check", "check_phrase_pattern_exam_relevance"),
     ("d0_senior_knowledge_check", "check_cloze_collocation_structural_subset"),
+    ("d0_junior_sections_check", "check_junior_sections"),
     ("d0_phrases_check", "check_phrases"),
     ("d0_stage_check", "check_stage"),
     ("d0_stage_check", "check_tested_word_stage"),

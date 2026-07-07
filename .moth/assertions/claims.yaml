@@ -292,6 +292,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import grammar_structural_coverage as g,phrase_pattern_exam_relevance as p,cloze_collocation_structural_subset as c;con=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);gd=g(con);pd=p(con);cd=c(con);con.close();ok=gd['report_as']=='absolute_count_and_list_not_percentage' and len(gd['confirmed_items'])==gd['n_grammar_items_confirmed'] and pd['n_overlap_junior_known']+pd['n_senior_only']==pd['n_senior_phrases_total'] and pd['n_junior_phrases_total']>0 and cd['structural_flags']['n_structurally_flagged']+cd['structural_flags']['unclassified_count']==cd['n_blanks_total'] and cd['human_transcribed']['provenance']=='human_transcribed_from_official_analysis';print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: junior-sections-e1-foundation
+    claim: "Phase E1(2026-07-07, 用户拍板全深度复刻高中方法论到初中): 沪教牛津6册教材units/sections/section_text结构化地基(此前sections=0行完全空白)。scripts/extract_hujiao_sections.py 用页眉'Module N/Unit N'边界检测(含粗体渲染乱序/字符加倍兜底, 6册抽样实测2处触发)抽取46个unit(5册×8+9b经TOC核实真实只有3module/6unit, 非bug)、416个section(Reading/Listening/Grammar/Writing/Speaking/Vocabulary/Comprehension/MorePractice/StudySkills/CultureCorner 10类)。extract_hujiao_phrases.py 已收口改读section_text(单一计算点, 不再独立扫PDF)。"
+    type: shell
+    command: ["python3", "-c", "import duckdb;con=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);nu=con.execute(\"SELECT count(*) FROM units WHERE version_key='hujiao'\").fetchone()[0];ns=con.execute(\"SELECT count(*) FROM sections WHERE version_key='hujiao'\").fetchone()[0];nt=con.execute(\"SELECT count(*) FROM section_text WHERE version_key='hujiao'\").fetchone()[0];con.close();ok=nu==46 and ns==416 and nt==416;print('OK' if ok else f'FAIL units={nu} sections={ns} text={nt}')"]
+    expect: {op: regex, pattern: "OK"}
   - id: l4-paper-liaoning-only
     claim: "L4模拟卷 province 前缀锚(坑7/§7, A3修): generate_l4_paper 用 LIKE '辽宁%' 前缀非 '%辽宁%' 子串(子串会命中'非辽宁'标签混全国卷); 实测出卷全部 province 以'辽宁'起"
     type: shell

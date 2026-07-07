@@ -8,7 +8,7 @@
 
 baselines:
   # 教材/课标地基 (data_accuracy_check.py)
-  textbooks:            {value: 14,   op: eq, note: "8版×册 教材PDF全下"}
+  textbooks:            {value: 20,   op: eq, note: "高中8版×册(14) + 2026-07-07 Phase E1初中沪教牛津6册(hujiao 7a/7b/8a/8b/9a/9b), 用户拍板全深度复刻高中方法论到初中"}
   manifest_min:         {value: 14,   op: ge, note: "manifest 行下界"}
   cefr_vocab:           {value: 3054, op: eq, note: "课标附录2词表(补p182/183漏页+截国家表3误纳+补kilogramme/kilogram跨行截断续行合并2026-07-04); 级别由星数现算见content_gates cefr_level_from_stars"}
   unit_vocab_min:       {value: 3900, op: ge, note: "教材生词表下界(renjiao召回1957→2206后总~4231); 防丢册回归"}
