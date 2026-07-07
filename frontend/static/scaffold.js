@@ -144,17 +144,56 @@
     return `${chips}<span class="tk-tchip" style="border-style:dashed">合计 <b>${te.total}</b></span>`;
   }
 
+  // 2026-07-07: 得分点词学段分布(cloze_answer_word_stage) — 回应"得分点是不是靠高中词汇"的字面版本
+  // (得分点=完形填空每空唯一正确答案词, 非整篇混合词汇)。复用 .zt-gram 已有横条 CSS(不新增样式)。
+  const _era_short2 = era => (era || "").replace(/^[\d.+-]+_/, "").replace(/_/g, " ") || era;
+  function _scoreptRow(label, pct, thin, dim) {
+    const bg = dim ? "background:var(--data-gray)" : "";
+    return `<div class="zt-gram"><span class="zt-gram-c">${esc(label)}${thin ? '<span class="zt-thin-tag">样本薄</span>' : ""}</span><span class="zt-gram-bar"><span class="zt-gram-fill" style="width:${pct}%;${bg}"></span></span><span class="zt-gram-n">${pct}%</span></div>`;
+  }
+  function _scoreptCard(cw) {
+    if (!cw || !cw.by_era || !Object.keys(cw.by_era).length) return '<p class="kb-dim">得分点数据不足。</p>';
+    const eras = Object.keys(cw.by_era).sort();
+    return eras.map(era => {
+      const c = cw.by_era[era];
+      const wp = c.whole_passage_baseline;
+      const delta = wp ? Math.round((c.answer_word_senior_pct - wp.senior_pct) * 10) / 10 : null;
+      const deltaTxt = delta == null ? "" :
+        (Math.abs(delta) < 1 ? '<span class="kb-dim">几乎无差</span>' :
+         delta > 0 ? `<span class="tk-senior">得分点词偏高中 +${delta}pp</span>` : `<span class="tk-found">得分点词偏基础 ${delta}pp</span>`);
+      const thin = c.n_passages < 5;
+      return `<div class="zt-scorept-era-h">${esc(_era_short2(era))} <span class="kb-dim">(${c.n_passages}篇完形填空, ${c.n_blanks_classified}/${c.n_blanks_total}空可判定学段)</span></div>
+        ${_scoreptRow("得分点词(正确答案)", c.answer_word_senior_pct, thin, false)}
+        ${_scoreptRow("同批语篇全篇基线", wp ? wp.senior_pct : 0, false, true)}
+        <p class="kb-dim" style="margin:2px 0 12px;">${deltaTxt}</p>`;
+    }).join("");
+  }
+
+  // 2026-07-07: 语篇级联合归因(joint_attribution_by_passage.by_dominant_skill) — "推断题多的文章
+  // 是不是词汇也更难"。同复用 .zt-gram 横条。
+  function _jointAttrCard(ja) {
+    if (!ja || !ja.by_dominant_skill || !Object.keys(ja.by_dominant_skill).length) return '<p class="kb-dim">联合归因数据不足。</p>';
+    const skills = Object.entries(ja.by_dominant_skill).sort((a, b) => b[1].n_passages - a[1].n_passages);
+    return skills.map(([skill, s]) =>
+      _scoreptRow(`主导「${skill}」(${s.n_passages}篇)`, s.avg_word_senior_pct, s.thin, false)
+    ).join("");
+  }
+
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const [d, cbc, gram] = await Promise.all([
+    const [d, cbc, gram, cw, ja] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
       fetchSafe("/api/grammar/stats"),
+      fetchSafe("/api/exam_point/cloze_answer_word_stage"),
+      fetchSafe("/api/exam_point/joint_attribution"),
     ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
     const gramHTML = (!isErr(gram)) ? _grammarCard(gram.grammar_exam) : '<p class="kb-dim">语法考查数据加载失败。</p>';
     const taoluHTML = (!isErr(cbc)) ? _taoluCard(cbc) : '<p class="kb-dim">套路数据加载失败。</p>';
+    const scoreptHTML = (!isErr(cw)) ? _scoreptCard(cw) : '<p class="kb-dim">得分点数据加载失败。</p>';
+    const jointAttrHTML = (!isErr(ja)) ? _jointAttrCard(ja) : '<p class="kb-dim">联合归因数据加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
       ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
       <div class="sc-takeaway">
@@ -167,6 +206,18 @@
         ${_stageHero(d)}
         ${_stageSrTable(d)}
         <p class="kb-dim" style="margin:10px 0 0;">统计口径 = 真题里<b>真正考查</b>的词 (教材出现过 ≠ 高考考过), 共 ${d.total} 个去重词。<b>已学过 ≠ 都记得</b> — 义务段词仍是考查主体, 主攻 ${d.senior_pct}% 不等于放掉基础。未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算。</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>再深一层: "得分点"本身是不是更偏高中?</span><span class="bk-src">/api/exam_point/cloze_answer_word_stage</span></div>
+        <p class="kb-dim" style="margin:0 0 8px;">上面统计的是<b>整篇文章</b>的词汇难度。这里换个问法: 完形填空<b>每空唯一正确答案词</b>本身的难度, 是不是比全篇平均更偏高中(即"认对词才是真本事")?</p>
+        ${scoreptHTML}
+        <p class="kb-dim" style="margin:0;">口径: 仅统计选项文字完整印在题面里、可逐空核对答案的完形填空(老课标6篇+新高考4篇); 2021/2022 两年的完形填空题面按空拆行存储、选项文字不全, 无法逐空核对, 诚实排除不硬凑。</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>推断题多的文章, 词汇是不是也更难?</span><span class="bk-src">/api/exam_point/joint_attribution</span></div>
+        <p class="kb-dim" style="margin:0 0 8px;">把同一批文章的"设问思维"和"词汇难度"对齐: 按每篇文章<b>出题最多的设问思维</b>分组, 看该组文章的平均高中新词占比。</p>
+        ${jointAttrHTML}
+        <p class="kb-dim" style="margin:0;">口径: 2015–2020 旧课标II 共 ${ja && ja.n_passages_with_word_data != null ? ja.n_passages_with_word_data : "24"} 篇 (2021+ 子题编号非全局唯一, 无法与词汇边对齐, 该维度仅覆盖旧课标)。</p>
       </section>
       <p class="zt-nextlink">近年考什么在变? 完整迁移图 → <a href="#/beike">命题研判</a></p>
       <section class="bk-card">
@@ -186,6 +237,7 @@
           <li><b>「出现 ≠ 考查」</b>: 教材里出现过的词不算, 只统计真题里真正被考的词。</li>
           <li><b>新老高考分开统计</b>: 2021 起辽宁用新高考 II 卷, 与 2015–2020 老卷分开算, 不混着平均。</li>
           <li><b>设问思维是事实标签</b>: 题型标签直接来自教研解析原文, 不是 AI 猜的; 题材/主题由两个 AI 独立标注、结论一致才计入 (方向参考)。</li>
+          <li><b>"得分点"卡样本小</b>: 新高考II仅4篇完形填空可逐空核对(2023–2026各1篇), 25.0%这个数字是方向性观察, 不是精确分布 — 别当成"新高考就是考高中词"的定论。</li>
           <li>原始口径: ${esc(d.caveat || "")}${d.stage_note ? " · " + esc(d.stage_note) : ""}</li>
         </ul>
       </details>
