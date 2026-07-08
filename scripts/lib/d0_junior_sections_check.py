@@ -122,3 +122,30 @@ def check_junior_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
           total_vocab == 947, f"{total_vocab}")
     check("content 字段全为 None (Phase D 内容生成需就绪门, 本函数只搭框架)",
           r.get("content") is None, f"{r.get('content')}")
+
+
+def check_junior_unit_content(con: duckdb.DuckDBPyConnection, check) -> None:
+    """D0: 初中单元内容直出 junior_knowledge.unit_content (基础库 jr_jichu 页, 2026-07-08).
+
+    /api/course/junior/unit_content 薄壳消费; 校验output结构闭合(knowledge三轴+passages)
+    与已被 check_junior_grammar_occurrences/check_junior_vocab_unit/check_junior_sections
+    验证过的底层边/表数据一致(不重复验底层正确性, 只验组合函数的输出结构不丢字段/不重算)。
+    """
+    print("\n=== (54) 初中单元内容直出 unit_content (基础库) ===")
+    from backend.services.course.junior_knowledge import unit_content
+    r = unit_content(con, "7a", 1)
+    check("顶层结构闭合: version_key/volume_key/unit_number/title_en/knowledge/passages",
+          all(k in r for k in ("version_key", "volume_key", "unit_number", "title_en", "knowledge", "passages")),
+          f"{sorted(r.keys())}")
+    check("version_key == hujiao (初中单版本锚定)", r["version_key"] == "hujiao", f"{r['version_key']}")
+    k = r["knowledge"]
+    check("knowledge 三轴齐全: grammar/vocab/phrases", all(a in k for a in ("grammar", "vocab", "phrases")), f"{sorted(k.keys())}")
+    check("vocab_n 与 vocab 列表长度一致 (无重算, 直接count)", k["vocab_n"] == len(k["vocab"]), f"{k['vocab_n']} vs {len(k['vocab'])}")
+    check("passages_n 与 passages 列表长度一致", r["passages_n"] == len(r["passages"]), f"{r['passages_n']} vs {len(r['passages'])}")
+    # 全单元遍历: knowledge三轴总数与底层表逐单元求和一致 (对账, 防组合函数漏单元/重复单元)
+    units = con.execute(
+        "SELECT volume_key, unit_number, title_en FROM units WHERE version_key='hujiao'"
+    ).fetchall()
+    total_vocab = sum(unit_content(con, v, u)["knowledge"]["vocab_n"] for v, u, _ in units)
+    check("遍历46单元vocab_n总和 == 947 (同check_junior_vocab_unit已验证的unit_vocab_intro总行数)",
+          total_vocab == 947, f"{total_vocab}")

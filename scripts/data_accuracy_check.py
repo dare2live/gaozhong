@@ -317,6 +317,7 @@ _LIB_CHECKS = [
     ("d0_junior_sections_check", "check_junior_grammar_occurrences"),
     ("d0_junior_sections_check", "check_junior_vocab_unit"),
     ("d0_junior_sections_check", "check_junior_syllabus"),
+    ("d0_junior_sections_check", "check_junior_unit_content"),
     ("d0_phrases_check", "check_phrases"),
     ("d0_stage_check", "check_stage"),
     ("d0_stage_check", "check_tested_word_stage"),

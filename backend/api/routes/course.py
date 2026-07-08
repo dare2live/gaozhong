@@ -42,6 +42,26 @@ def api_course_junior_syllabus(qs: dict) -> dict:
         con.close()
 
 
+def api_course_junior_unit_content(qs: dict) -> dict:
+    """初中单元内容直出 — 基础库 jr_jichu 页 (语法+词汇+短语+正文, Phase E4 后续, 2026-07-08).
+
+    薄壳(计算在 course.junior_knowledge 单算点, 铁律1同 api_unit_content 模式)。"""
+    vol = (qs.get("volume", [None])[0] or "").strip()
+    raw_unit = qs.get("unit", [None])[0]
+    if not vol or raw_unit is None:
+        return {"error": "volume/unit required", "knowledge": {}, "passages": [], "passages_n": 0}
+    try:
+        unit = int(raw_unit)
+    except (TypeError, ValueError):
+        return {"error": "unit must be int", "knowledge": {}, "passages": [], "passages_n": 0}
+    from backend.services.course import junior_knowledge as jk
+    con = db_ro()
+    try:
+        return jk.unit_content(con, vol, unit)
+    finally:
+        con.close()
+
+
 def api_course_list(qs: dict) -> dict:
     layer = (qs.get("layer", [None])[0] or "").strip()
     con = db_ro()
@@ -157,4 +177,5 @@ ROUTES = {
     "/api/course/coverage": api_course_coverage,
     "/api/course/syllabus": api_course_syllabus,
     "/api/course/junior/syllabus": api_course_junior_syllabus,
+    "/api/course/junior/unit_content": api_course_junior_unit_content,
 }

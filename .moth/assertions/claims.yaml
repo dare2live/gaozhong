@@ -825,3 +825,15 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb; from backend.services.k12 import zhongkao_exam_point_summary; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=zhongkao_exam_point_summary(c); ok=(sum(x['n'] for x in r['genre_分布'])==48 and sum(x['n'] for x in r['theme_l2_分布'])==48 and len(r['语法考查重点'])>0 and len(r['高频实词'])>0 and set(r['scope_note'].keys())=={'sample_type','genre_theme_coverage','grammar_coverage','vocab_coverage'} and '/api/zhongkao/exam_focus' in open('backend/api/routes/k12.py').read() and '/api/zhongkao/exam_focus' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: junior-jichu-kecheng-frontend-wired
+    claim: "初中'基础库'(jr_jichu)/'课程'(jr_kecheng)前端页面落地(2026-07-08): scaffold.js
+      占位_juniorStub已删, jr_jichu.js/jr_kecheng.js各自registerTab; jr_jichu按6册46单元
+      浏览(复用course.junior_knowledge.unit_knowledge_profile组合出新公开函数unit_content,
+      新端点/api/course/junior/unit_content, 薄壳同api_unit_content模式)展示语法/词汇/短语
+      三轴+section_text正文; jr_kecheng直接消费已有/api/course/junior/syllabus, 按volume_key
+      (非命题频次)分章, 每节展开三轴知识点(与高中40节课程content=null作业列表刻意不同,
+      理由见junior_knowledge.py/jr_kecheng.js模块注释); 两页均复用.tb-*/.ks-*既有design-system
+      class(不发明新视觉语言); app.html已加载两文件; endpoint_contracts已登记新端点"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.course.junior_knowledge import unit_content; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=unit_content(c,'7a',1); c.close(); scaf=open('frontend/static/scaffold.js').read(); app=open('frontend/app.html').read(); ep=open('backend/config/endpoint_contracts.yaml').read(); rt=open('backend/api/routes/course.py').read(); ok=(r['version_key']=='hujiao' and 'grammar' in r['knowledge'] and 'vocab' in r['knowledge'] and 'phrases' in r['knowledge'] and 'passages' in r and '_juniorStub' not in scaf and 'jr_jichu.js' in app and 'jr_kecheng.js' in app and '/api/course/junior/unit_content' in ep and '/api/course/junior/unit_content' in rt); print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}

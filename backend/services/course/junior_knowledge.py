@@ -107,6 +107,57 @@ def unit_knowledge_profile(con: duckdb.DuckDBPyConnection, vol: str, unit: int, 
     }
 
 
+def _passages_for_unit(con: duckdb.DuckDBPyConnection, vol: str, unit: int) -> list[dict]:
+    """教材正文: section_text.raw_text join sections 取标题/类型, 按 seq.
+
+    与高中 textbook_content._passages 同一写法(Rule5 第2消费者), 唯一差异是 version_key
+    固定 hujiao(初中单版本, 不像高中要按 waiyan/renjiao 参数切换), 故不强行抽公用函数
+    (四列SQL, 抽共享反而多一层间接, 奥卡姆剃刀——两处保持写法一致即可, 不是同一份代码)。
+    """
+    from backend.api.db import rows_to_dicts
+    return rows_to_dicts(con.execute(
+        "SELECT st.seq AS seq, s.kind AS kind, s.title AS title, st.raw_text AS text, st.n_chars AS n_chars, "
+        "s.is_narrative AS is_narrative, s.is_applied AS is_applied, s.is_listening AS is_listening "
+        "FROM section_text st "
+        "LEFT JOIN sections s ON s.version_key=st.version_key AND s.volume_key=st.volume_key "
+        "  AND s.unit_number=st.unit_number AND s.seq=st.seq "
+        "WHERE st.version_key=? AND st.volume_key=? AND st.unit_number=? ORDER BY st.seq",
+        [_VERSION, vol, unit]))
+
+
+def unit_content(con: duckdb.DuckDBPyConnection, vol: str, unit: int) -> dict:
+    """初中单元内容直出DB: 知识点(语法+词汇+短语, 复用unit_knowledge_profile) + 教材正文(section_text).
+
+    与高中 textbook_content.unit_content 的对应关系(基础库 jr_jichu 页, 2026-07-08):
+    高中版多一层"辽宁高考命中次数/课标类目考查占比"的考查徽章聚合(exam_vocabulary/
+    exam_grammar_stats), 初中没有同构的第一手考查统计表——unit_knowledge_profile 已经把
+    对应的中考验证信息(zhongkao_verified_questions/zhongkao_exposure_count)做成"是否被
+    验证过"的列表/计数, 不是占比, 直接复用不重新发明一套百分比口径(坑30: 没有第一手考查边
+    的维度不能为了凑"每类都有重点标注"而编一个新指标)。
+    """
+    title_row = con.execute(
+        "SELECT title_en FROM units WHERE version_key=? AND volume_key=? AND unit_number=?",
+        [_VERSION, vol, unit],
+    ).fetchone()
+    title_en = title_row[0] if title_row else None
+    profile = unit_knowledge_profile(con, vol, unit, title_en)
+    passages = _passages_for_unit(con, vol, unit)
+    return {
+        "version_key": _VERSION, "volume_key": vol, "unit_number": unit, "title_en": title_en,
+        "knowledge": {
+            "grammar": profile["grammar"], "vocab": profile["vocab"]["words"],
+            "vocab_n": profile["vocab"]["n_total"], "vocab_n_overrun": profile["vocab"]["n_overrun"],
+            "phrases": profile["phrases"],
+        },
+        "passages": passages, "passages_n": len(passages),
+        "scope_note": profile["scope_note"],
+        "note": "初中(沪教牛津hujiao)单元知识点(语法/词汇/短语)+正文均直出DB "
+                "(grammar_occurrences/unit_vocab_intro/phrases/section_text), 不依赖PDF。"
+                "词后stage=学段归属(高中必修/选修=超纲); 语法后中考验证题号=已被中考真题印证; "
+                "短语无中考侧验证边(诚实分层, 见scope_note).",
+    }
+
+
 def _lessons_uncompressed(con: duckdb.DuckDBPyConnection,
                           units: list[tuple[str, int, str]]) -> list[dict]:
     """不压缩: 每单元独立1节(真实教学进度, 默认路径)."""

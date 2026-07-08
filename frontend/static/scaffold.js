@@ -379,22 +379,5 @@
     _jichuSearchWire();
   });
 
-  // ── 初中板块剩余占位 (jr_beike/jr_zhenti 2026-07-08 已转正, 见 junior.js; jichu/kecheng 待建) ──
-  function _juniorStub(title) {
-    return async () => {
-      document.querySelector("#content").innerHTML = _scaffold({
-        badge: "初中 · Phase F 建设中",
-        title: title + " (初中)",
-        lead: "命题研判/真题特点已用真实90题数据跑通(见对应tab)。本页(基础库/课程)需要把已有的教材单元/词汇/语法lineage(E1-E4产物)接上前端渲染, 数据已就绪, 尚待接线。",
-        cards: [
-          { title: "已有数据", icon: IC.std, phase: "Phase E1-E4已完成",
-            desc: "沪教牛津6册教材单元/词汇947条/语法occurrences39条/短语221条 + 40节课程生成器(junior_syllabus)均已入库+过D0, 只缺前端渲染。" },
-          { title: "对齐高中的接线方式", icon: IC.build, phase: "待办",
-            desc: "复用 jichu_pages.js/teaching 页同款渲染模式, 换成初中的 /api/course/junior/syllabus 等已注册端点。" },
-        ],
-      });
-    };
-  }
-  registerTab("jr_jichu", _juniorStub("基础库"));
-  registerTab("jr_kecheng", _juniorStub("课程"));
+  // ── 初中板块 jr_jichu(基础库)/jr_kecheng(课程) 已转正, 见 jr_jichu.js / jr_kecheng.js ──
 })();
