@@ -28,9 +28,20 @@ def check_zhongkao(con: duckdb.DuckDBPyConnection, check) -> None:
           leak == 0 and zk_view == 90, f"高考视图含中考={leak} 中考视图={zk_view}")
     _check_answer_fidelity(con, check)
     # inc2: 初中节点 (单库 node_type/stage 判别)
+    # 坑(2026-07-08 Phase E4 发现): 原查询靠 attrs_json.source='junior_curriculum_hujiao' 这个
+    # 标记计数——但 exam_coverage.py 是 nodes.attrs_json 的**唯一writer**(坑14修复架构, 见该
+    # 文件头注), 它对同时也在 cefr_vocab(国家课标, 跨学段共享)里的词会整段覆盖attrs_json,
+    # 抹掉这个仅供信息展示、无任何消费者依赖的source标记(实测: german/grammar/sound等5+词
+    # 验证均如此, 不是bug是架构使然)。改查**节点是否存在**(真正关心的事: 初中课标/沪教词表
+    # 里的词有没有materialize成图节点), 不依赖会被单一writer覆盖的标记字段存活。
+    from backend.services.data_sources.extract.junior.vocab import junior_word_stages
+    jr_words = set(junior_word_stages())
     n_jrw = con.execute(
-        "SELECT COUNT(*) FROM nodes WHERE node_type='word' AND attrs_json LIKE '%junior_curriculum%'").fetchone()[0]
-    check("初中独有 word 节点入库 (~112, stage 小学/初中)", 100 <= n_jrw <= 140, f"{n_jrw}")
+        "SELECT COUNT(*) FROM nodes n JOIN (SELECT UNNEST(?) AS w) j ON n.concept_id = 'word:' || j.w",
+        [list(jr_words)],
+    ).fetchone()[0] if jr_words else 0
+    check("初中课标/沪教词表词 全部materialize成word节点(~1900, 含跨学段共享+初中独有两类)",
+          n_jrw == len(jr_words), f"{n_jrw}/{len(jr_words)}")
     n_jrg = con.execute("SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%'").fetchone()[0]
     bad_g = con.execute(
         "SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'grammar:jr:%' AND attrs_json NOT LIKE '%初中%'").fetchone()[0]

@@ -66,3 +66,31 @@ def check_junior_grammar_occurrences(con: duckdb.DuckDBPyConnection, check) -> N
     ).fetchone()[0]
     check("覆盖单元数 == 30 (46单元里16个纯练习/复习单元Grammar板块无可提取主题标题, 诚实反映"
           "教材真实分布不强配)", n_units_covered == 30, f"{n_units_covered}")
+
+
+def check_junior_vocab_unit(con: duckdb.DuckDBPyConnection, check) -> None:
+    """D0: 初中词汇单元lineage (unit_vocab_intro, Phase E4, 2026-07-08).
+
+    真相源: 6册卷末"Words and expressions in each unit"附录(与已用的"alphabetical order"
+    版是同一批词的两种排布, 逐条核实"Unit N"标题后的词条属该单元, 非估算)。高中侧的塌缩/
+    跨单元重复地板(scripts/data_accuracy_check.py _check_2_vocab)已按version_key排除
+    hujiao(该口径专为renjiao/waiyan"单一区段抽取"回归而设, hujiao真实分布[部分单元15-19词/
+    31词跨单元重现]是逐条核实过的教材事实非提取误差)。
+    """
+    print("\n=== (52) 初中词汇单元lineage (unit_vocab_intro, Phase E4) ===")
+    n_uvi = con.execute("SELECT count(*) FROM unit_vocab_intro WHERE version_key='hujiao'").fetchone()[0]
+    check("初中unit_vocab_intro == 947 (6册卷末in-each-unit附录, 逐条Unit N标题核验归属)",
+          n_uvi == 947, f"{n_uvi}")
+    n_vol = con.execute(
+        "SELECT count(DISTINCT volume_key) FROM unit_vocab_intro WHERE version_key='hujiao'"
+    ).fetchone()[0]
+    check("6册全覆盖", n_vol == 6, f"{n_vol}")
+    n_no_gloss = con.execute(
+        "SELECT count(*) FROM unit_vocab_intro WHERE version_key='hujiao' AND zh_def IS NULL"
+    ).fetchone()[0]
+    check("无法匹配hujiao_vocab.jsonl释义的词 <= 5 (诚实计数, 不强配)", n_no_gloss <= 5, f"{n_no_gloss}")
+    n_intro_edge = con.execute(
+        "SELECT count(*) FROM edges WHERE relation='introduces_word' AND src_id LIKE 'unit:hujiao/%'"
+    ).fetchone()[0]
+    check("introduces_word边(初中) == unit_vocab_intro行数 (1:1覆盖, build_introduces_word"
+          "已重跑纳入初中)", n_intro_edge == n_uvi, f"{n_intro_edge} vs {n_uvi}")

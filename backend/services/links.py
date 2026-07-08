@@ -131,11 +131,15 @@ def build_introduces_word(con: duckdb.DuckDBPyConnection) -> int:
         """).fetchall()
     except duckdb.CatalogException:
         return 0
-    # Step 1: ensure all word nodes exist (extracurricular included)
+    # Step 1: ensure all word nodes exist (extracurricular included).
+    # 坑(2026-07-08 Phase E4 发现): 原 INSERT OR REPLACE 会覆盖已有节点的真实attrs(如
+    # junior_vocab.py 标的 junior_curriculum 标记) — 本函数只需"节点存在"这个保底, 不该
+    # 覆写已有的更精确标注; 改 INSERT OR IGNORE(已存在则不动, 同 junior_vocab.py 一致口径)。
+    # 该bug此前一直潜伏, 因高中Layer3只调一次从未暴露; 初中Layer3x第二次调用才触发。
     extra_words = {r[3] for r in rows_in if not r[7]}
     if extra_words:
         con.executemany(
-            "INSERT OR REPLACE INTO nodes VALUES (?, 'word', ?, ?)",
+            "INSERT OR IGNORE INTO nodes VALUES (?, 'word', ?, ?)",
             [(f"word:{w}", w,
               '{"extracurricular": true, "cefr_level": "校本扩展"}') for w in extra_words],
         )

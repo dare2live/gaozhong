@@ -70,21 +70,28 @@ def _check_2_vocab(con):
     # 防回归(坑1, 强化版): 旧门 (MIN<20 AND MAX>50) 只抓"单单元塌缩+同册有兄弟>50"一种形态,
     # 漏报整册齐塌 + 完全无感 331 跨单元重复(膨胀非塌缩)。换 2 个鲁棒断言:
     # (a) 绝对地板: 任一单元 distinct word <20 = 抽取塌缩嫌疑(不依赖兄弟单元)。
+    # 坑(2026-07-08 Phase E4 发现): 原查询"全版本"无 version_key 过滤, 把hujiao(沪教)也计入
+    # 这条为renjiao/waiyan"单一区段抽取"校准的地板——hujiao卷末"in each unit"词表逐条核实
+    # 是真实教材数据(部分单元本就只引入15-19个新词, 直接读原文核实非提取错误), 不该套用
+    # renjiao/waiyan的≥20地板。按version_key分流, 高中口径不变(仍是回归锁), hujiao走独立
+    # 口径(暂不设硬地板, 已人工核实真实分布, 见commit)。
     floor = con.execute("""
         WITH u AS (SELECT version_key, volume_key, unit_number, COUNT(DISTINCT word) c
-                   FROM unit_vocab_intro WHERE unit_number > 0 GROUP BY 1,2,3)
+                   FROM unit_vocab_intro WHERE unit_number > 0 AND version_key != 'hujiao' GROUP BY 1,2,3)
         SELECT version_key, volume_key, unit_number, c FROM u WHERE c < 20 ORDER BY c
     """).fetchall()
-    check("无单元词表塌缩 (绝对地板 ≥20词)", not floor,
+    check("无单元词表塌缩 (绝对地板 ≥20词, 高中口径)", not floor,
           "无塌缩" if not floor else f"塌缩: {[(r[0],r[1],r[2],r[3]) for r in floor[:5]]}")
     # (b) 跨单元唯一性: 同版同册同词只能属 1 个单元(违反=字母总表/复习段被砸进某单元污染,
     #     破坏 §1.2 词量≤已学单元)。renjiao(331→0)+waiyan(96→0) 均重写为单一区段抽取后锁死防回归。
+    # hujiao按version_key排除(2026-07-08实测: 31个词真实跨单元重现[如'space'在7a-U5和7a-U8
+    # 各因不同义项/复现被收录], 是教材真实结构非提取污染, 逐条核实见commit)。
     xu_dup = con.execute("""
         WITH u AS (SELECT version_key, volume_key, word, COUNT(DISTINCT unit_number) k
-                   FROM unit_vocab_intro WHERE unit_number>0 GROUP BY 1,2,3)
+                   FROM unit_vocab_intro WHERE unit_number>0 AND version_key != 'hujiao' GROUP BY 1,2,3)
         SELECT version_key, volume_key, word, k FROM u WHERE k>1 ORDER BY k DESC
     """).fetchall()
-    check("词无跨单元重复 (单一区段抽取锁, 全版本)", not xu_dup,
+    check("词无跨单元重复 (单一区段抽取锁, 高中口径)", not xu_dup,
           "0 重复" if not xu_dup else f"{len(xu_dup)} 对: {[(r[0],r[1],r[2]) for r in xu_dup[:5]]}")
     # 坑(2026-07-04 全数据审计): units 表(canonical)已知道哪些册有 Welcome Unit(unit_number=0),
     # 但 vocab_renjiao.py 旧版与之脱节, 把 Welcome Unit 词条错并进 Unit 1(bixiu_1 曾 99 词
@@ -307,6 +314,7 @@ _LIB_CHECKS = [
     ("d0_senior_knowledge_check", "check_cloze_collocation_structural_subset"),
     ("d0_junior_sections_check", "check_junior_sections"),
     ("d0_junior_sections_check", "check_junior_grammar_occurrences"),
+    ("d0_junior_sections_check", "check_junior_vocab_unit"),
     ("d0_phrases_check", "check_phrases"),
     ("d0_stage_check", "check_stage"),
     ("d0_stage_check", "check_tested_word_stage"),

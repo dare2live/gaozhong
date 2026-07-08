@@ -142,7 +142,7 @@ def main() -> None:
         vocab as junior_vocab, grammar as junior_grammar, stage_link as junior_stage_link,
         stage_backfill as junior_stage_backfill, blueprint as junior_blueprint,
         phrases as junior_phrases, sections as junior_sections,
-        grammar_occurrence as junior_grammar_occurrence)
+        grammar_occurrence as junior_grammar_occurrence, vocab_unit as junior_vocab_unit)
     print(f"  {junior_vocab.load(con)}")
     print(f"  {junior_grammar.load(con)}")
     print(f"  {junior_stage_link.load(con)}")
@@ -150,6 +150,11 @@ def main() -> None:
     print(f"  {junior_blueprint.load(con)}")          # inc3: 10维 deepens 边
     print(f"  {junior_sections.load(con)}")           # Phase E1: 初中units/sections/section_text地基
     print(f"  {junior_grammar_occurrence.extract_junior_grammar_occurrences(con)}")  # Phase E4: 语法单元lineage
+    print(f"  {junior_vocab_unit.load(con)}")          # Phase E4: 词汇单元lineage(unit_vocab_intro)
+    # build_introduces_word 首次调用(Layer3 links.build_all内)早于本Layer3x, 那时hujiao的
+    # units还不存在, 故须在此重跑一次(全量replace, 幂等, Rule1同一份计算逻辑非重复实现)让
+    # 初中unit_vocab_intro流入introduces_word边。
+    print(f"  重跑introduces_word(含初中): {links.build_introduces_word(con)}")
     print(f"  {junior_phrases.load(con)}")            # 2026-07-07: 初中短语/句型/表达(须在Layer2高中phrases之后, 避免被其blanket DELETE清空)
 
     print("\n=== Layer 3y: 考试词典 (Canonical 词本体; 课标∪教材真超纲, 真题作旗) ===")
