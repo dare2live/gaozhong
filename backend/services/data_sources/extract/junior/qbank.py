@@ -1,19 +1,19 @@
-"""中考真题(2025真题面45条) → question_bank 镶入 + question:节点 (域A; Phase E3 tests_word层).
+"""中考真题(2024+2025共90条真题面) → question_bank 镶入 + question:节点 (域A; Phase E3 tests_word层).
 
 背景: exam_questions 视图硬过滤 exam_type='高考'(见 03_exam.sql), question_bank 装载
 (load_real_questions) 只读该视图 — 中考题从未进过 question_bank/tests_word 体系, 是设计
 上的隔离(非疏漏)。此处补一条平行入口, 不改视图/不改 load_real_questions 签名(Rule1
 单一计算点: 复用 autotag/insert_question/difficulty, 不重写打标逻辑)。
 
-数据现状(2026-07-07 直接查库核实, 不臆测):
-  - 2024年45题(6题型): raw_question 全部 walled(各免费源门控), 但完形填空/阅读理解等
-    答案字母/analysis 有(OCR官方答案图产)。stem 不可得 → 不入 question_bank(schema
-    NOT NULL 约束, 且'walled(...)'冒充题面违反D0诚实), 只在 exam_questions_all 留存
-    供 tests_grammar 等答案驱动分析用(见 grammar.py::link_zhongkao_grammar)。
+数据现状(2026-07-08 直接查库核实, 不臆测; 2024行 2026-07-08 全网挖掘更新):
+  - 2024年45题(6题型): raw_question 此前(2026-06-17)全部 walled(5渠道门控), 2026-07-08
+    找到第6渠道(zhongkao.com图片版系列文章, 与既有答案图11.png同站不同文章, PaddleOCR×
+    视觉核对)转真, 现全45题 raw_question 真实 + answer 全非空(官方答案key本已齐全)。
   - 2025年45题(6题型): raw_question 全部真实(题面驱动获取), 但仅语篇填空(语法填空)
     10题 answer 非空, 其余35题(完形/阅读理解/阅读表达/书面表达) answer 为 NULL(题面
-    有, 官方判分答案未获取)。→ 这45题入 question_bank(stem真实, answer 可 NULL,
-    schema 允许); answer 缺失诚实体现为 NULL, 不伪造正确答案。
+    有, 官方判分答案未获取; 2026-07-08全网挖掘二次尝试仍确认无免费渠道, 见docs/RESUME.md)。
+  → 下方函数按"raw_question NOT LIKE '%walled%'"筛选(非按年份hardcode), 2024解walled后
+    自动纳入, 无需改动本文件筛选逻辑(Rule1: 判断规则挂数据状态不挂年份字面量)。
 
 question:节点: canonical.build_all 的 _build_question_rows 只读 exam_questions(高考
 视图), 中考题从未建 question: 节点。此处按同一 concept_id 格式(question:{qid}) 独立
@@ -45,8 +45,8 @@ def _question_rows(con) -> list[tuple]:
 
 def _tests_word_edges(con) -> list[tuple]:
     """题面实词(cefr∩lemmatize token−停用词) → tests_word 边 (Rule1: 复用 links_extra.
-    build_tests_word 同款 _lemma_tokens 口径, 不重新定义分词/停用词规则)。只覆盖45条2025
-    真题面题(2024全walled无文本信号, 不建边)。"""
+    build_tests_word 同款 _lemma_tokens 口径, 不重新定义分词/停用词规则)。覆盖全部90条
+    真题面题(2024/2025均已转真, 按raw_question非walled筛选, 非年份hardcode)。"""
     from nltk.stem import WordNetLemmatizer
 
     from backend.services.exam_vocab import _lemma_tokens
@@ -67,7 +67,7 @@ def _tests_word_edges(con) -> list[tuple]:
 
 
 def link_tests_word(con) -> dict:
-    """qbank.load() 之后调: 45条真题面题 → tests_word 边(question:ZK-% 前缀独立scoped delete,
+    """qbank.load() 之后调: 90条真题面题 → tests_word 边(question:ZK-% 前缀独立scoped delete,
     不动 links_extra.build_tests_word 已建的高考边)。"""
     con.execute("DELETE FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'")
     edges = _tests_word_edges(con)
@@ -81,9 +81,8 @@ def link_tests_word(con) -> dict:
 def prune_orphan_question_nodes(con) -> dict:
     """须在 qbank.load() + grammar.link_zhongkao_grammar() + link_tests_word() 全部跑完后
     最后调: 删除仍无任何边的 question:ZK-% 节点(D0"孤立critical node=0"门, 同E1 unit:节点
-    先例) — 90题里目前只有部分(2025有文本信号的45题 + 2024语篇填空里能精确匹配语法点的题)
-    实际进图, 其余诚实地"不建节点"而非建了却孤立(节点是图分析锚点, 无边的节点不是分析锚点,
-    是伪完整感)。"""
+    先例) — 90题(2024/2025各45, 均已转真)按有无文本/语法信号实际进图, 其余诚实地"不建
+    节点"而非建了却孤立(节点是图分析锚点, 无边的节点不是分析锚点, 是伪完整感)。"""
     orphans = con.execute(
         "SELECT concept_id FROM nodes n WHERE concept_id LIKE 'question:ZK-%' "
         "AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id = n.concept_id "
@@ -95,7 +94,7 @@ def prune_orphan_question_nodes(con) -> dict:
 
 
 def _mirror_to_qbank(con) -> dict:
-    """题面驱动的45条(2025全量, stem真实) → question_bank(Rule1: 复用 autotag/insert_question)."""
+    """题面驱动的90条(2024+2025全量, stem真实) → question_bank(Rule1: 复用 autotag/insert_question)."""
     con.execute(
         "DELETE FROM question_tags WHERE qb_id IN "
         "(SELECT qb_id FROM question_bank WHERE origin_ref LIKE 'ZK-%')")
@@ -119,7 +118,7 @@ def _mirror_to_qbank(con) -> dict:
 
 
 def load(con) -> dict:
-    """question:节点(90) + question_bank镶入(45真题面题).
+    """question:节点(90) + question_bank镶入(90真题面题, 2024/2025各45).
 
     须在 Layer4 load_real_questions 之后调(该函数 DELETE FROM question_bank 全表,
     顺序颠倒会被清空; 同 junior_phrases.py 对 Layer2 高中 phrases blanket DELETE 的

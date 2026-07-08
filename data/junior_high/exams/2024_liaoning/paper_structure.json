@@ -7,9 +7,10 @@
   "source": "中考网 zhongkao.com (files.eduuu.com答案图 11.png)",
   "provenance": "B(民间聚合)",
   "has_answers": true,
-  "stem_walled": true,
-  "note": "官方答案key全45题+语篇填空语法考点+阅读与表达范例答案+作文范文; 题干stem各免费源全门控(Scribd学科网水印空白/kaosheng登录/中考网仅答案/教习网滑块/学科网付费),标unknown不伪造",
+  "stem_walled": false,
+  "note": "官方答案key全45题+语篇填空语法考点+阅读与表达范例答案+作文范文; 题干stem 2026-07-08 在中考网找到图片版全8页(与此前答案图11.png同源站点zhongkao.com, 不同文章), PaddleOCR×视觉逐页交叉核对后补齐, 全45题现题干+答案双完整(此前walled已解除)",
   "answer_validation": "paddleocr(answer_ocr.txt)×视觉裁决: 11.png(637x673)裁3块放大4x精读, 1-40与PaddleOCR全一致(初次扫读误差已纠); 19.E确认17-20五选四",
+  "stem_validation": "2026-07-08: 8页扫描图(p1-p8.png)PaddleOCR(ocr_image.paddleocr_lines)+视觉逐页Read交叉核对建exam_ocr.txt; 用exam_ocr.txt反推验证31-40语篇填空答案与实际空格上下文语义一致(如31 'a ball ___ a wall'='and'/34 'Then ___ other player'='the', 逐条核对通过), 45书面表达题面(李辉/Eric/飞机模型)与既有答案note(招募同学暑期活动)语义吻合, 确认是同一份真题非串卷",
   "sections": [
     {
       "no": "一",

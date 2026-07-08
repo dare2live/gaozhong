@@ -74,7 +74,8 @@ def _check_distribution_served(con, check) -> None:
 
 
 def _check_answer_fidelity(con, check) -> None:
-    """答案保真 (审计 HIGH): 2024 题面 walled, 答案是核心交付; 损坏(list-repr/小写/越界)须门抓.
+    """答案保真 (审计 HIGH): 2024 题面/答案均已获取(2026-07-08解walled), 答案仍是历史交付重点;
+    损坏(list-repr/小写/越界)须门抓.
 
     按题型作用域 — 只对 MCQ(选项字母答案)断言; 语法填空/开放问答/书面表达是自由词不约束 (坑16 防套错 schema)。
     """
@@ -112,7 +113,11 @@ def _check_content_status(con, check) -> None:
     check("content_status='complete' 必真完整 (无空心冒充完整)", mismark == 0, f"{mismark} 误标")
     n_walled = con.execute(
         "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2024 AND content_status='stem_walled'").fetchone()[0]
-    check("中考 2024 全 45 题题面诚实标 walled (免费源门控, 不伪造题面)", n_walled == 45, f"{n_walled}/45")
+    # 坑(2026-07-08 全网挖掘): 2024题面此前5渠道确认门控(walled=45), 本次找到第6渠道
+    # (zhongkao.com图片版系列文章, 与既有答案图11.png同站不同文章)PaddleOCR×视觉核对补全,
+    # walled状态解除(见 data/junior_high/exams/2024_liaoning/paper_structure.json stem_walled=false)。
+    check("中考 2024 题面已解除 walled (2026-07-08 找到题面第6渠道, 不再是源头不可得)",
+          n_walled == 0, f"{n_walled}/45")
     # 坑(2026-07-04 全数据审计): 2025 年 15 题(21-30完形填空+31-40语篇填空+41-45阅读表达/作文)
     # 曾因 extract_zhongkao.py._set_stem 条件写反(旧版要求options非空, 开放题/完形填空
     # 均不满足)被静默漏转录, 误标 stem_walled 冒充"题面门控"——实际 exam_ocr.txt 早有完整
@@ -128,13 +133,16 @@ def check_qbank_grammar_link(con: duckdb.DuckDBPyConnection, check) -> None:
     """Phase E3 中考关联层(2026-07-07): question_bank镶入 + tests_word/tests_grammar边.
 
     直接查库核实(非委托agent臆测)纠正此前"仅20题可用"的过度悲观结论: 2025年45题(全6题型)
-    raw_question真实(非walled), 只是仅语篇填空10题answer非空——故45题(非20题)可入
-    question_bank+建tests_word边; tests_grammar仅20题语篇填空(答案+考点齐全, 2024/2025各10)
-    可建, 样本量薄只报绝对数量不报占比。question:ZK-%节点须剪至有边覆盖(防孤儿)。
+    raw_question真实(非walled), 只是仅语篇填空10题answer非空; 2024年45题(2026-07-08全网
+    挖掘找到题面第6渠道, 见 junior/qbank.py 模块docstring)raw_question同样转真, 且2024
+    全45题答案齐全(2025缺35题答案)——故90题(2年合计, 非45题)可入question_bank+建
+    tests_word边; tests_grammar仅20题语篇填空(答案+考点齐全, 2024/2025各10)可建, 样本量
+    薄只报绝对数量不报占比。question:ZK-%节点须剪至有边覆盖(防孤儿)。
     """
     print("\n=== (48) 中考关联层 question_bank/tests_word/tests_grammar (Phase E3) ===")
     n_qb = con.execute("SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%'").fetchone()[0]
-    check("2025年45题(全部真题面, 2024全walled不入库) → question_bank", n_qb == 45, f"{n_qb}")
+    check("2024+2025共90题(全部真题面, 2026-07-08解2024 walled) → question_bank",
+          n_qb == 90, f"{n_qb}")
     bad_stem = con.execute(
         "SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%' AND stem LIKE '%walled%'"
     ).fetchone()[0]
@@ -142,24 +150,24 @@ def check_qbank_grammar_link(con: duckdb.DuckDBPyConnection, check) -> None:
     n_tw = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'"
     ).fetchone()[0]
-    check("中考tests_word边>0 (45题题面驱动, 复用exam_vocab._lemma_tokens同口径)", n_tw > 0, f"{n_tw}")
+    check("中考tests_word边>0 (90题题面驱动, 复用exam_vocab._lemma_tokens同口径)", n_tw > 0, f"{n_tw}")
     n_tg = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_grammar' AND src_id LIKE 'question:ZK-%'"
     ).fetchone()[0]
-    check("中考tests_grammar边>=15 (20题语篇填空样本薄, 精确匹配后17/20题命中, 部分1题→2边)",
+    check("中考tests_grammar边>=15 (20题语篇填空样本薄, 精确匹配后19/20题命中, 部分1题→2边)",
           n_tg >= 15, f"{n_tg}")
     n_orphan = con.execute(
         "SELECT COUNT(*) FROM nodes n WHERE concept_id LIKE 'question:ZK-%' "
         "AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)"
     ).fetchone()[0]
-    check("question:ZK-%节点无孤儿 (剪除38题无文本/语法信号的题, 防伪完整感, 同E1 unit:节点先例)",
+    check("question:ZK-%节点无孤儿 (剪除无文本/语法信号的题, 防伪完整感, 同E1 unit:节点先例)",
           n_orphan == 0, f"{n_orphan}")
     exam_type_tags = con.execute(
         "SELECT COUNT(*) FROM question_tags qt JOIN question_bank qb ON qt.qb_id=qb.qb_id "
         "WHERE qb.origin_ref LIKE 'ZK-%' AND qt.tag_id='exam_type:中考'"
     ).fetchone()[0]
-    check("45题全打exam_type:中考标签 (供组卷/学情按学段过滤, 不与高考题混淆)",
-          exam_type_tags == 45, f"{exam_type_tags}/45")
+    check("90题全打exam_type:中考标签 (供组卷/学情按学段过滤, 不与高考题混淆)",
+          exam_type_tags == 90, f"{exam_type_tags}/90")
 
 
 def check_k12_grammar_bridge(con: duckdb.DuckDBPyConnection, check) -> None:

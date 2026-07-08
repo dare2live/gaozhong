@@ -2,7 +2,9 @@
 
 源: data/junior_high/exams/{year}_liaoning/exam_questions.jsonl (extract_zhongkao 产, 已验证)。
 判别维: province=辽宁(与高考辽宁卷同名) **靠 exam_type=中考 区分**(K12设计§1 三判别维), 不靠 province。
-2024 题面 stem walled → raw_question 记 stem_status; 2025 题面驱动 → stem + options 拼。
+题面: 有 raw_question(+options) 则拼接入库; 无则退化记 stem_status(诚实, 不伪造题面) ——
+数据驱动、不按年份 hardcode(2024 曾全 walled, 2026-07-08 全网挖掘找到第6渠道后转真,
+本函数逻辑无需改动即自动纳入, 见 junior/qbank.py 模块docstring)。
 """
 from __future__ import annotations
 
@@ -17,7 +19,7 @@ _COLS = ("question_id,year,province,paper_type,question_type,raw_question,answer
 
 
 def _raw(r: dict) -> str | None:
-    """题面: 2025 stem(+options 拼); 2024 walled → 记 stem_status (诚实, 不伪造题面)."""
+    """题面: 有 stem(+options 拼); 无 → 记 stem_status (诚实, 不伪造题面)."""
     stem = (r.get("raw_question") or "").strip()
     opts = r.get("options") or {}
     if opts:

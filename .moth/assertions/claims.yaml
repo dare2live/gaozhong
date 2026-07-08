@@ -562,7 +562,7 @@ assertions:
     command: ["python3", "-c", "import duckdb,json,glob;rows=[json.loads(l) for p in glob.glob('data/junior_high/exams/*_liaoning/exam_questions.jsonl') for l in open(p,encoding='utf-8')];j={r['question_id']:str(r['answer']).strip() for r in rows if r.get('answer') and str(r['answer']).strip()};c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d={q:str(a).strip() for q,a in c.execute(\"SELECT question_id,answer FROM exam_questions_all WHERE exam_type='中考' AND answer IS NOT NULL AND TRIM(answer)<>''\").fetchall()};c.close();print('OK' if j==d and j else 'MISMATCH')"]
     expect: {op: regex, pattern: "OK"}
   - id: zhongkao-content-status-honest
-    claim: "中考空心诚实标记: content_status 显式标题面/答案完整性, 无'complete'冒充空心 (2024全walled/2025答案待补, 审计HIGH#8)"
+    claim: "中考空心诚实标记: content_status 显式标题面/答案完整性, 无'complete'冒充空心 (2024此前walled 2026-07-08找到题面转真/2025答案仍待补, 审计HIGH#8)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM zhongkao_questions WHERE content_status IS NULL OR (content_status='complete' AND (raw_question LIKE 'walled%' OR answer IS NULL OR TRIM(answer)=''))"
@@ -713,10 +713,16 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services.exam_grammar_stats import grammar_exam_stats, grammar_category_pct;from backend.services.trend import scope;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=grammar_exam_stats(c);pct=grammar_category_pct(c);c.close();ok=(scope.ERA_NEW not in s['eras_covered'] and pct=={}) or (scope.ERA_NEW in s['eras_covered'] and pct!={});print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: zhongkao-2025-stem-not-walled
-    claim: "extract_zhongkao.py 2026-07-04坑修: 旧版_set_stem条件写反(要求options非空), 21-30完形填空(stem本为空只有options)+31-45(语篇填空/阅读表达/作文, options本为空只有stem)两类题被静默漏转录, 误标stem_walled冒充'题面门控'——实际exam_ocr.txt早有完整原文(manifest/paper_structure自述'2025=题干完整'); 补_parse_wanxing(完形填空共享段落)+_parse_yupian_tiankong(语篇填空共享段落)+_set_stem判据改stem或options任一非空; 2025全45题应0 stem_walled(区别于2024真实源头门控45/45)"
+    claim: "extract_zhongkao.py 2026-07-04坑修: 旧版_set_stem条件写反(要求options非空), 21-30完形填空(stem本为空只有options)+31-45(语篇填空/阅读表达/作文, options本为空只有stem)两类题被静默漏转录, 误标stem_walled冒充'题面门控'——实际exam_ocr.txt早有完整原文(manifest/paper_structure自述'2025=题干完整'); 补_parse_wanxing(完形填空共享段落)+_parse_yupian_tiankong(语篇填空共享段落)+_set_stem判据改stem或options任一非空; 2025全45题应0 stem_walled(2024此前也是45/45源头真实门控, 2026-07-08全网挖掘找到第6渠道后同样转真0 stem_walled, 见zhongkao-2024-stem-not-walled)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2025 AND content_status='stem_walled'"
+    expect: {op: "==", value: 0}
+  - id: zhongkao-2024-stem-not-walled
+    claim: "2026-07-08全网挖掘: 2024年中考题面此前(2026-06-17)5渠道确认门控(Scribd水印/kaosheng登录/中考网zip仅答案/教习网滑块/学科网付费), 本次找到第6渠道(zhongkao.com图片版系列文章《2024年辽宁省中考英语真题（图片版）》, 8页, 与既有答案图11.png同站不同文章)——全程无登录/付费/验证码(遵守不破验证码/不登录/不付费红线), PaddleOCR(ocr_image.paddleocr_lines)×视觉逐页Read交叉核对建exam_ocr.txt, 反推验证语篇填空31-40答案与上下文语义一致确认非串卷; extract_zhongkao.py按raw_question非walled筛选自动纳入(无需改代码, Rule1判断规则挂数据状态非年份hardcode); 2024全45题应0 stem_walled(与2025同口径, 详见 data/junior_high/exams/2024_liaoning/manifest.json + paper_structure.json)"
+    type: duckdb_sql
+    database: data/db/gaozhong.duckdb
+    query: "SELECT COUNT(*) FROM zhongkao_questions WHERE year=2024 AND content_status='stem_walled'"
     expect: {op: "==", value: 0}
   - id: ocr-fix-dictionary-unreviewed-not-consumed
     claim: "坑17(2026-07-04全数据审计补): ocr_fix_dictionary(1627行OCR纠错候选, 含'doing'→'dining'等高风险模糊匹配)此前D0/moth/audit_findings三处零覆盖; 表本身只读候选队列(无consumer写回), 锁reviewed_by非NULL行数应=0(未审阅候选不得被当已验证消费), 防未来接lookup时绕过审阅"
@@ -758,7 +764,7 @@ assertions:
       [名词复数/宾格]库内无对应节点诚实标unmatched不强凑); question:ZK-%节点剪至有边覆盖
       的52个(90题里38题无文本/语法信号暂不建节点, 防伪完整感孤儿节点)"
     type: shell
-    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);qb=c.execute(\"SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%'\").fetchone()[0];tg=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_grammar' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];tw=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];orphan=c.execute(\"SELECT COUNT(*) FROM nodes n WHERE concept_id LIKE 'question:ZK-%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)\").fetchone()[0];c.close();print('OK' if (qb==45 and tg>=15 and tw>0 and orphan==0) else 'FAIL')"]
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);qb=c.execute(\"SELECT COUNT(*) FROM question_bank WHERE origin_ref LIKE 'ZK-%'\").fetchone()[0];tg=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_grammar' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];tw=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];orphan=c.execute(\"SELECT COUNT(*) FROM nodes n WHERE concept_id LIKE 'question:ZK-%' AND NOT EXISTS (SELECT 1 FROM edges e WHERE e.src_id=n.concept_id OR e.dst_id=n.concept_id)\").fetchone()[0];c.close();print('OK' if (qb==90 and tg>=15 and tw>0 and orphan==0) else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: k12-grammar-bridge-e5
     claim: "Phase E5(2026-07-07): backend/services/exam_point/k12_bridge.py::

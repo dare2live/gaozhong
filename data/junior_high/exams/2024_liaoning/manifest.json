@@ -1,15 +1,31 @@
 {
-  "file": "11.png",
-  "source_url": "https://files.eduuu.com/ohr/2024/08/22/150855_66c6e407a4766.zip",
-  "via": "zhongkao.com/e/20240822/66c6e4338504b.shtml",
-  "sha_bytes": 189209,
-  "content": "2024辽宁中考英语真题官方答案(图片版); 全45题答案+语篇填空语法考点+阅读与表达范例+作文范文",
-  "acquired": "2026-06-17 browser(Chrome MCP)",
-  "verify": "§1.4 结构匹 book118 45题90分",
-  "answer_validation": "2026-06-19 paddleocr(answer_ocr.txt)×视觉裁决: 11.png(637x673)裁3块放大4x精读 1-40与PaddleOCR全一致(初次扫读误差纠正); 19.E确认17-20五选四",
-  "stem_acquisition_walled": {
+  "records": [
+    {
+      "file": "11.png",
+      "source_url": "https://files.eduuu.com/ohr/2024/08/22/150855_66c6e407a4766.zip",
+      "via": "zhongkao.com/e/20240822/66c6e4338504b.shtml",
+      "sha_bytes": 189209,
+      "content": "2024辽宁中考英语真题官方答案(图片版); 全45题答案+语篇填空语法考点+阅读与表达范例+作文范文",
+      "acquired": "2026-06-17 browser(Chrome MCP)",
+      "verify": "§1.4 结构匹 book118 45题90分",
+      "answer_validation": "2026-06-19 paddleocr(answer_ocr.txt)×视觉裁决: 11.png(637x673)裁3块放大4x精读 1-40与PaddleOCR全一致(初次扫读误差纠正); 19.E确认17-20五选四"
+    },
+    {
+      "files": ["p1.png", "p2.png", "p3.png", "p4.png", "p5.png", "p6.png", "p7.png", "p8.png"],
+      "source_url_pattern": "https://files.eduuu.com/img/2024/08/22/1425{05,06}_66c6d9c1*.png (同一分钟内批量上传, 哈希序列连续)",
+      "via": "zhongkao.com/e/20240822/66c6da13110de.shtml (及分页 _2.shtml..._8.shtml, 标题《2024年辽宁省中考英语真题（图片版）》, 与11.png同站不同文章)",
+      "content": "2024辽宁中考英语真题完整题面(图片版); 阅读理解A-D四篇(1-16)+五选四(17-20)+完形填空(21-30)+语篇填空(31-40)+阅读与表达(41-44)+书面表达(45), 8页全覆盖",
+      "acquired": "2026-07-08 browser(claude-in-chrome MCP, 直接抓.content容器内真实img src, 排除广告图/追踪像素)",
+      "gate_compliance": "全程无登录/付费/验证码提示, 公开文章页直接可读(不违反不破验证码/不登录/不付费/不伪造红线)",
+      "ocr": "PaddleOCR(en, backend/services/data_sources/extract/ocr_image.paddleocr_lines, 单一计算点复用)",
+      "visual": "Read工具逐页(p1-p8)人工核对, 与OCR reconcile (坑23方法论: 高清图两源高度一致, 未发现如11.png那种低清误读)",
+      "cross_check_vs_answer_key": "反推验证: 31 'a ball ___ a wall'=and / 32 'gloves ___(need)'=are needed / 34 'Then ___ other player'=the / 35 '...you want ___(reach)'=to reach 等10空逐条核对语义通顺; 45书面表达题面(李辉为社团设计制作飞机模型/英国朋友Eric)与既有答案note(招募同学暑期航模活动)语义吻合, 确认11.png答案图与本次题面图同源同卷非串题",
+      "supersedes": "stem_acquisition_walled(见下, 2026-06-17记录), 此前5渠道失败结论保留存档, 本次是全新第6渠道(中考网另一篇图片版文章)找到"
+    }
+  ],
+  "stem_acquisition_walled_2026-06-17_superseded": {
     "intent": "按2025方法(Scribd页图→OCR×视觉)获取完整题面",
-    "outcome": "失败 — 题面各免费源全门控",
+    "outcome": "失败 — 题面各免费源全门控 (本轮已用全新渠道解决, 见上records[1])",
     "tried": [
       "Scribd document/803419295 (精品解析原卷版): 学科网PDF水印再上传, 直连CDN images/N-hash仅缩略图(635x459起)/占位图(90x68), 正文被组卷网+学科网水印挡=空白预览页, 不可用",
       "kaosheng.com/down/202410/26/684.html: Word原卷0.19M, 但下载需登录(门控)",
@@ -17,6 +33,7 @@
       "教习网51jiaoxi.com/doc-16795745.html(文字版原卷): 滑块验证码(按约束停)",
       "学科网zxxk.com(源头): 付费"
     ],
-    "decision": "不破验证码/不登录/不付费/不伪造题面(mio失败先承认+D0诚实). 题面标 stem_status=walled, 答案/考点用官方key. 用户如能提供2024题面doc(同2025), 可补全题面驱动结构化"
+    "decision_2026-06-17": "不破验证码/不登录/不付费/不伪造题面(mio失败先承认+D0诚实). 题面标 stem_status=walled, 答案/考点用官方key.",
+    "decision_2026-07-08": "全网挖掘第6渠道(zhongkao.com图片版系列文章, 与11.png同站不同文章)找到, walled状态解除, 见 paper_structure.json stem_walled=false"
   }
 }
