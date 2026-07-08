@@ -25,6 +25,7 @@ const _IC = {
   kecheng: '<path d="M3 4h18"/><path d="M4 4v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4"/><path d="M12 15v4"/><path d="M9 19h6"/>',
   guanlian:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8.2 7.1 15.6 8"/><path d="M7 8.3l2.2 7.3"/><path d="M16.4 10 11.6 16.4"/>',
   zujuan:  '<path d="M6 3h9l3 3v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="m9 12 2 2 4-4"/>',
+  k12:     '<path d="M4 19V6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 12h6"/><path d="M12 9v6"/>',
 };
 
 window.GZ_NAV = [
@@ -47,5 +48,8 @@ window.GZ_NAV = [
     { id: "jr_zhenti",  label: "真题特点", icon: _IC.zhenti },
     { id: "jr_jichu",   label: "基础库",   icon: _IC.jichu },
     { id: "jr_kecheng", label: "课程",     icon: _IC.kecheng },
+    // 2026-07-08 用户拍板"K12衔接打通小初高整体知识点覆盖串联": k12.js 曾误随教师工具下线
+    // (它是学习者可见的初高中衔接视图非备课工具), 复活并补入口(初中→高中桥接, 放初中分组)。
+    { id: "k12",        label: "K12 衔接", icon: _IC.k12 },
   ]},
 ];

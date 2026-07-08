@@ -105,3 +105,4 @@ contracts:
   "/api/vocab/word_info": {params: {word: [abandon]}, required_keys: [found, word, layer], type: dict}
   "/api/word_detail": {params: {word: [abandon]}, required_keys: [word, stages, provenance], type: dict}
   "/api/zhongkao/distribution": {params: {}, required_keys: [by_question_type, years, province], type: dict}
+  "/api/zhongkao/exam_focus": {params: {}, required_keys: [genre_分布, theme_l2_分布, 语法考查重点, 高频实词, scope_note], type: dict}

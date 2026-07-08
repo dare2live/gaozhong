@@ -197,22 +197,24 @@ def check_k12_grammar_bridge(con: duckdb.DuckDBPyConnection, check) -> None:
 
 
 def check_junior_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
-    """Phase E3b(2026-07-07): 中考genre/theme分类 → exam_point节点+tests_exam_point边.
+    """Phase E3b(2026-07-07起): 中考genre/theme分类 → exam_point节点+tests_exam_point边.
 
     数据源: 2025年8篇真实文章双独立视角分类, 只保留genre+theme完全一致的7篇(40题); 1篇
-    (养老院唱歌故事)theme判断不一致诚实排除标needs_review。样本量薄(40/90题), 不报占比。
+    (养老院唱歌故事)theme判断不一致诚实排除标needs_review。2026-07-08补2024年4篇(用户
+    "颗粒度对标高考"拍板): B/D篇两维度完全一致入库(8题), A/C篇各有一维度分歧按同一惯例
+    整篇排除。现覆盖48题(11篇一致文章), 相对90题库样本量薄, 不报占比。
     """
     print("\n=== (50) 中考genre/theme分类 exam_point (Phase E3b) ===")
     n_ep = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'"
     ).fetchone()[0]
-    check("中考tests_exam_point边==120 (40题×3维度genre/theme/theme_l2, 7篇一致文章)",
-          n_ep == 120, f"{n_ep}")
+    check("中考tests_exam_point边==144 (48题×3维度genre/theme/theme_l2, 11篇一致文章)",
+          n_ep == 144, f"{n_ep}")
     n_qids = con.execute(
         "SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' "
         "AND src_id LIKE 'question:ZK-%'"
     ).fetchone()[0]
-    check("覆盖40道题(7篇一致文章, 90题库里样本量薄不报占比)", n_qids == 40, f"{n_qids}")
+    check("覆盖48道题(11篇一致文章, 90题库里样本量薄不报占比)", n_qids == 48, f"{n_qids}")
     bad_genre = con.execute(
         "SELECT COUNT(*) FROM nodes WHERE concept_id LIKE 'exam_point:genre:%' "
         "AND label NOT IN ('议论文','应用文','书评介绍','新闻报道','记叙文','说明文')"
@@ -225,3 +227,25 @@ def check_junior_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     ).fetchone()[0]
     check("theme_l2值域未越界(义务教育课标2022官方10主题群, PDF p.21逐字核实, 未发明)",
           bad_l2 == 0, f"{bad_l2}")
+
+
+def check_zhongkao_exam_focus(con: duckdb.DuckDBPyConnection, check) -> None:
+    """Phase F2(2026-07-08, 用户拍板"中考自成体系, 颗粒度对标高考的考点分析, 不复刻设问思维"):
+    k12.zhongkao_exam_point_summary 只读聚合已有边(genre/theme_l2/tests_grammar/tests_word),
+    验output结构闭合, 不重复验底层边正确性(已由check_junior_exam_point/check_qbank_grammar_link覆盖)。
+    """
+    print("\n=== (51) 中考考查重点 zhongkao_exam_point_summary (Phase F2) ===")
+    from backend.services.k12 import zhongkao_exam_point_summary
+    r = zhongkao_exam_point_summary(con)
+    check("genre_分布非空且总和==48(同check_junior_exam_point已锁的48题)",
+          sum(x["n"] for x in r["genre_分布"]) == 48, f"{sum(x['n'] for x in r['genre_分布'])}")
+    check("theme_l2_分布非空且总和==48", sum(x["n"] for x in r["theme_l2_分布"]) == 48,
+          f"{sum(x['n'] for x in r['theme_l2_分布'])}")
+    check("语法考查重点非空(≥1条, 复用已有tests_grammar边)", len(r["语法考查重点"]) > 0,
+          f"{len(r['语法考查重点'])}")
+    check("高频实词非空(≥1条, 复用已有tests_word边)", len(r["高频实词"]) > 0,
+          f"{len(r['高频实词'])}")
+    check("scope_note含4项诚实声明(sample_type/genre_theme_coverage/grammar_coverage/vocab_coverage)",
+          set(r["scope_note"].keys()) == {"sample_type", "genre_theme_coverage",
+                                           "grammar_coverage", "vocab_coverage"},
+          f"{list(r['scope_note'].keys())}")

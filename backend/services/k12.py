@@ -112,8 +112,66 @@ def zhongkao_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         "by_question_type": [{"type": t, "n": n} for t, n in by_type],
         "语篇填空考点": [{"year": y, "qid": q, "考点": a} for y, q, a in kaodian],
         "语篇填空_pivot": pivot,
-        "data_honesty": ("题型骨架完整, 但题面/答案部分门控 — "
-                         "2024 题面免费源全门控(仅官方答案可得), 2025 部分小题答案待补; 见 content_status"),
+        "data_honesty": ("题型骨架完整, 但答案部分门控 — "
+                         "2024 全45题题面+答案齐全(2026-07-08解walled), 2025 题面齐全但35题答案待补; 见 content_status"),
+    }
+
+
+def _exam_point_dim_dist(con: duckdb.DuckDBPyConnection, dimension: str) -> list[dict]:
+    """中考 tests_exam_point 边按维度(genre/theme_l2)分布 (Rule1: 只读聚合已有边, 不重分类)."""
+    rows = con.execute(
+        "SELECT n.label, COUNT(DISTINCT e.src_id) FROM edges e JOIN nodes n ON n.concept_id = e.dst_id "
+        "WHERE e.relation='tests_exam_point' AND e.src_id LIKE 'question:ZK-%' "
+        "AND json_extract_string(e.evidence_json, '$.dimension') = ? "
+        "GROUP BY n.label ORDER BY 2 DESC", [dimension],
+    ).fetchall()
+    return [{"label": lb, "n": n} for lb, n in rows]
+
+
+def _grammar_focus(con: duckdb.DuckDBPyConnection) -> list[dict]:
+    """中考 tests_grammar 边命中的初中语法点 (Rule1: 只读聚合, 复用 junior/grammar.py 已建边)."""
+    rows = con.execute(
+        "SELECT n.label, COUNT(*) FROM edges e JOIN nodes n ON n.concept_id = e.dst_id "
+        "WHERE e.relation='tests_grammar' AND e.src_id LIKE 'question:ZK-%' "
+        "GROUP BY n.label ORDER BY 2 DESC",
+    ).fetchall()
+    return [{"grammar_item": lb, "n": n} for lb, n in rows]
+
+
+def _vocab_focus(con: duckdb.DuckDBPyConnection, top_n: int = 30) -> list[dict]:
+    """中考 tests_word 边命中的高频实词 (Rule1: 只读聚合 junior/qbank.py 已建边, 不重新分词)."""
+    rows = con.execute(
+        "SELECT split_part(dst_id, ':', 2) AS word, COUNT(*) AS n FROM edges "
+        "WHERE relation='tests_word' AND src_id LIKE 'question:ZK-%' "
+        "GROUP BY word ORDER BY n DESC LIMIT ?", [top_n],
+    ).fetchall()
+    return [{"word": w, "n": n} for w, n in rows]
+
+
+def zhongkao_exam_point_summary(con: duckdb.DuckDBPyConnection) -> dict:
+    """中考考查重点(Phase F2, 2026-07-08用户拍板"颗粒度对标高考的考点分析, 不复刻设问思维").
+
+    设计原则: 不照搬高考cognitive_skill(设问思维)维度——中考题型结构与高考不同, 生搬会失真;
+    改用中考实际能支撑的三条已有边做"考什么"的静态分布(非趋势): genre/theme_l2(题材主题,
+    覆盖48/90题, 见exam_point.py)+ tests_grammar(语篇填空语法点, 20题样本)+ tests_word
+    (高频实词, 90题全覆盖)。全部只读聚合已有边(Rule1), 不重新分类/分词。
+
+    样本量诚实(坑12): 2024/2025共2年, 只做"分布"结论(同卷制静态占比), 不做逐年"趋势"
+    (需≥5年每年≥10题, 现远不够, 见 docs/RESUME.md 中考子系统scope note); genre/theme_l2
+    基数48题(11篇一致文章)相对90题库是部分覆盖, 不代表全部90题题材分布, 显式标注避免过度外推。
+    """
+    return {
+        "exam_type": "中考", "province": "辽宁", "years": [2024, 2025],
+        "genre_分布": _exam_point_dim_dist(con, "genre"),
+        "theme_l2_分布": _exam_point_dim_dist(con, "theme_l2"),
+        "语法考查重点": _grammar_focus(con),
+        "高频实词": _vocab_focus(con),
+        "scope_note": {
+            "sample_type": "分布(distribution), 非趋势(trend) — 仅2年数据, 不支持逐年趋势结论",
+            "genre_theme_coverage": "48/90题(11篇双独立视角一致的文章), 非全部90题题材覆盖",
+            "grammar_coverage": "20题语篇填空样本, 相对71个课标语法点是验证性附注非频次代表",
+            "vocab_coverage": "90题全覆盖(tests_word边基于全部真实题面), 已排除功能词(见stopwords.py)",
+        },
     }
 
 

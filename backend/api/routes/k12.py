@@ -4,6 +4,7 @@
 /api/k12/tested_word_stage  — 辽宁高考考查词 按学段占比 ("最少覆盖最大" 实证, 北极星 Phase B)
 /api/k12/blueprint          — 10维语法蓝图 (deepens 边; 中考∩高考)
 /api/zhongkao/distribution  — 中考题型 + 语篇填空考点 (zhongkao_questions 视图)
+/api/zhongkao/exam_focus    — 中考考查重点 (Phase F2; genre/theme/语法/高频词静态分布, 非趋势)
 """
 from __future__ import annotations
 
@@ -48,9 +49,18 @@ def api_zhongkao_distribution(qs: dict) -> dict:
         con.close()
 
 
+def api_zhongkao_exam_focus(qs: dict) -> dict:
+    con = db_ro()
+    try:
+        return k12.zhongkao_exam_point_summary(con)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/k12/stage_distribution": api_stage_distribution,
     "/api/k12/tested_word_stage": api_tested_word_stage,
     "/api/k12/blueprint": api_blueprint,
     "/api/zhongkao/distribution": api_zhongkao_distribution,
+    "/api/zhongkao/exam_focus": api_zhongkao_exam_focus,
 }

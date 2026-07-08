@@ -777,15 +777,19 @@ assertions:
     command: ["python3", "-c", "import duckdb; from backend.services.exam_point import junior_senior_grammar_bridge; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_senior_grammar_bridge(c); ok=(len(r['records'])==71 and all(x.get('senior_grammar_id') for x in r['records']) and r['summary'].get('report_as')=='absolute_count_not_percentage' and '/api/exam_point/k12_grammar_bridge' in open('backend/api/routes/exam_point.py').read() and '/api/exam_point/k12_grammar_bridge' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: junior-exam-point-e3b
-    claim: "Phase E3b(2026-07-07): 2025年8篇真实中考文章双独立视角(classify-lens-A/B)分类
+    claim: "Phase E3b(2026-07-07起): 2025年8篇真实中考文章双独立视角(classify-lens-A/B)分类
       genre+theme, 只保留完全一致的7篇(养老院唱歌故事1篇theme判断不一致[社会服务与人际沟通
       vs 做人与做事]诚实排除needs_review); junior/exam_point.py 复用高中
       exam_point/loader.py::load_exam_points(Rule5参数化labels_path/theme_l2_path后的
-      第2消费者, 不重写落边逻辑), 40题×3维度(genre/theme_l1/theme_l2)=120条tests_exam_point
-      边; genre值域复用高中6值(未发明), theme_l2值域=义务教育课标2022官方10主题群(PDF p.21
-      逐字核实, 见data/junior_high/structured/theme_taxonomy_hardcoded.json, 未发明子分类)"
+      第2消费者, 不重写落边逻辑)。2026-07-08补2024年4篇(用户拍板「中考自成体系但颗粒度对标
+      高考」): B篇(Kelly渔村结识Marie记叙文)+D篇(Li介绍七巧板记叙文)两独立视角genre+theme_l2
+      完全一致入库; A篇(植物养护)genre一致但theme_l2分歧(生活与学习vs自然生态)、C篇(舞蹈
+      访谈)theme_l2一致但genre分歧(新闻报道vs记叙文), 按同一「一维度不一致即整篇排除」惯例
+      不入库。现48题×3维度(genre/theme_l1/theme_l2)=144条tests_exam_point边; genre值域
+      复用高中6值(未发明), theme_l2值域=义务教育课标2022官方10主题群(PDF p.21逐字核实,
+      见data/junior_high/structured/theme_taxonomy_hardcoded.json, 未发明子分类)"
     type: shell
-    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];nq=c.execute(\"SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];c.close();print('OK' if (n==120 and nq==40) else 'FAIL')"]
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];nq=c.execute(\"SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];c.close();print('OK' if (n==144 and nq==48) else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: junior-grammar-occurrence-lineage-e4
     claim: "Phase E4(2026-07-08, 用户'仔细研究'后要求做到与高中同等深度的教材单元语法lineage):
@@ -810,4 +814,14 @@ assertions:
       endpoint_contracts已登记"
     type: shell
     command: ["python3", "-c", "import duckdb; from backend.services.course.junior_knowledge import junior_syllabus; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_syllabus(c); ok=(r['n_lessons']==46 and r['n_units_total']==46 and all(x.get('content') is None for x in [r]) and sum(l['vocab']['n_total'] for l in r['lessons'])==947 and '/api/course/junior/syllabus' in open('backend/api/routes/course.py').read() and '/api/course/junior/syllabus' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: zhongkao-exam-focus-f2
+    claim: "Phase F2(2026-07-08, 用户拍板「中考自成体系, 颗粒度对标高考的考点分析, 不复刻
+      设问思维, 样本不够不做趋势只做分布」): k12.zhongkao_exam_point_summary 只读聚合已有边
+      (genre/theme_l2/tests_grammar/tests_word), 不重分类不重分词(Rule1); 产出genre_分布+
+      theme_l2_分布(基数48题)+语法考查重点(20题语篇填空样本)+高频实词(90题全覆盖)四块静态
+      分布, scope_note显式声明「分布非趋势」+各维度覆盖基数, 防consumer过度外推成年度趋势
+      结论; API /api/zhongkao/exam_focus 已注册+endpoint_contracts已登记"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.k12 import zhongkao_exam_point_summary; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=zhongkao_exam_point_summary(c); ok=(sum(x['n'] for x in r['genre_分布'])==48 and sum(x['n'] for x in r['theme_l2_分布'])==48 and len(r['语法考查重点'])>0 and len(r['高频实词'])>0 and set(r['scope_note'].keys())=={'sample_type','genre_theme_coverage','grammar_coverage','vocab_coverage'} and '/api/zhongkao/exam_focus' in open('backend/api/routes/k12.py').read() and '/api/zhongkao/exam_focus' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}

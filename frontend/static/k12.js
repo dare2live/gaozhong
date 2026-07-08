@@ -23,7 +23,10 @@
   <div id="k12-pivot"></div></section>
 <section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>D 细粒度语法点初高衔接 <small>deepens 边 (初中学牢→高中深化)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
   <p class="muted" style="font-size:11px;margin:0 0 8px;">细粒度语法点逐一衔接(非10维粗分) · 初中掌握 → 高中同名深化 · N=2 实证</p>
-  <div id="k12-bp"></div></section>`;
+  <div id="k12-bp"></div></section>
+<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>E 词汇维度初高衔接 <small>辽宁高考考查词按学段占比</small></span><span class="bk-src">/api/k12/tested_word_stage</span></div>
+  <p class="muted" style="font-size:11px;margin:0 0 8px;">高考离散考点题型实际考查的词, 有多大比例在初中(及以下)阶段就已学过(义务教育地基) vs 高中阶段新学 · "用最少课程覆盖最大考点" 实证 (北极星 Phase B)</p>
+  <div id="k12-vocab"></div></section>`;
   }
 
   function renderStage(d) {
@@ -136,17 +139,43 @@
       `</div><p class="muted" style="font-size:11px;margin:8px 0 0;">共 ${d.n} 对细粒度衔接边(非10维粗分) · ${d.basis}</p>`;
   }
 
+  function renderVocabBridge(d) {
+    const el = G.$("#k12-vocab");
+    if (!el) return;
+    if (!d || !d.total) { el.innerHTML = '<p class="muted" style="padding:12px">暂无高考考查词学段数据</p>'; return; }   // 空态守卫(不渲零态)
+    const stages = d.stages || [];
+    el.innerHTML = `<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:140px;padding:10px;background:#E1F5EE;border-radius:8px;">
+          <div style="font-size:20px;font-weight:600;color:var(--good);font-family:var(--num);">${d.foundation_pct}%</div>
+          <div style="font-size:11px;color:var(--ink-3);">义务教育阶段已学(≤初中)</div></div>
+        <div style="flex:1;min-width:140px;padding:10px;background:#E6F1FB;border-radius:8px;">
+          <div style="font-size:20px;font-weight:600;color:var(--down);font-family:var(--num);">${d.senior_pct}%</div>
+          <div style="font-size:11px;color:var(--ink-3);">高中阶段新学</div></div>
+        <div style="flex:1;min-width:140px;padding:10px;background:var(--sunken);border-radius:8px;">
+          <div style="font-size:20px;font-weight:600;color:var(--ink-3);font-family:var(--num);">${d.unclassified_pct}%</div>
+          <div style="font-size:11px;color:var(--ink-3);">未分类(校本超纲/外省词)</div></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="text-align:left;border-bottom:2px solid var(--line);"><th style="padding:4px 8px;">学段</th><th style="padding:4px 8px;">考查词数</th><th style="padding:4px 8px;">占比</th></tr></thead>
+        <tbody>${stages.map(s => `<tr style="border-bottom:1px solid var(--line-soft);">
+          <td style="padding:4px 8px;">${s.stage}</td><td style="padding:4px 8px;font-family:var(--num);">${s.n}</td><td style="padding:4px 8px;font-family:var(--num);">${s.pct}%</td></tr>`).join("")}
+        </tbody></table>
+      <p class="muted" style="font-size:11px;margin:8px 0 0;">共 ${d.total} 词(去重) · ${d.stage_note || ""}</p>`;
+  }
+
   registerTab("k12", async () => {
     G.$("#content").innerHTML = shell();
     const echartsOk = await G.ensureECharts();   // RC1: 等 echarts 就绪防静默空白
-    const [st, bp, zk] = await Promise.all([
+    const [st, bp, zk, vw] = await Promise.all([
       fetchJSON("/api/k12/stage_distribution"),
       fetchJSON("/api/k12/blueprint").catch(() => ({ pairs: [], n: 0 })),
       fetchJSON("/api/zhongkao/distribution").catch(() => ({ by_question_type: [] })),
+      fetchJSON("/api/k12/tested_word_stage").catch(() => ({ total: 0 })),
     ]);
     if (echartsOk) { renderStage(st); renderZk(zk); } else { G.chartLoadError(G.$("#k12-stage")); }
     renderPivot(zk);
     renderBlueprint(bp);
+    renderVocabBridge(vw);
     if (!window.__rzK12) { window.__rzK12 = 1; window.addEventListener("resize", () => { chS && chS.resize(); chZ && chZ.resize(); }); }  // RC1: 只绑一次防泄漏
   });
 })();
