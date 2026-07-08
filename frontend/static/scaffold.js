@@ -379,24 +379,22 @@
     _jichuSearchWire();
   });
 
-  // ── 初中板块 (Phase E 镜像建设中) — 四页共用占位 ──
+  // ── 初中板块剩余占位 (jr_beike/jr_zhenti 2026-07-08 已转正, 见 junior.js; jichu/kecheng 待建) ──
   function _juniorStub(title) {
     return async () => {
       document.querySelector("#content").innerHTML = _scaffold({
-        badge: "初中 · Phase E 建设中",
+        badge: "初中 · Phase F 建设中",
         title: title + " (初中)",
-        lead: "初中板块将与高中同结构镜像 (命题研判 / 真题特点 / 基础库 / 课程)。当前优先把高中跑通; 初中需先补齐地基 (沪教牛津教材 + 沈阳中考真题 + 义务课标 2022) 才会建本页。",
+        lead: "命题研判/真题特点已用真实90题数据跑通(见对应tab)。本页(基础库/课程)需要把已有的教材单元/词汇/语法lineage(E1-E4产物)接上前端渲染, 数据已就绪, 尚待接线。",
         cards: [
-          { title: "为什么先做高中", icon: IC.build, phase: "决策 B",
-            desc: "高中数据最全 (教材/真题/课标齐), 作样板先跑通三层产品; 初中按同框架镜像放第二步。" },
-          { title: "初中地基现状", icon: IC.std, phase: "Phase E 前置",
-            desc: "中考 2024/2025 省统一卷已结构化; 沪教牛津教材 + 义务课标产物已抽取, 尚无独立 D0 门 (待补)。" },
+          { title: "已有数据", icon: IC.std, phase: "Phase E1-E4已完成",
+            desc: "沪教牛津6册教材单元/词汇947条/语法occurrences39条/短语221条 + 40节课程生成器(junior_syllabus)均已入库+过D0, 只缺前端渲染。" },
+          { title: "对齐高中的接线方式", icon: IC.build, phase: "待办",
+            desc: "复用 jichu_pages.js/teaching 页同款渲染模式, 换成初中的 /api/course/junior/syllabus 等已注册端点。" },
         ],
       });
     };
   }
-  registerTab("jr_beike", _juniorStub("命题研判"));
-  registerTab("jr_zhenti", _juniorStub("真题特点"));
   registerTab("jr_jichu", _juniorStub("基础库"));
   registerTab("jr_kecheng", _juniorStub("课程"));
 })();
