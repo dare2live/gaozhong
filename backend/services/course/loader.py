@@ -61,9 +61,12 @@ def _validate_course(c: dict) -> None:
 
 
 def _validate_id(c: dict) -> int:
+    """course_id 上限读 thresholds.yaml course.total_courses(2026-07-08: 用户明确不要硬编码
+    40, 该数字后续会调整; 高中侧课程总数是config值不是代码常量)."""
     cid = c.get("course_id")
-    if not isinstance(cid, int) or not (1 <= cid <= 40):
-        raise ValueError(f"course_id must be 1..40, got {cid}")
+    n_total = get_threshold("course.total_courses", 40)
+    if not isinstance(cid, int) or not (1 <= cid <= n_total):
+        raise ValueError(f"course_id must be 1..{n_total}, got {cid}")
     return cid
 
 

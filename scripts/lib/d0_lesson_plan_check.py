@@ -48,13 +48,15 @@ def _c2_deterministic(con, check) -> None:
 
 
 def _c3_grammar_fk(con, check) -> None:
-    """语法轴 FK 完整: grammar_occurrences → grammar_items 0 悬挂."""
+    """语法轴 FK 完整: grammar_occurrences → grammar_items 0 悬挂(高中口径, version_key
+    != 'hujiao'; 初中口径见 d0_junior_sections_check.check_junior_grammar_occurrences,
+    2026-07-08 Phase E4 补初中lineage后按version_key分流, 二者用不同ID命名空间)."""
     orphan = con.execute(
         "SELECT COUNT(*) FROM grammar_occurrences g "
         "LEFT JOIN grammar_items gi ON gi.grammar_item_id = g.grammar_item_id "
-        "WHERE gi.grammar_item_id IS NULL"
+        "WHERE gi.grammar_item_id IS NULL AND g.version_key != 'hujiao'"
     ).fetchone()[0]
-    check("grammar_occurrences → grammar_items 0 悬挂", orphan == 0, f"orphan={orphan}")
+    check("grammar_occurrences → grammar_items 0 悬挂(高中口径)", orphan == 0, f"orphan={orphan}")
 
 
 def _c4_word_order(con, check) -> None:

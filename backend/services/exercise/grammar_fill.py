@@ -37,20 +37,27 @@ def generate_grammar_fill(con: duckdb.DuckDBPyConnection, unit_id: str | None = 
         if len(parts) >= 3:
             where = "st.version_key=? AND st.volume_key=? AND st.unit_number=?"
             args = [parts[0], parts[1], int(parts[2].lstrip("U"))]
+    # 坑(2026-07-08 Phase E1引入hujiao sections后触发): 原只取RANDOM()首条候选, 单条候选文本
+    # 可能恰好无内联可挖空词(初中沪教段落密度与高中不同, 概率上升); 改取多条候选逐个试, 全部
+    # 落空才诚实返回error(不是"扩大池子必然更容易失败", 是"只试1条samples太薄", 同坑12护栏思路)。
     rows = con.execute(f"""
         SELECT st.version_key, st.volume_key, st.unit_number, st.seq, st.raw_text
         FROM section_text st
         INNER JOIN sections s USING (version_key, volume_key, unit_number, seq)
         WHERE s.kind IN ('Reading', 'Grammar') AND st.n_chars BETWEEN {get_threshold('extraction.section_text_min_chars', 500)} AND {get_threshold('extraction.section_text_max_chars', 5000)}
           AND {where}
-        ORDER BY RANDOM() LIMIT 1
+        ORDER BY RANDOM() LIMIT 20
     """, args).fetchall()
     if not rows:
         return {"error": "no suitable section"}
-    ver, vol, un, seq, text = rows[0]
-    passage = text[:1500].replace("\n", " ").strip()
-    candidates = list(_TOKEN_RE.finditer(passage))
-    if not candidates:
+    ver = vol = un = seq = text = None
+    candidates: list = []
+    for ver, vol, un, seq, text in rows:
+        passage = text[:1500].replace("\n", " ").strip()
+        candidates = list(_TOKEN_RE.finditer(passage))
+        if candidates:
+            break
+    else:
         return {"error": "no inflected word in passage"}
     rng.shuffle(candidates)
     picked = candidates[:n_blanks]

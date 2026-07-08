@@ -13,6 +13,7 @@ import duckdb
 
 from backend.services.course.coverage import _ln_freq_by_point
 from backend.services.extraction.example_text import clean_preview
+from backend.services.thresholds import get_threshold
 
 # 坑(2026-07-05 根因审计): 原 SUBSTR(...,1,120) 定长截断可能截在词中间; 现 SQL 端宽窗取原文
 # (给干净断句留余量), Python 端 clean_preview 裁到最近句末标点 + 需要时补省略号 (与 lesson
@@ -76,11 +77,15 @@ def _coverage_proof(con: duckdb.DuckDBPyConnection) -> dict:
     }
 
 
-def syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int = 40) -> dict:
+def syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int | None = None) -> dict:
     """教学提纲 framework: N 节按主题群频次**最大余数法**分配 + 每节段级可溯源(考点焦点+作业真题, content=null).
 
     课节分配维度 = theme_l2 主题群 (主组织轴); 题材/词/语法的覆盖见 coverage_proof, 其逐节映射待 Phase D 内容生成 (决策C)。
+    n_lessons 默认读 thresholds.yaml course.total_courses(2026-07-08: 用户明确不要硬编码40,
+    该数字后续会调整, 遵循模块+数据+配置文件原则)。
     """
+    if n_lessons is None:
+        n_lessons = get_threshold("course.total_courses", 40)
     themes = _ln_freq_by_point(con, "theme_l2")  # [(label, 频次)] 降序
     alloc = _alloc(themes, n_lessons)
     theme_total_w = sum(f for _, f in themes) or 1

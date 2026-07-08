@@ -432,10 +432,12 @@ assertions:
     command: ["bash", "-c", "grep -q 'graph.neighbors' backend/api/routes/graph_popup.py && echo VIA_SERVICE || echo INLINE"]
     expect: {op: regex, pattern: "VIA_SERVICE"}
   - id: lesson-plan-grammar-axis
-    claim: "备课整合接入语法轴: generate_lesson_plan 含 grammar 字段且 grammar_occurrences→grammar_items 0 悬挂"
+    claim: "备课整合接入语法轴: generate_lesson_plan 含 grammar 字段且 grammar_occurrences→grammar_items
+      0 悬挂(高中口径, version_key!='hujiao'; 2026-07-08 Phase E4 补初中Grammar单元lineage后,
+      初中rows用grammar:jr:节点命名空间非grammar_items表, 按version_key分流校验不误判)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM grammar_occurrences g LEFT JOIN grammar_items gi ON gi.grammar_item_id=g.grammar_item_id WHERE gi.grammar_item_id IS NULL"
+    query: "SELECT count(*) FROM grammar_occurrences g LEFT JOIN grammar_items gi ON gi.grammar_item_id=g.grammar_item_id WHERE gi.grammar_item_id IS NULL AND g.version_key != 'hujiao'"
     expect: {op: "==", value: 0}
   - id: lesson-plan-grammar-province-scoped
     claim: "备课语法轴真题溯源锚定辽宁卷 (§7; _grammar_exam_trace 带 province LIKE 辽宁%, 不混外省冒充辽宁备课锚)"
@@ -776,4 +778,16 @@ assertions:
       逐字核实, 见data/junior_high/structured/theme_taxonomy_hardcoded.json, 未发明子分类)"
     type: shell
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];nq=c.execute(\"SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'\").fetchone()[0];c.close();print('OK' if (n==120 and nq==40) else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: junior-grammar-occurrence-lineage-e4
+    claim: "Phase E4(2026-07-08, 用户'仔细研究'后要求做到与高中同等深度的教材单元语法lineage):
+      46个Grammar section标题(教材自身'A/B/C <主题>'标注)人工逐条核对(非正则自动判定, 见
+      hujiao_grammar_topic_map.yaml头注坑记录), 映射到71项初中课标语法点; 62个主题标题里
+      58个有清晰对应(4个诚实跳过: Instructions about numbers/Question tags/the same and
+      different/like the same as different from, 71项taxonomy未单列不强配), 落
+      grammar_occurrences(version_key='hujiao')39条, 全部反查回真实grammar:jr:节点(无捏造id);
+      同一份表原有的高中FK校验(d0_lesson_plan_check/data_accuracy_check/本moth断言
+      lesson-plan-grammar-axis)均已按version_key分流, 不误判初中rows为悬挂"
+    type: shell
+    command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM grammar_occurrences WHERE version_key='hujiao'\").fetchone()[0];bad=c.execute(\"SELECT COUNT(*) FROM grammar_occurrences go WHERE go.version_key='hujiao' AND NOT EXISTS (SELECT 1 FROM nodes n WHERE n.concept_id='grammar:jr:'||go.grammar_item_id)\").fetchone()[0];c.close();print('OK' if (n==39 and bad==0) else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}

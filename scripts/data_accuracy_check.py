@@ -102,22 +102,6 @@ def _check_2_vocab(con):
           not missing_welcome_vocab, f"units 表有Welcome Unit但vocab无对应行: {missing_welcome_vocab}")
 
 
-def _check_3_grammar(con):
-    print("\n=== (3) 语法 ===")
-    n_g = con.execute("SELECT COUNT(*) FROM grammar_items").fetchone()[0]
-    n_orphan = con.execute(
-        "SELECT COUNT(*) FROM grammar_items WHERE parent_id IS NOT NULL "
-        "AND parent_id NOT IN (SELECT grammar_item_id FROM grammar_items)"
-    ).fetchone()[0]
-    check("grammar_items 行 == 108", n_g == B('grammar_items'), f"{n_g}")  # 106→108: 补限制性/非限制性定语从句(原_skip_line误杀)
-    check("grammar DAG 无环 (audit OK)", _audit_ok(con, "grammar_dag"))
-    check("grammar parent_id 引用完整", n_orphan == 0, f"orphan={n_orphan}")
-    n_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences").fetchone()[0]  # §1.2 语法per-unit
-    bad_occ = con.execute("SELECT COUNT(*) FROM grammar_occurrences WHERE grammar_item_id NOT IN (SELECT grammar_item_id FROM grammar_items)").fetchone()[0]
-    check("grammar_occurrences 已填(§1.2 语法per-unit)", n_occ >= B('grammar_occ_min'), f"{n_occ}")
-    check("grammar_occurrences FK 有效", bad_occ == 0, f"{bad_occ}")
-
-
 def _check_4_phrases(con):
     print("\n=== (4) 短语 ===")
     n_ph = con.execute("SELECT COUNT(*) FROM phrases").fetchone()[0]
@@ -322,6 +306,7 @@ _LIB_CHECKS = [
     ("d0_senior_knowledge_check", "check_phrase_pattern_exam_relevance"),
     ("d0_senior_knowledge_check", "check_cloze_collocation_structural_subset"),
     ("d0_junior_sections_check", "check_junior_sections"),
+    ("d0_junior_sections_check", "check_junior_grammar_occurrences"),
     ("d0_phrases_check", "check_phrases"),
     ("d0_stage_check", "check_stage"),
     ("d0_stage_check", "check_tested_word_stage"),
@@ -337,6 +322,7 @@ _LIB_CHECKS = [
     ("d0_governance_check", "check_real_student_isolation"),
     ("d0_k12_served_check", "check_k12_served"),
     ("endpoint_contract_check", "check_endpoint_contracts"),   # 维度38: 75端点 HTTP 契约 (endpoint_contracts.yaml, 审计MAJOR修)
+    ("d0_grammar_check", "check_grammar"),   # (3) 语法(从本文件抽出, 2026-07-08 god-module瘦身)
 ]
 
 
@@ -355,7 +341,7 @@ def _check_truth_anchors(con):
 
 # ===== main 调度 (CC=2). Phase7 回滚移除 _check_5/19/20 (断言已删生成内容) =====
 CHECKS = [
-    _check_1_manifest, _check_2_vocab, _check_3_grammar, _check_4_phrases,
+    _check_1_manifest, _check_2_vocab, _check_4_phrases,
     _check_6_graph, _check_7_audit_summary, _check_8_course_audits,
     _check_9_qbank, _check_10_qbank_options, _check_11_tag_dict,
     _check_12_cefr_node_xref, _check_13_grammar_chain, _check_14_graph_refs,

@@ -1,0 +1,125 @@
+# 沪教牛津(广深沈)初中英语 教材单元语法主题 → 初中课标官方 grammar_item 映射 (Phase E4, 2026-07-08).
+#
+# 真相源: 46个Grammar-kind section(每单元1个)里 "A/B/C <主题>" 格式的板块标题(教材自身标注,
+# 非估算), 逐条直接读 section_text 原文核实(见下方注释里的 unit 出处), 非OCR自动归纳。
+# 目标: grammar:jr:<item_id> (71项, 全来自 义务教育英语课程标准2022 语法条目表, 见 junior/
+# grammar.py 已入库节点)。
+# 映射依据: 标准语法术语等价(Wh-questions=疑问句大类, Modal verb=情态动词...), 非估算/非主观。
+# 诚实跳过(D0 返空>假推, 同高中 grammar_topic_map.yaml 纪律): 71项taxonomy里找不到清晰对应的
+# 主题(如反义疑问句/the same as 比较结构 官方taxonomy未单列)明确标 skip, 不强配近似节点。
+# 用法: extraction/junior_grammar_occurrence.py 对每个Grammar section标题行按patterns顺序
+# 首匹配(具体在前, 泛化在后)。
+#
+# 坑(2026-07-08 提取时发现): 正则粗筛第2轮曾把小写开头合法主题("can and cannot"等模态动词
+# 惯用写法)和真实误检(练习题句子片段"dog will love you faithfully and bring")一起过滤掉,
+# 靠单纯"首字母大写"规则做不到两者兼顾——最终采用人工逐条核对原文(46个section全部读过),
+# 不靠正则自动断言"是不是主题标题"。
+
+rules:
+  # 坑(2026-07-08, 同高中坑29): "passive voice"须排最前, 优先级高于任何时态/情态动词规则——
+  # "The passive voice with modal verbs"/"The passive voice in the present perfect tense"
+  # 这类复合标题, 新教内容是被动语态转换本身(71项无tense/modal+被动的细分子项, 归被动语态
+  # umbrella), 时态/情态动词只是背景已学内容, 若被那些规则先命中会误判主题。
+  - patterns: ["passive voice"]
+    grammar_item_id: "三/四"
+    note: "被动语态(modal被动/完成时被动 71项无对应细分子项, 归umbrella)"
+  - patterns: ["wh-question"]
+    grammar_item_id: "三/一/2"
+    note: "特殊疑问句(疑问句大类下, 71项无更细分支)"
+  - patterns: ["indefinite article", "definite article", "using the with"]
+    grammar_item_id: "一/九"
+    note: 冠词(a/an/the 统一归冠词)
+  - patterns: ["simple present tense"]
+    grammar_item_id: "三/三/1"
+    note: 一般现在时
+  - patterns: ["adverbs and adverbial phrases of frequency", "using adverbs with verbs"]
+    grammar_item_id: "一/四"
+    note: 副词(频度副词/一般副词用法, 71项无频度副词独立子项)
+  - patterns: ["countable and uncountable"]
+    grammar_item_id: ["一/一/1", "一/一/2"]
+    note: "可数名词单复数 + 不可数名词(单标题合并两概念, 同高中比较级/最高级 enum 例外先例)"
+  - patterns: ["using adjectives before nouns", "using adjectives after the verb to be"]
+    grammar_item_id: "一/三/1"
+    note: 形容词的基本形式(前置定语/表语两种用法)
+  # 坑(2026-07-08): "present perfect tense"须排在"simple past tense"**之前**——
+  # "The present perfect tense and the simple past tense"(8a-U6)复合标题以现在完成时为
+  # 该单元新教主概念(一般过去时是背景已学时态), 若"simple past tense"规则先命中会误判。
+  - patterns: ["present perfect tense"]
+    grammar_item_id: "三/三/6"
+    note: 现在完成时(含 since/for 用法 + 与一般过去时对比, 主概念仍是现在完成时)
+  - patterns: ["simple past tense", "time expressions with the simple past"]
+    grammar_item_id: "三/三/2"
+    note: 一般过去时
+  - patterns: ["personal pronoun"]
+    grammar_item_id: "一/五/1"
+    note: 人称代词
+  - patterns: ["possessive adjective", "possessive pronoun"]
+    grammar_item_id: "一/五/2"
+    note: 物主代词
+  - patterns: ["proper noun"]
+    grammar_item_id: "一/一/3"
+    note: 专有名词
+  - patterns: ["conjunctions: and, but"]
+    grammar_item_id: "一/八"
+    note: 连词
+  - patterns: ["reflexive pronoun"]
+    grammar_item_id: "一/五/3"
+    note: 反身代词
+  - patterns: ["prepositions of position", "using prepositions after"]
+    grammar_item_id: "一/七"
+    note: 介词
+  - patterns: ["can and cannot", "may and may not", "must and must not", "modal verb", "had better"]
+    grammar_item_id: "一/二/5"
+    note: 情态动词
+  - patterns: ["imperative"]
+    grammar_item_id: "三/一/3"
+    note: 祈使句
+  - patterns: ["exclamation"]
+    grammar_item_id: "三/一/4"
+    note: 感叹句
+  - patterns: ["some and any"]
+    grammar_item_id: "一/五/5"
+    note: 不定代词
+  - patterns: ["cardinal and ordinal number"]
+    grammar_item_id: "一/六"
+    note: 数词(基数词+序数词统一标题, umbrella)
+  - patterns: ["comparative of adjectives", "superlative of adjectives", "good, bad and far"]
+    grammar_item_id: "一/三/2"
+    note: 形容词的比较级和最高级(含不规则形式)
+  - patterns: ["gerund"]
+    grammar_item_id: "三/五/2"
+    note: 动词的-ing形式
+  - patterns: ["comparative and superlative of adverbs"]
+    grammar_item_id: "一/四/2"
+    note: 副词的比较级和最高级
+  - patterns: ["adverbial clauses of reason", "because of"]
+    grammar_item_id: "三/七/2"
+    note: 状语从句(原因状语)
+  - patterns: ["sentence types"]
+    grammar_item_id: "三/一"
+    note: 句子种类(教材标题与71项父节点直接同名)
+  - patterns: ["infinitive"]
+    grammar_item_id: "三/五/1"
+    note: 动词不定式
+  - patterns: ["linking verb"]
+    grammar_item_id: "一/二/3"
+    note: 系动词
+  - patterns: ["adverbial clauses of result", "enough to"]
+    grammar_item_id: "三/七/2"
+    note: 状语从句(结果状语, enough to 同组呈现归此)
+  - patterns: ["adverbial clauses of purpose", "review of adverbial clause"]
+    grammar_item_id: "三/七/2"
+    note: 状语从句(目的状语/复习)
+  - patterns: ["review of tense"]
+    grammar_item_id: "三/三"
+    note: 谓语动词的时态(复习跨多个时态子项, 归父节点)
+  - patterns: ["review of the passive voice"]
+    grammar_item_id: "三/四"
+    note: 被动语态(复习)
+  - patterns: ["review of object clause"]
+    grammar_item_id: "三/七/1"
+    note: 宾语从句
+
+# 诚实跳过(71项taxonomy无清晰对应, 不强配): "Instructions about numbers"(非独立语法概念),
+# "Question tags"(反义疑问句71项未单列), "the same and different"/"like, the same as and
+# different from"(比较结构71项未单列为独立概念, 与"比较级"不是同一语法点)。

@@ -35,6 +35,13 @@ STATUS_HINT = {
 # tag-not-exclude: with/the 等义教词标"义务教育"(非高中新词), 留图里供按 stage 过滤, 不删。
 # 小学/初中 细分待初中课标(义务教育2022 二级/三级)抽取后 reconcile (S1/S4)。
 # 课标三级标签 = CEFR_LEVEL_STAGE 单点; 校本扩展/课标变形 是本审计合成 stage 值, 本地扩展 (不泄漏进 dictionary 域)
+# ⚠ 2026-07-08 查证: 此处写入 nodes.attrs_json.stage 是"引入时快照", S4(scripts/junior_stage_
+# reconcile.py) 跑完后**不会回写**这个字段(reconcile 把它当"精细化前基线"来算 refined_cnt/
+# expand_candidates, 回写会破坏这个diff)——精细化后的真值只活在 stage_refined.jsonl → at_stage
+# 边(stage_backfill.py/stage_link.py)。3205个有at_stage边的word节点里1842个(57%)
+# attrs_json.stage 与 at_stage 边不同, 这是设计使然非bug(已查证 exam_dictionary.py/k12.py 现有
+# 消费者都正确绕开此字段直接读 at_stage 边或 stage_refined.jsonl)。**任何新代码要精确小学/初中
+# 学段, 一律查 at_stage 边, 不要读这个字段**(我自己在这写E4时就被这坑绕了一次)。
 _STAGE = {**CEFR_LEVEL_STAGE, "校本扩展": "校本超纲", "课标变形": "课标变形"}
 
 
