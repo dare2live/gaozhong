@@ -793,3 +793,15 @@ assertions:
     type: shell
     command: ["python3", "-c", "import duckdb;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);n=c.execute(\"SELECT COUNT(*) FROM grammar_occurrences WHERE version_key='hujiao'\").fetchone()[0];bad=c.execute(\"SELECT COUNT(*) FROM grammar_occurrences go WHERE go.version_key='hujiao' AND NOT EXISTS (SELECT 1 FROM nodes n WHERE n.concept_id='grammar:jr:'||go.grammar_item_id)\").fetchone()[0];c.close();print('OK' if (n==39 and bad==0) else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
+  - id: junior-syllabus-e4
+    claim: "Phase E4(2026-07-08): course/junior_knowledge.py::junior_syllabus 组织轴=46个
+      真实教材单元(用户明确纠正: 不套用高中course.syllabus的命题频次驱动方法论, 初中中考
+      数据太薄撑不起该逻辑); 默认n_lessons=None不压缩(1单元1节, 遵循'模块+数据+配置文件'
+      不硬编码, 可选传参走course.syllabus同款_adjust最大余数法压缩, Rule5第2消费者); 三轴
+      (语法/词汇/短语)lineage逐单元整合(grammar_occurrences 39条覆盖30单元 + unit_vocab_intro
+      947词覆盖46单元 + phrases 221条覆盖46单元), 只读聚合已有边不重算; content字段全为
+      null(Phase D就绪门前不生成内容); API /api/course/junior/syllabus 已注册+
+      endpoint_contracts已登记"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.course.junior_knowledge import junior_syllabus; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_syllabus(c); ok=(r['n_lessons']==46 and r['n_units_total']==46 and all(x.get('content') is None for x in [r]) and sum(l['vocab']['n_total'] for l in r['lessons'])==947 and '/api/course/junior/syllabus' in open('backend/api/routes/course.py').read() and '/api/course/junior/syllabus' in open('backend/config/endpoint_contracts.yaml').read()); print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}

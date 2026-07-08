@@ -31,6 +31,17 @@ def api_course_syllabus(qs: dict) -> dict:
         con.close()
 
 
+def api_course_junior_syllabus(qs: dict) -> dict:
+    """初中课程生成器 — 46个真实教材单元三轴lineage(语法+词汇+短语)+K12衔接+中考印证
+    (Phase E4, 与高中命题频次驱动方法论刻意不同, 见 course.junior_knowledge 模块docstring)。"""
+    from backend.services.course import junior_knowledge as jk
+    con = db_ro()
+    try:
+        return jk.junior_syllabus(con)
+    finally:
+        con.close()
+
+
 def api_course_list(qs: dict) -> dict:
     layer = (qs.get("layer", [None])[0] or "").strip()
     con = db_ro()
@@ -145,4 +156,5 @@ ROUTES = {
     "/api/course/quiz":     api_course_quiz,
     "/api/course/coverage": api_course_coverage,
     "/api/course/syllabus": api_course_syllabus,
+    "/api/course/junior/syllabus": api_course_junior_syllabus,
 }

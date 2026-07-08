@@ -94,3 +94,31 @@ def check_junior_vocab_unit(con: duckdb.DuckDBPyConnection, check) -> None:
     ).fetchone()[0]
     check("introduces_word边(初中) == unit_vocab_intro行数 (1:1覆盖, build_introduces_word"
           "已重跑纳入初中)", n_intro_edge == n_uvi, f"{n_intro_edge} vs {n_uvi}")
+
+
+def check_junior_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
+    """D0: 初中课程生成器 junior_syllabus (Phase E4, 2026-07-08).
+
+    组织轴=46真实教材单元(非命题频次, 用户明确纠正不套用高中syllabus.py那套), 默认
+    n_lessons=None不压缩(1单元1节); 三轴(语法/词汇/短语)lineage逐单元整合, 只读聚合
+    已有边(grammar_occurrences/unit_vocab_intro/phrases/deepens/tests_grammar/
+    tests_word), 不重算(Rule1)。
+    """
+    print("\n=== (53) 初中课程生成器 junior_syllabus (Phase E4) ===")
+    from backend.services.course.junior_knowledge import junior_syllabus
+    r = junior_syllabus(con)
+    check("默认不压缩: n_lessons == n_units_total == 46",
+          r["n_lessons"] == 46 and r["n_units_total"] == 46,
+          f"{r['n_lessons']} / {r['n_units_total']}")
+    lessons = r["lessons"]
+    check("每节课都有volume_key/unit_number(真实单元锚定, 非虚构)",
+          all("volume_key" in l and "unit_number" in l for l in lessons),
+          f"{sum(1 for l in lessons if 'volume_key' in l)}/{len(lessons)}")
+    n_with_grammar = sum(1 for l in lessons if l.get("grammar"))
+    check("覆盖语法lineage的课节数 == 30 (同check_junior_grammar_occurrences的30单元)",
+          n_with_grammar == 30, f"{n_with_grammar}")
+    total_vocab = sum(l["vocab"]["n_total"] for l in lessons)
+    check("全部课节词汇总数 == 947 (同unit_vocab_intro总行数, 无遗漏无重算)",
+          total_vocab == 947, f"{total_vocab}")
+    check("content 字段全为 None (Phase D 内容生成需就绪门, 本函数只搭框架)",
+          r.get("content") is None, f"{r.get('content')}")
