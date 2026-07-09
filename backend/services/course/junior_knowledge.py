@@ -18,6 +18,7 @@ import duckdb
 
 from backend.services.course.syllabus import _adjust
 from backend.services.thresholds import get_threshold
+from backend.services.vocab_pos import pos_distribution
 
 _VERSION = "hujiao"
 
@@ -80,7 +81,8 @@ def _vocab_for_unit(con: duckdb.DuckDBPyConnection, vol: str, unit: int) -> dict
                       "stage": stage_row[0].replace("stage:", "") if stage_row else None,
                       "zhongkao_exposure_count": zk_n})
     n_overrun = sum(1 for w in words if w["stage"] in ("高中必修", "高中选修", "校本超纲"))
-    return {"words": words, "n_total": len(words), "n_overrun": n_overrun}
+    return {"words": words, "n_total": len(words), "n_overrun": n_overrun,
+            "pos_distribution": pos_distribution(words)}
 
 
 def _phrases_for_unit(con: duckdb.DuckDBPyConnection, vol: str, unit: int) -> list[dict]:
@@ -147,6 +149,7 @@ def unit_content(con: duckdb.DuckDBPyConnection, vol: str, unit: int) -> dict:
         "knowledge": {
             "grammar": profile["grammar"], "vocab": profile["vocab"]["words"],
             "vocab_n": profile["vocab"]["n_total"], "vocab_n_overrun": profile["vocab"]["n_overrun"],
+            "vocab_pos_distribution": profile["vocab"]["pos_distribution"],
             "phrases": profile["phrases"],
         },
         "passages": passages, "passages_n": len(passages),

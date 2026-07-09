@@ -298,6 +298,7 @@ _LIB_CHECKS = [
     ("d0_lesson_plan_check", "check_lesson_plan"),
     ("d0_exam_status_check", "check_exam_status"),
     ("d0_textbook_sections_check", "check_textbook_sections"),
+    ("d0_textbook_sections_check", "check_textbook_unit_content"),
     ("d0_zhongkao_check", "check_zhongkao"),
     ("d0_zhongkao_check", "check_qbank_grammar_link"),
     ("d0_zhongkao_check", "check_k12_grammar_bridge"),

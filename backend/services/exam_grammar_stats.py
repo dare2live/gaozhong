@@ -30,10 +30,12 @@ def grammar_category_pct(con: duckdb.DuckDBPyConnection, era: str | None = None)
     """{课标第二级子类 label: 辽宁卷考查占比%} — 供教材单元视图给某语法点标"考察重点"用.
 
     坑(2026-07-04 全数据审计坑12): 教材单元教的是**当前**课标, "考察重点"该反映当前卷制
-    (era=scope.ERA_NEW, 2021+新高考II)而非默认混入历史(2015-2020旧课标II)数据——旧版不分era,
-    当前全部tests_grammar辽宁边恰好100%来自2015-2020(build_tests_grammar对2021+英文答案桩
-    文本关键词匹配结构性失效, 见坑同源修复), 却在前端标"真值"无era限定, 会让人误以为是当前卷制占比。
-    era=None(默认)=当前卷制; 当前era暂无覆盖时返回空dict(前端诚实展示"暂无考查数据", 不冒用历史占比)。
+    (era=scope.ERA_NEW, 2021+新高考II)而非默认混入历史(2015-2020旧课标II)数据。2026-07-09
+    全网挖掘补齐2024/2025/2026语法填空题真实教研解析后(此前analysis字段空/机器占位文本,
+    build_tests_grammar搜不到语法关键词无法建边), 2021+现有15条tests_grammar边(2024:4/
+    2025:5/2026:6), eras_missing已归零, 本函数从"诚实返回空dict"状态转为serve真实占比;
+    era=None(默认)=当前卷制; 未来若某卷制again无覆盖仍会诚实返回空dict(逻辑本身不变,
+    只是当前实际有数据了), 不冒用历史占比。
     单一计算点: 复用 grammar_exam_stats 已算的 by_era (不重跑聚合 SQL, Rule 1)。
     """
     era = era or scope.ERA_NEW
@@ -90,13 +92,14 @@ def _grammar_stats_note(eras_covered: list[str], eras_missing: list[str]) -> str
 def grammar_exam_stats(con: duckdb.DuckDBPyConnection) -> dict:
     """辽宁语法考查 按卷制 era 分层 + 课标第二级子类 + 频次热点 + 每类 top 考点 (考查真值).
 
-    坑(2026-07-04 全数据审计坑12分析诚实红线): 旧版不分 era 聚合全历史, 当前全部
-    tests_grammar 辽宁边 100% 来自 2015-2020 era(2021+ 因 build_tests_grammar 对英文
-    答案核验桩文本关键词匹配结构性失效而缺席), 前端却展示不限 era 的"真值"百分比,
-    与本项目其它维度(cognitive_skill/exam_point 分布)已有的 era 分层+缺口披露标准不一致。
-    按 scope.era_sql() 分 era 各自算 total/by_category; 顶层字段(total/by_category等)是
-    **跨全部有数据的era合并**参考量(当前=仅2015-2020, 故与该era切片数值相同), 要精确到
-    具体卷制请用 by_era[era]; eras_missing 诚实列出暂无覆盖的卷制, 不静默吞掉这个事实。
+    坑(2026-07-04 全数据审计坑12分析诚实红线): 旧版不分 era 聚合全历史, 前端却展示不限 era
+    的"真值"百分比, 与本项目其它维度(cognitive_skill/exam_point 分布)已有的 era 分层+
+    缺口披露标准不一致, 改按 scope.era_sql() 分 era 各自算。2026-07-09: 此前2021+因
+    build_tests_grammar对2024/2025/2026语法填空题的空/占位analysis文本关键词匹配结构性
+    缺席(2021/2022自身也是EOL答案核验占位文本, 非真解析, 已确认结构性天花板不追), 全网
+    挖掘补齐2024/2025/2026真实教研解析后2021+现有15条边, eras_missing已归零。顶层字段
+    (total/by_category等)是**跨全部有数据的era合并**参考量, 要精确到具体卷制请用
+    by_era[era]; eras_missing 诚实列出暂无覆盖的卷制(逻辑保留, 现为空列表), 不静默吞掉。
 
     口径 (D0 坑17): total/n_edges = tests_grammar∧辽宁 **边数** (一题可考多语法点, 频次口径);
     n_questions = COUNT(DISTINCT src_id) **去重题数** (题级口径)。两口径显式分离, 不混用。

@@ -4,6 +4,16 @@
 外研"Using language"英文主题); 经 backend/config/grammar_topic_map.yaml curated 映射到课标官方
 grammar_items (标准术语等价非估算)。不命中 (歧义交际指令如"Talk about your future plans") →
 **诚实跳过** (D0 返空>假推, 不强配)。单一计算点 (Rule 1): 从 sections+section_text 派生一次入表。
+
+⚠ 已知永久边界(2026-07-09覆盖率审计实证, 不是bug不要"修"): 课标taxonomy"一/词类"
+(名词/动词/形容词/副词/代词/数词/介词/连词/冠词/感叹词)+"二/构词法"两个分支, 本提取器
+永远是0覆盖——因为这两个分支的内容从不会以独立"Grammar kind"专题段形式出现在教材里
+(英语词类是隐性习得, 教材不会陈述"这是名词/这是介词")。调研过2条补救路径均已否决:
+① 从 unit_vocab_intro.pos 反推——会制造假分层(如"数词覆盖0%"看着像教材不重视数词,
+实际是自动词性标注工具对数词/代词/冠词标注覆盖率历史偏低, 是工具局限非教材特征);
+② 扫非Grammar段落找术语提及——教材里"noun/verb"几乎全部出现在题目操作指令里
+("Match the nouns"), 不是真实讲解, 抓取会误判。词性信息该走 backend/services/vocab_pos.py
+的独立"词性分布"视图(基于 unit_vocab_intro.pos), 不该塞进 grammar_occurrences 这个框架。
 """
 from __future__ import annotations
 

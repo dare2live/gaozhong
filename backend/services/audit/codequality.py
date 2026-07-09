@@ -67,7 +67,7 @@ def audit_code_complexity(_con: duckdb.DuckDBPyConnection) -> list[dict]:
                     note=f"OBS 工程指标 (M6 持续收紧); hotspots: {hi_funcs[:5]}" if hi_funcs else None)]
 
 
-SIZE_BIG_BASELINE = 22  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13. 2026-07-07 grammar_4q.py 修复子串误配坑31(精确匹配+从句族/前缀/枚举例外三分层)125→183行, 19→21. senior_knowledge.py 补初中短语基线+两层判断物理隔离 231→294行, 21→22.
+SIZE_BIG_BASELINE = 24  # 2026-06-15 拆 4 个 god-module 后, huge(>400)=0 即 Rule 8 已满足; 拆分自然产生更多 250-400 中型文件(big), 均合规. iron-law (huge>400=FAIL) 不变. 2026真题: cross_verify_pdf 加扫描图skip 249→255 (中型合规, 非god-module), baseline 12→13. 2026-07-07 grammar_4q.py 修复子串误配坑31(精确匹配+从句族/前缀/枚举例外三分层)125→183行, 19→21. senior_knowledge.py 补初中短语基线+两层判断物理隔离 231→294行, 21→22. 2026-07-09 全网挖掘补2024/2025/2026高考语法填空解析后: import_recent_exams.py新增_jsonl_field_map/_enrich_analysis(Rule5复用_row_contrib/_fmt_group, 参数化field非重写)217→257行新晋big; data_accuracy_check.py新增2条_LIB_CHECKS注册392→394行(注: 已接近400硬阈, 后续再涨需评估再抽lib), 22→24.
 # 2026-07-04 全数据审计12+21问题按根因修复: vocab_renjiao.py(Welcome Unit+专有名词头识别+
 # 跨行词条头合并 3 处真bug修复, 220→270行) + junior_high_curriculum.py(语法/词汇续行合并
 # 2 处真bug修复, 233→298行) 跨过250行门槛, huge 仍=0(均<400, 非god-module), baseline 13→15.

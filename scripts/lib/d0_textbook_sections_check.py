@@ -26,3 +26,30 @@ def check_textbook_sections(con: duckdb.DuckDBPyConnection, check) -> None:
         "OR raw_text LIKE '%参考答案%' OR raw_text ILIKE '%English glossary%'"
     ).fetchone()[0]
     check("section_text 无 back-matter 污染", n_pollute == 0, f"{n_pollute} 含书末锚点")
+
+
+def check_textbook_unit_content(con: duckdb.DuckDBPyConnection, check) -> None:
+    """D0: 高中单元内容直出 textbook_content.unit_content (基础库 textbook 页, 此前无D0覆盖).
+
+    2026-07-09覆盖率审计后补: /api/unit/content 此前只有 endpoint_contract_check 兜底
+    (不崩+required_keys存在), 无专门D0校验其output结构; 顺带补vocab_pos_distribution
+    (backend/services/vocab_pos.py, Rule5高中/初中共享helper)的结构闭合校验。
+    """
+    print("\n=== (55) 高中单元内容直出 unit_content (基础库 textbook 页) ===")
+    from backend.services.textbook_content import unit_content
+    r = unit_content(con, "waiyan", "bixiu_1", 1)
+    check("顶层结构闭合: version_key/volume_key/unit_number/knowledge/passages",
+          all(k in r for k in ("version_key", "volume_key", "unit_number", "knowledge", "passages")),
+          f"{sorted(r.keys())}")
+    k = r["knowledge"]
+    check("knowledge 五轴齐全: vocab/collocation/sentence_pattern/expression/grammar",
+          all(a in k for a in ("vocab", "collocation", "sentence_pattern", "expression", "grammar")),
+          f"{sorted(k.keys())}")
+    check("vocab_n 与 vocab 列表长度一致 (无重算)", k["vocab_n"] == len(k["vocab"]), f"{k['vocab_n']} vs {len(k['vocab'])}")
+    pd = k.get("vocab_pos_distribution")
+    check("vocab_pos_distribution 结构闭合(by_pos/n_tagged/n_untagged/caveat)",
+          isinstance(pd, dict) and all(kk in pd for kk in ("by_pos", "n_tagged", "n_untagged", "caveat")),
+          f"{sorted(pd.keys()) if isinstance(pd, dict) else pd}")
+    check("pos_distribution n_tagged+n_untagged == vocab_n (对账, 无漏词)",
+          isinstance(pd, dict) and pd["n_tagged"] + pd["n_untagged"] == k["vocab_n"],
+          f"{pd.get('n_tagged') if isinstance(pd, dict) else None}+{pd.get('n_untagged') if isinstance(pd, dict) else None} vs {k['vocab_n']}")

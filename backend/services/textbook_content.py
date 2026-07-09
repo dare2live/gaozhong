@@ -18,6 +18,7 @@ from backend.api.db import rows_to_dicts
 from backend.services.exam_grammar_stats import PHRASE_LIB_NOTE, grammar_category_pct
 from backend.services.extraction.example_text import clean_example as _clean_example
 from backend.services.trend import scope
+from backend.services.vocab_pos import pos_distribution
 
 
 def _vocab(con, v, vol, u):
@@ -114,7 +115,7 @@ def unit_content(con: duckdb.DuckDBPyConnection, version: str, volume: str, unit
     return {
         "version_key": version, "volume_key": volume, "unit_number": unit,
         "knowledge": {
-            "vocab": vocab, "vocab_n": len(vocab),
+            "vocab": vocab, "vocab_n": len(vocab), "vocab_pos_distribution": pos_distribution(vocab),
             "collocation": ph["collocation"], "sentence_pattern": ph["sentence_pattern"],
             "expression": ph["expression"], "phrase_note": PHRASE_LIB_NOTE,
             "grammar": grammar,

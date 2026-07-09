@@ -92,27 +92,35 @@ def _row_key(jqt, r) -> tuple | None:
     return _QT_MAP.get(jqt)
 
 
-def _row_contrib(r) -> tuple:
-    """单行 → (排序号, 答案串). 源数据异构: list 型(2024整段)保序拼并用 -1 标识整段串."""
-    ans = r["answer"]
-    if isinstance(ans, list):
-        return (-1, " ".join(str(x) for x in ans))
+def _row_contrib(r, field: str = "answer") -> tuple:
+    """单行 → (排序号, 字段值串). 源数据异构: list 型(2024整段)保序拼并用 -1 标识整段串.
+
+    field 参数化(2026-07-09 全网挖掘补analysis后, 第2消费者复用同一份聚合逻辑, Rule5:
+    analysis字段跟answer字段走一模一样的"逐题/整段"两形态聚合, 不重写一遍)。
+    """
+    val = r[field]
+    if isinstance(val, list):
+        return (-1, " ".join(str(x) for x in val))
     try:
         num = int(r.get("question_number") or 0)
     except (TypeError, ValueError):
         num = 0
-    return (num, str(ans))
+    return (num, str(val))
 
 
 def _fmt_group(v: list) -> str:
-    """组贡献 → 答案串: 逐题行按题号排 '1.C 2.B'; 整段 list 串(num=-1)直接用."""
+    """组贡献 → 字段串: 逐题行按题号排 '1.C 2.B'; 整段 list 串(num=-1)直接用."""
     if len(v) == 1 and v[0][0] == -1:
         return v[0][1]
     return " ".join(f"{n}.{a}" for n, a in sorted(v))
 
 
-def _jsonl_answer_map(year: int) -> dict:
-    """从 gaokao jsonl 聚合该年答案: (pdf_qtype, qnum) → 答案串 (2025逐题/2024整段两形态统一)."""
+def _jsonl_field_map(year: int, field: str = "answer") -> dict:
+    """从 gaokao jsonl 聚合该年某字段: (pdf_qtype, qnum) → 字段串 (2025逐题/2024整段两形态统一).
+
+    field="answer"(原_jsonl_answer_map) 或 field="analysis"(2026-07-09新增, 同一套聚合
+    逻辑复用, 不为analysis重写一遍groups/key/fmt——唯一差异是读哪个字段+按field判空)。
+    """
     import json
     from collections import defaultdict
     if not GAOKAO_SUBQ.exists():
@@ -122,21 +130,34 @@ def _jsonl_answer_map(year: int) -> dict:
         if not line.strip():
             continue
         r = json.loads(line)
-        if str(r.get("year")) != str(year) or not r.get("answer"):
+        if str(r.get("year")) != str(year) or not r.get(field):
             continue
         key = _row_key(r.get("question_type"), r)
         if key:
-            groups[key].append(_row_contrib(r))
+            groups[key].append(_row_contrib(r, field))
     return {k: _fmt_group(v) for k, v in groups.items()}
 
 
 def _enrich_answers(sections: list[dict], year: int) -> list[dict]:
     """用 gaokao jsonl 答案真相源填 PDF section 的 answer (原为空; D0 缺陷修复)."""
-    amap = _jsonl_answer_map(year)
+    amap = _jsonl_field_map(year, "answer")
     for s in sections:
         a = amap.get((s["question_type"], s["source_index"]))
         if a:
             s["answer"] = a
+    return sections
+
+
+def _enrich_analysis(sections: list[dict], year: int) -> list[dict]:
+    """用 gaokao jsonl 教研解析真相源填 PDF section 的 analysis (2026-07-09全网挖掘补齐
+    2024/2025语法填空解析后新增; 原为空导致 build_tests_grammar 搜不到语法关键词无法建边,
+    见 backend/services/links_extra.py 依赖analysis字段的既有逻辑, 不改那边只补数据源头)。
+    """
+    nmap = _jsonl_field_map(year, "analysis")
+    for s in sections:
+        a = nmap.get((s["question_type"], s["source_index"]))
+        if a:
+            s["analysis"] = a
     return sections
 
 
@@ -208,7 +229,7 @@ def import_pdfs(con) -> dict:
             # 非有效 PDF (HTML 伪装/损坏) → 诚实跳过, 不静默吞 (§1.5), 不崩流程
             print(f"  SKIP {year}: {e}")
             continue
-        qs = _enrich_answers(parse_exam_sections(text, year), year)
+        qs = _enrich_analysis(_enrich_answers(parse_exam_sections(text, year), year), year)
         if not _policy_check(qs, year, block_if):
             verify_ok = False
         n = import_to_db(qs, con)

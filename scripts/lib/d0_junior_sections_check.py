@@ -149,3 +149,8 @@ def check_junior_unit_content(con: duckdb.DuckDBPyConnection, check) -> None:
     total_vocab = sum(unit_content(con, v, u)["knowledge"]["vocab_n"] for v, u, _ in units)
     check("遍历46单元vocab_n总和 == 947 (同check_junior_vocab_unit已验证的unit_vocab_intro总行数)",
           total_vocab == 947, f"{total_vocab}")
+    # 2026-07-09覆盖率审计后新增: 词性分布(backend/services/vocab_pos.py, Rule5高中/初中共享helper)
+    pd = k.get("vocab_pos_distribution")
+    check("vocab_pos_distribution 结构闭合(by_pos/n_tagged/n_untagged/caveat)",
+          isinstance(pd, dict) and all(kk in pd for kk in ("by_pos", "n_tagged", "n_untagged", "caveat")),
+          f"{sorted(pd.keys()) if isinstance(pd, dict) else pd}")
