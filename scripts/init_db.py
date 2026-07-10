@@ -205,6 +205,8 @@ def main() -> None:
     from backend.services.exam_point import (load_exam_points, bridge_exam_point_themes,
                                              load_cognitive_skill)
     print(f"  {load_exam_points(con)}")
+    from backend.services.exam_point.genre_truth import upgrade_cross_verified
+    print(f"  genre analysis 交叉验证升档(cross_verified, 坑16): {upgrade_cross_verified(con)}")
     print(f"  桥接考点主题↔教材主题(4路追溯): {bridge_exam_point_themes(con)}")
     print(f"  设问类型金矿(KG-A1, 子题级explicit_label+血缘): {load_cognitive_skill(con)}")
     from backend.services.exam_point import materialize_cooccurrence

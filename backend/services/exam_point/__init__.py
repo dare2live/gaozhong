@@ -11,3 +11,5 @@ from .attribution import joint_attribution_by_passage, cloze_answer_word_stage
 from .senior_knowledge import (grammar_structural_coverage, phrase_pattern_exam_relevance,
                                cloze_collocation_structural_subset)
 from .k12_bridge import junior_senior_grammar_bridge
+
+from .genre_truth import analysis_genre_crosscheck, upgrade_cross_verified

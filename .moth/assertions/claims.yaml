@@ -273,9 +273,9 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_distribution as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c);c.close();tot=d['n_total'];g=lambda k:next((p['pct'] for e,pts in d['by_era'].items() if e.startswith(k) for p in pts if p['label']=='推断'),0);print('OK' if tot==115 and g('2021')>g('2015-2020')>0 else f'FAIL tot={tot} old={g(\"2015-2020\")} new={g(\"2021\")}')"]
     expect: {op: regex, pattern: "OK"}
   - id: cognitive-skill-by-content-cross
-    claim: "设问技能×题材交叉(2015-20截面): join命中75(genre)/'question:'||passage_label对齐, era锁2015-20(2021+桥缺失不出迁移), 异质provenance分层(技能=explicit_label真值/题材=dual_model_agree模型推断非真值交叉); 结构真值=应用文100%理解具体信息(0推断)/说明文最考推断; 2026-07-06新增理解目的边落记叙文(不影响应用文格)"
+    claim: "设问技能×题材交叉(2015-20截面): join命中79(genre, 2026-07-10 cross_verified扩核); era锁2015-20; 异质provenance分层; 应用文100%理解具体信息"
     type: shell
-    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_by_content as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c,'genre');c.close();yw=d['by_content'].get('应用文',{}).get('skills',[]);top=yw[0]['label'] if yw else '?';ok=d['n_matched']==75 and d['era']=='2015-2020_旧课标II' and 'dual_model_agree' in d['content_provenance'] and top=='理解具体信息' and len(yw)==1;print('OK' if ok else f'FAIL match={d[\"n_matched\"]} era={d[\"era\"]} 应用文top={top}')"]
+    command: ["python3", "-c", "import duckdb;from backend.services.exam_point import cognitive_skill_by_content as f;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=f(c,'genre');c.close();yw=d['by_content'].get('应用文',{}).get('skills',[]);top=yw[0]['label'] if yw else '?';ok=d['n_matched']==79 and d['era']=='2015-2020_旧课标II' and 'dual_model_agree' in d['content_provenance'] and top=='理解具体信息' and len(yw)==1;print('OK' if ok else f'FAIL match={d[\"n_matched\"]} era={d[\"era\"]} 应用文top={top}')"]
     expect: {op: regex, pattern: "OK"}
   - id: joint-attribution-word-skill
     claim: "语篇级联合归因(2026-07-06方法论落地, attribution.py): 词汇学段×设问思维对齐24篇语篇(2015-20, cognitive_skill∩tests_word交集), 语法维度已实测排除(question_type不相交, 不返回grammar_cefr_mix字段防误导); 每篇foundation+senior+unclassified≈100%自洽; 推断题主导语篇(n=6)平均高中新词占比11.5%, 理解具体信息主导语篇(n=16)平均12.3% — 未见推断题语篇词汇显著更难, 支持'推断是独立于词汇的技能维度'"
@@ -314,11 +314,18 @@ assertions:
     query: "SELECT count(*) FROM phrases WHERE phrase_type='sentence_pattern' AND (regexp_matches(evidence, '\\bsuch\\s+\\w+\\s+as\\b') OR regexp_matches(evidence, '\\bso that\\b'))"
     expect: {op: "==", value: 0}
   - id: exam-point-trusted-provenance
-    claim: "考点边 provenance ∈ {dual_model_agree(genre/theme双模型一致), explicit_label(cognitive_skill教研解析显式标签)} — 无弱provenance, 不冒充人工核验; explicit_label 强于双模型 (A1金矿)"
+    claim: "考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified} — cross_verified=analysis显式体裁句交叉验证升档(坑16); 无弱provenance"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') NOT IN ('dual_model_agree', 'explicit_label')"
+    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') NOT IN ('dual_model_agree', 'explicit_label', 'cross_verified')"
     expect: {op: "==", value: 0}
+
+  - id: genre-truth-cross-verified
+    claim: "坑16 genre analysis 交叉验证: 显式体裁句≥15、0 conflict、cross_verified≥15 (升档单点 genre_truth.upgrade_cross_verified)"
+    type: shell
+    command: ["python3", "-c", "from backend.services.exam_point.genre_truth import analysis_genre_crosscheck; import duckdb; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=analysis_genre_crosscheck(c); c.close(); ok=r['n_conflict']==0 and r['n_analysis_explicit']>=15 and r['n_cross_verified_edges']>=15; print('OK' if ok else f'FAIL {r}')"]
+    expect: {op: regex, pattern: "OK"}
+
   - id: exam-point-no-orphan-edge
     claim: "考点边 src 必为真实 question 节点 (无悬挂; Rule 3 edges 一等公民)"
     type: duckdb_sql

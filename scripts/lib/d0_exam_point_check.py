@@ -23,9 +23,9 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     check("考点边两端有效 (无悬挂)", bad_ep == 0, f"{bad_ep} 悬挂")
     bad_prov = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
-        "AND json_extract_string(evidence_json,'$.provenance') NOT IN ('dual_model_agree','explicit_label')"
+        "AND json_extract_string(evidence_json,'$.provenance') NOT IN ('dual_model_agree','explicit_label','cross_verified')"
     ).fetchone()[0]
-    check("考点边 provenance ∈ {dual_model_agree, explicit_label} (无弱provenance; cognitive_skill=教研显式标签)",
+    check("考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified} (无弱provenance; 坑16)",
           bad_prov == 0, f"{bad_prov} 弱provenance")
     bad_ta = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='theme_aligns' AND ("
@@ -39,6 +39,7 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_evidence_json_valid(con, check)
     _check_grammar_qtype(con, check)
     _check_grammar_coverage_floor(con, check)
+    check_genre_truth(con, check)
 
 
 def _check_grammar_coverage_floor(con: duckdb.DuckDBPyConnection, check) -> None:
@@ -242,3 +243,12 @@ def check_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_syl_segments(con, lessons, check)
     _check_syl_alloc(con, lessons, check)
     _check_syl_homework(con, lessons, check)
+
+
+def check_genre_truth(con: duckdb.DuckDBPyConnection, check) -> None:
+    """坑16: analysis 显式体裁句交叉验证 + cross_verified 升档地板."""
+    from backend.services.exam_point.genre_truth import analysis_genre_crosscheck
+    r = analysis_genre_crosscheck(con)
+    check("genre analysis 交叉验证 0 conflict", r["n_conflict"] == 0, f"conflict={r['n_conflict']} samples={r['conflict_samples'][:2]}")
+    check("genre analysis 显式体裁句 ≥15", r["n_analysis_explicit"] >= 15, f"{r['n_analysis_explicit']}")
+    check("genre cross_verified 边 ≥15 (analysis 一致升档)", r["n_cross_verified_edges"] >= 15, f"{r['n_cross_verified_edges']}")

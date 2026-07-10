@@ -23,6 +23,6 @@ cognitive_skill:
   require_all_explicit_label: true
 
 genre_truth:
-  min_analysis_agree: 5
+  min_analysis_agree: 15
   max_analysis_conflict: 0
-  min_cross_verified_edges: 0
+  min_cross_verified_edges: 15

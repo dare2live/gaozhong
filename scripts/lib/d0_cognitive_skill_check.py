@@ -99,7 +99,7 @@ def check_cognitive_cross(con: duckdb.DuckDBPyConnection, check) -> None:
     g, t = cognitive_skill_by_content(con, "genre"), cognitive_skill_by_content(con, "theme_l2")
 
     # join 对齐防回归: passage_label 前缀对齐断了 → n_matched 静默掉 0 (违 D0); 锁命中数
-    check("技能×题材 join 命中 == 75 ('question:'||passage_label 对齐, 防前缀回归静默漏行)",
+    check("技能×题材 join 命中 == 79 ('question:'||passage_label 对齐, 防前缀回归静默漏行)",
           g["n_matched"] == B('cog_cross_genre'), f"{g['n_matched']}")
     check("技能×主题群 join 命中 == 76 (11miss=有theme无genre真缺口)",
           t["n_matched"] == B('cog_cross_theme_l2'), f"{t['n_matched']}")

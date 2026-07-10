@@ -1,10 +1,12 @@
-"""Genre/theme 第一手交叉验证 (坑16 GenreTruthChecker MVP).
+"""Genre/theme 第一手交叉验证 (坑16 GenreTruthChecker).
 
-只读审计 + 统计; 不修改 edges (派生升级走 init_db loader 单点, 后续 Sprint)。
-真相源优先级: exam_questions.analysis 显式体裁句 > dual_model artifact evidence (方向性, 非本函数核验)。
+真相源优先级: exam_questions.analysis 显式体裁句 > dual_model artifact (方向性)。
+- analysis_genre_crosscheck: 只读审计
+- upgrade_cross_verified: 一致边 provenance 升为 cross_verified (init_db 单点调用)
 """
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -13,12 +15,17 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
 _GATE_CFG = ROOT / "backend" / "config" / "l3_readiness_gate.yaml"
-_GENRES = ("记叙文", "说明文", "议论文", "应用文", "新闻报道", "夹叙夹议", "书评介绍")
+_GENRES = ("记叙文", "说明文", "议论文", "应用文", "新闻报道", "夹叙夹议文", "夹叙夹议", "书评介绍")
+# 覆盖: 这是一篇X / 本文是一篇X / 本文是X / 本文为X / 文章为X / 体裁为X
 _EXPLICIT_RE = re.compile(
-    r"(?:这是一篇|本文是|文章为|体裁[为是：:]|文体[为是：:])\s*("
+    r"(?:这是一篇|本文是一篇|本文是|本文为|文章为|体裁[为是：:]|文体[为是：:])\s*("
     + "|".join(re.escape(g) for g in _GENRES)
     + r")"
 )
+_ANALYSIS_GENRE_ALIASES: dict[str, frozenset[str]] = {
+    "夹叙夹议": frozenset({"记叙文", "议论文"}),
+    "夹叙夹议文": frozenset({"记叙文", "议论文"}),
+}
 
 
 def _load_gate_cfg() -> dict:
@@ -31,21 +38,15 @@ def _normalize_genre(label: str) -> str:
     return (label or "").split("|")[0].strip()
 
 
-def _genre_edge_label(con: duckdb.DuckDBPyConnection, question_id: str) -> str | None:
+def _genre_edge(con: duckdb.DuckDBPyConnection, question_id: str) -> tuple[str, str] | None:
+    """返回 (edge_genre_label, evidence_json) 或 None."""
     row = con.execute(
-        "SELECT SUBSTR(e.dst_id, LENGTH('exam_point:genre:') + 1) "
+        "SELECT SUBSTR(e.dst_id, LENGTH('exam_point:genre:') + 1), e.evidence_json "
         "FROM edges e WHERE e.src_id = ? AND e.relation = 'tests_exam_point' "
         "AND json_extract_string(e.evidence_json, '$.dimension') = 'genre'",
         [f"question:{question_id}"],
     ).fetchone()
-    return row[0] if row else None
-
-
-# 教研解析体裁名 → 可视为一致的 canonical 边标签 (课标无「夹叙夹议」项, 归记叙/议论)
-_ANALYSIS_GENRE_ALIASES: dict[str, frozenset[str]] = {
-    "夹叙夹议": frozenset({"记叙文", "议论文"}),
-    "夹叙夹议文": frozenset({"记叙文", "议论文"}),
-}
+    return (row[0], row[1] or "{}") if row else None
 
 
 def _labels_agree(analysis_genre: str, edge_genre: str) -> bool:
@@ -54,6 +55,25 @@ def _labels_agree(analysis_genre: str, edge_genre: str) -> bool:
         return True
     alts = _ANALYSIS_GENRE_ALIASES.get(a) or _ANALYSIS_GENRE_ALIASES.get(analysis_genre)
     return bool(alts and e in alts)
+
+
+def _iter_analysis_agreements(con: duckdb.DuckDBPyConnection):
+    """yield (qid, analysis_genre, edge_genre, evidence_json) for agreeing pairs."""
+    rows = con.execute(
+        "SELECT question_id, analysis FROM exam_questions "
+        "WHERE province LIKE '辽宁%' AND analysis IS NOT NULL AND TRIM(analysis) <> ''"
+    ).fetchall()
+    for qid, analysis in rows:
+        m = _EXPLICIT_RE.search(analysis or "")
+        if not m:
+            continue
+        explicit = m.group(1)
+        edge = _genre_edge(con, qid)
+        if edge is None:
+            continue
+        edge_g, ev = edge
+        if _labels_agree(explicit, edge_g):
+            yield qid, explicit, edge_g, ev
 
 
 def analysis_genre_crosscheck(con: duckdb.DuckDBPyConnection) -> dict:
@@ -70,10 +90,11 @@ def analysis_genre_crosscheck(con: duckdb.DuckDBPyConnection) -> dict:
             continue
         n_explicit += 1
         explicit = m.group(1)
-        edge_g = _genre_edge_label(con, qid)
-        if edge_g is None:
+        edge = _genre_edge(con, qid)
+        if edge is None:
             no_edge += 1
             continue
+        edge_g, _ = edge
         row = {"question_id": qid, "analysis_genre": explicit, "edge_genre": edge_g}
         if _labels_agree(explicit, edge_g):
             agree += 1
@@ -83,8 +104,7 @@ def analysis_genre_crosscheck(con: duckdb.DuckDBPyConnection) -> dict:
                 samples.append(row)
     n_cross = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation = 'tests_exam_point' "
-        "AND json_extract_string(evidence_json, '$.dimension') IN "
-        "('genre', 'theme_context', 'theme_l2') "
+        "AND json_extract_string(evidence_json, '$.dimension') = 'genre' "
         "AND json_extract_string(evidence_json, '$.provenance') = 'cross_verified'"
     ).fetchone()[0]
     cfg = _load_gate_cfg().get("genre_truth", {})
@@ -106,5 +126,29 @@ def analysis_genre_crosscheck(con: duckdb.DuckDBPyConnection) -> dict:
             "min_cross_verified_edges": min_cross_edges,
         },
         "pass": ok,
-        "note": "genre/theme 仍主要靠 dual_model; 本审计仅覆盖 analysis 显式体裁句子集",
+        "note": "genre 仍多数 dual_model; cross_verified 仅 analysis 显式体裁句一致子集",
     }
+
+
+def upgrade_cross_verified(con: duckdb.DuckDBPyConnection) -> dict:
+    """将 analysis↔genre 一致的边 provenance 升为 cross_verified (坑16 写路径单点)."""
+    upgraded = skipped = 0
+    for qid, analysis_g, edge_g, ev_raw in _iter_analysis_agreements(con):
+        try:
+            ev = json.loads(ev_raw) if ev_raw else {}
+        except json.JSONDecodeError:
+            ev = {"dimension": "genre"}
+        if ev.get("provenance") == "cross_verified":
+            skipped += 1
+            continue
+        ev["provenance"] = "cross_verified"
+        ev["truth_source"] = "exam_questions.analysis_explicit_genre"
+        ev["analysis_genre"] = analysis_g
+        ev["prior_provenance"] = ev.get("prior_provenance") or "dual_model_agree"
+        con.execute(
+            "UPDATE edges SET evidence_json = ? WHERE src_id = ? AND relation = 'tests_exam_point' "
+            "AND json_extract_string(evidence_json, '$.dimension') = 'genre'",
+            [json.dumps(ev, ensure_ascii=False), f"question:{qid}"],
+        )
+        upgraded += 1
+    return {"upgraded": upgraded, "already_cross_verified": skipped}

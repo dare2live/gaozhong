@@ -2,8 +2,8 @@
 
 来源: data/structured/exam_point/genre_theme_labels.jsonl (双模型分类, 一致=dual_model_agree)。
 诚实红线:
-  - **只落 dual_model_agree 且非 NA** 的边 (歧义 needs_review / 无正文 NA 不入 canonical 分布,
-    宁缺毋滥); provenance 入 edges.evidence_json, 趋势/分布消费方据此知"这是双模型一致, 非人工核验"。
+  - **只落 dual_model_agree / cross_verified 且非 NA** 的边 (歧义 needs_review / 无正文 NA 不入,
+    宁缺毋滥); cross_verified=analysis 显式体裁句交叉验证升档(坑16)。
   - 节点**懒建**: 只为实际出现的考点 label 建 exam_point 节点, 避免 taxonomy 全集造 orphan。
 取代 tests_word 把整篇实词当"考点"的 token 假象 (critic 盲点 #2)。
 """
@@ -52,10 +52,10 @@ def ensure_point_node(con: duckdb.DuckDBPyConnection, dimension: str, label: str
 
 def add_point_edge(con: duckdb.DuckDBPyConnection, qnode: str, dimension: str,
                     label, prov, cue) -> tuple[int, int, int]:
-    """落一条 question→exam_point 边 (只 dual_model_agree 非 NA). 返回 (nodes+, edges+, skipped)."""
+    """落一条 question→exam_point 边 (dual_model_agree / cross_verified, 非 NA). 返回 (nodes+, edges+, skipped)."""
     if label == "NA" or not label:
         return (0, 0, 0)
-    if prov != "dual_model_agree":
+    if prov not in ("dual_model_agree", "cross_verified"):
         return (0, 0, 1)
     nm = int(ensure_point_node(con, dimension, label))
     pnode = point_node_id(dimension, label)
