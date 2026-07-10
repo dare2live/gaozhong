@@ -39,9 +39,9 @@ OUT_DIR = ROOT / "data/external/gaokao_bench"
 
 # local_pdf 是这些年辽宁卷的**权威源**(更全: 含应用文/续写/语法填空分项); GAOKAO-Bench(-Updates)
 # 的同年辽宁记录是**同一份卷的重复采集**(强验证 wf_9d0ef21a B1: 2024 四篇阅读逐字相同), 让位 superseded。
-# 真相源 = scripts/import_recent_exams._local_pdf_sources() / sources.yaml(family=exam_truth_source_local_pdf);
-# 此处常量与之对账(local_pdf 仅 2024/2025; gbu 最高到 2024 → 实际仅 2024 有重复, 2025 为前瞻 guard)。
-LOCAL_PDF_LIAONING_YEARS = (2024, 2025)
+# 真相源 = sources.yaml(family=exam_truth_source_local_pdf) + 2026 jhgk 专用 importer;
+# 此处常量 = GAOKAO-Bench mirror 让位年份(权威源已入库的辽宁年)。
+LOCAL_PDF_LIAONING_YEARS = (2024, 2025, 2026)
 
 # 兼容 re-export (上述 import 已引入 classify_paper / infer_question_type / iter_examples /
 # LN_II_* / 路径常量); 下面只补 infer_province 这个仅 province 的 compat wrapper.

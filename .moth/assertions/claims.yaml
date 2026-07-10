@@ -109,7 +109,7 @@ assertions:
     command: ["grep", "-c", "english_stopwords", "backend/config/stopwords.yaml"]
     expect: {op: ">=", value: 1}
   - id: year-weights-matches-constitution
-    claim: "year_weights.yaml 操作型权重 == 宪法铁律P1字面 {2025:5..2021:1.5} (G1 去硬编码: 5副本收口单点; verify-the-verifier 坑1+接孤儿门进门2 坑21)"
+    claim: "year_weights.yaml 操作型权重 == 铁律字面 {2026:5..2022:1.5} (G1 去硬编码; 2026入库后滚动)"
     type: shell
     command: ["python3", "-c", "from scripts.tools.audit.model_capability_audit import _check_weight_compliance as c; print(len(c()['mismatches']))"]
     expect: {op: "==", value: "0"}
@@ -331,6 +331,13 @@ assertions:
     claim: "真题年入库预检脚本存在且对已入库年(2025)无 BLOCK (摩擦可见化, Occam 不重构 init_db)"
     type: shell
     command: ["python3", "scripts/tools/audit/exam_year_readiness.py", "--year", "2025"]
+    expect: {op: regex, pattern: "无 BLOCK"}
+
+
+  - id: exam-year-readiness-2026
+    claim: "2026 真题年入库预检 0 BLOCK 0 WARN (契约/权重/LOCAL_PDF_LIAONING_YEARS 已滚动对齐)"
+    type: shell
+    command: ["python3", "scripts/tools/audit/exam_year_readiness.py", "--year", "2026", "--strict"]
     expect: {op: regex, pattern: "无 BLOCK"}
 
   - id: exam-point-no-orphan-edge

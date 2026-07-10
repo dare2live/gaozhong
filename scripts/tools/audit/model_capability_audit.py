@@ -21,11 +21,9 @@ import duckdb
 
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 # 独立宪法镜像 (verify-the-verifier, 坑1): **故意保留字面量**, 镜像铁律 P1 散文原文
-# "2025(权重5)>2024(4)>2023(3)>2022(2)>2021(1.5)>旧(0.5)"(原载 backend/services/constitution.py,
-# 2026-07-04 死代码审计已删该模块 — 铁律字面量本就该独立于操作代码存在, 迁移不影响本对账门)。
+# "2026(权重5)>2025(4)>2024(3)>2023(2)>2022(1.5)>旧(0.5)" — 2026 入库后滚动(与 year_weights.yaml 注释一致)。
 # 不从 year_weights.yaml 取 — 否则审计变成 yaml↔yaml 自比恒真, 抓不住"yaml 偏离铁律"。
-# 此审计 (_check_weight_compliance) = 操作型 yaml 与本铁律字面对账门。
-CONSTITUTION_WEIGHTS = {2025: 5, 2024: 4, 2023: 3, 2022: 2, 2021: 1.5}
+CONSTITUTION_WEIGHTS = {2026: 5, 2025: 4, 2024: 3, 2023: 2, 2022: 1.5}
 
 
 def audit(con: duckdb.DuckDBPyConnection) -> dict:
@@ -51,13 +49,13 @@ def _check_data_completeness(con) -> dict:
     years_in_db = {r[0] for r in con.execute(
         "SELECT DISTINCT year FROM exam_questions WHERE year >= 2021"
     ).fetchall()}
-    required = {2021, 2022, 2023, 2024, 2025}
+    required = {2022, 2023, 2024, 2025, 2026}
     missing = required - years_in_db
     missing_weight = sum(CONSTITUTION_WEIGHTS.get(y, 0) for y in missing)
     total_weight = sum(CONSTITUTION_WEIGHTS.values())
     score = 100 * (1 - missing_weight / total_weight)
     return {
-        "name": "数据完整度 (2021-2025)",
+        "name": "数据完整度 (近年加权窗)",
         "score": round(score, 1),
         "pass": len(missing) == 0,
         "years_present": sorted(years_in_db),
@@ -227,7 +225,7 @@ def _check_cross_validation(con) -> dict:
     only_bench = set(bench_d) - set(pdf_d)
     only_pdf = set(pdf_d) - set(bench_d)
     all_years_covered = set(bench_d) | set(pdf_d)
-    target = {2021, 2022, 2023, 2024, 2025}
+    target = {2022, 2023, 2024, 2025, 2026}
     coverage = len(all_years_covered & target) / len(target)
     has_both = len({k for k in bench_d}) > 0 and len({k for k in pdf_d}) > 0
     score = round(coverage * 100) if has_both else (60 if coverage >= 0.6 else 30)

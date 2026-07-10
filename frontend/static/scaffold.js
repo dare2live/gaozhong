@@ -141,7 +141,9 @@
   function _phraseCard(te) {
     if (!te || !te.by_group) return "";
     const chips = te.by_group.map(g => `<span class="tk-tchip">${esc(g.group)} <b>${g.n}</b></span>`).join("");
-    return `${chips}<span class="tk-tchip" style="border-style:dashed">合计 <b>${te.total}</b></span>`;
+    // 坑16/出现≠考查: note 必显, 防把教材短语库读成"高考考查频次"
+    const note = te.note ? `<p class="kb-dim" style="margin-top:8px;">${esc(te.note)}</p>` : "";
+    return `${chips}<span class="tk-tchip" style="border-style:dashed">合计 <b>${te.total}</b></span>${note}`;
   }
 
   // 2026-07-07: 得分点词学段分布(cloze_answer_word_stage) — 回应"得分点是不是靠高中词汇"的字面版本

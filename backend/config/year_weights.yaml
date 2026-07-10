@@ -1,11 +1,11 @@
 # 命题近年加权 — 操作型单点真相源 (去硬编码 backlog G1)
 #
 # 铁律 P1 §1.2 原文(见 scripts/tools/audit/model_capability_audit.py 顶部 CONSTITUTION_WEIGHTS 字面量):
-#   "2025(权重5)>2024(4)>2023(3)>2022(2)>2021(1.5)>旧(0.5). 趋势/频次/模板全部加权."
+#   "2026(权重5)>2025(4)>2024(3)>2023(2)>2022(1.5)>旧(0.5). 趋势/频次/模板全部加权."
 # 近年真题权重递增: 趋势/频次/模板分析全部按此加权 (近年命题信号 > 历史存量)。
 #
 # 每年6月滚动: 新真题入库 → 新年份加最高权重, 旧年份顺延降权。
-#   例 2026 真题入库后: 2026→5, 2025→4, 2024→3, 2023→2, 2022→1.5, 其余→default。
+#   现行(2026已入库): 2026→5, 2025→4, 2024→3, 2023→2, 2022→1.5, 其余→default。
 # 改权重改此文件, 不动代码 (4 个消费者 import 读取 backend/services/year_weights.py:
 #   trend_engine / milestone_b_rebuild / exam_pattern_extractor; model_capability_audit
 #   保留独立字面量做 yaml↔铁律对账, 见该文件注释)。
@@ -13,10 +13,10 @@
 #   死代码审计确认 check_compliance/enforce_before_generation 0 wired 并整体删除)一并声明; 读取函数
 #   已独立拆到 backend/services/year_weights.py, 不受该次删除影响。
 weights:
-  2025: 5
-  2024: 4
-  2023: 3
-  2022: 2
-  2021: 1.5
+  2026: 5
+  2025: 4
+  2024: 3
+  2023: 2
+  2022: 1.5
 # 未列年份 (2021 前旧课标自主命题期) 兜底权重
 default: 0.5

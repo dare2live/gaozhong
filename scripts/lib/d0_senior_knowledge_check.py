@@ -51,6 +51,9 @@ def check_phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection, check) -
           f"{sum(d['matched_by_stage'].values())} vs {d['n_matched_in_exam_text']}")
     check("caveat 含'出现非考查'诚实披露(复用既有PHRASE_LIB_NOTE)",
           "出现非考查" in d["caveat"] or "出现≠考查" in d["caveat"], "")
+    n_tp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_phrase'").fetchone()[0]
+    check("无 tests_phrase 边 (短语级真题考查未建; introduces_phrase=教材出现, 防冒充考查)",
+          n_tp == 0, f"{n_tp}")
 
 
 def check_cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection, check) -> None:
