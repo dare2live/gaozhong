@@ -64,7 +64,7 @@
 
 {"question_id": "gb/2010-2022_English_Fill_in_Blanks/21", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "Ehlers 长途寻回路边走失的狗 Rosie 并联系失主 Jeff/Lisa 团聚, 是带人物与情节的叙事", "source": "dual_model_classify_20260615"}
 
-{"question_id": "gb/2010-2022_English_Reading_Comp/88", "genre": "书评介绍", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "'My Favourite Books'逐本介绍 Matilda/After Dark/Gone Girl/The Stand, 属图书推荐介绍, 话题为文学作品", "source": "dual_model_classify_20260615"}
+{"question_id": "gb/2010-2022_English_Reading_Comp/88", "genre": "说明文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "'My Favourite Books'逐本介绍 Matilda/After Dark/Gone Girl/The Stand, 属图书推荐介绍, 话题为文学作品", "source": "dual_model_classify_20260615"}
 
 {"question_id": "gb/2010-2022_English_Reading_Comp/89", "genre": "记叙文|议论文", "genre_prov": "needs_review", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "第一人称叙述劝说不情愿的家长为孩子曲棍球俱乐部做志愿者, 话题为社区志愿服务", "source": "dual_model_classify_20260615"}
 
@@ -90,7 +90,7 @@
 
 {"question_id": "gb/2012-2022_English_Cloze_Test/20", "genre": "说明文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "Emoji and Workplace Communication 说明表情符号改善职场沟通, 社会人际/科技应用", "source": "dual_model_classify_20260615"}
 
-{"question_id": "gb/2012-2022_English_Language_Error_Correction/20", "genre": "应用文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "'Thank you for your letter' 书信体, 朋友来华学 kung fu 的人际往来与文化", "source": "dual_model_classify_20260615"}
+{"question_id": "gb/2012-2022_English_Language_Error_Correction/20", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "'Thank you for your letter' 书信体, 朋友来华学 kung fu 的人际往来与文化", "source": "dual_model_classify_20260615"}
 
 {"question_id": "gb/2014-2022_English_Language_Cloze_Passage/17", "genre": "说明文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "Decorating...for Chinese New Year 说明春节植物花果的象征寓意, 传统节日文化", "source": "dual_model_classify_20260615"}
 
@@ -338,7 +338,7 @@
 
 {"question_id": "gbu24/2024_English_Reading_Comp/9", "genre": "新闻报道", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "报道 BART 地铁短篇故事 kiosk 项目, 引用 chief communications officer 受访话", "source": "dual_model_classify_20260615"}
 
-{"question_id": "pdf/2024/xgkii/完形填空(七选五/语篇)/36", "genre": "议论文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "'Overtourism Is For Real: How Can You Help?' 提 tips 劝读者明智旅行减压", "source": "dual_model_classify_20260615"}
+{"question_id": "pdf/2024/xgkii/完形填空(七选五/语篇)/36", "genre": "说明文", "genre_prov": "dual_model_agree", "theme": "人与社会", "theme_prov": "dual_model_agree", "evidence": "'Overtourism Is For Real: How Can You Help?' 提 tips 劝读者明智旅行减压", "source": "dual_model_classify_20260615"}
 
 {"question_id": "pdf/2024/xgkii/完形填空/41", "genre": "记叙文", "genre_prov": "dual_model_agree", "theme": "人与自我", "theme_prov": "dual_model_agree", "evidence": "'I decided to buy a house in Europe' 第一人称叙述在意大利定居的经历", "source": "dual_model_classify_20260615"}
 

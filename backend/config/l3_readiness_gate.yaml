@@ -1,0 +1,28 @@
+# L3 就绪门机器契约 (北极星 product_master_plan §5).
+# 读: scripts/tools/audit/l3_readiness_gate.py + backend/services/exam_point/genre_truth.py
+# exit 0 = 允许 Phase D 内容生成; exit 1 = 仍有硬阻塞项.
+
+high_school_versions: [waiyan, renjiao]
+
+textbook:
+  units_expected:
+    waiyan: 42
+    renjiao: 36
+  require_section_text_1to1: true
+  require_unit_vocab_all_units: true
+
+k12_word_stage:
+  max_unclassified_pct: 30.0
+  require_foundation_gt_senior: true
+
+coverage:
+  required_axes: [genre, theme_l2, word, grammar]
+  min_high_yield_n: 1
+
+cognitive_skill:
+  require_all_explicit_label: true
+
+genre_truth:
+  min_analysis_agree: 5
+  max_analysis_conflict: 0
+  min_cross_verified_edges: 0

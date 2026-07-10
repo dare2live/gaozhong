@@ -100,11 +100,13 @@ def cmd_doctor(args) -> bool:
     drift = collect.collect_drift()
     gates = collect.collect_gates()
     stats = collect.collect_stats()
+    readiness = collect.collect_readiness_gate()
     if args.json:
         print(json.dumps({"arch_audit": arch, "drift": drift,
-                          "gate_count": len(gates), "stats": stats},
+                          "gate_count": len(gates), "stats": stats,
+                          "readiness_gate": readiness},
                          ensure_ascii=False, indent=2))
-        return _doctor_bad(arch, drift, stats)
+        return _doctor_bad(arch, drift, stats, readiness)
     print("=== gaozhong 项目地图 · doctor (live 状态单一入口) ===")
     arch_bad = arch.get("status") == "fail" or not arch.get("available")
     print(f"  {_mark(not arch_bad)} 架构契约审计: {arch.get('status', arch.get('error'))} "
@@ -118,12 +120,20 @@ def cmd_doctor(args) -> bool:
         _warn_thin_years(stats["liaoning_by_year"])
     else:
         print(f"  {BAD} DB: {stats.get('error')}")
-    return _doctor_bad(arch, drift, stats)
+    if readiness.get("available"):
+        rg_ok = readiness.get("ready_for_phase_d", False)
+        print(f"  {_mark(rg_ok)} L3 就绪门 (Phase D): "
+              f"{'全绿' if rg_ok else '未绿 — ' + str(len(readiness.get('failures', []))) + ' 项阻塞'}")
+    else:
+        print(f"  {BAD} L3 就绪门: {readiness.get('error')}")
+    return _doctor_bad(arch, drift, stats, readiness)
 
 
-def _doctor_bad(arch: dict, drift: dict, stats: dict) -> bool:
+def _doctor_bad(arch: dict, drift: dict, stats: dict, readiness: dict | None = None) -> bool:
+    rg = readiness or {}
+    rg_bad = rg.get("available") and not rg.get("ready_for_phase_d", False)
     return (arch.get("status") == "fail" or not arch.get("available")
-            or _drift_bad(drift) or not stats.get("available"))
+            or _drift_bad(drift) or not stats.get("available") or rg_bad)
 
 
 _COMMANDS = {

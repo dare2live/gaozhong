@@ -14,6 +14,7 @@ import importlib.util
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -153,3 +154,22 @@ def collect_stats() -> dict[str, Any]:
         return stats
     finally:
         con.close()
+
+
+def collect_readiness_gate() -> dict[str, Any]:
+    """L3 就绪门 (Phase D 前置) — 只读调用 audit/l3_readiness_gate."""
+    script = ROOT / "scripts" / "tools" / "audit" / "l3_readiness_gate.py"
+    if not script.exists():
+        return {"available": False, "error": "l3_readiness_gate.py 缺失"}
+    try:
+        proc = _run([sys.executable, str(script), "--json"], timeout=180)
+    except Exception as exc:  # noqa: BLE001 — doctor 不崩
+        return {"available": False, "error": str(exc)}
+    if proc.returncode not in (0, 1) or not proc.stdout.strip():
+        return {"available": False, "error": proc.stderr.strip() or f"exit {proc.returncode}"}
+    try:
+        data = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        return {"available": False, "error": f"JSON: {exc}"}
+    data["available"] = True
+    return data
