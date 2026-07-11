@@ -9,6 +9,13 @@ import duckdb
 _STAGE_ORDER = ["小学", "初中", "义务教育", "高中必修", "高中选修"]
 
 
+def _zhongkao_years(con: duckdb.DuckDBPyConnection) -> list[int]:
+    """中考年份列表 — 读 zhongkao_questions 现算 (不 hardcode 2024/2025)."""
+    return [int(y) for (y,) in con.execute(
+        "SELECT DISTINCT year FROM zhongkao_questions WHERE year IS NOT NULL ORDER BY 1"
+    ).fetchall()]
+
+
 def stage_distribution(con: duckdb.DuckDBPyConnection) -> dict:
     """各 stage 的知识点数 (从 at_stage 边; 单库 stage 维 materialize)."""
     rows = con.execute(
@@ -108,7 +115,7 @@ def zhongkao_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         "SELECT content_status, COUNT(*) FROM zhongkao_questions GROUP BY 1").fetchall())
     pivot = _kaodian_pivot(kaodian)  # 逐空 pivot (空号×年) 单算点, 前端禁重pivot (铁律1)
     return {
-        "exam_type": "中考", "province": "辽宁", "paper": "辽宁省统一(2024起)", "years": [2024, 2025],
+        "exam_type": "中考", "province": "辽宁", "paper": "辽宁省统一(2024起)", "years": _zhongkao_years(con),
         "by_question_type": [{"type": t, "n": n} for t, n in by_type],
         "语篇填空考点": [{"year": y, "qid": q, "考点": a} for y, q, a in kaodian],
         "语篇填空_pivot": pivot,
@@ -161,7 +168,7 @@ def zhongkao_exam_point_summary(con: duckdb.DuckDBPyConnection) -> dict:
     基数48题(11篇一致文章)相对90题库是部分覆盖, 不代表全部90题题材分布, 显式标注避免过度外推。
     """
     return {
-        "exam_type": "中考", "province": "辽宁", "years": [2024, 2025],
+        "exam_type": "中考", "province": "辽宁", "years": _zhongkao_years(con),
         "genre_分布": _exam_point_dim_dist(con, "genre"),
         "theme_l2_分布": _exam_point_dim_dist(con, "theme_l2"),
         "语法考查重点": _grammar_focus(con),

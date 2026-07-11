@@ -1,0 +1,20 @@
+# 辽宁高考真题入库步骤注册表 — init_db Layer 2a 只读此表遍历 (消手接 2a/2a2/2a3).
+# 加一份卷: ① 实现/复用 importer callable ② 本表加一步; 不改 init_db.py.
+# 对照 docs/toplevel_architecture_design.md §2 #1 (目标摩擦 ≤2 处).
+
+version: 1
+steps:
+  - name: eol_2021_2022
+    module: backend.services.imports.eol_import
+    callable: import_eol_exams
+    note: "EOL structured draft + review decisions → 替换 GAOKAO 混合卷占位"
+
+  - name: local_pdf_registry
+    module: scripts.import_recent_exams
+    callable: import_pdfs
+    note: "sources.yaml family=exam_truth_source_local_pdf (现行 2024/2025)"
+
+  - name: xgkii_2026
+    module: backend.services.imports.xgkii2026_import
+    callable: import_xgkii_2026
+    note: "锦宏镜像 group 级; 待 registry 统一后可并入 local_pdf 族"

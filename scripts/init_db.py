@@ -49,20 +49,11 @@ def main() -> None:
     print("\n=== Layer 2: exam mirror ===")
     print(f"  {extract.run_exam_extract(con)}")
 
-    print("\n=== Layer 2a: EOL 真题入库 (2021/2022 辽宁新高考全国II卷, 替换 GAOKAO 混合卷占位) ===")
-    from backend.services.imports import eol_import
-    print(f"  {eol_import.import_eol_exams(con)}")
-
-    print("\n=== Layer 2a2: 2026 真题入库 (辽宁新高考全国II卷, 锦宏镜像PDF+双通道转录, group级) ===")
-    from backend.services.imports import xgkii2026_import
-    print(f"  {xgkii2026_import.import_xgkii_2026(con)}")
-
-    print("\n=== Layer 2a3: 2024/2025 local_pdf 真题入库 (前移自原 Layer 4g, 2026-06-26 架构修) ===")
-    # 必须早于 Layer 3 边构建: 原在 Layer 4g(canonical/links 之后) → build_tests_word/exam_point 跑时
-    # 这些行未入库 → tests_word 漏年(实证 2024/25 曾 0 边)。全部真题入库归位 Layer 2a*, 早于派生层。
-    # import_policies(污染/缺题干门) + sources.yaml(PDF路径) 驱动, 见 scripts/import_recent_exams.py。
-    from scripts.import_recent_exams import import_pdfs
-    print(f"  {import_pdfs(con)}")
+    print("\n=== Layer 2a: 辽宁真题入库 (exam_import_pipeline.yaml 注册表遍历) ===")
+    # 必须早于 Layer 3 边构建 (2024/25 曾因晚入库导致 tests_word 漏年)。
+    # 加年 = 改 backend/config/exam_import_pipeline.yaml + importer; 不改本文件 (架构 §2 #1)。
+    from backend.services.imports.exam_pipeline import import_all as import_exam_papers
+    print(f"  {import_exam_papers(con)}")
 
     print("\n=== Layer 2b: 真题 cross-verify 门禁 (宪法 §8.3) ===")
     try:
@@ -199,7 +190,7 @@ def main() -> None:
     from backend.services import students as students_seed
     print(f"  {students_seed.seed_demo(con)}")
 
-    # (Layer 4g 2024/2025 local_pdf 导入已前移到 Layer 2a3 — 必须早于 Layer 3 边构建, 见上)
+    # (真题入库已收口 Layer 2a exam_import_pipeline — 必须早于 Layer 3 边构建)
 
     print("\n=== Layer 4i: 考点 canonical 维度 (件2: genre/theme 双模型标注 → edges) ===")
     from backend.services.exam_point import (load_exam_points, bridge_exam_point_themes,

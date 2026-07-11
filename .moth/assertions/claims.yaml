@@ -340,6 +340,18 @@ assertions:
     command: ["python3", "scripts/tools/audit/exam_year_readiness.py", "--year", "2026", "--strict"]
     expect: {op: regex, pattern: "无 BLOCK"}
 
+
+  - id: exam-import-pipeline-registry
+    claim: "辽宁真题入库走 exam_import_pipeline.yaml 注册表 (init_db 无手接 eol/xgkii2026/import_pdfs; 架构§2#1)"
+    type: shell
+    command: ["bash", "-c", "grep -q 'exam_import_pipeline' scripts/init_db.py && ! grep -q 'import_recent_exams' scripts/init_db.py && ! grep -q 'xgkii2026_import' scripts/init_db.py && python3 -c 'from backend.services.imports.exam_pipeline import load_steps; s=load_steps(); assert len(s)>=3; print(len(s))'"]
+    expect: {op: ">=", value: "3"}
+  - id: junior-exam-years-data-driven
+    claim: "中考 YEARS 数据驱动 available_years()=有 jsonl 的 *_liaoning 目录 (不 hardcode 2024/2025)"
+    type: shell
+    command: ["python3", "-c", "from backend.services.data_sources.extract.junior.exam import available_years; y=available_years(); print('OK' if y==('2024','2025') else f'FAIL {y}')"]
+    expect: {op: regex, pattern: "OK"}
+
   - id: exam-point-no-orphan-edge
     claim: "考点边 src 必为真实 question 节点 (无悬挂; Rule 3 edges 一等公民)"
     type: duckdb_sql

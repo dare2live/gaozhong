@@ -25,6 +25,7 @@ CONTRACTS = ROOT / "backend" / "config" / "exam_paper_contracts.yaml"
 ANCHORS = ROOT / "backend" / "config" / "truth_anchors.yaml"
 YEAR_WEIGHTS = ROOT / "backend" / "config" / "year_weights.yaml"
 INIT_DB = ROOT / "scripts" / "init_db.py"
+PIPELINE = ROOT / "backend" / "config" / "exam_import_pipeline.yaml"
 EXAM_PY = ROOT / "backend" / "services" / "extraction" / "exam.py"
 JUNIOR_EXAM = ROOT / "backend" / "services" / "data_sources" / "extract" / "junior" / "exam.py"
 K12_PY = ROOT / "backend" / "services" / "k12.py"
@@ -72,13 +73,17 @@ def audit_gaokao(year: int) -> list[dict]:
            f"w={weights.get(year) or weights.get(str(year))}" if has_w else "缺年份权重(滚动加最高权)",
            level="warn")
 
+    pipe_txt = PIPELINE.read_text(encoding="utf-8") if PIPELINE.exists() else ""
     init_txt = INIT_DB.read_text(encoding="utf-8") if INIT_DB.exists() else ""
-    wired = str(year) in init_txt or f"xgkii{year}" in init_txt.lower()
-    # 2024/2025 via import_pdfs registry — count as wired if sources hit + import_pdfs present
-    if year in (2024, 2025) and "import_pdfs" in init_txt and src_hit:
+    # 接线真相源 = exam_import_pipeline.yaml (init_db 只调 import_all)
+    wired = (str(year) in pipe_txt or f"xgkii_{year}" in pipe_txt
+             or f"xgkii{year}" in pipe_txt.replace("_", ""))
+    if year in (2024, 2025) and "local_pdf_registry" in pipe_txt and src_hit:
         wired = True
-    _check(items, "init_db.py 导入路径已接线", wired,
-           "已接线" if wired else "需加 Layer 2a* importer 或扩 registry 遍历")
+    if "import_exam_papers" not in init_txt and "import_all" not in init_txt:
+        wired = False
+    _check(items, "exam_import_pipeline 已接线该年", wired,
+           "已接线" if wired else "需在 exam_import_pipeline.yaml 注册 importer")
 
     exam_txt = EXAM_PY.read_text(encoding="utf-8") if EXAM_PY.exists() else ""
     m = re.search(r"LOCAL_PDF_LIAONING_YEARS\s*=\s*\(([^)]*)\)", exam_txt)
@@ -121,13 +126,9 @@ def audit_zhongkao(year: int) -> list[dict]:
     _check(items, "中考 structured jsonl 存在", qpath.exists(),
            str(qpath.relative_to(ROOT)) if qpath.exists() else f"缺 {qpath.relative_to(ROOT)}")
 
-    jr = JUNIOR_EXAM.read_text(encoding="utf-8") if JUNIOR_EXAM.exists() else ""
-    m = re.search(r'YEARS\s*=\s*\(([^)]*)\)', jr) or re.search(r'YEARS\s*=\s*\(([^)]*)\)', jr)
-    years = re.findall(r'20\d{2}', jr)
-    # parse YEARS = ("2024", "2025")
-    m2 = re.search(r"YEARS\s*=\s*\(([^)]+)\)", jr)
-    listed = re.findall(r"20\d{2}", m2.group(1)) if m2 else []
-    _check(items, "junior/exam.py YEARS 含该年", str(year) in listed,
+    from backend.services.data_sources.extract.junior.exam import available_years
+    listed = list(available_years())
+    _check(items, "junior available_years 含该年 (jsonl 落地即纳入)", str(year) in listed,
            f"当前={listed}")
 
     k12 = K12_PY.read_text(encoding="utf-8") if K12_PY.exists() else ""

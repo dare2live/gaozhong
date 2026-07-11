@@ -13,7 +13,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[5]            # .../gaozhong
 EXAMS = ROOT / "data" / "junior_high" / "exams"
-YEARS = ("2024", "2025")
+
+
+def available_years() -> tuple[str, ...]:
+    """有 exam_questions.jsonl 的中考年 (数据驱动, 不 hardcode; 新年目录落地即纳入)."""
+    years = []
+    for d in sorted(EXAMS.glob("*_liaoning")):
+        if (d / "exam_questions.jsonl").exists():
+            years.append(d.name.split("_", 1)[0])
+    return tuple(years)
+
+
+# 兼容旧引用 (测试/预检); 真值 = available_years() 现算
+YEARS = available_years()
 _COLS = ("question_id,year,province,paper_type,question_type,raw_question,answer,"
          "analysis,source_file,source_index,source_repo,exam_type")
 
@@ -44,7 +56,7 @@ def _rows(year: str) -> list[tuple]:
 
 def load(con) -> dict:
     """中考真题入 exam_questions (单一计算点; init_db 的 junior Layer 调)."""
-    rows = [row for y in YEARS for row in _rows(y)]
+    rows = [row for y in available_years() for row in _rows(y)]
     if rows:
         con.executemany(
             f"INSERT OR REPLACE INTO exam_questions_all ({_COLS}) VALUES ({','.join(['?'] * 12)})", rows)
