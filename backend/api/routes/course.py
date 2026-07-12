@@ -22,7 +22,7 @@ def api_course_coverage(qs: dict) -> dict:
 
 
 def api_course_syllabus(qs: dict) -> dict:
-    """L3 教学提纲 — 40 节考点焦点 + 段级可溯源作业真题 (content=null, 北极星 Phase C)."""
+    """L3 教学提纲 — 40 节考点焦点 + 段级可溯源作业真题 (+ Phase D 试点 content)."""
     from backend.services.course import syllabus as syl
     con = db_ro()
     try:

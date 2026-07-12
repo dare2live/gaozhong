@@ -57,8 +57,9 @@
     - **`data_accuracy_check.py` 瘦身**: 406行超Rule8 400行god-module阈值, 抽`_check_3_grammar`到`scripts/lib/d0_grammar_check.py`。
     - **词汇单元lineage补齐(2026-07-08续)**: 发现"Vocabulary"kind section其实是练习题(非生词表), 真正的生词表在卷末"Words and expressions **in each unit**"附录(与已用的"alphabetical order"总表是同一批词的两种排布, 前者按"Unit N"标题分段, 页码是单元内部计数非全书绝对页, 逐条读原文核实)。新增`scripts/extract_hujiao_vocab_unit.py`(947条word→unit归属, 复用`extract_hujiao_vocab.py`的`_ENTRY`/`_col_lines`不重复解析) + `junior/vocab_unit.py`(填`unit_vocab_intro`, in_curriculum口径同`orchestrator/extract.py::run_vocab`)。**过程中揪出2个真bug**: ①`links.py::build_introduces_word`的"ensure word节点存在"步骤原用`INSERT OR REPLACE`, 会覆盖`junior_vocab.py`已设的节点(该函数须在初中units就绪后重跑一次才能纳入初中数据, 重跑时暴露此问题), 改`INSERT OR IGNORE`; ②`exam_coverage.py`(nodes.attrs_json唯一writer架构, 坑14修复产物)对同时在国家课标cefr_vocab里的词会整段覆盖attrs_json, 抹掉一个无消费者依赖的source标记纯信息位——不是bug是架构使然, 改成查节点存在性而非标记存活。**顺带修正2个高中专用回归锁的误伤**: "无单元词表塌缩(≥20词)"和"词无跨单元重复"两个校验(`data_accuracy_check.py`+moth `unit-vocab-no-cross-unit-dup`)原来"全版本"无`version_key`过滤, hujiao真实数据(部分单元15-19词/31词跨单元重现, 逐条核实为教材真实结构)被误判违反专为renjiao/waiyan"单一区段抽取"校准的地板, 按version_key分流, 高中口径原样保留。
     - **知识点整合+课程生成器落地**: 新增 `backend/services/course/junior_knowledge.py::junior_syllabus`——组织轴=46个真实教材单元(非命题频次), 默认`n_lessons=None`不压缩(1单元1节, 不硬编码), 传参时复用`course.syllabus`同款`_adjust`最大余数法压缩(Rule5第2消费者)。每节整合语法(grammar_occurrences+deepens+exam_status+tests_grammar反查)/词汇(unit_vocab_intro+at_stage+tests_word反查)/短语(phrases+高中复现判断)三轴lineage, 不跨轴混算(坑12分层非平均)。API `/api/course/junior/syllabus` 已注册+endpoint_contracts登记+浏览器实测(preview_eval验证真实HTTP响应, 与直接Python调用一致)。D0(53)+moth新断言。前端页面尚为`_juniorStub`占位, 本轮聚焦后端知识体系正确性(用户全程纠偏焦点), UI留后续。
-- **下一步 (待用户决策, 非 loop 自动)**: Phase D (L3 内容生成) 需 **就绪门**(北极星§5)绿 + 用户拍板; 或 Phase E (初中板块)。**不自动进 Phase D**(决策C)。已知待办(非阻塞): 坑16 genre/theme 显式真相源交叉验证(GenreTruthChecker, Phase D 前置, 现维持方向性标注); 固定搭配/表达的短语级真题考查标注(现 phrases 是教材库出现非考查); DesignSync 同步设计系统组件到 claude.ai/design 需用户先跑 `/design-login`(本环境无交互终端拿不到 OAuth); cognitive_skill 2022/2025/2026 仍无可得解析源(诚实标待补, 见 `scripts/lib/d0_cognitive_skill_check.py` 头注); "理解观点态度/理解文章结构类型"2官方桶仍0样本(待有更多真题解析数据出现); 语言/策略诊断分支需用户拍板(可行性存疑, 已知瓶颈=无法区分"单词不认识"vs"认识但推不出", 现有样本量下不建议做); 课标→学业质量标准→真题考查范围解析链未建模(STEP2/3新待办, 非考纲缺口)。
-- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity≤10(高fan-in换内聚归属勿绕过); 新数据/schema moth AND D0 双门; 数据真值不估算; **不生成 L3 内容**(Phase D 需就绪门)。
+- **✅ Phase D 试点 1 节 (2026-07-12)**: L3 就绪门绿后落地 `data/structured/course_content/seg-01.json` + `course.content` 挂载 + `course_content_review_gate`(词量/10-gram/考点锚定); 学习者轻闭环 `/api/learner/gap_highlights`; theme 诚实 dual_model_only(不伪造 cross_verified); cognitive `missing_source_years` 披露; 2026 经 `local_pdf_dispatch` 并入 local_pdf 族。
+- **下一步**: 扩 Phase D 正文(仍逐节过 review gate); Phase E 初中 UI; 短语考查边; DesignSync OAuth; cognitive 2022/25/26 待有偿/免费解析源。
+- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity; 新数据 moth AND D0; 数据真值不估算; L3 正文必过 §6 review gate。
 
 ---
 
@@ -67,7 +68,7 @@
 - **三门全绿**: `data_accuracy_check.py` exit0 (D0) + `stop_gate.sh` exit0 + `moth assert` PASS。计数以脚本 verdict / `d0_baselines.yaml` 为准, 不在此 hardcode。
 - **数据诚实分层 (防 over-claim, L3 就绪门依赖)**:
   - **真值可卖**: 题型 presence 结构迁移 · 词汇热力四象限 · cognitive_skill 技能侧(explicit_label 第一手解析) · 考试词典(教材→中考→COCA 三源溯源, 第一手源最值钱)。
-  - **LLM 方向性参考(必标, 非真值)**: genre/theme 题材分布 = dual_model 推断, **零第一手核验**(坑16, 维持"模型推断"标注; **不可用 tests_exam_point 真值边数顶替这条 caveat**)。
+  - **LLM 方向性参考(必标, 非真值)**: theme 题材分布 = dual_model 推断, **零第一手核验**(坑16); genre 子集已 analysis 交叉为 `cross_verified`(见 l3_readiness_gate / genre_truth), 其余仍 dual_model。
   - **demo 壳(必空态)**: 学情整条 = 合成 seed(student_answers 全 demo); 真实学生作答 = 0 条 → 弱点/热力/推荐全 demo。
 - **样本量诚实**: 辽宁逐年 <10 标"趋势样本不足"不画 slope(坑12); 分布(同卷制 era ≥30)可报。cognitive "推断迁移"引数必同句带"n=方向性", 别 narrate 成 era 迁移真值。
 

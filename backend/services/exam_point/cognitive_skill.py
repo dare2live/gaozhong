@@ -214,7 +214,16 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
             "provenance": "explicit_label (教研解析显式标签, 强于双模型)",
             "official_ref": "陈康等《基于高考评价体系的英语科考试内容改革实施路径》,《中国考试》2019年第12期(教育部考试中心命题团队解读, 阅读理解7理解性技能)",
             "n_total": len(rows), "by_era": out, "reliability": reliability,
-            "eras_ordered": sorted(by_era.keys()), **_coverage_gap(by_era)}
+            "eras_ordered": sorted(by_era.keys()),
+            "missing_source_years": {
+                "years": [2022, 2025, 2026],
+                "covered_years": sorted({int(y) for _, y in rows if y}),
+                "note": (
+                    "2022/2025/2026 无本地可核验逐题教研解析显式题型标签 "
+                    "(付费墙/宏观评析非逐题); 诚实标未补, 非估算填桶 — 见 d0_cognitive_skill_check 头注."
+                ),
+            },
+            **_coverage_gap(by_era)}
 
 
 _CROSS_DIMS = {"genre", "theme_l2", "theme_context"}

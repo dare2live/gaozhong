@@ -35,7 +35,20 @@ from backend.services.trend import scope   # paper_type canonical 值单点
 DB_PATH = ROOT / "data" / "db" / "gaozhong.duckdb"
 # 答案真相源 (gaokao 收口 sub-question, 含 2024/2025 答案键); PDF 给全文, jsonl 给答案
 GAOKAO_SUBQ = ROOT / "data" / "structured" / "exam_subquestions" / "xgkii_2021_2025_subquestions.jsonl"
-LOCAL_PDF_FAMILY = "exam_truth_source_local_pdf"   # sources.yaml 里本地 PDF 真题源家族
+LOCAL_PDF_FAMILY = "exam_truth_source_local_pdf"
+
+def _dispatch_handlers() -> dict[int, tuple[str, str]]:
+    """exam_import_pipeline.yaml local_pdf_dispatch → {year: (module, callable)}."""
+    import yaml
+    cfg = ROOT / "backend" / "config" / "exam_import_pipeline.yaml"
+    raw = yaml.safe_load(cfg.read_text(encoding="utf-8")) if cfg.exists() else {}
+    out = {}
+    for y, spec in (raw.get("local_pdf_dispatch") or {}).items():
+        out[int(y)] = (spec["module"], spec["callable"])
+    return out
+
+
+   # sources.yaml 里本地 PDF 真题源家族
 IMPORT_POLICY = "exam_truth_source_import"          # import_policies.yaml 里适用的策略名
 
 
@@ -211,22 +224,34 @@ def _post_import_verify(year: int, con=None) -> bool:
 
 
 def import_pdfs(con) -> dict:
-    """编排 PDF→入库 (用传入写连接), 返回 {total, by_year, verify}. init_db Layer 4g 调用.
+    """编排 local_pdf 族入库: 普通 PDF 解析 + local_pdf_dispatch 特殊年 (如 2026 group_txt).
 
-    PDF→文本→分段 走 extract 层 (pdf.extract_text / parse_exam_sections); 本函数只编排 + 入库 + 核对.
+    用传入写连接; 返回 {total, by_year, verify, dispatched}.
     """
+    import importlib
     total = 0
     by_year: dict[int, int] = {}
+    dispatched: dict[int, object] = {}
     verify_ok = True
     block_if = _policy_block_if()
+    handlers = _dispatch_handlers()
     for year, _paper, pdf_path in _local_pdf_sources():
+        if year in handlers:
+            mod_name, fn_name = handlers[year]
+            fn = getattr(importlib.import_module(mod_name), fn_name)
+            result = fn(con)
+            dispatched[year] = result
+            n = int(result.get("groups") or result.get("total") or 0)
+            by_year[year] = n
+            total += n
+            print(f"  {year}: dispatched {mod_name}.{fn_name} → {result}")
+            continue
         if not pdf_path.exists():
             print(f"  SKIP {year}: {pdf_path} not found")
             continue
         try:
             text = extract_text(pdf_path)
         except PdfUnreadableError as e:
-            # 非有效 PDF (HTML 伪装/损坏) → 诚实跳过, 不静默吞 (§1.5), 不崩流程
             print(f"  SKIP {year}: {e}")
             continue
         qs = _enrich_analysis(_enrich_answers(parse_exam_sections(text, year), year), year)
@@ -239,7 +264,7 @@ def import_pdfs(con) -> dict:
         if not _post_import_verify(year, con=con):
             verify_ok = False
             print(f"    ❌ cross-verify FAIL for {year} — 数据可能不一致, 请检查")
-    return {"total": total, "by_year": by_year, "verify_ok": verify_ok}
+    return {"total": total, "by_year": by_year, "verify_ok": verify_ok, "dispatched": dispatched}
 
 
 def main():

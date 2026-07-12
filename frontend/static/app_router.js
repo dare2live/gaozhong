@@ -124,11 +124,12 @@
 
 
   // ===================================================================
-  // B. 40 节课程 — L3 框架 (北极星 Phase C): 覆盖模型 + 教学提纲(考点焦点+作业真题溯源, content=null)
-  //    替代旧 course-grid+handout (旧生成内容已回滚; 内容生成待就绪门)。
+  // B. 40 节课程 — L3 框架 + Phase D 试点正文 (content 仅 review=pass 节非 null)
+  //    替代旧 course-grid+handout (旧生成内容已回滚)。
   //    ④ 重构: 覆盖证明4轴微条 + 课程地图分段条 + 主题群章 + 课节timeline (数字全活取 API, 禁编造)。
   // ===================================================================
   const _esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  let _gapSeqs = new Set(); // 学习者缺口高亮 (无身份/无作答 → 空, 不伪造)
   function _covLine(cov) {
     // coverage fetch 失败时的文本 fallback (数据源 = syllabus 自带 coverage_proof)
     const ax = (cov && cov.axes) || {};
@@ -224,29 +225,51 @@
     // 补充练习只能手动去组卷页重新找。带着考点焦点跳组卷预筛选(route()新支持二级hash参数)。
     const focus = (l.covers_exam_points || [])[0];
     const focusLink = focus ? `<a class="ks-hw-more" href="#/qbank/${encodeURIComponent(focus)}">按此考点补充练习 →</a>` : "";
-    return `<details class="ks-lesson"><summary class="ks-sum">
+    const gap = _gapSeqs.has(l.seq);
+    const body = l.content && l.content.body_en
+      ? `<div class="ks-pilot"><div class="ks-body-h">可背诵正文 (Phase D 试点 · review 已过)</div>
+           <p class="ks-pilot-en">${_esc(l.content.body_en)}</p>
+           ${l.content.body_zh ? `<p class="ks-pilot-zh">${_esc(l.content.body_zh)}</p>` : ""}</div>`
+      : `<div class="ks-soon">正文即将上线</div>`;
+    return `<details class="ks-lesson${gap ? " ks-gap" : ""}"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-hwn">· 作业 ${(l.evidence_questions || []).length} 道真题</span>
+        ${gap ? `<span class="ks-gap-tag" title="摸底弱点主题群对齐">缺口</span>` : ""}
+        ${l.content ? `<span class="ks-gap-tag" style="background:var(--down-3)">有正文</span>` : ""}
       </summary>
       <div class="ks-body">
+        ${body}
         <div class="ks-body-h">作业真题 (辽宁卷, 可溯源原卷; 非生成)</div>
         <ul class="ks-hwlist">${hw || '<li class="ks-hw">本节真题作业整理中</li>'}</ul>
-        <div class="ks-soon">正文即将上线</div>
         ${focusLink}
       </div>
     </details>`;
   }
   register("teaching", async () => {
     CONTENT.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入课程框架…</div>';
-    const [syl, cov, stg] = await Promise.all([fetchSafe("/api/course/syllabus"), fetchSafe("/api/course/coverage"), fetchSafe("/api/k12/tested_word_stage")]);
+    const sid = (localStorage.getItem("gz_student_id") || "").trim();
+    const [syl, cov, stg, gap] = await Promise.all([
+      fetchSafe("/api/course/syllabus"),
+      fetchSafe("/api/course/coverage"),
+      fetchSafe("/api/k12/tested_word_stage"),
+      sid ? fetchSafe("/api/learner/gap_highlights?student_id=" + encodeURIComponent(sid)) : Promise.resolve(null),
+    ]);
+    _gapSeqs = new Set();
+    if (gap && !isErr(gap) && !gap.empty && Array.isArray(gap.highlights)) {
+      for (const h of gap.highlights) for (const s of (h.lesson_seqs || [])) _gapSeqs.add(s);
+    }
     if (isErr(syl)) { CONTENT.innerHTML = '<div class="error-state"><div class="es-title">课程框架加载失败</div><div class="es-msg">后端未就绪 — 真实错误。</div></div>'; return; }
     const gs = _themeGroups(syl.lessons);
     const sumTtw = gs.reduce((a, g) => a + (g.ttw || 0), 0);
     const covOk = !isErr(cov) && cov && cov.axes;
     const theme = covOk ? cov.axes.theme_l2 : null;
+    const nContent = syl.n_with_content || 0;
+    const gapNote = _gapSeqs.size
+      ? `摸底对齐 ${_gapSeqs.size} 节缺口课已高亮。`
+      : (sid ? "已登录学习者但暂无弱点高亮(无作答或非主题群弱点)。" : "未绑定学习者身份 — 课程不伪造个人缺口高亮。");
     CONTENT.innerHTML = `<section class="scaffold">
       ${GZ.pageHead(`高中 · ${syl.n_lessons} 节课程`, `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
-      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>讲义制作中</b> — 每节已定考点焦点与真题作业, <b>作业现在就能做</b>; 可背诵正文上线前不占位不伪造。</span></div>
+      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>Phase D 试点</b> — 已上线正文 ${nContent}/${syl.n_lessons} 节(过 review gate); 其余仍「作业可做、正文待补」。${gapNote}</span></div>
       <div class="sc-takeaway">
         <div class="sc-tk-h">覆盖证明 · 用最少的课覆盖最大考查权重</div>
         ${covOk ? _covProof(cov) : `<p class="sc-tk-body">${_esc(_covLine(syl.coverage_proof || {}) || "覆盖数据加载失败。")}</p>`}
@@ -262,6 +285,7 @@
             <li>作业 = 历年辽宁卷真题原题, 每道都标年份和题号, 可查回原卷 — 不是生成题, 不是押题。</li>
             <li>考点焦点 = 按真题命题频次把 ${syl.n_lessons} 节课分给各主题群: 考得多的主题, 分到的课就多。</li>
             <li>覆盖 = 课程教的考点占考试考查权重的比例; 低频长尾考点明确标出, 不假装全覆盖。</li>
+            <li>正文 = Phase D 试点经词量/10-gram/考点锚定 review gate; 未过门的节 content 仍为 null。</li>
           </ul>
         </details>
       </div>

@@ -193,9 +193,22 @@ def check_coverage(con: duckdb.DuckDBPyConnection, check) -> None:
 
 
 def _check_syl_segments(con: duckdb.DuckDBPyConnection, lessons: list, check) -> None:
-    """段级: content==null(决策C) + covers_exam_points 无孤儿节点 且 有 tests_exam_point 考查边(§3.2)."""
-    n_content = sum(1 for l in lessons if l.get("content") is not None)
-    check("所有段 content==null (决策C 框架不生成内容)", n_content == 0, f"{n_content} 段已有内容(违决策C)")
+    """段级: content 仅 review=pass 试点可非 null + covers_exam_points 无孤儿/有考查边(§3.2)."""
+    bad_content = []
+    n_content = 0
+    for l in lessons:
+        c = l.get("content")
+        if c is None:
+            continue
+        n_content += 1
+        rev = (c.get("review") or {}).get("status")
+        if rev != "pass" or not c.get("body_en"):
+            bad_content.append(l.get("seq"))
+    check(
+        "段 content 仅 review=pass 试点非 null (其余 null; Phase D §6)",
+        not bad_content,
+        f"非法 content 节={bad_content[:5]} n_with={n_content}",
+    )
     pts = {p for l in lessons for p in l["covers_exam_points"]}
     real = {r[0] for r in con.execute("SELECT concept_id FROM nodes WHERE concept_id LIKE 'exam_point:%'").fetchall()}
     edged = {r[0] for r in con.execute("SELECT DISTINCT dst_id FROM edges WHERE relation='tests_exam_point'").fetchall()}
@@ -233,8 +246,8 @@ def _check_syl_homework(con: duckdb.DuckDBPyConnection, lessons: list, check) ->
 
 
 def check_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
-    """L3 教学提纲 correctness (北极星 Phase C 决策C 框架): 段级可溯源/无孤儿/content=null + 分配真比例 + 作业辽宁真题."""
-    print("\n=== (34) L3 教学提纲 correctness (course.syllabus 段级可溯源/无孤儿/content=null) ===")
+    """L3 教学提纲 correctness: 段级可溯源/无孤儿 + content 仅 review=pass 试点 + 分配真比例 + 作业辽宁真题."""
+    print("\n=== (34) L3 教学提纲 correctness (course.syllabus 段级可溯源 + Phase D 试点 content) ===")
     from backend.services.course.syllabus import syllabus
     lessons = syllabus(con)["lessons"]
     check("有课节 (n_lessons>0)", len(lessons) > 0, f"{len(lessons)}")

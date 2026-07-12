@@ -21,6 +21,7 @@ import yaml
 
 from backend.services.course.coverage import coverage_model
 from backend.services.exam_point.genre_truth import analysis_genre_crosscheck
+from backend.services.exam_point.theme_truth import analysis_theme_crosscheck
 from backend.services.k12 import tested_word_stage_distribution
 from scripts.lib.db_lock import connect_readonly_with_retry
 
@@ -114,7 +115,18 @@ def check_exam_annotation(con: duckdb.DuckDBPyConnection, cfg: dict) -> dict:
     )
     if gt["conflict_samples"]:
         if not QUIET: print(f"    冲突样例: {gt['conflict_samples'][:3]}")
-    return {"pass": ok_cog and ok_gt, "genre_truth": gt}
+    th = analysis_theme_crosscheck(con)
+    # theme 无第一手交叉源 → 诚实 WARN 披露, 不挡 Phase D (genre 已 cross_verified)
+    _record(
+        "theme dual_model 诚实披露 (不伪造 cross_verified)",
+        True,
+        f"status={th['status']} explicit={th['n_analysis_explicit_theme']} "
+        f"cross={th['n_cross_verified_edges']}",
+        warn=False,
+    )
+    if not th["pass"]:
+        _record("theme 无假升 cross_verified", False, f"cross={th['n_cross_verified_edges']}")
+    return {"pass": ok_cog and ok_gt and th["pass"], "genre_truth": gt, "theme_truth": th}
 
 
 def check_association(con: duckdb.DuckDBPyConnection) -> dict:

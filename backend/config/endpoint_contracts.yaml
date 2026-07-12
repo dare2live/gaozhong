@@ -23,6 +23,7 @@ contracts:
   "/api/course/quiz": {params: {id: ["1"]}, required_keys: [course_id, questions, count], type: dict}
   "/api/course/session": {params: {id: ["1"]}, required_keys: [course, materials], type: dict}
   "/api/course/syllabus": {params: {}, required_keys: [lessons, n_lessons, coverage], type: dict}
+  "/api/learner/gap_highlights": {params: {student_id: optional}, required_keys: [empty, highlights], type: dict}
   "/api/course/junior/syllabus": {params: {}, required_keys: [lessons, n_lessons, n_units_total, organizing_axis], type: dict}
   "/api/course/junior/unit_content": {params: {volume: ["7a"], unit: ["1"]}, required_keys: [knowledge, passages, version_key], type: dict}
   "/api/curriculum/summary": {params: {}, required_keys: [vocab_total, grammar_total, themes_total], type: dict}

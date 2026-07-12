@@ -342,10 +342,41 @@ assertions:
 
 
   - id: exam-import-pipeline-registry
-    claim: "辽宁真题入库走 exam_import_pipeline.yaml 注册表 (init_db 无手接 eol/xgkii2026/import_pdfs; 架构§2#1)"
+    claim: "辽宁真题入库走 exam_import_pipeline.yaml (2步: eol+local_pdf; 2026 经 local_pdf_dispatch; init_db 无手接)"
     type: shell
-    command: ["bash", "-c", "grep -q 'exam_import_pipeline' scripts/init_db.py && ! grep -q 'import_recent_exams' scripts/init_db.py && ! grep -q 'xgkii2026_import' scripts/init_db.py && python3 -c 'from backend.services.imports.exam_pipeline import load_steps; s=load_steps(); assert len(s)>=3; print(len(s))'"]
-    expect: {op: ">=", value: "3"}
+    command: ["bash", "-c", "grep -q 'exam_import_pipeline' scripts/init_db.py && ! grep -q 'import_recent_exams' scripts/init_db.py && ! grep -q 'xgkii2026_import' scripts/init_db.py && python3 -c 'from backend.services.imports.exam_pipeline import load_steps; import yaml; from pathlib import Path; s=load_steps(); d=yaml.safe_load(Path(\"backend/config/exam_import_pipeline.yaml\").read_text())[\"local_pdf_dispatch\"]; assert len(s)==2 and 2026 in d; print(len(s))'"]
+    expect: {op: "==", value: "2"}
+
+  - id: local-pdf-dispatch-2026
+    claim: "2026 经 exam_import_pipeline local_pdf_dispatch 并入 local_pdf_registry (非 init_db 第三条手接线)"
+    type: shell
+    command: ["python3", "-c", "from scripts.import_recent_exams import _dispatch_handlers; d=_dispatch_handlers(); assert 2026 in d and 'xgkii2026' in d[2026][0]; print('OK')"]
+    expect: {op: "==", value: "OK"}
+
+  - id: theme-truth-no-fake-cross
+    claim: "theme_l2 无假升 cross_verified (analysis 无可核验显式主题句 → dual_model_only 诚实披露)"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.exam_point.theme_truth import analysis_theme_crosscheck as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); d=f(c); c.close(); print('OK' if d['pass'] and d['status']=='dual_model_only' and d['n_cross_verified_edges']==0 else d)"]
+    expect: {op: "==", value: "OK"}
+
+  - id: learner-gap-empty-honest
+    claim: "学习者缺口闭环: 无 student_id/无作答 → empty 诚实不高亮"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.learner import gap_highlights as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); d=f(c,''); e=f(c,'__no_such_student__'); c.close(); print('OK' if d.get('empty') and e.get('empty') else (d,e))"]
+    expect: {op: "==", value: "OK"}
+
+  - id: phase-d-pilot-content-review
+    claim: "Phase D 试点 seg-01 过 course_content review gate 且 syllabus content 挂载"
+    type: shell
+    command: ["bash", "-c", "python3 scripts/tools/audit/course_content_review_gate.py >/dev/null && python3 -c 'import duckdb; from backend.services.course.syllabus import syllabus; c=duckdb.connect(\"data/db/gaozhong.duckdb\",read_only=True); s=syllabus(c); c.close(); assert s[\"n_with_content\"]>=1 and s[\"lessons\"][0][\"content\"][\"body_en\"]; print(\"OK\")'"]
+    expect: {op: "==", value: "OK"}
+
+  - id: cognitive-missing-years-disclosed
+    claim: "cognitive_skill API 诚实披露 missing_source_years={2022,2025,2026} 不填桶"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.exam_point import cognitive_skill_distribution as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); d=f(c); c.close(); y=set(d['missing_source_years']['years']); print('OK' if y=={2022,2025,2026} else y)"]
+    expect: {op: "==", value: "OK"}
+
   - id: junior-exam-years-data-driven
     claim: "中考 YEARS 数据驱动 available_years()=有 jsonl 的 *_liaoning 目录 (不 hardcode 2024/2025)"
     type: shell
@@ -696,9 +727,9 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services.course.coverage import coverage_model;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);m=coverage_model(c);c.close();ax=m['axes'];ok=ax['word']['n_total']>0 and all(a['high_yield_n']<=a['n_total'] for a in ax.values()) and 'cognitive_skill' not in ax;print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: l3-syllabus-framework-no-content
-    claim: "L3教学提纲(course.syllabus 北极星PhaseC决策C): 40节段级可溯源(focus考点+作业真题溯源, 无孤儿) 且 content全null(框架不生成内容, Phase D才填) 且 作业全辽宁真题(非生成 坑14)"
+    claim: "L3教学提纲(course.syllabus): 段级可溯源(focus+作业真题溯源) + 作业全辽宁真题(坑14) + content 仅 review=pass 试点非null(其余 null)"
     type: shell
-    command: ["python3", "-c", "import duckdb;from backend.services.course.syllabus import syllabus;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=syllabus(c);c.close();L=s['lessons'];ok=len(L)>0 and all(l['content'] is None for l in L) and all(q.get('source') for l in L for q in l['evidence_questions']);print('OK' if ok else 'FAIL')"]
+    command: ["python3", "-c", "import duckdb;from backend.services.course.syllabus import syllabus;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=syllabus(c);c.close();L=s['lessons'];ok=len(L)>0 and all(q.get('source') for l in L for q in l['evidence_questions']) and all((l['content'] is None) or ((l['content'].get('review') or {}).get('status')=='pass' and l['content'].get('body_en')) for l in L) and s.get('n_with_content',0)>=1;print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: grammar-stats-honest-sourced
     claim: "语法/搭配统计(exam_grammar_stats 真题特点扩展): 语法考查=tests_grammar辽宁真值(锚课标第二级子类不杜撰, total==独立SQL) + 教材搭配/句型/表达库=phrases(出现非考查, 诚实分层不冒充考查频次)"
