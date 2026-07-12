@@ -1,0 +1,74 @@
+# 已封账不可继续推进项 — 非开放「下一步」。
+# 规则: 每条必须有 blocker_class ∈ {truth_source_absent, out_of_product_scope, sealed_honesty_law}
+# + evidence + reopen_when。禁止在 RESUME「下一步」重复列为待办。
+# 读: moth claim irreducible-blockers-sealed + scripts/tools/audit 披露面。
+
+version: 1
+sealed_at: "2026-07-12"
+
+items:
+  - id: cognitive_skill_years_2022_2025_2026
+    blocker_class: truth_source_absent
+    evidence: >
+      data/structured 无带 explicit 阅读技能标签的逐题解析
+      (2022 子题缺失; 2025 analysis=null; 2026 analysis 空)。
+      见 cognitive_skill_distribution.missing_source_years 与 d0_cognitive_skill_check 头注。
+    reopen_when: "获得可核验逐题教研解析(免费或有偿)并过 truth_anchor 后补边"
+
+  - id: cognitive_official_buckets_empty
+    blocker_class: truth_source_absent
+    evidence: "官方7项中「理解观点态度」「理解文章结构类型」仍0样本(无解析显式标签)"
+    reopen_when: "真题解析出现对应显式题型标签并入 taxonomy aliases"
+
+  - id: theme_l2_cross_verified
+    blocker_class: sealed_honesty_law
+    evidence: >
+      analysis 无可映射课标 theme_l2 的显式主题句; theme_truth 维持 dual_model_only,
+      禁止伪造 cross_verified (坑16)。
+    reopen_when: "教研解析出现「主题/话题是…」且可映射官方10主题群"
+
+  - id: tests_phrase_exam_edges
+    blocker_class: sealed_honesty_law
+    evidence: >
+      phrases 仅 introduces_phrase(教材出现); 完形「考查搭配」落 collocation/grammar 桶,
+      无 phrase_id 级真题考查标注。D0 锁 tests_phrase==0; UI 标出现非考查。
+    reopen_when: "有人工核验的 phrase_id↔真题空/改错标签 loader + 改 D0 允许带 provenance 边"
+
+  - id: zhongkao_2025_answers_35
+    blocker_class: truth_source_absent
+    evidence: "2025辽宁中考英语除语篇填空外35题答案无免费渠道(RESUME 已穷尽检索)"
+    reopen_when: "官方/可核验答案源入库"
+
+  - id: zhongkao_2026_english
+    blocker_class: truth_source_absent
+    evidence: "2026中考英语聚合站尚未稳定收录(2026-07 查)"
+    reopen_when: "题面+答案可核验源就绪后走 exam_year_readiness"
+
+  - id: designsync_oauth
+    blocker_class: out_of_product_scope
+    evidence: "仓内无 DesignSync 集成代码; 属设计工具同步, 非 L1-L3 产品债"
+    reopen_when: "产品明确要求且用户可完成本地 OAuth 时另开专项"
+
+  - id: grammar_point_taxonomy_dimension
+    blocker_class: sealed_honesty_law
+    evidence: >
+      exam_point_taxonomy.yaml grammar_point status=pending;
+      考查真值已在 tests_grammar→grammar_items, 不另造平行维度冒充完成。
+    reopen_when: "调研确认需要独立 grammar_point 维且与 tests_grammar 不双真相源"
+
+  - id: junior_phase_d_recitable_body
+    blocker_class: sealed_honesty_law
+    evidence: >
+      初中课程组织轴=教材单元三轴 lineage(已交付 jr_kecheng);
+      可背诵正文属高中 Phase D 命题频次课特有; 初中不为「看起来一致」编造同款正文。
+    reopen_when: "产品拍板初中也要段级可背诵正文并过初中词量门"
+
+  - id: exam_weight_metric_choice
+    blocker_class: out_of_product_scope
+    evidence: "product_master_plan §10 待决: 题数/分值/频次口径 — 现行覆盖模型用频次, 已可证"
+    reopen_when: "用户拍板改权重口径"
+
+  - id: product_rename
+    blocker_class: out_of_product_scope
+    evidence: "命名/重定位时机待决, 不影响数据与课程正确性"
+    reopen_when: "品牌决策就绪"

@@ -1,0 +1,32 @@
+{
+  "seq": 36,
+  "segment_id": "seg-36",
+  "layer": "G_FINAL",
+  "focus": "环境保护",
+  "focus_dim": "theme_l2",
+  "title_zh": "环境保护 — 第36节",
+  "body_en": "Wildlife needs habitat. Keep wild places clean on trips. Do not buy products from endangered species. Study how food, forests, and oceans connect. Protecting nature protects our future food and air.",
+  "body_zh": "野生动物需要栖息地。出行时保持野外清洁。不买濒危物种制品。学习食物、森林与海洋如何相连。保护自然，就是保护未来的食物与空气。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:环境保护"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "环境保护",
+    "evidence_years": [
+      2021
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

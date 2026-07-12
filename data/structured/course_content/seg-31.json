@@ -1,0 +1,32 @@
+{
+  "seq": 31,
+  "segment_id": "seg-31",
+  "layer": "G_FINAL",
+  "focus": "科学与技术",
+  "focus_dim": "theme_l2",
+  "title_zh": "科学与技术 — 第31节",
+  "body_en": "Everyday tools: search well with exact key words, save links, compare two sites. Watch out for hot claims without date or author. Update programs to stay safe. Understand basics of how your tools work — do not treat them as magic.",
+  "body_zh": "日常工具：用精确关键词搜索、保存链接、对比两站。警惕无日期无作者的热门说法。更新程序保安全。弄懂工具基本原理——别当魔法。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:科学与技术"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "科学与技术",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

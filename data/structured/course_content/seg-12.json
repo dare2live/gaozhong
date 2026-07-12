@@ -1,0 +1,33 @@
+{
+  "seq": 12,
+  "segment_id": "seg-12",
+  "layer": "G_FINAL",
+  "focus": "做人与做事",
+  "focus_dim": "theme_l2",
+  "title_zh": "做人与做事 — 第12节",
+  "body_en": "Kindness is not weakness. Offer a seat, share notes, thank the cleaner. Stand with someone who is left out. Strong people lift others; they do not push them down. Your daily manners become your reputation.",
+  "body_zh": "善良不是软弱。让座、分享笔记、感谢保洁。站到被冷落的人一边。强者托人向上，不把人按下去。日常礼貌会变成你的名声。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:做人与做事"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "做人与做事",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

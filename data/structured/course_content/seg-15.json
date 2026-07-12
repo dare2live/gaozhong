@@ -1,0 +1,33 @@
+{
+  "seq": 15,
+  "segment_id": "seg-15",
+  "layer": "G_FINAL",
+  "focus": "做人与做事",
+  "focus_dim": "theme_l2",
+  "title_zh": "做人与做事 — 第15节",
+  "body_en": "Public rules protect everyone: wait in line, clean up, follow lab safety. Breaking rules for fun can hurt others. If a rule seems wrong, discuss it with teachers instead of quiet fight-back. Being a good member of the school starts in the hallways.",
+  "body_zh": "公共规则保护所有人：排队、清理、遵守实验安全。图好玩犯规可能伤人。觉得规则不对，就和老师讨论，而不是暗地对抗。做学校里的好成员，从走廊开始。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:做人与做事"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "做人与做事",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

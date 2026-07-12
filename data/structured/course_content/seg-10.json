@@ -1,0 +1,32 @@
+{
+  "seq": 10,
+  "segment_id": "seg-10",
+  "layer": "G_FINAL",
+  "focus": "做人与做事",
+  "focus_dim": "theme_l2",
+  "title_zh": "做人与做事 — 第10节",
+  "body_en": "Honesty in study means no cheating and no fake progress. If you did not prepare, say so and plan repair time. Help a classmate without doing the work for them. Courage is speaking up when something unfair happens in class.",
+  "body_zh": "学习上的诚实：不作弊、不假装进步。没准备就直说，并安排补救时间。帮同学，但不要替他做完。课堂上不公时敢说出来，也是勇气。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:做人与做事"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "做人与做事",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

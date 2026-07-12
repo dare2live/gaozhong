@@ -1,0 +1,33 @@
+{
+  "seq": 25,
+  "segment_id": "seg-25",
+  "layer": "G_FINAL",
+  "focus": "文学、艺术与体育",
+  "focus_dim": "theme_l2",
+  "title_zh": "文学、艺术与体育 — 第25节",
+  "body_en": "Write a short poem with simple words and strong verbs. Read it aloud to hear the beat. Watch a play or match and note teamwork moments. Creative work is not talent only — it is hours of craft.",
+  "body_zh": "用简单词和有力动词写一首短诗。朗读听节奏。看戏或比赛，记下团队合作瞬间。创作不只靠天赋——也靠长时间手艺。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:文学、艺术与体育"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "文学、艺术与体育",
+    "evidence_years": [
+      2021,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

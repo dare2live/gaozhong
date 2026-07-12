@@ -1,0 +1,33 @@
+{
+  "seq": 28,
+  "segment_id": "seg-28",
+  "layer": "G_FINAL",
+  "focus": "科学与技术",
+  "focus_dim": "theme_l2",
+  "title_zh": "科学与技术 — 第28节",
+  "body_en": "Science asks for evidence. Claim, support, limit — say what you do not know. Technology is a tool: phones help research, but they also steal focus. Set device rules during study blocks. Wanting to know plus care keeps new ideas safe.",
+  "body_zh": "科学要证据。主张、支撑、边界——说出你不知道的。技术是工具：手机助检索，也偷专注。学习时段设设备规则。想弄清加上谨慎，新想法才安全。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:科学与技术"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "科学与技术",
+    "evidence_years": [
+      2022,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "seq": 5,
+  "segment_id": "seg-05",
+  "layer": "G_FINAL",
+  "focus": "生活与学习",
+  "focus_dim": "theme_l2",
+  "title_zh": "生活与学习 — 第5节",
+  "body_en": "Online tools can help, but they are not the lesson. Read the question twice before you search. Write your own answer in simple English, then check. Copying full essays teaches little. Build sentences with words you already know. After practice, close the screen and say the key points out loud.",
+  "body_zh": "线上工具能帮你，但它们不是课本身。先把题读两遍再去搜。用简单英语写出自己的答案，再核对。整篇照抄作文学不到多少。用已知的词造句。练完后关掉屏幕，把要点大声说出来。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:生活与学习"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "生活与学习",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

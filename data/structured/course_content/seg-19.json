@@ -1,0 +1,33 @@
+{
+  "seq": 19,
+  "segment_id": "seg-19",
+  "layer": "G_FINAL",
+  "focus": "社会服务与人际沟通",
+  "focus_dim": "theme_l2",
+  "title_zh": "社会服务与人际沟通 — 第19节",
+  "body_en": "Talk across cultures needs patience. Slow down, avoid hard local phrases at first, confirm meanings. Share your festivals and ask about theirs. Funny stories can bridge gaps, but never at someone's identity. Wanting to learn beats quick judgment.",
+  "body_zh": "跨文化交流要有耐心。先放慢、少用难懂的本地说法、确认含义。分享自己的节日，也问问对方的。有趣的故事能搭桥，但不要拿身份开玩笑。想学习胜过急着评判。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:社会服务与人际沟通"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "社会服务与人际沟通",
+    "evidence_years": [
+      2022,
+      2023
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

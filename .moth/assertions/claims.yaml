@@ -366,9 +366,21 @@ assertions:
     expect: {op: "==", value: "OK"}
 
   - id: phase-d-pilot-content-review
-    claim: "Phase D 试点 seg-01 过 course_content review gate 且 syllabus content 挂载"
+    claim: "Phase D 全量: course_content review gate 绿且 syllabus n_with_content==n_lessons"
     type: shell
-    command: ["bash", "-c", "python3 scripts/tools/audit/course_content_review_gate.py >/dev/null && python3 -c 'import duckdb; from backend.services.course.syllabus import syllabus; c=duckdb.connect(\"data/db/gaozhong.duckdb\",read_only=True); s=syllabus(c); c.close(); assert s[\"n_with_content\"]>=1 and s[\"lessons\"][0][\"content\"][\"body_en\"]; print(\"OK\")'"]
+    command: ["bash", "-c", "python3 scripts/tools/audit/course_content_review_gate.py >/dev/null && python3 -c 'import duckdb; from backend.services.course.syllabus import syllabus; from backend.services.course.content import reload; reload(); c=duckdb.connect(\"data/db/gaozhong.duckdb\",read_only=True); s=syllabus(c); c.close(); assert s[\"n_with_content\"]==s[\"n_lessons\"]>=40; print(\"OK\")'"]
+    expect: {op: "==", value: "OK"}
+
+  - id: irreducible-blockers-sealed
+    claim: "不可推进残留已封账 irreducible_blockers.yaml; RESUME 无开放「- **下一步**:」待办行"
+    type: shell
+    command: ["bash", "-c", "test -f backend/config/irreducible_blockers.yaml && python3 -c 'import yaml,re; from pathlib import Path; d=yaml.safe_load(Path(\"backend/config/irreducible_blockers.yaml\").read_text()); assert len(d.get(\"items\") or [])>=8; r=Path(\"docs/RESUME.md\").read_text(); assert not re.search(r\"^- \\\\*\\\\*下一步\\\\*\\\\*:\", r, re.M); assert \"irreducible_blockers.yaml\" in r; print(\"OK\")'"]
+    expect: {op: "==", value: "OK"}
+
+  - id: junior-nav-not-wip-label
+    claim: "初中导航去「建设中」标签(Phase E 四页已接线)"
+    type: shell
+    command: ["bash", "-c", "grep -q '沈阳中考 · 沪教牛津' frontend/static/nav-config.js && ! grep -q '建设中' frontend/static/nav-config.js && echo OK"]
     expect: {op: "==", value: "OK"}
 
   - id: cognitive-missing-years-disclosed

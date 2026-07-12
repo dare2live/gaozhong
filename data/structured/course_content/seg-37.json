@@ -1,0 +1,33 @@
+{
+  "seq": 37,
+  "segment_id": "seg-37",
+  "layer": "G_FINAL",
+  "focus": "历史、社会与文化",
+  "focus_dim": "theme_l2",
+  "title_zh": "历史、社会与文化 — 第37节",
+  "body_en": "History is not only dates. Ask who wrote the record and whose voice is missing. Compare past and present carefully — not every old idea is wise. Museums, family stories, and city streets are sources too. Understanding the past helps you act fairly now.",
+  "body_zh": "历史不只是日期。问记录是谁写的、谁的声音缺失。谨慎对比今昔——并非一切旧观念都明智。博物馆、家史与街道也是来源。理解过去，帮助你现在行事更公正。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:历史、社会与文化"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "历史、社会与文化",
+    "evidence_years": [
+      2022,
+      2025
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

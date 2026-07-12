@@ -1,0 +1,33 @@
+{
+  "seq": 7,
+  "segment_id": "seg-07",
+  "layer": "G_FINAL",
+  "focus": "生活与学习",
+  "focus_dim": "theme_l2",
+  "title_zh": "生活与学习 — 第7节",
+  "body_en": "Exam weeks feel heavy. Break big goals into daily pieces: words, one passage, one writing outline. Celebrate small wins so you do not burn out. If anxiety rises, breathe slowly and return to the next small task. Remember: the paper tests skills you have practiced, not magic.",
+  "body_zh": "考试周很沉。把大目标拆成每天几块：词、一篇阅读、一份写作提纲。庆祝小进步，避免燃尽。焦虑上来时，慢慢呼吸，回到下一个小任务。记住：试卷测的是你练过的技能，不是魔法。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:生活与学习"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "生活与学习",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

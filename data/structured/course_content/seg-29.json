@@ -1,0 +1,33 @@
+{
+  "seq": 29,
+  "segment_id": "seg-29",
+  "layer": "G_FINAL",
+  "focus": "科学与技术",
+  "focus_dim": "theme_l2",
+  "title_zh": "科学与技术 — 第29节",
+  "body_en": "Lab work needs method: question, plan, observe, record, conclude. Never fake data. Report errors honestly. Read graphs slowly — the lines and numbers matter. Share findings so others can test them.",
+  "body_zh": "实验要方法：提问、计划、观察、记录、结论。绝不造假数据，诚实报错。慢慢读图——线条与数字很重要。分享发现，让别人能复验。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:科学与技术"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "科学与技术",
+    "evidence_years": [
+      2022,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

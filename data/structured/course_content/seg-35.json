@@ -1,0 +1,32 @@
+{
+  "seq": 35,
+  "segment_id": "seg-35",
+  "layer": "G_FINAL",
+  "focus": "环境保护",
+  "focus_dim": "theme_l2",
+  "title_zh": "环境保护 — 第35节",
+  "body_en": "Climate news can feel huge. Break it into causes, effects, and choices. Support policies and products that cut harm when your family shops. Share reliable articles, not panic posts. Hope is a plan you can measure.",
+  "body_zh": "气候新闻可能显得巨大。拆成原因、影响与选择。家庭购物时支持减害的政策与产品。分享可靠文章，不传恐慌帖。希望是一份可衡量的计划。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:环境保护"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "环境保护",
+    "evidence_years": [
+      2021
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

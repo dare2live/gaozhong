@@ -1,0 +1,32 @@
+{
+  "seq": 30,
+  "segment_id": "seg-30",
+  "layer": "G_FINAL",
+  "focus": "科学与技术",
+  "focus_dim": "theme_l2",
+  "title_zh": "科学与技术 — 第30节",
+  "body_en": "Smart tools can draft text, but you must check facts and voice. Never submit machine work as if it were only yours without review. Learn how to ask for sources and limits. Human judgment stays the final gate.",
+  "body_zh": "智能工具能起草文字，但你必须核对事实与语气。未经审阅勿把机器产出当纯自己的作业提交。学着要求来源与边界。人类判断仍是最后一道门。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:科学与技术"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "科学与技术",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

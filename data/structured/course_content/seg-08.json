@@ -1,0 +1,33 @@
+{
+  "seq": 8,
+  "segment_id": "seg-08",
+  "layer": "G_FINAL",
+  "focus": "生活与学习",
+  "focus_dim": "theme_l2",
+  "title_zh": "生活与学习 — 第8节",
+  "body_en": "Teachers give feedback for a reason. Read every comment and fix one type of error each week. Keep old papers in a folder ordered by date. Compare your first draft with the final one — growth becomes visible. Ask one clear question in the next class instead of saying you understand when you do not.",
+  "body_zh": "老师的反馈有原因。逐条读评语，每周只改一类错。旧卷按日期放进文件夹。对比初稿与终稿——进步会看得见。下节课问一个清楚的问题，不要懂装懂。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:生活与学习"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "生活与学习",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

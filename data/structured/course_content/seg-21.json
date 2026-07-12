@@ -1,0 +1,32 @@
+{
+  "seq": 21,
+  "segment_id": "seg-21",
+  "layer": "G_FINAL",
+  "focus": "社会服务与人际沟通",
+  "focus_dim": "theme_l2",
+  "title_zh": "社会服务与人际沟通 — 第21节",
+  "body_en": "Service talk is a useful life skill: greet, state the problem, offer options, thank. Practice with role play in class. Calm words lower heat in hard talks with shops or offices. Clear speech saves time for everyone.",
+  "body_zh": "服务话术也是生活技能：问候、说明问题、给出选项、感谢。课上用角色扮演练。冷静措辞能给商店或办公室里的难谈降温。清楚表达为人人省时间。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:社会服务与人际沟通"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "社会服务与人际沟通",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

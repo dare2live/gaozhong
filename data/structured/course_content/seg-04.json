@@ -1,0 +1,33 @@
+{
+  "seq": 4,
+  "segment_id": "seg-04",
+  "layer": "G_FINAL",
+  "focus": "生活与学习",
+  "focus_dim": "theme_l2",
+  "title_zh": "生活与学习 — 第4节",
+  "body_en": "Morning time is quiet and useful. Ten minutes of review before class can save an hour at night. Carry a small notebook for mistakes you keep making. If a passage feels long, mark the topic sentence of each paragraph first. Learning is a habit: same place, same time, small goal — then stop and rest.",
+  "body_zh": "清晨安静又好用。课前十分钟复习，晚上能省下一小时。随身带小本，记下反复犯的错。篇章太长时，先标出每段主题句。学习是习惯：同一地点、同一时间、小目标——然后停下来休息。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:生活与学习"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "生活与学习",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

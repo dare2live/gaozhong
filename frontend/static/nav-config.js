@@ -2,7 +2,7 @@
  *
  * 2026-06-27 产品重置 (北极星 docs/product_master_plan.md): 面向学习者的产品 IA。
  * 顶层 = 初中 | 高中 两大板块 (GZ_SECTIONS); 每板块四页 (① 命题研判 ② 真题特点 ③ 基础库 ④ 课程)。
- * 教师工具 (备课/讲课/组卷/学情/扫描) 已下线 (后端服务保留, 不在 nav)。高中先跑通, 初中 Phase E 镜像建设中。
+ * 教师工具 (备课/讲课/组卷/学情/扫描) 已下线 (后端服务保留, 不在 nav)。高中 Phase D 正文已挂载; 初中 Phase E 四页+K12 已接线。
  *
  * app_router.js renderSidebar() 渲染: 板块切换器 (GZ_SECTIONS) + 当前板块的分组 (GZ_NAV 按 section 过滤)。
  * 加/改/排页面 = 改本配置一处, 不动 HTML/CSS。
@@ -15,7 +15,7 @@
  */
 window.GZ_SECTIONS = [
   { id: "senior", label: "高中", hint: "辽宁新高考 II 卷" },
-  { id: "junior", label: "初中", hint: "沈阳中考 · 建设中" },
+  { id: "junior", label: "初中", hint: "沈阳中考 · 沪教牛津" },
 ];
 
 const _IC = {
@@ -42,8 +42,8 @@ window.GZ_NAV = [
     // 蓝图练习卷/自定义组卷), 但重构导航时漏加了入口, 只能靠直接改URL到达。补这一条。
     { id: "qbank",    label: "组卷练习", icon: _IC.zujuan },
   ]},
-  // ── 初中 (北极星 Phase E; 同结构镜像高中, 建设中) ──
-  { section: "junior", group: "初中 · 沈阳中考 (建设中)", tabs: [
+  // ── 初中 (北极星 Phase E; 同结构镜像高中) ──
+  { section: "junior", group: "初中 · 沈阳中考", tabs: [
     { id: "jr_beike",   label: "命题研判", icon: _IC.yanpan },
     { id: "jr_zhenti",  label: "真题特点", icon: _IC.zhenti },
     { id: "jr_jichu",   label: "基础库",   icon: _IC.jichu },

@@ -1,0 +1,32 @@
+{
+  "seq": 3,
+  "segment_id": "seg-03",
+  "layer": "G_FINAL",
+  "focus": "生活与学习",
+  "focus_dim": "theme_l2",
+  "title_zh": "生活与学习 — 第3节",
+  "body_en": "School life is more than grades. Classmates can become study partners: explain a hard point to a friend, and you remember it better. Keep a short list of new words from each reading. Sleep well before a test; a clear mind beats last-minute fear. Parents may push hard — tell them your plan so they can help, not only worry.",
+  "body_zh": "学校生活不只是分数。同学可以成为学习搭档：把难点讲给朋友听，自己记得更牢。每次阅读后留一小张生词清单。考试前睡好；清醒的头脑胜过临时慌张。家长也许很急——把计划告诉他们，让他们帮得上忙，而不只是担心。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:生活与学习"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "生活与学习",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

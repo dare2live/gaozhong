@@ -1,0 +1,33 @@
+{
+  "seq": 13,
+  "segment_id": "seg-13",
+  "layer": "G_FINAL",
+  "focus": "做人与做事",
+  "focus_dim": "theme_l2",
+  "title_zh": "做人与做事 — 第13节",
+  "body_en": "Goals need action plans. Write what you will do this week, not only what you hope. Check progress on Sunday night. Adjust without self-hate. Ask teachers for advice, then decide yourself. Standing on your own grows from many small responsible acts.",
+  "body_zh": "目标需要行动计划。写下本周要做的，而不只是盼望。周日晚检查进度。调整，但不自我厌恶。向老师求建议，再自己决定。靠自己站稳，来自许多小小的负责行为。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:做人与做事"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "做人与做事",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

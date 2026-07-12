@@ -269,7 +269,7 @@
       : (sid ? "已登录学习者但暂无弱点高亮(无作答或非主题群弱点)。" : "未绑定学习者身份 — 课程不伪造个人缺口高亮。");
     CONTENT.innerHTML = `<section class="scaffold">
       ${GZ.pageHead(`高中 · ${syl.n_lessons} 节课程`, `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
-      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>Phase D 试点</b> — 已上线正文 ${nContent}/${syl.n_lessons} 节(过 review gate); 其余仍「作业可做、正文待补」。${gapNote}</span></div>
+      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>Phase D</b> — 可背诵正文 ${nContent}/${syl.n_lessons} 节(均过 review gate)。${gapNote}</span></div>
       <div class="sc-takeaway">
         <div class="sc-tk-h">覆盖证明 · 用最少的课覆盖最大考查权重</div>
         ${covOk ? _covProof(cov) : `<p class="sc-tk-body">${_esc(_covLine(syl.coverage_proof || {}) || "覆盖数据加载失败。")}</p>`}

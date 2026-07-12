@@ -1,0 +1,32 @@
+{
+  "seq": 20,
+  "segment_id": "seg-20",
+  "layer": "G_FINAL",
+  "focus": "社会服务与人际沟通",
+  "focus_dim": "theme_l2",
+  "title_zh": "社会服务与人际沟通 — 第20节",
+  "body_en": "Online communities have rules too. Do not spread false stories. Cite sources. Protect privacy — yours and others'. If chat turns angry, pause before you type. Good online behavior is part of real life behavior.",
+  "body_zh": "线上社区也有规矩。不传假消息，注明来源。保护隐私——自己的和别人的。聊天变怒时，先停再打字。线上好行为也是真实生活行为的一部分。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:社会服务与人际沟通"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "社会服务与人际沟通",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

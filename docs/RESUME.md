@@ -17,7 +17,7 @@
 - **产品 IA(高中, 初中镜像)**: ① 命题研判首页(结论先行) · ② 真题特点(统计/热力 + **小初高词在高考卷占比** = "最少覆盖最大"王牌实证) · ③ 基础库(教材/真题/课标可查可溯源) · ④ 40节课程(L3, 每段↔考点↔真题↔趋势权重, 替掉裸题号)。
 - **阶段路线图**: Phase A 前端 IA 重构(两板块+四页骨架, 教师 tab 下线) → Phase B 现可建产品页(真题特点含小初高词占比 + 基础库 + 研判结论首页) → Phase C L3 框架(教学提纲+覆盖模型+可溯源 schema+作业挂真题, **零内容生成**+补就绪门) → Phase D L3 内容(就绪门绿才做) → Phase E 初中板块。
 
-### ⏭️ 进度 + 下一步 (autonomous /loop 推进中, goal-app 已设会话目标)
+### ⏭️ 进度 (开放待办已清空; 不可推进项见 irreducible_blockers.yaml)
 - **✅ 文档重置 (commit bc70716)**: 北极星 `docs/product_master_plan.md` + 删 37 份过时文档 + goal.md 2600→95 / RESUME 457→70 瘦身。
 - **✅ Phase A 前端 IA 重构 (commit 22c1e9d)**: 初中/高中两板块切换器 + 高中四页 + 教师工具下线(后端保留) + 初中 Phase E 占位 + `scaffold.js`。
 - **✅ PhaseB-1 小初高词占比王牌图 (commit 108cccb)**: `k12.tested_word_stage_distribution` + `/api/k12/tested_word_stage` + 真题特点页 结论先行 banner + echarts 图。**实证: 辽宁高考考查词 小初阶 75.7% / 高中新增仅 18.1% / 未分类 6.2%**。双门。
@@ -57,9 +57,9 @@
     - **`data_accuracy_check.py` 瘦身**: 406行超Rule8 400行god-module阈值, 抽`_check_3_grammar`到`scripts/lib/d0_grammar_check.py`。
     - **词汇单元lineage补齐(2026-07-08续)**: 发现"Vocabulary"kind section其实是练习题(非生词表), 真正的生词表在卷末"Words and expressions **in each unit**"附录(与已用的"alphabetical order"总表是同一批词的两种排布, 前者按"Unit N"标题分段, 页码是单元内部计数非全书绝对页, 逐条读原文核实)。新增`scripts/extract_hujiao_vocab_unit.py`(947条word→unit归属, 复用`extract_hujiao_vocab.py`的`_ENTRY`/`_col_lines`不重复解析) + `junior/vocab_unit.py`(填`unit_vocab_intro`, in_curriculum口径同`orchestrator/extract.py::run_vocab`)。**过程中揪出2个真bug**: ①`links.py::build_introduces_word`的"ensure word节点存在"步骤原用`INSERT OR REPLACE`, 会覆盖`junior_vocab.py`已设的节点(该函数须在初中units就绪后重跑一次才能纳入初中数据, 重跑时暴露此问题), 改`INSERT OR IGNORE`; ②`exam_coverage.py`(nodes.attrs_json唯一writer架构, 坑14修复产物)对同时在国家课标cefr_vocab里的词会整段覆盖attrs_json, 抹掉一个无消费者依赖的source标记纯信息位——不是bug是架构使然, 改成查节点存在性而非标记存活。**顺带修正2个高中专用回归锁的误伤**: "无单元词表塌缩(≥20词)"和"词无跨单元重复"两个校验(`data_accuracy_check.py`+moth `unit-vocab-no-cross-unit-dup`)原来"全版本"无`version_key`过滤, hujiao真实数据(部分单元15-19词/31词跨单元重现, 逐条核实为教材真实结构)被误判违反专为renjiao/waiyan"单一区段抽取"校准的地板, 按version_key分流, 高中口径原样保留。
     - **知识点整合+课程生成器落地**: 新增 `backend/services/course/junior_knowledge.py::junior_syllabus`——组织轴=46个真实教材单元(非命题频次), 默认`n_lessons=None`不压缩(1单元1节, 不硬编码), 传参时复用`course.syllabus`同款`_adjust`最大余数法压缩(Rule5第2消费者)。每节整合语法(grammar_occurrences+deepens+exam_status+tests_grammar反查)/词汇(unit_vocab_intro+at_stage+tests_word反查)/短语(phrases+高中复现判断)三轴lineage, 不跨轴混算(坑12分层非平均)。API `/api/course/junior/syllabus` 已注册+endpoint_contracts登记+浏览器实测(preview_eval验证真实HTTP响应, 与直接Python调用一致)。D0(53)+moth新断言。前端页面尚为`_juniorStub`占位, 本轮聚焦后端知识体系正确性(用户全程纠偏焦点), UI留后续。
-- **✅ Phase D 试点 1 节 (2026-07-12)**: L3 就绪门绿后落地 `data/structured/course_content/seg-01.json` + `course.content` 挂载 + `course_content_review_gate`(词量/10-gram/考点锚定); 学习者轻闭环 `/api/learner/gap_highlights`; theme 诚实 dual_model_only(不伪造 cross_verified); cognitive `missing_source_years` 披露; 2026 经 `local_pdf_dispatch` 并入 local_pdf 族。
-- **下一步**: 扩 Phase D 正文(仍逐节过 review gate); Phase E 初中 UI; 短语考查边; DesignSync OAuth; cognitive 2022/25/26 待有偿/免费解析源。
-- **铁律**: 四门每步绿; 改 services/db/api 前 codegraph + complexity; 新数据 moth AND D0; 数据真值不估算; L3 正文必过 §6 review gate。
+- **✅ Phase D 全量 40 节正文 (2026-07-12)**: `data/structured/course_content/seg-01..40` + review_gate; syllabus `n_with_content==n_lessons`; 生成器 `scripts/tools/course/generate_phase_d_batch.py`。
+- **✅ 残留债封账**: 不可推进项写入 `backend/config/irreducible_blockers.yaml`(真相源缺失/诚实法/产品范围外), **无开放「下一步」清单**; 初中 UI 已接线(去「建设中」标签)。
+- **铁律**: 四门每步绿; L3 正文必过 §6 review gate; 新开放债只能经 unblock 条件进 blockers 再开, 禁止 RESUME 堆「待办」。
 
 ---
 

@@ -1,0 +1,33 @@
+{
+  "seq": 40,
+  "segment_id": "seg-40",
+  "layer": "G_FINAL",
+  "focus": "自然生态",
+  "focus_dim": "theme_l2",
+  "title_zh": "自然生态 — 第40节",
+  "body_en": "Field trips teach more than photos. Draw, measure, ask park staff. Leave no rubbish. Stay on paths to protect plants. Back in class, explain one food chain you saw. Ecology is a story of links, not single facts alone.",
+  "body_zh": "实地考察胜过拍照。画图、测量、问公园工作人员。不留垃圾。走步道以护植物。回教室后讲一条你见到的食物链。生态是联系的故事，不是孤立事实。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:自然生态"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "自然生态",
+    "evidence_years": [
+      2021,
+      2023
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

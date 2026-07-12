@@ -1,0 +1,33 @@
+{
+  "seq": 26,
+  "segment_id": "seg-26",
+  "layer": "G_FINAL",
+  "focus": "文学、艺术与体育",
+  "focus_dim": "theme_l2",
+  "title_zh": "文学、艺术与体育 — 第26节",
+  "body_en": "Museums and stadiums are public classrooms. Read the labels. Ask guides questions. Compare two artworks or two athletes' styles. Bring a friend and teach each other one new fact. Culture grows when shared.",
+  "body_zh": "博物馆与体育场是公共课堂。读说明牌，问讲解员。比较两件作品或两位运动员的风格。带朋友互相教一个新事实。文化因分享而生长。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:文学、艺术与体育"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "文学、艺术与体育",
+    "evidence_years": [
+      2021,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "seq": 6,
+  "segment_id": "seg-06",
+  "layer": "G_FINAL",
+  "focus": "生活与学习",
+  "focus_dim": "theme_l2",
+  "title_zh": "生活与学习 — 第6节",
+  "body_en": "Group work works when roles are clear: one keeps time, one writes notes, one checks facts. Listen before you speak. Disagree with ideas, not with people. Share sources so everyone can check them. End with three takeaways the group agrees on — that is real learning together.",
+  "body_zh": "小组学习要角色清楚：一人计时、一人记笔记、一人核对事实。先听再说。反驳观点，不攻击人。分享来源，人人可核对。结束时写出三组共同认可的收获——那才是一起学会的东西。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:生活与学习"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "生活与学习",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

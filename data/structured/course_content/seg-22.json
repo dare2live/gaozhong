@@ -1,0 +1,32 @@
+{
+  "seq": 22,
+  "segment_id": "seg-22",
+  "layer": "G_FINAL",
+  "focus": "社会服务与人际沟通",
+  "focus_dim": "theme_l2",
+  "title_zh": "社会服务与人际沟通 — 第22节",
+  "body_en": "Family talks can be hard. Choose a quiet time. Use I-messages: I feel… when… I need… Avoid blame words. Agree on one next step together. Follow up later so trust grows. Home is also a place to practice respect.",
+  "body_zh": "家庭谈话可能很难。选安静时候。用「我」句式：我感到…当…我需要…少指责。一起定下一步。之后跟进，信任才会长。家也是练习尊重的地方。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:社会服务与人际沟通"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "社会服务与人际沟通",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

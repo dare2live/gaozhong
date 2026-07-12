@@ -1,0 +1,33 @@
+{
+  "seq": 16,
+  "segment_id": "seg-16",
+  "layer": "G_FINAL",
+  "focus": "社会服务与人际沟通",
+  "focus_dim": "theme_l2",
+  "title_zh": "社会服务与人际沟通 — 第16节",
+  "body_en": "Good communication starts with clear purpose: what do you need the other person to know? Use short sentences. Check that they understood. In messages, tone is easy to miss — be polite and specific. Listening is half of every talk.",
+  "body_zh": "沟通先明确目的：你要对方知道什么？用短句。确认对方听懂了。消息里语气易被误读——礼貌且具体。倾听占谈话一半。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:社会服务与人际沟通"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "社会服务与人际沟通",
+    "evidence_years": [
+      2022,
+      2025
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

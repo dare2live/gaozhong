@@ -1,0 +1,33 @@
+{
+  "seq": 14,
+  "segment_id": "seg-14",
+  "layer": "G_FINAL",
+  "focus": "做人与做事",
+  "focus_dim": "theme_l2",
+  "title_zh": "做人与做事 — 第14节",
+  "body_en": "Conflict happens. Stay calm, state facts, suggest a fair fix. Apologize when you hurt someone, even if you did not mean it. Forgive when others change. Holding anger forever costs you more. Peace is also something you build.",
+  "body_zh": "冲突总会有。保持冷静，陈述事实，提出公平办法。伤到人就道歉，即使不是故意。对方改了就原谅。永远憋着怒气更伤自己。和平也是建出来的。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:做人与做事"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "做人与做事",
+    "evidence_years": [
+      2021,
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

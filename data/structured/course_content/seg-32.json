@@ -1,0 +1,32 @@
+{
+  "seq": 32,
+  "segment_id": "seg-32",
+  "layer": "G_FINAL",
+  "focus": "科学与技术",
+  "focus_dim": "theme_l2",
+  "title_zh": "科学与技术 — 第32节",
+  "body_en": "Space, medicine, and clean energy show how science serves people. Read one short science news piece a week and summarize it. Note numbers and units carefully. Ask: who benefits, and what risks remain?",
+  "body_zh": "航天、医学、清洁能源显示科学如何服务人。每周读一则短科学新闻并概括。仔细记下数字与单位。追问：谁受益，还剩什么风险？",
+  "covers_exam_points": [
+    "exam_point:theme_l2:科学与技术"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "科学与技术",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

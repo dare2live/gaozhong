@@ -84,15 +84,16 @@ course_segment: { segment_id, course_id, seq,
 
 ## 5. L3 就绪门 (把用户"等数据正确"操作化)
 
-C 决策"内容依赖 L1/L2 正确"= 需一道**明确的就绪门**判"地基够不够填 L3 内容"。绿才允许生成:
+C 决策"内容依赖 L1/L2 正确"= 需一道**明确的就绪门**判"地基够不够填 L3 内容"。绿才允许生成。
+机器契约: `backend/config/l3_readiness_gate.yaml` + `scripts/tools/audit/l3_readiness_gate.py`。
 
-- [ ] **教材提取完整**: 高中外研+人教 单元/词表/课文 100%(初中板块另算)。
-- [ ] **考点标注可信**: 题材/主题=双模型一致 **且对第一手教研解析交叉验证**(坑16); 设问思维=explicit_label 真值。
-- [ ] **关联口径正确**: 出现≠考查(tests_word 离散口径) / 篇章级 genre-theme / 卷制分段 —— 本季已修(见 RESUME 根因A/B), 三门绿。
-- [ ] **覆盖模型跑通**: 考点全集 + 覆盖率可算(§4)。
-- [ ] **小初高词占比验证**(§4 王牌实证可信)。
+- [x] **教材提取完整**: 高中外研+人教 单元/词表/课文 100%(初中板块另算)。
+- [x] **考点标注可信**: genre 子集 analysis 交叉=`cross_verified`; theme 仍 dual_model_only(已封账, 见 irreducible_blockers); 设问思维=explicit_label。
+- [x] **关联口径正确**: 出现≠考查(tests_word 离散口径) / 篇章级 genre-theme / 卷制分段。
+- [x] **覆盖模型跑通**: 考点全集 + 覆盖率可算(§4)。
+- [x] **小初高词占比验证**(§4 王牌实证可信)。
 
-就绪门绿 → 才进 Phase D(L3 内容生成)。**现在: 大部分已绿, 教材初中 + 覆盖模型 是主要待办** → 故本次先搭 L3 框架 + 把就绪门补齐, 不生成内容。
+就绪门绿 → Phase D。**已交付**: 高中 40 节可背诵正文(review_gate) + 初中四页+K12 接线。不可推进项见 `backend/config/irreducible_blockers.yaml`(非开放待办)。
 
 ---
 

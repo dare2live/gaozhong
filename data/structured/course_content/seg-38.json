@@ -1,0 +1,33 @@
+{
+  "seq": 38,
+  "segment_id": "seg-38",
+  "layer": "G_FINAL",
+  "focus": "历史、社会与文化",
+  "focus_dim": "theme_l2",
+  "title_zh": "历史、社会与文化 — 第38节",
+  "body_en": "Culture lives in food, festivals, language, and daily manners. Respect differences without freezing people into stereotypes. Learn one tradition deeply instead of collecting empty labels. Share your own culture with clear pride and open ears.",
+  "body_zh": "文化活在饮食、节日、语言与日常礼貌里。尊重差异，不要把人冻成刻板印象。深入学一种传统，胜过收集空洞标签。带着清楚的自豪与开放的耳朵分享自己的文化。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:历史、社会与文化"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "历史、社会与文化",
+    "evidence_years": [
+      2022,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

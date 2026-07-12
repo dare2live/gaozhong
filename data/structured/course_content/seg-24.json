@@ -1,0 +1,33 @@
+{
+  "seq": 24,
+  "segment_id": "seg-24",
+  "layer": "G_FINAL",
+  "focus": "文学、艺术与体育",
+  "focus_dim": "theme_l2",
+  "title_zh": "文学、艺术与体育 — 第24节",
+  "body_en": "Music builds rhythm for language. Sing along quietly and notice stress patterns. Describe a painting with precise adjectives. Sport teaches tough spirit: train, fail, adjust, try again. Body and mind grow together when practice is regular.",
+  "body_zh": "音乐给语言节奏。轻声跟唱，注意重音模式。用准确形容词描述一幅画。体育教韧劲：练、败、调、再试。规律练习时，身心一起成长。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:文学、艺术与体育"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "文学、艺术与体育",
+    "evidence_years": [
+      2021,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

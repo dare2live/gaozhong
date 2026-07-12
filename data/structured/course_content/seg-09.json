@@ -1,0 +1,32 @@
+{
+  "seq": 9,
+  "segment_id": "seg-09",
+  "layer": "G_FINAL",
+  "focus": "做人与做事",
+  "focus_dim": "theme_l2",
+  "title_zh": "做人与做事 — 第9节",
+  "body_en": "Character shows in small choices: return a lost wallet, keep a promise, admit a mistake. Hard work beats empty talk. When you fail, own it and try a better way. Respect grows when you listen and keep secrets that are not yours to share. Doing the right thing is a skill you can practice every day.",
+  "body_zh": "品格显在小选择：归还钱包、守约、承认错误。实干胜过空谈。失败时认账，再换更好办法。倾听、不传不属于你的秘密，尊重才会长。做对的事是可以每天练习的技能。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:做人与做事"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "做人与做事",
+    "evidence_years": [
+      2022
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

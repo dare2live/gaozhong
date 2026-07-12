@@ -1,0 +1,33 @@
+{
+  "seq": 18,
+  "segment_id": "seg-18",
+  "layer": "G_FINAL",
+  "focus": "社会服务与人际沟通",
+  "focus_dim": "theme_l2",
+  "title_zh": "社会服务与人际沟通 — 第18节",
+  "body_en": "In debate, attack the claim with evidence, not the person. Summarize the other side fairly before you reply. Change your mind when facts change — that is strength. Classrooms become safer when disagreement stays respectful.",
+  "body_zh": "辩论用证据打论点，不打人。先公正复述对方观点再回应。事实变了就改想法——那是力量。意见不合仍保持尊重，教室才更安全。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:社会服务与人际沟通"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "社会服务与人际沟通",
+    "evidence_years": [
+      2022,
+      2024
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}

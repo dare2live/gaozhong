@@ -1,0 +1,32 @@
+{
+  "seq": 34,
+  "segment_id": "seg-34",
+  "layer": "G_FINAL",
+  "focus": "环境保护",
+  "focus_dim": "theme_l2",
+  "title_zh": "环境保护 — 第34节",
+  "body_en": "Pollution has sources you can name: smoke, plastic, dirty rivers. Learn one local problem and one fix students can support. Plant trees if your school runs a green project. Speak with facts, not only anger.",
+  "body_zh": "污染有可点名的来源：烟、塑料、脏河。了解一个本地问题与学生能支持的一个对策。学校有绿化项目就参与种树。用事实说话，不只靠愤怒。",
+  "covers_exam_points": [
+    "exam_point:theme_l2:环境保护"
+  ],
+  "exam_grounded": {
+    "axis": "theme_l2",
+    "label": "环境保护",
+    "evidence_years": [
+      2021
+    ],
+    "note": "焦点=教学提纲 theme_l2; 作业仍为辽宁真题; 本段可背诵讲义非押题"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-12",
+    "checks": [
+      "lexicon_G_FINAL",
+      "no_10gram_textbook",
+      "exam_grounded_theme_l2",
+      "no_political"
+    ],
+    "note": "Phase D batch via generate_phase_d_batch + review_gate"
+  }
+}
