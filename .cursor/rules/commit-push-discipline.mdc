@@ -1,0 +1,29 @@
+---
+description: 每次实质改动后 commit 并 push GitHub（用户 2026-07-15 硬约束）
+alwaysApply: true
+---
+
+# Commit + Push 纪律
+
+用户硬约束：**每次有实质代码/数据/配置改动，都要 commit，并 push 到 GitHub**。不要等用户再说「提交」。
+
+## 何时 commit
+- 一个可验证的逻辑单元完成（功能落地、门绿、修 bug、数据 curated、文档断点更新）
+- 不要攒一大坨跨主题改动；可拆成 2–3 个清晰 commit
+- 空改动 / 仅探索未改文件 → 不 commit
+
+## 流程（每次改完）
+1. `git status` + `git diff` + 最近 `git log` 对齐 message 风格
+2. 相关门先绿（至少触及面的 D0 子集或 `python3 scripts/data_accuracy_check.py`；大改再 `moth assert`）
+3. `git add` 只加本次相关文件（勿盲 `git add .` 带上 secrets）
+4. `git commit`（HEREDOC message，写 why）
+5. `git push -u origin HEAD`（已跟踪则 `git push`）
+6. 回报：commit hash + 远程 URL/ahead 状态
+
+## 禁止
+- `--no-verify` 跳过 hook（除非用户明示）
+- force push main/master
+- 把 `.env` / 密钥 / 本地 DB 二进制误提交
+
+## 辅助脚本
+- `bash scripts/tools/git/commit_push.sh "message"` — 暂存已跟踪改动+常见新文件后 commit+push（仍需人工确认范围）
