@@ -43,10 +43,21 @@ items:
 
   - id: junior_phase_d_recitable_body
     blocker_class: sealed_honesty_law
+    status: reopened
+    reopened_at: "2026-07-15"
+    reopen_decision: "用户拍板: 初中也做可背诵正文"
     evidence: >
-      初中课程组织轴=教材单元三轴 lineage(已交付 jr_kecheng);
-      可背诵正文属高中 Phase D 命题频次课特有; 初中不为「看起来一致」编造同款正文。
-    reopen_when: "产品拍板初中也要段级可背诵正文并过初中词量门"
+      原封账: 初中组织轴=教材单元三轴 lineage; 可背诵正文属高中 Phase D 特有。
+      2026-07-15 用户明确「做」→ 本条 reopen; 实现须用累计 hujiao 词表门(禁 G_FINAL)。
+    reopen_when: "已 reopen — 见 status"
+
+  - id: student_real_answer_personalization
+    blocker_class: out_of_product_scope
+    sealed_at: "2026-07-15"
+    evidence: >
+      用户拍板: 「真实作答→缺啥学啥」预留, 有真实学生后再上。
+      现行学情/弱点/推荐保持 demo 壳诚实空态, 禁止假填真实闭环。
+    reopen_when: "有非 demo 的 student_answers 且产品要求个性化路径时"
 
   - id: exam_weight_metric_choice
     blocker_class: out_of_product_scope
