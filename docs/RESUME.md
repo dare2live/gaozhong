@@ -62,7 +62,7 @@
 - **✅ 真相源补齐(2026-07-13)**: cognitive 2022/2025/2026 阅读子题 explicit_label 入图(160边; 2026 truth_anchor→active); 中考2025 除书面表达标「略」外答案齐(45/45 complete)。仍封账: `zhongkao_2026_english` + 官方2技能桶空样本等。
 - **✅ 设问思维结构桶全覆盖 (2026-07-14/15)**: 官方7技能 `missing_categories=[]`; 七选五→「理解文章结构类型」L1+L2(主题句/承上启下/段旨收束/逻辑推进/句际衔接), `unknown=0` 门锁; 中考五选四同口径; 命题研判 E 卡 + 真题特点7技能讲解; 单测 `tests/test_structure_subtype.py`。
 - **✅ Ceiling 三任务达标 (2026-07-15)**: ① theme 人工课标核验≥15(`human_curriculum_verified`, 禁假 analysis-cross) ② 课标学业质量 3水平+42描述入图 + 辽宁高考卷级→水平二 ③ 短语原先封账后**重开人工核验路径**。
-- **✅ tests_phrase 人工核验开放 (2026-07-15)**: `phrase_human_verified.jsonl` + `phrase_truth.load_tests_phrase` → ≥15 边(首批20: 完形多词空+语法填空固定搭配), provenance=`human_verified`; 教材 `come up with` 复用既有 phrase 节点。共现/「考查搭配」类别桶仍永久禁 bulk(blockers `tests_phrase_bulk_from_cooccurrence`)。
+- **✅ tests_phrase 人工核验开放 (2026-07-15)**: `phrase_human_verified.jsonl` + `phrase_truth.load_tests_phrase` → human_verified 边(高考完形/语法填空/短改 + 辽宁中考完形短语动词 + 语篇填空固定搭配); 教材短语节点可复用。共现/「考查搭配」类别桶仍永久禁 bulk。
 - **✅ Commit+Push 纪律**: `.cursor/rules/commit-push-discipline.mdc` + `scripts/tools/git/commit_push.sh` — 实质改动后即 commit 并 push GitHub。
 - **铁律**: 四门每步绿; L3 正文必过 §6 review gate; 新开放债只能经 unblock 条件进 blockers 再开, 禁止 RESUME 堆「待办」。
 
