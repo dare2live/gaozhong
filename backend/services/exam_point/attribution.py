@@ -6,7 +6,7 @@
 
 **语法学段维度已实测排除, 非遗漏**: 设计之初曾打算做"词汇×语法×设问思维"三线联合, 但实测
 发现 tests_grammar 边只出现在 语法填空/短文改错 这两种 question_type 上, 而 cognitive_skill
-只标注 阅读理解 的子题 —— 两者 question_type 完全不相交, 语法维度在当前数据结构下**必然**
+只标注 阅读理解 的子题(四选一; 七选五结构空另计 curriculum_aligned_task, 不进本联合归因) —— 两者 question_type 完全不相交, 语法维度在当前数据结构下**必然**
 是空集(不是"样本少", 是"这两条边永远不会同时出现在同一道题上")。若强行保留这个字段, 会让
 读者误以为"这篇文章语法信息未知/待补", 实际是**结构性不可能**, 故诚实地不做这个维度, 而非
 摆一个必空的占位字段(参考项目"宁缺毋滥, 返空>假推"原则)。
@@ -39,7 +39,11 @@ _SENIOR_STAGES = {"高中必修", "高中选修"}
 
 def _passage_skill_dist(con: duckdb.DuckDBPyConnection) -> dict[str, dict[str, int]]:
     """每语篇(2015-2020) 设问思维分布(子题计数), 复用 cognitive_skill_by_content 的
-    passage_label 回指桥接手法(cognitive_skill.py::_CROSS_SQL 同款 JOIN, 未重写逻辑)。"""
+    passage_label 回指桥接手法(cognitive_skill.py::_CROSS_SQL 同款 JOIN, 未重写逻辑)。
+
+    排除 curriculum_aligned_task(七选五结构空): 无 passage_label 回指阅读四选一语篇,
+    且联合归因问的是「四选一设问思维×词汇」, 不混语篇衔接任务。
+    """
     rows = con.execute(
         "SELECT 'question:'||json_extract_string(nq.attrs_json,'$.passage_label') AS pid, "
         "       ns.label AS skill "
@@ -47,6 +51,9 @@ def _passage_skill_dist(con: duckdb.DuckDBPyConnection) -> dict[str, dict[str, i
         "JOIN nodes nq ON nq.concept_id = e.src_id "
         "JOIN nodes ns ON ns.concept_id = e.dst_id "
         "WHERE e.relation='tests_exam_point' AND json_extract_string(e.evidence_json,'$.dimension')='cognitive_skill' "
+        "AND json_extract_string(e.evidence_json,'$.provenance') <> 'curriculum_aligned_task' "
+        "AND COALESCE(json_extract_string(e.evidence_json,'$.exam_stage'),'gaokao')='gaokao' "
+        "AND json_extract_string(nq.attrs_json,'$.passage_label') IS NOT NULL "
         "AND CAST(json_extract_string(e.evidence_json,'$.lineage.source_year') AS INT) "
         f"BETWEEN {scope.LIAONING_NATIONAL_PAPER_SINCE} AND {scope.ERA_BOUNDARY_YEAR - 1}"
     ).fetchall()

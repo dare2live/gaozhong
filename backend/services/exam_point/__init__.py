@@ -7,6 +7,7 @@ from .loader import (load_exam_points, exam_point_distribution, exam_point_shift
 from .cooccur import exam_point_cooccurrence, materialize_cooccurrence
 from .cognitive_skill import (load_cognitive_skill, cognitive_skill_distribution,
                               cognitive_skill_by_content)
+from .cognitive_seven_choose_five import structure_subtype_distribution
 from .attribution import joint_attribution_by_passage, cloze_answer_word_stage
 from .senior_knowledge import (grammar_structural_coverage, phrase_pattern_exam_relevance,
                                cloze_collocation_structural_subset)

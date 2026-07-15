@@ -325,8 +325,9 @@
 }
 
 /* ══ P1-zhenti-jichu 锚区 (scaffold.js 域新样式只写这里) ══ */
-/* 设问思维 2×2 常显卡 */
+/* 设问思维讲解卡 (官方7项; 窄屏单列) */
 .zt-cog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 4px 0 12px; }
+.zt-cog-grid-7 { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .zt-cogcard { border: 1px solid var(--line); border-radius: var(--r); background: var(--sunken); padding: 11px 13px; }
 .zt-cogcard-s { font-size: 13.5px; font-weight: 650; color: var(--ink); margin-bottom: 3px; }
 .zt-cogcard-w { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; margin: 0 0 7px; }

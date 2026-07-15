@@ -11,6 +11,7 @@
 - 变更优先级：先满足真实用户可见行为与数据完整，再做重构；同一文件/同一数据通路尽量避免并行写入。
 
 ## Core Working Rules
+- **Commit + push 纪律 (2026-07-15)**: 每次实质改动完成后立即 `git commit` 并 `git push` 到 GitHub; 见 `.cursor/rules/commit-push-discipline.mdc` 与 `scripts/tools/git/commit_push.sh`。不要攒到用户再催。
 - Keep edits minimal and reversible.
 - Prefer truth-source-first reasoning before shortcut fixes.
 - Any API change should trace to an entrypoint in `backend/api/routes/*` and the affected service in `backend/services/*`.

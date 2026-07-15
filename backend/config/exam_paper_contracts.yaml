@@ -104,8 +104,9 @@ contracts:
         current_status: imported_canonical_passage_level_not_item_level
         known_gaps:
           - 锦宏镜像 group 级 8 行(听力/阅读ABCD/七选五/完形/语法; 写作不入), 非逐题 item-level。
-          - truth_anchors lifecycle=no_anchor (仅1源, 待≥2独立源升 active)。
+          - truth_anchors lifecycle=active (≥2源: local_pdf + 51jiaoxi/renrendoc markers)。
           - source_repo=jhgk_xgkii_english_2026 (tier-B), 非 local_pdf 同名。
+          - cognitive_skill 阅读15子题已补explicit_label(subq 2026 jsonl)。
 
   historical_gaokao_bench_english_2010_2022:
     subject: English

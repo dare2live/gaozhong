@@ -22,8 +22,17 @@ from backend.services.trend import scope
 
 ROOT = Path(__file__).resolve().parents[3]
 _SUBQ = ROOT / "data" / "structured" / "exam_subquestions" / "xgkii_2021_2025_subquestions.jsonl"
+_SUBQ_2026 = ROOT / "data" / "structured" / "exam_subquestions" / "xgkii_2026_subquestions.jsonl"
 _TAXONOMY = ROOT / "backend" / "config" / "exam_point_taxonomy.yaml"
 DIMENSION = "cognitive_skill"
+
+
+def _load_subq_rows() -> list[dict]:
+    """2021-2025 主文件 + 2026 独立文件 (同 schema; 阅读理解行带 explicit analysis 才入图)."""
+    rows = [json.loads(ln) for ln in _SUBQ.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    if _SUBQ_2026.exists():
+        rows.extend(json.loads(ln) for ln in _SUBQ_2026.read_text(encoding="utf-8").splitlines() if ln.strip())
+    return rows
 
 
 @lru_cache(maxsize=1)
@@ -109,16 +118,26 @@ def _emit_subq(con: duckdb.DuckDBPyConnection, r: dict, skill: str) -> tuple[int
         "question_type": r.get("question_type"), "subquestion": True})
     pnode = f"exam_point:{DIMENSION}:{skill}"
     n_pt = _ensure_node(con, pnode, "exam_point", skill, {"dimension": DIMENSION})
-    if con.execute("SELECT 1 FROM edges WHERE src_id=? AND dst_id=? AND relation='tests_exam_point'",
-                   [qnode, pnode]).fetchone():
-        return n_sub, n_pt, 0
+    # 每子题至多一条 cognitive_skill 边 (课标纠正会换 dst; 防重复边)
+    existing = con.execute(
+        "SELECT dst_id FROM edges WHERE src_id=? AND relation='tests_exam_point' "
+        "AND json_extract_string(evidence_json,'$.dimension')=?",
+        [qnode, DIMENSION]).fetchone()
+    if existing:
+        if existing[0] == pnode:
+            return n_sub, n_pt, 0
+        con.execute(
+            "DELETE FROM edges WHERE src_id=? AND relation='tests_exam_point' "
+            "AND json_extract_string(evidence_json,'$.dimension')=?",
+            [qnode, DIMENSION])
     lineage = stamp(con, source_year=year, source_qid=qid, provenance="explicit_label",
                     derived_by="cognitive_skill@v1",
                     version_kinds={"exam_paper": "liaoning_gaokao", "curriculum": "gaozhong"})
     con.execute(
         "INSERT INTO edges (src_id, dst_id, relation, weight, evidence_json) VALUES (?, ?, ?, ?, ?)",
         [qnode, pnode, "tests_exam_point", 1.0,
-         json.dumps({"dimension": DIMENSION, "provenance": "explicit_label", "lineage": lineage},
+         json.dumps({"dimension": DIMENSION, "provenance": "explicit_label",
+                     "exam_stage": "gaokao", "lineage": lineage},
                     ensure_ascii=False)])
     return n_sub, n_pt, 1
 
@@ -127,10 +146,10 @@ def load_cognitive_skill(con: duckdb.DuckDBPyConnection) -> dict:
     """子题级设问类型入图: 子题node + exam_point:cognitive_skill节点 + tests_exam_point边(explicit_label+血缘).
 
     两真值源 → 跨era(旧课标全国II 2015-20 / 新高考全国II 2021+)设问演变:
-    - 2021-2025: subq jsonl, 经真值锚门(_truth_valid_years 剔甲卷冒辽宁, §7/坑3)。
+    - 2021-2026: subq jsonl(+2026独立文件), 经真值锚门(_truth_valid_years 剔甲卷冒辽宁, §7/坑3)。
     - 2015-2020: exam_questions refine后 province(辽宁新课标II)作门(provenance-aware单点真值, 坑3)。
     """
-    rows = [json.loads(ln) for ln in _SUBQ.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    rows = _load_subq_rows()
     valid_years = _truth_valid_years(rows)
     n_sub = n_pt = n_edge = n_legacy = skipped = skip_mislabel = 0
     for r in rows:                                       # 2021-2025 新高考全国II
@@ -150,9 +169,20 @@ def load_cognitive_skill(con: duckdb.DuckDBPyConnection) -> dict:
             continue
         s, p, e = _emit_subq(con, r, skill)
         n_sub += s; n_pt += p; n_edge += e; n_legacy += e
+    from backend.services.exam_point.cognitive_curriculum import apply_curriculum_overrides
+    from backend.services.exam_point.cognitive_seven_choose_five import (
+        load_junior_curriculum_reading_skills,
+        load_junior_sentence_gap_structure,
+        load_seven_choose_five_structure,
+    )
+    cur = apply_curriculum_overrides(con)  # 课标对齐纠正(态度等); 边数不变, 换桶+provenance
+    seven = load_seven_choose_five_structure(con)  # 高考七选五 → 结构 L1+L2
+    jr_gap = load_junior_sentence_gap_structure(con)  # 中考五选四 → 结构
+    jr_rd = load_junior_curriculum_reading_skills(con)  # 中考四选一题干对齐
     return {"子题node": n_sub, "cognitive_skill节点": n_pt, "tests_exam_point边": n_edge,
             "其中legacy(2015-2020)边": n_legacy,
-            "skipped(非阅读技能/未映射变体)": skipped, "skipped(真值锚未过=源误标甲卷)": skip_mislabel}
+            "skipped(非阅读技能/未映射变体)": skipped, "skipped(真值锚未过=源误标甲卷)": skip_mislabel,
+            **cur, **seven, **jr_gap, **jr_rd}
 
 
 def _official_skill_labels() -> list[str]:
@@ -166,9 +196,12 @@ def _coverage_gap(by_era: dict[str, dict[str, int]]) -> dict:
     official = _official_skill_labels()
     covered = sorted({label for d in by_era.values() for label in d})
     missing = [s for s in official if s not in covered]
-    note = (f"官方定义{len(official)}项理解性技能, 当前真题解析数据覆盖{len(covered)}项; "
-            f"{missing}这{len(missing)}项当前无可得教研解析显式标注真题样本(非估算不补, 见坑16)"
-            if missing else f"官方{len(official)}项理解性技能已全覆盖")
+    if missing:
+        note = (f"官方定义{len(official)}项理解性技能, 当前覆盖{len(covered)}项; "
+                f"{missing}仍无辽宁卷可操作样本")
+    else:
+        note = (f"官方{len(official)}项理解性技能已全覆盖"
+                f"(四选一设问+七选五语篇结构任务+课标题干纠正)")
     return {"official_categories": official, "covered_categories": covered,
             "missing_categories": missing, "coverage_note": note}
 
@@ -187,7 +220,9 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         "SELECT n.label, json_extract_string(e.evidence_json, '$.lineage.source_year') "
         "FROM edges e JOIN nodes n ON n.concept_id = e.dst_id "
         "WHERE e.relation='tests_exam_point' "
-        "AND json_extract_string(e.evidence_json, '$.dimension') = ?", [DIMENSION]).fetchall()
+        "AND json_extract_string(e.evidence_json, '$.dimension') = ? "
+        "AND COALESCE(json_extract_string(e.evidence_json,'$.exam_stage'),'gaokao')='gaokao'",
+        [DIMENSION]).fetchall()
     by_era: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     years_by_era: dict[str, set[int]] = defaultdict(set)
     for label, yr in rows:
@@ -211,16 +246,19 @@ def cognitive_skill_distribution(con: duckdb.DuckDBPyConnection) -> dict:
                             "note": "分布可报占比" if tot >= scope.MIN_DISTRIBUTION_SAMPLE
                             else f"样本<{scope.MIN_DISTRIBUTION_SAMPLE}(仅方向性, 非精确分布)"}
     return {"dimension": DIMENSION, "province_scope": "辽宁卷",
-            "provenance": "explicit_label (教研解析显式标签, 强于双模型)",
+            "provenance": (
+                "explicit_label (教研解析) + curriculum_aligned_stem (题干对齐) "
+                "+ curriculum_aligned_task (七选五→理解文章结构类型)"
+            ),
             "official_ref": "陈康等《基于高考评价体系的英语科考试内容改革实施路径》,《中国考试》2019年第12期(教育部考试中心命题团队解读, 阅读理解7理解性技能)",
             "n_total": len(rows), "by_era": out, "reliability": reliability,
             "eras_ordered": sorted(by_era.keys()),
             "missing_source_years": {
-                "years": [2022, 2025, 2026],
+                "years": [],
                 "covered_years": sorted({int(y) for _, y in rows if y}),
                 "note": (
-                    "2022/2025/2026 无本地可核验逐题教研解析显式题型标签 "
-                    "(付费墙/宏观评析非逐题); 诚实标未补, 非估算填桶 — 见 d0_cognitive_skill_check 头注."
+                    "阅读四选一 explicit_label/课标题干纠正 + 阅读第二节七选五 "
+                    "curriculum_aligned_task 入结构桶; 官方7项全覆盖."
                 ),
             },
             **_coverage_gap(by_era)}
@@ -235,6 +273,9 @@ WITH cog AS (
   JOIN nodes nq ON nq.concept_id = e.src_id
   JOIN nodes ns ON ns.concept_id = e.dst_id
   WHERE e.relation='tests_exam_point' AND json_extract_string(e.evidence_json,'$.dimension')='cognitive_skill'
+    AND COALESCE(json_extract_string(e.evidence_json,'$.exam_stage'),'gaokao')='gaokao'
+    AND json_extract_string(e.evidence_json,'$.provenance') <> 'curriculum_aligned_task'
+    AND json_extract_string(nq.attrs_json,'$.passage_label') IS NOT NULL
     AND CAST(json_extract_string(e.evidence_json,'$.lineage.source_year') AS INT) BETWEEN {scope.LIAONING_NATIONAL_PAPER_SINCE} AND {scope.ERA_BOUNDARY_YEAR - 1}),
 content AS (
   SELECT ge.src_id AS pid, nc.label AS content
@@ -259,6 +300,8 @@ def cognitive_skill_by_content(con: duckdb.DuckDBPyConnection, by: str = "genre"
     n_total = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
         "AND json_extract_string(evidence_json,'$.dimension')='cognitive_skill' "
+        "AND COALESCE(json_extract_string(evidence_json,'$.exam_stage'),'gaokao')='gaokao' "
+        "AND json_extract_string(evidence_json,'$.provenance') <> 'curriculum_aligned_task' "
         f"AND CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) BETWEEN {scope.LIAONING_NATIONAL_PAPER_SINCE} AND {scope.ERA_BOUNDARY_YEAR - 1}").fetchone()[0]
     by_content: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     for content, skill, n in con.execute(_CROSS_SQL, [by]).fetchall():
@@ -273,8 +316,8 @@ def cognitive_skill_by_content(con: duckdb.DuckDBPyConnection, by: str = "genre"
     n_matched = sum(c["total"] for c in out.values())
     return {"facet": f"cognitive_skill_by_{by}", "by_dimension": by, "era": scope.ERA_OLD,
             "province_scope": "辽宁卷",
-            "skill_provenance": "explicit_label (教研显式标签, 真值)",
+            "skill_provenance": "explicit_label + curriculum_aligned_stem (四选一; 七选五结构另计)",
             "content_provenance": "dual_model_agree (模型推断, 非真值交叉)",
-            "note": "粒度=子题数(同语篇多子题共享题材, 重复计入); era锁2015-20(2021+桥缺失不出迁移); thin格(<10子题)只进池化不单独下结论",
+            "note": "粒度=子题数(同语篇多子题共享题材, 重复计入); era锁2015-20; 不含七选五task; thin格(<10)只进池化",
             "n_subq_total": n_total, "n_matched": n_matched, "thin_threshold": scope.MIN_YEAR_SAMPLE,
             "by_content": dict(sorted(out.items(), key=lambda kv: -kv[1]["total"]))}

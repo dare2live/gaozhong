@@ -7,37 +7,21 @@ version: 1
 sealed_at: "2026-07-12"
 
 items:
-  - id: cognitive_skill_years_2022_2025_2026
-    blocker_class: truth_source_absent
-    evidence: >
-      data/structured 无带 explicit 阅读技能标签的逐题解析
-      (2022 子题缺失; 2025 analysis=null; 2026 analysis 空)。
-      见 cognitive_skill_distribution.missing_source_years 与 d0_cognitive_skill_check 头注。
-    reopen_when: "获得可核验逐题教研解析(免费或有偿)并过 truth_anchor 后补边"
-
-  - id: cognitive_official_buckets_empty
-    blocker_class: truth_source_absent
-    evidence: "官方7项中「理解观点态度」「理解文章结构类型」仍0样本(无解析显式标签)"
-    reopen_when: "真题解析出现对应显式题型标签并入 taxonomy aliases"
-
   - id: theme_l2_cross_verified
     blocker_class: sealed_honesty_law
     evidence: >
-      analysis 无可映射课标 theme_l2 的显式主题句; theme_truth 维持 dual_model_only,
-      禁止伪造 cross_verified (坑16)。
-    reopen_when: "教研解析出现「主题/话题是…」且可映射官方10主题群"
+      analysis 无可映射课标 theme_l2 的显式「主题/话题是…」句, 故不升 analysis-cross_verified。
+      2026-07-15 另开 human_curriculum_verified 路径(人工语篇×课标10群核验≥15边)已达标;
+      本条仅锁「禁止伪造 analysis-cross」。
+    reopen_when: "教研解析出现「主题/话题是…」且可映射官方10主题群 → 可另升 analysis cross_verified"
 
-  - id: tests_phrase_exam_edges
+  - id: tests_phrase_bulk_from_cooccurrence
     blocker_class: sealed_honesty_law
     evidence: >
-      phrases 仅 introduces_phrase(教材出现); 完形「考查搭配」落 collocation/grammar 桶,
-      无 phrase_id 级真题考查标注。D0 锁 tests_phrase==0; UI 标出现非考查。
-    reopen_when: "有人工核验的 phrase_id↔真题空/改错标签 loader + 改 D0 允许带 provenance 边"
-
-  - id: zhongkao_2025_answers_35
-    blocker_class: truth_source_absent
-    evidence: "2025辽宁中考英语除语篇填空外35题答案无免费渠道(RESUME 已穷尽检索)"
-    reopen_when: "官方/可核验答案源入库"
+      2026-07-15 已开放 human_verified curated tests_phrase(phrase_human_verified.jsonl +
+      phrase_truth.load_tests_phrase); D0 要求 provenance=human_verified 且 ≥15。
+      仍永久禁止: 文本共现 / 解析「考查搭配」类别桶 / 选项模糊交集 → bulk 建 tests_phrase。
+    reopen_when: "N/A — 永久诚实法; 仅可增人工 phrase_id↔空 条目"
 
   - id: zhongkao_2026_english
     blocker_class: truth_source_absent

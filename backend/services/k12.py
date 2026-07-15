@@ -120,7 +120,7 @@ def zhongkao_distribution(con: duckdb.DuckDBPyConnection) -> dict:
         "语篇填空考点": [{"year": y, "qid": q, "考点": a} for y, q, a in kaodian],
         "语篇填空_pivot": pivot,
         "data_honesty": ("题型骨架完整, 但答案部分门控 — "
-                         "2024 全45题题面+答案齐全(2026-07-08解walled), 2025 题面齐全但35题答案待补; 见 content_status"),
+                         "2024/2025 全45题题面+答案齐全(2025答案补自教习网同步解析; 44/45主观标略); 见 content_status"),
     }
 
 

@@ -1,0 +1,92 @@
+# 理解文章结构类型 · L2 空位功能 (课标语篇知识细化)
+#
+# L1 = 官方7项「理解文章结构类型」(陈康等2019) — 不变。
+# L2 = 普通高中英语课标「语篇知识」操作化: 衔接与连贯 / 段落功能 / 逻辑展开。
+#
+# 分类优先级 (全部完成, 不留空):
+#   1) analysis_any 命中教研逐空解析
+#   2) curated labels (cognitive_structure_subtype_labels.jsonl) 题面语篇功能核验
+#   3) discourse_slot 题面空位几何 (段首/段题/段尾/过渡)
+#   4) fallback → 句际衔接 (选句填空默认考查衔接; 仍属官方结构项下)
+
+version: 1
+parent_skill: 理解文章结构类型
+curriculum_ref: >-
+  普通高中英语课程标准(2017年版2020修订) 语篇知识(衔接与连贯、语篇结构);
+  陈康等2019《中国考试》阅读理解理解性技能·理解文章结构类型
+fallback_subtype: 句际衔接
+
+subtypes:
+  - id: 主题句
+    desc: 段首/小标题/段内总起句, 统领本段要点
+    analysis_any:
+      - 主题句
+      - 中心句
+      - 总述
+      - 段首.{0,12}(?:是|为)?本段
+      - 位于段首
+      - 缺一个主题句
+      - 本段的中心句
+    discourse_any:
+      - heading_blank      # ● ___ / 单独成行的空
+      - para_initial       # 段首句空
+
+  - id: 承上启下
+    desc: 段际或开篇过渡, 衔接上文与下文展开
+    analysis_any:
+      - 承上启下
+      - 过渡句?
+      - 引出下文
+      - 过渡
+    discourse_any:
+      - opening_bridge     # 导语提问后、分点前
+      - between_sections
+
+  - id: 段旨收束
+    desc: 段尾总结/收束本段或全文
+    analysis_any:
+      - 段尾
+      - 位于段尾
+      - 本段的总结
+      - 对本段的总结
+      - 总结本段
+      - 收束
+    discourse_any:
+      - para_final
+      - closing_blank
+
+  - id: 逻辑推进
+    desc: 对前句进一步解释、例证、延伸
+    analysis_any:
+      - 进一步解释
+      - 进一步延伸
+      - 联系上文题
+      - 联系下文题
+      - 对后面内容的总述
+      - 空后句子是对
+      - 进一步
+    discourse_any:
+      - para_medial
+
+  - id: 句际衔接
+    desc: 一般性上下文/前后句衔接
+    analysis_any:
+      - 前后句子的联系
+      - 上下文联系
+      - 上下文信息联系
+      - 上下文推理
+      - 根据前句
+      - 根据前一句
+      - 根据后句
+      - 根据后文
+      - 根据上文
+      - 根据下文
+      - 根据空前
+      - 根据空后
+      - 承接上文
+      - 前后文
+      - 文章前面说
+      - 前面说
+      - 本段前两句
+      - 根据本段
+      - 信息提取题

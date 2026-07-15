@@ -70,10 +70,31 @@ def api_exam_point_cooccurrence(qs: dict) -> dict:
 
 
 def api_exam_point_cognitive_skill(qs: dict) -> dict:
-    """设问类型分布 (KG-A1 金矿; 子题级"怎么想", explicit_label, 推断50% vs inference错估15%)."""
+    """设问类型分布 (KG-A1; 高考口径) + 结构 L2 空位功能披露."""
     con = db_ro()
     try:
-        return cognitive_skill_distribution(con)
+        out = cognitive_skill_distribution(con)
+        from backend.services.exam_point.cognitive_seven_choose_five import (
+            structure_subtype_distribution,
+        )
+        out["structure_subtypes"] = structure_subtype_distribution(con, "gaokao")
+        out["structure_subtypes_zhongkao"] = structure_subtype_distribution(con, "zhongkao")
+        return out
+    finally:
+        con.close()
+
+
+def api_exam_point_structure_subtypes(qs: dict) -> dict:
+    """理解文章结构类型 L2 空位功能分布. ?stage=gaokao|zhongkao"""
+    stage = (qs.get("stage", ["gaokao"]) or ["gaokao"])[0] or "gaokao"
+    if stage not in ("gaokao", "zhongkao"):
+        return {"error": "stage must be gaokao|zhongkao"}
+    con = db_ro()
+    try:
+        from backend.services.exam_point.cognitive_seven_choose_five import (
+            structure_subtype_distribution,
+        )
+        return structure_subtype_distribution(con, stage)
     finally:
         con.close()
 
@@ -144,10 +165,21 @@ def api_exam_point_k12_grammar_bridge(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_quality_standards(qs: dict) -> dict:
+    """课标学业质量水平(3+42描述) + 辽宁高考卷级对齐水平二."""
+    from backend.services.exam_point.quality_standards import quality_standards_summary
+    con = db_ro()
+    try:
+        return quality_standards_summary(con)
+    finally:
+        con.close()
+
+
 ROUTES = {
     "/api/exam_point/distribution": api_exam_point_distribution,
     "/api/exam_point/cooccurrence": api_exam_point_cooccurrence,
     "/api/exam_point/cognitive_skill": api_exam_point_cognitive_skill,
+    "/api/exam_point/structure_subtypes": api_exam_point_structure_subtypes,
     "/api/exam_point/cognitive_by_content": api_exam_point_cognitive_by_content,  # 技能×题材交叉(2015-20)
     "/api/exam_point/joint_attribution": api_exam_point_joint_attribution,  # 词汇×设问思维语篇级联合归因
     "/api/exam_point/cloze_answer_word_stage": api_exam_point_cloze_answer_word_stage,  # 完形得分点词学段
@@ -155,4 +187,5 @@ ROUTES = {
     "/api/exam_point/phrase_pattern_relevance": api_exam_point_phrase_pattern_relevance,  # 短语句型真题共现
     "/api/exam_point/cloze_collocation_subset": api_exam_point_cloze_collocation_subset,  # 完形搭配结构下限
     "/api/exam_point/k12_grammar_bridge": api_exam_point_k12_grammar_bridge,  # 初中→高中语法衔接+中考印证
+    "/api/exam_point/quality_standards": api_exam_point_quality_standards,
 }

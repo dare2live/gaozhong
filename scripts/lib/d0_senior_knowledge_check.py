@@ -37,6 +37,23 @@ def check_phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection, check) -
     check("n_matched_in_exam_text <= n_senior_phrases_total (无越界)",
           d["n_matched_in_exam_text"] <= d["n_senior_phrases_total"],
           f"{d['n_matched_in_exam_text']}/{d['n_senior_phrases_total']}")
+    check("honesty.cooccurrence_is_not_tested == True (共现≠考查)",
+          (d.get("honesty") or {}).get("cooccurrence_is_not_tested") is True, str(d.get("honesty")))
+    check("honesty.tests_phrase_only_human_verified == True",
+          (d.get("honesty") or {}).get("tests_phrase_only_human_verified") is True, str(d.get("honesty")))
+    check("honesty.tests_phrase_sealed == False (人工核验已开放)",
+          (d.get("honesty") or {}).get("tests_phrase_sealed") is False, str(d.get("honesty")))
+    n_tp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_phrase'").fetchone()[0]
+    check("tests_phrase_edges == live DB count",
+          d.get("tests_phrase_edges") == n_tp, f"api={d.get('tests_phrase_edges')} db={n_tp}")
+    check("tests_phrase 边 ≥15 (human_verified curated 下限)",
+          n_tp >= 15, f"{n_tp}")
+    n_bad = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_phrase' "
+        "AND COALESCE(json_extract_string(evidence_json,'$.provenance'),'') <> 'human_verified'"
+    ).fetchone()[0]
+    check("全部 tests_phrase provenance=human_verified (禁共现 bulk)",
+          n_bad == 0, f"bad={n_bad}")
     check("phrase_type_breakdown 分组求和 == n_senior_phrases_total (计数自洽)",
           sum(d["phrase_type_breakdown"].values()) == d["n_senior_phrases_total"],
           f"{sum(d['phrase_type_breakdown'].values())} vs {d['n_senior_phrases_total']}")
@@ -51,9 +68,6 @@ def check_phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection, check) -
           f"{sum(d['matched_by_stage'].values())} vs {d['n_matched_in_exam_text']}")
     check("caveat 含'出现非考查'诚实披露(复用既有PHRASE_LIB_NOTE)",
           "出现非考查" in d["caveat"] or "出现≠考查" in d["caveat"], "")
-    n_tp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_phrase'").fetchone()[0]
-    check("无 tests_phrase 边 (短语级真题考查未建; introduces_phrase=教材出现, 防冒充考查)",
-          n_tp == 0, f"{n_tp}")
 
 
 def check_cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection, check) -> None:

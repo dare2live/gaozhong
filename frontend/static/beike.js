@@ -1,13 +1,13 @@
 /* 备课工作流「考点驾驶舱」— ①命题研判页 (P1 三问分区重构 2026-07-02).
  *
  * 结构 = 学习者三问: 区1 考什么(A 考点分布·通栏 + 帕累托注记) / 区2 怎么变(B 命题迁移哑铃图 + C 题型结构)
- *      / 区3 怎么考(D 设问类型 + F 题材×思维) + 顶部结论 3 行(带看证据锚点) + 页尾「数据怎么来的?」人话对照.
+ *      / 区3 怎么考(D 设问类型 + F 题材×思维 + E 七选五结构 L2) + 顶部结论 3 行(带看证据锚点) + 页尾「数据怎么来的?」人话对照.
  * 铁律1 单一计算点: 全部 fetch /api/* service 产物, 前端只渲染。B 的 era 间差值在 service 算
  *   (shift.by_dimension), 前端仅按 |delta| 排序; A 的累计占比为纯渲染层注记(对 service 已算 pct 求和)。
  * 分层非平均: 按卷制 era 分段看, 不混历史均值。
  * 认识论编码: 实心=真值; 空心/虚线/降饱和=方向性(n<30 或 AI 标注)。红族=「你该主攻的重点」每视图≤1系列。
  * 学习者语言: 工程术语(explicit_label/双模型/era/PIT)收进页尾「数据怎么来的?」details, 不进正文。
- * E 词汇热力卡已撤(2026-07-02 P1: 词数按状态≠考点, 答不出页级三问; 词汇实证在 #/zhenti)。
+ * 原 E 词汇热力卡已撤(2026-07-02 P1); 字母 E 现复用于七选五结构空位卡(2026-07-15)。
  * ECharts 仅渲染层, 数据仍 service 单算; B 图窄屏(≤820px)/echarts 缺失时降级回文本行实现。
  */
 (function () {
@@ -70,6 +70,7 @@
     const cardC = `<section class="bk-card"><div class="bk-h"><span>C 题型结构演变 · 存续时间带</span><span id="bk-relbadge"></span></div><div id="bk-trend" role="img" aria-label="题型结构存续时间带: 各题型在辽宁卷的存续区间与登场、退场事件" style="height:240px;"></div><p id="bk-trendnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardD = `<section class="bk-card"><div class="bk-h"><span>D 设问类型 · 怎么想 <small>子题级 · 教研解析标签</small></span><span class="bk-src">/api/exam_point/cognitive_skill</span></div><div id="bk-cog" role="img" aria-label="设问类型分布: 旧课标与新高考的认知技能占比对比" style="height:240px;"></div><p id="bk-cognote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     const cardF = `<section class="bk-card" id="bk-card-f"><div class="bk-h"><span>F 题材 × 思维 <small id="bk-crosslbl">体裁·2015–20截面</small></span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div><div id="bk-crosstoggle" style="margin:2px 0 6px;"></div><div id="bk-cross" role="img" aria-label="题材与思维交叉: 各类语篇考查的认知技能分布" style="height:248px;"></div><p id="bk-crossnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
+    const cardE = `<section class="bk-card" id="bk-card-e"><div class="bk-h"><span>E 七选五 · 文章结构空位 <small>理解文章结构类型 L2 · 每空功能</small></span><span class="bk-src">cognitive_skill.structure_subtypes</span></div><div id="bk-struct" role="img" aria-label="七选五结构空位功能分布"></div><p id="bk-structnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     return `
 ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考什么 · 怎么变 · 怎么考 — 每个数字来自辽宁真题与课标原文的统计, 可以点开追到原卷。", `<button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button>`)}
 <div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
@@ -77,7 +78,7 @@ ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考�
 ${sect("bk-sect-what", "bk-h-what", "考什么", "— 真被考的主题与体裁, 按考查占比排", cardA,
     `这些考点不是孤立出的 — <a href="#/graph">考点怎么绑着出题 → 考点关联</a>`)}
 ${sect("bk-sect-change", "bk-h-change", "怎么变", "— 2021 换卷后, 命题重心挪去了哪", cardB + cardC, "")}
-${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在考哪种思维 (下方两图跨度不同: D含新老两卷对比, F仅2015–20旧卷截面)", `<div class="bk-grid">${cardD}${cardF}</div>`,
+${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在考哪种思维 (D/F=四选一阅读; E=七选五结构空位)", `<div class="bk-grid">${cardD}${cardF}</div>${cardE}`,
     `<a href="#/zhenti">完整套路 → 真题特点</a>`)}
 <div class="bk-foot">
   <p class="bk-next">下一步: <a href="#/zhenti">看词从哪来的实证 → 真题特点</a></p>
@@ -86,7 +87,10 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
       <li><b>出现 ≠ 考查</b> — 教材里出现过 ≠ 高考考过, 本页只统计真被考的。</li>
       <li><b>卷制 era 分层</b> — 新高考(2021 起)和老高考分开统计, 不混着平均。</li>
       <li><b>双模型标注</b> — 题材/主题类标签由两个 AI 独立标注且结论一致才计入(方向性参考)。</li>
-      <li><b>explicit_label(教研显式标签)</b> — 设问类型的题型标签直接来自教研解析, 不靠 AI 猜。</li>
+      <li><b>explicit_label(教研显式标签)</b> — 四选一设问类型直接来自教研解析, 不靠 AI 猜。</li>
+      <li><b>curriculum_aligned_task</b> — 七选五整题对齐「理解文章结构类型」; L2 空位功能优先读逐空解析, 其次人工核验, 再题面位置, 最后默认句际衔接(不留 unknown)。</li>
+      <li><b>学业质量水平二</b> — 课标明示「英语高考命题的主要依据」; 已入图为卷级对齐(非逐题映射描述条)。</li>
+      <li><b>theme 人工核验</b> — 解析无「主题是…」句时不伪造 analysis-cross; 语篇×课标10群人工核验子集升 human_curriculum_verified。</li>
     </ul>
   </details>
 </div>`;
@@ -524,11 +528,39 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const missing = (cs && cs.missing_categories) || [];
     const missingNote = missing.length
       ? `<br><small class="muted">官方定义7项理解性技能, 当前真题解析数据覆盖${skills.length}项; ${missing.join("/")}这${missing.length}项当前无可得教研解析显式标注真题样本(不臆测补齐)。</small>`
-      : "";
+      : `<br><small class="muted">官方7项理解性技能均已有辽宁卷样本; 「理解文章结构类型」主载体=七选五, 见下方 E 卡 L2 空位功能。</small>`;
     G.$("#bk-cognote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">这${skills.length}种"怎么想"是什么意思? →</a><br>` + banner
       + `题型标签直接来自教研解析, 不靠 AI 猜(详见页尾「数据怎么来的?」)。${inf}。`
       + `<br><small class="muted">实心条=旧课标II ${nOld}子题(2015–20六年, 分布可靠), <b style="color:${C.up}">红条=推断(主攻重点)</b>; 空心圆=新高考II 方向(仅${newYearsLabel} n=${nNew})。2021 年源数据混入外省卷, 已按省份核验剔除。</small>`
       + missingNote;
+  }
+
+  function renderStructureSubtypes(cs) {
+    const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const el = G.$("#bk-struct"), note = G.$("#bk-structnote");
+    if (!el || !note) return;
+    const sub = (cs && cs.structure_subtypes) || {};
+    const rows = sub.by_subtype || [];
+    const tot = sub.n_total || 0;
+    const unk = sub.unknown_n || 0;
+    if (!tot || !rows.length) {
+      el.innerHTML = '<p class="muted">暂无七选五结构空位数据</p>';
+      note.textContent = "";
+      return;
+    }
+    const max = Math.max(...rows.map(r => r.n), 1);
+    el.innerHTML = `<div class="bk-struct-list">${rows.map(r => {
+      const w = Math.round(100 * r.n / max);
+      return `<div class="bk-struct-row"><span class="bk-struct-l">${esc(r.label)}</span>`
+        + `<span class="bk-struct-bar"><span class="bk-struct-fill" style="width:${w}%"></span></span>`
+        + `<span class="bk-struct-n">${r.n}空 ${r.pct}%</span></div>`;
+    }).join("")}</div>`;
+    setAria("bk-struct", `七选五结构空位功能分布: 共${tot}空, unknown=${unk}; `
+      + rows.map(r => `${r.label} ${r.n}空(${r.pct}%)`).join(", "));
+    const top = rows[0];
+    note.innerHTML = `辽宁高考阅读第二节(七选五) ${tot} 空 · L2 unknown=${unk}(须为0)。`
+      + `最多考的是 <b>${esc(top.label)}</b>(${top.pct}%) — 练段内衔接与逻辑推进比背选项更对口。`
+      + `<br><small class="muted">L1=官方「理解文章结构类型」; L2=课标语篇知识(主题句/承上启下/段旨收束/逻辑推进/句际衔接)。</small>`;
   }
 
   async function loadCross(by) {
@@ -581,7 +613,7 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const highest = byInfer[0], lowest = byInfer[byInfer.length - 1];
     // 坑(2026-07-06 数据关联设计审查): D卡已有卡内联行链接解释设问技能术语, F卡同一组术语首现
     // 在图例/tooltip里, 只靠区块级公共链接兜底, 位置不对等——补一份同款卡内联行链接, 与D卡一致。
-    G.$("#bk-crossnote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">这4种"怎么想"是什么意思? →</a><br>`
+    G.$("#bk-crossnote").innerHTML = `<a href="#/zhenti" style="font-size:11px;">设问思维是什么意思? →</a><br>`
       + (highest && lowest && highest.c !== lowest.c
       ? `老师分流: 哪类${CROSS_LBL[state.cross]}考哪种思维。<b>${lowest.c} ≈ 纯找信息(${lowest.v}%推断)</b>, <b style="color:${C.up}">${highest.c}最考推断(${highest.v}%)</b> → 精读分流训练重心。`
       : `老师分流: 哪类${CROSS_LBL[state.cross]}考哪种思维, 见下方堆叠条各类推断占比 → 精读分流训练重心。`)
@@ -701,7 +733,7 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     wire();
     const cross = await loadCross(state.cross);
     if (echartsOk) {
-      renderDist(); renderTrend(qt); renderCognitiveSkill(cog);
+      renderDist(); renderTrend(qt); renderCognitiveSkill(cog); renderStructureSubtypes(cog);
       renderCrossToggle(); renderCogCross(cross);
     } else {
       G.chartLoadError(G.$("#bk-dist"));   // D0诚实: echarts 真失败显式报错, 不冒充空白

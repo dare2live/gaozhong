@@ -198,6 +198,12 @@ def main() -> None:
     print(f"  {load_exam_points(con)}")
     from backend.services.exam_point.genre_truth import upgrade_cross_verified
     print(f"  genre analysis 交叉验证升档(cross_verified, 坑16): {upgrade_cross_verified(con)}")
+    from backend.services.exam_point.theme_truth import upgrade_human_verified
+    print(f"  theme 人工课标核验升档(human_curriculum_verified): {upgrade_human_verified(con)}")
+    from backend.services.exam_point.quality_standards import load_quality_standards
+    print(f"  课标学业质量标准入图(水平1-3+42描述+卷级→水平二): {load_quality_standards(con)}")
+    from backend.services.exam_point.phrase_truth import load_tests_phrase
+    print(f"  短语考查边(tests_phrase, human_verified curated): {load_tests_phrase(con)}")
     print(f"  桥接考点主题↔教材主题(4路追溯): {bridge_exam_point_themes(con)}")
     print(f"  设问类型金矿(KG-A1, 子题级explicit_label+血缘): {load_cognitive_skill(con)}")
     from backend.services.exam_point import materialize_cooccurrence

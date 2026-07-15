@@ -42,6 +42,10 @@ from .attribution import parse_cloze_options, qualifying_cloze_rows
 _GRAMMAR_STRUCTURAL_QTYPES = ("语法填空", "短文改错")
 
 
+def _n_tests_phrase(con: duckdb.DuckDBPyConnection) -> int:
+    return con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_phrase'").fetchone()[0]
+
+
 def _grammar_term_hits(rows: list[tuple]) -> dict[str, int]:
     cnt: dict[str, int] = {t: 0 for t in TERM_TO_LABEL_KEYWORD}
     for q, a in rows:
@@ -179,9 +183,19 @@ def phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection) -> dict:
         "matched_by_stage": matched_by_stage,
         "match_method": "exact_substring_of_canonical_phrase",
         "matched_examples": matched[:20],
-        "caveat": PHRASE_LIB_NOTE + " 本函数额外核实: 无 tests_phrase 边(已确认不存在, phrases"
-                  "表只有 introduces_phrase 教材边), 此为教材短语库与真题文本的文本共现证据,"
-                  "非考查关系的结构性证据。junior_known/senior_only 是教材库层面的学段对齐,"
+        "tests_phrase_edges": _n_tests_phrase(con),
+        "honesty": {
+            "cooccurrence_is_not_tested": True,
+            "tests_phrase_sealed": False,
+            "tests_phrase_only_human_verified": True,
+            "note": (
+                "文本共现≠考查; 解析「考查搭配」是类别桶不是 phrase_id; "
+                "tests_phrase 仅接受 phrase_human_verified.jsonl 人工核验边"
+            ),
+        },
+        "caveat": PHRASE_LIB_NOTE + " 本函数额外核实: tests_phrase 仅 human_verified curated"
+                  "(见 phrase_truth.load_tests_phrase), 与本共现统计物理隔离。"
+                  "junior_known/senior_only 是教材库层面的学段对齐,"
                   "不是'这道真题的这个短语按学段考查'的逐题归因(同 word 学段口径的颗粒度边界)。",
     }
 
@@ -291,4 +305,12 @@ def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
             "flagged_examples": flagged,
         },
         "human_transcribed": _human_transcribed_breakdown(con, qids),
+        "honesty": {
+            "tests_phrase_edges": _n_tests_phrase(con),
+            "collocation_label_is_not_phrase_id": True,
+            "phrase_table_exact_option_hits_note": (
+                "解析「考查搭配」≈类别统计, 不是 phrase_id; "
+                "tests_phrase 仅接受 phrase_human_verified.jsonl 人工核验, 禁止共现/类别桶 bulk"
+            ),
+        },
     }

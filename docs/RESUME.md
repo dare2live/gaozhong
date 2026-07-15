@@ -59,6 +59,11 @@
     - **知识点整合+课程生成器落地**: 新增 `backend/services/course/junior_knowledge.py::junior_syllabus`——组织轴=46个真实教材单元(非命题频次), 默认`n_lessons=None`不压缩(1单元1节, 不硬编码), 传参时复用`course.syllabus`同款`_adjust`最大余数法压缩(Rule5第2消费者)。每节整合语法(grammar_occurrences+deepens+exam_status+tests_grammar反查)/词汇(unit_vocab_intro+at_stage+tests_word反查)/短语(phrases+高中复现判断)三轴lineage, 不跨轴混算(坑12分层非平均)。API `/api/course/junior/syllabus` 已注册+endpoint_contracts登记+浏览器实测(preview_eval验证真实HTTP响应, 与直接Python调用一致)。D0(53)+moth新断言。前端页面尚为`_juniorStub`占位, 本轮聚焦后端知识体系正确性(用户全程纠偏焦点), UI留后续。
 - **✅ Phase D 全量 40 节正文 (2026-07-12)**: `data/structured/course_content/seg-01..40` + review_gate; syllabus `n_with_content==n_lessons`; 生成器 `scripts/tools/course/generate_phase_d_batch.py`。
 - **✅ 残留债封账**: 不可推进项写入 `backend/config/irreducible_blockers.yaml`(真相源缺失/诚实法/产品范围外), **无开放「下一步」清单**; 初中 UI 已接线(去「建设中」标签)。
+- **✅ 真相源补齐(2026-07-13)**: cognitive 2022/2025/2026 阅读子题 explicit_label 入图(160边; 2026 truth_anchor→active); 中考2025 除书面表达标「略」外答案齐(45/45 complete)。仍封账: `zhongkao_2026_english` + 官方2技能桶空样本等。
+- **✅ 设问思维结构桶全覆盖 (2026-07-14/15)**: 官方7技能 `missing_categories=[]`; 七选五→「理解文章结构类型」L1+L2(主题句/承上启下/段旨收束/逻辑推进/句际衔接), `unknown=0` 门锁; 中考五选四同口径; 命题研判 E 卡 + 真题特点7技能讲解; 单测 `tests/test_structure_subtype.py`。
+- **✅ Ceiling 三任务达标 (2026-07-15)**: ① theme 人工课标核验≥15(`human_curriculum_verified`, 禁假 analysis-cross) ② 课标学业质量 3水平+42描述入图 + 辽宁高考卷级→水平二 ③ 短语原先封账后**重开人工核验路径**。
+- **✅ tests_phrase 人工核验开放 (2026-07-15)**: `phrase_human_verified.jsonl` + `phrase_truth.load_tests_phrase` → ≥15 边(首批20: 完形多词空+语法填空固定搭配), provenance=`human_verified`; 教材 `come up with` 复用既有 phrase 节点。共现/「考查搭配」类别桶仍永久禁 bulk(blockers `tests_phrase_bulk_from_cooccurrence`)。
+- **✅ Commit+Push 纪律**: `.cursor/rules/commit-push-discipline.mdc` + `scripts/tools/git/commit_push.sh` — 实质改动后即 commit 并 push GitHub。
 - **铁律**: 四门每步绿; L3 正文必过 §6 review gate; 新开放债只能经 unblock 条件进 blockers 再开, 禁止 RESUME 堆「待办」。
 
 ---

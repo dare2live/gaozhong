@@ -1,0 +1,57 @@
+# 阅读理解设问 → 官方7技能 操作化规则 (课标/考纲对齐)
+#
+# 真相源层级:
+#   1) official_neea 7技能定义 — exam_point_taxonomy.yaml question_intent
+#      (陈康等2019《中国考试》, 教育部考试中心命题团队解读)
+#   2) 本文件 = 题干操作化判据 (专家课标对齐, 非教辅字面、非 dual_model 瞎猜)
+#   3) 教辅 analysis「推理判断题」常把态度/目的粗并入推断 — 与官方并列分项冲突时,
+#      以本规则+curated labels 为准 (provenance=curriculum_aligned_stem)
+#
+# 不做: 无题干证据时估算填桶; 把记叙文「Why did the author do X」一律标成理解目的.
+
+version: 1
+curriculum_ref: >-
+  陈康等《基于高考评价体系的英语科考试内容改革实施路径》,《中国考试》2019年第12期;
+  普通高中英语课程标准(2017年版2020修订) 阅读理解学业质量(理解语篇意义/意图与情感态度/语篇结构)
+
+skills:
+  理解观点态度:
+    desc: >-
+      识别作者或文中人物对某人/事的态度、观点、看法、语气或评价立场
+      (官方项; 与「推断事实隐含义」并列, 不并入推断桶)
+    stem_any:
+      - '(?i)\\battitude\\b'
+      - '(?i)\\btone\\b'
+      - '(?i)(?:author|writer|narrator)\\S{0,12}(?:attitude|view|opinion|feeling|tone)'
+      - '(?i)how does .{0,50} feel about'
+      - '(?i)what does .{0,50} think of'
+      - '(?i)what is .{0,50} (?:attitude|opinion|view|tone)'
+      - '作者(?:的)?(?:态度|观点|看法|语气|立场)'
+    # 选项侧态度词仅作辅证, 须同时命中 stem_any 之一 (防细节题选项碰巧含 Critical)
+    option_attitude_words_aux: true
+
+  理解目的:
+    desc: >-
+      写作目的/作者写本文意图 (官方「理解目的」);
+      不含记叙情节里「作者为何做了某事」(那是细节或推断)
+    stem_any:
+      - '(?i)purpose (?:of|in) (?:writing )?(?:the )?(?:text|passage)'
+      - '(?i)author.?s purpose in writing'
+      - '(?i)writer.?s purpose in writing'
+      - '写作(?:目的|意图)'
+      - '作者写(?:这篇文章|本文|此文)的目的'
+      - 'writer.?s purpose in writing the text'
+
+  理解文章结构类型:
+    desc: >-
+      篇章/段落组织方式、展开顺序、结构图式、句际段际衔接
+      (官方项; 卷面主载体=阅读理解第二节七选五, 见 cognitive_seven_choose_five.py;
+      四选一若出现 organization/structure 设问亦可叠加)
+    task_carriers:
+      - 完形填空(七选五/语篇)   # 库内命名; 卷面=阅读第二节
+    stem_any:   # 四选一结构设问(辽宁实测极少); 七选五不走 stem, 走 task_carriers
+      - '(?i)(?:organization|structure) of (?:the )?(?:passage|text|paragraph)'
+      - '(?i)how is (?:the )?(?:passage|text|paragraph) (?:organized|structured|developed)'
+      - '(?i)which .{0,40}(?:shows?|describes?) (?:the )?(?:structure|organization)'
+      - '(?i)developed (?:mainly )?by'
+      - '文章(?:的)?结构|篇章结构|组织结构|展开方式'

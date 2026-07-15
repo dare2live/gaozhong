@@ -94,16 +94,19 @@ def check_exam_annotation(con: duckdb.DuckDBPyConnection, cfg: dict) -> dict:
     if not QUIET: print("\n=== [2/5] 考点标注可信 ===")
     cog_cfg = cfg.get("cognitive_skill", {})
     if cog_cfg.get("require_all_explicit_label", True):
+        # 允许课标题干对齐纠正; 禁 dual_model/inference 弱 provenance
         bad = con.execute(
             "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
             "AND json_extract_string(evidence_json,'$.dimension')='cognitive_skill' "
-            "AND json_extract_string(evidence_json,'$.provenance')<>'explicit_label'"
+            "AND json_extract_string(evidence_json,'$.provenance') "
+            "NOT IN ('explicit_label','curriculum_aligned_stem','curriculum_aligned_task')"
         ).fetchone()[0]
         ok_cog = bad == 0
-        _record("cognitive_skill 全 explicit_label", ok_cog, f"非explicit={bad}")
+        _record("cognitive_skill provenance ∈ {explicit_label, curriculum_aligned_stem/task}",
+                ok_cog, f"弱provenance={bad}")
     else:
         ok_cog = True
-        _record("cognitive_skill explicit_label (跳过)", True)
+        _record("cognitive_skill provenance (跳过)", True)
     gt = analysis_genre_crosscheck(con)
     ok_gt = bool(gt["pass"])
     _record(

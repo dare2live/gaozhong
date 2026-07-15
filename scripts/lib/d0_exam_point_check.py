@@ -23,9 +23,12 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     check("考点边两端有效 (无悬挂)", bad_ep == 0, f"{bad_ep} 悬挂")
     bad_prov = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
-        "AND json_extract_string(evidence_json,'$.provenance') NOT IN ('dual_model_agree','explicit_label','cross_verified')"
+        "AND json_extract_string(evidence_json,'$.provenance') NOT IN "
+        "('dual_model_agree','explicit_label','cross_verified',"
+        "'curriculum_aligned_stem','curriculum_aligned_task',"
+        "'human_curriculum_verified')"
     ).fetchone()[0]
-    check("考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified} (无弱provenance; 坑16)",
+    check("考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified, curriculum_aligned_*, human_curriculum_verified} (无弱provenance; 坑16)",
           bad_prov == 0, f"{bad_prov} 弱provenance")
     bad_ta = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='theme_aligns' AND ("
@@ -40,6 +43,8 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_grammar_qtype(con, check)
     _check_grammar_coverage_floor(con, check)
     check_genre_truth(con, check)
+    check_theme_human_verified(con, check)
+    check_quality_standards(con, check)
 
 
 def _check_grammar_coverage_floor(con: duckdb.DuckDBPyConnection, check) -> None:
@@ -265,3 +270,27 @@ def check_genre_truth(con: duckdb.DuckDBPyConnection, check) -> None:
     check("genre analysis 交叉验证 0 conflict", r["n_conflict"] == 0, f"conflict={r['n_conflict']} samples={r['conflict_samples'][:2]}")
     check("genre analysis 显式体裁句 ≥15", r["n_analysis_explicit"] >= 15, f"{r['n_analysis_explicit']}")
     check("genre cross_verified 边 ≥15 (analysis 一致升档)", r["n_cross_verified_edges"] >= 15, f"{r['n_cross_verified_edges']}")
+
+
+def check_theme_human_verified(con: duckdb.DuckDBPyConnection, check) -> None:
+    """theme_l2: 禁假 analysis-cross; 人工课标核验 ≥15."""
+    from backend.services.exam_point.theme_truth import analysis_theme_crosscheck
+    r = analysis_theme_crosscheck(con)
+    check("theme 无假升 analysis-cross_verified", r["n_cross_verified_edges"] == 0, f"{r['n_cross_verified_edges']}")
+    check("theme 人工课标核验边 ≥15", r["n_human_verified_edges"] >= 15,
+          f"{r['n_human_verified_edges']} status={r['status']}")
+    check("theme_truth pass", r["pass"], r.get("note", ""))
+
+
+def check_quality_standards(con: duckdb.DuckDBPyConnection, check) -> None:
+    """课标学业质量: 3水平+42描述 + 辽宁高考卷级→水平二; 禁题目级细边."""
+    from backend.services.exam_point.quality_standards import quality_standards_summary
+    s = quality_standards_summary(con)
+    check("学业质量水平节点 == 3", s["n_quality_levels"] == 3, f"{s['n_quality_levels']}")
+    check("学业质量描述节点 == 42", s["n_descriptors"] == 42, f"{s['n_descriptors']}")
+    check("辽宁高考卷级对齐水平二边存在", s["aligned_edge_present"], "")
+    n_item = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='aligned_to_quality_level' "
+        "AND src_id LIKE 'question:%'"
+    ).fetchone()[0]
+    check("无题目级 quality 对齐边 (禁发明细映射)", n_item == 0, f"{n_item}")

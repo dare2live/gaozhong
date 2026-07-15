@@ -58,9 +58,9 @@ exam:
     "2026:辽宁:gaokao":
       year: 2026
       province: 辽宁
-      lifecycle: no_anchor                               # 仅1源(jhgk官方重印), 未达≥2独立源 → UNKNOWN不冒充已验证(用户立法3)
-      provenance: "1源(DB local_pdf jhgk_reprint_official_key); 待≥2独立web源核验后升 active"
-      markers: ["Reisley", "Qomolangma", "MetroCharge"]   # 2026II卷候选标志篇章(no_anchor期不比对); 待第2源印证
+      lifecycle: active
+      provenance: "≥2源(DB local_pdf jhgk_reprint + web:51jiaoxi/renrendoc Reisley/Qomolangma/MetroCharge在2026新高考II卷)"
+      markers: ["Reisley", "Qomolangma", "MetroCharge"]
 
 theme:
   provenance_note: |

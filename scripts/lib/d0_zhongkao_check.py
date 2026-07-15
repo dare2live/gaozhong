@@ -206,13 +206,15 @@ def check_junior_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     """
     print("\n=== (50) 中考genre/theme分类 exam_point (Phase E3b) ===")
     n_ep = con.execute(
-        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%'"
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' AND src_id LIKE 'question:ZK-%' "
+        "AND json_extract_string(evidence_json,'$.dimension') IN ('genre','theme_context','theme_l2')"
     ).fetchone()[0]
-    check("中考tests_exam_point边==144 (48题×3维度genre/theme/theme_l2, 11篇一致文章)",
+    check("中考tests_exam_point边==144 (48题×3维度genre/theme_context/theme_l2; 不含cognitive)",
           n_ep == 144, f"{n_ep}")
     n_qids = con.execute(
         "SELECT COUNT(DISTINCT src_id) FROM edges WHERE relation='tests_exam_point' "
-        "AND src_id LIKE 'question:ZK-%'"
+        "AND src_id LIKE 'question:ZK-%' "
+        "AND json_extract_string(evidence_json,'$.dimension') IN ('genre','theme_context','theme_l2')"
     ).fetchone()[0]
     check("覆盖48道题(11篇一致文章, 90题库里样本量薄不报占比)", n_qids == 48, f"{n_qids}")
     bad_genre = con.execute(

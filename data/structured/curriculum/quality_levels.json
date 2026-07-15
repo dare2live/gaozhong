@@ -1,0 +1,27 @@
+{
+  "levels": [
+    {
+      "level": 1,
+      "label": "水平一",
+      "exam_role": "学业水平考试命题主要依据 / 高中毕业合格要求",
+      "n_descriptors": 14
+    },
+    {
+      "level": 2,
+      "label": "水平二",
+      "exam_role": "英语高考命题的主要依据",
+      "n_descriptors": 14
+    },
+    {
+      "level": 3,
+      "label": "水平三",
+      "exam_role": "选修提高类课程 / 其他相关考试或测评",
+      "n_descriptors": 14
+    }
+  ],
+  "n_descriptors": 42,
+  "gaokao_aligned_level": 2,
+  "paper_mapping_quote": "水平二主要用于检测选择性必修课程的学习结果，是英语高考命题的主要依据",
+  "curriculum_ref": "普通高中英语课程标准(2017年版2020年修订) §五(三) 学业质量水平与考试评价的关系",
+  "note": "仅转录课标可枚举层(3水平+42条描述); 辽宁新高考II 卷级对齐水平二。禁止自动建 题目→descriptor 细边(同 theme_l3 反例)。"
+}

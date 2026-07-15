@@ -20,7 +20,9 @@ coverage:
   min_high_yield_n: 1
 
 cognitive_skill:
+  # 教研显式标签为主; 允许课标题干对齐纠正(curriculum_aligned_stem)
   require_all_explicit_label: true
+  allow_curriculum_aligned_stem: true
 
 genre_truth:
   min_analysis_agree: 15

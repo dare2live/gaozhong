@@ -86,19 +86,21 @@
   }
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-  // N3: 设问思维 4 技能 — 2×2 常显卡 (学习者最可迁移的知识不折叠; ≤820px 降 1 列)。
-  // 技能名与分布 = 教研显式标签真值; 「怎么想」与信号词 = 教学归纳。
+  // N3: 官方7理解性技能讲解卡 (陈康等2019; 信号词=教学归纳)。
   const _COG_EXPLAIN = [
-    { skill: "推断", what: "据字面信息推未明说的言外之意、作者态度、隐含结论。", sig: ["infer", "suggest", "imply", "probably", "most likely", "learn from"] },
-    { skill: "理解主旨要义", what: "抓全文中心、标题、段落大意。", sig: ["main idea", "best title", "mainly about", "purpose of the text"] },
-    { skill: "理解具体信息", what: "定位某处细节事实 (时间/原因/数字/做法) — 拿题干关键词回原文找。", sig: ["according to", "what", "when", "why", "how many"] },
-    { skill: "理解词汇", what: "据上下文猜词义、猜指代, 不背也能推。", sig: ["the word X means", "refers to", "closest in meaning"] },
+    { skill: "推断", what: "据字面信息推未明说的言外之意、作者态度、隐含结论。", sig: ["infer", "suggest", "imply", "probably", "most likely"] },
+    { skill: "理解主旨要义", what: "抓全文中心、标题、段落大意。", sig: ["main idea", "best title", "mainly about"] },
+    { skill: "理解具体信息", what: "定位某处细节事实 (时间/原因/数字/做法)。", sig: ["according to", "what", "when", "why", "how many"] },
+    { skill: "理解词汇", what: "据上下文猜词义、猜指代。", sig: ["means", "refers to", "closest in meaning"] },
+    { skill: "理解观点态度", what: "作者/人物对某事的立场、评价与情感倾向。", sig: ["attitude", "opinion", "feel about", "tone"] },
+    { skill: "理解目的", what: "作者写作意图或某段/某句的功能目的。", sig: ["purpose", "intend to", "written to"] },
+    { skill: "理解文章结构类型", what: "语篇衔接与段落功能 — 主载体是七选五选句填空。", sig: ["七选五", "主题句", "承上启下", "句际衔接"] },
   ];
   function _cogExplainPanel() {
     const cards = _COG_EXPLAIN.map(c =>
       `<div class="zt-cogcard"><div class="zt-cogcard-s">${esc(c.skill)}</div><p class="zt-cogcard-w">${esc(c.what)}</p><div class="zt-cogcard-sig">${c.sig.map(x => `<span class="zt-sig">${esc(x)}</span>`).join("")}</div></div>`).join("");
-    return `<p class="kb-dim" style="margin:0 0 8px;">设问思维 = 题目要你<strong>怎么想</strong>, 不只是考什么。同一篇文章, 设问换个思维就是另一道题。高考阅读主要考这 4 种 — 看到卡里的设问信号词, 就知道该用哪种思维:</p>
-      <div class="zt-cog-grid">${cards}</div>`;
+    return `<p class="kb-dim" style="margin:0 0 8px;">设问思维 = 题目要你<strong>怎么想</strong>。官方阅读理解性技能共 7 项(陈康等2019); 下方卡含信号词。七选五对应「理解文章结构类型」— 空位功能分布见 <a href="#/beike">命题研判 E 卡</a>。</p>
+      <div class="zt-cog-grid zt-cog-grid-7">${cards}</div>`;
   }
 
   // N2: 语法考点卡 (tests_grammar 课标第二级子类 辽宁考查频次热点)
@@ -201,17 +203,20 @@
     }).join("");
     return `<p class="kb-dim" style="margin:0 0 8px;">高中教材短语/句型/表达库共 <b>${p.n_senior_phrases_total}</b> 个(对齐初中沪教牛津库 <b>${p.n_junior_phrases_total}</b> 个后): <b class="tk-found">${p.n_overlap_junior_known}</b> 个初中已学(高中复现巩固), <b class="tk-senior">${p.n_senior_only}</b> 个高中新学。其中 <b>${p.n_matched_in_exam_text}</b> 个能在辽宁真题原文/解析文本里找到(${p.matched_by_stage.junior_known}个已学 / ${p.matched_by_stage.senior_only}个新学):</p>
       <div class="tk-types">${chips}</div>
+      <p class="kb-dim" style="margin:8px 0 0;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">出现≠考查</span>上表是文本共现。另有人工核验 <b>tests_phrase=${p.tests_phrase_edges ?? 0}</b> 边(仅 curated phrase_id↔空, 非共现自动生成)。</p>
       <p class="kb-dim" style="margin:8px 0 0;">${esc(p.caveat)}</p>`;
   }
   function _cozeCollocationCard(c) {
     if (!c || c.n_blanks_total == null) return '<p class="kb-dim">搭配结构数据不足。</p>';
     const sf = c.structural_flags, ht = c.human_transcribed;
+    const nTp = (c.honesty && c.honesty.tests_phrase_edges) || 0;
     const htChips = Object.entries(ht.by_category || {}).map(([k, v]) =>
       `<span class="tk-tchip">${esc(ht.category_meaning[k] ? ht.category_meaning[k].split(" — ")[1] || k : k)} <b>${v}</b></span>`).join("");
     return `<p class="kb-dim" style="margin:0 0 8px;">同上10篇完形填空180空里, <b>${sf.n_structurally_flagged}</b> 空(${sf.structurally_flagged_pct}%)结构上可客观确认"像固定搭配"(如 ${sf.flagged_examples[0] ? esc(sf.flagged_examples[0].options.join(" / ")) : ""}):</p>
       <p class="kb-dim" style="margin:0 0 10px;">${esc(sf.explicit_ceiling_caveat)}</p>
       <p class="kb-dim" style="margin:0 0 6px;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">未独立验证</span>另一层参考: 官方解析文本"考查XX"标签转录统计(<b>${ht.n_labels_extracted}</b> 空有标签):</p>
       <div class="tk-types">${htChips}</div>
+      <p class="kb-dim" style="margin:8px 0 0;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">类别≠phrase_id</span>解析标「搭配」是技能桶; 真 phrase 考查边另计 tests_phrase=<b>${nTp}</b>(人工核验, 禁 bulk)。</p>
       <p class="kb-dim" style="margin:8px 0 0;">${esc(ht.coverage_note)}</p>`;
   }
 
