@@ -2,7 +2,8 @@
 """Fingerprint-check listening candidate MP3s against stored transcripts via ASR.
 
 Uses distinctive spoken anchors (proper nouns / unique phrases), with fuzzy
-ASR variants. Does NOT promote audio to teachable / years_with_audio.
+ASR variants. Promotion to data/audio / years_with_audio is a separate step
+(see scripts.tools.map.promote_listening_audio).
 
 Requires: ffmpeg; faster-whisper (e.g. /tmp/gaozhong_asr_venv).
 Usage:

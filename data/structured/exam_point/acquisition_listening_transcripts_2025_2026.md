@@ -25,11 +25,12 @@
 sha256 见 `*_newdu_manifest.json` + `sources.yaml`。
 
 诚实保留：
-- 非 NEEA 官方发布口；仍是民间聚合镜像
-- 2026 答案稿文件名含「听力原文2025.06.11」字样 → **candidate**；ASR 指纹已证正文与 2026 音频对齐（见 `listening_audio_transcript_fingerprint.md`），文件名 anomaly 仍记档
-- `years_with_audio` 仍 `[]`（可教门未开）
+- 非 NEEA 官方发布口；第三方指纹核验后已升 `data/audio` + `years_with_audio=[2021..2026]`
+- `module_status=third_party_fingerprint_verified`
+- 2026 答案稿文件名含「听力原文2025.06.11」字样已由 ASR 指纹证正文对齐，anomaly 仍记档
 
 ## 仍缺
 
-- 升 teachable 前：全卷逐字/题号级 QC（当前 2021–26 均为锚点指纹 PASS）
+- 2022–25 题库题干行仍缺（仅 2021/2026 已 `has_audio` 挂接）
+- 全卷逐字/题号级 QC（当前锚点指纹）
 - 可可英语网页双语稿仍被壳页挡住（已用 cpsenglish / scribd / 网易云 旁路入库）

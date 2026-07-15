@@ -1,0 +1,29 @@
+{
+  "year": 2026,
+  "source": "newdu",
+  "packing": "full_paper",
+  "provenance": {
+    "class": "third_party_not_neea",
+    "fingerprint_report": "data/structured/exam_point/listening_audio_transcript_fingerprint.json",
+    "fingerprint_verdict": "PASS",
+    "years_fingerprinted": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ]
+  },
+  "files": [
+    {
+      "year": 2026,
+      "id": "full",
+      "src": "data/external/exam_sources/listening_candidates/2026_national_ii_listening_newdu_candidate.mp3",
+      "dst": "data/audio/2026/listening/full.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "b1d6d42bb7804eaa2f6808d48f9992b1a18254311662a9d74304da6a0ca8cc97",
+      "bytes": 21844756
+    }
+  ]
+}

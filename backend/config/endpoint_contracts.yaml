@@ -66,9 +66,12 @@ contracts:
   "/api/lesson_plan": {params: {unit: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [unit_id, words, grammar, related_exams], type: dict}
   "/api/liaoning/allowed_publishers": {params: {}, type: list}
   "/api/liaoning/city_choice": {params: {}, type: list}
-  "/api/listening/detail": {params: {id: ["1"]}, required_keys: [], type: dict, allow_error: true,
-    note: "已知数据缺口: question_bank 现无 has_audio=true 行, 任何 id 都返 not found; 数据入库后本契约自动转真断言 (allow_error 只放行不强制 error)"}
+  "/api/listening/detail": {params: {id: ["100"]}, required_keys: [], type: dict, allow_error: true,
+    note: "has_audio 行在 attach_listening_audio_to_qbank 后可用; id=100 为 2021 Q1。未 attach 时 allow_error"}
   "/api/listening/list": {params: {}, required_keys: [count, questions], type: dict}
+  "/api/listening/catalog": {params: {}, required_keys: [module_status, years_with_audio, years, complete], type: dict}
+  "/api/listening/file": {params: {year: ["2021"], id: ["full"]}, required_keys: [], type: dict, allow_error: true,
+    note: "默认 Accept 返回 audio/mpeg 二进制(main.py); Accept:application/json 返回元数据"}
   "/api/paper/compose": {params: {}, required_keys: [paper_id, questions, target_total], type: dict}
   "/api/placement/final_score": {params: {}, required_keys: [error], type: dict, allow_error: true,
     note: "POST-body 端点 (main.py do_POST 走带 body 调用); GET 形态无 body 契约 = 确定性 error 提示"}

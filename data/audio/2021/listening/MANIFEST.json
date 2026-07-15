@@ -1,0 +1,29 @@
+{
+  "year": 2021,
+  "source": "133ku",
+  "packing": "full_paper",
+  "provenance": {
+    "class": "third_party_not_neea",
+    "fingerprint_report": "data/structured/exam_point/listening_audio_transcript_fingerprint.json",
+    "fingerprint_verdict": "PASS",
+    "years_fingerprinted": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ]
+  },
+  "files": [
+    {
+      "year": 2021,
+      "id": "full",
+      "src": "data/external/exam_sources/listening_candidates/2021_xgkii_listening_133ku_candidate.mp3",
+      "dst": "data/audio/2021/listening/full.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "df861b844a98ef9467b83cecb3252c1552d39f579a10acef64b7f9b2b7584531",
+      "bytes": 14401036
+    }
+  ]
+}

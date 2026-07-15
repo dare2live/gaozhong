@@ -33,3 +33,6 @@ data/external/exam_sources/listening_candidates/*.zip
 data/external/exam_sources/listening_candidates/*.rar
 data/external/exam_sources/listening_candidates/*_extracted/
 data/external/exam_sources/listening_candidates/*_extracted/**
+
+# Promoted teachable listening mp3s (local; MANIFEST.json committed)
+data/audio/**/*.mp3

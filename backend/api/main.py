@@ -26,6 +26,7 @@ MIME_MAP = {
     ".html": "text/html; charset=utf-8",
     ".png": "image/png",
     ".pdf": "application/pdf",
+    ".mp3": "audio/mpeg",
 }
 
 
@@ -63,6 +64,8 @@ class Handler(BaseHTTPRequestHandler):
             if self._try_static(path):
                 return
             if self._try_textbook_pdf(path):
+                return
+            if self._try_listening_audio(path, qs):
                 return
             self._dispatch_api(path, qs)
         except Exception as e:
@@ -148,12 +151,41 @@ class Handler(BaseHTTPRequestHandler):
             self._send_file(pdf, "application/pdf")
         return True
 
+    def _try_listening_audio(self, path: str, qs: dict) -> bool:
+        """GET /api/listening/file?year=&id= → audio/mpeg (JSON Accept → ROUTES meta)."""
+        if path != "/api/listening/file":
+            return False
+        accept = (self.headers.get("Accept") or "").lower()
+        if "application/json" in accept and "audio/mpeg" not in accept:
+            return False
+        year_raw = (qs.get("year", [None])[0] or "").strip()
+        file_id = (qs.get("id", [None])[0] or "").strip()
+        if not year_raw or not file_id:
+            self._json(400, {"error": "missing ?year=&id="})
+            return True
+        try:
+            year = int(year_raw)
+            from backend.services.listening.audio_catalog import resolve_audio_file
+            mp3 = resolve_audio_file(year, file_id)
+        except ValueError as e:
+            self._json(400, {"error": str(e)})
+            return True
+        safe = self._resolve_under(ROOT / "data" / "audio", mp3)
+        if safe is None:
+            self._json(403, {"error": "access denied"})
+        elif not safe.is_file():
+            self._json(404, {"error": "not found"})
+        else:
+            self._send_file(safe, "audio/mpeg")
+        return True
+
     def _dispatch_api(self, path: str, qs: dict) -> None:
         handler = ALL_ROUTES.get(path)
         if handler is None:
             self._json(404, {"error": "no route", "path": path,
                               "available": sorted(ALL_ROUTES) + ["/", "/static/*",
-                              "/api/textbooks/<ver>/<vol>/pdf"]})
+                              "/api/textbooks/<ver>/<vol>/pdf",
+                              "/api/listening/file?year=&id="]})
             return
         try:
             body = handler(qs)

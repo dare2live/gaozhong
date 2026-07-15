@@ -168,10 +168,15 @@ assertions:
     type: shell
     command: ["bash", "-c", "! grep -q '正文即将上线' frontend/static/app_router.js && grep -q '本节暂无正文' frontend/static/app_router.js && grep -q 'Phase D · review 已过' frontend/static/app_router.js && grep -q 'sy-2024' frontend/student.html && grep -q 'demo' frontend/student.html && echo OK || echo FAIL"]
     expect: {op: regex, pattern: "OK"}
-  - id: listening-not-teachable-audio-honest
-    claim: "全局审计三刀: 听力不作可教模块 — audio_config.years_with_audio=[] + module_status=extraction_gap_not_teachable; beike 注明听力不作可教; zizzs 伪PDF status=rejected_html_landing_masquerading_as_pdf"
+  - id: listening-third-party-audio-honest
+    claim: "听力可教档诚实: years_with_audio=[2021..2026] + module_status=third_party_fingerprint_verified + provenance.third_party_not_neea; beike 标明第三方核验非官方; zizzs 伪PDF仍 rejected"
     type: shell
-    command: ["python3", "-c", "import yaml,pathlib;a=yaml.safe_load(open('backend/config/audio_config.yaml'));s=yaml.safe_load(open('backend/config/sources.yaml'));z=s['exam_sources']['third_party_pdf_xgkii_english_2023_zizzs'];bj=pathlib.Path('frontend/static/beike.js').read_text();ok=a.get('years_with_audio')==[] and a.get('module_status')=='extraction_gap_not_teachable' and z.get('status')=='rejected_html_landing_masquerading_as_pdf' and '听力不作可教' in bj;print('OK' if ok else 'FAIL')"]
+    command: ["python3", "-c", "import yaml,pathlib;a=yaml.safe_load(open('backend/config/audio_config.yaml'));s=yaml.safe_load(open('backend/config/sources.yaml'));z=s['exam_sources']['third_party_pdf_xgkii_english_2023_zizzs'];bj=pathlib.Path('frontend/static/beike.js').read_text();y=a.get('years_with_audio');ok=y==[2021,2022,2023,2024,2025,2026] and a.get('module_status')=='third_party_fingerprint_verified' and (a.get('provenance') or {}).get('class')=='third_party_not_neea' and z.get('status')=='rejected_html_landing_masquerading_as_pdf' and '第三方核验' in bj and '非 NEEA' in bj;print('OK' if ok else 'FAIL', y, a.get('module_status'))"]
+    expect: {op: regex, pattern: "OK"}
+  - id: listening-audio-files-match-config
+    claim: "years_with_audio 与 data/audio 磁盘文件一致 (promote_map 全存在)"
+    type: shell
+    command: ["python3", "-c", "from backend.services.listening.audio_catalog import catalog;c=catalog();print('OK' if c.get('complete') else 'FAIL '+str(c.get('missing_files')))"]
     expect: {op: regex, pattern: "OK"}
   - id: compose-in-spa
     claim: "自定义组卷进主SPA(教研室#6 全量收敛): app_router genCompose 调 /api/paper/compose + 默认type_mix从库内真类型(去legacy不存在的'选义单选') + stem放宽; 收敛自 /teacher#compose"

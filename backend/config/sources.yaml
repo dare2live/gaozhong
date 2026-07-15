@@ -333,7 +333,7 @@ exam_sources:
     publish_url: https://m.kekenet.com/gaokao/202209/659942.shtml
     status: raw_acquired_candidate_segmented_needs_paper_align
     observed_scope: >-
-      6 段(短对话+长对话1-4+独白); I&II 共用。sha256 见 manifest。未升 data/audio。
+      6 段(短对话+长对话1-4+独白); I&II 共用。sha256 见 manifest。已升 data/audio/2022/listening/。
     attachments:
       - kind: json_manifest
         local_path: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_manifest.json
@@ -348,7 +348,7 @@ exam_sources:
     publish_url: https://m.kekenet.com/gaokao/202408/693782.shtml
     status: raw_acquired_candidate_segmented_needs_paper_align
     observed_scope: >-
-      6 段; I&II 共用(微信/教习网多源一致)。sha256 见 manifest。未升 data/audio。
+      6 段; I&II 共用(微信/教习网多源一致)。sha256 见 manifest。已升 data/audio/2023/listening/。
     attachments:
       - kind: json_manifest
         local_path: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_manifest.json
@@ -363,7 +363,7 @@ exam_sources:
     publish_url: https://m.kekenet.com/gaokao/202408/693798.shtml
     status: raw_acquired_candidate_segmented_needs_paper_align
     observed_scope: >-
-      2024 起 I/II 听力分卷; 本套为 II 卷 6 段。sha256 见 manifest。未升 data/audio。
+      2024 起 I/II 听力分卷; 本套为 II 卷 6 段。sha256 见 manifest。已升 data/audio/2024/listening/。
     attachments:
       - kind: json_manifest
         local_path: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_manifest.json

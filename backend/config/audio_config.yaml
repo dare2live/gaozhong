@@ -1,30 +1,30 @@
-# 音频资源配置 — Phase 7.2 听力播放器壳 (非可教听力模块)
+# 音频资源配置 — 听力播放 (第三方指纹核验可教档)
 # 命名规范: data/audio/{year}/listening/{id}.mp3
-# id 格式: {section}_{question_number}  (eg: short_01, dialog_05, passage_01)
 #
-# 高考英语听力结构 (新课标 II 卷):
-#   Section A: 5 短对话 (各 1 题, 5 分)
-#   Section B: 4 长对话/独白 (各 2-3 题, 15 分)
-#   Section C: 1 填空题 (5 空, 10 分) — 2021 起部分年份调整
-#   满分 30 分, 占总分 150 的 20%
-#
-# 诚实状态 (2026-07-15 全局审计):
-#   - 卷面听力 = skeleton + extraction_gap (trend/raw)
-#   - DB 辽宁听力题: 2021=20, 2026=1 group, 2022–25=0
-#   - data/audio/{year}/ 目录占位存在, mp3 文件数 = 0 → 不作「可教听力模块」
-#   - years_with_audio 必须反映真实文件, 禁止把卷面年份冒充已覆盖
+# 诚实分层 (2026-07-15 业主拍板升档):
+#   - years_with_audio = 正式目录确有 mp3 的年份 (禁止空目录冒充)
+#   - provenance = third_party_not_neea (133ku/kekenet/newdu; 非考试院官方发行口)
+#   - fingerprint = ASR 锚点 PASS (listening_audio_transcript_fingerprint.json)
+#   - 题库 has_audio 行另计; 音频文件在 ≠ 每题已挂题干
 
-version: "1.1"
+version: "1.2"
 updated: "2026-07-15"
-module_status: extraction_gap_not_teachable
+module_status: third_party_fingerprint_verified
 module_note: >-
-  听力是卷面骨架题型, 本项目未抽全且无音频文件。UI/产品不得标「听力模块已上线」。
-  播放器组件(common.js audioPlayer)仅作壳; 无 src 时显式「无音频」。
+  2021–2026 听力音频已升入 data/audio/{year}/listening/，ASR 指纹与仓内文字稿一致。
+  源为第三方镜像(非 NEEA/省考试院官方发布口)。UI 可播放，须标明第三方核验来源。
+  禁止 TTS 冒充真听力。
+
+provenance:
+  class: third_party_not_neea
+  fingerprint_report: data/structured/exam_point/listening_audio_transcript_fingerprint.json
+  fingerprint_verdict: PASS
+  years_fingerprinted: [2021, 2022, 2023, 2024, 2025, 2026]
 
 directory_layout:
   root: "data/audio"
   pattern: "{year}/listening/{id}.mp3"
-  example: "2024/listening/short_01.mp3"
+  example: "2024/listening/dialog_01.mp3"
 
 sections:
   short_dialog:
@@ -37,27 +37,27 @@ sections:
 
   long_dialog:
     prefix: "dialog"
-    description: "Section B 长对话 — 2 段, 每段 3-4 题"
-    count: 2
+    description: "Section B 长对话 — 通常 4 段 (本仓按源打包: dialog_01..04 或 full)"
+    count: 4
     questions_per: 3
     points_per: 1.5
-    total_points: 9
+    total_points: 12
 
   monologue:
     prefix: "passage"
-    description: "Section B 独白 — 2 段, 每段 3-4 题"
-    count: 2
-    questions_per: 3
+    description: "Section B 独白 — 通常 1 段"
+    count: 1
+    questions_per: 4
     points_per: 1.5
-    total_points: 9
+    total_points: 6
 
   dictation:
     prefix: "dict"
-    description: "Section C 听力填空 (部分年份)"
-    count: 1
+    description: "Section C 听力填空 (部分年份; 本仓暂无独立分段)"
+    count: 0
     questions_per: 5
     points_per: 1.4
-    total_points: 7
+    total_points: 0
 
 scoring:
   total_points: 30
@@ -69,16 +69,61 @@ tts_fallback:
   engine: "macos_say"
   voice: "Samantha"
   rate: 160
-  note: "禁用 TTS 冒充真听力; 有官方/授权音频再开"
+  note: "禁用 TTS 冒充真听力"
 
-# 有 mp3 的年份才写入; 当前正式目录 data/audio 仍 0 —
-# 候选在 listening_candidates/ (见 acquisition_listening_audio_web.md), 未交叉核验不升档。
-years_with_audio: []
-# 卷面应有听力的年份 (结构真值, 非本库提取完成)
+# 正式目录有文件的年份 (promote 脚本写入后须与磁盘一致)
+years_with_audio: [2021, 2022, 2023, 2024, 2025, 2026]
 paper_years_listening_expected: [2021, 2022, 2023, 2024, 2025, 2026]
-# 开放直链已镜像的候选年 (≠ teachable)
 candidate_audio_years_mirrored: [2021, 2022, 2023, 2024, 2025, 2026]
 candidate_audio_gaps: []
-# 文字稿候选目录 (≠ 入 DB 真值)
+
 transcript_dir: data/external/exam_sources/listening_transcripts
-transcript_years_mirrored: [2021, 2025, 2026]  # 2022-24: 音频有、公开页文字稿需人工/可可见面另存
+transcript_years_mirrored: [2021, 2022, 2023, 2024, 2025, 2026]
+
+# promote 清单: candidate → data/audio/{year}/listening/{id}.mp3
+promote_map:
+  2021:
+    source: 133ku
+    packing: full_paper
+    files:
+      - {id: full, from: data/external/exam_sources/listening_candidates/2021_xgkii_listening_133ku_candidate.mp3}
+  2022:
+    source: kekenet
+    packing: section_bundles
+    files:
+      - {id: short_all, from: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_short_dialog.mp3}
+      - {id: dialog_01, from: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_1.mp3}
+      - {id: dialog_02, from: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_2.mp3}
+      - {id: dialog_03, from: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_3.mp3}
+      - {id: dialog_04, from: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_4.mp3}
+      - {id: passage_01, from: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_monologue.mp3}
+  2023:
+    source: kekenet
+    packing: section_bundles
+    files:
+      - {id: short_all, from: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_short_dialog.mp3}
+      - {id: dialog_01, from: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_1.mp3}
+      - {id: dialog_02, from: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_2.mp3}
+      - {id: dialog_03, from: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_3.mp3}
+      - {id: dialog_04, from: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_4.mp3}
+      - {id: passage_01, from: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_monologue.mp3}
+  2024:
+    source: kekenet
+    packing: section_bundles
+    files:
+      - {id: short_all, from: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_short_dialog.mp3}
+      - {id: dialog_01, from: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_long_1.mp3}
+      - {id: dialog_02, from: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_long_2.mp3}
+      - {id: dialog_03, from: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_long_3.mp3}
+      - {id: dialog_04, from: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_long_4.mp3}
+      - {id: passage_01, from: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_monologue.mp3}
+  2025:
+    source: newdu
+    packing: full_paper
+    files:
+      - {id: full, from: data/external/exam_sources/listening_candidates/2025_xgkii_listening_newdu_candidate.mp3}
+  2026:
+    source: newdu
+    packing: full_paper
+    files:
+      - {id: full, from: data/external/exam_sources/listening_candidates/2026_national_ii_listening_newdu_candidate.mp3}

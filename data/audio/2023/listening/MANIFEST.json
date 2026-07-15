@@ -1,0 +1,74 @@
+{
+  "year": 2023,
+  "source": "kekenet",
+  "packing": "section_bundles",
+  "provenance": {
+    "class": "third_party_not_neea",
+    "fingerprint_report": "data/structured/exam_point/listening_audio_transcript_fingerprint.json",
+    "fingerprint_verdict": "PASS",
+    "years_fingerprinted": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ]
+  },
+  "files": [
+    {
+      "year": 2023,
+      "id": "short_all",
+      "src": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_short_dialog.mp3",
+      "dst": "data/audio/2023/listening/short_all.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "6e85f81a451d03c3bc513adbd811e8f96d151509829060bae2a129fff8c94ab8",
+      "bytes": 2515493
+    },
+    {
+      "year": 2023,
+      "id": "dialog_01",
+      "src": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_1.mp3",
+      "dst": "data/audio/2023/listening/dialog_01.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "593b097e5cca8e148aee28f9a9b2123dd0b231796326f6dba7c7ee8bccd14f35",
+      "bytes": 2194152
+    },
+    {
+      "year": 2023,
+      "id": "dialog_02",
+      "src": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_2.mp3",
+      "dst": "data/audio/2023/listening/dialog_02.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "90013ada67d387b14d9db01732794afb65ebecd04a23343bf49be2fbe60bbf3a",
+      "bytes": 2109144
+    },
+    {
+      "year": 2023,
+      "id": "dialog_03",
+      "src": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_3.mp3",
+      "dst": "data/audio/2023/listening/dialog_03.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "b02f486e1e81b913bb72159e44a6c796d88ad7068fb1d8c5b10eea8308097b35",
+      "bytes": 4449004
+    },
+    {
+      "year": 2023,
+      "id": "dialog_04",
+      "src": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_4.mp3",
+      "dst": "data/audio/2023/listening/dialog_04.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "3752401f9362fedf01cba78e15d580d91f9bdba0a8c10da29264a600ad0b83a9",
+      "bytes": 3883100
+    },
+    {
+      "year": 2023,
+      "id": "passage_01",
+      "src": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_monologue.mp3",
+      "dst": "data/audio/2023/listening/passage_01.mp3",
+      "status": "OK_HARDLINK",
+      "sha256": "da7f2bebc55d7076f2e50c2da7db8e78923b03222c54b40b58e31cc493fcb67b",
+      "bytes": 3968236
+    }
+  ]
+}
