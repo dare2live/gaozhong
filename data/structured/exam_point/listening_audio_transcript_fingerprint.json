@@ -1,0 +1,115 @@
+{
+  "method": "faster-whisper fingerprint anchors vs local transcripts",
+  "model": "tiny.en",
+  "note": "Fingerprint only (distinctive spoken anchors + fuzzy ASR variants); not full verbatim force-alignment. Teachable gate / years_with_audio stays closed until explicit product decision.",
+  "years_without_transcript_in_repo": [
+    2022,
+    2023,
+    2024
+  ],
+  "years_without_transcript_verdict": "N/A_NO_GOLD_TRANSCRIPT",
+  "results": [
+    {
+      "year": 2021,
+      "audio": "2021_xgkii_listening_133ku_candidate.mp3",
+      "transcript": "2021_xgki_ii_cpsenglish_transcript.md",
+      "audio_exists": true,
+      "transcript_exists": true,
+      "windows": [
+        {
+          "id": "text1_2_opening",
+          "start_s": 90,
+          "dur_s": 90,
+          "hits": {
+            "spanish": true,
+            "lab_report": true,
+            "davidson": true,
+            "mallorca_or_visit": true
+          },
+          "pass": true,
+          "asr": "I was in my York last week. Oh, what were you doing there? My best friend worked there, and I went to visit her. It was a good chance to practice my Spanish. Ruth, I've got this terrible cold. And I have to see a doctor. I'm afraid I can't go to the class. Could you help me hand in my lab report to Dr. Davidson? Sure, no problem. Just take care of yourself, and don't worry about the class. Marie, if no one takes care of your children while you're away, Jennifer and I will be glad to have them stay with us. That's it."
+        }
+      ],
+      "verdict": "PASS"
+    },
+    {
+      "year": 2025,
+      "audio": "2025_xgkii_listening_newdu_candidate.mp3",
+      "transcript": "2025_xgkii_newdu_listening_stem.txt",
+      "audio_exists": true,
+      "transcript_exists": true,
+      "windows": [
+        {
+          "id": "text1_baxley_route",
+          "start_s": 40,
+          "dur_s": 80,
+          "hits": {
+            "bus_query": true,
+            "yellow_taxi": true,
+            "bus_number_four": true
+          },
+          "pass": true,
+          "asr": "I should take a shower. Since I'm a yellow moon out from the city and beautiful, the South New Mexico, Juanito. Is this bus going to Fast Leech's sir? No, I'm afraid not. See the yellow taxi on the corner? Turn left there to make the street and take bus number four. All right, thank you. So, would you folks like some dessert? Just bring us the bill, please. We need to get back on the road and continue our journey. No problem. Dad, I can't afford that computer, but I think I really need it from my research. Don't worry, Alice. Just pay as much as you bet and how many of those."
+        },
+        {
+          "id": "text10_creative_camp",
+          "start_s": 900,
+          "dur_s": 120,
+          "hits": {
+            "creative_day": true,
+            "mini_camp": true,
+            "ages_5_12": false
+          },
+          "pass": true,
+          "asr": "We all are, we all can listen to it. We are the Suvatalki. We are the Suvatalki. We are the Tevat. We are the Suvatalki. So what are you doing? We're the Suvatalki. Hello, everyone. Welcome to the creative day school. I'm the U.S. We're the Suvatalki. We provide two full-time summer camp programs. Well, we'll last the entire time the children are out of school. We're the one who's going to be out on the U.S. Our first Suvatalki is for our four-year-olds called Mini Camp. This Mini Camp will still cut their normal everyday schedule with a lot of fun activities. At least once a week our Mini Campers will go on a future. These few trips couldn't exist on the day at the beach or exploring the natural museum. Our older summer camp is provided for ages five through 12. There are central summer fun activities and games. The children hold your decision in part. They draw their hair. They draw their hair. They draw their hair. They can't do much more. This Mini has been nearby to school. This is all in a weekly future for ages six and not. We have other field trips, couldn't clean clothing, a day at the movies, or a picnic in the park. And we've permission of pairing the stand activities are required to participate in all field trips. Now, let's watch a five-minute film."
+        }
+      ],
+      "verdict": "PASS"
+    },
+    {
+      "year": 2026,
+      "audio": "2026_national_ii_listening_newdu_candidate.mp3",
+      "transcript": "2026_national_ii_sjds_transcript.md",
+      "audio_exists": true,
+      "transcript_exists": true,
+      "windows": [
+        {
+          "id": "text1_picnic_rose",
+          "start_s": 206,
+          "dur_s": 40,
+          "hits": {
+            "picnic": true,
+            "rose": true,
+            "kevin": true
+          },
+          "pass": true,
+          "asr": "We're going to the park for a picnic. Would you like to come, Rose? I'd love to. But I have to go downtown to get Kevin a birthday present. He invited me to his party. We're going to the park for a picnic. Would you like to come, Rose? I'd love to. But I have to go downtown to get Kevin a birthday present. He invited me to his party. Pianzia me."
+        },
+        {
+          "id": "text6_swansea",
+          "start_s": 486,
+          "dur_s": 50,
+          "hits": {
+            "swansea": true,
+            "june_22": true
+          },
+          "pass": true,
+          "asr": "Good morning, sir. Can I help you? Yes. I've booked a ticket for June 22 to Swan Sea. I'd like to see if there's an earlier flight available. What date do you have in mind? I'd prefer the 18th if possible. I'm sorry. There are no departures for the 18th. We have a flight leaving on the 15th, and the 17th will either of these days work for you? The 17th would work better for me. Thank you. Good morning, sir. Can I help you? Yes. I've booked a ticket for June 22 to Swan Sea. I'd like to see if there's an earlier flight available. What date do you have in mind?"
+        },
+        {
+          "id": "text10_melbourne",
+          "start_s": 1050,
+          "dur_s": 60,
+          "hits": {
+            "melbourne": true,
+            "eureka": true,
+            "book_thief": true
+          },
+          "pass": true,
+          "asr": "Okay, now let's briefly review what we have done in the past few days. We set off a Monday morning and arrived in Melbourne after a two hour bus ride. We started with a guided tour of your Rika Tower. After lunch, we walked along Collin Street, taking in the view of Town Hall. We then took a walk through Chinatown to the State Library. On expectedly, we also met Marcus Zuzak, the author of the book Thief at the library. On Tuesday morning, we enjoyed the beauty of the botanical gardens, followed by a tour of the Victoria Parliament House in the afternoon. Today is Wednesday. We spent most of the morning on Swanton Street studying the historic architecture. Now we finished lunch."
+        }
+      ],
+      "verdict": "PASS"
+    }
+  ]
+}

@@ -4,14 +4,15 @@
 
 | 年 | 卷面关系 | 本地候选音频 | 状态 |
 |---|---|---|---|
-| 2021 | I&II **共用听力**（多源称） | `2021_xgkii_listening_133ku_candidate.mp3` 整卷 ~15:00 | **candidate** — 未与 EOL 题干指纹交叉；勿升 teachable |
-| 2022 | I&II **共用** | 可可英语 6 段 `2022_xgki_ii_kekenet_*.mp3` | **candidate** — 已镜像+sha256 |
-| 2023 | I&II **共用** | 可可英语 6 段 `2023_xgki_ii_kekenet_*.mp3` | **candidate** — 已镜像+sha256 |
-| 2024 | I / II **分卷**（II 单独） | 可可英语 6 段 `2024_xgkii_kekenet_*.mp3` | **candidate** — 已镜像+sha256 |
-| 2025 | I / II 分卷 | **新都网 zip 已下** 整卷 mp3(~18:53)+原文 docx | **candidate** |
-| 2026 | 全国二卷 | **新都网 rar 已下** 整卷 mp3(~22:45)+原文 docx | **candidate**（稿名带 2025.06.11，待指纹） |
+| 2021 | I&II **共用听力**（多源称） | `2021_xgkii_listening_133ku_candidate.mp3` 整卷 ~15:00 | **candidate** — ASR 指纹 vs cpsenglish **PASS**；仍勿升 teachable |
+| 2022 | I&II **共用** | 可可英语 6 段 `2022_xgki_ii_kekenet_*.mp3` | **candidate** — 已镜像+sha256；仓内无文稿 → 指纹 N/A |
+| 2023 | I&II **共用** | 可可英语 6 段 `2023_xgki_ii_kekenet_*.mp3` | **candidate** — 已镜像+sha256；仓内无文稿 → 指纹 N/A |
+| 2024 | I / II **分卷**（II 单独） | 可可英语 6 段 `2024_xgkii_kekenet_*.mp3` | **candidate** — 已镜像+sha256；仓内无文稿 → 指纹 N/A |
+| 2025 | I / II 分卷 | **新都网 zip 已下** 整卷 mp3(~18:53)+原文 docx | **candidate** — ASR 指纹 vs newdu 稿 **PASS** |
+| 2026 | 全国二卷 | **新都网 rar 已下** 整卷 mp3(~22:45)+原文 docx | **candidate** — ASR 指纹 vs sjds/newdu **PASS**（稿名 2025.06.11 caveat 仍保留） |
 
-文字稿进度见 `acquisition_listening_transcripts_2025_2026.md`。
+文字稿进度见 `acquisition_listening_transcripts_2025_2026.md`。  
+音频↔文稿指纹报告：`listening_audio_transcript_fingerprint.md`。
 
 - NEEA / 省考试院：**无**个人可下的官方 MP3 门户。
 - GitHub：**无**可用的新课标 II 听力 mp3 仓（仅有四六级/其它）。
@@ -37,6 +38,6 @@
 
 ## 下一步（未做）
 
-1. 用 2021 EOL 题干 / 答案键对 133ku 音频做听辨或 ASR 指纹（防 I/II 错挂）。
-2. 2022–24 段音频与卷面 Text1–10 对齐后，再 copy 入 `data/audio/{year}/listening/` 并更新 `years_with_audio`。
-3. 2025/2026：需人工网盘授权或付费源入库后再锁 sha256。
+1. ~~2021/2025/2026 ASR 指纹~~ → 见 `listening_audio_transcript_fingerprint.md`（锚点 PASS，非逐字对齐）。
+2. 入库 2022–24 文字稿后补同标准指纹；再考虑 copy 入 `data/audio/{year}/listening/` 与 `years_with_audio`。
+3. 若要升 teachable：全卷逐字/题号级 QC + 产品明确授权（第三方候选 ≠ NEEA）。
