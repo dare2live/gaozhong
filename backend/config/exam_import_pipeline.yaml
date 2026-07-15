@@ -8,10 +8,11 @@ steps:
     callable: import_eol_exams
     note: "EOL structured draft + review decisions"
 
-  - name: local_pdf_registry
-    module: scripts.import_recent_exams
-    callable: import_pdfs
-    note: "sources.yaml family=exam_truth_source_local_pdf; 含 PDF 解析年 + group_txt 调度年"
+  - name: writing_2023_xgkii
+    module: backend.services.imports.writing_2023_import
+    callable: import_writing_2023
+    note: "2023 应用文+续写 from gzenxx docx mirror (zizzs .pdf in-repo is HTML landing)"
+
 
 # local_pdf 族内特殊年: PDF 无文字层/走 OCR txt+group 聚合时, import_pdfs 按年 dispatch
 # (仍属同一 family, 不单独占 pipeline step — 消 2026 第三条手接线)

@@ -223,6 +223,20 @@ exam_sources:
         expected_sha256: c51421c891f7e1344b5e8bb058fbfa57b7fbf3fec4b6d05d1ca7bbcbe0e39eda
         min_bytes: 100000
 
+  third_party_docx_xgkii_english_2023_gzenxx:
+    name: 2023 新课标 II 卷英语 gzenxx Word 题干 (写作补全)
+    family: exam_truth_source_third_party_docx
+    org: gzenxx / 民间聚合镜像
+    year: 2023
+    paper_type: 新高考全国II卷
+    status: imported_writing_stems_2023
+    observed_scope: Word 题干含应用文66+续写67全文; 本仓用于补全 GAOKAO-Bench 2023 写作缺口。in-repo zizzs.pdf 实为 HTML 落地页不可抽题干。
+    attachments:
+      - kind: docx
+        local_path: data/external/exam_sources/third_party_pdfs/2023_xgkii_english_gzenxx.docx
+        expected_sha256: 3c8f9f12423734e3603d7ae05acb05d6e8dbceb0cf16fc9766688be371d9b1ef
+        min_bytes: 50000
+
   legacy_local_pdf_xgkii_english_2024:
     name: 2024 新高考全国 II 卷英语 local mirrored PDF source
     family: exam_truth_source_local_pdf
