@@ -45,6 +45,13 @@ def _resolve_phrase_node(con: duckdb.DuckDBPyConnection, canonical: str, phrase_
         "AND lower(trim(label)) = ? LIMIT 1",
         [want],
     ).fetchone()
+    if not row and want:
+        # 教材标签偶带中文后缀 e.g. so...that 结果状语
+        row = con.execute(
+            "SELECT concept_id FROM nodes WHERE node_type='phrase' "
+            "AND lower(label) LIKE ? LIMIT 1",
+            [want + "%"],
+        ).fetchone()
     if row:
         return row[0]
     # 教材节点 type 可能与 curated 不同, 再试 sha(canonical/教材type) 无意义 —
