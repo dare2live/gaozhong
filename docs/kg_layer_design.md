@@ -12,7 +12,8 @@
 > | 关联性: co_occurs 考点共现 + characterizes_theme 主题特征词 | ✅ 50fa9c5/c9d8cd3 |
 > | B轨 跨年级分阶 (at_stage 边已细, verify-the-verifier) | ✅ 1d5d2de |
 > | **⚠ 矿口缺口**: 考试词典/word_sense **有API无前端** (teacher 页未接) | ❌ 收口冲刺第3步 |
-> | A2 语法考点 / A3 句型 / A4 表达 | ⏸ 真相源未成熟·候选池, 需标注 workflow, **真老师校验前别预建** |
+> | A2 语法考点 | **SUPERSEDED (2026-07-15)**: 禁平行 `tests_grammar_point`/dim=grammar_point 考查边; 改只读 `grammar_point_rollup`←`tests_grammar` |
+> | A3 句型 / A4 表达 | ⏸ 真相源未成熟·候选池, 需标注 workflow, **真老师校验前别预建** |
 > | "怎么考"第二轴 = cognitive_skill(设问类型) | ✅ 已落地+跨era(explicit_label最强, **115边 2015-20旧课标II 86 + 新高考II 29[2023:15+2024:14]**, 推断28→41%迁移; 原"exam_method待建"系误判, 见§6) |
 > | A6 立体透视 stereo_query (stage×dim×era) | ⏸ 待 word_sense.stage 跨年级 + 真老师校验后再建 |
 >
@@ -55,7 +56,7 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 | 主题 theme | exam_point dim=theme_context/theme_l2 | 课标官方3大主题语境/10主题群 (亲验PDF表2: 无可枚举第三级; 杜撰theme_l3已废2026-06-21) | mature(锁L1/L2官方层) | 复用 |
 | 题型 qtype | node_type=qtype + question_type 边(结构性: 阅读/完形/语法填空/续写/应用文/听力) | 卷型结构 | mature | 复用不动 |
 | **设问类型 cognitive_skill** | exam_point dim=cognitive_skill, **passage级聚合**(先不建子题node) | **真题教研解析显式标签(explicit_label, 高于dual_model)**; 实测 **38 题有 analysis** | **absent→金矿首建** | 复用 |
-| **语法考点 grammar_point** | exam_point dim=grammar_point + 新 `tests_grammar_point` 边 → grammar课标节点 `aligns_to` | 辽宁语法填空真题 + grammar_point_distribution.json(dual_model_avg分歧0.04); **旧弱 tests_grammar(84%非辽宁旧MCQ)降级 legacy_mcq_keyword 不进辽宁分布** | absent(节点全/边弱) | 复用grammar节点+新边 |
+| **语法考点 grammar_point** | **SUPERSEDED**: 九桶只读 rollup(`grammar_point_rollup`)←`tests_grammar→grammar_items`; **禁止**平行 `tests_exam_point` dim=grammar_point / `tests_grammar_point` | 考查真值=`tests_grammar`; 九桶=empirical 高频面派生 | derived_rollup | 只读服务不写边 |
 | **句型 syntax_pattern** | exam_point dim=syntax_pattern, **真题归纳**(非教材词典) | 辽宁真题双模型归纳; 教材 phrases.phrase_type=候选种子非真相源(phrase→question 实测0边) | absent(真相源未成熟→v1诚实标候选池) | 复用 |
 | **表达方式 function_expression** | exam_point dim=function_expression | 应用文/续写真题归纳 + 课标功能意念表(S全集锚) | absent(同句型 v1候选池) | 复用 |
 | **命题方式 exam_method「怎么考」第二轴** | **唯一新 node_type** + `tested_by_method` 边 | 设问解析实证 + evidence.cue(586边); **unclaimed land, 真相源最弱** | absent | **新建(待业主拍板, §6)** |
@@ -112,7 +113,7 @@ KG 层 = 既有一张图 `nodes(concept_id,node_type,label,attrs_json)+edges(src
 ### TrackA 高中侧 KG 加厚
 - **A0** 接线存量(零重标, 坑8): question_intent/grammar_point/外省标注已结构化的孤儿 JSON 直接喂 loader; 外省题标 province=外省不入辽宁分布(§7).
 - **A1 设问类型金矿(首建, 红队确认安全第一步)**: loader._DIMENSIONS 加 dim=cognitive_skill, provenance=explicit_label, passage级聚合不建子题node. **门锁真数: 可建边对账 38 题有analysis(非"~29"); 推断占比≈50%对账真相源(防回退inference的15%, 坑16); 辽宁覆盖率(命中数非边数)+provenance纯度.** D0 用 `_check_29+`(避开已占的 _check_23) + 3 条 moth.
-- **A2** 语法考点升格: dim=grammar_point + tests_grammar_point 边 + aligns_to 桥接; 旧 tests_grammar 降级 legacy_mcq_keyword. 门: 全辽宁+provenance+caveat诚实(9类不覆盖名词数).
+- **A2 SUPERSEDED (2026-07-15 颗粒度残留整改)**: 原「dim=grammar_point + tests_grammar_point 写边」与 `irreducible_blockers.grammar_point_taxonomy_dimension` / Rule1 双真相源冲突 → **废止写边**。现行: `grammar_point_buckets.yaml` + `grammar_point_rollup` 只读聚合 `tests_grammar`, taxonomy status=`derived_rollup`, D0 锁考查边=0.
 - **A3/A4** 句型/表达: 真题归纳 artifact → loader 加维; 教材 phrase=候选. 门: 真题来源非教材冒充 + 空心率(真题证据边vs候选节点). **真相源未成熟 → v1 大概率诚实停候选池**.
 - **A5** 命题方式 exam_method 第二轴(**待业主 §6 决策**): 若建, facet 冻≤8 + taxonomy_self_derived + 只上分析面不上教学面.
 - **A6** stereo_query service + A7 立体前端视图 + A8 消费产物接线(kg_compliance).

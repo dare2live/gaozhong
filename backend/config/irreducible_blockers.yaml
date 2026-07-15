@@ -36,9 +36,10 @@ items:
   - id: grammar_point_taxonomy_dimension
     blocker_class: sealed_honesty_law
     evidence: >
-      exam_point_taxonomy.yaml grammar_point status=pending;
-      考查真值已在 tests_grammar→grammar_items, 不另造平行维度冒充完成。
-    reopen_when: "调研确认需要独立 grammar_point 维且与 tests_grammar 不双真相源"
+      taxonomy status=derived_rollup: 九桶只读 grammar_point_rollup←tests_grammar。
+      平行考查边(tests_exam_point dim=grammar_point / tests_grammar_point)仍永久禁止。
+      rollup 绿不等于「独立 grammar_point 考查维已完成」。
+    reopen_when: "仅当产品明确要正交考查轴且能证明与 tests_grammar 不双真相源时再议写边"
 
   - id: junior_phase_d_recitable_body
     blocker_class: sealed_honesty_law

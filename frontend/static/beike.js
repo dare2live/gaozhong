@@ -122,68 +122,84 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
   }
 
   function renderDist() {
-    const desc = (state.dist.distribution[state.era][state.dim] || []);   // service 已按占比降序
-    const rows = desc.slice().reverse();                                  // echarts 横条自下而上
-    // 坑(2026-07-06 数据关联设计审查): 小样本(如n=19分7类, 单类n=1)下累计占比原精确到小数点1位,
-    // 与旁边"样本不足(方向性)"警示语气冲突, 给人虚假精确感。distEligible=false 时累计占比降级为
-    // 整数(tooltip/label/note/aria-label/sr表 5处输出全部读同一份cums, 一处降级全部生效)。
-    const elig = distEligible(state.era, state.dim);
-    // 帕累托注记 (#3): 累计占比 = 纯渲染层对 service 已算 pct 求和 (排序累计, 不重算占比本身)
+    const THEME_DIMS = { theme_l2: 1, theme_context: 1 };
+    const isTheme = !!THEME_DIMS[state.dim];
+    const layerPack = isTheme
+      ? (((state.dist.theme_layers || {})[state.era] || {})[state.dim] || null)
+      : null;
+    const humanRows = layerPack ? ((layerPack.layers || {}).human_curriculum_verified || []) : null;
+    const dualRows = layerPack ? ((layerPack.layers || {}).dual_model_agree || []) : null;
+    // theme: 默认只画 human 实心; dual 空心第二系列。禁混算成一条真值分布。
+    const desc = (isTheme && humanRows && humanRows.length)
+      ? humanRows
+      : (isTheme && dualRows && dualRows.length)
+        ? dualRows  // human=0 时仅 dual, 下方 note 标方向性
+        : (state.dist.distribution[state.era][state.dim] || []);
+    const dualOnly = isTheme && !(humanRows && humanRows.length) && !!(dualRows && dualRows.length);
+    const rows = desc.slice().reverse();
+    const elig = distEligible(state.era, state.dim) && !dualOnly;
     let cum = 0;
     const cums = desc.map(r => { cum += r.pct; return elig ? +cum.toFixed(1) : Math.round(cum); });
     let pN = desc.length;
     for (let i = 0; i < desc.length; i++) if (cums[i] >= 70) { pN = i + 1; break; }
     G.$("#bk-dimname").textContent = DIM_LABEL[state.dim];
     charts.dist = G.initChart(G.$("#bk-dist"));
-    charts.dist.setOption({
-      grid: { left: 4, right: 96, top: 8, bottom: 8, containLabel: true },
-      // 坑(2026-07-05 数据可视化审计): 无 rows 时 Math.max(...[]) = -Infinity(轴崩); 姊妹图 cog 图(下方
-      // renderCognitiveSkill)已用 ,0 兜底, 此处补齐同款防御(现无数据会触发, 补上防未来 dim/era 组合为空)。
-      // 坑(2026-07-05 教师视角审计): 未取整的浮点乘法(如31.6*1.15)会产生 36.339999999999996 这类原始
-      // 浮点噪声直接喂给 echarts 当轴上限刻度; 姊妹图 renderShiftDumbbell(下方)已用 Math.ceil(...*1.15)
-      // 处理过同一模式, 此处补齐同款取整。
-      xAxis: { type: "value", max: Math.ceil(Math.max(...rows.map(r => r.pct), 0) * 1.15), axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
-      yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
-      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>${p[0].value}% · n=${rows[p[0].dataIndex].n} · 累计前${desc.length - p[0].dataIndex}类 ${cums[desc.length - 1 - p[0].dataIndex]}%` },
-      series: [{
-        type: "bar", data: rows.map(r => r.pct), barWidth: "62%",
-        itemStyle: { color: C.blue, borderRadius: [0, 4, 4, 0] },
-        label: {
-          show: true, position: "right", fontSize: 11, color: INK3,
-          formatter: p => {
-            const i = desc.length - 1 - p.dataIndex;   // 还原降序位次
-            const base = `${p.value}% · n=${rows[p.dataIndex].n}`;
-            return i > 0 ? `${base} {c|▸累计${cums[i]}%}` : base;
-          },
-          rich: { c: { color: C.grey, fontSize: 10 } },   // 条尾灰字=累计占比 (锚 --data-gray)
+    const series = [{
+      name: isTheme ? "人工核验" : "考查占比",
+      type: "bar", data: rows.map(r => r.pct), barWidth: isTheme && dualRows && dualRows.length && humanRows && humanRows.length ? "42%" : "62%",
+      itemStyle: { color: C.blue, borderRadius: [0, 4, 4, 0] },
+      label: {
+        show: true, position: "right", fontSize: 11, color: INK3,
+        formatter: p => {
+          const i = desc.length - 1 - p.dataIndex;
+          const base = `${p.value}% · n=${rows[p.dataIndex].n}`;
+          return i > 0 ? `${base} {c|▸累计${cums[i]}%}` : base;
         },
-      }],
+        rich: { c: { color: C.grey, fontSize: 10 } },
+      },
+    }];
+    // dual 空心层: 与 human 标签对齐 (缺标签补 0)
+    if (isTheme && humanRows && humanRows.length && dualRows && dualRows.length) {
+      const dualMap = Object.fromEntries(dualRows.map(r => [r.label, r]));
+      const dualAligned = rows.map(r => (dualMap[r.label] ? dualMap[r.label].pct : 0));
+      series.push({
+        name: "方向性(dual_model)",
+        type: "bar", data: dualAligned, barWidth: "42%",
+        itemStyle: { color: "rgba(128,128,128,0.15)", borderColor: C.grey, borderWidth: 1, borderRadius: [0, 4, 4, 0] },
+        label: { show: false },
+      });
+    }
+    charts.dist.setOption({
+      legend: isTheme ? { top: 0, right: 8, textStyle: { fontSize: 11, color: INK3 } } : undefined,
+      grid: { left: 4, right: 96, top: isTheme ? 28 : 8, bottom: 8, containLabel: true },
+      xAxis: { type: "value", max: Math.ceil(Math.max(...rows.map(r => r.pct), ...(series[1] ? series[1].data : [0]), 0) * 1.15), axisLabel: { formatter: "{value}%" }, splitLine: { lineStyle: { color: "rgba(128,128,128,0.12)" } } },
+      yAxis: { type: "category", data: rows.map(r => r.label), axisTick: { show: false }, axisLine: { show: false } },
+      tooltip: { trigger: "axis", formatter: p => `${p[0].name}<br/>` + p.map(x => `${x.seriesName}: ${x.value}%`).join("<br/>") },
+      series,
     });
-    // 坑(2026-07-06 数据关联设计审查): A卡切到"体裁"维度时6个体裁分类与F卡(题材×思维)完全重叠
-    // (同一份底层真题池, 只是A是passage粒度/F是子题粒度), 但两卡分属"考什么"/"怎么考"两个区块,
-    // 中间隔着整个"怎么变"区, 无任何呼应——补一条跳转提示, 不做echarts跨图高亮(复杂度/收益不对等)。
-    // 坑: 页面本身就是 #/beike 路由, 用 <a href="#bk-card-f"> 会把hash改成"bk-card-f"触发SPA路由
-    // 误判为未知页面——沿用本文件已有的 data-goto + scrollIntoView 模式(非真正hash跳转)。
     const xlink = state.dim === "genre"
       ? `<br><button type="button" class="bk-vlink" data-goto="bk-card-f" style="font-size:11.5px;">同一批真题按题材看"怎么想"(推断占比) → F卡</button>` : "";
-    G.$("#bk-distnote").innerHTML = desc.length > 1
-      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${xlink}`
+    const th = (layerPack && layerPack.honesty) || {};
+    const themeNote = isTheme
+      ? `<br><span class="zt-thin-tag" style="margin-right:6px;">禁混算</span>实心=人工课标核验(n=${th.n_human || 0}); 空心=dual_model 方向性(n=${th.n_dual || 0}); analysis-cross=${th.analysis_cross_verified || 0}(必须为0)。${dualOnly ? " 本 era 无人核验子集, 仅方向性。" : ""}`
       : "";
+    G.$("#bk-distnote").innerHTML = desc.length > 1
+      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${themeNote}${xlink}`
+      : (themeNote || "");
     G.$$("#bk-distnote [data-goto]").forEach(b => b.onclick = () => {
       const t = document.getElementById(b.dataset.goto);
       if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-    // a11y: 动态 aria-label(图名+维度+era+前几项实值) + sr-only 数据表 — 复用本函数已用的 rows(原序非 reverse)
     const dimName = DIM_LABEL[state.dim];
     setAria("bk-dist",
       `考点分布条形图(${dimName} · ${ERA_LABEL[state.era] || state.era} 辽宁卷): ` +
       (desc.slice(0, 4).map(r => `${r.label} ${r.pct}%`).join(", ") || "无数据") +
       (desc.length > 4 ? ` 等共 ${desc.length} 项` : "") +
-      (desc.length > 1 ? `; 前 ${pN} 类合计 ${cums[pN - 1]}%` : ""));
+      (desc.length > 1 ? `; 前 ${pN} 类合计 ${cums[pN - 1]}%` : "") +
+      (isTheme ? "; theme 分层披露禁混算" : ""));
     setSrTable("bk-dist", `考点分布 — ${escHtml(dimName)} · ${escHtml(ERA_LABEL[state.era] || state.era)} 辽宁卷`,
       ["类别", "占比", "题数", "累计占比"], desc.map((r, i) => [r.label, r.pct + "%", "n=" + r.n, cums[i] + "%"]));
     charts.dist.off("click");
-    // #3: 点考点条 → 弹该考点浮窗(关联+真题, 复用#2修好的 exam_point 真题); fallback sendPrompt 下钻
     charts.dist.on("click", p => {
       const cid = `exam_point:${state.dim}:${p.name}`;
       if (G.openPopup) G.openPopup(cid);
@@ -560,7 +576,9 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const top = rows[0];
     note.innerHTML = `辽宁高考阅读第二节(七选五) ${tot} 空 · L2 unknown=${unk}(须为0)。`
       + `最多考的是 <b>${esc(top.label)}</b>(${top.pct}%) — 练段内衔接与逻辑推进比背选项更对口。`
-      + `<br><small class="muted">L1=官方「理解文章结构类型」; L2=课标语篇知识(主题句/承上启下/段旨收束/逻辑推进/句际衔接)。</small>`;
+      + `<br><small class="muted">L1=官方「理解文章结构类型」; L2=课标语篇知识。method: `
+      + (sub.by_method || []).map(m => `${esc(m.method)} ${m.n}`).join(" / ")
+      + `。全覆盖≠精确(fallback 可见)。</small>`;
   }
 
   async function loadCross(by) {

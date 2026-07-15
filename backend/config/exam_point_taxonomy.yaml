@@ -116,17 +116,15 @@ dimensions:
       - {id: 连续性文本, prov: official_curriculum}
       - {id: 非连续性文本, prov: official_curriculum, note: "图表/广告/活动单/目录等"}
 
-  # 维度 5: 语法考点 (语法填空/完形 — 映射课标 106 项官方语法; 9类粒度是高频面归纳 🟡)
-  # 2026-07-07 名实不符修正: 本维度此前只有 yaml 声明, backend 里 0 行代码实现(grep
-  # "grammar_point" 全库无命中), 跟 text_continuity 一样是"未接入"却没标 status:pending,
-  # 是文档说了但代码没做的假声明。已实测真实语法标注: tests_grammar 边仅18条/8个
-  # distinct grammar_items(占官方108项的7%), 数据本身单薄, 是否值得在其上再建9类聚合层
-  # 待坑17级调研(覆盖率是真天花板还是可修bug)结论后再定, 现诚实标 pending。
+  # 维度 5: 语法考点九桶 — 只读派生面 (非独立考查维)
+  # 2026-07-15: SUPERSEDED 平行写边; sink=grammar_point_rollup 只读 tests_grammar→九桶。
+  # 禁止 tests_exam_point dim=grammar_point / tests_grammar_point (双真相源)。
   grammar_point:
-    desc: 语法填空/完形挖空考查的语法点 (映射课标 grammar_items 106 项; 9类粒度=高考高频面归纳)
+    desc: 语法填空等考查语法点的九桶高频面 (派生自 tests_grammar→grammar_items, 非第二套考点)
     provenance: empirical_liaoning
     curriculum_ref: "可映射 grammar_items.jsonl(课标106项); 9类聚合为高频考查面"
-    status: pending  # 2026-07-07: 0代码实现的假声明已诚实标注, 待tests_grammar覆盖率调研结论
+    status: derived_rollup  # 只读服务; 禁止写 tests_exam_point 该维
+    sink: grammar_point_rollup  # 非 edges
     applies_to: [语法填空, 完形填空]
     labels:
       - {id: 动词时态语态, prov: empirical_liaoning}

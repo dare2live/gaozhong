@@ -44,7 +44,9 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_grammar_coverage_floor(con, check)
     check_genre_truth(con, check)
     check_theme_human_verified(con, check)
+    check_theme_layers(con, check)
     check_quality_standards(con, check)
+    check_grammar_point_rollup(con, check)
 
 
 def _check_grammar_coverage_floor(con: duckdb.DuckDBPyConnection, check) -> None:
@@ -289,8 +291,58 @@ def check_quality_standards(con: duckdb.DuckDBPyConnection, check) -> None:
     check("学业质量水平节点 == 3", s["n_quality_levels"] == 3, f"{s['n_quality_levels']}")
     check("学业质量描述节点 == 42", s["n_descriptors"] == 42, f"{s['n_descriptors']}")
     check("辽宁高考卷级对齐水平二边存在", s["aligned_edge_present"], "")
+    check("学业质量 descriptors 可浏览列表非空", len(s.get("descriptors") or []) == 3, f"{len(s.get('descriptors') or [])}")
+    check("学业质量 forbid_item_level_edges", s.get("forbid_item_level_edges") is True, "")
     n_item = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='aligned_to_quality_level' "
         "AND src_id LIKE 'question:%'"
     ).fetchone()[0]
     check("无题目级 quality 对齐边 (禁发明细映射)", n_item == 0, f"{n_item}")
+
+
+def check_theme_layers(con: duckdb.DuckDBPyConnection, check) -> None:
+    """theme provenance 分层: layers 求和==边数; cross=0; mixed_forbidden."""
+    from backend.services.exam_point.loader import theme_distribution_layers
+    layers = theme_distribution_layers(con)
+    check("theme_layers 非空", bool(layers), str(layers)[:80])
+    n_sql = con.execute(
+        "SELECT COUNT(*) FROM edges e "
+        "JOIN exam_questions q ON ('question:'||q.question_id)=e.src_id AND q.province LIKE '辽宁%' "
+        "WHERE e.relation='tests_exam_point' "
+        "AND json_extract_string(e.evidence_json,'$.dimension')='theme_l2' "
+        "AND q.source_repo NOT LIKE 'eol_xgkii%'"
+    ).fetchone()[0]
+    n_layers = 0
+    for era, dims in layers.items():
+        pack = dims.get("theme_l2") or {}
+        h = pack.get("honesty") or {}
+        check(f"theme_l2 {era} mixed_forbidden", h.get("mixed_forbidden") is True, str(h))
+        check(f"theme_l2 {era} cross==0", h.get("analysis_cross_verified") == 0, str(h))
+        for _name, rows in (pack.get("layers") or {}).items():
+            n_layers += sum(r["n"] for r in rows)
+    check("theme_l2 layers 求和 == 篇章级边数", n_layers == n_sql, f"layers={n_layers} sql={n_sql}")
+
+
+def check_grammar_point_rollup(con: duckdb.DuckDBPyConnection, check) -> None:
+    """九桶只读派生; 平行考查边=0; 对账 tests_grammar."""
+    from backend.services.exam_point.grammar_point_rollup import grammar_point_rollup
+    import yaml
+    from pathlib import Path
+    tax = yaml.safe_load(Path("backend/config/exam_point_taxonomy.yaml").read_text(encoding="utf-8"))
+    gp = None
+    # taxonomy 可能是 {dimensions: {grammar_point: ...}} 或扁平
+    for root in (tax, tax.get("dimensions") or {}, tax.get("exam_point_dimensions") or {}):
+        if isinstance(root, dict) and isinstance(root.get("grammar_point"), dict):
+            gp = root["grammar_point"]
+            break
+    st = (gp or {}).get("status")
+    check("taxonomy grammar_point status ∈ {derived_rollup,pending}",
+          st in ("derived_rollup", "pending"), f"status={st}")
+    r = grammar_point_rollup(con)
+    check("rollup derived_from=tests_grammar", r["derived_from"] == "tests_grammar", "")
+    check("rollup parallel exam_point grammar_point 边==0", r["parallel_exam_point_edges"] == 0, str(r["parallel_exam_point_edges"]))
+    check("rollup parallel tests_grammar_point 边==0", r["parallel_tests_grammar_point_edges"] == 0, str(r["parallel_tests_grammar_point_edges"]))
+    check("rollup assigned+unbucketed == n_tests_grammar_edges_read",
+          r["n_edges_assigned_to_buckets"] + r["n_edges_unbucketed"] == r["n_tests_grammar_edges_read"],
+          f"{r['n_edges_assigned_to_buckets']}+{r['n_edges_unbucketed']} vs {r['n_tests_grammar_edges_read']}")
+    check("rollup report_as 绝对计数", r["report_as"] == "absolute_count_not_percentage", r["report_as"])

@@ -1,0 +1,26 @@
+# 九桶 ← grammar_items 标签规则 (只读派生; 非考查边)
+# 匹配: label 含子串即入桶; 多命中取 rules 顺序更靠前的桶。
+# unmatched 计入 unbucketed, 不发明第 10 桶冒充完成。
+
+version: 1
+derived_from: tests_grammar
+status: derived_rollup
+buckets:
+  - id: 动词时态语态
+    match_any: ["时态", "语态", "被动", "一般过去", "一般现在", "现在完成", "过去完成", "将来", "进行", "情态动词"]
+  - id: 非谓语动词
+    match_any: ["非谓语", "不定式", "现在分词", "过去分词", "动名词"]
+  - id: 定语从句
+    match_any: ["定语从句"]
+  - id: 名词性从句
+    match_any: ["宾语从句", "表语从句", "主语从句", "同位语从句", "名词性从句"]
+  - id: 状语从句
+    match_any: ["状语从句"]
+  - id: 连词介词
+    match_any: ["连词", "介词"]
+  - id: 冠词代词
+    match_any: ["冠词", "代词", "物主"]
+  - id: 构词派生
+    match_any: ["构词", "派生", "词缀"]
+  - id: 形容词副词比较
+    match_any: ["形容词", "副词", "比较级", "最高级"]

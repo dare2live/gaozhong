@@ -366,10 +366,22 @@ assertions:
     command: ["python3", "-c", "import duckdb; from backend.services.exam_point.theme_truth import analysis_theme_crosscheck as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); d=f(c); c.close(); print('OK' if d['pass'] and d['n_cross_verified_edges']==0 and d['n_human_verified_edges']>=15 and d['status']=='human_curriculum_verified' else d)"]
     expect: {op: "==", value: "OK"}
 
-  - id: quality-standards-seeded
-    claim: "课标学业质量入图: 3水平+42描述 + 辽宁高考卷级→水平二; 无题目级细边"
+  - id: theme-layers-no-mix
+    claim: "theme_layers human+dual 求和==theme_l2 边; mixed_forbidden; cross=0"
     type: shell
-    command: ["python3", "-c", "import duckdb; from backend.services.exam_point.quality_standards import quality_standards_summary as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); s=f(c); n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='aligned_to_quality_level' AND src_id LIKE 'question:%'\").fetchone()[0]; c.close(); print('OK' if s['n_quality_levels']==3 and s['n_descriptors']==42 and s['aligned_edge_present'] and n==0 else s)"]
+    command: ["python3", "-c", "import duckdb; from backend.services.exam_point.loader import theme_distribution_layers as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); L=f(c); n=c.execute(\"SELECT COUNT(*) FROM edges e JOIN exam_questions q ON ('question:'||q.question_id)=e.src_id AND q.province LIKE '辽宁%' WHERE e.relation='tests_exam_point' AND json_extract_string(e.evidence_json,'$.dimension')='theme_l2' AND q.source_repo NOT LIKE 'eol_xgkii%'\").fetchone()[0]; s=sum(r['n'] for e in L.values() for r in ((e.get('theme_l2') or {}).get('layers') or {}).get('human_curriculum_verified',[])+((e.get('theme_l2') or {}).get('layers') or {}).get('dual_model_agree',[])); h=all(((e.get('theme_l2') or {}).get('honesty') or {}).get('mixed_forbidden') and ((e.get('theme_l2') or {}).get('honesty') or {}).get('analysis_cross_verified')==0 for e in L.values()); c.close(); print('OK' if s==n and h and L else (s,n,h))"]
+    expect: {op: "==", value: "OK"}
+
+  - id: grammar-point-rollup-no-parallel-edges
+    claim: "grammar_point 只读 rollup; taxonomy derived_rollup; 无平行考查边"
+    type: shell
+    command: ["python3", "-c", "import duckdb,yaml; from pathlib import Path; from backend.services.exam_point.grammar_point_rollup import grammar_point_rollup as f; tax=yaml.safe_load(Path('backend/config/exam_point_taxonomy.yaml').read_text()); gp=next((root['grammar_point'] for root in (tax, tax.get('dimensions') or {}) if isinstance(root.get('grammar_point'), dict)), None); c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=f(c); c.close(); print('OK' if gp and gp.get('status')=='derived_rollup' and r['parallel_exam_point_edges']==0 and r['parallel_tests_grammar_point_edges']==0 and r['n_edges_assigned_to_buckets']+r['n_edges_unbucketed']==r['n_tests_grammar_edges_read'] else (gp,r))"]
+    expect: {op: "==", value: "OK"}
+
+  - id: quality-standards-seeded
+    claim: "课标学业质量入图: 3水平+42描述 + 辽宁高考卷级→水平二; 无题目级细边; descriptors 可浏览"
+    type: shell
+    command: ["python3", "-c", "import duckdb; from backend.services.exam_point.quality_standards import quality_standards_summary as f; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); s=f(c); n=c.execute(\"SELECT COUNT(*) FROM edges WHERE relation='aligned_to_quality_level' AND src_id LIKE 'question:%'\").fetchone()[0]; c.close(); print('OK' if s['n_quality_levels']==3 and s['n_descriptors']==42 and s['aligned_edge_present'] and n==0 and len(s.get('descriptors') or [])==3 and s.get('forbid_item_level_edges') else s)"]
     expect: {op: "==", value: "OK"}
 
   - id: learner-gap-empty-honest

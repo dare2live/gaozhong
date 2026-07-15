@@ -155,12 +155,25 @@ def _bridge_edge(con: duckdb.DuckDBPyConnection, src: str, dst: str) -> int:
     return 1
 
 
+_THEME_DIMS = frozenset({"theme_l2", "theme_context"})
+_PROV_HUMAN = "human_curriculum_verified"
+_PROV_DUAL = "dual_model_agree"
+
+
+def _pct_rows(counts: dict[str, int]) -> list[dict]:
+    tot = sum(counts.values()) or 1
+    rows = [{"label": k, "n": v, "pct": round(100 * v / tot, 1)} for k, v in counts.items()]
+    rows.sort(key=lambda r: -r["n"])
+    return rows
+
+
 def exam_point_distribution(con: duckdb.DuckDBPyConnection,
                             dimension: str | None = None) -> dict:
     """辽宁考点分布 — **按卷制 era 分层 + 占比** (单一计算点, 从 tests_exam_point 边算一次).
 
     用户 2026-06-15 纠偏: 不取全历史平均(会抹掉时间轴结构), 分时间轴/卷制分层看 (PIT §3.1)。
     返回 {era: {dimension: [{label, n, pct}]}}, 每段内 dimension 各 label 占比独立计。
+    theme 全量混合列表仍供计数对账; 产品诚实层见 theme_distribution_layers。
     """
     rows = con.execute(f"""
         SELECT {_ERA_SQL} AS era,
@@ -189,27 +202,110 @@ def exam_point_distribution(con: duckdb.DuckDBPyConnection,
     return by_era
 
 
+def theme_distribution_layers(con: duckdb.DuckDBPyConnection) -> dict:
+    """theme_l2/theme_context 按 provenance 分层 — 禁把 dual 与 human 混成一条真值分布。
+
+    返回 {era: {dim: {layers: {human_curriculum_verified, dual_model_agree}, honesty}}}。
+    """
+    rows = con.execute(f"""
+        SELECT {_ERA_SQL} AS era,
+               json_extract_string(e.evidence_json, '$.dimension') AS dim,
+               COALESCE(json_extract_string(e.evidence_json, '$.provenance'), '{_PROV_DUAL}') AS prov,
+               n.label, COUNT(*) AS c
+        FROM edges e
+        JOIN nodes n ON n.concept_id = e.dst_id
+        JOIN exam_questions q
+          ON ('question:' || q.question_id) = e.src_id AND q.province LIKE '辽宁%'
+        WHERE e.relation = 'tests_exam_point'
+          AND {_PASSAGE_DIM_SQL}
+          AND json_extract_string(e.evidence_json, '$.dimension') IN ('theme_l2', 'theme_context')
+        GROUP BY 1, 2, 3, 4
+    """).fetchall()
+    buckets: dict[tuple, dict[str, int]] = {}
+    for era, dim, prov, label, c in rows:
+        key = (era, dim, prov if prov in (_PROV_HUMAN, _PROV_DUAL) else _PROV_DUAL)
+        buckets.setdefault(key, {})
+        buckets[key][label] = buckets[key].get(label, 0) + c
+    n_cross = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
+        "AND json_extract_string(evidence_json,'$.dimension') IN ('theme_l2','theme_context') "
+        "AND json_extract_string(evidence_json,'$.provenance')='cross_verified'"
+    ).fetchone()[0]
+    out: dict[str, dict] = {}
+    eras = {e for e, _, _ in ((k[0], k[1], k[2]) for k in buckets)}
+    dims = {d for _, d, _ in ((k[0], k[1], k[2]) for k in buckets)}
+    for era in eras:
+        for dim in dims:
+            human = buckets.get((era, dim, _PROV_HUMAN), {})
+            dual = buckets.get((era, dim, _PROV_DUAL), {})
+            n_h, n_d = sum(human.values()), sum(dual.values())
+            out.setdefault(era, {})[dim] = {
+                "layers": {
+                    _PROV_HUMAN: _pct_rows(human),
+                    _PROV_DUAL: _pct_rows(dual),
+                },
+                "honesty": {
+                    "mixed_forbidden": True,
+                    "n_human": n_h,
+                    "n_dual": n_d,
+                    "analysis_cross_verified": n_cross,
+                    "default_display": _PROV_HUMAN if n_h else _PROV_DUAL,
+                    "dual_is_directional_only": True,
+                },
+            }
+    return out
+
+
 def exam_point_shift(con: duckdb.DuckDBPyConnection, top: int = 6) -> dict:
     """命题迁移 — 新旧 era 占比做差 (审计HIGH#18; 派生事实在 service 算一次, 前端不重算 Rule1).
 
-    返回 {dimension: [{label, then_pct, now_pct, delta, n_new, n_old}]} 按 |delta| 降序 top N。
-    era 同 distribution 分层 (NEW=最新卷制在前); <2 era 无可迁移返 {}。
-    坑(2026-07-06 数据关联设计审查): 结论卡"最大命题迁移"条原完全不显示样本量(比同卡b条更不
-    透明), n_new/n_old 补上样本数, 供前端小样本时降级/标注方向性(不影响delta本身算法, 单一计算点)。
+    theme_* 默认只吃 human_curriculum_verified 层; human=0 时标 directional 且不把 dual 当迁移真值。
     """
     by_era = exam_point_distribution(con)
+    layers = theme_distribution_layers(con)
     eras = sorted(by_era, reverse=True)
     if len(eras) < 2:
-        return {"eras": eras, "by_dimension": {}}
+        return {"eras": eras, "by_dimension": {}, "theme_shift_policy": "human_only"}
     new_era, old_era = eras[0], eras[1]
     dims = {d for era in by_era.values() for d in era}
     out: dict[str, list] = {}
+    theme_meta: dict[str, dict] = {}
     for dim in dims:
-        old_map = {x["label"]: x for x in by_era.get(old_era, {}).get(dim, [])}
-        rows = [{"label": x["label"], "then_pct": old_map.get(x["label"], {}).get("pct", 0.0),
-                 "now_pct": x["pct"], "delta": round(x["pct"] - old_map.get(x["label"], {}).get("pct", 0.0), 1),
-                 "n_new": x["n"], "n_old": old_map.get(x["label"], {}).get("n", 0)}
-                for x in by_era.get(new_era, {}).get(dim, [])]
+        if dim in _THEME_DIMS:
+            new_h = (layers.get(new_era, {}).get(dim, {}).get("layers") or {}).get(_PROV_HUMAN, [])
+            old_h = (layers.get(old_era, {}).get(dim, {}).get("layers") or {}).get(_PROV_HUMAN, [])
+            n_new_h = sum(x["n"] for x in new_h)
+            n_old_h = sum(x["n"] for x in old_h)
+            if n_new_h == 0 or n_old_h == 0:
+                out[dim] = []
+                theme_meta[dim] = {
+                    "policy": "human_only",
+                    "directional": True,
+                    "reason": "human_layer_insufficient",
+                    "n_human_new": n_new_h,
+                    "n_human_old": n_old_h,
+                }
+                continue
+            old_map = {x["label"]: x for x in old_h}
+            rows = [{"label": x["label"], "then_pct": old_map.get(x["label"], {}).get("pct", 0.0),
+                     "now_pct": x["pct"],
+                     "delta": round(x["pct"] - old_map.get(x["label"], {}).get("pct", 0.0), 1),
+                     "n_new": x["n"], "n_old": old_map.get(x["label"], {}).get("n", 0),
+                     "provenance_layer": _PROV_HUMAN}
+                    for x in new_h]
+            theme_meta[dim] = {"policy": "human_only", "directional": False}
+        else:
+            old_map = {x["label"]: x for x in by_era.get(old_era, {}).get(dim, [])}
+            rows = [{"label": x["label"], "then_pct": old_map.get(x["label"], {}).get("pct", 0.0),
+                     "now_pct": x["pct"],
+                     "delta": round(x["pct"] - old_map.get(x["label"], {}).get("pct", 0.0), 1),
+                     "n_new": x["n"], "n_old": old_map.get(x["label"], {}).get("n", 0)}
+                    for x in by_era.get(new_era, {}).get(dim, [])]
         rows.sort(key=lambda r: -abs(r["delta"]))
         out[dim] = rows[:top]
-    return {"eras": [new_era, old_era], "by_dimension": out}
+    return {
+        "eras": [new_era, old_era],
+        "by_dimension": out,
+        "theme_shift_policy": "human_only",
+        "theme_shift_meta": theme_meta,
+    }

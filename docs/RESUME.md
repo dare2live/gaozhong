@@ -64,6 +64,7 @@
 - **✅ Ceiling 三任务达标 (2026-07-15)**: ① theme 人工课标核验≥15(`human_curriculum_verified`, 禁假 analysis-cross) ② 课标学业质量 3水平+42描述入图 + 辽宁高考卷级→水平二 ③ 短语原先封账后**重开人工核验路径**。
 - **✅ tests_phrase 人工核验开放 (2026-07-15)**: `phrase_human_verified.jsonl` + `phrase_truth.load_tests_phrase` → human_verified 边(高考完形/语法填空/短改 + 辽宁中考完形短语动词 + 语篇填空固定搭配); 教材短语节点可复用。共现/「考查搭配」类别桶仍永久禁 bulk。
 - **✅ Commit+Push 纪律**: `.cursor/rules/commit-push-discipline.mdc` + `scripts/tools/git/commit_push.sh` — 实质改动后即 commit 并 push GitHub。
+- **✅ 颗粒度残留无人审收口 (2026-07-15)**: theme provenance 分层披露(禁混算) + grammar_point `derived_rollup` 只读九桶 + phrase curated_sample 文案 + 学业质量描述浏览器(非逐题) + structure by_method; kg A2 写边叙事 SUPERSEDED; 不扩人工 curated。
 - **铁律**: 四门每步绿; L3 正文必过 §6 review gate; 新开放债只能经 unblock 条件进 blockers 再开, 禁止 RESUME 堆「待办」。
 
 ---

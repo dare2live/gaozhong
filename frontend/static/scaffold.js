@@ -203,7 +203,8 @@
     }).join("");
     return `<p class="kb-dim" style="margin:0 0 8px;">高中教材短语/句型/表达库共 <b>${p.n_senior_phrases_total}</b> 个(对齐初中沪教牛津库 <b>${p.n_junior_phrases_total}</b> 个后): <b class="tk-found">${p.n_overlap_junior_known}</b> 个初中已学(高中复现巩固), <b class="tk-senior">${p.n_senior_only}</b> 个高中新学。其中 <b>${p.n_matched_in_exam_text}</b> 个能在辽宁真题原文/解析文本里找到(${p.matched_by_stage.junior_known}个已学 / ${p.matched_by_stage.senior_only}个新学):</p>
       <div class="tk-types">${chips}</div>
-      <p class="kb-dim" style="margin:8px 0 0;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">出现≠考查</span>上表是文本共现。另有人工核验 <b>tests_phrase=${p.tests_phrase_edges ?? 0}</b> 边(仅 curated phrase_id↔空, 非共现自动生成)。</p>
+      <p class="kb-dim" style="margin:8px 0 0;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">出现≠考查</span>上表是<strong>文本共现</strong>(非考查)。</p>
+      <p class="kb-dim" style="margin:4px 0 0;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">抽样考查</span>另计人工核验 <b>tests_phrase=${(p.tested_sample && p.tested_sample.n_edges) != null ? p.tested_sample.n_edges : (p.tests_phrase_edges ?? 0)}</b> 边(curated 抽样, 非全量、非共现自动生成)。</p>
       <p class="kb-dim" style="margin:8px 0 0;">${esc(p.caveat)}</p>`;
   }
   function _cozeCollocationCard(c) {
@@ -218,6 +219,27 @@
       <div class="tk-types">${htChips}</div>
       <p class="kb-dim" style="margin:8px 0 0;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">类别≠phrase_id</span>解析标「搭配」是技能桶; 真 phrase 考查边另计 tests_phrase=<b>${nTp}</b>(人工核验, 禁 bulk)。</p>
       <p class="kb-dim" style="margin:8px 0 0;">${esc(ht.coverage_note)}</p>`;
+  }
+
+  function _grammarRollupCard(r) {
+    if (!r || !r.buckets) return '<p class="kb-dim">语法九桶派生数据不足。</p>';
+    const chips = r.buckets.filter(b => b.n > 0).map(b =>
+      `<span class="tk-tchip">${esc(b.bucket)} <b>${b.n}</b></span>`).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">派生面</span>自 tests_grammar 只读聚合九桶(绝对计数, 非独立考点维)。已入桶 <b>${r.n_edges_assigned_to_buckets}</b> / 共 <b>${r.n_tests_grammar_edges_read}</b> 边; 未入桶 ${r.n_edges_unbucketed}。</p>
+      <div class="tk-types">${chips || '<span class="kb-dim">暂无</span>'}</div>
+      <p class="kb-dim" style="margin:8px 0 0;">${esc((r.honesty && r.honesty.note) || "")}</p>`;
+  }
+  function _qualityBrowseCard(q) {
+    if (!q || !q.descriptors) return '<p class="kb-dim">学业质量描述不足。</p>';
+    const blocks = q.descriptors.map(lv => {
+      const items = (lv.items || []).slice(0, 3).map(it =>
+        `<li style="margin:2px 0;font-size:12px;">${esc(it.descriptor_id)} · ${esc((it.text || "").slice(0, 48))}${(it.text || "").length > 48 ? "…" : ""}</li>`).join("");
+      return `<div style="margin:0 0 10px;"><b>${esc(lv.label)}</b> (${(lv.items || []).length}条)<ul style="margin:4px 0 0;padding-left:18px;">${items}</ul></div>`;
+    }).join("");
+    return `<p class="kb-dim" style="margin:0 0 8px;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">非逐题</span>${esc(q.ui_caveat || "辽宁卷对齐水平二 · 描述库只读")}</p>
+      <p class="kb-dim" style="margin:0 0 8px;">卷级对齐: ${esc(q.paper_mapping_quote || "").slice(0, 120)}…</p>
+      ${blocks}
+      <p class="kb-dim" style="margin:0;">共 ${q.n_descriptors} 条描述 · 水平 ${q.n_quality_levels} · 禁止题级挂边。</p>`;
   }
 
   // 2026-07-07 Phase E5: K12衔接视图(初中语法点→高中deepens→高考exam_status+中考真题印证)。
@@ -236,7 +258,7 @@
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
     C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
-    const [d, cbc, gram, cw, ja, gsc, ppr, ccs, kb] = await Promise.all([
+    const [d, cbc, gram, cw, ja, gsc, ppr, ccs, kb, gpr, qs] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
       fetchSafe("/api/grammar/stats"),
@@ -246,6 +268,8 @@
       fetchSafe("/api/exam_point/phrase_pattern_relevance"),
       fetchSafe("/api/exam_point/cloze_collocation_subset"),
       fetchSafe("/api/exam_point/k12_grammar_bridge"),
+      fetchSafe("/api/exam_point/grammar_point_rollup"),
+      fetchSafe("/api/exam_point/quality_standards"),
     ]);
     if (isErr(d)) { C.innerHTML = errorBox({ title: "真题特点加载失败", msg: "后端未就绪或数据未算出 — 真实错误, 非空数据。" }); return; }
     const gramHTML = (!isErr(gram)) ? _grammarCard(gram.grammar_exam) : '<p class="kb-dim">语法考查数据加载失败。</p>';
@@ -256,6 +280,8 @@
     const pprHTML = (!isErr(ppr)) ? _phraseRelevanceCard(ppr) : '<p class="kb-dim">短语共现加载失败。</p>';
     const ccsHTML = (!isErr(ccs)) ? _cozeCollocationCard(ccs) : '<p class="kb-dim">搭配结构数据加载失败。</p>';
     const kbHTML = (!isErr(kb)) ? _k12BridgeCard(kb) : '<p class="kb-dim">K12衔接数据加载失败。</p>';
+    const gprHTML = (!isErr(gpr)) ? _grammarRollupCard(gpr) : '<p class="kb-dim">语法九桶派生加载失败。</p>';
+    const qsHTML = (!isErr(qs)) ? _qualityBrowseCard(qs) : '<p class="kb-dim">学业质量浏览加载失败。</p>';
     C.innerHTML = `<section class="scaffold">
       ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
       <div class="sc-takeaway">
@@ -304,6 +330,14 @@
         <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法 (辽宁考查热点)</span><span class="bk-src">/api/grammar/stats</span></div>
         <div class="zt-gramlist">${gramHTML}</div>
         <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。${(!isErr(gram)) ? _grammarTopNote(gram.grammar_exam) : ""} ${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>语法九桶派生面 <small>← tests_grammar 只读</small></span><span class="bk-src">/api/exam_point/grammar_point_rollup</span></div>
+        ${gprHTML}
+      </section>
+      <section class="bk-card">
+        <div class="bk-h"><span>课标学业质量 · 描述浏览器</span><span class="bk-src">/api/exam_point/quality_standards</span></div>
+        ${qsHTML}
       </section>
       <p class="zt-nextlink">这些套路怎么变成课? → <a href="#/teaching">40 节课程</a> · 固定搭配/句型/表达库已移入 <a href="#/jichu">基础库</a></p>
       <details class="zt-datahow"><summary>数据怎么来的?</summary>

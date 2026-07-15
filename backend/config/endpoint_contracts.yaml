@@ -33,13 +33,14 @@ contracts:
   "/api/exam_point/cognitive_skill": {params: {}, required_keys: [by_era, dimension, n_total, structure_subtypes, structure_subtypes_zhongkao], type: dict}
   "/api/exam_point/structure_subtypes": {params: {stage: ["gaokao"]}, required_keys: [parent_skill, by_subtype, n_total], type: dict}
   "/api/exam_point/cooccurrence": {params: {}, required_keys: [by_era, min_co, province_scope], type: dict}
-  "/api/exam_point/distribution": {params: {}, required_keys: [distribution, eras, province_scope], type: dict}
+  "/api/exam_point/distribution": {params: {}, required_keys: [distribution, eras, province_scope, theme_layers, theme_honesty], type: dict}
   "/api/exam_point/joint_attribution": {params: {}, required_keys: [passages, n_passages, era, province_scope], type: dict}
   "/api/exam_point/cloze_answer_word_stage": {params: {}, required_keys: [by_era, n_passages, province_scope, excluded_source_note], type: dict}
   "/api/exam_point/grammar_structural_coverage": {params: {}, required_keys: [n_grammar_items_confirmed, confirmed_items, sample_size_note, report_as], type: dict}
-  "/api/exam_point/phrase_pattern_relevance": {params: {}, required_keys: [scope_note, n_senior_phrases_total, n_matched_in_exam_text, phrase_stage_breakdown, caveat, honesty, tests_phrase_edges], type: dict}
+  "/api/exam_point/phrase_pattern_relevance": {params: {}, required_keys: [scope_note, n_senior_phrases_total, n_matched_in_exam_text, phrase_stage_breakdown, caveat, honesty, tests_phrase_edges, tested_sample], type: dict}
   "/api/exam_point/cloze_collocation_subset": {params: {}, required_keys: [structural_flags, human_transcribed, n_blanks_total, honesty], type: dict}
-  "/api/exam_point/quality_standards": {params: {}, required_keys: [n_quality_levels, n_descriptors, gaokao_aligned_level, paper_mapping_quote, aligned_edge_present], type: dict}
+  "/api/exam_point/quality_standards": {params: {}, required_keys: [n_quality_levels, n_descriptors, gaokao_aligned_level, paper_mapping_quote, aligned_edge_present, descriptors, forbid_item_level_edges, ui_caveat], type: dict}
+  "/api/exam_point/grammar_point_rollup": {params: {}, required_keys: [derived_from, status, buckets, n_tests_grammar_edges_read, honesty, parallel_exam_point_edges], type: dict}
   "/api/exam_point/k12_grammar_bridge": {params: {}, required_keys: [records, summary, scope_note, anchor_dimension], type: dict}
   "/api/exam_questions": {params: {}, type: list}
   "/api/exercise/applied_templates": {params: {}, required_keys: [sections, samples, by_type], type: dict}

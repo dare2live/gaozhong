@@ -254,6 +254,7 @@ def load_junior_curriculum_reading_skills(con: duckdb.DuckDBPyConnection) -> dic
 def structure_subtype_distribution(con: duckdb.DuckDBPyConnection, exam_stage: str = "gaokao") -> dict:
     rows = con.execute(
         "SELECT json_extract_string(evidence_json,'$.subtype'), "
+        "COALESCE(json_extract_string(evidence_json,'$.subtype_method'),'unknown'), "
         "CAST(json_extract_string(evidence_json,'$.lineage.source_year') AS INT) "
         "FROM edges WHERE relation='tests_exam_point' "
         "AND json_extract_string(evidence_json,'$.dimension')=? "
@@ -262,10 +263,12 @@ def structure_subtype_distribution(con: duckdb.DuckDBPyConnection, exam_stage: s
         [DIMENSION, PROVENANCE, exam_stage],
     ).fetchall()
     by_sub: Counter = Counter()
+    by_method: Counter = Counter()
     by_year: dict[int, Counter] = defaultdict(Counter)
-    for sub, yr in rows:
+    for sub, method, yr in rows:
         sub = sub or "句际衔接"
         by_sub[sub] += 1
+        by_method[method or "unknown"] += 1
         if yr:
             by_year[int(yr)][sub] += 1
     tot = sum(by_sub.values())
@@ -274,7 +277,16 @@ def structure_subtype_distribution(con: duckdb.DuckDBPyConnection, exam_stage: s
         "by_subtype": sorted(
             [{"label": k, "n": v, "pct": round(100 * v / tot, 1) if tot else 0} for k, v in by_sub.items()],
             key=lambda x: -x["n"]),
+        "by_method": sorted(
+            [{"method": k, "n": v, "pct": round(100 * v / tot, 1) if tot else 0}
+             for k, v in by_method.items()],
+            key=lambda x: -x["n"]),
         "by_year": {y: dict(c) for y, c in sorted(by_year.items())},
         "unknown_n": by_sub.get("unknown", 0),
-        "note": "L2 全覆盖: analysis/curated/discourse/fallback; unknown 必须为 0",
+        "fallback_n": by_method.get("fallback_cohesion", 0) + by_method.get("fallback", 0),
+        "honesty": {
+            "full_coverage_is_not_precision": True,
+            "note": "unknown=0 只保证有桶; fallback 占比可见, 禁止宣称100%精确",
+        },
+        "note": "L2 全覆盖: analysis/curated/discourse/fallback; unknown 必须为 0; 精度看 by_method",
     }

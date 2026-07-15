@@ -41,6 +41,11 @@ def check_phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection, check) -
           (d.get("honesty") or {}).get("cooccurrence_is_not_tested") is True, str(d.get("honesty")))
     check("honesty.tests_phrase_only_human_verified == True",
           (d.get("honesty") or {}).get("tests_phrase_only_human_verified") is True, str(d.get("honesty")))
+    check("honesty.curated_sample == True (抽样非全量)",
+          (d.get("honesty") or {}).get("curated_sample") is True, str(d.get("honesty")))
+    check("tested_sample.grain == human_verified_curated_sample",
+          (d.get("tested_sample") or {}).get("grain") == "human_verified_curated_sample",
+          str(d.get("tested_sample")))
     check("honesty.tests_phrase_sealed == False (人工核验已开放)",
           (d.get("honesty") or {}).get("tests_phrase_sealed") is False, str(d.get("honesty")))
     n_tp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_phrase'").fetchone()[0]

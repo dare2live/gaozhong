@@ -188,15 +188,22 @@ def phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection) -> dict:
             "cooccurrence_is_not_tested": True,
             "tests_phrase_sealed": False,
             "tests_phrase_only_human_verified": True,
+            "curated_sample": True,
             "note": (
                 "文本共现≠考查; 解析「考查搭配」是类别桶不是 phrase_id; "
-                "tests_phrase 仅接受 phrase_human_verified.jsonl 人工核验边"
+                "tests_phrase 仅接受 phrase_human_verified.jsonl 人工抽样核验边(非全量)"
             ),
         },
-        "caveat": PHRASE_LIB_NOTE + " 本函数额外核实: tests_phrase 仅 human_verified curated"
+        "caveat": PHRASE_LIB_NOTE + " 本函数额外核实: tests_phrase 仅 human_verified curated 抽样"
                   "(见 phrase_truth.load_tests_phrase), 与本共现统计物理隔离。"
                   "junior_known/senior_only 是教材库层面的学段对齐,"
                   "不是'这道真题的这个短语按学段考查'的逐题归因(同 word 学段口径的颗粒度边界)。",
+        "tested_sample": {
+            "relation": "tests_phrase",
+            "n_edges": _n_tests_phrase(con),
+            "grain": "human_verified_curated_sample",
+            "note": "抽样考查边; 不得用共现命中率冒充考查覆盖",
+        },
     }
 
 
@@ -308,9 +315,10 @@ def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
         "honesty": {
             "tests_phrase_edges": _n_tests_phrase(con),
             "collocation_label_is_not_phrase_id": True,
+            "curated_sample": True,
             "phrase_table_exact_option_hits_note": (
                 "解析「考查搭配」≈类别统计, 不是 phrase_id; "
-                "tests_phrase 仅接受 phrase_human_verified.jsonl 人工核验, 禁止共现/类别桶 bulk"
+                "tests_phrase 仅接受 phrase_human_verified.jsonl 人工抽样, 禁止共现/类别桶 bulk"
             ),
         },
     }

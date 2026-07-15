@@ -90,6 +90,7 @@ def load_quality_standards(con: duckdb.DuckDBPyConnection) -> dict:
 
 def quality_standards_summary(con: duckdb.DuckDBPyConnection) -> dict:
     meta = json.loads(_META.read_text(encoding="utf-8"))
+    rows = [json.loads(l) for l in _DESC.read_text(encoding="utf-8").splitlines() if l.strip()]
     n_desc = con.execute(
         "SELECT COUNT(*) FROM nodes WHERE node_type='quality_desc'"
     ).fetchone()[0]
@@ -99,6 +100,19 @@ def quality_standards_summary(con: duckdb.DuckDBPyConnection) -> dict:
     edge = con.execute(
         "SELECT evidence_json FROM edges WHERE relation='aligned_to_quality_level' LIMIT 1"
     ).fetchone()
+    by_level: dict[int, list] = {}
+    for r in rows:
+        by_level.setdefault(int(r["quality_level"]), []).append({
+            "descriptor_id": r["descriptor_id"],
+            "text": r["text"],
+            "curriculum_ref": r.get("curriculum_ref"),
+        })
+    descriptors = [
+        {"quality_level": lv, "label": next(
+            (x["label"] for x in meta["levels"] if x["level"] == lv), f"水平{lv}"),
+         "items": by_level.get(lv, [])}
+        for lv in sorted(by_level)
+    ]
     return {
         "n_quality_levels": n_lvl,
         "n_descriptors": n_desc,
@@ -107,5 +121,9 @@ def quality_standards_summary(con: duckdb.DuckDBPyConnection) -> dict:
         "paper_mapping_quote": meta["paper_mapping_quote"],
         "aligned_edge_present": bool(edge),
         "forbid_item_level_edges": True,
+        "grain": "paper_era",
+        "browse_only": True,
+        "descriptors": descriptors,
+        "ui_caveat": "辽宁卷对齐水平二 · 非逐题; 描述库只读浏览, 不挂题",
         "note": meta["note"],
     }

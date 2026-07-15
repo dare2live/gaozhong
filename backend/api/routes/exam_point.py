@@ -35,22 +35,30 @@ def _era_sufficiency(con, by_era=None) -> dict:
 
 
 def api_exam_point_distribution(qs: dict) -> dict:
-    """考点分布, 按 era 分层 + 占比; ?dimension=genre|theme_context|theme_l2 可过滤."""
+    """考点分布, 按 era 分层 + 占比; ?dimension=genre|theme_context|theme_l2 可过滤.
+    theme 另附 theme_layers(human/dual 物理拆分, mixed_forbidden)。"""
     dimension = (qs.get("dimension", [None]) or [None])[0]
     con = db_ro()
     try:
         by_era = exam_point_distribution(con, dimension=dimension)
         eras = sorted(by_era, reverse=True)  # 新高考II 在前
         dims = sorted({d for era in by_era.values() for d in era})
+        from backend.services.exam_point.loader import theme_distribution_layers
+        from backend.services.exam_point.theme_truth import analysis_theme_crosscheck
+        layers = theme_distribution_layers(con)
+        if dimension in ("theme_l2", "theme_context"):
+            layers = {e: {dimension: v[dimension]} for e, v in layers.items() if dimension in v}
         return {
             "province_scope": "辽宁卷",
             "layered_by": "卷制 era (PIT §3.1, 非全历史平均)",
-            "provenance": "dual_model_agree (双模型一致; needs_review 歧义项不入)",
+            "provenance": "genre/theme: dual_model_agree+human_curriculum_verified; theme 禁止混算",
             "eras": eras,
             "dimensions": dims,
             "distribution": by_era,
-            "shift": exam_point_shift(con),   # 命题迁移单算点 (前端不重算, Rule1; 审计HIGH#18)
-            "sufficiency": _era_sufficiency(con, by_era),   # 审计#5: 传 by_era 得 per-(era,dim) 篇章级样本量
+            "theme_layers": layers,
+            "theme_honesty": analysis_theme_crosscheck(con),
+            "shift": exam_point_shift(con),
+            "sufficiency": _era_sufficiency(con, by_era),
         }
     finally:
         con.close()
@@ -165,6 +173,16 @@ def api_exam_point_k12_grammar_bridge(qs: dict) -> dict:
         con.close()
 
 
+def api_exam_point_grammar_point_rollup(qs: dict) -> dict:
+    """语法九桶只读派生 (←tests_grammar); 非独立考查维."""
+    from backend.services.exam_point.grammar_point_rollup import grammar_point_rollup
+    con = db_ro()
+    try:
+        return grammar_point_rollup(con)
+    finally:
+        con.close()
+
+
 def api_exam_point_quality_standards(qs: dict) -> dict:
     """课标学业质量水平(3+42描述) + 辽宁高考卷级对齐水平二."""
     from backend.services.exam_point.quality_standards import quality_standards_summary
@@ -187,5 +205,6 @@ ROUTES = {
     "/api/exam_point/phrase_pattern_relevance": api_exam_point_phrase_pattern_relevance,  # 短语句型真题共现
     "/api/exam_point/cloze_collocation_subset": api_exam_point_cloze_collocation_subset,  # 完形搭配结构下限
     "/api/exam_point/k12_grammar_bridge": api_exam_point_k12_grammar_bridge,  # 初中→高中语法衔接+中考印证
+    "/api/exam_point/grammar_point_rollup": api_exam_point_grammar_point_rollup,  # 九桶只读派生
     "/api/exam_point/quality_standards": api_exam_point_quality_standards,
 }

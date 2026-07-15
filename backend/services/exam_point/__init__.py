@@ -3,7 +3,7 @@
 单一计算点(Rule 1): 考点分布只从 edges 算一次; Edges一等公民(Rule 3): question↔考点走 edges。
 """
 from .loader import (load_exam_points, exam_point_distribution, exam_point_shift,
-                     bridge_exam_point_themes)
+                     bridge_exam_point_themes, theme_distribution_layers)
 from .cooccur import exam_point_cooccurrence, materialize_cooccurrence
 from .cognitive_skill import (load_cognitive_skill, cognitive_skill_distribution,
                               cognitive_skill_by_content)
