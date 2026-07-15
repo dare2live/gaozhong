@@ -112,11 +112,12 @@ _ERA_SQL = scope.era_sql("q.year")
 # 故 genre/theme/theme_l2 的分布/共现**排除子题级源**, 与篇章级年份(2015-20/2023-26)apples-to-apples。
 # cognitive_skill 是**子题属性**(每子题 1 题型, 审计 100/100 对账正确), 不在此列, 照常计子题。
 # 2021/2022 待 eol 篇章重建后再以篇章级纳入 genre/theme(当前 schema 无篇章边界, 见 docs)。
-PASSAGE_LEVEL_DIMS = ("genre", "theme_context", "theme_l2")
+PASSAGE_LEVEL_DIMS = ("genre", "theme_context", "theme_l2", "text_continuity")
 SUBQ_SOURCE_LIKE = "eol_xgkii%"   # 子题级源鉴别 (source_repo); 单一真相源, cooccur 等复用
 # SQL 片段: 篇章级维度边须来自非子题级源 (cognitive_skill 维度不受限)
 _PASSAGE_DIM_SQL = (
-    "NOT (json_extract_string(e.evidence_json, '$.dimension') IN ('genre','theme_context','theme_l2') "
+    "NOT (json_extract_string(e.evidence_json, '$.dimension') "
+    "IN ('genre','theme_context','theme_l2','text_continuity') "
     f"AND q.source_repo LIKE '{SUBQ_SOURCE_LIKE}')")
 
 

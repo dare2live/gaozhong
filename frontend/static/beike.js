@@ -22,7 +22,7 @@
   // eraPill 按钮早已各自手写人话标签, 这里补一份单一映射复用, 不再漏 raw key。
   const ERA_LABEL = { [ERA_NEW]: "2021+ 新高考II", [ERA_OLD]: "2015–2020 旧课标II" };
   const DC = (window.GZ_CAT && window.GZ_CAT.dim) || {};   // 维度基础标签单一来源 category-config.js (防 beike/teacher/jiangke 漂移)
-  const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群" };
+  const DIM_LABEL = { genre: DC.genre, theme_context: DC.theme_context, theme_l2: DC.theme_l2 + "·课标10群", text_continuity: "文本连续性" };
   // 图表数据编码色 — 锚 design-system 令牌族值 (blue=--down / blue3=--down-3 / blue4=--down-4
   // / up=--accent-ink·--up / grey=--data-gray; echarts canvas 需 hex 故写值非 var, 跨图一致; 无新增 ad-hoc 色)
   const C = { blue: "#1F5F94", blue3: "#8FAECB", blue4: "#C3D4E3", up: "#9C2C20", upBg: "#FAECE7", downBg: "#E6F1FB", grey: "#B4B2A9" };
@@ -183,9 +183,12 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const themeNote = isTheme
       ? `<br><span class="zt-thin-tag" style="margin-right:6px;">禁混算</span>实心=人工课标核验(n=${th.n_human || 0}); 空心=dual_model 方向性(n=${th.n_dual || 0}); analysis-cross=${th.analysis_cross_verified || 0}(必须为0)。${dualOnly ? " 本 era 无人核验子集, 仅方向性。" : ""}`
       : "";
+    const contNote = state.dim === "text_continuity"
+      ? `<br><span class="zt-thin-tag" style="margin-right:6px;">provenance</span>连续/非连续为课标正交维; 边 provenance=agent_curriculum_verified(冷启动), 非 analysis 假升档。`
+      : "";
     G.$("#bk-distnote").innerHTML = desc.length > 1
-      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${themeNote}${xlink}`
-      : (themeNote || "");
+      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${themeNote}${contNote}${xlink}`
+      : (themeNote || contNote || "");
     G.$$("#bk-distnote [data-goto]").forEach(b => b.onclick = () => {
       const t = document.getElementById(b.dataset.goto);
       if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });

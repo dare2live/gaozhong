@@ -19,8 +19,8 @@ baselines:
   edges_min:            {value: 20000, op: ge, note: "edges 下界"}
   audit_ok_min:         {value: 40,   op: ge, note: "audit OK 项下界"}
   # 真题计数锚 (data_accuracy_check.py + d0_zhongkao_check.py)
-  gaokao_total:         {value: 474,  op: eq, note: "高考真题 B1去重466 + 2026锦宏镜像8 group(写作主观题不入, 同2021/2022惯例; 改动须显式更新防漂移)"}
-  gaokao_liaoning:      {value: 190,  op: eq, note: "辽宁卷 新课标II §7 (182 B1去重 + 2026锦宏镜像8 group, 写作不入)"}
+  gaokao_total:         {value: 476,  op: eq, note: "高考真题 B1去重466 + 2026锦宏8 group + 2023写作2(gzenxx docx应用文/续写); 改动须显式更新防漂移"}
+  gaokao_liaoning:      {value: 192,  op: eq, note: "辽宁卷 新课标II §7 (182 B1去重 + 2026锦宏8 + 2023写作2)"}
   zhongkao_total:       {value: 90,   op: eq, note: "中考 2024×45+2025×45"}
   zhongkao_per_year:    {value: 45,   op: eq, note: "中考每年45题"}
   zhongkao_kaodian:     {value: 20,   op: eq, note: "语篇填空逐空考点行 (2年×10空, 2024/2025 省统一卷; k12.zhongkao_distribution as-served)"}

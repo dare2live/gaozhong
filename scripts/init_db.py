@@ -204,6 +204,8 @@ def main() -> None:
     print(f"  课标学业质量标准入图(水平1-3+42描述+卷级→水平二): {load_quality_standards(con)}")
     from backend.services.exam_point.phrase_truth import load_tests_phrase
     print(f"  短语考查边(tests_phrase, human_verified curated): {load_tests_phrase(con)}")
+    from backend.services.exam_point.text_continuity import load_text_continuity
+    print(f"  文本连续性(text_continuity, agent/human curriculum): {load_text_continuity(con)}")
     print(f"  桥接考点主题↔教材主题(4路追溯): {bridge_exam_point_themes(con)}")
     print(f"  设问类型金矿(KG-A1, 子题级explicit_label+血缘): {load_cognitive_skill(con)}")
     from backend.services.exam_point import materialize_cooccurrence

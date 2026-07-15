@@ -321,10 +321,10 @@ assertions:
     query: "SELECT count(*) FROM phrases WHERE phrase_type='sentence_pattern' AND (regexp_matches(evidence, '\\bsuch\\s+\\w+\\s+as\\b') OR regexp_matches(evidence, '\\bso that\\b'))"
     expect: {op: "==", value: 0}
   - id: exam-point-trusted-provenance
-    claim: "考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified, curriculum_aligned_*, human_curriculum_verified}; 无弱provenance"
+    claim: "考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified, curriculum_aligned_*, human_curriculum_verified, agent_curriculum_verified}; 无弱provenance"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
-    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') NOT IN ('dual_model_agree', 'explicit_label', 'cross_verified', 'curriculum_aligned_stem', 'curriculum_aligned_task', 'human_curriculum_verified')"
+    query: "SELECT count(*) FROM edges WHERE relation = 'tests_exam_point' AND json_extract_string(evidence_json, '$.provenance') NOT IN ('dual_model_agree', 'explicit_label', 'cross_verified', 'curriculum_aligned_stem', 'curriculum_aligned_task', 'human_curriculum_verified', 'agent_curriculum_verified')"
     expect: {op: "==", value: 0}
 
   - id: genre-truth-cross-verified
@@ -349,10 +349,10 @@ assertions:
 
 
   - id: exam-import-pipeline-registry
-    claim: "辽宁真题入库走 exam_import_pipeline.yaml (2步: eol+local_pdf; 2026 经 local_pdf_dispatch; init_db 无手接)"
+    claim: "辽宁真题入库走 exam_import_pipeline.yaml (3步: eol+local_pdf+writing_2023; 2026 经 local_pdf_dispatch; init_db 无手接)"
     type: shell
-    command: ["bash", "-c", "grep -q 'exam_import_pipeline' scripts/init_db.py && ! grep -q 'import_recent_exams' scripts/init_db.py && ! grep -q 'xgkii2026_import' scripts/init_db.py && python3 -c 'from backend.services.imports.exam_pipeline import load_steps; import yaml; from pathlib import Path; s=load_steps(); d=yaml.safe_load(Path(\"backend/config/exam_import_pipeline.yaml\").read_text())[\"local_pdf_dispatch\"]; assert len(s)==2 and 2026 in d; print(len(s))'"]
-    expect: {op: "==", value: "2"}
+    command: ["bash", "-c", "grep -q 'exam_import_pipeline' scripts/init_db.py && ! grep -q 'import_recent_exams' scripts/init_db.py && ! grep -q 'xgkii2026_import' scripts/init_db.py && python3 -c 'from backend.services.imports.exam_pipeline import load_steps; import yaml; from pathlib import Path; s=load_steps(); d=yaml.safe_load(Path(\"backend/config/exam_import_pipeline.yaml\").read_text())[\"local_pdf_dispatch\"]; assert len(s)==3 and 2026 in d; print(len(s))'"]
+    expect: {op: "==", value: "3"}
 
   - id: local-pdf-dispatch-2026
     claim: "2026 经 exam_import_pipeline local_pdf_dispatch 并入 local_pdf_registry (非 init_db 第三条手接线)"
@@ -669,17 +669,17 @@ assertions:
     query: "SELECT count(*) FROM zhongkao_questions WHERE content_status IS NULL OR (content_status='complete' AND (raw_question LIKE 'walled%' OR answer IS NULL OR TRIM(answer)=''))"
     expect: {op: "==", value: 0}
   - id: gaokao-count-baseline
-    claim: "高考真题计数基线 474 (B1双源去重466 + 2026锦宏镜像8 group, 写作不入); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
+    claim: "高考真题计数基线 476 (B1双源去重466 + 2026锦宏8 + 2023写作2); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions"
-    expect: {op: "==", value: 474}
+    expect: {op: "==", value: 476}
   - id: gaokao-liaoning-baseline
-    claim: "高考辽宁卷计数基线 190 (新课标II §7, B1去重182 + 2026锦宏镜像8); 防漂移 (审计 HIGH#3)"
+    claim: "高考辽宁卷计数基线 192 (新课标II §7, B1去重182 + 2026锦宏8 + 2023写作2); 防漂移 (审计 HIGH#3)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE province LIKE '辽宁%'"
-    expect: {op: "==", value: 190}
+    expect: {op: "==", value: 192}
   - id: xgkii-2026-truth-imported
     claim: "2026新高考全国II卷英语入库(锦宏镜像PDF双通道转录, group级8组 听力/阅读ABCD/七选五/完形/语法, 写作不入): province=辽宁/paper_type新课标II/客观题答案齐, source_repo=jhgk_xgkii_english_2026 (坑16 tier-B诚实标, 非官方冒充)"
     type: duckdb_sql

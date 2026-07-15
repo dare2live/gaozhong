@@ -26,9 +26,9 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
         "AND json_extract_string(evidence_json,'$.provenance') NOT IN "
         "('dual_model_agree','explicit_label','cross_verified',"
         "'curriculum_aligned_stem','curriculum_aligned_task',"
-        "'human_curriculum_verified')"
+        "'human_curriculum_verified','agent_curriculum_verified')"
     ).fetchone()[0]
-    check("考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified, curriculum_aligned_*, human_curriculum_verified} (无弱provenance; 坑16)",
+    check("考点边 provenance ∈ {dual_model_agree, explicit_label, cross_verified, curriculum_aligned_*, human_curriculum_verified, agent_curriculum_verified} (无弱provenance; 坑16)",
           bad_prov == 0, f"{bad_prov} 弱provenance")
     bad_ta = con.execute(
         "SELECT COUNT(*) FROM edges e WHERE e.relation='theme_aligns' AND ("
@@ -44,6 +44,7 @@ def check_exam_point(con: duckdb.DuckDBPyConnection, check) -> None:
     _check_grammar_coverage_floor(con, check)
     check_genre_truth(con, check)
     check_theme_human_verified(con, check)
+    check_text_continuity(con, check)
     check_theme_layers(con, check)
     check_quality_standards(con, check)
     check_grammar_point_rollup(con, check)
@@ -275,13 +276,54 @@ def check_genre_truth(con: duckdb.DuckDBPyConnection, check) -> None:
 
 
 def check_theme_human_verified(con: duckdb.DuckDBPyConnection, check) -> None:
-    """theme_l2: 禁假 analysis-cross; 人工课标核验 ≥15."""
+    """theme_l2: 禁假 analysis-cross; 人工课标核验地板随战役上调."""
     from backend.services.exam_point.theme_truth import analysis_theme_crosscheck
     r = analysis_theme_crosscheck(con)
     check("theme 无假升 analysis-cross_verified", r["n_cross_verified_edges"] == 0, f"{r['n_cross_verified_edges']}")
-    check("theme 人工课标核验边 ≥15", r["n_human_verified_edges"] >= 15,
+    check("theme 人工课标核验边 ≥180 (残留补齐战役人核扩面)", r["n_human_verified_edges"] >= 180,
           f"{r['n_human_verified_edges']} status={r['status']}")
     check("theme_truth pass", r["pass"], r.get("note", ""))
+
+
+def check_text_continuity(con: duckdb.DuckDBPyConnection, check) -> None:
+    """text_continuity 冷启动: 边>0 + provenance 白名单 + 仅官方二值标签."""
+    from pathlib import Path
+
+    import yaml
+
+    from backend.services.exam_point.text_continuity import (
+        LABELS,
+        PROV_OK,
+        text_continuity_summary,
+    )
+
+    s = text_continuity_summary(con)
+    check("text_continuity 边 > 0", s["n_edges"] > 0, f"{s['n_edges']}")
+    check("text_continuity summary pass", s["pass"], str(s.get("by_label_prov")))
+    provs = sorted(PROV_OK)
+    n_bad = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
+        "AND json_extract_string(evidence_json,'$.dimension')='text_continuity' "
+        "AND (json_extract_string(evidence_json,'$.provenance') IS NULL "
+        "     OR json_extract_string(evidence_json,'$.provenance') NOT IN (?,?))",
+        provs,
+    ).fetchone()[0]
+    check("text_continuity provenance ∈ allowlist", n_bad == 0, f"{n_bad}")
+    labs = [f"exam_point:text_continuity:{x}" for x in sorted(LABELS)]
+    n_lab = con.execute(
+        "SELECT COUNT(*) FROM edges WHERE relation='tests_exam_point' "
+        "AND json_extract_string(evidence_json,'$.dimension')='text_continuity' "
+        "AND dst_id NOT IN (?,?)",
+        labs,
+    ).fetchone()[0]
+    check("text_continuity 仅连续/非连续二值", n_lab == 0, f"{n_lab}")
+    cfg = yaml.safe_load(
+        (Path(__file__).resolve().parents[2] / "backend/config/exam_point_taxonomy.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    st = ((cfg.get("dimensions") or {}).get("text_continuity") or {}).get("status")
+    check("taxonomy text_continuity status ≠ pending", st and st != "pending", str(st))
 
 
 def check_quality_standards(con: duckdb.DuckDBPyConnection, check) -> None:

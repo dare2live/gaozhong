@@ -100,3 +100,16 @@
 - 全库重建: `python3 scripts/init_db.py`; 重建后必重生成 `python3 scripts/build_vocab_classification.py`
 - 状态总览: `python3 -m scripts.tools.map doctor` · 接手对账: `sherpa takeover --repo .`
 - gaozhong↔gaokao **完全独立**(运行时不读 gaokao; 真值已镜像本地, moth `gaozhong-self-contained` 守门)。
+
+---
+
+## 2026-07-15 残留补齐战役 (无人等 2026; agent 人核)
+
+- **B1** 2021/2022 完形选项: `cloze_options_eol_xgkii.jsonl` + `qualifying_cloze_rows` → n_passages **12**
+- **A1** theme: `theme_human_verified.jsonl` 扩至全 dual(含 ZK 同篇 sibling) → human_curriculum_verified; **禁** cross_verified
+- **A2** phrase: curated `tests_phrase` 扩高置信 GF/完形空
+- **B2** 2023 应用文+续写: gzenxx docx 入库(`docx/2023/xgkii/...`); in-repo zizzs.pdf=HTML 落地页不可抽
+- **A3** text_continuity 冷启动: labels jsonl + loader + taxonomy `human_labeled` + D0 allowlist
+- **B3** 2021 听力: DB 键与公开 II 卷答案交叉一致; sohu 文件为 I 卷未混入(见 `acquisition_2021_listening_crosscheck.md`)
+- **B4** ZK2025 #44/#45: 再搜无稳定可核验范文 → **保持「略」**(见 `acquisition_zk2025_44_45.md`)
+- **不做**: 2026 中考; theme 假升 analysis-cross; phrase bulk; 平行 grammar_point 写边; 题级 quality; 真实学情造假

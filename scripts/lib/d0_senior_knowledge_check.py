@@ -51,8 +51,8 @@ def check_phrase_pattern_exam_relevance(con: duckdb.DuckDBPyConnection, check) -
     n_tp = con.execute("SELECT COUNT(*) FROM edges WHERE relation='tests_phrase'").fetchone()[0]
     check("tests_phrase_edges == live DB count",
           d.get("tests_phrase_edges") == n_tp, f"api={d.get('tests_phrase_edges')} db={n_tp}")
-    check("tests_phrase 边 ≥15 (human_verified curated 下限)",
-          n_tp >= 15, f"{n_tp}")
+    check("tests_phrase 边 ≥40 (human_verified curated 下限, 残留补齐后)",
+          n_tp >= 40, f"{n_tp}")
     n_bad = con.execute(
         "SELECT COUNT(*) FROM edges WHERE relation='tests_phrase' "
         "AND COALESCE(json_extract_string(evidence_json,'$.provenance'),'') <> 'human_verified'"

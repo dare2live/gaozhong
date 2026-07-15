@@ -111,7 +111,7 @@ dimensions:
     desc: 连续性文本 vs 非连续性文本 (课标官方正交维度)
     provenance: official_curriculum
     curriculum_ref: "普通高中英语课程标准 §语篇类型(连续/非连续)"
-    status: pending  # 暂未标注, 列出以备件2后续
+    status: human_labeled  # agent_curriculum_verified curated → tests_exam_point
     labels:
       - {id: 连续性文本, prov: official_curriculum}
       - {id: 非连续性文本, prov: official_curriculum, note: "图表/广告/活动单/目录等"}

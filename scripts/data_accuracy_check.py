@@ -253,8 +253,8 @@ def _check_21_exam_provenance(con):
     # 21g: 高考计数正向锁 (审计: 防漂移; B1去重后基线=466/182 非陈旧472/188; 增减须显式改基线)
     n_gk, n_ln = con.execute(
         "SELECT COUNT(*), COUNT(*) FILTER (WHERE province LIKE '辽宁%') FROM exam_questions").fetchone()
-    check("高考真题计数基线 466 (B1 去重后; 改动须显式更新基线防漂移)", n_gk == B('gaokao_total'), f"{n_gk}")
-    check("高考辽宁卷计数基线 182 (新课标II §7)", n_ln == B('gaokao_liaoning'), f"{n_ln}")
+    check("高考真题计数基线 (B1+2026+2023写作; 改动须显式更新基线防漂移)", n_gk == B('gaokao_total'), f"{n_gk}")
+    check("高考辽宁卷计数基线 (新课标II §7)", n_ln == B('gaokao_liaoning'), f"{n_ln}")
 
 
 # ===== helpers (CC ≤ 4) =====
