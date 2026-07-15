@@ -7,11 +7,13 @@
 | 年 | 文字稿本地 | 源 | 质量信号 |
 |---|---|---|---|
 | 2021 | `listening_transcripts/2021_xgki_ii_cpsenglish_transcript.md` | 柯帕斯 | Text=10, W:/M: 齐全 |
-| 2022–24 | **暂缺入库文本** | 可可英语页有双语稿，但移动端/桌面抓取被壳页挡住（仅音频已镜像） | 音频在 `listening_candidates/` |
+| 2022 | `2022_xgki_ii_cpsenglish_transcript.md` | 柯帕斯 | Text=10；与 kekenet 分段 ASR **PASS** |
+| 2023 | `2023_xgki_ii_listening_transcript.md` | scribd 解析【原文】+百度文库 | I&II 共用；与 kekenet ASR **PASS** |
+| 2024 | `2024_xgkii_netease_transcript.md` | 网易云电台介绍区 | II 卷；与 kekenet ASR **PASS** |
 | 2025 | `2025_xgkii_newdu_listening_stem.txt` + `_analysis.txt` | 新都网 zip 内 docx | Text=10, W:=27+ |
 | 2026 | `2026_national_ii_newdu_listening.txt`（另：sjds / renrendoc 对照） | 新都网 rar 内「答案+听力原文」docx | Text=10, W:=23 |
 
-交叉对照：2025 renrendoc / 2026 sjds 开场句与 newdu 稿一致（如 2025 Baxley bus；2026 picnic/Rose）。
+交叉对照：2025 renrendoc / 2026 sjds 开场句与 newdu 稿一致（如 2025 Baxley bus；2026 picnic/Rose）。2022–24 见指纹报告。
 
 ## 2025–26 音频（此前标「仅付费」——已打穿）
 
@@ -29,5 +31,5 @@ sha256 见 `*_newdu_manifest.json` + `sources.yaml`。
 
 ## 仍缺
 
-- 2022–24 **入库文字稿**（可可见面人工另存 / 或后续 ASR 对齐已有分段 mp3）
-- 升 teachable 前：全卷逐字/题号级 QC（当前仅锚点指纹 PASS）
+- 升 teachable 前：全卷逐字/题号级 QC（当前 2021–26 均为锚点指纹 PASS）
+- 可可英语网页双语稿仍被壳页挡住（已用 cpsenglish / scribd / 网易云 旁路入库）

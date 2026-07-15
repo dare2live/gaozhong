@@ -91,6 +91,133 @@ CHECKS = [
         ],
     },
     {
+        "year": 2022,
+        "audio": "2022_xgki_ii_kekenet_short_dialog.mp3",
+        "transcript": "2022_xgki_ii_cpsenglish_transcript.md",
+        "windows": [
+            {
+                "id": "short_text1_5",
+                "audio": "2022_xgki_ii_kekenet_short_dialog.mp3",
+                "start": 0,
+                "dur": 140,
+                "groups": {
+                    "parking": ["parking space", "off-street"],
+                    "judy": ["Judy", "flight"],
+                    "laura": ["Laura", "thank-you", "thank you"],
+                },
+                "require_any_of": [["parking", "judy"], ["parking", "laura"]],
+            },
+            {
+                "id": "long_tracy_woods",
+                "audio": "2022_xgki_ii_kekenet_long_3.mp3",
+                "start": 0,
+                "dur": 150,
+                "groups": {
+                    "tracy": ["Tracy Woods", "Tracy"],
+                    "dogs": ["dogs", "special education"],
+                },
+                "require_any_of": [["tracy", "dogs"]],
+            },
+            {
+                "id": "mono_emma_wilson",
+                "audio": "2022_xgki_ii_kekenet_monologue.mp3",
+                "start": 0,
+                "dur": 120,
+                "groups": {
+                    "emma": ["Emma Wilson", "Emma"],
+                    "ubc": ["UBC", "British Columbia", "Vancouver"],
+                },
+                "require_any_of": [["emma", "ubc"]],
+            },
+        ],
+    },
+    {
+        "year": 2023,
+        "audio": "2023_xgki_ii_kekenet_short_dialog.mp3",
+        "transcript": "2023_xgki_ii_listening_transcript.md",
+        "windows": [
+            {
+                "id": "short_camping_bill",
+                "audio": "2023_xgki_ii_kekenet_short_dialog.mp3",
+                "start": 0,
+                "dur": 105,
+                "groups": {
+                    "camping": ["camping", "cinema", "weatherman"],
+                    "convenience": ["convenience store"],
+                    "bill": ["ten dollars", "waiter"],
+                },
+                "require_any_of": [
+                    ["camping", "convenience"],
+                    ["camping", "bill"],
+                ],
+            },
+            {
+                "id": "long_yard_sale",
+                "audio": "2023_xgki_ii_kekenet_long_3.mp3",
+                "start": 0,
+                "dur": 120,
+                "groups": {
+                    "clara": ["Clara"],
+                    "ashley": ["Ashley", "Los Angeles"],
+                    "yard": ["yard sale"],
+                },
+                "require_any_of": [["clara", "ashley"], ["yard", "ashley"]],
+            },
+            {
+                "id": "mono_idler",
+                "audio": "2023_xgki_ii_kekenet_monologue.mp3",
+                "start": 0,
+                "dur": 90,
+                "groups": {
+                    "idler": ["Idler", "idler"],
+                    "hodgkinson": ["Hodgkinson", "Tom"],
+                },
+                "require_any_of": [["idler"], ["idler", "hodgkinson"]],
+            },
+        ],
+    },
+    {
+        "year": 2024,
+        "audio": "2024_xgkii_kekenet_short_dialog.mp3",
+        "transcript": "2024_xgkii_netease_transcript.md",
+        "windows": [
+            {
+                "id": "short_talent_smiths",
+                "audio": "2024_xgkii_kekenet_short_dialog.mp3",
+                "start": 0,
+                "dur": 85,
+                "groups": {
+                    "talent": ["talent show"],
+                    "smiths": ["Smiths"],
+                    "denver": ["Denver"],
+                },
+                "require_any_of": [["talent", "smiths"], ["talent", "denver"]],
+            },
+            {
+                "id": "long_browns_grill",
+                "audio": "2024_xgkii_kekenet_long_2.mp3",
+                "start": 0,
+                "dur": 90,
+                "groups": {
+                    "grill": ["Brown's Grill", "Browns Grill", "Brown"],
+                    "anderson": ["Anderson"],
+                },
+                "require_any_of": [["grill", "anderson"]],
+            },
+            {
+                "id": "mono_rochester",
+                "audio": "2024_xgkii_kekenet_monologue.mp3",
+                "start": 0,
+                "dur": 90,
+                "groups": {
+                    "rochester": ["Rochester"],
+                    "leadership": ["leadership"],
+                },
+                "require_any_of": [["rochester", "leadership"]],
+            },
+        ],
+    },
+    {
         "year": 2025,
         "audio": "2025_xgkii_listening_newdu_candidate.mp3",
         "transcript": "2025_xgkii_newdu_listening_stem.txt",
@@ -214,13 +341,25 @@ def main() -> int:
 
             all_ok = True
             for win in check["windows"]:
+                src = AUDIO / win["audio"] if win.get("audio") else audio
+                if not src.is_file():
+                    year_row["windows"].append(
+                        {
+                            "id": win["id"],
+                            "pass": False,
+                            "error": f"missing audio {src.name}",
+                        }
+                    )
+                    all_ok = False
+                    continue
                 wav = tmpdir / f"{check['year']}_{win['id']}.wav"
-                cut_wav(audio, win["start"], win["dur"], wav)
+                cut_wav(src, win["start"], win["dur"], wav)
                 text = asr_text(model, wav)
                 ok, hits = window_pass(text, win)
                 year_row["windows"].append(
                     {
                         "id": win["id"],
+                        "audio": src.name,
                         "start_s": win["start"],
                         "dur_s": win["dur"],
                         "hits": hits,
@@ -241,8 +380,7 @@ def main() -> int:
             "not full verbatim force-alignment. Teachable gate / years_with_audio "
             "stays closed until explicit product decision."
         ),
-        "years_without_transcript_in_repo": [2022, 2023, 2024],
-        "years_without_transcript_verdict": "N/A_NO_GOLD_TRANSCRIPT",
+        "asr_full_segment_dump": "data/structured/exam_point/listening_2022_2024_asr_dump.json",
         "results": results,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

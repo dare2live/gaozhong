@@ -2,12 +2,7 @@
   "method": "faster-whisper fingerprint anchors vs local transcripts",
   "model": "tiny.en",
   "note": "Fingerprint only (distinctive spoken anchors + fuzzy ASR variants); not full verbatim force-alignment. Teachable gate / years_with_audio stays closed until explicit product decision.",
-  "years_without_transcript_in_repo": [
-    2022,
-    2023,
-    2024
-  ],
-  "years_without_transcript_verdict": "N/A_NO_GOLD_TRANSCRIPT",
+  "asr_full_segment_dump": "data/structured/exam_point/listening_2022_2024_asr_dump.json",
   "results": [
     {
       "year": 2021,
@@ -18,6 +13,7 @@
       "windows": [
         {
           "id": "text1_2_opening",
+          "audio": "2021_xgkii_listening_133ku_candidate.mp3",
           "start_s": 90,
           "dur_s": 90,
           "hits": {
@@ -33,6 +29,148 @@
       "verdict": "PASS"
     },
     {
+      "year": 2022,
+      "audio": "2022_xgki_ii_kekenet_short_dialog.mp3",
+      "transcript": "2022_xgki_ii_cpsenglish_transcript.md",
+      "audio_exists": true,
+      "transcript_exists": true,
+      "windows": [
+        {
+          "id": "short_text1_5",
+          "audio": "2022_xgki_ii_kekenet_short_dialog.mp3",
+          "start_s": 0,
+          "dur_s": 140,
+          "hits": {
+            "parking": true,
+            "judy": true,
+            "laura": true
+          },
+          "pass": true,
+          "asr": "We have to find a parking space. Let's drive around the block one more time. Did you say the restaurant has no off-street parking at all? None. I checked it. Look, there's a space. You have to go now, Judy, or you'll miss your flight. It's an hour's drive to the airport. I'm leaving. Don't forget to water my flowers. Just a minute. Where's my ticket, Dad? Laura, what's in the mailbox? It's a thank-you note from our neighbor. They thank us for visiting them last week when the baby was born. They also invite us to have dinner next Friday. Are they back home now? Should be. Good afternoon. Paper Museum. Hello. Could you tell me your opening hours for Saturday? Yeah. We're open from 10 in the morning to 5 in the afternoon. Thanks. Excuse me. Where is the hotel gym, please? It's on the top floor. You can take the lift over there. Do I have to pay extra? No, sir. You just need to take your room key with you."
+        },
+        {
+          "id": "long_tracy_woods",
+          "audio": "2022_xgki_ii_kekenet_long_3.mp3",
+          "start_s": 0,
+          "dur_s": 150,
+          "hits": {
+            "tracy": true,
+            "dogs": true
+          },
+          "pass": true,
+          "asr": "Helen, busy doing anything? Oh, Kevin! I'm preparing a presentation for the City Library. It's about a girl named Tracy Woods. What's special about her? It was an amazing story. She brought specially trained dogs to special education schools and helped children to build confidence. She believes that dogs can help children in ways we can't. Dogs don't judge, and they don't care who you are or what you look like. But putting dogs into a school? Aren't they going to mess up the school? Don't worry. All the dogs are assessed and trained properly. There are now 40 dogs working with children aged from 6 to 18. I hope that children love them. Of course they do. I've got some pictures. I'll show them at my presentation tomorrow morning. Helen, busy doing anything? Oh, Kevin! I'm preparing a presentation for the City Library. It's about a girl named Tracy Woods. What's special about her? It was an amazing story. She brought specially trained dogs to special education schools and helped children to build confidence. She believes that dogs can help children in ways we can't. Dogs don't judge, and they don't care who you are or what you look like. But putting dogs into a school? Aren't they going to mess up the school? Don't worry. All the dogs are assessed and trained properly. There are now 40 dogs working with children aged from 6 to 18. I hope the children love them. Of course they do. I've got some pictures. I'll show them at my presentation. Tomorrow morning."
+        },
+        {
+          "id": "mono_emma_wilson",
+          "audio": "2022_xgki_ii_kekenet_monologue.mp3",
+          "start_s": 0,
+          "dur_s": 120,
+          "hits": {
+            "emma": true,
+            "ubc": true
+          },
+          "pass": true,
+          "asr": "Hi everyone. This is the monthly meeting of our club. We've been fortunate to have got good advice from some famous athletes on how to improve our skills and build up our body. Today we'll hear something different. We're honored to have Emma Wilson here. Emma is a health expert and lecturer from UBC, the University of British Columbia. Emma worked for a football team in Manchester, then for a very successful rugby team in Dublin, and finally ended up working here in Vancouver. Emma says it's challenging to be a health expert because people can be easily influenced by advertisements that lack scientific support. Also, people aren't willing to change their views about food and nutrition as there is so much confusing information online. It's really important to hear what experts say, and that's why we've invited Emma here. She isn't going to tell us about everything we should eat, but she will teach us to make better choices. Let's welcome Emma Wilson. Hi everyone. This is the monthly meeting of our club. We've been fortunate to have got good advice from some famous athletes on how to improve our skills and build up our body. Today we'll hear something different. We're honored to have..."
+        }
+      ],
+      "verdict": "PASS"
+    },
+    {
+      "year": 2023,
+      "audio": "2023_xgki_ii_kekenet_short_dialog.mp3",
+      "transcript": "2023_xgki_ii_listening_transcript.md",
+      "audio_exists": true,
+      "transcript_exists": true,
+      "windows": [
+        {
+          "id": "short_camping_bill",
+          "audio": "2023_xgki_ii_kekenet_short_dialog.mp3",
+          "start_s": 0,
+          "dur_s": 105,
+          "hits": {
+            "camping": true,
+            "convenience": true,
+            "bill": true
+          },
+          "pass": true,
+          "asr": "Jack, are you going camping with your friends this weekend? It depends. If it's sunny, we'll go. The weatherman says it's going to rain. In that case, we'll go to the cinema instead. Excuse me, could you mind my bags for a moment? I want to buy some food at the convenience store. No problem, but be quick. It was announced that my train would arrive in 10 minutes. Bob came out of hospital last Friday. Have you got a chance to visit him? I plan to see him this Saturday. Aren't you going to the conference then? No, it has been rescheduled for next Monday. Sorry, miss. We made a terrible mistake adding up the bill. Here is the $10 we have to return to you. Oh, I didn't notice that. It's okay. Don't blame the waiter. He's been really nice. Do you think we should get Steve a book for the new year? Books are good, but Steve wouldn't take just any book. He has to have this particular one on geography."
+        },
+        {
+          "id": "long_yard_sale",
+          "audio": "2023_xgki_ii_kekenet_long_3.mp3",
+          "start_s": 0,
+          "dur_s": 120,
+          "hits": {
+            "clara": true,
+            "ashley": true,
+            "yard": true
+          },
+          "pass": true,
+          "asr": "Morning, Mark. Morning, Clara. How was your weekend? Great. I went to my grandpa's. He invited us to pick vegetables on his farm. My daughter had a great time there. What about you? Oh, I had a truly incredible experience. I dropped by a yard sale on Saturday and got several books. Narvos? A novel and two poetry collections. As I leafed through the novel, a piece of paper fell out. It was an air ticket from 2012. The flight was from Los Angeles to Chicago. And the name on the ticket was Ashley Lewis. Was it? Yes. Ashley, my sister. In 2012, she lived in Los Angeles and her husband worked in Chicago. Both of them, often flew between the two cities. I asked the seller where he got the book. He said it was bought at a second hand bookstore in Los Angeles three years ago. Last year, he and his family moved from Los Angeles to Philadelphia. So all the way across the country, your sister's old book landed in your hands. That's really crazy. Morning, Mark. Morning, Clara. How was your weekend? Great. I went to my grandpa's. He invited us to pick vegetables on his farm. My daughter had a great time there. What about you? Oh, I had a truly incredible experience. I dropped by a yard sale on Saturday and got several books."
+        },
+        {
+          "id": "mono_idler",
+          "audio": "2023_xgki_ii_kekenet_monologue.mp3",
+          "start_s": 0,
+          "dur_s": 90,
+          "hits": {
+            "idler": true,
+            "hodgkinson": true
+          },
+          "pass": true,
+          "asr": "Good evening dear listeners. One was the last time you enjoyed leisure activities. Do you want to live a full and happy life? Today I am going to introduce to you a magazine that features the art of living. The idler was launched by Tom Hocanson back in 1993, with the intention of providing a bit of fun, freedom and achievement in a busy world. It is now published by Monthly. In every issue you'll find an interesting mix of interviews and essays on the good life, history, philosophy, arts and fashion photography. You'll find much to laugh at and much useful stuff as well. From recipes for making bacon, to guides to housekeeping. If you've ever felt that there's more to life than boring jobs, then why not subscribe to it? The idler is a cheering read that makes you feel better about life. You can download the application and subscribe today to get your first issue free. Good evening dear listeners. One was the last time you enjoyed leisure."
+        }
+      ],
+      "verdict": "PASS"
+    },
+    {
+      "year": 2024,
+      "audio": "2024_xgkii_kekenet_short_dialog.mp3",
+      "transcript": "2024_xgkii_netease_transcript.md",
+      "audio_exists": true,
+      "transcript_exists": true,
+      "windows": [
+        {
+          "id": "short_talent_smiths",
+          "audio": "2024_xgkii_kekenet_short_dialog.mp3",
+          "start_s": 0,
+          "dur_s": 85,
+          "hits": {
+            "talent": true,
+            "smiths": true,
+            "denver": true
+          },
+          "pass": true,
+          "asr": "Did you watch the talent show on TV last night? No, I missed it. I went with my mom to buy some clothes. I love this park. It's so beautiful. It surely is. Are you tired? Shall we stop by the lake for a few minutes? Good idea. Let's go to that cafe for a little refreshment. Tom, shall we invite the smiths around for dinner this Sunday? Sure, but I need to pack for Monday's business trip. What about Saturday? Okay. Barbara, do you want to play table tennis with us tonight? I'd love to, but I can't. I'm catching the last train to Denver to see my grandma. I need to take her to visit a doctor tomorrow morning. Alex, did you feed the cat this morning? I don't think she can wait. All right. After I finish this chapter, I just can't let go of this book."
+        },
+        {
+          "id": "long_browns_grill",
+          "audio": "2024_xgkii_kekenet_long_2.mp3",
+          "start_s": 0,
+          "dur_s": 90,
+          "hits": {
+            "grill": true,
+            "anderson": true
+          },
+          "pass": true,
+          "asr": "Hello. Brown's Grill. How may I help you? Hi. I'd like to book a table for Friday evening. Okay. How many people are there in your party? There will be six. And what time would you like to come? Let's say at 6.30. I'm afraid we don't have anything available then. We could see you at 5.30 or 8.00 o'clock. Oh. 8 o'clock is better. Fine. May I have your name? Yes. It's Anderson. Thank you. We'll see you on Friday. By the way, we've moved to Howard Street. Oh, yeah. I know. Thanks. Hello. Brown's Grill. How may I help you? Hi. I'd like to book a table for Friday evening. Okay. How many people are there in your party? There will be six. And what time would you like to come? Let's say at 6.30. I'm afraid we don't have anything available then. We could see you at 5.30 or 8 o'clock. Oh. 8 o'clock is better. Fine. May I have your name? Yes. It's Anderson. Thank you. We'll see you on Friday. By the way, we've moved to Howard Street. Oh, yeah. I know. Thanks."
+        },
+        {
+          "id": "mono_rochester",
+          "audio": "2024_xgkii_kekenet_monologue.mp3",
+          "start_s": 0,
+          "dur_s": 90,
+          "hits": {
+            "rochester": true,
+            "leadership": true
+          },
+          "pass": true,
+          "asr": "Good morning, everyone. This lesson is a part of our leadership series. Let me start by sharing a story of a Richard Rochester, one of the most successful businessmen in Britain. Years ago, I was given the task of organizing a conference in the south of England. I chose a five-star hotel owned by Rochester as the venue. Susan, the receptionist, helped me arrange everything perfectly. Once when we were chatting, I asked Susan if she'd ever met Mr. Rochester. She said yes. Shortly after Mr. Rochester bought the hotel, he made an appointment to see the hotel manager. When he arrived, the first person he met was Susan, who was cleaning the carpet. He chatted with Susan for 30 minutes before keeping his appointment with the manager. He spent all day at the hotel, talking with each member of the staff, from the top guy to the lady who cleaned the toilets. Six months later, Mr. Rochester paid another visit. Susan had been promoted to receptionist, but he recognized her immediately and addressed her by name. He even remembered that she had a little girl and what her name was. Now, I don't believe that Richard Rochester has that good of memory."
+        }
+      ],
+      "verdict": "PASS"
+    },
+    {
       "year": 2025,
       "audio": "2025_xgkii_listening_newdu_candidate.mp3",
       "transcript": "2025_xgkii_newdu_listening_stem.txt",
@@ -41,6 +179,7 @@
       "windows": [
         {
           "id": "text1_baxley_route",
+          "audio": "2025_xgkii_listening_newdu_candidate.mp3",
           "start_s": 40,
           "dur_s": 80,
           "hits": {
@@ -53,15 +192,16 @@
         },
         {
           "id": "text10_creative_camp",
+          "audio": "2025_xgkii_listening_newdu_candidate.mp3",
           "start_s": 900,
           "dur_s": 120,
           "hits": {
             "creative_day": true,
             "mini_camp": true,
-            "ages_5_12": false
+            "ages_5_12": true
           },
           "pass": true,
-          "asr": "We all are, we all can listen to it. We are the Suvatalki. We are the Suvatalki. We are the Tevat. We are the Suvatalki. So what are you doing? We're the Suvatalki. Hello, everyone. Welcome to the creative day school. I'm the U.S. We're the Suvatalki. We provide two full-time summer camp programs. Well, we'll last the entire time the children are out of school. We're the one who's going to be out on the U.S. Our first Suvatalki is for our four-year-olds called Mini Camp. This Mini Camp will still cut their normal everyday schedule with a lot of fun activities. At least once a week our Mini Campers will go on a future. These few trips couldn't exist on the day at the beach or exploring the natural museum. Our older summer camp is provided for ages five through 12. There are central summer fun activities and games. The children hold your decision in part. They draw their hair. They draw their hair. They draw their hair. They can't do much more. This Mini has been nearby to school. This is all in a weekly future for ages six and not. We have other field trips, couldn't clean clothing, a day at the movies, or a picnic in the park. And we've permission of pairing the stand activities are required to participate in all field trips. Now, let's watch a five-minute film."
+          "asr": "We all are, we all have to listen to it, we are the super talented... Hello everyone, welcome to the creative day school, this summer we provide two full-time summer camp programs. Well, we'll last the entire time the children are out of school every when you are on the beach. Our first round of the hair is where our four year olds, called Mini-Can. This Mini-Can will still cut their normal everyday schedule with a lot of fun activities. At least once a week, our Mini-Caners will go on a future. These few trips couldn't exist on the day at the beach. Four exploring the natural museum. Our older summer camp is provided for ages five through twelve. There are central summer fun activities and games. The children hold your decision and art. Outdoor play, games, and much more. This Mini-Caners are at the nearby school. It is all in a weekly future for ages six and not. The other field trips couldn't bring going a day at the movies or a picnic in the park. And the permission of pairing the stand activities are required to participate in all field trips. Now, let's watch the bike in a field."
         }
       ],
       "verdict": "PASS"
@@ -75,6 +215,7 @@
       "windows": [
         {
           "id": "text1_picnic_rose",
+          "audio": "2026_national_ii_listening_newdu_candidate.mp3",
           "start_s": 206,
           "dur_s": 40,
           "hits": {
@@ -83,10 +224,11 @@
             "kevin": true
           },
           "pass": true,
-          "asr": "We're going to the park for a picnic. Would you like to come, Rose? I'd love to. But I have to go downtown to get Kevin a birthday present. He invited me to his party. We're going to the park for a picnic. Would you like to come, Rose? I'd love to. But I have to go downtown to get Kevin a birthday present. He invited me to his party. Pianzia me."
+          "asr": "We're going to the park for a picnic. Would you like to come, Rose? I'd love to, but I have to go downtown to get Kevin a birthday present. He invited me to his party. We're going to the park for a picnic. Would you like to come, Rose? I'd love to, but I have to go downtown to get Kevin a birthday present. He invited me to his party. Pianxami."
         },
         {
           "id": "text6_swansea",
+          "audio": "2026_national_ii_listening_newdu_candidate.mp3",
           "start_s": 486,
           "dur_s": 50,
           "hits": {
@@ -98,6 +240,7 @@
         },
         {
           "id": "text10_melbourne",
+          "audio": "2026_national_ii_listening_newdu_candidate.mp3",
           "start_s": 1050,
           "dur_s": 60,
           "hits": {

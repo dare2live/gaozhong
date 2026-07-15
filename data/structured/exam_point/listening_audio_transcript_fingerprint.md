@@ -1,55 +1,43 @@
 # 听力音频 ↔ 文字稿一致性指纹审计
 
-date: 2026-07-15  
-method: `faster-whisper` (`tiny.en`) 切片 ASR + 专有名词/独特句锚点（含 ASR 模糊变体）  
+date: 2026-07-15（含 2022–24 补核）  
+method: `faster-whisper` (`tiny.en`) 切片/分段 ASR + 专有名词锚点  
 script: `scripts/tools/audit/listening_audio_transcript_fingerprint.py`  
-machine result: `data/structured/exam_point/listening_audio_transcript_fingerprint.json`  
-scope: **指纹一致，不是逐字 force-align**；不因此打开 `years_with_audio` teachable 门。
+machine: `listening_audio_transcript_fingerprint.json`  
+full ASR dump (2022–24 分段): `listening_2022_2024_asr_dump.json`  
+scope: **指纹一致，不是逐字 force-align**；不打开 `years_with_audio` teachable 门。
 
 ## 总表
 
-| 年 | 音频候选 | 仓内文字稿 | 指纹结论 | 说明 |
+| 年 | 音频候选 | 仓内文字稿 | 指纹结论 | 听写核对要点 |
 |---|---|---|---|---|
-| 2021 | 133ku full mp3 (900s) | cpsenglish | **PASS** | Text1–2 开口与文稿同剧情；`Mallorca` 被 tiny 听成 `my York`，但 `Spanish` / `lab report` / `Dr. Davidson` 命中 |
-| 2022 | kekenet 分段 | **无** | **N/A** | 短对话 ASR 可听（Judy/flight、邻居 thank-you note），无金标文稿可对 |
-| 2023 | kekenet 分段 | **无** | **N/A** | 短对话 ASR 可听（train / Bob hospital / 账单退 $10），无金标文稿可对 |
-| 2024 | kekenet 分段 | **无** | **N/A** | 短对话 ASR 可听（Smiths dinner / Denver / feed the cat），无金标文稿可对 |
-| 2025 | newdu full mp3 (~18:53) | newdu stem/analysis + renrendoc | **PASS** | Text1：黄出租车 + Bus No.4（`Baxley` 被听成 `Fast Leech`）；Text10：`Creative Day School` / `Mini Camp` / ages 5–12 |
-| 2026 | newdu full mp3 (~22:45) | newdu + sjds + renrendoc | **PASS** | Text1 picnic/Rose/Kevin；Text6 Swansea（ASR=`Swan Sea`）；Text10 Melbourne / Eureka / Book Thief |
+| 2021 | 133ku full | cpsenglish | **PASS** | Spanish / lab report / Davidson |
+| 2022 | kekenet 6 段 | cpsenglish（新入库） | **PASS** | parking / Judy flight / Tracy Woods / Emma Wilson·UBC |
+| 2023 | kekenet 6 段 | scribd+百度文库整理（新入库） | **PASS** | camping·cinema / convenience store / yard sale·Ashley / The Idler |
+| 2024 | kekenet 6 段 | 网易云电台稿（新入库） | **PASS** | talent show / Smiths / Brown’s Grill·Anderson / Rochester |
+| 2025 | newdu full | newdu stem | **PASS** | yellow taxi·Bus No.4 / Creative Day·Mini Camp |
+| 2026 | newdu full | sjds/newdu | **PASS** | picnic·Rose / Swansea / Melbourne·Eureka |
 
-## 关键证据（ASR 摘录）
+## 2022–24「自己听」怎么做的
 
-### 2021 @90s（对照 cpsenglish Text1–2）
-> I was in my York last week. … practice my Spanish. … hand in my lab report to Dr. Davidson?
+此前缺仓内金标文稿，故标 N/A。本次：
 
-### 2025 @40s（对照 stem Text1）
-> Is this bus going to Fast Leech's sir? … yellow taxi on the corner? … take bus number four.
+1. 用 ASR **整段听写**可可英语 18 个分段 mp3 → `listening_2022_2024_asr_dump.json`
+2. 网上取金标/准金标原文入库：
+   - 2022：柯帕斯 cpsenglish article/1073
+   - 2023：新课标 I/II 共用稿（scribd 解析【原文】+ baidu word）
+   - 2024：网易云节目 `program?id=3057211543` 介绍区全文
+3. 锚点交叉：短对话 + 长对话/独白各至少 1 窗 → 全部 HIT
 
-### 2025 @900s（对照 stem Text10）
-> Welcome to the creative day school. … Mini Camp … ages 5 through 12 …
+ASR 与文稿几乎逐句同剧情（tiny 偶发专名误听：如 Mallorca→my York、Mark→Bob），不影响卷别指纹判定。
 
-### 2026 @03:26 / @08:06 / @17:30（对照 sjds 时间戳）
-> picnic … Rose … Kevin a birthday present  
-> June 22 to Swan Sea … earlier flight  
-> arrived in Melbourne … Rika Tower … Book Thief
+## 仍不升级 teachable
 
-## 文稿多源交叉（文本层）
-
-- **2025**：newdu stem / analysis / renrendoc 均含 `Baxley`、`Madison`、`Mini Camp`、`Alice`；与音频指纹一致。
-- **2026**：newdu / sjds / renrendoc 均含 picnic–Rose–Kevin、Swansea、Melbourne、Eureka；与音频指纹一致。newdu 文件名残留 `听力原文2025.06.11` 的 caveat **不推翻**正文与 2026 音频对齐这一实测。
-
-## 仍不升级 teachable 的原因
-
-1. 本次是锚点指纹，不是全卷逐字对齐 + 题号级 QC。  
-2. 2022–24 仍缺仓内文字稿，无法做同标准核对。  
-3. 第三方候选源（非 MoE 官方发行）身份层仍是 candidate。
+第三方候选 ≠ NEEA；指纹 ≠ 全卷逐字/题号 QC；`years_with_audio` 仍 `[]`。
 
 ## 复跑
 
 ```bash
-python3 -m venv /tmp/gaozhong_asr_venv
-/tmp/gaozhong_asr_venv/bin/pip install faster-whisper
-# brew install ffmpeg   # if needed
 /tmp/gaozhong_asr_venv/bin/python \
   scripts/tools/audit/listening_audio_transcript_fingerprint.py tiny.en
 ```

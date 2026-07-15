@@ -5,6 +5,21 @@
     "sha256": "e831c02267967750c21c6179584aac7a292eb6b3c75da6e41029c9150a58d621"
   },
   {
+    "file": "2022_xgki_ii_cpsenglish_transcript.md",
+    "bytes": 5209,
+    "sha256": "cce86d6db021b4953a8db0074a8fddf2cb65f10c760085eb5c053ccda9ae8a4c"
+  },
+  {
+    "file": "2023_xgki_ii_listening_transcript.md",
+    "bytes": 5151,
+    "sha256": "c7edf0cf8cb49a5a19a3544609ca9d6d1925808ba035161b44f9052840b7e510"
+  },
+  {
+    "file": "2024_xgkii_netease_transcript.md",
+    "bytes": 5068,
+    "sha256": "b0051ac86b33d24925511bdd2115edc810ea863d6ee90d6ab398ac522a974985"
+  },
+  {
     "file": "2025_xgkii_newdu_listening_analysis.txt",
     "bytes": 16096,
     "sha256": "0aec0a74257bb44128751ceb34df1c4e7769c124aea39d7bb12baf24fa27ed4b"
