@@ -71,7 +71,11 @@ tts_fallback:
   rate: 160
   note: "禁用 TTS 冒充真听力; 有官方/授权音频再开"
 
-# 有 mp3 的年份才写入; 当前 0 — 勿把卷面年份列成「已覆盖」
+# 有 mp3 的年份才写入; 当前正式目录 data/audio 仍 0 —
+# 2021–24 候选在 listening_candidates/ (见 acquisition_listening_audio_web.md), 未交叉核验不升档。
 years_with_audio: []
 # 卷面应有听力的年份 (结构真值, 非本库提取完成)
 paper_years_listening_expected: [2021, 2022, 2023, 2024, 2025, 2026]
+# 开放直链已镜像的候选年 (≠ teachable)
+candidate_audio_years_mirrored: [2021, 2022, 2023, 2024]
+candidate_audio_gaps: [2025, 2026]  # 仅付费/网盘, 本次未入库

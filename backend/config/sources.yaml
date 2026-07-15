@@ -303,6 +303,72 @@ exam_sources:
         expected_sha256: 6089470a8e3ac4ba7fe2694c13333016af74486ca516a8662b3bd6c9b36021b0
         min_bytes: 10000
 
+  third_party_mp3_xgkii_listening_2021_133ku:
+    name: 2021 新高考II卷听力整卷 mp3 (盘古文库 candidate)
+    family: listening_audio_candidate
+    org: 盘古文库 / 133ku
+    year: 2021
+    paper_type: 新高考全国II卷
+    publish_url: https://www.133ku.com/doc/3663.html
+    status: raw_acquired_candidate_needs_eol_fingerprint
+    observed_scope: >-
+      整卷 mp3 ~15:00; 标 II 卷但未与 EOL 2021 题干做听辨/ASR 指纹。
+      2021 I&II 常共用听力 — 升教前必须交叉核验。详见 acquisition_listening_audio_web.md
+    attachments:
+      - kind: mp3
+        url: https://www.133ku.com/uploads/convert/202511/24/3663/d7b6b96b-1345-4e43-9077-1684b4b6bc6d.mp3
+        local_path: data/external/exam_sources/listening_candidates/2021_xgkii_listening_133ku_candidate.mp3
+        expected_sha256: df861b844a98ef9467b83cecb3252c1552d39f579a10acef64b7f9b2b7584531
+        min_bytes: 10000000
+      - kind: json_manifest
+        local_path: data/external/exam_sources/listening_candidates/2021_xgkii_133ku_manifest.json
+        min_bytes: 200
+
+  third_party_mp3_xgki_ii_listening_2022_kekenet:
+    name: 2022 新高考 I&II 共用听力 分段 mp3 (可可英语 candidate)
+    family: listening_audio_candidate
+    org: 可可英语 / kekenet
+    year: 2022
+    paper_type: 新高考全国I&II卷共用听力
+    publish_url: https://m.kekenet.com/gaokao/202209/659942.shtml
+    status: raw_acquired_candidate_segmented_needs_paper_align
+    observed_scope: >-
+      6 段(短对话+长对话1-4+独白); I&II 共用。sha256 见 manifest。未升 data/audio。
+    attachments:
+      - kind: json_manifest
+        local_path: data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_manifest.json
+        min_bytes: 500
+
+  third_party_mp3_xgki_ii_listening_2023_kekenet:
+    name: 2023 新高考 I&II 共用听力 分段 mp3 (可可英语 candidate)
+    family: listening_audio_candidate
+    org: 可可英语 / kekenet
+    year: 2023
+    paper_type: 新高考全国I&II卷共用听力
+    publish_url: https://m.kekenet.com/gaokao/202408/693782.shtml
+    status: raw_acquired_candidate_segmented_needs_paper_align
+    observed_scope: >-
+      6 段; I&II 共用(微信/教习网多源一致)。sha256 见 manifest。未升 data/audio。
+    attachments:
+      - kind: json_manifest
+        local_path: data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_manifest.json
+        min_bytes: 500
+
+  third_party_mp3_xgkii_listening_2024_kekenet:
+    name: 2024 新课标 II 卷听力 分段 mp3 (可可英语 candidate)
+    family: listening_audio_candidate
+    org: 可可英语 / kekenet
+    year: 2024
+    paper_type: 新课标全国II卷
+    publish_url: https://m.kekenet.com/gaokao/202408/693798.shtml
+    status: raw_acquired_candidate_segmented_needs_paper_align
+    observed_scope: >-
+      2024 起 I/II 听力分卷; 本套为 II 卷 6 段。sha256 见 manifest。未升 data/audio。
+    attachments:
+      - kind: json_manifest
+        local_path: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_manifest.json
+        min_bytes: 500
+
 quarantined_exam_sources:
   sunedu_new_gaokao_i_listening_2021_candidate:
     name: 2021 新高考 I 卷听力 candidate source

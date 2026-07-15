@@ -26,3 +26,6 @@ data/reports/project_architecture_audit_*.json
 
 # preview 工具本地配置
 .claude/launch.json
+
+# Listening audio candidates (large binaries; sha256 locked in manifests + sources.yaml)
+data/external/exam_sources/listening_candidates/*.mp3

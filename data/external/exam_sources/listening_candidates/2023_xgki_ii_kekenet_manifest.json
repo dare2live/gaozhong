@@ -1,0 +1,50 @@
+[
+  {
+    "segment": "short_dialog",
+    "page_url": "https://m.kekenet.com/gaokao/202408/693782.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2024/08/1_1650471nAL.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_short_dialog.mp3",
+    "bytes": 2515493,
+    "sha256": "6e85f81a451d03c3bc513adbd811e8f96d151509829060bae2a129fff8c94ab8"
+  },
+  {
+    "segment": "long_1",
+    "page_url": "https://m.kekenet.com/gaokao/202408/693783.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2024/08/2_18114179mF.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_1.mp3",
+    "bytes": 2194152,
+    "sha256": "593b097e5cca8e148aee28f9a9b2123dd0b231796326f6dba7c7ee8bccd14f35"
+  },
+  {
+    "segment": "long_2",
+    "page_url": "https://m.kekenet.com/gaokao/202408/693784.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2024/08/3_1858553ipE.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_2.mp3",
+    "bytes": 2109144,
+    "sha256": "90013ada67d387b14d9db01732794afb65ebecd04a23343bf49be2fbe60bbf3a"
+  },
+  {
+    "segment": "long_3",
+    "page_url": "https://m.kekenet.com/gaokao/202408/693785.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2024/08/4_1937779JkM.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_3.mp3",
+    "bytes": 4449004,
+    "sha256": "b02f486e1e81b913bb72159e44a6c796d88ad7068fb1d8c5b10eea8308097b35"
+  },
+  {
+    "segment": "long_4",
+    "page_url": "https://m.kekenet.com/gaokao/202408/693786.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2024/08/5_2017972Fd5.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_long_4.mp3",
+    "bytes": 3883100,
+    "sha256": "3752401f9362fedf01cba78e15d580d91f9bdba0a8c10da29264a600ad0b83a9"
+  },
+  {
+    "segment": "monologue",
+    "page_url": "https://m.kekenet.com/gaokao/202408/693787.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2024/08/6_2058726Vbt.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2023_xgki_ii_kekenet_monologue.mp3",
+    "bytes": 3968236,
+    "sha256": "da7f2bebc55d7076f2e50c2da7db8e78923b03222c54b40b58e31cc493fcb67b"
+  }
+]

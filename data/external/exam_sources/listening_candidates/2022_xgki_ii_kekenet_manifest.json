@@ -1,0 +1,50 @@
+[
+  {
+    "segment": "short_dialog",
+    "page_url": "https://m.kekenet.com/gaokao/202209/659942.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2022/08/duanduihua_2003210jqB.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_short_dialog.mp3",
+    "bytes": 2242011,
+    "sha256": "4b68020e32840bb8eaf39de6ed7d56e1bd8ac44a3af447a57b990782b921af1a"
+  },
+  {
+    "segment": "long_1",
+    "page_url": "https://m.kekenet.com/gaokao/202209/659943.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2022/08/changduihua1_2113650Q5t.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_1.mp3",
+    "bytes": 1124451,
+    "sha256": "187fbd9be3e52eef2a3f0d47570bb00757d950199d790f8c82ff9c659dd59c6a"
+  },
+  {
+    "segment": "long_2",
+    "page_url": "https://m.kekenet.com/gaokao/202209/659944.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2022/08/changduihua2_2229785AFQ.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_2.mp3",
+    "bytes": 2401722,
+    "sha256": "2ed630b860ecbe3d5941252f4133c42fd160d5bb6a8dd7a479128e38e7a35760"
+  },
+  {
+    "segment": "long_3",
+    "page_url": "https://m.kekenet.com/gaokao/202209/659945.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2022/08/changduihua3_2414194eBb.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_3.mp3",
+    "bytes": 2401722,
+    "sha256": "8b25749411dc22cd56fbf92a53927a57abd71637bd76ce4d4168ccede5309b86"
+  },
+  {
+    "segment": "long_4",
+    "page_url": "https://m.kekenet.com/gaokao/202209/659946.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2022/08/changduihua4_2523920b88.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_long_4.mp3",
+    "bytes": 2826228,
+    "sha256": "0d26bc49f266993347128d03938deabee48f1cdf9ddea8f99995c4f5fe27a703"
+  },
+  {
+    "segment": "monologue",
+    "page_url": "https://m.kekenet.com/gaokao/202209/659947.shtml",
+    "mp3_url": "https://k7.kekenet.com/Sound/2022/08/dubai_2725327L7E.mp3",
+    "local": "data/external/exam_sources/listening_candidates/2022_xgki_ii_kekenet_monologue.mp3",
+    "bytes": 3091023,
+    "sha256": "846846e8acc29eb1b1b7a4bec70f185649b85b88994f050874a1750ada207c3e"
+  }
+]
