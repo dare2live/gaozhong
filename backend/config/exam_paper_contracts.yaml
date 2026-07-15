@@ -60,12 +60,11 @@ contracts:
           - eol_xgkii_english_2023_page
           - gaokao_bench_updates_english_2023
           - gaokao_verified_xgkii_2023_2024
-          - third_party_pdf_xgkii_english_2023_zizzs
           - third_party_docx_xgkii_english_2023_gzenxx
         current_status: imported_canonical_partial_needs_source_review
         known_gaps:
-          - Previous local PDF artifact at data/external/gaokao_2023_xgkii_english.pdf was only 427 bytes and has been removed from active source contracts.
-          - In-repo third_party 2023_xgkii_english_zizzs.pdf is an HTML download landing page (not stem PDF); writing stems imported from mirrored gzenxx docx (应用文66+续写67).
+          - Previous local PDF artifact at data/external/gaokao_2023_xgkii_english.pdf was only 427 bytes (S3 NoSuchKey XML stub) and has been removed from active source contracts; file may still exist on disk as rejected stub, not a truth source.
+          - In-repo third_party 2023_xgkii_english_zizzs.pdf is an HTML download landing page (sources.yaml status=rejected_html_landing_masquerading_as_pdf); writing stems imported from mirrored gzenxx docx (应用文66+续写67).
           - EOL landing page still require content-level cross-check before item-level D0 proof for non-writing sections.
           - Imported GAOKAO-Bench rows are not item-level full-paper proof.
           - Project-local verified structured seed only covers 6 rows for 2023; it cannot close full item-level M0 coverage.

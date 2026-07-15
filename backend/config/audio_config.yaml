@@ -1,4 +1,4 @@
-# 音频资源配置 — Phase 7.2 听力模块
+# 音频资源配置 — Phase 7.2 听力播放器壳 (非可教听力模块)
 # 命名规范: data/audio/{year}/listening/{id}.mp3
 # id 格式: {section}_{question_number}  (eg: short_01, dialog_05, passage_01)
 #
@@ -7,9 +7,19 @@
 #   Section B: 4 长对话/独白 (各 2-3 题, 15 分)
 #   Section C: 1 填空题 (5 空, 10 分) — 2021 起部分年份调整
 #   满分 30 分, 占总分 150 的 20%
+#
+# 诚实状态 (2026-07-15 全局审计):
+#   - 卷面听力 = skeleton + extraction_gap (trend/raw)
+#   - DB 辽宁听力题: 2021=20, 2026=1 group, 2022–25=0
+#   - data/audio/{year}/ 目录占位存在, mp3 文件数 = 0 → 不作「可教听力模块」
+#   - years_with_audio 必须反映真实文件, 禁止把卷面年份冒充已覆盖
 
-version: "1.0"
-updated: "2026-05-25"
+version: "1.1"
+updated: "2026-07-15"
+module_status: extraction_gap_not_teachable
+module_note: >-
+  听力是卷面骨架题型, 本项目未抽全且无音频文件。UI/产品不得标「听力模块已上线」。
+  播放器组件(common.js audioPlayer)仅作壳; 无 src 时显式「无音频」。
 
 directory_layout:
   root: "data/audio"
@@ -55,15 +65,13 @@ scoring:
   play_count: 2
 
 tts_fallback:
-  enabled: true
+  enabled: false
   engine: "macos_say"
   voice: "Samantha"
   rate: 160
-  note: "当无原始音频时, macOS say 命令合成备用音频"
+  note: "禁用 TTS 冒充真听力; 有官方/授权音频再开"
 
-years_covered:
-  - 2021
-  - 2022
-  - 2023
-  - 2024
-  - 2025
+# 有 mp3 的年份才写入; 当前 0 — 勿把卷面年份列成「已覆盖」
+years_with_audio: []
+# 卷面应有听力的年份 (结构真值, 非本库提取完成)
+paper_years_listening_expected: [2021, 2022, 2023, 2024, 2025, 2026]

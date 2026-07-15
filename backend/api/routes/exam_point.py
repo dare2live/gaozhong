@@ -24,14 +24,30 @@ def _era_sufficiency(con, by_era=None) -> dict:
     用142会虚高~4.5x 并误判 theme_l2(n=19<30)为充足。故加 by_era_dim 给前端按显示维度取真样本量。
     """
     diag = scope.diagnose(con)
-    suff = {era: {"n_total": seg["total"], "distribution_eligible": seg["distribution_eligible"]}
-            for era, seg in diag["by_segment"].items()}
+    suff = {
+        era: {
+            "n_total": seg["total"],
+            "distribution_eligible": seg["distribution_eligible"],
+            "years": seg.get("years") or {},
+            "adequate_year_share": seg.get("adequate_year_share"),
+            "weight_dominated_by_early_full_years": seg.get(
+                "weight_dominated_by_early_full_years", False),
+            "composition_note": seg.get("composition_note"),
+            "thin_years": seg.get("thin_years") or {},
+        }
+        for era, seg in diag["by_segment"].items()
+    }
     by_dim: dict = {}
     for era, dims in (by_era or {}).items():
         by_dim[era] = {dim: {"n_total": sum(r["n"] for r in rows),
                              "distribution_eligible": sum(r["n"] for r in rows) >= scope.MIN_DISTRIBUTION_SAMPLE}
                        for dim, rows in dims.items()}
-    return {"by_era": suff, "by_era_dim": by_dim, "distribution_reliable": diag["distribution_reliable"]}
+    return {
+        "by_era": suff,
+        "by_era_dim": by_dim,
+        "distribution_reliable": diag["distribution_reliable"],
+        "composition_notes": diag.get("composition_notes") or {},
+    }
 
 
 def api_exam_point_distribution(qs: dict) -> dict:

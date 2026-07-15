@@ -158,6 +158,21 @@ assertions:
     type: shell
     command: ["bash", "-c", "grep -q 'distribution_reliable' frontend/static/beike.js && grep -q '方向性参考' frontend/static/beike.js && grep -q '样本不足' frontend/static/beike.js && echo 0 || echo 1"]
     expect: {op: "==", value: "0"}
+  - id: era-composition-honesty-disclosed
+    claim: "全局审计三刀: 新高考era分布可用≠各年等权 — scope.diagnose 算 weight_dominated_by_early_full_years+composition_note; API sufficiency 透传; beike 滤栏/注记消费(早年主导)"
+    type: shell
+    command: ["python3", "-c", "import duckdb;from backend.services.trend import scope;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);d=scope.diagnose(c);c.close();s=d['by_segment'].get(scope.ERA_NEW,{});ok=s.get('weight_dominated_by_early_full_years') and s.get('composition_note') and '主导' in s['composition_note'];import pathlib;bj=pathlib.Path('frontend/static/beike.js').read_text();ok=ok and 'weight_dominated_by_early_full_years' in bj and 'composition_note' in bj;print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
+  - id: phase-d-ui-not-coming-soon
+    claim: "全局审计三刀: Phase D 正文已挂载时 UI 不得写「即将上线/试点即将」; 无正文写「本节暂无正文」; 学生端标明 demo/real 隔离"
+    type: shell
+    command: ["bash", "-c", "! grep -q '正文即将上线' frontend/static/app_router.js && grep -q '本节暂无正文' frontend/static/app_router.js && grep -q 'Phase D · review 已过' frontend/static/app_router.js && grep -q 'sy-2024' frontend/student.html && grep -q 'demo' frontend/student.html && echo OK || echo FAIL"]
+    expect: {op: regex, pattern: "OK"}
+  - id: listening-not-teachable-audio-honest
+    claim: "全局审计三刀: 听力不作可教模块 — audio_config.years_with_audio=[] + module_status=extraction_gap_not_teachable; beike 注明听力不作可教; zizzs 伪PDF status=rejected_html_landing_masquerading_as_pdf"
+    type: shell
+    command: ["python3", "-c", "import yaml,pathlib;a=yaml.safe_load(open('backend/config/audio_config.yaml'));s=yaml.safe_load(open('backend/config/sources.yaml'));z=s['exam_sources']['third_party_pdf_xgkii_english_2023_zizzs'];bj=pathlib.Path('frontend/static/beike.js').read_text();ok=a.get('years_with_audio')==[] and a.get('module_status')=='extraction_gap_not_teachable' and z.get('status')=='rejected_html_landing_masquerading_as_pdf' and '听力不作可教' in bj;print('OK' if ok else 'FAIL')"]
+    expect: {op: regex, pattern: "OK"}
   - id: compose-in-spa
     claim: "自定义组卷进主SPA(教研室#6 全量收敛): app_router genCompose 调 /api/paper/compose + 默认type_mix从库内真类型(去legacy不存在的'选义单选') + stem放宽; 收敛自 /teacher#compose"
     type: shell
@@ -764,7 +779,7 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services.course.coverage import coverage_model;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);m=coverage_model(c);c.close();ax=m['axes'];ok=ax['word']['n_total']>0 and all(a['high_yield_n']<=a['n_total'] for a in ax.values()) and 'cognitive_skill' not in ax;print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: l3-syllabus-framework-no-content
-    claim: "L3教学提纲(course.syllabus): 段级可溯源(focus+作业真题溯源) + 作业全辽宁真题(坑14) + content 仅 review=pass 试点非null(其余 null)"
+    claim: "L3教学提纲(course.syllabus): 段级可溯源(focus+作业真题溯源) + 作业全辽宁真题(坑14) + content 仅 review=pass 非null(其余 null)"
     type: shell
     command: ["python3", "-c", "import duckdb;from backend.services.course.syllabus import syllabus;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=syllabus(c);c.close();L=s['lessons'];ok=len(L)>0 and all(q.get('source') for l in L for q in l['evidence_questions']) and all((l['content'] is None) or ((l['content'].get('review') or {}).get('status')=='pass' and l['content'].get('body_en')) for l in L) and s.get('n_with_content',0)>=1;print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}

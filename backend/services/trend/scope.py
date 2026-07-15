@@ -68,22 +68,55 @@ def year_totals(con: duckdb.DuckDBPyConnection, province_scoped: bool = True) ->
     return {int(y): int(n) for y, n in rows}
 
 
+def _composition_honesty(years: dict[int, int], seg_total: int) -> dict:
+    """era 内组成诚实: 总题数够格时, 仍可能被少数「达标年」绑架权重.
+
+    2021+ 实证: 2021+2022 ≈ 76% 题量, 2023–26 每年仅 8–9 题 — distribution_eligible
+    仍 True, 但不能读成「各年等权的新高考全期分布」。
+    """
+    adequate = {y: n for y, n in years.items() if n >= MIN_YEAR_SAMPLE}
+    thin = {y: n for y, n in years.items() if n < MIN_YEAR_SAMPLE}
+    adeq_n = sum(adequate.values())
+    share = round(adeq_n / seg_total, 3) if seg_total else 0.0
+    # ≥60% 题量落在达标年 且 仍有薄样本年 → 披露「早年主导」
+    dominated = bool(thin) and share >= 0.6 and seg_total >= MIN_DISTRIBUTION_SAMPLE
+    note = None
+    if dominated:
+        adeq_label = "+".join(str(y) for y in sorted(adequate))
+        thin_label = ",".join(str(y) for y in sorted(thin))
+        note = (
+            f"本 era 分布可用, 但题量由 {adeq_label} 主导"
+            f"({adeq_n}/{seg_total}={int(share * 100)}%); "
+            f"薄样本年 {thin_label} 勿当作各年等权。"
+        )
+    return {
+        "adequate_year_share": share,
+        "adequate_years_n": adeq_n,
+        "thin_years": dict(sorted(thin.items())),
+        "weight_dominated_by_early_full_years": dominated,
+        "composition_note": note,
+    }
+
+
 def sample_diagnosis(totals: dict[int, int]) -> dict:
-    """每段 → {各年样本量, 达标年, 总题数, 趋势是否够格, 分布是否够格}."""
+    """每段 → {各年样本量, 达标年, 总题数, 趋势是否够格, 分布是否够格, 组成诚实}."""
     segs: dict[str, dict[int, int]] = defaultdict(dict)
     for year, n in totals.items():
         segs[segment(year)][year] = n
     diagnosis = {}
     for seg, ys in segs.items():
-        adequate = sorted(y for y, n in ys.items() if n >= MIN_YEAR_SAMPLE)
-        seg_total = sum(ys.values())
-        diagnosis[seg] = {
-            "years": dict(sorted(ys.items())),
+        years = dict(sorted(ys.items()))
+        adequate = sorted(y for y, n in years.items() if n >= MIN_YEAR_SAMPLE)
+        seg_total = sum(years.values())
+        row = {
+            "years": years,
             "total": seg_total,
             "adequate_years": adequate,
             "trend_eligible": len(adequate) >= MIN_TREND_YEARS,
             "distribution_eligible": seg_total >= MIN_DISTRIBUTION_SAMPLE,
         }
+        row.update(_composition_honesty(years, seg_total))
+        diagnosis[seg] = row
     return diagnosis
 
 
@@ -110,4 +143,10 @@ def diagnose(con: duckdb.DuckDBPyConnection, province_scoped: bool = True) -> di
         "distribution_reliable": distribution_reliable(diagnosis),
         "trend_reliable": is_reliable(diagnosis),
         "reliable": is_reliable(diagnosis),  # 向后兼容 (= trend_reliable)
+        # era 组成披露 (与 distribution_reliable 正交: 够格≠等权)
+        "composition_notes": {
+            era: seg["composition_note"]
+            for era, seg in diagnosis.items()
+            if seg.get("composition_note")
+        },
     }

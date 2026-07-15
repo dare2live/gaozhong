@@ -124,7 +124,7 @@
 
 
   // ===================================================================
-  // B. 40 节课程 — L3 框架 + Phase D 试点正文 (content 仅 review=pass 节非 null)
+  // B. 40 节课程 — L3 框架 + Phase D 正文 (content 仅 review=pass 节非 null)
   //    替代旧 course-grid+handout (旧生成内容已回滚)。
   //    ④ 重构: 覆盖证明4轴微条 + 课程地图分段条 + 主题群章 + 课节timeline (数字全活取 API, 禁编造)。
   // ===================================================================
@@ -227,10 +227,10 @@
     const focusLink = focus ? `<a class="ks-hw-more" href="#/qbank/${encodeURIComponent(focus)}">按此考点补充练习 →</a>` : "";
     const gap = _gapSeqs.has(l.seq);
     const body = l.content && l.content.body_en
-      ? `<div class="ks-pilot"><div class="ks-body-h">可背诵正文 (Phase D 试点 · review 已过)</div>
+      ? `<div class="ks-pilot"><div class="ks-body-h">可背诵正文 (Phase D · review 已过)</div>
            <p class="ks-pilot-en">${_esc(l.content.body_en)}</p>
            ${l.content.body_zh ? `<p class="ks-pilot-zh">${_esc(l.content.body_zh)}</p>` : ""}</div>`
-      : `<div class="ks-soon">正文即将上线</div>`;
+      : `<div class="ks-soon">本节暂无正文</div>`;
     return `<details class="ks-lesson${gap ? " ks-gap" : ""}"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-hwn">· 作业 ${(l.evidence_questions || []).length} 道真题</span>
@@ -269,7 +269,7 @@
       : (sid ? "已登录学习者但暂无弱点高亮(无作答或非主题群弱点)。" : "未绑定学习者身份 — 课程不伪造个人缺口高亮。");
     CONTENT.innerHTML = `<section class="scaffold">
       ${GZ.pageHead(`高中 · ${syl.n_lessons} 节课程`, `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
-      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>Phase D</b> — 可背诵正文 ${nContent}/${syl.n_lessons} 节(均过 review gate)。${gapNote}</span></div>
+      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>Phase D</b> — 可背诵正文 ${nContent}/${syl.n_lessons} 节(均过 review gate; 机械门非教学效度证明)。${gapNote}</span></div>
       <div class="sc-takeaway">
         <div class="sc-tk-h">覆盖证明 · 用最少的课覆盖最大考查权重</div>
         ${covOk ? _covProof(cov) : `<p class="sc-tk-body">${_esc(_covLine(syl.coverage_proof || {}) || "覆盖数据加载失败。")}</p>`}
@@ -285,7 +285,7 @@
             <li>作业 = 历年辽宁卷真题原题, 每道都标年份和题号, 可查回原卷 — 不是生成题, 不是押题。</li>
             <li>考点焦点 = 按真题命题频次把 ${syl.n_lessons} 节课分给各主题群: 考得多的主题, 分到的课就多。</li>
             <li>覆盖 = 课程教的考点占考试考查权重的比例; 低频长尾考点明确标出, 不假装全覆盖。</li>
-            <li>正文 = Phase D 试点经词量/10-gram/考点锚定 review gate; 未过门的节 content 仍为 null。</li>
+            <li>正文 = Phase D 经词量/10-gram/考点锚定 review gate 挂载; 未过门的节 content 仍为 null。过门≠已验证教学效果。</li>
           </ul>
         </details>
       </div>

@@ -43,7 +43,7 @@ def reload() -> None:
 
 
 def content_for_seq(seq: int) -> dict | None:
-    """挂到 syllabus lesson: 仅 review.status==pass; 否则 None (前端仍显示即将上线)."""
+    """挂到 syllabus lesson: 仅 review.status==pass; 否则 None (前端显示「本节暂无正文」)."""
     item = _index().get(int(seq))
     if not item:
         return None

@@ -85,7 +85,8 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
   <details class="bk-method"><summary>数据怎么来的?</summary>
     <ul>
       <li><b>出现 ≠ 考查</b> — 教材里出现过 ≠ 高考考过, 本页只统计真被考的。</li>
-      <li><b>卷制 era 分层</b> — 新高考(2021 起)和老高考分开统计, 不混着平均。</li>
+      <li><b>卷制 era 分层</b> — 新高考(2021 起)和老高考分开统计, 不混着平均。分布可用≠各年等权: 新高考题量目前由 2021/22 主导, 薄样本年只作方向。</li>
+      <li><b>听力 extraction_gap</b> — 卷面常驻, 本库缺年/无音频, 不作可教听力模块。</li>
       <li><b>双模型标注</b> — 题材/主题类标签由两个 AI 独立标注且结论一致才计入(方向性参考)。</li>
       <li><b>explicit_label(教研显式标签)</b> — 四选一设问类型直接来自教研解析, 不靠 AI 猜。</li>
       <li><b>curriculum_aligned_task</b> — 七选五整题对齐「理解文章结构类型」; L2 空位功能优先读逐空解析, 其次人工核验, 再题面位置, 最后默认句际衔接(不留 unknown)。</li>
@@ -104,14 +105,27 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const _sf = (state.dist && state.dist.sufficiency) || {};
     const suff = ((_sf.by_era_dim || {})[state.era] || {})[state.dim]
               || ((_sf.by_era || {})[state.era] || {});   // 兜底: 无 per-dim 时回退 era 池
+    const eraSuff = (_sf.by_era || {})[state.era] || {};
     const n = suff.n_total != null ? suff.n_total : 0;
     const ok = !!suff.distribution_eligible;
     const unit = (_sf.by_era_dim && _sf.by_era_dim[state.era] && _sf.by_era_dim[state.era][state.dim]) ? "篇" : "题";
+    const dominated = !!eraSuff.weight_dominated_by_early_full_years;
+    const sharePct = eraSuff.adequate_year_share != null
+      ? Math.round(100 * eraSuff.adequate_year_share) : null;
+    const suffLabel = ok
+      ? (dominated
+          ? `分布可用 · ${n}${unit} · 早年主导 ${sharePct}%`
+          : `分布可用 · ${n}${unit}`)
+      : `样本不足(方向性) · ${n}${unit}`;
+    const suffClass = ok ? (dominated ? "warn" : "ok") : "warn";
+    const banner = (eraSuff.composition_note)
+      ? `<div class="caveat-banner" style="margin-top:8px;"><span class="cb-tag">组成</span><span>${escHtml(eraSuff.composition_note)}</span></div>`
+      : "";
     return `
 <span class="bk-flabel">卷制</span>${eraPill(ERA_NEW, "2021+ 新高考II")}${eraPill(ERA_OLD, "2015–2020")}
 <span class="bk-lock">辽宁卷·锁定</span>
 <span class="bk-flabel" style="margin-left:8px;">维度</span><select id="bk-dim" aria-label="考点分布维度">${dimOpt}</select>
-<span class="bk-suff ${ok ? "ok" : "warn"}">${ok ? "分布可用 · " + n + unit : "样本不足(方向性) · " + n + unit}</span>`;
+<span class="bk-suff ${suffClass}">${suffLabel}</span>${banner}`;
   }
 
   // era+dim 的样本充足旗 (service 已算 distribution_eligible, 前端只读 — Rule1)
@@ -186,9 +200,13 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
     const contNote = state.dim === "text_continuity"
       ? `<br><span class="zt-thin-tag" style="margin-right:6px;">provenance</span>连续/非连续为课标正交维; 边 provenance=agent_curriculum_verified(冷启动), 非 analysis 假升档。`
       : "";
+    const eraSuff = (((state.dist && state.dist.sufficiency) || {}).by_era || {})[state.era] || {};
+    const compNote = eraSuff.composition_note
+      ? `<br><span class="zt-thin-tag" style="margin-right:6px;">组成</span>${escHtml(eraSuff.composition_note)}`
+      : "";
     G.$("#bk-distnote").innerHTML = desc.length > 1
-      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${themeNote}${contNote}${xlink}`
-      : (themeNote || contNote || "");
+      ? `前 <b>${pN}</b> 类 = <b>${cums[pN - 1]}%</b> 考查权重 — 备课先覆盖这 ${pN} 类${elig ? "" : "(本维度样本不足, 方向性参考)"}。条尾灰字为累计占比。${themeNote}${contNote}${compNote}${xlink}`
+      : (themeNote || contNote || compNote || "");
     G.$$("#bk-distnote [data-goto]").forEach(b => b.onclick = () => {
       const t = document.getElementById(b.dataset.goto);
       if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -466,7 +484,7 @@ ${sect("bk-sect-how", "bk-h-how", "怎么考", "— 同一篇文章, 设问在�
         [x.question_type, (SIG[x.signal] || SIG.unregistered).t, fmtRuns(x.runs) || "无", x.extraction_gap ? "是(年份仅样本)" : "否"]));
     G.$("#bk-trendnote").innerHTML = `<b>结构真值</b>(题型存续时间带 · 登退场信号由<b>卷面结构</b>定非数据): `
       + `蓝横带=存续区间(<b>万变不离其宗</b>: 骨架题型跨两卷制常驻) · <b style="color:${PRES.out}">红点=真退场</b>(${ret.join("、") || "无"}: 新高考取消) · <b style="color:${PRES.in}">绿点=真登场</b>(${intro.join("、") || "无"}: 新高考新增) · 竖虚线=${REFORM} 新高考改革。`
-      + `<br><small class="muted">注 淡色虚线带·段=提取不全或该年未登记(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>存续年仅样本, 不作首末考年信号</b>(听力≠登场2021, 续写真登场但登场年不可信); 空心点=登/退场年不可信, 只作卷面级信号。</small>`;
+      + `<br><small class="muted">注 淡色虚线带·段=提取不全或该年未登记(${gaps.join("、") || "无"}): 卷面常驻/确有但本项目未抽全 → <b>存续年仅样本, 不作首末考年信号</b>(听力=骨架题型·本库几乎无音频/缺年, ≠登场2021; 续写真登场但登场年不可信); 空心点=登/退场年不可信, 只作卷面级信号。听力不作可教练习模块。</small>`;
   }
 
   function renderCognitiveSkill(cs) {

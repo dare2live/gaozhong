@@ -148,14 +148,21 @@ def _unit_vocab_profile(con: duckdb.DuckDBPyConnection, unit_id: str) -> dict:
 def _trend_honesty(con: duckdb.DuckDBPyConnection) -> dict:
     """命题趋势可信度 live banner (件1 分析诚实) — 不写死 slope, 读 scope.diagnose 单一计算点."""
     d = scope.diagnose(con)
+    notes = d.get("composition_notes") or {}
+    # 优先披露新高考 era 组成绑架 (与 distribution_reliable 正交)
+    composition = notes.get(scope.ERA_NEW) or next(iter(notes.values()), None)
+    if d["distribution_reliable"] and not d["trend_reliable"]:
+        base = "考点分布(占比)可报; 逐年斜率样本不足不外推"
+    elif d["trend_reliable"]:
+        base = "分布与逐年趋势均达样本量门槛"
+    else:
+        base = "样本量不足, 分布与趋势均谨慎"
     return {
         "province_scope": d["province_scope"],
         "distribution_reliable": d["distribution_reliable"],
         "trend_reliable": d["trend_reliable"],
-        "note": ("考点分布(占比)可报; 逐年斜率样本不足不外推" if d["distribution_reliable"]
-                 and not d["trend_reliable"]
-                 else ("分布与逐年趋势均达样本量门槛" if d["trend_reliable"]
-                       else "样本量不足, 分布与趋势均谨慎")),
+        "composition_notes": notes,
+        "note": f"{base}。{composition}" if composition else base,
     }
 
 

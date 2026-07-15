@@ -208,20 +208,23 @@ exam_sources:
         min_bytes: 10000
 
   third_party_pdf_xgkii_english_2023_zizzs:
-    name: 2023 新课标 II 卷英语 third-party PDF source
-    family: exam_truth_source_third_party_pdf
+    name: 2023 新课标 II 卷英语 zizzs 伪 PDF (HTML 落地页, 已降级)
+    family: exam_truth_source_rejected_misnamed
     org: 自主选拔在线 / zizzs
     year: 2023
     paper_type: 新高考全国II卷
     publish_url: https://www.zizzs.com/Fup/document/202306/2023%E5%B9%B4%E5%85%A8%E5%9B%BD%E9%AB%98%E8%80%83%E6%96%B0%E8%AF%BE%E6%A0%87%E2%85%A1%E5%8D%B7%E8%8B%B1%E8%AF%AD%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88.pdf
-    status: raw_acquired_third_party_pdf_needs_eol_crosscheck
-    observed_scope: third-party PDF source for 2023 New Curriculum II English questions and answers; acquired through data source tool, sha256 locked, must be cross-checked against EOL page and structured rows before item-level D0 closure
+    status: rejected_html_landing_masquerading_as_pdf
+    observed_scope: >-
+      文件扩展名 .pdf, 实际为 HTML 落地页(<!DOCTYPE html>), 不可作题干/答案真相源。
+      写作题干已改走 third_party_docx_xgkii_english_2023_gzenxx。保留本条仅为血缘+防再当 PDF 用。
     attachments:
-      - kind: pdf
+      - kind: html_misnamed_as_pdf
         url: https://www.zizzs.com/Fup/document/202306/2023%E5%B9%B4%E5%85%A8%E5%9B%BD%E9%AB%98%E8%80%83%E6%96%B0%E8%AF%BE%E6%A0%87%E2%85%A1%E5%8D%B7%E8%8B%B1%E8%AF%AD%E8%AF%95%E9%A2%98%E7%AD%94%E6%A1%88.pdf
         local_path: data/external/exam_sources/third_party_pdfs/2023_xgkii_english_zizzs.pdf
         expected_sha256: c51421c891f7e1344b5e8bb058fbfa57b7fbf3fec4b6d05d1ca7bbcbe0e39eda
-        min_bytes: 100000
+        min_bytes: 1000
+        note: not_a_pdf_truth_source
 
   third_party_docx_xgkii_english_2023_gzenxx:
     name: 2023 新课标 II 卷英语 gzenxx Word 题干 (写作补全)

@@ -1,11 +1,12 @@
-"""L3 教学提纲 + 段级可溯源 + 作业挂真题 (北极星 Phase C 框架 + Phase D 试点 content 挂载).
+"""L3 教学提纲 + 段级可溯源 + 作业挂真题 (北极星 Phase C 框架 + Phase D content 挂载).
 
 教学提纲 = L2 派生: 按主题群命题频次比例把 N 节课分配到考点焦点 (高产出优先); 单一计算点。
 段级可溯源 (course_segment schema): 每节 = {seq, focus, covers_exam_points, evidence_questions(作业真题), trend_weight, content}
   —— 替代旧前端甩裸题号 gb/...44, 用"考点焦点 + 可溯源真题"组织。
 作业挂真题: evidence_questions = 反向 tests_exam_point 边命中的辽宁真题 (非生成 坑14; 每题溯源 source_file#index)。
 
-content: 默认 null; Phase D 试点经 course.content.content_for_seq 挂载 (仅 review=pass)。
+content: 默认 null; Phase D 经 course.content.content_for_seq 挂载 (仅 review=pass)。
+过门 = 机械 review, 非教学效度证明。
 """
 from __future__ import annotations
 
@@ -79,7 +80,7 @@ def _coverage_proof(con: duckdb.DuckDBPyConnection) -> dict:
 
 
 def syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int | None = None) -> dict:
-    """教学提纲: N 节按主题群频次**最大余数法**分配 + 段级可溯源; content 试点挂载.
+    """教学提纲: N 节按主题群频次**最大余数法**分配 + 段级可溯源; content 挂载.
 
     课节分配维度 = theme_l2 主题群 (主组织轴); 题材/词/语法的覆盖见 coverage_proof。
     n_lessons 默认读 thresholds.yaml course.total_courses。
@@ -105,7 +106,7 @@ def syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int | None = None) -> di
                      "source": f"{q[4]}#{q[5]}", "has_answer": bool(q[6])} for q in hw],
                 "trend_weight": lesson_w,   # 本节命题权重份额 (该主题频次/节数; 跨本主题各节求和=主题频次, 不重复计)
                 "theme_total_weight": freq,  # 该主题群总频次 (供前端区分份额 vs 总额)
-                "content": content_for_seq(seq),  # Phase D 试点: review=pass 才非 null
+                "content": content_for_seq(seq),  # Phase D: review=pass 才非 null
             })
             seq += 1
     n_with = sum(1 for l in lessons if l["content"])
@@ -121,6 +122,6 @@ def syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int | None = None) -> di
             "note": "课节按主题群命题频次最大余数法分配; 此 pct 仅 theme_l2 主题轴(每主题≥1节, 全分配)。题材/词/语法轴覆盖见 coverage_proof。非字面全考点覆盖(§7)。",
         },
         "coverage_proof": _coverage_proof(con),
-        "schema": "course_segment: seq/segment_id/course_id/focus/covers_exam_points/evidence_questions/trend_weight/theme_total_weight/content(Phase D pilot or null)",
-        "note": "教学提纲=L2派生; 作业=辽宁真题非生成(坑14); content 仅 review_gate 通过的试点节非 null。",
+        "schema": "course_segment: seq/segment_id/course_id/focus/covers_exam_points/evidence_questions/trend_weight/theme_total_weight/content(Phase D or null)",
+        "note": "教学提纲=L2派生; 作业=辽宁真题非生成(坑14); content 仅 review_gate 通过的节非 null(机械门≠教学效度)。",
     }

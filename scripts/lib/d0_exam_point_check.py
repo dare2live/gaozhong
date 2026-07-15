@@ -255,7 +255,7 @@ def _check_syl_homework(con: duckdb.DuckDBPyConnection, lessons: list, check) ->
 
 def check_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
     """L3 教学提纲 correctness: 段级可溯源/无孤儿 + content 仅 review=pass 试点 + 分配真比例 + 作业辽宁真题."""
-    print("\n=== (34) L3 教学提纲 correctness (course.syllabus 段级可溯源 + Phase D 试点 content) ===")
+    print("\n=== (34) L3 教学提纲 correctness (course.syllabus 段级可溯源 + Phase D content) ===")
     from backend.services.course.syllabus import syllabus
     lessons = syllabus(con)["lessons"]
     check("有课节 (n_lessons>0)", len(lessons) > 0, f"{len(lessons)}")
