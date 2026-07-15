@@ -81,8 +81,8 @@ def check_cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection, ch
     d = cloze_collocation_structural_subset(con)
     sf, ht = d["structural_flags"], d["human_transcribed"]
 
-    check("n_passages == 10 (同 cloze_answer_word_stage 范围限定, 单一计算点)",
-          d["n_passages"] == 10, f"{d['n_passages']}")
+    check("n_passages == 12 (同 cloze_answer_word_stage 范围限定, 单一计算点)",
+          d["n_passages"] == 12, f"{d['n_passages']}")
     check("structural_flags: n_structurally_flagged + unclassified_count == n_blanks_total (计数自洽)",
           sf["n_structurally_flagged"] + sf["unclassified_count"] == d["n_blanks_total"],
           f"{sf['n_structurally_flagged']}+{sf['unclassified_count']} vs {d['n_blanks_total']}")

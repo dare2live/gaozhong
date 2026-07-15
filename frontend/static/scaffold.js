@@ -213,7 +213,7 @@
     const nTp = (c.honesty && c.honesty.tests_phrase_edges) || 0;
     const htChips = Object.entries(ht.by_category || {}).map(([k, v]) =>
       `<span class="tk-tchip">${esc(ht.category_meaning[k] ? ht.category_meaning[k].split(" — ")[1] || k : k)} <b>${v}</b></span>`).join("");
-    return `<p class="kb-dim" style="margin:0 0 8px;">同上10篇完形填空180空里, <b>${sf.n_structurally_flagged}</b> 空(${sf.structurally_flagged_pct}%)结构上可客观确认"像固定搭配"(如 ${sf.flagged_examples[0] ? esc(sf.flagged_examples[0].options.join(" / ")) : ""}):</p>
+    return `<p class="kb-dim" style="margin:0 0 8px;">同上${c.n_passages != null ? c.n_passages : 12}篇完形填空${c.n_blanks_total}空里, <b>${sf.n_structurally_flagged}</b> 空(${sf.structurally_flagged_pct}%)结构上可客观确认"像固定搭配"(如 ${sf.flagged_examples[0] ? esc(sf.flagged_examples[0].options.join(" / ")) : ""}):</p>
       <p class="kb-dim" style="margin:0 0 10px;">${esc(sf.explicit_ceiling_caveat)}</p>
       <p class="kb-dim" style="margin:0 0 6px;"><span class="zt-thin-tag" style="margin:0 6px 0 0;">未独立验证</span>另一层参考: 官方解析文本"考查XX"标签转录统计(<b>${ht.n_labels_extracted}</b> 空有标签):</p>
       <div class="tk-types">${htChips}</div>
@@ -299,7 +299,7 @@
         <div class="bk-h"><span>再深一层: "得分点"本身是不是更偏高中?</span><span class="bk-src">/api/exam_point/cloze_answer_word_stage</span></div>
         <p class="kb-dim" style="margin:0 0 8px;">上面统计的是<b>整篇文章</b>的词汇难度。这里换个问法: 完形填空<b>每空唯一正确答案词</b>本身的难度, 是不是比全篇平均更偏高中(即"认对词才是真本事")?</p>
         ${scoreptHTML}
-        <p class="kb-dim" style="margin:0;">口径: 仅统计选项文字完整印在题面里、可逐空核对答案的完形填空(老课标6篇+新高考4篇); 2021/2022 两年的完形填空题面按空拆行存储、选项文字不全, 无法逐空核对, 诚实排除不硬凑。</p>
+        <p class="kb-dim" style="margin:0;">口径: 可逐空核对选项的辽宁完形填空共 ${cw && cw.n_passages != null ? cw.n_passages : 12} 篇(老课标6 + 2021/2022 EOL docx 选项重建2 + 2023–2026 新高考4); exam_questions 中 2021/2022 仍按空拆行, 选项由 sidecar 合成不硬凑题面。</p>
       </section>
       <section class="bk-card">
         <div class="bk-h"><span>推断题多的文章, 词汇是不是也更难?</span><span class="bk-src">/api/exam_point/joint_attribution</span></div>

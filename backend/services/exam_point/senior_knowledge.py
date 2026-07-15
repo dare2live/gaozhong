@@ -37,7 +37,7 @@ import duckdb
 from backend.services.audit.grammar_4q import TERM_TO_LABEL_KEYWORD, match_ids_for_term
 from backend.services.exam_grammar_stats import PHRASE_LIB_NOTE
 
-from .attribution import parse_cloze_options, qualifying_cloze_rows
+from .attribution import cloze_baseline_qids, parse_cloze_options, qualifying_cloze_rows
 
 _GRAMMAR_STRUCTURAL_QTYPES = ("语法填空", "短文改错")
 
@@ -282,7 +282,7 @@ def _human_transcribed_breakdown(con: duckdb.DuckDBPyConnection, qids: list[str]
 
 
 def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
-    """完形填空(10篇, 同 attribution.qualifying_cloze_rows 范围) 两层判断并存不混淆:
+    """完形填空(同 attribution.qualifying_cloze_rows, 现 12 篇) 两层判断并存不混淆:
 
     (1) structural_flags: 结构规则(≥2个多词选项共享token, 如"put up with"/"stand up for"
         共享"up")可客观确认的"像固定搭配"子集 — 零语义判断, 但只是**规则能抓到的下限**
@@ -294,7 +294,11 @@ def cloze_collocation_structural_subset(con: duckdb.DuckDBPyConnection) -> dict:
     """
     rows = qualifying_cloze_rows(con)
     total, flagged = _structural_flags(rows)
-    qids = [r[0] for r in rows]
+    qids: list[str] = []
+    for r in rows:
+        for q in cloze_baseline_qids(r[0]):
+            if q not in qids:
+                qids.append(q)
 
     return {
         "province_scope": "辽宁卷",

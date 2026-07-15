@@ -27,7 +27,9 @@ tests_exam_point dimension=cognitive_skill 同 cognitive_skill_by_content 的 pa
 """
 from __future__ import annotations
 
+import json
 import re
+from pathlib import Path
 
 import duckdb
 
@@ -158,6 +160,9 @@ _CLOZE_OPT_LINE = re.compile(
     re.DOTALL,
 )
 _ANS_LETTER_RE = re.compile(r"[A-D]")
+_ROOT = Path(__file__).resolve().parents[3]
+_EOL_CLOZE_OPTS = _ROOT / "data/structured/exam_point/cloze_options_eol_xgkii.jsonl"
+_EOL_FRAGMENTED_PREFIX = re.compile(r"^eol/(2021|2022)/xgkii/\d+$")
 
 
 def parse_cloze_options(raw: str) -> list[tuple[str, str, str, str]]:
@@ -168,23 +173,55 @@ def parse_cloze_options(raw: str) -> list[tuple[str, str, str, str]]:
     return _CLOZE_OPT_LINE.findall(raw[m0.start():])
 
 
-def qualifying_cloze_rows(con: duckdb.DuckDBPyConnection) -> list[tuple[str, int, list, list[str]]]:
-    """辽宁完形填空里"选项文本完整内联 + 可与 answer 字母数对齐"的整篇行。
+def _load_eol_cloze_option_rebuilds() -> list[tuple[str, int, list, list[str]]]:
+    """2021/2022 逐空拆行完形: 从 EOL docx 重建的选项 sidecar 合成整篇行。"""
+    if not _EOL_CLOZE_OPTS.exists():
+        return []
+    out: list[tuple[str, int, list, list[str]]] = []
+    for ln in _EOL_CLOZE_OPTS.read_text(encoding="utf-8").splitlines():
+        if not ln.strip():
+            continue
+        row = json.loads(ln)
+        opts = [(o["A"], o["B"], o["C"], o["D"]) for o in row["options"]]
+        letters = list(row["answers"])
+        if len(opts) == len(letters) and len(letters) >= 10:
+            out.append((row["question_id"], int(row["year"]), opts, letters))
+    return out
 
-    结构性排除 eol/2021,2022/xgkii(15题×2年=30行): 逐空拆行存储, 选项文本未完整/一致内联各行
-    (30行仅3行意外含本空选项且其一有卷尾section边界污染风险), 不是本次遗漏, 是已知数据结构天花板
-    (同 grammar_4q.py TERM_TO_LABEL_KEYWORD 注释里"2021/2022 EOL 答案核验机械占位"同一根因)。
+
+def cloze_baseline_qids(qid: str) -> list[str]:
+    """整篇基线 qid: 2021/2022 重建行展开为同卷 41–55 逐空 id(tests_word 挂在拆行上)。"""
+    if not _EOL_FRAGMENTED_PREFIX.match(qid or ""):
+        return [qid]
+    prefix = "/".join(qid.split("/")[:3])
+    return [f"{prefix}/{n}" for n in range(41, 56)]
+
+
+def qualifying_cloze_rows(con: duckdb.DuckDBPyConnection) -> list[tuple[str, int, list, list[str]]]:
+    """辽宁完形填空里"选项文本完整 + 可与 answer 字母数对齐"的整篇行。
+
+    内联选项行(2015–2020 / 2023+)直接从 exam_questions 解析; 2021/2022 原逐空拆行、
+    选项未一致内联, 改由 cloze_options_eol_xgkii.jsonl(EOL docx 重建)合成整篇行纳入
+    (n_passages 10→12)。跳过 DB 中仍拆行的 eol/2021|2022 单空, 避免与重建行重复计数。
     """
     out: list[tuple[str, int, list, list[str]]] = []
+    seen: set[str] = set()
     rows = con.execute(
         "SELECT question_id, year, raw_question, answer FROM exam_questions "
         "WHERE question_type='完形填空' AND province LIKE '辽宁%'"
     ).fetchall()
     for qid, year, raw, ans in rows:
+        if _EOL_FRAGMENTED_PREFIX.match(qid or ""):
+            continue
         letters = _ANS_LETTER_RE.findall(ans or "")
         opts = parse_cloze_options(raw)
         if len(opts) == len(letters) and len(letters) >= 10:
             out.append((qid, year, opts, letters))
+            seen.add(qid)
+    for qid, year, opts, letters in _load_eol_cloze_option_rebuilds():
+        if qid not in seen:
+            out.append((qid, year, opts, letters))
+            seen.add(qid)
     return out
 
 
@@ -251,7 +288,11 @@ def _era_answer_word_summary(con: duckdb.DuckDBPyConnection, lemm, stage_map: di
     n_senior = sum(1 for b in blanks if b == "senior")
     n_found = sum(1 for b in blanks if b == "foundation")
     n_classified = n_senior + n_found
-    qids = [qid for qid, *_ in rows_for_era]
+    qids: list[str] = []
+    for qid, *_ in rows_for_era:
+        for q in cloze_baseline_qids(qid):
+            if q not in qids:
+                qids.append(q)
     return {
         "n_passages": len(rows_for_era),
         "n_blanks_total": len(blanks),
@@ -266,9 +307,8 @@ def cloze_answer_word_stage(con: duckdb.DuckDBPyConnection) -> dict:
     """完形填空"得分点词"(每空唯一正确答案词)学段分布, 对比同批语篇全篇词汇学段基线。
 
     回答用户"75%词汇是初中及以前, 但得分点是不是靠高中词汇"的字面版本: 得分点=正确答案词本身
-    的难度(非整篇混合词汇难度)。范围限定(诚实, 见 qualifying_cloze_rows docstring): 仅 10 篇
-    "选项文本完整内联"完形填空(2015-2020 旧课标II 6篇 + 2023/2024/2025/2026 新高考II 4篇);
-    eol/2021,2022/xgkii 结构性排除(逐空拆行存储, 选项文本未完整/一致内联, 已知数据结构天花板)。
+    的难度(非整篇混合词汇难度)。范围: 12 篇(2015-2020 旧课标II 6 + 2021/2022 EOL docx
+    选项重建 2 + 2023–2026 新高考II 4); 见 qualifying_cloze_rows。
 
     分层不取平均(坑12): 按 scope.segment(year) 分 era 各自算 by_era, 不跨 era 合并百分比。
     """
@@ -288,8 +328,8 @@ def cloze_answer_word_stage(con: duckdb.DuckDBPyConnection) -> dict:
         "question_type": "完形填空",
         "n_passages": len(rows),
         "excluded_source_note": (
-            "eol/2021,2022/xgkii(15题×2年=30行)结构性排除: 逐空拆行存储, 选项文本未完整/一致内联"
-            "(30行仅3行意外含本空选项且其一有section边界污染风险), 非本次遗漏, 是已知数据结构天花板"
+            "2021/2022 已由 cloze_options_eol_xgkii.jsonl(EOL docx 选项重建)纳入; "
+            "exam_questions 仍保留逐空拆行, 不与重建整篇行重复计数"
         ),
         "coverage_note": (
             "WordNetLemmatizer 只处理屈折形态(单复数/时态), 不处理派生形态(painful/completely 类), "

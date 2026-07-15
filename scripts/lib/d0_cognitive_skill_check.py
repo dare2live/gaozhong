@@ -202,7 +202,7 @@ def check_cloze_answer_word_stage(con: duckdb.DuckDBPyConnection, check) -> None
     from backend.services.exam_point.attribution import cloze_answer_word_stage
     d = cloze_answer_word_stage(con)
 
-    check("得分点分析篇数 == 10 (2015-2020旧课标II 6 + 2023-2026新高考II 4)",
+    check("得分点分析篇数 == 12 (2015-2020旧课标II 6 + 2021/2022重建 2 + 2023-2026新高考II 4)",
           d["n_passages"] == B('cloze_answer_word_passages'), f"{d['n_passages']}")
     check("排除说明字段存在 (eol/2021,2022诚实排除, 非静默丢弃)",
           "excluded_source_note" in d and "eol" in d["excluded_source_note"], "")
