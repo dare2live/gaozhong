@@ -1,0 +1,12 @@
+{
+  "year": 2026,
+  "paper": "全国II卷/新课标II",
+  "source": "newdu rar",
+  "rar_url": "http://pic01.newdu.com/uploads/Cee/202606/12/2026gaokao2026061201.rar",
+  "rar_sha256": "b67d12e7b7a4e5fac47e1268ffecc52855c46b850b36c2246edbfe104a81dc80",
+  "rar_bytes": 19240043,
+  "mp3_local": "data/external/exam_sources/listening_candidates/2026_national_ii_listening_newdu_candidate.mp3",
+  "mp3_sha256": "b1d6d42bb7804eaa2f6808d48f9992b1a18254311662a9d74304da6a0ca8cc97",
+  "mp3_bytes": 21844756,
+  "page": "http://edu.newdu.com/NECE/English/Analysis/202606/4928961.html"
+}

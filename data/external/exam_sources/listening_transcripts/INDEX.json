@@ -1,0 +1,37 @@
+[
+  {
+    "file": "2021_xgki_ii_cpsenglish_transcript.md",
+    "bytes": 9260,
+    "sha256": "e831c02267967750c21c6179584aac7a292eb6b3c75da6e41029c9150a58d621"
+  },
+  {
+    "file": "2025_xgkii_newdu_listening_analysis.txt",
+    "bytes": 16096,
+    "sha256": "0aec0a74257bb44128751ceb34df1c4e7769c124aea39d7bb12baf24fa27ed4b"
+  },
+  {
+    "file": "2025_xgkii_newdu_listening_stem.txt",
+    "bytes": 9855,
+    "sha256": "caa7fad8608d9689935416b2656f3393a79d88c6a18f54aeb795582dc0f28895"
+  },
+  {
+    "file": "2025_xgkii_renrendoc_transcript.md",
+    "bytes": 10559,
+    "sha256": "09ebeedc7eabf7b7126954423f6bdde945402fdfe520e9b17ac06833c1969655"
+  },
+  {
+    "file": "2026_national_ii_newdu_listening.txt",
+    "bytes": 30072,
+    "sha256": "31bdaae2115e70e21db911409aa6c2d421c3da6f8ffced1b4ef6774f7f6174e9"
+  },
+  {
+    "file": "2026_national_ii_renrendoc_transcript.md",
+    "bytes": 31498,
+    "sha256": "d21710b1abb92921acc375b37d07bc45da8307e94905ce38ba19b3329aeb8e34"
+  },
+  {
+    "file": "2026_national_ii_sjds_transcript.md",
+    "bytes": 8090,
+    "sha256": "2a4ebb449513f5fad3a3ed7f9bad11bc6a4f93efcaf8c75b2841d7c55b05cf68"
+  }
+]

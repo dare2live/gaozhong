@@ -29,3 +29,7 @@ data/reports/project_architecture_audit_*.json
 
 # Listening audio candidates (large binaries; sha256 locked in manifests + sources.yaml)
 data/external/exam_sources/listening_candidates/*.mp3
+data/external/exam_sources/listening_candidates/*.zip
+data/external/exam_sources/listening_candidates/*.rar
+data/external/exam_sources/listening_candidates/*_extracted/
+data/external/exam_sources/listening_candidates/*_extracted/**

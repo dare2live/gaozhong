@@ -369,6 +369,69 @@ exam_sources:
         local_path: data/external/exam_sources/listening_candidates/2024_xgkii_kekenet_manifest.json
         min_bytes: 500
 
+  third_party_bundle_xgkii_listening_2025_newdu:
+    name: 2025 新课标II卷 听力整卷 mp3+原文 (新都网 zip candidate)
+    family: listening_audio_candidate
+    org: 新都网 / newdu
+    year: 2025
+    paper_type: 新课标全国II卷
+    publish_url: http://edu.newdu.com/NECE/English/Analysis/202506/4668973.html
+    status: raw_acquired_candidate_needs_fingerprint
+    observed_scope: >-
+      zip 含整卷听力 mp3(~18:53) + 听力原卷/解析 docx(含 Text1-10 原文)。
+      非 NEEA 官方; 升教前须与辽宁卷题干交叉。文字稿见 listening_transcripts/2025_xgkii_newdu_*.txt
+    attachments:
+      - kind: zip
+        url: http://pic01.newdu.com/uploads/Cee/202506/11/qgej2025061101.zip
+        local_path: data/external/exam_sources/listening_candidates/2025_xgkii_newdu_bundle_candidate.zip
+        expected_sha256: c5f1c069998156ec30136a73865d895048ea3a73d6686234b0d58fce0edda353
+        min_bytes: 20000000
+      - kind: json_manifest
+        local_path: data/external/exam_sources/listening_candidates/2025_xgkii_newdu_manifest.json
+        min_bytes: 200
+      - kind: transcript_txt
+        local_path: data/external/exam_sources/listening_transcripts/2025_xgkii_newdu_listening_stem.txt
+        min_bytes: 5000
+
+  third_party_bundle_national_ii_listening_2026_newdu:
+    name: 2026 全国II卷 听力整卷 mp3+原文 (新都网 rar candidate)
+    family: listening_audio_candidate
+    org: 新都网 / newdu
+    year: 2026
+    paper_type: 新高考全国II卷
+    publish_url: http://edu.newdu.com/NECE/English/Analysis/202606/4928961.html
+    status: raw_acquired_candidate_needs_fingerprint
+    observed_scope: >-
+      rar 含整卷听力 mp3(~22:45) + 试题/答案听力原文 docx。
+      答案稿文件名带「听力原文2025.06.11」字样 — 内容与四季读书网2026稿一致作 candidate, 升教前必指纹。
+      文字稿见 listening_transcripts/2026_national_ii_newdu_listening.txt
+    attachments:
+      - kind: rar
+        url: http://pic01.newdu.com/uploads/Cee/202606/12/2026gaokao2026061201.rar
+        local_path: data/external/exam_sources/listening_candidates/2026_national_ii_newdu_bundle_candidate.rar
+        expected_sha256: b67d12e7b7a4e5fac47e1268ffecc52855c46b850b36c2246edbfe104a81dc80
+        min_bytes: 15000000
+      - kind: json_manifest
+        local_path: data/external/exam_sources/listening_candidates/2026_national_ii_newdu_manifest.json
+        min_bytes: 200
+      - kind: transcript_txt
+        local_path: data/external/exam_sources/listening_transcripts/2026_national_ii_newdu_listening.txt
+        min_bytes: 10000
+
+  third_party_transcript_xgkii_listening_2021_cpsenglish:
+    name: 2021 新高考II卷 听力录音原文 (柯帕斯 candidate)
+    family: listening_transcript_candidate
+    org: 柯帕斯英语网 / cpsenglish
+    year: 2021
+    paper_type: 新高考全国II卷
+    publish_url: https://www.cpsenglish.com/index.php/article/812
+    status: raw_acquired_transcript_candidate
+    observed_scope: 附录音原文 Text1-10; I&II 共用年。与 sohu 答案键交叉见 acquisition_2021_listening_crosscheck.md
+    attachments:
+      - kind: transcript_md
+        local_path: data/external/exam_sources/listening_transcripts/2021_xgki_ii_cpsenglish_transcript.md
+        min_bytes: 5000
+
 quarantined_exam_sources:
   sunedu_new_gaokao_i_listening_2021_candidate:
     name: 2021 新高考 I 卷听力 candidate source

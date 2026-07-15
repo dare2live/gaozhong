@@ -8,8 +8,10 @@
 | 2022 | I&II **共用** | 可可英语 6 段 `2022_xgki_ii_kekenet_*.mp3` | **candidate** — 已镜像+sha256 |
 | 2023 | I&II **共用** | 可可英语 6 段 `2023_xgki_ii_kekenet_*.mp3` | **candidate** — 已镜像+sha256 |
 | 2024 | I / II **分卷**（II 单独） | 可可英语 6 段 `2024_xgkii_kekenet_*.mp3` | **candidate** — 已镜像+sha256 |
-| 2025 | I / II 分卷 | 学科网/结网英语/百度盘付费包；**无开放直链** | **未入库** |
-| 2026 | 全国二卷有教习网/学科网包 | 付费/网盘；**无开放直链** | **未入库** |
+| 2025 | I / II 分卷 | **新都网 zip 已下** 整卷 mp3(~18:53)+原文 docx | **candidate** |
+| 2026 | 全国二卷 | **新都网 rar 已下** 整卷 mp3(~22:45)+原文 docx | **candidate**（稿名带 2025.06.11，待指纹） |
+
+文字稿进度见 `acquisition_listening_transcripts_2025_2026.md`。
 
 - NEEA / 省考试院：**无**个人可下的官方 MP3 门户。
 - GitHub：**无**可用的新课标 II 听力 mp3 仓（仅有四六级/其它）。

@@ -1,0 +1,12 @@
+{
+  "year": 2025,
+  "paper": "新课标II卷",
+  "source": "newdu zip",
+  "zip_url": "http://pic01.newdu.com/uploads/Cee/202506/11/qgej2025061101.zip",
+  "zip_sha256": "c5f1c069998156ec30136a73865d895048ea3a73d6686234b0d58fce0edda353",
+  "zip_bytes": 21824443,
+  "mp3_local": "data/external/exam_sources/listening_candidates/2025_xgkii_listening_newdu_candidate.mp3",
+  "mp3_sha256": "17dde1a773e314ac41d73bd20aaa03cf7b18457c1a5e6b4e680d61ccd3951bb5",
+  "mp3_bytes": 27208042,
+  "page": "http://edu.newdu.com/NECE/English/Analysis/202506/4668973.html"
+}
