@@ -57,12 +57,17 @@
     const nG = (l.grammar || []).length;
     const nV = (l.vocab && l.vocab.n_total) || 0;
     const nP = (l.phrases || []).length;
+    const body = l.content && l.content.body_en
+      ? `<div class="ks-pilot"><div class="ks-body-h">可背诵正文 (初中 Phase D · review 已过)</div>
+           <p class="ks-pilot-en">${_esc(l.content.body_en)}</p>
+           ${l.content.body_zh ? `<p class="ks-pilot-zh">${_esc(l.content.body_zh)}</p>` : ""}</div>`
+      : `<div class="ks-soon">本节暂无正文</div>`;
     return `<details class="ks-lesson"><summary class="ks-sum">
         <span class="ks-seq">第 ${l.seq} 节</span>
         <span class="ks-hwn" style="flex:1;">${_esc(title)}</span>
         <span class="ks-hwn">语法${nG} · 词汇${nV} · 短语${nP}</span>
       </summary>
-      <div class="ks-body">${_lessonKnowledgeHTML(l)}</div>
+      <div class="ks-body">${body}${_lessonKnowledgeHTML(l)}</div>
     </details>`;
   }
 
@@ -108,14 +113,17 @@
     if (isErr(syl)) { C.innerHTML = G.errorBox({ title: "课程框架加载失败" }); return; }
     const lessons = syl.lessons || [];
     const gs = _volumeGroups(lessons);
+    const nContent = syl.n_with_content || 0;
     C.innerHTML = `<section class="scaffold">
-      ${pageHead("初中 · 课程", "46节真实教学进度", `组织轴 = ${_esc(syl.organizing_axis || "真实教材单元进度")} — 每节 = 1个真实教材单元, 自带语法/词汇/短语三轴知识点(非命题频次分配, 与高中"40节课程"方法论不同)。`)}
+      ${pageHead("初中 · 课程", `${syl.n_lessons || 46}节真实教学进度`, `组织轴 = ${_esc(syl.organizing_axis || "真实教材单元进度")} — 每节 = 1个真实教材单元, 自带语法/词汇/短语三轴知识点(非命题频次分配, 与高中"40节课程"方法论不同)。`)}
+      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>初中 Phase D</b> — 可背诵正文 ${nContent}/${syl.n_lessons || lessons.length} 节(累计 hujiao 词量门 · review 已过; 未宣称 46 全齐)。</span></div>
       ${_courseMap(gs)}
       ${gs.map((g, i) => _chapter(g, i)).join("")}
       <details class="zt-datahow"><summary>数据怎么来的?</summary>
         <ul>
           <li>组织轴: 6册46个真实教材单元(沪教牛津hujiao), 按学习顺序1单元=1节, 不套用命题频次分配。</li>
           <li>语法/词汇/短语三轴均逐条lineage到教材原文(grammar_occurrences/unit_vocab_intro/phrases), 挂载已有的高中衔接(deepens)边与中考真题验证(tests_grammar/tests_word)边。</li>
+          <li>可背诵正文: data/structured/junior_course_content/jr-seg-*.json, 仅 review=pass 挂载; 词量门=累计 hujiao∪义教, 禁 G_FINAL。</li>
           <li>${_esc(lessons[0] && lessons[0].scope_note || "")}</li>
         </ul>
       </details>

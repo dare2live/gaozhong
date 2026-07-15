@@ -164,9 +164,17 @@ def unit_content(con: duckdb.DuckDBPyConnection, vol: str, unit: int) -> dict:
 def _lessons_uncompressed(con: duckdb.DuckDBPyConnection,
                           units: list[tuple[str, int, str]]) -> list[dict]:
     """不压缩: 每单元独立1节(真实教学进度, 默认路径)."""
-    return [{"seq": seq, "segment_id": f"jr-seg-{seq:02d}",
-            **unit_knowledge_profile(con, vol, unit, title)}
-            for seq, (vol, unit, title) in enumerate(units, 1)]
+    from backend.services.course.junior_content import content_for_jr_seq
+
+    return [
+        {
+            "seq": seq,
+            "segment_id": f"jr-seg-{seq:02d}",
+            **unit_knowledge_profile(con, vol, unit, title),
+            "content": content_for_jr_seq(seq),
+        }
+        for seq, (vol, unit, title) in enumerate(units, 1)
+    ]
 
 
 def _merge_vocab(profiles: list[dict]) -> dict:
@@ -212,7 +220,15 @@ def junior_syllabus(con: duckdb.DuckDBPyConnection, n_lessons: int | None = None
         n_lessons = get_threshold("course.total_courses_junior", len(units))
     lessons = (_lessons_uncompressed(con, units) if n_lessons >= len(units)
                else _lessons_compressed(con, units, n_lessons))
-    return {"n_lessons": len(lessons), "n_units_total": len(units), "lessons": lessons,
-            "organizing_axis": "真实教材单元进度(非命题频次, 与高中course.syllabus方法论"
-                                "刻意不同, 见模块docstring)",
-            "content": None}
+    # compressed path has no per-lesson content mount yet (pilot = uncompressed 46)
+    n_with_content = sum(1 for l in lessons if l.get("content"))
+    return {
+        "n_lessons": len(lessons),
+        "n_units_total": len(units),
+        "n_with_content": n_with_content,
+        "lessons": lessons,
+        "organizing_axis": "真实教材单元进度(非命题频次, 与高中course.syllabus方法论"
+        "刻意不同, 见模块docstring)",
+        # top-level content reserved null; bodies live on lessons[].content (pass-only)
+        "content": None,
+    }

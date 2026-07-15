@@ -49,7 +49,7 @@ items:
     evidence: >
       原封账: 初中组织轴=教材单元三轴 lineage; 可背诵正文属高中 Phase D 特有。
       2026-07-15 用户明确「做」→ 本条 reopen; 实现须用累计 hujiao 词表门(禁 G_FINAL)。
-    reopen_when: "已 reopen — 见 status"
+    reopen_when: "已 reopen — 试点 jr-seg-01 已挂; 全 46 节齐备后再封账"
 
   - id: student_real_answer_personalization
     blocker_class: out_of_product_scope

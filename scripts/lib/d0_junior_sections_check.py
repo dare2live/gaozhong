@@ -120,8 +120,29 @@ def check_junior_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
     total_vocab = sum(l["vocab"]["n_total"] for l in lessons)
     check("全部课节词汇总数 == 947 (同unit_vocab_intro总行数, 无遗漏无重算)",
           total_vocab == 947, f"{total_vocab}")
-    check("content 字段全为 None (Phase D 内容生成需就绪门, 本函数只搭框架)",
+    # 顶层 content 仍为 None; 可背诵正文挂 lessons[].content 且仅 review=pass
+    check("顶层 content 字段为 None (正文挂 lessons[].content, 非顶层 blob)",
           r.get("content") is None, f"{r.get('content')}")
+    bad_mount = [
+        l["seq"]
+        for l in lessons
+        if l.get("content") is not None
+        and (
+            (l["content"].get("review") or {}).get("status") != "pass"
+            or not (l["content"].get("body_en") or "").strip()
+        )
+    ]
+    check(
+        "lessons[].content 仅允许 review=pass 且 body_en 非空 (否则必须 None)",
+        not bad_mount,
+        f"bad seqs={bad_mount}",
+    )
+    n_content = r.get("n_with_content", 0)
+    check(
+        "n_with_content == 实际挂载数 (与 lessons[].content 对账)",
+        n_content == sum(1 for l in lessons if l.get("content")),
+        f"{n_content}",
+    )
 
 
 def check_junior_unit_content(con: duckdb.DuckDBPyConnection, check) -> None:

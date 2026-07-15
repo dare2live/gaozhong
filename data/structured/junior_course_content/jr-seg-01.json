@@ -1,0 +1,28 @@
+{
+  "seq": 1,
+  "segment_id": "jr-seg-01",
+  "volume_key": "7a",
+  "unit_number": 1,
+  "unit_concept_id": "unit:hujiao/7a/U1",
+  "layer": "hujiao_cumulative",
+  "title_zh": "My life — 试点可背诵讲义",
+  "body_en": "My elder sister is an engineer. She lives in a flat in Germany. Her dream is to see Japan and the world. Everyone in our family is friendly. What is your hobby? Tell us about yourself — your age and your country. German grammar sounds hard, but we can learn.",
+  "body_zh": "我姐姐是工程师，住在德国的一套公寓。她的梦想是去看看日本和更广阔的世界。我们家人都很友善。你的爱好是什么？介绍一下你自己——年龄和家乡。德语语法听起来难，但我们能学。",
+  "covers": ["unit:hujiao/7a/U1"],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "My life",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-15",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "初中 Phase D 试点 1 节 (7a U1); 经 junior_course_content_review_gate 后挂载"
+  }
+}
