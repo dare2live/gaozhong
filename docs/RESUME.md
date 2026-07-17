@@ -113,3 +113,4 @@
 - **B3** 2021 听力: DB 键与公开 II 卷答案交叉一致; sohu 文件为 I 卷未混入(见 `acquisition_2021_listening_crosscheck.md`)
 - **B4** ZK2025 #44/#45: 再搜无稳定可核验范文 → **保持「略」**(见 `acquisition_zk2025_44_45.md`)
 - **不做**: 2026 中考; theme 假升 analysis-cross; phrase bulk; 平行 grammar_point 写边; 题级 quality; 真实学情造假
+- **后续衔接 (2026-07-17)**: 2022–25 听力题干入库后 D0 基线 `gaokao_total`→556 / `gaokao_liaoning`→272; 补 question 节点; local_pdf 重复校验豁免 `listening_stems_xgkii`; 拆分听力导入脚本守 Rule8。

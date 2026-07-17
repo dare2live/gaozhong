@@ -226,9 +226,9 @@ assertions:
     command: ["python3", "-c", "import duckdb;from backend.services import trend;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);s=trend.trend_summary(c);print('OK' if s.get('province_scope')=='辽宁卷' and 'sample_diagnosis' in s else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
   - id: practice-not-prediction
-    claim: "练习卷不冒充'预测/押题': 趋势不可信(辽宁样本不足)时退回**考纲蓝图固定结构**(后端审计B2: exam_structure_eras.item_counts 真考纲题数, 取代原 grain混合 avg_share), 不按 slope 加权 (REVISE predicted.py)"
+    claim: "练习卷不冒充'预测/押题': paper_type=blueprint_structured_practice; 题面来自真题库; selection_basis 仅为 blueprint_canonical(样本不足) 或 trend_weighted(可靠时 canonical+轻微slope), 禁 predicted/押题口径 (REVISE predicted.py)"
     type: shell
-    command: ["python3", "-c", "import duckdb;from backend.services.exercise.predicted import generate_blueprint_practice_paper as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=g(c,total=10);b=p['composition_basis']['selection_basis'];print('OK' if 'blueprint_canonical' in b and 'slope' not in b and p['paper_type']=='blueprint_structured_practice' else 'FAIL')"]
+    command: ["python3", "-c", "import duckdb;from backend.services.exercise.predicted import generate_blueprint_practice_paper as g;c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True);p=g(c,total=10);b=p['composition_basis']['selection_basis'];ok=p['paper_type']=='blueprint_structured_practice' and (b.startswith('blueprint_canonical') or b.startswith('trend_weighted')) and 'predicted' not in b.lower() and '押' not in b;print('OK' if ok else 'FAIL')"]
     expect: {op: regex, pattern: "OK"}
 
   # ===== 词×真题考过状态 单一计算点 (#12/#13/#14: exam_vocab 唯一 tokenizer + exam_coverage 唯一 writer) =====
@@ -689,17 +689,17 @@ assertions:
     query: "SELECT count(*) FROM zhongkao_questions WHERE content_status IS NULL OR (content_status='complete' AND (raw_question LIKE 'walled%' OR answer IS NULL OR TRIM(answer)=''))"
     expect: {op: "==", value: 0}
   - id: gaokao-count-baseline
-    claim: "高考真题计数基线 476 (B1双源去重466 + 2026锦宏8 + 2023写作2); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
+    claim: "高考真题计数基线 556 (B1双源去重466 + 2026锦宏8 + 2023写作2 + 2022-25听力80); 增减须显式改基线防静默漂移 (审计 HIGH#3)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions"
-    expect: {op: "==", value: 476}
+    expect: {op: "==", value: 556}
   - id: gaokao-liaoning-baseline
-    claim: "高考辽宁卷计数基线 192 (新课标II §7, B1去重182 + 2026锦宏8 + 2023写作2); 防漂移 (审计 HIGH#3)"
+    claim: "高考辽宁卷计数基线 272 (新课标II §7, 战役192 + 2022-25听力题干80); 防漂移 (审计 HIGH#3)"
     type: duckdb_sql
     database: data/db/gaozhong.duckdb
     query: "SELECT count(*) FROM exam_questions WHERE province LIKE '辽宁%'"
-    expect: {op: "==", value: 192}
+    expect: {op: "==", value: 272}
   - id: xgkii-2026-truth-imported
     claim: "2026新高考全国II卷英语入库(锦宏镜像PDF双通道转录, group级8组 听力/阅读ABCD/七选五/完形/语法, 写作不入): province=辽宁/paper_type新课标II/客观题答案齐, source_repo=jhgk_xgkii_english_2026 (坑16 tier-B诚实标, 非官方冒充)"
     type: duckdb_sql

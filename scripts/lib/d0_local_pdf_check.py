@@ -40,10 +40,15 @@ def check_local_pdf_integrity(con: duckdb.DuckDBPyConnection, check) -> None:
     check("local_pdf 阅读/完形/语法 answer 已填", noans == 0, f"{noans} 行空答案")
     check("local_pdf 题干无卷尾附录污染", polluted == 0, f"{polluted} 行")
     check("local_pdf 题干无页中水印bleed(锦宏/学科网/页码, 坑18)", watermark == 0, f"{watermark} 行残留水印")
-    # B1 (强验证 wf_9d0ef21a): 2024/2025 辽宁卷 local_pdf 权威, GAOKAO-Bench 同卷重复已 supersede。
+    # B1: 2024/2025 客观卷面以 local_pdf 为权威; GAOKAO-Bench/gbu 同卷不得残留。
+    # listening_stems_xgkii = 听力题干补齐(另源), 非 Bench 重复, 豁免。
+    _ok_extra = ("listening_stems_xgkii",)
+    placeholders = ",".join("?" * len(_ok_extra))
     dup = con.execute(
         "SELECT year, COUNT(*) FROM exam_questions WHERE year IN (2024, 2025) "
-        "AND province LIKE '辽宁%' AND source_repo <> 'local_pdf' GROUP BY year"
+        "AND province LIKE '辽宁%' AND source_repo <> 'local_pdf' "
+        f"AND source_repo NOT IN ({placeholders}) GROUP BY year",
+        list(_ok_extra),
     ).fetchall()
     check("2024/2025 辽宁卷无 GAOKAO-Bench 重复(local_pdf 单一权威)", not dup,
           f"{dup} (gbu 同卷未 supersede)" if dup else "0 重复")
