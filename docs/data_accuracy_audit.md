@@ -93,6 +93,10 @@ vocab_alignment           | WARN     | 教材覆盖课标 46.3%         | OBS  �
 2. 任何 WARN 必须判 OBS or BUG; BUG → 立即修或入此表"非 100% 待修"
 3. PR 复核门 #14 (新加): "100% 数据准确率 maintain"
 
+| 项 | 准确率门 | 评估 |
+|---|---|---|
+| 听力文字稿讲解辅助 `listening_transcript_teaching.jsonl` | 100% 可核验 | D0 `check_listening_teaching`: n=100、answer 对齐 qbank、distractor.cue ⊆ transcript、provenance=`agent_transcript_grounded`; 非官方评分细则 |
+
 ## 七、M1 闭环复核（图谱与趋势）
 
 ### M1 一次性执行证据（2026-06-10）

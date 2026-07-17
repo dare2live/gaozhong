@@ -14,6 +14,7 @@ from pathlib import Path
 from backend.api.db import db_ro
 from backend.services.extraction.example_text import clean_preview
 from backend.services.listening.audio_catalog import catalog, resolve_audio_file
+from backend.services.listening.teaching_aid import all_aids, get_aid, summary as teaching_summary
 
 # 坑(2026-07-05 根因审计复核): 用户追问"深层根因是否真修完"后复扫发现的漏网实例 — 本文件读
 # question_bank.stem 时仍是原始 SUBSTR(...,1,80) 无边界截断, 与已收口的 example_text.py 不一致
@@ -24,6 +25,8 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def api_listening_list(qs: dict) -> dict:
     section = (qs.get("section", [None])[0] or "").strip()
+    year_raw = (qs.get("year", [None])[0] or "").strip()
+    year = int(year_raw) if year_raw.isdigit() else None
     con = db_ro()
     try:
         sql = ("SELECT qb_id, question_type, difficulty, "
@@ -38,15 +41,23 @@ def api_listening_list(qs: dict) -> dict:
             args.append(qt)
         sql += " ORDER BY qb_id"
         rows = con.execute(sql, args).fetchall()
-        return {
-            "questions": [
-                {"qb_id": r[0], "question_type": r[1], "difficulty": r[2],
-                 "stem_preview": clean_preview(r[3], _STEM_PREVIEW_LEN), "audio_id": r[4],
-                 "audio_duration": r[5], "origin_ref": r[6]}
-                for r in rows
-            ],
-            "count": len(rows),
-        }
+        questions = []
+        for r in rows:
+            ref = r[6] or ""
+            if year is not None and str(year) not in ref:
+                continue
+            aid = get_aid(ref)
+            questions.append({
+                "qb_id": r[0], "question_type": r[1], "difficulty": r[2],
+                "stem_preview": clean_preview(r[3], _STEM_PREVIEW_LEN), "audio_id": r[4],
+                "audio_duration": r[5], "origin_ref": ref,
+                "has_teaching_aid": bool(aid),
+                "skill": (aid or {}).get("skill"),
+                "section_layer": (aid or {}).get("section"),
+                "q": (aid or {}).get("q"),
+                "year": (aid or {}).get("year"),
+            })
+        return {"questions": questions, "count": len(questions)}
     finally:
         con.close()
 
@@ -76,15 +87,27 @@ def api_listening_detail(qs: dict) -> dict:
                 speakers = json.loads(r[8])
             except (json.JSONDecodeError, TypeError):
                 pass
+        origin_ref = r[10]
         return {
             "qb_id": r[0], "question_type": r[1], "stem": r[2],
             "answer": r[3], "difficulty": r[4], "analysis": r[5],
             "transcript": r[6], "audio_id": r[7],
             "speakers": speakers, "audio_duration": r[9],
-            "origin_ref": r[10],
+            "origin_ref": origin_ref,
+            "teaching_aid": get_aid(origin_ref),
+            "audio_note": "第三方核验音频, 非 NEEA 官方原声; 讲解锚定文字稿与题干。",
         }
     finally:
         con.close()
+
+
+def api_listening_teaching_summary(qs: dict) -> dict:
+    """分层诊断摘要 + 已生成讲解覆盖 (单一计算点 teaching_aid.summary)."""
+    return {"summary": teaching_summary(), "items": [
+        {"origin_ref": r["origin_ref"], "year": r["year"], "q": r["q"],
+         "skill": r["skill"], "section": r["section"], "bottleneck": r.get("bottleneck")}
+        for r in all_aids()
+    ]}
 
 
 def api_listening_catalog(qs: dict) -> dict:
@@ -123,6 +146,7 @@ def api_listening_file_meta(qs: dict) -> dict:
 ROUTES = {
     "/api/listening/list": api_listening_list,
     "/api/listening/detail": api_listening_detail,
+    "/api/listening/teaching_summary": api_listening_teaching_summary,
     "/api/listening/catalog": api_listening_catalog,
     "/api/listening/file": api_listening_file_meta,
 }

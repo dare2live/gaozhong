@@ -66,9 +66,10 @@ contracts:
   "/api/lesson_plan": {params: {unit: ["unit:waiyan/bixiu_1/U1"]}, required_keys: [unit_id, words, grammar, related_exams], type: dict}
   "/api/liaoning/allowed_publishers": {params: {}, type: list}
   "/api/liaoning/city_choice": {params: {}, type: list}
-  "/api/listening/detail": {params: {id: ["100"]}, required_keys: [], type: dict, allow_error: true,
-    note: "has_audio 行在 attach_listening_audio_to_qbank 后可用; id=100 为 2021 Q1。未 attach 时 allow_error"}
+  "/api/listening/detail": {params: {id: ["100"]}, required_keys: [qb_id, stem, transcript, teaching_aid, audio_note], type: dict,
+    note: "has_audio 行; id=100 为 2021 Q1; teaching_aid 来自 listening_transcript_teaching.jsonl"}
   "/api/listening/list": {params: {}, required_keys: [count, questions], type: dict}
+  "/api/listening/teaching_summary": {params: {}, required_keys: [summary, items], type: dict}
   "/api/listening/catalog": {params: {}, required_keys: [module_status, years_with_audio, years, complete], type: dict}
   "/api/listening/file": {params: {year: ["2021"], id: ["full"]}, required_keys: [], type: dict, allow_error: true,
     note: "默认 Accept 返回 audio/mpeg 二进制(main.py); Accept:application/json 返回元数据"}

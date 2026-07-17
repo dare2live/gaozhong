@@ -178,6 +178,11 @@ assertions:
     type: shell
     command: ["python3", "-c", "from backend.services.listening.audio_catalog import catalog;c=catalog();print('OK' if c.get('complete') else 'FAIL '+str(c.get('missing_files')))"]
     expect: {op: regex, pattern: "OK"}
+  - id: listening-teaching-aid-wired
+    claim: "听力文字稿讲解辅助: jsonl n=100 + API teaching_summary/detail.teaching_aid + 基础库 #/listening 入口"
+    type: shell
+    command: ["python3", "-c", "from pathlib import Path;from backend.services.listening.teaching_aid import all_aids,summary;from backend.api.routes.listening import api_listening_detail,api_listening_teaching_summary;n=len(all_aids());s=summary();t=api_listening_teaching_summary({});d=api_listening_detail({'id':['100']});js=Path('frontend/static/listening.js').read_text();sc=Path('frontend/static/scaffold.js').read_text();ok=n==100 and s.get('n')==100 and t.get('summary',{}).get('n')==100 and d.get('teaching_aid') and d['teaching_aid'].get('origin_ref') and 'registerTab(\"listening\"' in js and '#/listening' in sc and '第三方' in (d.get('audio_note') or '');print('OK' if ok else 'FAIL', n, bool(d.get('teaching_aid')))"]
+    expect: {op: regex, pattern: "OK"}
   - id: compose-in-spa
     claim: "自定义组卷进主SPA(教研室#6 全量收敛): app_router genCompose 调 /api/paper/compose + 默认type_mix从库内真类型(去legacy不存在的'选义单选') + stem放宽; 收敛自 /teacher#compose"
     type: shell

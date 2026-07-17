@@ -15,7 +15,7 @@ from pathlib import Path
 
 FE = Path(__file__).resolve().parents[2] / "frontend" / "static"
 LIVE_JS = ["common", "graph_popup", "nav-config", "category-config", "app_router",
-           "beike", "scaffold", "jichu_pages", "textbook", "dict", "k12"]
+           "beike", "scaffold", "jichu_pages", "listening", "textbook", "dict", "k12"]
 ECHARTS_JS = ["beike", "k12", "scaffold"]
 NON_ECHARTS = [f for f in LIVE_JS if f not in ECHARTS_JS]
 LIVE_CSS = ["style", "app", "beike", "design-system"]

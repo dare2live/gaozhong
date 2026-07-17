@@ -114,3 +114,4 @@
 - **B4** ZK2025 #44/#45: 再搜无稳定可核验范文 → **保持「略」**(见 `acquisition_zk2025_44_45.md`)
 - **不做**: 2026 中考; theme 假升 analysis-cross; phrase bulk; 平行 grammar_point 写边; 题级 quality; 真实学情造假
 - **后续衔接 (2026-07-17)**: 2022–25 听力题干入库后 D0 基线 `gaokao_total`→556 / `gaokao_liaoning`→272; 补 question 节点; local_pdf 重复校验豁免 `listening_stems_xgkii`; 拆分听力导入脚本守 Rule8。
+- **听力讲解辅助 (2026-07-17)**: `listening_transcript_teaching.jsonl` 100 题(2021–2025) — 干扰项/易忽略/技巧锚定文字稿; API `teaching_aid` + 基础库 `#/listening`; provenance=`agent_transcript_grounded`; 音频仍第三方非 NEEA。

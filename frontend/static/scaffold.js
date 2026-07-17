@@ -403,6 +403,9 @@
           !isErr(dict) && dict.total ? `${Number(dict.total).toLocaleString()} 词 · 辽宁高考命中标记 + 学段归属 ${!isErr(stg) ? window.GZ.stageMiniBand(stg) : ""}` : "", "考纲词汇释义 + 辽宁高考命中 / 学段标记。")}
         ${shelf("课标库", IC.std, "#/kebiao",
           !isErr(cur) && cur.vocab_total ? `${Number(cur.vocab_total).toLocaleString()} 词 · ${cur.grammar_total} 语法项 · 主题语境 ${cur.themes_total} 项` : "", "课程标准: 主题群 / 语法体系 / 词汇结构化浏览。")}
+        ${shelf("听力讲解", IC.paper, "#/listening",
+          "2021–2025 逐题文字稿 · 干扰项 / 易忽略点 / 应对技巧（第三方音频非 NEEA）",
+          "辽宁新高考 II 听力文字稿讲解辅助。")}
       </div>
       <section class="bk-card" style="margin-top:14px">
         <div class="bk-h"><span>教材 固定搭配 / 句型 / 表达方式</span><span class="bk-src">/api/grammar/stats · phrases</span></div>

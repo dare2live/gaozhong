@@ -335,6 +335,7 @@ _LIB_CHECKS = [
     ("d0_k12_served_check", "check_k12_served"),
     ("endpoint_contract_check", "check_endpoint_contracts"),   # 维度38: 75端点 HTTP 契约 (endpoint_contracts.yaml, 审计MAJOR修)
     ("d0_grammar_check", "check_grammar"),   # (3) 语法(从本文件抽出, 2026-07-08 god-module瘦身)
+    ("d0_listening_teaching", "check_listening_teaching"),  # 听力文字稿讲解辅助 (transcript-grounded)
 ]
 
 
