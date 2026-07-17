@@ -5,7 +5,7 @@
  * 不伪造图表/不甩原始题号。可用的子库 (教材库/考试词典) 直接链到现有 working tab。
  */
 (function () {
-  const { registerTab, fetchSafe, isErr, errorBox, ensureECharts, initChart, pageHead } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, ensureECharts, initChart, pageHead, loadingHTML } = window.GZ;
 
   // 通用骨架渲染: 标题 + Phase 徽章 + 引言 + 计划模块卡片
   function _scaffold({ title, badge, lead, cards }) {
@@ -257,7 +257,7 @@
 
   registerTab("zhenti", async () => {
     const C = document.querySelector("#content");
-    C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
+    C.innerHTML = (loadingHTML && loadingHTML("载入真题特点…")) || '<div class="loading-state"><span class="ls-dot"></span>载入真题特点…</div>';
     const [d, cbc, gram, cw, ja, gsc, ppr, ccs, kb, gpr, qs] = await Promise.all([
       fetchSafe("/api/k12/tested_word_stage"),
       fetchSafe("/api/exam_point/cognitive_by_content"),
@@ -282,63 +282,78 @@
     const kbHTML = (!isErr(kb)) ? _k12BridgeCard(kb) : '<p class="kb-dim">K12衔接数据加载失败。</p>';
     const gprHTML = (!isErr(gpr)) ? _grammarRollupCard(gpr) : '<p class="kb-dim">语法九桶派生加载失败。</p>';
     const qsHTML = (!isErr(qs)) ? _qualityBrowseCard(qs) : '<p class="kb-dim">学业质量浏览加载失败。</p>';
-    C.innerHTML = `<section class="scaffold">
+    C.innerHTML = `<section class="scaffold gz-stack">
       ${pageHead("高中 · 真题实证", "真题长什么样", "辽宁卷到底考哪个学段的词、每类文章怎么设问 — 每个数字都能点开追到真题原卷。")}
-      <div class="sc-takeaway">
+      <div class="sc-takeaway is-sticky">
         <div class="sc-tk-h">结论 · 用最少课程覆盖最大考点</div>
         <p class="sc-tk-body">辽宁高考<strong>离散考点题型</strong>(完形/语法填空/短改/单选)考查的词中, <strong class="tk-found">${d.foundation_pct}% 是小学 / 初中阶</strong>(学生入高中前已学), 真正属<strong class="tk-senior">高中新增的仅 ${d.senior_pct}%</strong>。→ 高中课程不必重教基础词, 主攻这 ${d.senior_pct}% 的高中 delta + 高频考点。</p>
         <p class="sc-tk-caveat">口径: 只统计真题里<b>真正考过</b>的词 (教材出现过 ≠ 高考考过), 共 ${d.total} 个去重词; 详细口径见页尾「数据怎么来的?」。</p>
       </div>
-      <section class="bk-card">
+      <section class="bk-card is-primary">
         <div class="bk-h"><span>辽宁高考考查词 · 哪个学段学的</span><span class="bk-src">/api/k12/tested_word_stage</span></div>
         ${_stageHero(d)}
         ${_stageSrTable(d)}
         <p class="kb-dim" style="margin:10px 0 0;">统计口径 = 真题里<b>真正考查</b>的词 (教材出现过 ≠ 高考考过), 共 ${d.total} 个去重词。<b>已学过 ≠ 都记得</b> — 义务段词仍是考查主体, 主攻 ${d.senior_pct}% 不等于放掉基础。未分类 ${d.unclassified_pct}% 为校本超纲/外省词, 不估算。</p>
       </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>再深一层: "得分点"本身是不是更偏高中?</span><span class="bk-src">/api/exam_point/cloze_answer_word_stage</span></div>
-        <p class="kb-dim" style="margin:0 0 8px;">上面统计的是<b>整篇文章</b>的词汇难度。这里换个问法: 完形填空<b>每空唯一正确答案词</b>本身的难度, 是不是比全篇平均更偏高中(即"认对词才是真本事")?</p>
-        ${scoreptHTML}
-        <p class="kb-dim" style="margin:0;">口径: 可逐空核对选项的辽宁完形填空共 ${cw && cw.n_passages != null ? cw.n_passages : 12} 篇(老课标6 + 2021/2022 EOL docx 选项重建2 + 2023–2026 新高考4); exam_questions 中 2021/2022 仍按空拆行, 选项由 sidecar 合成不硬凑题面。</p>
-      </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>推断题多的文章, 词汇是不是也更难?</span><span class="bk-src">/api/exam_point/joint_attribution</span></div>
-        <p class="kb-dim" style="margin:0 0 8px;">把同一批文章的"设问思维"和"词汇难度"对齐: 按每篇文章<b>出题最多的设问思维</b>分组, 看该组文章的平均高中新词占比。</p>
-        ${jointAttrHTML}
-        <p class="kb-dim" style="margin:0;">口径: 2015–2020 旧课标II 共 ${ja && ja.n_passages_with_word_data != null ? ja.n_passages_with_word_data : "24"} 篇 (2021+ 子题编号非全局唯一, 无法与词汇边对齐, 该维度仅覆盖旧课标)。</p>
-      </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>再深一层: 考查的是高中"知识点"(语法/短语/句式)吗?</span><span class="bk-src">/api/exam_point/grammar_structural_coverage</span></div>
-        <p class="kb-dim" style="margin:0 0 8px;">词汇难度之外, 完形填空/语法填空很多时候考的是<b>短语搭配/语法结构</b>本身, 不是单词认不认识。分三层看:</p>
-        ${gscHTML}
-        <div style="margin:10px 0 8px;border-top:1px solid var(--line);padding-top:10px;">${pprHTML}</div>
-        <div style="margin:10px 0 0;border-top:1px solid var(--line);padding-top:10px;">${ccsHTML}</div>
-      </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>再深一层: 初中学的语法, 高考怎么深化考?</span><span class="bk-src">/api/exam_point/k12_grammar_bridge</span></div>
-        <p class="kb-dim" style="margin:0 0 8px;">初中71个课标语法点里, 哪些会在高中深化(更多用法/时态/被动等), 又已经在辽宁中考真题里被印证过:</p>
-        ${kbHTML}
-      </section>
       <p class="zt-nextlink">近年考什么在变? 完整迁移图 → <a href="#/beike">命题研判</a></p>
+      <details class="gz-evidence">
+        <summary>再深一层 · 得分点词难不难、和设问思维有没有关系</summary>
+        <div class="gz-evidence-body">
+          <section class="bk-card">
+            <div class="bk-h"><span>"得分点"本身是不是更偏高中?</span><span class="bk-src">/api/exam_point/cloze_answer_word_stage</span></div>
+            <p class="kb-dim" style="margin:0 0 8px;">上面统计的是<b>整篇文章</b>的词汇难度。这里换个问法: 完形填空<b>每空唯一正确答案词</b>本身的难度, 是不是比全篇平均更偏高中(即"认对词才是真本事")?</p>
+            ${scoreptHTML}
+            <p class="kb-dim" style="margin:0;">口径: 可逐空核对选项的辽宁完形填空共 ${cw && cw.n_passages != null ? cw.n_passages : 12} 篇(老课标6 + 2021/2022 EOL docx 选项重建2 + 2023–2026 新高考4); exam_questions 中 2021/2022 仍按空拆行, 选项由 sidecar 合成不硬凑题面。</p>
+          </section>
+          <section class="bk-card">
+            <div class="bk-h"><span>推断题多的文章, 词汇是不是也更难?</span><span class="bk-src">/api/exam_point/joint_attribution</span></div>
+            <p class="kb-dim" style="margin:0 0 8px;">把同一批文章的"设问思维"和"词汇难度"对齐: 按每篇文章<b>出题最多的设问思维</b>分组, 看该组文章的平均高中新词占比。</p>
+            ${jointAttrHTML}
+            <p class="kb-dim" style="margin:0;">口径: 2015–2020 旧课标II 共 ${ja && ja.n_passages_with_word_data != null ? ja.n_passages_with_word_data : "24"} 篇 (2021+ 子题编号非全局唯一, 无法与词汇边对齐, 该维度仅覆盖旧课标)。</p>
+          </section>
+        </div>
+      </details>
+      <details class="gz-evidence">
+        <summary>再深一层 · 语法 / 短语 / 搭配结构 · 初高衔接</summary>
+        <div class="gz-evidence-body">
+          <section class="bk-card">
+            <div class="bk-h"><span>考查的是高中"知识点"(语法/短语/句式)吗?</span><span class="bk-src">/api/exam_point/grammar_structural_coverage</span></div>
+            <p class="kb-dim" style="margin:0 0 8px;">词汇难度之外, 完形填空/语法填空很多时候考的是<b>短语搭配/语法结构</b>本身, 不是单词认不认识。分三层看:</p>
+            ${gscHTML}
+            <div style="margin:10px 0 8px;border-top:1px solid var(--line);padding-top:10px;">${pprHTML}</div>
+            <div style="margin:10px 0 0;border-top:1px solid var(--line);padding-top:10px;">${ccsHTML}</div>
+          </section>
+          <section class="bk-card">
+            <div class="bk-h"><span>初中学的语法, 高考怎么深化考?</span><span class="bk-src">/api/exam_point/k12_grammar_bridge</span></div>
+            <p class="kb-dim" style="margin:0 0 8px;">初中71个课标语法点里, 哪些会在高中深化(更多用法/时态/被动等), 又已经在辽宁中考真题里被印证过:</p>
+            ${kbHTML}
+          </section>
+          <section class="bk-card">
+            <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法</span><span class="bk-src">/api/grammar/stats</span></div>
+            <div class="zt-gramlist">${gramHTML}</div>
+            <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。${(!isErr(gram)) ? _grammarTopNote(gram.grammar_exam) : ""} ${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
+          </section>
+          <section class="bk-card">
+            <div class="bk-h"><span>语法九桶派生面 <small>← tests_grammar 只读</small></span><span class="bk-src">/api/exam_point/grammar_point_rollup</span></div>
+            ${gprHTML}
+          </section>
+        </div>
+      </details>
       <section class="bk-card">
         <div class="bk-h"><span>命题套路 · 题材 × 设问思维</span><span class="bk-src">/api/exam_point/cognitive_by_content</span></div>
         ${_cogExplainPanel()}
         <div class="kb-list">${taoluHTML}</div>
         <p class="kb-dim" style="margin:8px 0 0;">"每类语篇主导哪种思维" = 命题套路 (设问思维=教研显式标签真值; 题材=双模型方向性; era 2015–20, 2021+ 桥缺)。这里只看体裁维度的主导技能摘要; 想看完整占比构成、切主题群/主题语境维度 → <a href="#/beike">命题研判</a> F卡。</p>
       </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>语法考点 · 时态 / 从句 / 句型 / 词法 (辽宁考查热点)</span><span class="bk-src">/api/grammar/stats</span></div>
-        <div class="zt-gramlist">${gramHTML}</div>
-        <p class="kb-dim" style="margin:8px 0 0;">辽宁卷语法考查频次 (直接来自历年试卷, 按课标语法体系分类)。${(!isErr(gram)) ? _grammarTopNote(gram.grammar_exam) : ""} ${(!isErr(gram)) ? _grammarCaption(gram.grammar_exam) : ""}</p>
-      </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>语法九桶派生面 <small>← tests_grammar 只读</small></span><span class="bk-src">/api/exam_point/grammar_point_rollup</span></div>
-        ${gprHTML}
-      </section>
-      <section class="bk-card">
-        <div class="bk-h"><span>课标学业质量 · 描述浏览器</span><span class="bk-src">/api/exam_point/quality_standards</span></div>
-        ${qsHTML}
-      </section>
+      <details class="gz-evidence">
+        <summary>课标学业质量 · 描述浏览器</summary>
+        <div class="gz-evidence-body">
+          <section class="bk-card">
+            <div class="bk-h"><span>课标学业质量</span><span class="bk-src">/api/exam_point/quality_standards</span></div>
+            ${qsHTML}
+          </section>
+        </div>
+      </details>
       <p class="zt-nextlink">这些套路怎么变成课? → <a href="#/teaching">40 节课程</a> · 固定搭配/句型/表达库已移入 <a href="#/jichu">基础库</a></p>
       <details class="zt-datahow"><summary>数据怎么来的?</summary>
         <ul>
@@ -379,7 +394,7 @@
   }
   registerTab("jichu", async () => {
     const C = document.querySelector("#content");
-    C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入基础库…</div>';
+    C.innerHTML = (loadingHTML && loadingHTML("载入基础库…")) || '<div class="loading-state"><span class="ls-dot"></span>载入基础库…</div>';
     const [stats, browse, cur, dict, gram, stg] = await Promise.all([
       fetchSafe("/api/stats"), fetchSafe("/api/exam/liaoning_browse"),
       fetchSafe("/api/curriculum/summary"), fetchSafe("/api/exam_dictionary?prefix=zz&limit=1"),
@@ -388,7 +403,7 @@
     // 计数 fetch 失败 → 显原描述不显假数字 (D0 诚实)
     const shelf = (title, icon, href, sub, fallback) =>
       `<a class="sc-card link" href="${href}"><div class="sc-card-h"><svg class="sc-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${icon}</svg><span class="sc-card-t">${title}</span></div><p class="sc-card-d">${sub || fallback}</p><span class="sc-go">进入 →</span></a>`;
-    C.innerHTML = `<section class="scaffold">
+    C.innerHTML = `<section class="scaffold gz-stack">
       ${pageHead("高中 · 基础库", "去哪查、有多少", "教材 · 真题 · 课标 · 词典 — 每条数据可回溯原始 PDF 与真题原卷。")}
       <div class="jc-search">
         <input id="jc-q" type="search" placeholder="查一个词: 释义 · 学段 · 高考是否考过" aria-label="词典检索 (按词头)" autocomplete="off">

@@ -473,9 +473,24 @@ window.GZ = (function () {
       `</div>${right ? `<div class="sc-right">${right}</div>` : ""}</header>`;
   }
 
+  /** 诚实横幅 — tag 短标签(进度/方向/样本…) + html 正文(调用方负责 moth 必留子串). */
+  function honestyBanner(tag, html, kind) {
+    const cls = kind === "demo" ? "caveat-banner demo" : "caveat-banner";
+    return `<div class="${cls}"><span class="cb-tag">${tag}</span><span>${html}</span></div>`;
+  }
+
+  /** 切 tab 加载占位 — 骨架优于裸「载入中」白屏. */
+  function loadingHTML(label) {
+    return `<div class="loading-skeleton" aria-busy="true" aria-live="polite">
+      <div class="loading-state"><span class="ls-dot"></span>${label || "载入中…"}</div>
+      <div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-card"></div>
+    </div>`;
+  }
+
   return {
     $, $$, fetchJSON, fetchSafe, isErr, errorBox, tagChip, renderTable, formToQs,
-    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, stageMiniBand, isSubqPreview,
+    mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, honestyBanner, loadingHTML,
+    stageMiniBand, isSubqPreview,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,
     renderAtlasGraph,

@@ -2,7 +2,7 @@
  * 数据: /api/listening/* (teaching_aid 单一计算点, 前端禁重算).
  */
 (function () {
-  const { registerTab, fetchSafe, isErr, errorBox, pageHead, audioPlayer } = window.GZ;
+  const { registerTab, fetchSafe, isErr, errorBox, pageHead, audioPlayer, loadingHTML } = window.GZ;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => (
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
   ));
@@ -235,7 +235,7 @@
 
   registerTab("listening", async () => {
     const C = document.querySelector("#content");
-    C.innerHTML = '<div class="loading-state"><span class="ls-dot"></span>载入听力讲解…</div>';
+    C.innerHTML = (loadingHTML && loadingHTML("载入听力讲解…")) || '<div class="loading-state"><span class="ls-dot"></span>载入听力讲解…</div>';
     const [sumPack, list] = await Promise.all([
       fetchSafe("/api/listening/teaching_summary"),
       fetchSafe("/api/listening/list"),
@@ -250,7 +250,7 @@
     _applyFilters();
     _state.activeId = (_state.filtered[0] || {}).qb_id || null;
 
-    C.innerHTML = `<section class="scaffold lt-page">
+    C.innerHTML = `<section class="scaffold lt-page gz-stack">
       ${pageHead("基础库 · 听力讲解", "听后理解 · 改写定位 · 抗诱饵",
         `辽宁新高考 II · ${summary.n || 0} 题文字稿讲解（2021–2025）。音频为第三方核验档，非 NEEA 官方原声。`)}
       ${_hero(summary)}

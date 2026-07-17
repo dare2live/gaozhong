@@ -110,16 +110,16 @@
 
 
 /* ===== 骨架 / hub 页 (scaffold.js — 北极星 Phase A: 真题特点/基础库/初中占位) ===== */
-.scaffold { max-width: 940px; margin: 0 auto; padding: 6px 2px 44px; }
+.scaffold { max-width: var(--content-max, 960px); margin: 0 auto; padding: 4px 2px 48px; }
 /* 统一无色块 masthead (设计规范 §页头; 全站唯一页头形态, GZ.pageHead 单渲染点):
  * kicker(纯文本, 前版药丸降级) + H1 学习者问题句 + lead + 右槽 + 红短横线叠通栏线。零背景色块。 */
-.sc-head { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding: 6px 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
-.sc-head::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 48px; height: 3px; background: var(--accent); }
-.sc-badge { font-size: 11px; font-weight: 650; letter-spacing: .08em; color: var(--accent-ink); margin-bottom: 7px; }
-.sc-title { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; color: var(--ink); text-wrap: balance; }
-.sc-lead { font-size: 14px; line-height: 1.6; color: var(--ink-3); max-width: 72ch; margin: 0; }
+.sc-head { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding: 4px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: var(--sp-4, 18px); }
+.sc-head::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 48px; height: 3px; background: var(--accent); border-radius: 2px; }
+.sc-badge { font-size: 11px; font-weight: 650; letter-spacing: .08em; color: var(--accent-ink); margin-bottom: 8px; text-transform: none; }
+.sc-title { font-size: clamp(24px, 2.4vw, 30px); font-weight: 700; letter-spacing: -0.025em; margin: 0 0 8px; color: var(--ink); text-wrap: balance; line-height: 1.2; }
+.sc-lead { font-size: 14.5px; line-height: 1.65; color: var(--ink-3); max-width: 68ch; margin: 0; text-wrap: pretty; }
 .sc-right { flex: none; display: flex; gap: 8px; align-items: center; padding-bottom: 2px; }
-.sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 14px; }
+.sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: var(--sp-3, 14px); }
 .sc-card {
   border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; background: var(--card);
   display: flex; flex-direction: column; gap: 8px;
@@ -138,13 +138,33 @@
 .sc-card-d { font-size: 13px; line-height: 1.6; color: var(--ink-3); margin: 0; }
 .sc-go { font-size: 12.5px; font-weight: 600; color: var(--accent); margin-top: 2px; }
 /* 真题特点 · 结论先行 banner (北极星 Phase B "最少覆盖最大" 实证) */
-.sc-takeaway { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: var(--r); padding: 14px 18px; margin-bottom: 18px; }
-.sc-tk-h { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--accent); margin-bottom: 6px; }
-.sc-tk-body { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0 0 6px; }
+.sc-takeaway, .bk-verdict {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-wash);
+  border-radius: var(--r); padding: 14px 18px; margin-bottom: var(--sp-4, 18px);
+}
+.sc-takeaway.is-sticky, .bk-verdict.is-sticky {
+  position: sticky; top: 0; z-index: 4;
+  box-shadow: 0 8px 24px rgba(46,38,28,.06);
+  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--accent-wash) 92%, #fff);
+}
+.sc-tk-h, .bk-verdict-h { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--accent); margin-bottom: 6px; }
+.sc-tk-body { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0 0 6px; text-wrap: pretty; }
 .sc-tk-body strong { font-weight: 680; }
 .sc-tk-body .tk-found { color: var(--down); }
 .sc-tk-body .tk-senior { color: var(--accent); }
 .sc-tk-caveat { font-size: 12px; line-height: 1.55; color: var(--ink-3); margin: 0; }
+.zt-nextlink { font-size: 13.5px; margin: 4px 0; color: var(--ink-2); }
+.zt-nextlink a { color: var(--accent-ink); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; }
+.zt-nextlink a:hover { border-bottom-color: var(--accent); }
+.zt-datahow, .bk-method {
+  border: 1px solid var(--line-soft); border-radius: var(--r); padding: 4px 14px; background: var(--sunken);
+  font-size: 13px; color: var(--ink-2); margin-top: var(--sp-3);
+}
+.zt-datahow summary, .bk-method summary {
+  cursor: pointer; font-weight: 650; color: var(--ink-2); padding: 8px 0;
+}
+.zt-datahow ul, .bk-method ul { margin: 0 0 10px; padding-left: 1.15em; line-height: 1.55; }
 
 /* ── 王牌视觉锤: 100% 学段带 + 巨号数字 (设计规范 §03; 纯 CSS, 打印友好) ── */
 .zt-hero-num { font-family: var(--num); font-size: 56px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }

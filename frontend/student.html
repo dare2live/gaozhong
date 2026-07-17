@@ -7,42 +7,63 @@
   <link rel="stylesheet" href="/static/style.css">
   <link rel="stylesheet" href="/static/design-system.css">
   <style>
-    .student-card { background: white; margin: 16px; padding: 18px 22px;
-                    border: 1px solid #e8e6e0; max-width: 720px; }
+    body.stu-body { margin: 0; background: var(--surface); color: var(--ink); }
+    .stu-wrap { max-width: 720px; margin: 0 auto; padding: var(--sp-4, 18px) var(--sp-4, 18px) 48px; }
+    .student-card {
+      background: var(--card); margin: 0 0 var(--sp-3, 14px); padding: 18px 22px;
+      border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+    }
+    .student-card h2 { margin: 0 0 8px; font-size: 17px; font-weight: 650; color: var(--ink);
+      font-family: var(--font); border: 0; padding: 0; letter-spacing: -0.015em; }
     .city-pick { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
-    .city-pick button { padding: 6px 12px; border: 1px solid #0a4d75; background: white;
-                        color: #0a4d75; cursor: pointer; font-family: inherit; }
-    .city-pick button.active { background: #0a4d75; color: white; }
-    .score-bar { margin: 12px 0; padding: 10px; background: #f7f5ef;
-                  font-family: Georgia, serif; font-size: 15px; }
-    .score-bar b { color: #c1272d; font-size: 22px; }
+    .city-pick button {
+      padding: 7px 12px; border: 1px solid var(--line); background: var(--card);
+      color: var(--ink-2); cursor: pointer; font-family: inherit; border-radius: var(--r-sm);
+      transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    .city-pick button:hover { border-color: var(--accent); color: var(--accent-ink); }
+    .city-pick button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .score-bar {
+      margin: 12px 0; padding: 12px 14px; background: var(--sunken); border-radius: var(--r);
+      font-size: 15px; color: var(--ink-2);
+    }
+    .score-bar b { color: var(--accent-ink); font-size: 22px; font-family: var(--num); font-variant-numeric: tabular-nums; }
+    #stu-unit { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm);
+      background: var(--card); font: inherit; color: var(--ink); }
+    .btn-primary, #stu-go {
+      background: var(--accent); color: #fff; border: 0; border-radius: var(--r-sm);
+      padding: 8px 16px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .btn-primary:hover, #stu-go:hover { background: var(--accent-ink); }
   </style>
 </head>
-<body style="margin:0;background:#fdfdfb">
-  <div class="caveat-banner demo" style="margin:16px 16px 0;max-width:720px;" id="stu-honesty">
-    <span class="cb-tag">学情</span>
-    <span>本页练习写入<strong>你的</strong>作答记录(<code>real-*</code>身份)。库内另有演示班级(<code>sy-2024-*</code>, source=demo)供教师工具联调, 与你的练习物理隔离 — 不把演示弱点当成你的学情。</span>
-  </div>
-  <section class="student-card">
-    <h2>1. 你所在的城市</h2>
-    <div class="city-pick" id="city-pick">加载中…</div>
-    <p style="font-size:12px;color:#777">点城市自动切教材版本</p>
-  </section>
-
-  <section class="student-card">
-    <h2>2. 选 unit, 出 5 道课时题</h2>
-    <p>当前教材: <b id="cur-version">—</b></p>
-    <select id="stu-unit" style="width:100%;padding:6px"></select>
-    <div style="margin-top:8px">
-      <button id="stu-go" class="btn-primary">开始做题</button>
+<body class="stu-body">
+  <div class="stu-wrap">
+    <div class="caveat-banner demo" id="stu-honesty">
+      <span class="cb-tag">学情</span>
+      <span>本页练习写入<strong>你的</strong>作答记录(<code>real-*</code>身份)。库内另有演示班级(<code>sy-2024-*</code>, source=demo)供教师工具联调, 与你的练习物理隔离 — 不把演示弱点当成你的学情。</span>
     </div>
-  </section>
+    <section class="student-card">
+      <h2>1. 你所在的城市</h2>
+      <div class="city-pick" id="city-pick">加载中…</div>
+      <p class="muted" style="font-size:12px;margin:0">点城市自动切教材版本</p>
+    </section>
 
-  <section class="student-card" id="stu-quiz-card" style="display:none">
-    <h2>课时题</h2>
-    <div id="stu-quiz"></div>
-    <div class="score-bar" id="stu-score" style="display:none"></div>
-  </section>
+    <section class="student-card">
+      <h2>2. 选 unit, 出 5 道课时题</h2>
+      <p style="margin:0 0 8px">当前教材: <b id="cur-version">—</b></p>
+      <select id="stu-unit" aria-label="选择单元"></select>
+      <div style="margin-top:10px">
+        <button id="stu-go" class="btn-primary" type="button">开始做题</button>
+      </div>
+    </section>
+
+    <section class="student-card" id="stu-quiz-card" style="display:none">
+      <h2>课时题</h2>
+      <div id="stu-quiz"></div>
+      <div class="score-bar" id="stu-score" style="display:none"></div>
+    </section>
+  </div>
 
   <script src="/static/common.js"></script>
   <script src="/static/student.js"></script>

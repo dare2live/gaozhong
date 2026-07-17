@@ -21,20 +21,18 @@ body {
   vertical-align: middle;
 }
 
+/* .card 视觉由 design-system.css 接管 (圆角/暖阴影); 此处只留兼容间距, 禁 Georgia 泄漏进 SPA */
 .card {
-  background: white;
-  margin: 18px 32px;
+  margin: 0;
   padding: 18px 22px;
-  border: 1px solid #e8e6e0;        /* economist 细边代替 box-shadow */
-  border-radius: 0;                  /* 直角 */
 }
 .card h2 {
   margin: 0 0 12px;
-  font-family: Georgia, serif;
+  font-family: var(--font);
   font-size: 17px;
-  font-weight: 700;
-  color: var(--down);
-  border-bottom: 2px solid var(--accent);
+  font-weight: 650;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-soft);
   padding-bottom: 6px;
 }
 .src { font-size: 12px; color: var(--ink-3); margin: -4px 0 8px; }

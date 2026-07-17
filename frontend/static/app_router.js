@@ -269,8 +269,8 @@
       : (sid ? "已登录学习者但暂无弱点高亮(无作答或非主题群弱点)。" : "未绑定学习者身份 — 课程不伪造个人缺口高亮。");
     CONTENT.innerHTML = `<section class="scaffold">
       ${GZ.pageHead(`高中 · ${syl.n_lessons} 节课程`, `${syl.n_lessons} 节课覆盖高考主题全集`, "按命题频次分配 — 用最少的课覆盖最大的考查权重; 每节一个考点焦点 + 可溯源的辽宁真题作业。")}
-      <div class="caveat-banner"><span class="cb-tag">进度</span><span><b>Phase D</b> — 可背诵正文 ${nContent}/${syl.n_lessons} 节(均过 review gate; 机械门非教学效度证明)。${gapNote}</span></div>
-      <div class="sc-takeaway">
+      ${(GZ.honestyBanner || ((t,h)=>`<div class="caveat-banner"><span class="cb-tag">${t}</span><span>${h}</span></div>`))("进度", `<b>Phase D</b> — 可背诵正文 ${nContent}/${syl.n_lessons} 节(均过 review gate; 机械门非教学效度证明)。${gapNote}`)}
+      <div class="sc-takeaway is-sticky">
         <div class="sc-tk-h">覆盖证明 · 用最少的课覆盖最大考查权重</div>
         ${covOk ? _covProof(cov) : `<p class="sc-tk-body">${_esc(_covLine(syl.coverage_proof || {}) || "覆盖数据加载失败。")}</p>`}
         <p class="sc-tk-caveat">实色段 = 课程教的高产出考点; 空心段 = 低频长尾, 明确标出不假装全覆盖。为什么主攻高中新增词? ${!isErr(stg) ? GZ.stageMiniBand(stg) : ""}考查词大头初中前已学 — 详见<a href="#/zhenti">真题特点</a>。</p>
@@ -579,7 +579,7 @@
     CONTENT.innerHTML = `
       ${GZ.pageHead("高中 · 考点关联", "哪些考点总是一起考", "共现 = 同一道真题里同时考到。高频组合就是命题套路: 先看下面的结论, 网络图是它的证据。")}
 
-      <div class="sc-takeaway">
+      <div class="sc-takeaway is-sticky">
         <div class="sc-tk-h">命题套路 · 这些考点常绑着出题</div>
         <div id="kg-chips" class="kg-chips">${_coChips(eraPairs)}</div>
         <p class="sc-tk-caveat">口径: 2021+ 新高考II 卷实测计数, 共现 ≠ 因果; 题材/主题为 AI 标注 · 方向参考。</p>

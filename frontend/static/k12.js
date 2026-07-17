@@ -6,27 +6,28 @@
 (function () {
   const G = window.GZ;
   if (!G || !G.registerTab) return;
-  const { fetchJSON, registerTab } = G;
+  const { fetchJSON, registerTab, pageHead } = G;
   const STAGE_C = (window.GZ_CAT && window.GZ_CAT.stage) || {};   // 学段色单一来源 category-config.js (no-hardcode)
   let chS = null, chZ = null;
 
   function shell() {
-    return `
-<h2 style="margin:0 0 2px;">K12 衔接 · 初中 → 高中</h2>
-<p class="muted" style="margin:0 0 14px;font-size:13px;">沈阳/辽宁 小学→初中→高中 单库 stage 维 · 中考语篇填空逐空考点 = 高考语法填空考点全集 (最高优先级地基)</p>
+    return `<section class="scaffold gz-stack">
+${pageHead("初中 · K12 衔接", "初中学的, 高中怎么接着考", "沈阳/辽宁 小学→初中→高中 同库 stage 维 · 中考语篇填空逐空考点 = 高考语法填空考点母集。")}
+<div class="caveat-banner"><span class="cb-tag">样本</span><span>中考侧为 <b>N=2</b> 省统一卷实证(2024+2025), 看结构与覆盖, <b>非趋势</b>。细粒度语法点初高衔接用 deepens 边, 非10维粗分。</span></div>
 <div class="bk-grid">
-  <section class="bk-card"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" role="img" style="height:300px;"></div><div id="k12-stage-sr" class="sr-only"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
-  <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" role="img" style="height:300px;"></div><div id="k12-zk-sr" class="sr-only"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:#9a6a00;"></p></section>
+  <section class="bk-card is-primary"><div class="bk-h"><span>A stage 阶梯分布 <small>各阶段知识点数</small></span><span class="bk-src">/api/k12/stage_distribution</span></div><div id="k12-stage" role="img" style="height:300px;"></div><div id="k12-stage-sr" class="sr-only"></div><p id="k12-stage-cov" class="muted" style="font-size:11px;margin:6px 0 0;"></p></section>
+  <section class="bk-card"><div class="bk-h"><span>C 中考题型分布 <small>2024+2025 省统一</small></span><span class="bk-src">/api/zhongkao/distribution</span></div><div id="k12-zk" role="img" style="height:300px;"></div><div id="k12-zk-sr" class="sr-only"></div><p id="k12-zk-honesty" class="muted" style="font-size:11px;margin:6px 0 0;color:var(--warn);"></p></section>
 </div>
-<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>B 语篇填空逐空考点 <small>每年10空 = 高考语法填空考点全集</small></span><span class="bk-src">/api/zhongkao/distribution</span></div>
+<section class="bk-card"><div class="bk-h"><span>B 语篇填空逐空考点 <small>每年10空 = 高考语法填空考点全集</small></span><span class="bk-src">/api/zhongkao/distribution</span></div>
   <p class="muted" style="font-size:11px;margin:0 0 8px;">辽宁中考语篇填空固定 10 空(31-40), 每空 1 语法考点 · 这 10 空 = 高考语法填空(7空)的考点母集 (N=2 省统一卷实证, 非趋势)</p>
   <div id="k12-pivot"></div></section>
-<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>D 细粒度语法点初高衔接 <small>deepens 边 (初中学牢→高中深化)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
+<section class="bk-card"><div class="bk-h"><span>D 细粒度语法点初高衔接 <small>deepens 边 (初中学牢→高中深化)</small></span><span class="bk-src">/api/k12/blueprint</span></div>
   <p class="muted" style="font-size:11px;margin:0 0 8px;">细粒度语法点逐一衔接(非10维粗分) · 初中掌握 → 高中同名深化 · N=2 实证</p>
   <div id="k12-bp"></div></section>
-<section class="bk-card" style="margin-top:14px;"><div class="bk-h"><span>E 词汇维度初高衔接 <small>辽宁高考考查词按学段占比</small></span><span class="bk-src">/api/k12/tested_word_stage</span></div>
-  <p class="muted" style="font-size:11px;margin:0 0 8px;">高考离散考点题型实际考查的词, 有多大比例在初中(及以下)阶段就已学过(义务教育地基) vs 高中阶段新学 · "用最少课程覆盖最大考点" 实证 (北极星 Phase B)</p>
-  <div id="k12-vocab"></div></section>`;
+<section class="bk-card"><div class="bk-h"><span>E 词汇维度初高衔接 <small>辽宁高考考查词按学段占比</small></span><span class="bk-src">/api/k12/tested_word_stage</span></div>
+  <p class="muted" style="font-size:11px;margin:0 0 8px;">高考离散考点题型实际考查的词, 有多大比例在初中(及以下)阶段就已学过(义务教育地基) vs 高中阶段新学 · "用最少课程覆盖最大考点" 实证</p>
+  <div id="k12-vocab"></div></section>
+</section>`;
   }
 
   function renderStage(d) {

@@ -73,7 +73,7 @@
     const cardE = `<section class="bk-card" id="bk-card-e"><div class="bk-h"><span>E 七选五 · 文章结构空位 <small>理解文章结构类型 L2 · 每空功能</small></span><span class="bk-src">cognitive_skill.structure_subtypes</span></div><div id="bk-struct" role="img" aria-label="七选五结构空位功能分布"></div><p id="bk-structnote" class="muted" style="font-size:12px;margin:8px 0 0;"></p></section>`;
     return `
 ${G.pageHead("高中 · 辽宁新高考 II 卷", "高考英语考什么", "考什么 · 怎么变 · 怎么考 — 每个数字来自辽宁真题与课标原文的统计, 可以点开追到原卷。", `<button id="bk-print" class="bk-export" title="打印/导PDF本页研判">${G.icon("printer")} 打印本页</button>`)}
-<div id="bk-verdict" class="bk-verdict" aria-live="polite"></div>
+<div id="bk-verdict" class="bk-verdict is-sticky" aria-live="polite"></div>
 <div id="bk-filter" class="bk-filter"></div>
 ${sect("bk-sect-what", "bk-h-what", "考什么", "— 真被考的主题与体裁, 按考查占比排", cardA,
     `这些考点不是孤立出的 — <a href="#/graph">考点怎么绑着出题 → 考点关联</a>`)}
