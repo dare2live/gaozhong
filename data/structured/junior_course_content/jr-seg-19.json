@@ -1,0 +1,30 @@
+{
+  "seq": 19,
+  "segment_id": "jr-seg-19",
+  "volume_key": "8a",
+  "unit_number": 3,
+  "unit_concept_id": "unit:hujiao/8a/U3",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Science and technology — 第19节可背诵讲义",
+  "body_en": "Science and technology help us solve problems, but they need careful people. Check facts before you believe a message online. In lab work, follow safety rules and write clear results. A good invention saves time or protects people — say which one you care about most.",
+  "body_zh": "科技帮我们解决问题，但需要谨慎的人。网上信息先核实再相信。实验课遵守安全规则，写清结果。好发明能省时间或保护人——说说你最在意哪一种。",
+  "covers": [
+    "unit:hujiao/8a/U3"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Science and technology",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

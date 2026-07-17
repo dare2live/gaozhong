@@ -1,0 +1,30 @@
+{
+  "seq": 6,
+  "segment_id": "jr-seg-06",
+  "volume_key": "7a",
+  "unit_number": 6,
+  "unit_concept_id": "unit:hujiao/7a/U6",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Travels — 第6节可背诵讲义",
+  "body_en": "A short trip can teach more than a long holiday. Visit a museum, a park, or a small town near home. Talk to local people in simple English if you can. Compare what you expected with what you really saw. Come home and share three facts with your class.",
+  "body_zh": "短途旅行可能比漫长假期学到更多。去博物馆、公园或家附近的小镇。若可以，用简单英语和当地人说话。对比你的期待和真实所见。回家后跟同学分享三个事实。",
+  "covers": [
+    "unit:hujiao/7a/U6"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Travels",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

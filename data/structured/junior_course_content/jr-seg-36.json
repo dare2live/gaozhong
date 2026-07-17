@@ -1,0 +1,30 @@
+{
+  "seq": 36,
+  "segment_id": "jr-seg-36",
+  "volume_key": "9a",
+  "unit_number": 4,
+  "unit_concept_id": "unit:hujiao/9a/U4",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Ideas and viewpoints — 第36节可背诵讲义",
+  "body_en": "In class talks, attack the idea, not the person. Keep time fair for each speaker. Take notes on strong points from the other side. End with one sentence you both agree on. Good discussion builds better thinking for everyone.",
+  "body_zh": "课堂讨论中，反驳观点而非攻击人。给每位发言者公平时间。记下对方的有力论点。最后写一句双方都同意的话。好的讨论让每个人的思维更好。",
+  "covers": [
+    "unit:hujiao/9a/U4"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Ideas and viewpoints",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

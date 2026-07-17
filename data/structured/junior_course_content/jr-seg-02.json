@@ -1,0 +1,30 @@
+{
+  "seq": 2,
+  "segment_id": "jr-seg-02",
+  "volume_key": "7a",
+  "unit_number": 2,
+  "unit_concept_id": "unit:hujiao/7a/U2",
+  "layer": "hujiao_cumulative",
+  "title_zh": "My life — 第2节可背诵讲义",
+  "body_en": "I live with my family in a small flat. In the morning I pack my school bag and say hello to my neighbours. After class I finish homework first, then I play with friends. At night I read a short story and write three new words. This is my life — simple plans, kind people, and a little English every day.",
+  "body_zh": "我和家人住在一套小公寓。早上我收拾书包，跟邻居问好。放学后我先写作业，再和朋友玩。晚上读一篇短故事，写下三个新词。这就是我的生活——简单计划、友善的人，以及每天一点英语。",
+  "covers": [
+    "unit:hujiao/7a/U2"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "My life",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

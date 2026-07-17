@@ -1,0 +1,30 @@
+{
+  "seq": 43,
+  "segment_id": "jr-seg-43",
+  "volume_key": "9b",
+  "unit_number": 3,
+  "unit_concept_id": "unit:hujiao/9b/U3",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Environmental problems — 第43节可背诵讲义",
+  "body_en": "Environmental problems touch air, water, and waste. Start at home: put rubbish in the right bins and turn off lights you do not use. At school, join a clean-up or a tree-planting day. Talk about one local problem and one possible fix. Small habits, kept by many people, change a city.",
+  "body_zh": "环境问题关系到空气、水与垃圾。从家里开始：把垃圾放进正确的桶，关掉不用的灯。在学校参加清洁日或植树。讨论一个本地问题和一个可能的办法。许多人坚持的小习惯，会改变一座城市。",
+  "covers": [
+    "unit:hujiao/9b/U3"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Environmental problems",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "seq": 23,
+  "segment_id": "jr-seg-23",
+  "volume_key": "8a",
+  "unit_number": 7,
+  "unit_concept_id": "unit:hujiao/8a/U7",
+  "layer": "hujiao_cumulative",
+  "title_zh": "School life — 第23节可背诵讲义",
+  "body_en": "School life is more than tests. Greet teachers, help classmates, and keep your desk tidy. When a lesson is hard, ask one clear question. Join one club and practice for ten minutes a day. A calm morning plan makes the whole day easier.",
+  "body_zh": "学校生活不只是考试。向老师问好，帮助同学，保持课桌整齐。课很难时，问一个清楚的问题。加入一个社团，每天练十分钟。平静的早晨计划会让整天更轻松。",
+  "covers": [
+    "unit:hujiao/8a/U7"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "School life",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

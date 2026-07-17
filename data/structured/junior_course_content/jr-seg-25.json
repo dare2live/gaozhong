@@ -1,0 +1,30 @@
+{
+  "seq": 25,
+  "segment_id": "jr-seg-25",
+  "volume_key": "8b",
+  "unit_number": 1,
+  "unit_concept_id": "unit:hujiao/8b/U1",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Social communication — 第25节可背诵讲义",
+  "body_en": "Social communication starts with listening. Look at the speaker and wait your turn. Use polite phrases: please, thank you, sorry, excuse me. Online messages need care too — never send words you would not say face to face. Clear talk prevents many problems.",
+  "body_zh": "社交沟通从倾听开始。看着说话的人，轮到你再开口。使用礼貌用语：请、谢谢、对不起、借过。网上留言也要谨慎——别发你当面不会说的话。清楚表达能避免很多问题。",
+  "covers": [
+    "unit:hujiao/8b/U1"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Social communication",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

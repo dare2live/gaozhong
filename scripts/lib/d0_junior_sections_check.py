@@ -143,6 +143,11 @@ def check_junior_syllabus(con: duckdb.DuckDBPyConnection, check) -> None:
         n_content == sum(1 for l in lessons if l.get("content")),
         f"{n_content}",
     )
+    check(
+        "可背诵正文全挂: n_with_content == n_lessons == 46 (junior review gate)",
+        n_content == r["n_lessons"] == 46,
+        f"{n_content}/{r['n_lessons']}",
+    )
 
 
 def check_junior_unit_content(con: duckdb.DuckDBPyConnection, check) -> None:

@@ -1,0 +1,30 @@
+{
+  "seq": 17,
+  "segment_id": "jr-seg-17",
+  "volume_key": "8a",
+  "unit_number": 1,
+  "unit_concept_id": "unit:hujiao/8a/U1",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Amazing things — 第17节可背诵讲义",
+  "body_en": "Amazing things are often small at first. A seed becomes a tree. A short practice becomes a skill. Ask how and why, then test your idea safely. Keep a wonder list in your notebook: three amazing facts each week. Share one fact with the class in clear English.",
+  "body_zh": "惊人的事起初往往很小。种子长成树。短暂练习变成技能。问如何与为何，再安全地验证想法。在笔记本里列惊奇清单：每周三个惊人事实。用清楚的英语和全班分享一个事实。",
+  "covers": [
+    "unit:hujiao/8a/U1"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Amazing things",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

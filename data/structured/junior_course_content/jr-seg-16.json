@@ -1,0 +1,30 @@
+{
+  "seq": 16,
+  "segment_id": "jr-seg-16",
+  "volume_key": "7b",
+  "unit_number": 8,
+  "unit_concept_id": "unit:hujiao/7b/U8",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Colourful life — 第16节可背诵讲义",
+  "body_en": "Festivals make life colourful. Prepare a small gift, learn a song, or cook a simple dish. Invite a friend to join and explain the meaning in English. After the festival, write what you liked and what you would change next year. Memory grows when you take part, not only watch.",
+  "body_zh": "节日让生活多彩。准备小礼物、学首歌，或做一道简单菜。邀请朋友一起，用英语解释含义。节日后写下你喜欢什么、明年想改什么。参与其中记忆才生长，而不是只旁观。",
+  "covers": [
+    "unit:hujiao/7b/U8"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Colourful life",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

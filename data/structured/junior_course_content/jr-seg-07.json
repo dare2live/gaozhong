@@ -1,0 +1,30 @@
+{
+  "seq": 7,
+  "segment_id": "jr-seg-07",
+  "volume_key": "7a",
+  "unit_number": 7,
+  "unit_concept_id": "unit:hujiao/7a/U7",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Fun time — 第7节可背诵讲义",
+  "body_en": "Fun time is not wasted time. Play a game, sing a song, or draw a picture after hard work. Choose activities that make you smile and also wake your mind. Share fun with friends, but keep rules fair for everyone. Rest well so tomorrow you can learn with energy.",
+  "body_zh": "娱乐时间不是浪费。辛苦学习后玩游戏、唱歌或画画。选让你微笑又能唤醒大脑的活动。和朋友一起玩，但规则要对人人公平。休息好，明天才能有精力学习。",
+  "covers": [
+    "unit:hujiao/7a/U7"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Fun time",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

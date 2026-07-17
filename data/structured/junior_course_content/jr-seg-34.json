@@ -1,0 +1,30 @@
+{
+  "seq": 34,
+  "segment_id": "jr-seg-34",
+  "volume_key": "9a",
+  "unit_number": 2,
+  "unit_concept_id": "unit:hujiao/9a/U2",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Geniuses — 第34节可背诵讲义",
+  "body_en": "Not every clever student looks famous at school. Some learn slowly, then jump ahead. Ask for help early. Teach a friend what you just learned. Keep trying after small mistakes. Your best idea may come after many common days.",
+  "body_zh": "并非每位聪明学生在学校都显眼。有人学得慢，然后突然跃进。尽早求助。把刚学会的教给朋友。小错误后继续试。你最好的想法可能出现在许多平常日子之后。",
+  "covers": [
+    "unit:hujiao/9a/U2"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Geniuses",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

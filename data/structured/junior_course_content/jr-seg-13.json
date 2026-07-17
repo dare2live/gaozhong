@@ -1,0 +1,30 @@
+{
+  "seq": 13,
+  "segment_id": "jr-seg-13",
+  "volume_key": "7b",
+  "unit_number": 5,
+  "unit_concept_id": "unit:hujiao/7b/U5",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Natural elements — 第13节可背诵讲义",
+  "body_en": "Water, air, earth, and fire are basic parts of nature. We drink water, take in air, and grow food from the ground. Fire can cook and heat us, but it is also dangerous. In experiments, change one thing at a time and write what happens. Care for nature: save water, keep air clean, protect the ground.",
+  "body_zh": "水、空气、泥土与火是自然的基本部分。我们喝水、吸入空气、从土地种出食物。火能做饭取暖，但也危险。实验时一次只改一样，并写下结果。关爱自然：节水、保持空气清洁、保护土地。",
+  "covers": [
+    "unit:hujiao/7b/U5"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Natural elements",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

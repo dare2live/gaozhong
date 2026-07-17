@@ -1,0 +1,30 @@
+{
+  "seq": 37,
+  "segment_id": "jr-seg-37",
+  "volume_key": "9a",
+  "unit_number": 5,
+  "unit_concept_id": "unit:hujiao/9a/U5",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Leisure time — 第37节可背诵讲义",
+  "body_en": "Free time rests your mind. Read for pleasure, walk outside, or play a quiet game. Stop screens before sleep so you rest well. Plan free time like you plan study: short, regular, and enjoyable. Balanced days make stronger learners.",
+  "body_zh": "空闲时间让大脑休息。为乐趣阅读、到户外走走，或玩安静的游戏。睡前停下屏幕，才能休息好。像安排学习一样安排空闲：短、规律、愉快。平衡的日子造就更强的学习者。",
+  "covers": [
+    "unit:hujiao/9a/U5"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Leisure time",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

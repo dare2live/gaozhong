@@ -1,0 +1,30 @@
+{
+  "seq": 40,
+  "segment_id": "jr-seg-40",
+  "volume_key": "9a",
+  "unit_number": 8,
+  "unit_concept_id": "unit:hujiao/9a/U8",
+  "layer": "hujiao_cumulative",
+  "title_zh": "A taste of literature — 第40节可背诵讲义",
+  "body_en": "Poems play with sound and picture. Read one poem aloud twice. Circle three strong words and explain why they matter. Try writing four lines about rain, friendship, or home. Stories and poems grow when you answer them with your own voice.",
+  "body_zh": "诗歌玩弄声音与画面。把一首诗大声读两遍。圈出三个有力的词并解释为何重要。试写四行关于雨、友谊或家的诗。当你用自己的声音回应，故事和诗才会生长。",
+  "covers": [
+    "unit:hujiao/9a/U8"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "A taste of literature",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

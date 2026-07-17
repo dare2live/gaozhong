@@ -1,0 +1,30 @@
+{
+  "seq": 33,
+  "segment_id": "jr-seg-33",
+  "volume_key": "9a",
+  "unit_number": 1,
+  "unit_concept_id": "unit:hujiao/9a/U1",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Geniuses — 第33节可背诵讲义",
+  "body_en": "Very clever people work hard for a long time. Talent helps, but practice builds real skill. Read about one scientist or artist and list three habits they kept. Copy one habit for a week: early start, careful notes, or daily review. Great work is often quiet work repeated.",
+  "body_zh": "很聪明的人也会长期努力。天赋有用，但练习造就真本领。读一位科学家或艺术家的故事，列出他们坚持的三个习惯。一周模仿一个习惯：早起、细心笔记或每日复习。伟大的工作常常是安静的重复。",
+  "covers": [
+    "unit:hujiao/9a/U1"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Geniuses",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

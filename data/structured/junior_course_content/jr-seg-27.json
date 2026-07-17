@@ -1,0 +1,30 @@
+{
+  "seq": 27,
+  "segment_id": "jr-seg-27",
+  "volume_key": "8b",
+  "unit_number": 3,
+  "unit_concept_id": "unit:hujiao/8b/U3",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Arts and crafts — 第27节可背诵讲义",
+  "body_en": "Art and hand work train careful hands and quiet minds. Choose paper, soft material, or clay and plan your picture. Follow steps, then add your own idea. Clean tools and share materials with classmates. A gift you make by hand can say more than expensive things.",
+  "body_zh": "美术与手工训练细心的手和安静的心。选择纸、软材料或黏土，先规划画面。按步骤做，再加入你自己的想法。清理工具，与同学分享材料。亲手做的礼物往往比昂贵的东西更能表达心意。",
+  "covers": [
+    "unit:hujiao/8b/U3"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Arts and crafts",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

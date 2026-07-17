@@ -1,0 +1,30 @@
+{
+  "seq": 45,
+  "segment_id": "jr-seg-45",
+  "volume_key": "9b",
+  "unit_number": 5,
+  "unit_concept_id": "unit:hujiao/9b/U5",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Sport and health — 第45节可背诵讲义",
+  "body_en": "Sport and health go together. Prepare your body before you run. Drink water and rest when you feel tired. Team sports teach fair play: follow rules and cheer for others. Sleep enough — strong bodies need quiet nights. Healthy habits beat short food plans that never last.",
+  "body_zh": "运动与健康相伴。跑步前先活动身体。感觉累时喝水休息。团队运动教公平竞赛：遵守规则并为他人加油。睡够——强壮的身体需要安静的夜晚。健康习惯胜过无法长久的短期饮食计划。",
+  "covers": [
+    "unit:hujiao/9b/U5"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Sport and health",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

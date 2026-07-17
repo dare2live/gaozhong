@@ -1,0 +1,30 @@
+{
+  "seq": 44,
+  "segment_id": "jr-seg-44",
+  "volume_key": "9b",
+  "unit_number": 4,
+  "unit_concept_id": "unit:hujiao/9b/U4",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Environmental problems — 第44节可背诵讲义",
+  "body_en": "Plastic in rivers hurts fish and birds. Carry a reusable bottle and bag. Write a short poster with three green ideas in English. Ask your family to try one idea for a week. Protecting the earth is daily work, not only a big word on a wall.",
+  "body_zh": "河里的塑料伤害鱼和鸟。带可重复使用的瓶子和袋子。用英语写一张写着三条绿色想法的短海报。请家人一周试行一条。保护地球是日常工作，而不只是墙上的大话。",
+  "covers": [
+    "unit:hujiao/9b/U4"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Environmental problems",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "seq": 20,
+  "segment_id": "jr-seg-20",
+  "volume_key": "8a",
+  "unit_number": 4,
+  "unit_concept_id": "unit:hujiao/8a/U4",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Science and technology — 第20节可背诵讲义",
+  "body_en": "Phones and computers are tools, not teachers. Use them to look up a word, then close the screen and practice. Build a small project: a poster, a model, or a short talk about one invention. Team work matters: one plans, one builds, one checks. Technology serves learning when you stay in control.",
+  "body_zh": "手机和电脑是工具，不是老师。用它们查一个词，然后关掉屏幕去练习。做一个小项目：海报、模型，或关于一项发明的短演讲。团队合作重要：一人计划、一人制作、一人检查。当你掌控节奏，科技才服务学习。",
+  "covers": [
+    "unit:hujiao/8a/U4"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Science and technology",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "seq": 39,
+  "segment_id": "jr-seg-39",
+  "volume_key": "9a",
+  "unit_number": 7,
+  "unit_concept_id": "unit:hujiao/9a/U7",
+  "layer": "hujiao_cumulative",
+  "title_zh": "A taste of literature — 第39节可背诵讲义",
+  "body_en": "Stories let you live many lives in one book. Read a short story slowly and mark new feelings. Ask: who wants what, and what stands in the way? Write five sentences that retell the ending in your own words. Good readers notice both the story and the heart.",
+  "body_zh": "故事让你在一本书里过许多人生。慢慢读短篇，标出新的感受。问：谁想要什么，什么挡住了路？用五句话按自己的话复述结局。好的读者既看见故事，也看见人心。",
+  "covers": [
+    "unit:hujiao/9a/U7"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "A taste of literature",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

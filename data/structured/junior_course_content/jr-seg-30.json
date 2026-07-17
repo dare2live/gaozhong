@@ -1,0 +1,30 @@
+{
+  "seq": 30,
+  "segment_id": "jr-seg-30",
+  "volume_key": "8b",
+  "unit_number": 6,
+  "unit_concept_id": "unit:hujiao/8b/U6",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Animals — 第30节可背诵讲义",
+  "body_en": "Some animals help farmers; some keep nature in good order. Read one short article about an animal in danger and note two causes. Tell your class what people can do this month. Care for animals is care for our shared world.",
+  "body_zh": "有些动物帮助农民，有些让自然保持良好秩序。读一篇关于濒危动物的短文，记下两个原因。告诉全班这个月人们能做什么。关爱动物就是关爱我们共同的世界。",
+  "covers": [
+    "unit:hujiao/8b/U6"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Animals",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

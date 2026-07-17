@@ -1,0 +1,30 @@
+{
+  "seq": 4,
+  "segment_id": "jr-seg-04",
+  "volume_key": "7a",
+  "unit_number": 4,
+  "unit_concept_id": "unit:hujiao/7a/U4",
+  "layer": "hujiao_cumulative",
+  "title_zh": "The natural world — 第4节可背诵讲义",
+  "body_en": "Mountains, rivers, and forests work together. Rain falls, plants grow, and animals find homes. When one part changes, other parts feel it. In science class we draw a simple food chain and talk about why green plants matter. Walk outside this week and write five things you see in nature.",
+  "body_zh": "山、河、森林彼此协作。雨水落下，植物生长，动物找到家。一部分一变，其它部分也会感受到。科学课上我们画简单的食物链，讨论绿植为何重要。这周走到户外，写下你在自然中看到的五样东西。",
+  "covers": [
+    "unit:hujiao/7a/U4"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "The natural world",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

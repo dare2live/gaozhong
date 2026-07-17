@@ -1,0 +1,30 @@
+{
+  "seq": 41,
+  "segment_id": "jr-seg-41",
+  "volume_key": "9b",
+  "unit_number": 1,
+  "unit_concept_id": "unit:hujiao/9b/U1",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Explorations and exchanges — 第41节可背诵讲义",
+  "body_en": "Explorations and exchanges connect people across places. Students may visit another school or write to a pen friend. Prepare questions and listen more than you speak. Share food, songs, or school rules with care. Exchange means both sides learn.",
+  "body_zh": "探索与交流把不同地方的人连起来。学生可能访问另一所学校或给笔友写信。准备问题，多听少说。小心地分享食物、歌曲或校规。交流意味着双方都学习。",
+  "covers": [
+    "unit:hujiao/9b/U1"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Explorations and exchanges",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

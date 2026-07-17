@@ -1,0 +1,30 @@
+{
+  "seq": 12,
+  "segment_id": "jr-seg-12",
+  "volume_key": "7b",
+  "unit_number": 4,
+  "unit_concept_id": "unit:hujiao/7b/U4",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Man’s best friends — 第12节可背诵讲义",
+  "body_en": "A guide dog helps people walk safely. Farm dogs watch the land. Cats keep quiet friends at home. Before you get a pet, ask: do we have time every day? Read about animal needs in a short book or a class text. Love means work, not only cute photos.",
+  "body_zh": "导盲犬帮助人们安全行走。农场犬守着土地。猫在家里安静陪伴。养宠物前先问：我们每天有时间吗？读一本短书或课文了解动物需求。爱意味着付出，而不只是可爱照片。",
+  "covers": [
+    "unit:hujiao/7b/U4"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Man’s best friends",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

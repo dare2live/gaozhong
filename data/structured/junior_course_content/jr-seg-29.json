@@ -1,0 +1,30 @@
+{
+  "seq": 29,
+  "segment_id": "jr-seg-29",
+  "volume_key": "8b",
+  "unit_number": 5,
+  "unit_concept_id": "unit:hujiao/8b/U5",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Animals — 第29节可背诵讲义",
+  "body_en": "Wild animals need space, food, and quiet. Do not feed them human food. Learn which animals live near your city and how to watch them safely. Zoos can teach, but wild homes matter more. Protect animals by protecting forests, rivers, and clean air.",
+  "body_zh": "野生动物需要空间、食物和安静。不要用人吃的食物喂它们。了解你家附近有哪些动物，以及如何安全观察。动物园能教学，但野生长家更重要。保护动物就是保护森林、河流和清洁的空气。",
+  "covers": [
+    "unit:hujiao/8b/U5"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Animals",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

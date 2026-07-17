@@ -1,0 +1,30 @@
+{
+  "seq": 24,
+  "segment_id": "jr-seg-24",
+  "volume_key": "8a",
+  "unit_number": 8,
+  "unit_concept_id": "unit:hujiao/8a/U8",
+  "layer": "hujiao_cumulative",
+  "title_zh": "School life — 第24节可背诵讲义",
+  "body_en": "Group projects teach school life skills. Divide jobs fairly and finish on time. Listen before you disagree. Write a short report the whole group can explain. If someone is quiet, invite them to share one idea. Success is the team’s work, not one star alone.",
+  "body_zh": "小组项目教学校生活技能。公平分工并按时完成。不同意之前先听。写一份全组都能讲解的短报告。若有人沉默，邀请他分享一个想法。成功是团队的工作，不是一颗明星独自完成。",
+  "covers": [
+    "unit:hujiao/8a/U8"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "School life",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

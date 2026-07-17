@@ -1,0 +1,30 @@
+{
+  "seq": 31,
+  "segment_id": "jr-seg-31",
+  "volume_key": "8b",
+  "unit_number": 7,
+  "unit_concept_id": "unit:hujiao/8b/U7",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Discovery — 第31节可背诵讲义",
+  "body_en": "Discovery begins with a question you really want to answer. Write the question down. Collect facts from books, safe websites, and teachers. Test one idea and record what changes. Share your discovery in five clear sentences.",
+  "body_zh": "发现始于一个你真正想回答的问题。先把问题写下来。从书本、安全网站和老师那里收集事实。验证一个想法并记录变化。用五句清楚的话分享你的发现。",
+  "covers": [
+    "unit:hujiao/8b/U7"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Discovery",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "seq": 26,
+  "segment_id": "jr-seg-26",
+  "volume_key": "8b",
+  "unit_number": 2,
+  "unit_concept_id": "unit:hujiao/8b/U2",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Social communication — 第26节可背诵讲义",
+  "body_en": "When friends disagree, stay calm. Say what you feel without hard words. Offer a plan and ask what they need. If you make a mistake, say sorry early. Strong friendships grow from honest and kind talk.",
+  "body_zh": "朋友意见不合时保持冷静。说出感受，不要用伤人的话。提出一个计划，并问对方需要什么。若你错了，尽早说对不起。牢固的友谊来自诚实又友善的交流。",
+  "covers": [
+    "unit:hujiao/8b/U2"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Social communication",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

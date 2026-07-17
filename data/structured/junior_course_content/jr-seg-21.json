@@ -1,0 +1,30 @@
+{
+  "seq": 21,
+  "segment_id": "jr-seg-21",
+  "volume_key": "8a",
+  "unit_number": 5,
+  "unit_concept_id": "unit:hujiao/8a/U5",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Culture and history — 第21节可背诵讲义",
+  "body_en": "Culture and history live in stories, festivals, and old buildings. Visit a local museum if you can. Ask elders about life when they were young. Compare one custom from China with one from another country in simple English. Care grows when we learn before we decide.",
+  "body_zh": "文化与历史活在故事、节日和老建筑里。若可以，参观本地博物馆。问问长辈他们年轻时的生活。用简单英语比较中国与另一个国家的一项习俗。先了解再决定，关心才会生长。",
+  "covers": [
+    "unit:hujiao/8a/U5"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Culture and history",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

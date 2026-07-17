@@ -1,0 +1,30 @@
+{
+  "seq": 18,
+  "segment_id": "jr-seg-18",
+  "volume_key": "8a",
+  "unit_number": 2,
+  "unit_concept_id": "unit:hujiao/8a/U2",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Amazing things — 第18节可背诵讲义",
+  "body_en": "Museums show amazing tools, old maps, and special objects. Read the signs slowly. Choose one object and explain why it changed people’s lives. Draw it and write five English words about it. Wonder is a habit: look twice before you walk past.",
+  "body_zh": "博物馆展示惊人的工具、古地图和特别物品。慢慢读说明。选一件物品，解释它如何改变人们的生活。画下来并写五个相关英语词。惊奇是一种习惯：走过之前再看一眼。",
+  "covers": [
+    "unit:hujiao/8a/U2"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Amazing things",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

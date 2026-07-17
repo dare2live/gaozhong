@@ -933,9 +933,9 @@ assertions:
     expect: {op: regex, pattern: "OK"}
   - id: junior-phase-d-review-gate
     claim: "初中可背诵正文 review gate 绿: 累计 hujiao∪义教词量门 + 禁 G_FINAL + 单元锚定;
-      试点至少 1 节挂载 (不宣称 46 全齐)"
+      n_with_content == n_lessons == 46 (jr-seg-01..46 全挂)"
     type: shell
-    command: ["bash", "-c", "python3 scripts/tools/audit/junior_course_content_review_gate.py >/dev/null 2>&1 && python3 -c \"import duckdb; from backend.services.course.junior_knowledge import junior_syllabus; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_syllabus(c); c.close(); print('OK' if r.get('n_with_content',0)>=1 else 'FAIL')\" || echo FAIL"]
+    command: ["bash", "-c", "python3 scripts/tools/audit/junior_course_content_review_gate.py >/dev/null 2>&1 && python3 -c \"import duckdb; from backend.services.course.junior_knowledge import junior_syllabus; c=duckdb.connect('data/db/gaozhong.duckdb',read_only=True); r=junior_syllabus(c); c.close(); print('OK' if r.get('n_with_content')==r.get('n_lessons')==46 else 'FAIL')\" || echo FAIL"]
     expect: {op: regex, pattern: "OK"}
   - id: zhongkao-exam-focus-f2
     claim: "Phase F2(2026-07-08, 用户拍板「中考自成体系, 颗粒度对标高考的考点分析, 不复刻

@@ -1,0 +1,30 @@
+{
+  "seq": 14,
+  "segment_id": "jr-seg-14",
+  "volume_key": "7b",
+  "unit_number": 6,
+  "unit_concept_id": "unit:hujiao/7b/U6",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Natural elements — 第14节可背诵讲义",
+  "body_en": "Weather shows nature at work. Wind moves clouds. Sun heats the land. Rain fills rivers. Keep a seven-day weather diary with simple words: sunny, rainy, windy, cold. Compare your notes with a classmate. Science begins when you notice patterns.",
+  "body_zh": "天气展现自然如何运作。风推动云，阳光加热大地，雨水注满河流。用简单词做七天天气日记：晴、雨、风、冷。和同学对比笔记。当你发现规律，科学就开始了。",
+  "covers": [
+    "unit:hujiao/7b/U6"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Natural elements",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

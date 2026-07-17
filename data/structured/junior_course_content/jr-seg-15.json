@@ -1,0 +1,30 @@
+{
+  "seq": 15,
+  "segment_id": "jr-seg-15",
+  "volume_key": "7b",
+  "unit_number": 7,
+  "unit_concept_id": "unit:hujiao/7b/U7",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Colourful life — 第15节可背诵讲义",
+  "body_en": "A colourful life mixes study, rest, and hobbies. Try art, music, or sport on different days. Do not fill every hour; leave space to think. Help at home and talk with family about your day. Colour comes from a calm week plan, not from rushing all the time.",
+  "body_zh": "多彩生活把学习、休息和爱好混在一起。不同日子试试艺术、音乐或运动。别把每一小时都填满，留点空间思考。在家帮忙，并和家人聊聊今天。色彩来自平静的一周计划，而不是一直赶路。",
+  "covers": [
+    "unit:hujiao/7b/U7"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Colourful life",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

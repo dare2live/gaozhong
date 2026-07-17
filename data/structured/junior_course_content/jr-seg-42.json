@@ -1,0 +1,30 @@
+{
+  "seq": 42,
+  "segment_id": "jr-seg-42",
+  "volume_key": "9b",
+  "unit_number": 2,
+  "unit_concept_id": "unit:hujiao/9b/U2",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Explorations and exchanges — 第42节可背诵讲义",
+  "body_en": "Online exchanges need safety rules. Never share your home address or secret numbers. Use school email when your teacher asks. After a talk, write three new facts you learned about the other culture. Real friendship grows from care and honesty.",
+  "body_zh": "线上交流需要安全规则。绝不分享家庭住址或秘密号码。老师要求时使用学校邮箱。交流后写下你学到的关于另一种文化的三个新事实。真正的友谊来自关心与诚实。",
+  "covers": [
+    "unit:hujiao/9b/U2"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Explorations and exchanges",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

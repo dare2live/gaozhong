@@ -1,0 +1,30 @@
+{
+  "seq": 22,
+  "segment_id": "jr-seg-22",
+  "volume_key": "8a",
+  "unit_number": 6,
+  "unit_concept_id": "unit:hujiao/8a/U6",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Culture and history — 第22节可背诵讲义",
+  "body_en": "History is not only dates. It is choices people made in hard times. Read a short life story and note two decisions the person faced. Draw a time line with five key events in your own words. Remember: every city has many voices — listen for more than one.",
+  "body_zh": "历史不只是日期，而是人们在艰难时刻做的选择。读一篇短短的人生故事，记下那人面对的两个决定。用自己的话画五件大事的时间线。记住：每座城市都有许多声音——多听几种。",
+  "covers": [
+    "unit:hujiao/8a/U6"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Culture and history",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

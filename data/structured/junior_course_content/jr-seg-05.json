@@ -1,0 +1,30 @@
+{
+  "seq": 5,
+  "segment_id": "jr-seg-05",
+  "volume_key": "7a",
+  "unit_number": 5,
+  "unit_concept_id": "unit:hujiao/7a/U5",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Travels — 第5节可背诵讲义",
+  "body_en": "Travel starts with a map and a clear plan. Pack light: water, a ticket, and a notebook. Ask politely when you are lost. Try local food and thank the people who help you. Photos are nice, but short notes help you remember the trip better. Safe travel means check the weather and stay with your group.",
+  "body_zh": "旅行从地图和清楚的计划开始。轻装：水、票、笔记本。迷路时礼貌地问路。试试当地食物，感谢帮你的人。照片很好，但短笔记更能帮你记住旅程。安全旅行要看天气、跟紧队伍。",
+  "covers": [
+    "unit:hujiao/7a/U5"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Travels",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

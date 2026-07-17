@@ -1,0 +1,30 @@
+{
+  "seq": 38,
+  "segment_id": "jr-seg-38",
+  "volume_key": "9a",
+  "unit_number": 6,
+  "unit_concept_id": "unit:hujiao/9a/U6",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Leisure time — 第38节可背诵讲义",
+  "body_en": "Hobby clubs turn free time into skill. Photos, chess, dance, or planting all teach careful work. Set a small goal for this month and show your progress. Invite a classmate who feels lonely to join once. Free time is richer when shared kindly.",
+  "body_zh": "爱好社团把空闲变成技能。摄影、象棋、舞蹈或种植都教细心工作。为本月设一个小目标并展示进步。邀请一位感到孤单的同学参加一次。善意分享时，空闲更丰富。",
+  "covers": [
+    "unit:hujiao/9a/U6"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Leisure time",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

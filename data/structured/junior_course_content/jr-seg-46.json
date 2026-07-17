@@ -1,0 +1,30 @@
+{
+  "seq": 46,
+  "segment_id": "jr-seg-46",
+  "volume_key": "9b",
+  "unit_number": 6,
+  "unit_concept_id": "unit:hujiao/9b/U6",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Sport and health — 第46节可背诵讲义",
+  "body_en": "You do not need to be a star to enjoy sport. Walk, move, or play ball with friends. Keep a weekly record: minutes of exercise and how you feel. If you are hurt, tell a teacher and stop. Health is progress you can check in energy, not only in scores.",
+  "body_zh": "你不必成为明星也能享受运动。散步、活动身体，或和朋友打球。做每周记录：运动分钟数和你的感觉。若受伤，告诉老师并停下。健康是你可以在精力里检查的进步，而不只是分数。",
+  "covers": [
+    "unit:hujiao/9b/U6"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Sport and health",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

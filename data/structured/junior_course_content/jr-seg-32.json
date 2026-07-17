@@ -1,0 +1,30 @@
+{
+  "seq": 32,
+  "segment_id": "jr-seg-32",
+  "volume_key": "8b",
+  "unit_number": 8,
+  "unit_concept_id": "unit:hujiao/8b/U8",
+  "layer": "hujiao_cumulative",
+  "title_zh": "Discovery — 第32节可背诵讲义",
+  "body_en": "People discover places; scientists discover rules. You can discover too in daily life. Notice how plants grow to the light. Notice how ice turns to water faster in hot water. Keep a discovery notebook with date, method, and result. Asking questions is a skill you can practice.",
+  "body_zh": "人们发现地方；科学家发现规律。你也能在日常生活中发现。注意植物如何朝光生长。注意冰在热水中如何更快变成水。用日期、方法和结果做发现笔记。提问是可以练习的技能。",
+  "covers": [
+    "unit:hujiao/8b/U8"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "Discovery",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}

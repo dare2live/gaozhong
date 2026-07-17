@@ -43,13 +43,15 @@ items:
 
   - id: junior_phase_d_recitable_body
     blocker_class: sealed_honesty_law
-    status: reopened
+    status: resolved
     reopened_at: "2026-07-15"
+    resolved_at: "2026-07-17"
     reopen_decision: "用户拍板: 初中也做可背诵正文"
     evidence: >
-      原封账: 初中组织轴=教材单元三轴 lineage; 可背诵正文属高中 Phase D 特有。
-      2026-07-15 用户明确「做」→ 本条 reopen; 实现须用累计 hujiao 词表门(禁 G_FINAL)。
-    reopen_when: "已 reopen — 试点 jr-seg-01 已挂; 全 46 节齐备后再封账"
+      2026-07-17: jr-seg-01..46 全量过 junior_course_content_review_gate
+      (累计 hujiao∪义教, 禁 G_FINAL); syllabus n_with_content==46。
+      机械门≠教学效度; 正文库 backend/config/junior_phase_d_banks.json。
+    reopen_when: "若改词量门口径或撤正文再议"
 
   - id: student_real_answer_personalization
     blocker_class: out_of_product_scope

@@ -1,0 +1,30 @@
+{
+  "seq": 10,
+  "segment_id": "jr-seg-10",
+  "volume_key": "7b",
+  "unit_number": 2,
+  "unit_concept_id": "unit:hujiao/7b/U2",
+  "layer": "hujiao_cumulative",
+  "title_zh": "People and places — 第10节可背诵讲义",
+  "body_en": "When you visit a new place, watch how people greet each other. Some shake hands; some smile and say hello. Learn one local custom and follow it carefully. Write a short diary: who you met, where you went, what surprised you. Places become real when you remember the people.",
+  "body_zh": "到新地方时，观察人们如何打招呼。有人握手，有人微笑问好。学一项当地习俗并认真遵守。写短日记：见了谁、去了哪、什么让你惊讶。当你记住那里的人，地方才变得真实。",
+  "covers": [
+    "unit:hujiao/7b/U2"
+  ],
+  "exam_grounded": {
+    "axis": "textbook_unit",
+    "label": "People and places",
+    "note": "组织轴=沪教教材单元; 非 theme_l2; 非押题。词量门=累计 hujiao∪义教基底, 禁 G_FINAL"
+  },
+  "review": {
+    "status": "pass",
+    "reviewed_at": "2026-07-17",
+    "checks": [
+      "lexicon_hujiao_cumulative",
+      "no_10gram_textbook",
+      "unit_grounded",
+      "no_political"
+    ],
+    "note": "junior Phase D batch via generate_junior_phase_d_batch + review_gate"
+  }
+}
