@@ -69,7 +69,8 @@ contracts:
   "/api/listening/detail": {params: {id: ["100"]}, required_keys: [qb_id, stem, transcript, teaching_aid, audio_note], type: dict,
     note: "has_audio 行; id=100 为 2021 Q1; teaching_aid 来自 listening_transcript_teaching.jsonl"}
   "/api/listening/list": {params: {}, required_keys: [count, questions], type: dict}
-  "/api/listening/teaching_summary": {params: {}, required_keys: [summary, items], type: dict}
+  "/api/listening/teaching_summary": {params: {}, required_keys: [summary, items], type: dict,
+    note: "summary 含 paraphrase_pct/by_trap/by_skill 等实测分布, 前端禁重算"}
   "/api/listening/catalog": {params: {}, required_keys: [module_status, years_with_audio, years, complete], type: dict}
   "/api/listening/file": {params: {year: ["2021"], id: ["full"]}, required_keys: [], type: dict, allow_error: true,
     note: "默认 Accept 返回 audio/mpeg 二进制(main.py); Accept:application/json 返回元数据"}

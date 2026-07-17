@@ -73,6 +73,9 @@ def summary() -> dict[str, Any]:
     by_year: dict[int, int] = {}
     by_skill: dict[str, int] = {}
     by_section: dict[str, int] = {}
+    by_bottleneck: dict[str, int] = {}
+    by_trap: dict[str, int] = {}
+    by_support: dict[str, int] = {}
     for r in rows:
         y = int(r.get("year") or 0)
         by_year[y] = by_year.get(y, 0) + 1
@@ -80,14 +83,35 @@ def summary() -> dict[str, Any]:
         by_skill[sk] = by_skill.get(sk, 0) + 1
         sec = str(r.get("section") or "?")
         by_section[sec] = by_section.get(sec, 0) + 1
+        for b in r.get("bottleneck") or []:
+            by_bottleneck[str(b)] = by_bottleneck.get(str(b), 0) + 1
+        for d in r.get("distractors") or []:
+            trap = str(d.get("trap") or "?")
+            by_trap[trap] = by_trap.get(trap, 0) + 1
+        kind = str((r.get("answer_support") or {}).get("kind") or "?")
+        by_support[kind] = by_support.get(kind, 0) + 1
+    n = len(rows)
+    paraphrase_n = by_support.get("paraphrase", 0)
+    bait_n = by_trap.get("原文提及但非答案", 0)
     return {
-        "n": len(rows),
+        "n": n,
         "by_year": dict(sorted(by_year.items())),
         "by_skill": dict(sorted(by_skill.items(), key=lambda kv: -kv[1])),
         "by_section": by_section,
+        "by_bottleneck": dict(sorted(by_bottleneck.items(), key=lambda kv: -kv[1])),
+        "by_trap": dict(sorted(by_trap.items(), key=lambda kv: -kv[1])),
+        "by_support": by_support,
+        "paraphrase_pct": round(100 * paraphrase_n / n) if n else 0,
+        "literal_pct": round(100 * by_support.get("literal", 0) / n) if n else 0,
+        "bait_trap_hits": bait_n,
         "provenance": "agent_transcript_grounded",
         "honesty": (
             "讲解锚定题干选项+文字稿; 音频为第三方核验档非 NEEA 官方原声; "
             "干扰项归类为可核验启发式, 非官方评分细则。"
+        ),
+        "teach_focus": (
+            f"100 题里约 {round(100 * paraphrase_n / n) if n else 0}% 答案靠改写定位;"
+            f" 最常见干扰是「原文提过但不是答案」。"
+            " 听力考的是听后理解, 不是录音原词填空。"
         ),
     }
