@@ -487,9 +487,146 @@ window.GZ = (function () {
     </div>`;
   }
 
+  // ===== 教材正文 / 练习排版 (jr_jichu + textbook 共用, 防两套逻辑漂移) =====
+  // 散文: 合并 PDF 硬换行; 练习: 题干/选项分行, 保留 ✓ / 改正年份; 禁止把 a/b/c/d 并进同一 <p>。
+  const _PASSAGE_ESC = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+  function _passageCleanLine(l) {
+    let s = String(l || "")
+      .replace(/\(cid:\d+\)/gi, "")
+      .replace(/\u0000/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    // OCR: "142 5 to 1519" → "1452 to 1519"
+    s = s.replace(/\b(\d{2,3})\s+(\d)\s+to\s+(\d{3,4})\b/g, (_, a, b, y) => a + b + " to " + y);
+    return s;
+  }
+  function _passageIsOption(l) {
+    // 小写 a-d + 分隔 (初中理解练习); 大写 A-D + 标点或双空格 (高中听力键)
+    if (/^[a-d](?:[\.\)\:]|\s)\s*\S/.test(l)) return true;
+    if (/^[A-D][\.\)\:]\s*\S/.test(l)) return true;
+    if (/^[A-D]\s{2,}\S/.test(l)) return true;
+    return false;
+  }
+  function _passageIsItemHead(l) {
+    return /^\d+\s+\S/.test(l) && !/^[A-D]\d+/i.test(l);
+  }
+  function _passageIsSectionHead(l) {
+    return /^(Module|Unit|Reading|Listening|Grammar|Speaking|Writing|Vocabulary|Comprehension|Study skills|Culture corner|More practice|Review|Starting out|Understanding ideas|Developing ideas|Using language|Presenting ideas)\b/i.test(l)
+      || /^[A-D]\s+(What|Vocabulary|Comprehension|Talk|Read)\b/i.test(l)
+      || /^[A-D]\d+\s/.test(l);
+  }
+  function _passageIsPageNoise(l) {
+    return /^\d{1,2}$/.test(l);
+  }
+  function _passageLooksExercise(lines) {
+    return lines.filter(_passageIsOption).length >= 3;
+  }
+  /** 同行多选项拆开: "1 … man. a He was…" / "A  Hearing. B  Sounds. C  Dogs." */
+  function _passageExpandLine(l) {
+    const inline = l.match(/^(\d+\s+.+?[.!?])\s+([a-d](?:[\.\)\:]|\s)\s*\S.*)$/);
+    if (inline) return [inline[1], inline[2]];
+    if (/^[A-D](?:[\.\)\:]|\s{2,})\S/.test(l) && (l.match(/\b[A-D](?:[\.\)\:]|\s{2,})\S/g) || []).length >= 2) {
+      const parts = l.split(/(?=\b[A-D](?:[\.\)\:]|\s{2,}))/).map(s => s.trim()).filter(Boolean);
+      if (parts.length >= 2 && parts.every(_passageIsOption)) return parts;
+    }
+    return [l];
+  }
+  function _passageReflowProse(lines) {
+    const paras = [];
+    let cur = [];
+    const flush = () => { if (cur.length) { paras.push(cur.join(" ")); cur = []; } };
+    lines.forEach(l => {
+      if (_passageIsSectionHead(l) || _passageIsItemHead(l)) { flush(); paras.push(l); return; }
+      cur.push(l);
+    });
+    flush();
+    return paras.map(t => {
+      if (_passageIsSectionHead(t)) return `<p class="jr-sec">${_PASSAGE_ESC(t)}</p>`;
+      return `<p class="jr-prose">${_PASSAGE_ESC(t)}</p>`;
+    }).join("");
+  }
+  function _passageOptLi(o) {
+    const m = o.match(/^([a-dA-D])(?:[\.\)\:]|\s+)\s*(.*)$/);
+    const letter = m ? m[1].toLowerCase() : "";
+    let body = m ? m[2] : o;
+    let mark = "";
+    // OCR 教材偶用 U+2714 heavy check; 源码用 escape 以满足 RC1 无 emoji 门 (ALLOWED 仅 ✓)
+    if (/[✓\u2714]/.test(body)) {
+      mark = '<span class="jr-mark jr-mark-ok" title="教材标注正确">✓</span>';
+      body = body.replace(/[✓\u2714]/g, "").trim();
+    }
+    const corr = body.match(/^(.*\.)\s+(\d{3,4})\s*$/);
+    if (corr) {
+      body = corr[1];
+      mark += `<span class="jr-mark jr-mark-fix" title="改正">${_PASSAGE_ESC(corr[2])}</span>`;
+    }
+    return `<li class="jr-opt"><span class="jr-opt-l">${_PASSAGE_ESC(letter || "·")}</span><span class="jr-opt-t">${_PASSAGE_ESC(body)}</span>${mark}</li>`;
+  }
+
+  /**
+   * 教材段文本 → HTML。title 用于跳过与卡头重复的首行。
+   * 返回带 .jr-* class 的片段 (散文 p / 练习 item+opts)。
+   */
+  function formatPassageText(text, title) {
+    const raw = String(text || "").split("\n").map(_passageCleanLine).filter(l => l && !_passageIsPageNoise(l));
+    let lines = raw.filter((l, i) => {
+      if (i === 0 && title && l.toLowerCase() === String(title).trim().toLowerCase()) return false;
+      return true;
+    });
+    lines = lines.flatMap(_passageExpandLine);
+    if (!_passageLooksExercise(lines)) {
+      return _passageReflowProse(lines);
+    }
+    const blocks = [];
+    let item = null;
+    const flushItem = () => {
+      if (!item) return;
+      const opts = (item.opts || []).map(_passageOptLi).join("");
+      const headIsQ = item.head && /\?$/.test(item.head);
+      blocks.push(`<div class="jr-item">
+        ${item.head ? `<div class="jr-item-h${headIsQ ? " is-q" : ""}">${_PASSAGE_ESC(item.head)}</div>` : ""}
+        ${item.stem ? `<p class="jr-stem">${_PASSAGE_ESC(item.stem)}</p>` : ""}
+        ${opts ? `<ul class="jr-opts">${opts}</ul>` : ""}
+      </div>`);
+      item = null;
+    };
+
+    lines.forEach(l => {
+      if (_passageIsSectionHead(l)) {
+        flushItem();
+        blocks.push(`<p class="jr-sec">${_PASSAGE_ESC(l)}</p>`);
+        return;
+      }
+      if (_passageIsItemHead(l)) {
+        flushItem();
+        item = { head: l, stem: "", opts: [] };
+        return;
+      }
+      if (_passageIsOption(l)) {
+        if (!item) item = { head: "", stem: "", opts: [] };
+        item.opts.push(l);
+        return;
+      }
+      // 选项跨行续写
+      if (item && item.opts.length) {
+        item.opts[item.opts.length - 1] += " " + l;
+        return;
+      }
+      if (item) {
+        item.stem = item.stem ? item.stem + " " + l : l;
+        return;
+      }
+      blocks.push(`<p class="jr-prose">${_PASSAGE_ESC(l)}</p>`);
+    });
+    flushItem();
+    return blocks.join("") || `<p class="kb-dim">（本段无可用文本）</p>`;
+  }
+
   return {
     $, $$, fetchJSON, fetchSafe, isErr, errorBox, tagChip, renderTable, formToQs,
     mountLayout, conceptLink, mdToHtml, NAV, icon, pageHead, honestyBanner, loadingHTML,
+    formatPassageText,
     stageMiniBand, isSubqPreview,
     audioPlayer, _toggleAudio, _seekAudio, _cycleSpeed,
     exportChartPNG, exportCSV, printWithCharts, ensureECharts, chartLoadError, initChart, renderCooccurNetwork,

@@ -1,6 +1,6 @@
 # gaozhong 文档权威索引
 
-更新：2026-07-03（教师子系统清理+KG转正 + 学习者版前端设计 P0-P2 + cognitive_skill 2024 真值补齐；`docs/RESUME.md` 有完整节点日志）
+更新：2026-07-20（教材库全局排版：初高中单元选择器 + 共享 `GZ.formatPassageText`；断点见 `docs/RESUME.md`「2026-07-17~20 教材库全局排版战役」；更早节点仍在 RESUME 正文）
 
 本文件是当前文档入口。接手顺序：**先读 `docs/product_master_plan.md`(🧭 北极星·产品方向)** -> **invoke `gaozhong-ops` skill** -> `docs/RESUME.md`(断点续传) -> `moth assert --repo .` + `python3 -m scripts.tools.map doctor`(看 live 数字真值) -> `AGENTS.md` -> `agent.md` -> `goal.md` -> 本文件。
 

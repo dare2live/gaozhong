@@ -115,3 +115,49 @@
 - **不做**: 2026 中考; theme 假升 analysis-cross; phrase bulk; 平行 grammar_point 写边; 题级 quality; 真实学情造假
 - **后续衔接 (2026-07-17)**: 2022–25 听力题干入库后 D0 基线 `gaokao_total`→556 / `gaokao_liaoning`→272; 补 question 节点; local_pdf 重复校验豁免 `listening_stems_xgkii`; 拆分听力导入脚本守 Rule8。
 - **听力讲解辅助 (2026-07-17)**: `listening_transcript_teaching.jsonl` 100 题(2021–2025) — 干扰项/易忽略/技巧锚定文字稿; API `teaching_aid` + 基础库 `#/listening`; provenance=`agent_transcript_grounded`; 音频仍第三方非 NEEA。
+
+---
+
+## 2026-07-17~20 教材库全局排版战役 (初中+高中浏览 UX)
+
+> **状态**: ✅ 前端落地并 commit/push（本条目）。纯 UI/排版，不改 L1/L2 数据口径、不碰 `TESTED_QTYPES` / plan 附件 / 诚实文案字符串。
+
+### 改了什么
+- **共享排版**: `frontend/static/common.js` → `GZ.formatPassageText`（散文硬换行 reflow；练习 a–d / 题号结构分行；初高中共用）。
+- **初中基础库** `#/jr_jichu`（`jr_jichu.js` + `.jrjc-*` CSS）: **册 chips → 单元 select+快捷 chips → 段类型子标签**（知识点 / Reading / Comprehension…）；**去掉**全册平铺 +「查内容」`<details>` 折叠。
+- **高中教材** `#/textbook`（`textbook.js`）: 对齐同一交互（地市→版本/册→单元→知识点/kind/全部）；**跨版本对照**按钮收到单元旁（宁缺毋滥：标题核心词无交集不推）。
+- **样式**: `frontend/static/app.css` — `.jrjc-*` / `.jr-*`（passage / item / opts）练习与选择器排版。
+
+### 验证（本轮）
+- `python3 -c` 接线自检: `formatPassageText` 导出 + `jr_jichu.js`/`textbook.js` 均调用；花括号平衡；初中侧无「查内容」CTA → **WIRING_OK**。
+- 预览路径（本地）: `python3 backend/api/main.py --port 8765` → `#/jr_jichu`（建议八年级上 U1「理解练习」）· `#/textbook`（外研必修1 任选单元）。
+- `moth assert`: 初跑 `rc1-frontend-quality` FAIL（`common.js` 字面量 `✔` U+2714 触 RC1 无 emoji 门）→ 改 `\u2714` escape + `frontend_rc1_check.py` LIVE_JS 补扫 `jr_jichu` → `python3 scripts/lib/frontend_rc1_check.py` 绿后再 commit。
+- D0 本战役未改数据层；动数据前接手须重跑 live D0。
+
+### 残留（诚实，勿当已修）
+- OCR 噪声偶发被当成选项行（formatter 启发式边界）。
+- 高中练习段结构不如初中 Comprehension 规整（教材 kind/OCR 差异，非单一 CSS 能抹平）。
+- 可选下一手（仅 polish，非开放债）: 针对高中练习再收紧 option/item 启发式；或对明显 OCR 伪选项加黑名单——**需样本驱动，禁止盲扩规则**。
+
+### 未做 / 不要做（下一账号硬约束）
+- **不要** invent 听力 tested 词学段进 `TESTED_QTYPES`。
+- **不要**改 plan 附件 md。
+- **不要**乱动诚实文案字符串（口径/样本量/宁缺毋滥措辞）。
+- **不要** commit `.playwright-cli/` / `.env` / 本地 DB / 密钥。
+
+### 下一手第一步（零上下文开工）
+1. 读北极星 `docs/product_master_plan.md` → `agent.md` → `goal.md` → **本文件本节**。
+2. `git pull` + `git status --short`（确认前端 4 文件已在 main）。
+3. 起服务预览初中 Comprehension + 高中教材单元，对照残留是否可接受。
+4. 若只做前端 polish：只动 `common.js` formatter / CSS；动数据前先 `gaozhong-ops` + D0。
+
+### 交接开场白（可直接粘给下一 Cursor 账号）
+
+```
+接手 gaozhong。先读 docs/product_master_plan.md → agent.md → goal.md → docs/RESUME.md（尤其「2026-07-17~20 教材库全局排版战役」）。
+本战役已落地并 push：初高中教材浏览改为 册/版本→单元选择器+段类型子标签；共享 GZ.formatPassageText（散文 reflow + a-d 选项分行）。文件: frontend/static/{common.js,jr_jichu.js,textbook.js,app.css}。
+预览: python3 backend/api/main.py --port 8765 → #/jr_jichu（八年级上 U1 理解练习）与 #/textbook（外研必修1）。
+残留: OCR 噪声偶发当选项；高中练习不如初中 Comprehension 规整。
+禁止: 勿改 TESTED_QTYPES 听力词学段、勿改 plan 附件 md、勿乱动诚实文案；勿 commit .playwright-cli/。
+invoke: .claude/skills/gaozhong-ops/SKILL.md；前端 polish 先看 common.js formatPassageText。
+```
